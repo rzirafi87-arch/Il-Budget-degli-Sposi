@@ -29,6 +29,10 @@ export async function GET(req: NextRequest) {
     const { data, error } = await query;
 
     if (error) {
+      if ((error as any).code === 'PGRST205') {
+        // schema/table missing locally: return empty for graceful UX
+        return NextResponse.json({ churches: [] });
+      }
       console.error("CHURCHES GET error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

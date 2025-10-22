@@ -143,6 +143,8 @@ const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 
 export default function DashboardPage() {
   const [totalBudget, setTotalBudget] = useState<number>(0);
+  const [brideBudget, setBrideBudget] = useState<number>(0);
+  const [groomBudget, setGroomBudget] = useState<number>(0);
   const [rows, setRows] = useState<SpendRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -181,7 +183,9 @@ export default function DashboardPage() {
         const r = await fetch("/api/my/dashboard", { headers });
         const j = await r.json();
 
-        setTotalBudget(j.totalBudget || 0);
+  setTotalBudget(j.totalBudget || 0);
+  setBrideBudget(j.brideBudget ?? Math.floor((j.totalBudget || 0) / 2));
+  setGroomBudget(j.groomBudget ?? Math.ceil((j.totalBudget || 0) / 2));
         if (j.rows && j.rows.length > 0) setRows(j.rows);
         else setRows(generateAllRows());
       } catch (err) {
@@ -202,7 +206,7 @@ export default function DashboardPage() {
     setSaving(true);
     setMessage(null);
     try {
-      const { data } = await supabase.auth.getSession();
+    const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
         setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
@@ -216,7 +220,7 @@ export default function DashboardPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${jwt}`,
         },
-        body: JSON.stringify({ totalBudget, rows }),
+  body: JSON.stringify({ totalBudget, brideBudget, groomBudget, rows }),
       });
 
       if (!r.ok) {
@@ -239,11 +243,8 @@ export default function DashboardPage() {
   const totalBride = rows.filter((r) => r.spendType === "bride").reduce((sum, r) => sum + r.amount, 0);
   const totalGroom = rows.filter((r) => r.spendType === "groom").reduce((sum, r) => sum + r.amount, 0);
 
-  const budgetBride = totalBudget / 2;
-  const budgetGroom = totalBudget / 2;
-
-  const remainingBride = budgetBride - totalBride;
-  const remainingGroom = budgetGroom - totalGroom;
+  const remainingBride = brideBudget - totalBride;
+  const remainingGroom = groomBudget - totalGroom;
   const remaining = totalBudget - totalSpent;
 
   if (loading) {
@@ -273,11 +274,34 @@ export default function DashboardPage() {
           placeholder="Es. 20000"
         />
 
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Budget iniziale Sposa (€)</label>
+            <input
+              type="number"
+              className="border border-pink-200 rounded px-3 py-2 w-full"
+              value={brideBudget || ""}
+              onChange={(e) => setBrideBudget(Number(e.target.value) || 0)}
+              placeholder="Es. 10000"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Budget iniziale Sposo (€)</label>
+            <input
+              type="number"
+              className="border border-blue-200 rounded px-3 py-2 w-full"
+              value={groomBudget || ""}
+              onChange={(e) => setGroomBudget(Number(e.target.value) || 0)}
+              placeholder="Es. 10000"
+            />
+          </div>
+        </div>
+
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 rounded-lg border border-pink-200 bg-pink-50">
             <h4 className="font-semibold text-pink-700 mb-2">💐 Budget Sposa</h4>
             <div className="space-y-1 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Disponibile:</span><span className="font-semibold">€ {formatEuro(budgetBride)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Disponibile:</span><span className="font-semibold">€ {formatEuro(brideBudget)}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">Speso:</span><span className="font-semibold text-pink-600">€ {formatEuro(totalBride)}</span></div>
               <div className="flex justify-between border-t pt-1"><span className="text-gray-700">Residuo:</span><span className={`font-bold ${remainingBride < 0 ? "text-red-600" : "text-green-600"}`}>€ {formatEuro(remainingBride)}</span></div>
             </div>
@@ -285,7 +309,7 @@ export default function DashboardPage() {
           <div className="p-4 rounded-lg border border-blue-200 bg-blue-50">
             <h4 className="font-semibold text-blue-700 mb-2">🤵 Budget Sposo</h4>
             <div className="space-y-1 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Disponibile:</span><span className="font-semibold">€ {formatEuro(budgetGroom)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Disponibile:</span><span className="font-semibold">€ {formatEuro(groomBudget)}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">Speso:</span><span className="font-semibold text-blue-600">€ {formatEuro(totalGroom)}</span></div>
               <div className="flex justify-between border-t pt-1"><span className="text-gray-700">Residuo:</span><span className={`font-bold ${remainingGroom < 0 ? "text-red-600" : "text-green-600"}`}>€ {formatEuro(remainingGroom)}</span></div>
             </div>

@@ -193,7 +193,7 @@ export async function GET(req: NextRequest) {
     // Prendi il primo evento dell'utente
     const { data: ev, error: e1 } = await db
       .from("events")
-      .select("id, total_budget")
+      .select("id, total_budget, bride_initial_budget, groom_initial_budget")
       .eq("owner_id", userId)
       .order("inserted_at", { ascending: true })
       .limit(1)
@@ -206,8 +206,10 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const eventId = ev.id;
-    const totalBudget = ev.total_budget || 0;
+  const eventId = ev.id;
+  const totalBudget = ev.total_budget || 0;
+  const brideBudget = ev.bride_initial_budget || 0;
+  const groomBudget = ev.groom_initial_budget || 0;
 
     // Carica tutte le spese con categoria e sottocategoria
     const { data: expenses, error: e2 } = await db
@@ -243,6 +245,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       totalBudget,
+      brideBudget,
+      groomBudget,
       rows,
     });
   } catch (e: any) {
@@ -260,8 +264,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Autenticazione richiesta per salvare" }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { totalBudget, rows } = body as { totalBudget: number; rows: SpendRow[] };
+  const body = await req.json();
+  const { totalBudget, brideBudget, groomBudget, rows } = body as { totalBudget: number; brideBudget?: number; groomBudget?: number; rows: SpendRow[] };
 
     const db = getServiceClient();
 
@@ -289,7 +293,14 @@ export async function POST(req: NextRequest) {
     const eventId = ev.id;
 
     // 1. Aggiorna il budget totale nell'evento
-    await db.from("events").update({ total_budget: totalBudget }).eq("id", eventId);
+    await db
+      .from("events")
+      .update({
+        total_budget: totalBudget,
+        bride_initial_budget: brideBudget ?? null,
+        groom_initial_budget: groomBudget ?? null,
+      })
+      .eq("id", eventId);
 
     // 2. Per ogni riga, crea/aggiorna categoria, sottocategoria e spesa
     for (const row of rows) {
