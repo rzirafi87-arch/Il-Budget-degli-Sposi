@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+export const runtime = "nodejs";
 import { getBrowserClient, getServiceClient } from "@/lib/supabaseServer";
 
-export async function POST() {
+export async function POST(_req: NextRequest) {
   try {
     // 1) Recupera utente autenticato (dal client anon, ma eseguito lato server)
     const browser = getBrowserClient();
@@ -83,6 +84,6 @@ export async function POST() {
 }
 
 // utile per test dal browser
-export async function GET() {
-  return POST();
+export async function GET(req: NextRequest) {
+  return POST(req);
 }

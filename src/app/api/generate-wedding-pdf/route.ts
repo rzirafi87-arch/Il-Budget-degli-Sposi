@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const runtime = "nodejs";
 import { getServiceClient } from '@/lib/supabaseServer';
 
 // Per generare il PDF useremo una libreria esterna da chiamare lato client
