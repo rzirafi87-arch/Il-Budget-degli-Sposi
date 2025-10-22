@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServiceClient } from '@/lib/supabaseServer';
 
 // Per generare il PDF useremo una libreria esterna da chiamare lato client
 // Questo endpoint restituisce i dati necessari per la generazione
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const supabase = getServiceClient();
     const body = await request.json();

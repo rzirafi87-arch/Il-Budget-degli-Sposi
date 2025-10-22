@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function POST(
-  _req: Request,
-  { params }: { params: { eventId: string } }
+  _req: NextRequest,
+  { params }: { params: Promise<{ eventId: string }> }
 ) {
   try {
     const db = getServiceClient();
-    const eventId = params.eventId;
+    const { eventId } = await params;
 
     if (!eventId) {
       return NextResponse.json(

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 /**
@@ -166,7 +166,7 @@ const generateAllRows = (): SpendRow[] => {
   return allRows;
 };
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];
@@ -250,7 +250,7 @@ export async function GET(req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];
