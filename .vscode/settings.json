@@ -1,0 +1,10 @@
+{
+  "files.exclude": {
+    "**/.git": false,
+    "**/.github": false,
+    "**/.vscode": false,
+    "**/.DS_Store": false
+  },
+  "explorer.excludeGitIgnore": false,
+  "files.watcherExclude": {}
+}
