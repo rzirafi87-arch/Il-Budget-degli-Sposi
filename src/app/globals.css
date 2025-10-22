@@ -24,3 +24,65 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Elegant, subtle wedding-themed backgrounds */
+.bg-wedding-rose {
+  background-image:
+    radial-gradient(1200px 800px at 10% 0%, #fff7f9 0%, #ffffff 60%),
+    linear-gradient(135deg, #f7f0ea 0%, #ffffff 70%);
+  background-attachment: fixed;
+}
+
+.bg-wedding-rose-floral {
+  background-image:
+    url('/backgrounds/floral.svg'),
+    radial-gradient(1200px 800px at 10% 0%, #fff7f9 0%, #ffffff 60%),
+    linear-gradient(135deg, #f7f0ea 0%, #ffffff 70%);
+  background-size: 420px 420px, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-blend-mode: normal, lighten, normal;
+  background-attachment: fixed, fixed, fixed;
+}
+
+.bg-wedding-sage {
+  background-image:
+    radial-gradient(1000px 700px at 90% 10%, #f3faf5 0%, #ffffff 65%),
+    linear-gradient(135deg, #eef5ef 0%, #ffffff 70%);
+  background-attachment: fixed;
+}
+
+.bg-wedding-sage-dots {
+  background-image:
+    url('/backgrounds/dots.svg'),
+    radial-gradient(1000px 700px at 90% 10%, #f3faf5 0%, #ffffff 65%),
+    linear-gradient(135deg, #eef5ef 0%, #ffffff 70%);
+  background-size: 320px 320px, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-blend-mode: normal, lighten, normal;
+  background-attachment: fixed, fixed, fixed;
+}
+
+.bg-wedding-champagne {
+  background-image:
+    radial-gradient(1100px 700px at 0% 10%, #fbf9f6 0%, #ffffff 60%),
+    linear-gradient(135deg, #f4efe8 0%, #ffffff 70%);
+  background-attachment: fixed;
+}
+
+.bg-wedding-champagne-ornament {
+  background-image:
+    url('/backgrounds/ornament.svg'),
+    radial-gradient(1100px 700px at 0% 10%, #fbf9f6 0%, #ffffff 60%),
+    linear-gradient(135deg, #f4efe8 0%, #ffffff 70%);
+  background-size: 480px 480px, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-blend-mode: normal, lighten, normal;
+  background-attachment: fixed, fixed, fixed;
+}
+
+.bg-wedding-paper {
+  background-image:
+    radial-gradient(1200px 900px at 20% -10%, #f8f7f4 0%, rgba(255,255,255,0.3) 65%),
+    conic-gradient(from 220deg at 20% 10%, #f7f4ec, #ffffff, #ffffff);
+  background-attachment: fixed;
+}

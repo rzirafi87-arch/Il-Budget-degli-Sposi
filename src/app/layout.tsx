@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NavTabs from "@/components/NavTabs";
+import Background from "@/components/Background";
 
 export const metadata: Metadata = {
   title: "Il Mio Budget Matrimonio",
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it">
-      <body className="min-h-screen bg-[conic-gradient(at_20%_10%,#f7f4ec,white)] text-[#2b2b2b]">
+      <body className="min-h-screen text-[#2b2b2b] antialiased">
+        <Background />
         <header className="max-w-6xl mx-auto px-6 pt-6 pb-3">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-serif">Il Mio Budget Matrimonio</h1>

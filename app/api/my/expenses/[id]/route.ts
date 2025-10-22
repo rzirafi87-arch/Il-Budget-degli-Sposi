@@ -1,7 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];
@@ -19,7 +22,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
     }
 
-    const expenseId = params.id;
+    const { id: expenseId } = await params;
 
     // Aggiorna lo stato della spesa
     // Se approvata, copia committed_amount in paid_amount

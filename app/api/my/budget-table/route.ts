@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 /**
@@ -8,7 +8,7 @@ import { getServiceClient } from "@/lib/supabaseServer";
  *
  * Se l'utente non ha spese o categorie, restituisce array vuoto e totali a zero (come nello screenshot).
  */
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];

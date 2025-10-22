@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <defs>
+    <pattern id="floral" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#6b7280" stroke-opacity="0.08" stroke-width="1">
+        <path d="M40 60 C50 40, 70 40, 80 60 C70 56, 50 56, 40 60 Z" />
+        <path d="M120 140 C130 120, 150 120, 160 140 C150 136, 130 136, 120 140 Z" />
+        <path d="M140 40 C150 20, 170 20, 180 40 C170 36, 150 36, 140 40 Z" />
+        <path d="M20 140 C30 120, 50 120, 60 140 C50 136, 30 136, 20 140 Z" />
+        <path d="M100 80 C110 60, 130 60, 140 80 C130 76, 110 76, 100 80 Z" />
+        <circle cx="100" cy="100" r="2" fill="#6b7280" fill-opacity="0.08" />
+        <circle cx="60" cy="30" r="1.5" fill="#6b7280" fill-opacity="0.07" />
+        <circle cx="170" cy="90" r="1.5" fill="#6b7280" fill-opacity="0.07" />
+      </g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#floral)"/>
+</svg>

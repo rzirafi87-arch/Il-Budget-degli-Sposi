@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -19,7 +19,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
     }
 
-    const { id } = await params;
+  const { id } = await params;
 
     // Elimina l'entrata (RLS policies si occuperanno della verifica proprietà)
     const { error: deleteError } = await db
