@@ -1,7 +1,15 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+
+// Singleton instance per il browser client
+let browserClient: SupabaseClient | null = null;
 
 // Client per il BROWSER: usa anon key (contesto utente)
 export function getBrowserClient() {
+  // Riutilizza l'istanza esistente se già creata
+  if (browserClient) {
+    return browserClient;
+  }
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -13,7 +21,15 @@ export function getBrowserClient() {
     );
   }
 
-  return createClient(url, anonKey, { auth: { persistSession: true } });
+  browserClient = createClient(url, anonKey, { 
+    auth: { 
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    } 
+  });
+
+  return browserClient;
 }
 
 // Client SERVICE (SOLO server): usa service role key (non esce mai sul client)
