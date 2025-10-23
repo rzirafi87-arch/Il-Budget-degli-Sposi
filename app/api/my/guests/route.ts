@@ -35,6 +35,11 @@ export async function GET(req: NextRequest) {
       // Dati demo per utenti non autenticati
       return NextResponse.json({
         guests: [],
+        familyGroups: [
+          { id: "demo-fam-1", familyName: "Famiglia Rossi", mainContactGuestId: null, notes: "" },
+          { id: "demo-fam-2", familyName: "Famiglia Bianchi", mainContactGuestId: null, notes: "" },
+          { id: "demo-fam-3", familyName: "Famiglia Verdi", mainContactGuestId: null, notes: "" },
+        ],
         nonInvitedRecipients: [],
         defaultRsvpDeadline: "",
       });
@@ -59,6 +64,7 @@ export async function GET(req: NextRequest) {
     if (eventError || !events || events.length === 0) {
       return NextResponse.json({
         guests: [],
+        familyGroups: [],
         nonInvitedRecipients: [],
         defaultRsvpDeadline: "",
       });
