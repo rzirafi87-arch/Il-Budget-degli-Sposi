@@ -9,7 +9,8 @@ type Totals = { total: 0 | number; common: 0 | number; bride: 0 | number; groom:
 type Row = {
   category: string;
   subcategory: string;
-  spend_type: "common" | "bride" | "groom";
+  spend_type: "common" | "bride" | "groom" | "gift";
+  payment_method: "common" | "bride" | "groom" | "gift";
   budget: number;
   committed: number;
   paid: number;
@@ -38,7 +39,8 @@ export default function BudgetPage() {
         const budgetRows: Row[] = approvedExpenses.map((exp: any) => ({
           category: exp.category || "",
           subcategory: exp.subcategory || "",
-          spend_type: (exp.spend_type || "common") as "common" | "bride" | "groom",
+          spend_type: (exp.spend_type || "common") as "common" | "bride" | "groom" | "gift",
+          payment_method: (exp.spend_type || "common") as "common" | "bride" | "groom" | "gift",
           budget: Number(exp.amount || 0),
           committed: Number(exp.amount || 0),
           paid: 0,
@@ -89,10 +91,11 @@ export default function BudgetPage() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <div className="grid grid-cols-9 gap-0 px-6 py-3 text-sm text-gray-700">
+        <div className="grid grid-cols-10 gap-0 px-6 py-3 text-sm text-gray-700">
           <div>Categoria</div>
           <div>Sottocategoria</div>
           <div>Tipo di spesa</div>
+          <div>Metodo pagamento</div>
           <div className="text-right">Budget (€)</div>
           <div className="text-right">Impegnato</div>
           <div className="text-right">Pagato</div>
@@ -113,13 +116,26 @@ export default function BudgetPage() {
             {rows.map((r, idx) => (
               <li
                 key={idx}
-                className="grid grid-cols-9 gap-0 px-6 py-3 text-sm border-t border-gray-50 hover:bg-gray-50/60"
+                className="grid grid-cols-10 gap-0 px-6 py-3 text-sm border-t border-gray-50 hover:bg-gray-50/60"
               >
                 <div>{r.category}</div>
                 <div>{r.subcategory}</div>
                 <div className="capitalize">
                   {r.spend_type === "common" ? "Comune" :
-                   r.spend_type === "bride"  ? "Sposa"  : "Sposo"}
+                   r.spend_type === "bride"  ? "Sposa"  :
+                   r.spend_type === "groom"  ? "Sposo"  : "Regalo"}
+                </div>
+                <div className="capitalize">
+                  <span className={`inline-block px-2 py-1 rounded text-xs ${
+                    r.payment_method === "common" ? "bg-gray-100 text-gray-700" :
+                    r.payment_method === "bride"  ? "bg-pink-100 text-pink-700" :
+                    r.payment_method === "groom"  ? "bg-blue-100 text-blue-700" :
+                    "bg-purple-100 text-purple-700"
+                  }`}>
+                    {r.payment_method === "common" ? "💰 Comune" :
+                     r.payment_method === "bride"  ? "👰 Sposa"  :
+                     r.payment_method === "groom"  ? "🤵 Sposo"  : "🎁 Regalo"}
+                  </span>
                 </div>
                 <div className="text-right">€ {formatEuro(r.budget)}</div>
                 <div className="text-right">€ {formatEuro(r.committed)}</div>

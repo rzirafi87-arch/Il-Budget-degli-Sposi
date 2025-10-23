@@ -1,2 +1,2 @@
-// Legacy duplicate; intentionally blank to avoid conflicts with src/app
-export default function Placeholder() { return null; }
+// Forward to the real page implementation under src/app to avoid duplication
+export { default } from "../src/app/page";

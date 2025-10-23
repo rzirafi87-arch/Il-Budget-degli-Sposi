@@ -13,7 +13,7 @@ type SpendRow = {
   subcategory: string;
   supplier: string;
   amount: number;
-  spendType: "common" | "bride" | "groom";
+  spendType: "common" | "bride" | "groom" | "gift";
   notes: string;
 };
 
@@ -33,7 +33,20 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Libretti Messa",
     "Fiori cerimonia",
     "Documenti e pratiche",
-    "Offerte / Diritti"
+    "Offerte / Diritti",
+    "Colombe uscita",
+    "Riso/Petali",
+    "Bottiglia per brindisi",
+    "Bicchieri per brindisi",
+    "Forfait cerimonia"
+  ],
+  "Fuochi d'artificio": [
+    "Fuochi d'artificio tradizionali",
+    "Fontane luminose",
+    "Spettacolo pirotecnico",
+    "Bengala per ospiti",
+    "Lancio palloncini luminosi",
+    "Forfait fuochi d'artificio"
   ],
   "Fiori & Decor": [
     "Bouquet",
@@ -43,7 +56,8 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Candele",
     "Tableau",
     "Segnaposto",
-    "Noleggi (vasi / strutture)"
+    "Noleggi (vasi / strutture)",
+    "Forfait fioraio"
   ],
   "Foto & Video": [
     "Servizio fotografico",
@@ -51,7 +65,8 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Drone",
     "Album",
     "Stampe",
-    "Secondo fotografo"
+    "Secondo fotografo",
+    "Forfait fotografo"
   ],
   "Inviti & Stationery": [
     "Partecipazioni",
@@ -89,14 +104,17 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Vini & Bevande",
     "Open bar",
     "Mise en place",
-    "Noleggio tovagliato / piatti"
+    "Noleggio tovagliato / piatti",
+    "Forfait location",
+    "Forfait catering (prezzo a persona)"
   ],
   "Musica & Intrattenimento": [
     "DJ / Band",
     "Audio / Luci",
     "Animazione",
     "Diritti SIAE",
-    "Guestbook phone / Postazioni"
+    "Guestbook phone / Postazioni",
+    "Forfait musica & intrattenimento"
   ],
   "Trasporti": [
     "Auto sposi",
@@ -107,7 +125,11 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Bomboniere",
     "Confetti",
     "Packaging / Scatole",
-    "Allestimento tavolo bomboniere"
+    "Allestimento tavolo bomboniere",
+    "Regalo testimoni",
+    "Regalo damigelle",
+    "Regalo pagetti",
+    "Realizzazione bomboniere"
   ],
   "Ospitalità & Logistica": [
     "Alloggi ospiti",
@@ -128,8 +150,33 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Quota viaggio",
     "Assicurazioni",
     "Visti / Documenti",
+    "Passaporto",
     "Extra",
     "Lista nozze"
+  ],
+  "Wedding Planner": [
+    "Consulenza",
+    "Full planning",
+    "Partial planning",
+    "Coordinamento giorno del matrimonio",
+    "Forfait wedding planner"
+  ],
+  "Musica Cerimonia": [
+    "Coro",
+    "Organo",
+    "Arpa",
+    "Violino",
+    "Violoncello",
+    "Gruppo strumenti",
+    "Forfait musica cerimonia"
+  ],
+  "Musica Ricevimento": [
+    "DJ",
+    "Band live",
+    "Orchestra",
+    "Duo acustico",
+    "Pianista",
+    "Forfait musica ricevimento"
   ],
   "Comunicazione & Media": [
     "Sito web / QR",

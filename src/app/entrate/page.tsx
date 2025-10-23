@@ -9,6 +9,7 @@ type Income = {
   id?: string;
   name: string; // Nome persona/famiglia
   type: "busta" | "bonifico" | "regalo";
+  incomeSource: "bride" | "groom" | "common"; // CHI riceve/porta l'entrata
   amount: number; // Solo per busta/bonifico
   notes: string; // Descrizione regalo o note
   date: string;
@@ -24,6 +25,7 @@ export default function EntratePage() {
   const [newIncome, setNewIncome] = useState<Income>({
     name: "",
     type: "busta",
+    incomeSource: "common",
     amount: 0,
     notes: "",
     date: new Date().toISOString().split("T")[0],
@@ -88,6 +90,7 @@ export default function EntratePage() {
         setNewIncome({
           name: "",
           type: "busta",
+          incomeSource: "common",
           amount: 0,
           notes: "",
           date: new Date().toISOString().split("T")[0],
@@ -129,6 +132,11 @@ export default function EntratePage() {
   const totalRegali = incomes.filter(i => i.type === "regalo").length;
   const totalMoney = totalBusta + totalBonifico;
 
+  // Totali per fonte
+  const totalBride = incomes.filter(i => i.incomeSource === "bride").reduce((sum, i) => sum + i.amount, 0);
+  const totalGroom = incomes.filter(i => i.incomeSource === "groom").reduce((sum, i) => sum + i.amount, 0);
+  const totalCommon = incomes.filter(i => i.incomeSource === "common").reduce((sum, i) => sum + i.amount, 0);
+
   if (loading) {
     return (
       <section className="pt-6">
@@ -150,21 +158,22 @@ export default function EntratePage() {
 
       {/* Riepilogo */}
       <div className="mb-6 grid grid-cols-4 gap-4">
-        <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-          <div className="text-sm text-gray-600">Buste</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalBusta)}</div>
+        <div className="p-4 rounded-lg bg-pink-50 border border-pink-200">
+          <div className="text-sm text-gray-600">Entrate Sposa</div>
+          <div className="text-2xl font-semibold">€ {formatEuro(totalBride)}</div>
         </div>
         <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-          <div className="text-sm text-gray-600">Bonifici</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalBonifico)}</div>
+          <div className="text-sm text-gray-600">Entrate Sposo</div>
+          <div className="text-2xl font-semibold">€ {formatEuro(totalGroom)}</div>
         </div>
-        <div className="p-4 rounded-lg bg-purple-50 border border-purple-200">
-          <div className="text-sm text-gray-600">Regali fisici</div>
-          <div className="text-2xl font-semibold">{totalRegali}</div>
+        <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
+          <div className="text-sm text-gray-600">Entrate Comuni</div>
+          <div className="text-2xl font-semibold">€ {formatEuro(totalCommon)}</div>
         </div>
         <div className="p-4 rounded-lg bg-[#A3B59D]/20 border border-[#A3B59D]">
           <div className="text-sm text-gray-600">Totale denaro</div>
           <div className="text-2xl font-semibold">€ {formatEuro(totalMoney)}</div>
+          <div className="text-xs text-gray-500 mt-1">Regali fisici: {totalRegali}</div>
         </div>
       </div>
 
@@ -203,6 +212,18 @@ export default function EntratePage() {
                 <option value="busta">Busta</option>
                 <option value="bonifico">Bonifico</option>
                 <option value="regalo">Regalo fisico</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Fonte entrata *</label>
+              <select
+                className="border border-gray-300 rounded px-3 py-2 w-full"
+                value={newIncome.incomeSource}
+                onChange={(e) => setNewIncome({ ...newIncome, incomeSource: e.target.value as any })}
+              >
+                <option value="common">Comune</option>
+                <option value="bride">Sposa</option>
+                <option value="groom">Sposo</option>
               </select>
             </div>
             {(newIncome.type === "busta" || newIncome.type === "bonifico") && (
@@ -259,6 +280,7 @@ export default function EntratePage() {
               <th className="px-4 py-3 text-left font-medium text-gray-700">Data</th>
               <th className="px-4 py-3 text-left font-medium text-gray-700">Nome</th>
               <th className="px-4 py-3 text-center font-medium text-gray-700">Tipologia</th>
+              <th className="px-4 py-3 text-center font-medium text-gray-700">Fonte</th>
               <th className="px-4 py-3 text-right font-medium text-gray-700">Importo (€)</th>
               <th className="px-4 py-3 text-left font-medium text-gray-700">Note / Descrizione</th>
               <th className="px-4 py-3 text-center font-medium text-gray-700">Azioni</th>
@@ -267,7 +289,7 @@ export default function EntratePage() {
           <tbody>
             {incomes.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-10 text-center text-gray-400">
+                <td colSpan={7} className="p-10 text-center text-gray-400">
                   Nessuna entrata registrata
                 </td>
               </tr>
@@ -285,6 +307,17 @@ export default function EntratePage() {
                       {income.type === "busta" ? "💵 Busta" : 
                        income.type === "bonifico" ? "🏦 Bonifico" : 
                        "🎁 Regalo"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`inline-block px-2 py-1 rounded text-xs ${
+                      income.incomeSource === "bride" ? "bg-pink-100 text-pink-700" :
+                      income.incomeSource === "groom" ? "bg-blue-100 text-blue-700" :
+                      "bg-gray-100 text-gray-700"
+                    }`}>
+                      {income.incomeSource === "bride" ? "👰 Sposa" :
+                       income.incomeSource === "groom" ? "🤵 Sposo" :
+                       "💑 Comune"}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold">

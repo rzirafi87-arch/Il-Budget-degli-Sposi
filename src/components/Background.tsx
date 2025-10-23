@@ -5,11 +5,16 @@ import React from "react";
 
 function pickBackground(pathname: string): string {
   const map: Array<{ prefix: string; cls: string }> = [
-    { prefix: "/partecipazione", cls: "bg-wedding-rose-floral" },
+    { prefix: "/save-the-date", cls: "bg-wedding-rose-floral" },
     { prefix: "/spese", cls: "bg-wedding-sage-dots" },
     { prefix: "/entrate", cls: "bg-wedding-rose" },
+    { prefix: "/invitati", cls: "bg-wedding-champagne-ornament" },
     { prefix: "/location", cls: "bg-wedding-champagne-ornament" },
     { prefix: "/chiese", cls: "bg-wedding-champagne-ornament" },
+    { prefix: "/wedding-planner", cls: "bg-wedding-sage" },
+    { prefix: "/musica-cerimonia", cls: "bg-wedding-champagne-ornament" },
+    { prefix: "/musica-ricevimento", cls: "bg-wedding-sage-dots" },
+    { prefix: "/cose-matrimonio", cls: "bg-wedding-rose-floral" },
     { prefix: "/fornitori", cls: "bg-wedding-sage" },
     { prefix: "/dashboard", cls: "bg-wedding-paper" },
     { prefix: "/budget", cls: "bg-wedding-paper" },

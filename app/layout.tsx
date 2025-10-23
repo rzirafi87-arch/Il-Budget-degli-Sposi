@@ -1,1 +1,2 @@
-export default function PlaceholderLayout({ children }: { children: React.ReactNode }) { return children; }
+// Forward to the real App Router implementation under src/app to avoid duplication
+export { default, metadata } from "../src/app/layout";

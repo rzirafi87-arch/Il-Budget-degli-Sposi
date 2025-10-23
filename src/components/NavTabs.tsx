@@ -7,12 +7,17 @@ import clsx from "clsx";
 const tabs = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/budget",    label: "Budget" },
+  { href: "/invitati",  label: "Invitati" },
   { href: "/spese",     label: "Spese" },
   { href: "/entrate",   label: "Entrate" },
   { href: "/fornitori", label: "Fornitori" },
   { href: "/location",  label: "Location" },
   { href: "/chiese",    label: "Chiese" },
-  { href: "/partecipazione", label: "Partecipazione" },
+  { href: "/wedding-planner", label: "Wedding Planner" },
+  { href: "/musica-cerimonia", label: "Musica Cerimonia" },
+  { href: "/musica-ricevimento", label: "Musica Ricevimento" },
+  { href: "/cose-matrimonio", label: "Cose da Matrimonio" },
+  { href: "/save-the-date", label: "Save the Date" },
 ];
 
 export default function NavTabs() {

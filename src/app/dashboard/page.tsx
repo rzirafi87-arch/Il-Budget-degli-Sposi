@@ -11,7 +11,7 @@ type SpendRow = {
   subcategory: string;
   supplier: string;
   amount: number;
-  spendType: "common" | "bride" | "groom";
+  spendType: "common" | "bride" | "groom" | "gift";
   notes: string;
 };
 
@@ -31,6 +31,19 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Fiori cerimonia",
     "Documenti e pratiche",
     "Offerte / Diritti",
+    "Colombe uscita",
+    "Riso/Petali",
+    "Bottiglia per brindisi",
+    "Bicchieri per brindisi",
+    "Forfait cerimonia",
+  ],
+  "Fuochi d'artificio": [
+    "Fuochi d'artificio tradizionali",
+    "Fontane luminose",
+    "Spettacolo pirotecnico",
+    "Bengala per ospiti",
+    "Lancio palloncini luminosi",
+    "Forfait fuochi d'artificio",
   ],
   "Fiori & Decor": [
     "Bouquet",
@@ -41,6 +54,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Tableau",
     "Segnaposto",
     "Noleggi (vasi / strutture)",
+    "Forfait fioraio",
   ],
   "Foto & Video": [
     "Servizio fotografico",
@@ -49,6 +63,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Album",
     "Stampe",
     "Secondo fotografo",
+    "Forfait fotografo",
   ],
   "Inviti & Stationery": [
     "Partecipazioni",
@@ -87,6 +102,8 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Open bar",
     "Mise en place",
     "Noleggio tovagliato / piatti",
+    "Forfait location",
+    "Forfait catering (prezzo a persona)",
   ],
   "Musica & Intrattenimento": [
     "DJ / Band",
@@ -94,6 +111,24 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Animazione",
     "Diritti SIAE",
     "Guestbook phone / Postazioni",
+    "Forfait musica & intrattenimento",
+  ],
+  "Musica Cerimonia": [
+    "Coro",
+    "Organo",
+    "Arpa",
+    "Violino",
+    "Violoncello",
+    "Gruppo strumenti",
+    "Forfait musica cerimonia",
+  ],
+  "Musica Ricevimento": [
+    "DJ",
+    "Band live",
+    "Orchestra",
+    "Duo acustico",
+    "Pianista",
+    "Forfait musica ricevimento",
   ],
   "Trasporti": [
     "Auto sposi",
@@ -105,6 +140,10 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Confetti",
     "Packaging / Scatole",
     "Allestimento tavolo bomboniere",
+    "Regalo testimoni",
+    "Regalo damigelle",
+    "Regalo pagetti",
+    "Realizzazione bomboniere",
   ],
   "Ospitalità & Logistica": [
     "Alloggi ospiti",
@@ -125,8 +164,16 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Quota viaggio",
     "Assicurazioni",
     "Visti / Documenti",
+    "Passaporto",
     "Extra",
     "Lista nozze",
+  ],
+  "Wedding Planner": [
+    "Consulenza",
+    "Full planning",
+    "Partial planning",
+    "Coordinamento giorno del matrimonio",
+    "Forfait wedding planner",
   ],
   "Comunicazione & Media": [
     "Sito web / QR",
@@ -142,13 +189,15 @@ const CATEGORIES_MAP: Record<string, string[]> = {
 const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 
 export default function DashboardPage() {
-  const [totalBudget, setTotalBudget] = useState<number>(0);
   const [brideBudget, setBrideBudget] = useState<number>(0);
   const [groomBudget, setGroomBudget] = useState<number>(0);
   const [rows, setRows] = useState<SpendRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  // Budget totale calcolato automaticamente
+  const totalBudget = brideBudget + groomBudget;
 
   const generateAllRows = (): SpendRow[] => {
     const allRows: SpendRow[] = [];
@@ -183,9 +232,8 @@ export default function DashboardPage() {
         const r = await fetch("/api/my/dashboard", { headers });
         const j = await r.json();
 
-  setTotalBudget(j.totalBudget || 0);
-  setBrideBudget(j.brideBudget ?? Math.floor((j.totalBudget || 0) / 2));
-  setGroomBudget(j.groomBudget ?? Math.ceil((j.totalBudget || 0) / 2));
+        setBrideBudget(j.brideBudget || 0);
+        setGroomBudget(j.groomBudget || 0);
         if (j.rows && j.rows.length > 0) setRows(j.rows);
         else setRows(generateAllRows());
       } catch (err) {
@@ -265,16 +313,7 @@ export default function DashboardPage() {
       )}
 
       <div className="mb-8 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Budget totale disponibile (€)</label>
-        <input
-          type="number"
-          className="border border-gray-300 rounded px-4 py-2 w-full max-w-xs"
-          value={totalBudget || ""}
-          onChange={(e) => setTotalBudget(Number(e.target.value) || 0)}
-          placeholder="Es. 20000"
-        />
-
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl">
           <div>
             <label className="block text-xs text-gray-600 mb-1">Budget iniziale Sposa (€)</label>
             <input
@@ -293,6 +332,16 @@ export default function DashboardPage() {
               value={groomBudget || ""}
               onChange={(e) => setGroomBudget(Number(e.target.value) || 0)}
               placeholder="Es. 10000"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Budget Totale (€)</label>
+            <input
+              type="number"
+              className="border border-gray-300 bg-gray-50 rounded px-3 py-2 w-full font-semibold"
+              value={totalBudget || ""}
+              readOnly
+              placeholder="0"
             />
           </div>
         </div>
@@ -354,6 +403,7 @@ export default function DashboardPage() {
                     <option value="common">Comune</option>
                     <option value="bride">Sposa</option>
                     <option value="groom">Sposo</option>
+                    <option value="gift">Regalo</option>
                   </select>
                 </td>
                 <td className="px-3 py-2">
