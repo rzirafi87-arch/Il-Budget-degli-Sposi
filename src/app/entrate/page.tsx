@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 const supabase = getBrowserClient();
 
@@ -149,6 +151,9 @@ export default function EntratePage() {
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-6">Entrate</h2>
+
+      {/* Carosello immagini */}
+      <ImageCarousel images={PAGE_IMAGES.entrate} height="280px" />
 
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">

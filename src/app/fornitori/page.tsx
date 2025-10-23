@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 const supabase = getBrowserClient();
 
@@ -155,6 +157,9 @@ export default function FornitoriPage() {
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-6">Fornitori</h2>
 
+      {/* Carosello immagini */}
+      <ImageCarousel images={PAGE_IMAGES.fornitori} height="280px" />
+
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">
           {message}
@@ -280,7 +285,7 @@ export default function FornitoriPage() {
               </select>
             </div>
             <div>
-              <label className="block text_sm font-medium text-gray-700 mb-1">Regione *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Regione *</label>
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newSupplier.region}

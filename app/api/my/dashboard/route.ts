@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 /**
@@ -12,7 +13,7 @@ type SpendRow = {
   subcategory: string;
   supplier: string;
   amount: number;
-  spendType: "common" | "bride" | "groom";
+  spendType: "common" | "bride" | "groom" | "gift";
   notes: string;
 };
 
@@ -32,7 +33,20 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Libretti Messa",
     "Fiori cerimonia",
     "Documenti e pratiche",
-    "Offerte / Diritti"
+    "Offerte / Diritti",
+    "Colombe uscita",
+    "Riso/Petali",
+    "Bottiglia per brindisi",
+    "Bicchieri per brindisi",
+    "Forfait cerimonia"
+  ],
+  "Fuochi d'artificio": [
+    "Fuochi d'artificio tradizionali",
+    "Fontane luminose",
+    "Spettacolo pirotecnico",
+    "Bengala per ospiti",
+    "Lancio palloncini luminosi",
+    "Forfait fuochi d'artificio"
   ],
   "Fiori & Decor": [
     "Bouquet",
@@ -42,7 +56,8 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Candele",
     "Tableau",
     "Segnaposto",
-    "Noleggi (vasi / strutture)"
+    "Noleggi (vasi / strutture)",
+    "Forfait fioraio"
   ],
   "Foto & Video": [
     "Servizio fotografico",
@@ -50,7 +65,8 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Drone",
     "Album",
     "Stampe",
-    "Secondo fotografo"
+    "Secondo fotografo",
+    "Forfait fotografo"
   ],
   "Inviti & Stationery": [
     "Partecipazioni",
@@ -88,14 +104,17 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Vini & Bevande",
     "Open bar",
     "Mise en place",
-    "Noleggio tovagliato / piatti"
+    "Noleggio tovagliato / piatti",
+    "Forfait location",
+    "Forfait catering (prezzo a persona)"
   ],
   "Musica & Intrattenimento": [
     "DJ / Band",
     "Audio / Luci",
     "Animazione",
     "Diritti SIAE",
-    "Guestbook phone / Postazioni"
+    "Guestbook phone / Postazioni",
+    "Forfait musica & intrattenimento"
   ],
   "Trasporti": [
     "Auto sposi",
@@ -106,7 +125,11 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Bomboniere",
     "Confetti",
     "Packaging / Scatole",
-    "Allestimento tavolo bomboniere"
+    "Allestimento tavolo bomboniere",
+    "Regalo testimoni",
+    "Regalo damigelle",
+    "Regalo pagetti",
+    "Realizzazione bomboniere"
   ],
   "Ospitalità & Logistica": [
     "Alloggi ospiti",
@@ -116,7 +139,27 @@ const CATEGORIES_MAP: Record<string, string[]> = {
   "Burocrazia": [
     "Pubblicazioni",
     "Certificati",
-    "Traduzioni / Apostille"
+    "Traduzioni / Apostille",
+  ],
+  "Addio al Nubilato": [
+    "Location addio al nubilato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al nubilato",
+  ],
+  "Addio al Celibato": [
+    "Location addio al celibato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al celibato",
   ],
   "Beauty & Benessere": [
     "Estetista",
@@ -127,8 +170,33 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Quota viaggio",
     "Assicurazioni",
     "Visti / Documenti",
+    "Passaporto",
     "Extra",
     "Lista nozze"
+  ],
+  "Wedding Planner": [
+    "Consulenza",
+    "Full planning",
+    "Partial planning",
+    "Coordinamento giorno del matrimonio",
+    "Forfait wedding planner"
+  ],
+  "Musica Cerimonia": [
+    "Coro",
+    "Organo",
+    "Arpa",
+    "Violino",
+    "Violoncello",
+    "Gruppo strumenti",
+    "Forfait musica cerimonia"
+  ],
+  "Musica Ricevimento": [
+    "DJ",
+    "Band live",
+    "Orchestra",
+    "Duo acustico",
+    "Pianista",
+    "Forfait musica ricevimento"
   ],
   "Comunicazione & Media": [
     "Sito web / QR",
@@ -192,7 +260,7 @@ export async function GET(req: NextRequest) {
     // Prendi il primo evento dell'utente
     const { data: ev, error: e1 } = await db
       .from("events")
-      .select("id, total_budget")
+      .select("id, total_budget, bride_initial_budget, groom_initial_budget")
       .eq("owner_id", userId)
       .order("inserted_at", { ascending: true })
       .limit(1)
@@ -205,8 +273,10 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const eventId = ev.id;
-    const totalBudget = ev.total_budget || 0;
+  const eventId = ev.id;
+  const totalBudget = ev.total_budget || 0;
+  const brideBudget = ev.bride_initial_budget || 0;
+  const groomBudget = ev.groom_initial_budget || 0;
 
     // Carica tutte le spese con categoria e sottocategoria
     const { data: expenses, error: e2 } = await db
@@ -240,9 +310,26 @@ export async function GET(req: NextRequest) {
       notes: e.notes || "",
     }));
 
+    // Merge con tutte le categorie disponibili
+    const allRows = generateAllRows();
+    const mergedRows: SpendRow[] = [];
+    
+    allRows.forEach((emptyRow) => {
+      const existing = rows.find(
+        (r) => r.category === emptyRow.category && r.subcategory === emptyRow.subcategory
+      );
+      if (existing) {
+        mergedRows.push(existing);
+      } else {
+        mergedRows.push(emptyRow);
+      }
+    });
+
     return NextResponse.json({
       totalBudget,
-      rows,
+      brideBudget,
+      groomBudget,
+      rows: mergedRows,
     });
   } catch (e: any) {
     console.error("DASHBOARD GET uncaught:", e);
@@ -259,8 +346,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Autenticazione richiesta per salvare" }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { totalBudget, rows } = body as { totalBudget: number; rows: SpendRow[] };
+  const body = await req.json();
+  const { totalBudget, brideBudget, groomBudget, rows } = body as { totalBudget: number; brideBudget?: number; groomBudget?: number; rows: SpendRow[] };
 
     const db = getServiceClient();
 
@@ -288,7 +375,14 @@ export async function POST(req: NextRequest) {
     const eventId = ev.id;
 
     // 1. Aggiorna il budget totale nell'evento
-    await db.from("events").update({ total_budget: totalBudget }).eq("id", eventId);
+    await db
+      .from("events")
+      .update({
+        total_budget: totalBudget,
+        bride_initial_budget: brideBudget ?? null,
+        groom_initial_budget: groomBudget ?? null,
+      })
+      .eq("id", eventId);
 
     // 2. Per ogni riga, crea/aggiorna categoria, sottocategoria e spesa
     for (const row of rows) {

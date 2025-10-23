@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 type MusicaRicevimento = {
   id: string;
@@ -106,6 +108,9 @@ export default function MusicaRicevimentoPage() {
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-6">Musica Ricevimento</h2>
+
+      {/* Carosello immagini */}
+      <ImageCarousel images={PAGE_IMAGES["musica-ricevimento"]} height="280px" />
 
       <p className="text-sm text-gray-600 mb-6">
         Trova DJ, band e intrattenimento musicale verificato per il ricevimento.

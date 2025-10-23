@@ -1,9 +1,15 @@
 "use client";
 
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
+
 export default function CoseMatrimonioPage() {
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-6">Cose da Matrimonio</h2>
+
+      {/* Carosello immagini */}
+      <ImageCarousel images={PAGE_IMAGES["cose-matrimonio"]} height="280px" />
 
       <div className="p-20 text-center rounded-2xl border-2 border-dashed border-gray-300 bg-white/50">
         <div className="text-6xl mb-4">🎊</div>

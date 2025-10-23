@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 interface WeddingCardConfig {
   bride_name: string;
@@ -144,8 +146,11 @@ export default function PartecipazionePage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-3xl font-bold mb-6 text-[#A3B59D]">
-          � Crea il tuo Save the Date
+          💌 Crea il tuo Save the Date
         </h1>
+
+        {/* Carosello immagini */}
+        <ImageCarousel images={PAGE_IMAGES["save-the-date"]} height="280px" />
 
         <div className="space-y-6">
           {/* Informazioni Sposi */}

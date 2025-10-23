@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 type Location = {
   id: string;
@@ -147,6 +149,9 @@ export default function LocationiPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Carosello immagini */}
+        <ImageCarousel images={PAGE_IMAGES.location} height="280px" />
+        
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">Location per Matrimoni</h1>
           <button
@@ -389,7 +394,7 @@ export default function LocationiPage() {
                   location.verified && "border-2 border-green-500"
                 )}
               >
-                <div className="flex justify_between items-start mb-3">
+                <div className="flex justify-between items-start mb-3">
                   <h3 className="text-xl font-bold text-gray-800">{location.name}</h3>
                   {location.verified && (
                     <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">

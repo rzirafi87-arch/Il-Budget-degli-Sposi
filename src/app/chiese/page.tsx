@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 type Church = {
   id: string;
@@ -143,6 +145,9 @@ export default function ChiesePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Carosello immagini */}
+        <ImageCarousel images={PAGE_IMAGES.chiese} height="280px" />
+        
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">Chiese per Matrimoni</h1>
           <button

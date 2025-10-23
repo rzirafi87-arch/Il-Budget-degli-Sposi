@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 const supabase = getBrowserClient();
 
@@ -155,6 +157,26 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Certificati",
     "Traduzioni / Apostille",
   ],
+  "Addio al Nubilato": [
+    "Location addio al nubilato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al nubilato",
+  ],
+  "Addio al Celibato": [
+    "Location addio al celibato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al celibato",
+  ],
   "Beauty & Benessere": [
     "Estetista",
     "SPA / Massaggi",
@@ -305,40 +327,44 @@ export default function DashboardPage() {
   }
 
   return (
-    <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Dashboard</h2>
+    <section>
+      <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">💰 Dashboard Budget</h2>
+
+      {/* Carosello immagini - height dinamica per mobile */}
+      <ImageCarousel images={PAGE_IMAGES.dashboard} height="180px" />
 
       {message && (
-        <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">{message}</div>
+        <div className="mb-4 p-4 rounded-xl bg-blue-50 border-2 border-blue-300 text-sm sm:text-base font-medium">{message}</div>
       )}
 
-      <div className="mb-8 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl">
+      <div className="mb-6 sm:mb-8 p-5 sm:p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
+        <h3 className="font-semibold text-lg mb-4 text-gray-700">💵 Imposta Budget Iniziale</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4">
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Budget iniziale Sposa (€)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">💐 Budget Sposa (€)</label>
             <input
               type="number"
-              className="border border-pink-200 rounded px-3 py-2 w-full"
+              className="border-2 border-pink-300 rounded-lg px-4 py-3 w-full text-base focus:ring-2 focus:ring-pink-400 focus:border-pink-400"
               value={brideBudget || ""}
               onChange={(e) => setBrideBudget(Number(e.target.value) || 0)}
               placeholder="Es. 10000"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Budget iniziale Sposo (€)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">🤵 Budget Sposo (€)</label>
             <input
               type="number"
-              className="border border-blue-200 rounded px-3 py-2 w-full"
+              className="border-2 border-blue-300 rounded-lg px-4 py-3 w-full text-base focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
               value={groomBudget || ""}
               onChange={(e) => setGroomBudget(Number(e.target.value) || 0)}
               placeholder="Es. 10000"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Budget Totale (€)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">💑 Budget Totale (€)</label>
             <input
               type="number"
-              className="border border-gray-300 bg-gray-50 rounded px-3 py-2 w-full font-semibold"
+              className="border-2 border-gray-300 bg-gray-100 rounded-lg px-4 py-3 w-full font-bold text-base"
               value={totalBudget || ""}
               readOnly
               placeholder="0"
@@ -346,78 +372,90 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg border border-pink-200 bg-pink-50">
-            <h4 className="font-semibold text-pink-700 mb-2">💐 Budget Sposa</h4>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Disponibile:</span><span className="font-semibold">€ {formatEuro(brideBudget)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Speso:</span><span className="font-semibold text-pink-600">€ {formatEuro(totalBride)}</span></div>
-              <div className="flex justify-between border-t pt-1"><span className="text-gray-700">Residuo:</span><span className={`font-bold ${remainingBride < 0 ? "text-red-600" : "text-green-600"}`}>€ {formatEuro(remainingBride)}</span></div>
+        <div className="mt-5 sm:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-4">
+          <div className="p-4 sm:p-5 rounded-xl border-3 border-pink-600 bg-gradient-to-br from-pink-100 to-pink-200 shadow-xl">
+            <h4 className="font-bold text-base sm:text-lg text-pink-900 mb-3">💐 Budget Sposa</h4>
+            <div className="space-y-2 text-sm sm:text-base">
+              <div className="flex justify-between"><span className="text-gray-800 font-semibold">Disponibile:</span><span className="font-bold text-gray-900">€ {formatEuro(brideBudget)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-800 font-semibold">Speso:</span><span className="font-bold text-pink-700">€ {formatEuro(totalBride)}</span></div>
+              <div className="flex justify-between border-t-2 border-pink-400 pt-2"><span className="text-gray-900 font-bold">Residuo:</span><span className={`font-bold text-lg ${remainingBride < 0 ? "text-red-700" : "text-green-700"}`}>€ {formatEuro(remainingBride)}</span></div>
             </div>
           </div>
-          <div className="p-4 rounded-lg border border-blue-200 bg-blue-50">
-            <h4 className="font-semibold text-blue-700 mb-2">🤵 Budget Sposo</h4>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Disponibile:</span><span className="font-semibold">€ {formatEuro(groomBudget)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Speso:</span><span className="font-semibold text-blue-600">€ {formatEuro(totalGroom)}</span></div>
-              <div className="flex justify-between border-t pt-1"><span className="text-gray-700">Residuo:</span><span className={`font-bold ${remainingGroom < 0 ? "text-red-600" : "text-green-600"}`}>€ {formatEuro(remainingGroom)}</span></div>
+          <div className="p-4 sm:p-5 rounded-xl border-3 border-blue-600 bg-gradient-to-br from-blue-100 to-blue-200 shadow-xl">
+            <h4 className="font-bold text-base sm:text-lg text-blue-900 mb-3">🤵 Budget Sposo</h4>
+            <div className="space-y-2 text-sm sm:text-base">
+              <div className="flex justify-between"><span className="text-gray-800 font-semibold">Disponibile:</span><span className="font-bold text-gray-900">€ {formatEuro(groomBudget)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-800 font-semibold">Speso:</span><span className="font-bold text-blue-700">€ {formatEuro(totalGroom)}</span></div>
+              <div className="flex justify-between border-t-2 border-blue-400 pt-2"><span className="text-gray-900 font-bold">Residuo:</span><span className={`font-bold text-lg ${remainingGroom < 0 ? "text-red-700" : "text-green-700"}`}>€ {formatEuro(remainingGroom)}</span></div>
             </div>
           </div>
-          <div className="p-4 rounded-lg border border-gray-300 bg-gray-50">
-            <h4 className="font-semibold text-gray-700 mb-2">💑 Budget Totale</h4>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Disponibile:</span><span className="font-semibold">€ {formatEuro(totalBudget)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Speso:</span><span className="font-semibold text-gray-700">€ {formatEuro(totalSpent)}</span></div>
-              <div className="flex justify-between text-xs text-gray-500"><span>- Comune:</span><span>€ {formatEuro(totalCommon)}</span></div>
-              <div className="flex justify-between border-t pt-1"><span className="text-gray-700">Residuo:</span><span className={`font-bold ${remaining < 0 ? "text-red-600" : "text-green-600"}`}>€ {formatEuro(remaining)}</span></div>
+          <div className="p-4 sm:p-5 rounded-xl border-3 border-gray-600 bg-gradient-to-br from-gray-200 to-gray-300 shadow-xl">
+            <h4 className="font-bold text-base sm:text-lg text-gray-900 mb-3">💑 Budget Totale</h4>
+            <div className="space-y-2 text-sm sm:text-base">
+              <div className="flex justify-between"><span className="text-gray-800 font-semibold">Disponibile:</span><span className="font-bold text-gray-900">€ {formatEuro(totalBudget)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-800 font-semibold">Speso:</span><span className="font-bold text-gray-900">€ {formatEuro(totalSpent)}</span></div>
+              <div className="flex justify-between text-sm text-gray-700"><span className="font-medium">- Comune:</span><span className="font-semibold">€ {formatEuro(totalCommon)}</span></div>
+              <div className="flex justify-between border-t-2 border-gray-500 pt-2"><span className="text-gray-900 font-bold">Residuo:</span><span className={`font-bold text-lg ${remaining < 0 ? "text-red-700" : "text-green-700"}`}>€ {formatEuro(remaining)}</span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50/50">
-              <th className="px-3 py-2 text-left font-medium text-gray-700 w-[18%]">Categoria</th>
-              <th className="px-2 py-2 text-left font-medium text-gray-700 w-[15%]">Sottocategoria</th>
-              <th className="px-3 py-2 text-left font-medium text-gray-700 w-[20%]">Fornitore</th>
-              <th className="px-2 py-2 text-right font-medium text-gray-700 w-[10%]">Importo (€)</th>
-              <th className="px-2 py-2 text-left font-medium text-gray-700 w-[12%]">Tipo</th>
-              <th className="px-3 py-2 text-left font-medium text-gray-700 w-[25%]">Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60">
-                <td className="px-3 py-2 text-gray-700 text-xs">{row.category}</td>
-                <td className="px-2 py-2 text-gray-700 text-xs">{row.subcategory}</td>
-                <td className="px-3 py-2">
-                  <input type="text" className="border border-gray-200 rounded px-2 py-1 w-full text-xs" value={row.supplier} onChange={(e) => updateRow(row.id, "supplier", e.target.value)} placeholder="Fornitore" />
-                </td>
-                <td className="px-2 py-2">
-                  <input type="number" className="border border-gray-200 rounded px-2 py-1 w-full text-right text-xs" value={row.amount || ""} onChange={(e) => updateRow(row.id, "amount", Number(e.target.value) || 0)} placeholder="0" />
-                </td>
-                <td className="px-2 py-2">
-                  <select className="border border-gray-200 rounded px-1 py-1 w-full text-xs" value={row.spendType} onChange={(e) => updateRow(row.id, "spendType", e.target.value)}>
-                    <option value="common">Comune</option>
-                    <option value="bride">Sposa</option>
-                    <option value="groom">Sposo</option>
-                    <option value="gift">Regalo</option>
-                  </select>
-                </td>
-                <td className="px-3 py-2">
-                  <input type="text" className="border border-gray-200 rounded px-2 py-1 w-full text-xs" value={row.notes} onChange={(e) => updateRow(row.id, "notes", e.target.value)} placeholder="Note..." />
-                </td>
+      {/* Tabella con scroll orizzontale su mobile */}
+      <div className="overflow-x-auto rounded-xl sm:rounded-2xl border border-gray-200 bg-white/70 shadow-sm -mx-4 sm:mx-0">
+        <div className="min-w-[800px]">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50/50">
+                <th className="px-2 sm:px-3 py-2 text-left font-medium text-gray-700 w-[18%]">Categoria</th>
+                <th className="px-1 sm:px-2 py-2 text-left font-medium text-gray-700 w-[15%]">Sottocategoria</th>
+                <th className="px-2 sm:px-3 py-2 text-left font-medium text-gray-700 w-[20%]">Fornitore</th>
+                <th className="px-1 sm:px-2 py-2 text-right font-medium text-gray-700 w-[10%]">Importo (€)</th>
+                <th className="px-1 sm:px-2 py-2 text-left font-medium text-gray-700 w-[12%]">Tipo</th>
+                <th className="px-2 sm:px-3 py-2 text-left font-medium text-gray-700 w-[25%]">Note</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60">
+                  <td className="px-2 sm:px-3 py-2 text-gray-700 text-xs">{row.category}</td>
+                  <td className="px-1 sm:px-2 py-2 text-gray-700 text-xs">{row.subcategory}</td>
+                  <td className="px-2 sm:px-3 py-2">
+                    <input type="text" className="border border-gray-200 rounded px-2 py-1 w-full text-xs" value={row.supplier} onChange={(e) => updateRow(row.id, "supplier", e.target.value)} placeholder="Fornitore" />
+                  </td>
+                  <td className="px-1 sm:px-2 py-2">
+                    <input type="number" className="border border-gray-200 rounded px-2 py-1 w-full text-right text-xs" value={row.amount || ""} onChange={(e) => updateRow(row.id, "amount", Number(e.target.value) || 0)} placeholder="0" />
+                  </td>
+                  <td className="px-1 sm:px-2 py-2">
+                    <select className="border border-gray-200 rounded px-1 py-1 w-full text-xs" value={row.spendType} onChange={(e) => updateRow(row.id, "spendType", e.target.value)}>
+                      <option value="common">Comune</option>
+                      <option value="bride">Sposa</option>
+                      <option value="groom">Sposo</option>
+                      <option value="gift">Regalo</option>
+                    </select>
+                  </td>
+                  <td className="px-2 sm:px-3 py-2">
+                    <input type="text" className="border border-gray-200 rounded px-2 py-1 w-full text-xs" value={row.notes} onChange={(e) => updateRow(row.id, "notes", e.target.value)} placeholder="Note..." />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className="mt-8">
-        <button onClick={saveData} disabled={saving} className="bg-[#A3B59D] text-white rounded-lg px-6 py-3 hover:bg-[#8a9d84] font-medium disabled:opacity-50">
-          {saving ? "Salvataggio..." : "Salva modifiche"}
+      {/* Nota per mobile - PIÙ VISIBILE */}
+      <div className="mt-3 p-3 bg-yellow-50 border-2 border-yellow-300 rounded-xl sm:hidden">
+        <p className="text-sm text-yellow-800 font-medium">💡 <strong>Suggerimento:</strong> Scorri la tabella a destra per vedere tutti i campi</p>
+      </div>
+
+      <div className="mt-6 sm:mt-8 flex gap-3">
+        <button 
+          onClick={saveData} 
+          disabled={saving} 
+          className="flex-1 sm:flex-none bg-gradient-to-r from-[#A3B59D] to-[#8a9d84] text-white rounded-xl px-8 py-4 hover:shadow-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed text-base sm:text-lg active:scale-95 transition-all shadow-md"
+        >
+          {saving ? "⏳ Salvataggio..." : "💾 Salva Modifiche"}
         </button>
       </div>
     </section>

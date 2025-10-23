@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 const supabase = getBrowserClient();
 
@@ -27,7 +29,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Accessori testimoni",
     "Fedi nuziali",
     "Anello fidanzamento",
-    "Accessori vari"
+    "Accessori vari",
   ],
   "Cerimonia": [
     "Chiesa / Comune",
@@ -35,7 +37,20 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Libretti Messa",
     "Fiori cerimonia",
     "Documenti e pratiche",
-    "Offerte / Diritti"
+    "Offerte / Diritti",
+    "Colombe uscita",
+    "Riso/Petali",
+    "Bottiglia per brindisi",
+    "Bicchieri per brindisi",
+    "Forfait cerimonia",
+  ],
+  "Fuochi d'artificio": [
+    "Fuochi d'artificio tradizionali",
+    "Fontane luminose",
+    "Spettacolo pirotecnico",
+    "Bengala per ospiti",
+    "Lancio palloncini luminosi",
+    "Forfait fuochi d'artificio",
   ],
   "Fiori & Decor": [
     "Bouquet",
@@ -45,7 +60,8 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Candele",
     "Tableau",
     "Segnaposto",
-    "Noleggi (vasi / strutture)"
+    "Noleggi (vasi / strutture)",
+    "Forfait fioraio",
   ],
   "Foto & Video": [
     "Servizio fotografico",
@@ -53,7 +69,8 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Drone",
     "Album",
     "Stampe",
-    "Secondo fotografo"
+    "Secondo fotografo",
+    "Forfait fotografo",
   ],
   "Inviti & Stationery": [
     "Partecipazioni",
@@ -64,7 +81,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Francobolli / Spedizioni",
     "Calligrafia",
     "Cartoncini / Tag",
-    "QR Code / Stampa"
+    "QR Code / Stampa",
   ],
   "Sposa": [
     "Abito sposa",
@@ -74,7 +91,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Parrucchiera",
     "Make-up",
     "Prove",
-    "Altro sposa"
+    "Altro sposa",
   ],
   "Sposo": [
     "Abito sposo",
@@ -82,7 +99,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Accessori (cravatta, gemelli, ecc.)",
     "Barbiere / Grooming",
     "Prove",
-    "Altro sposo"
+    "Altro sposo",
   ],
   "Location & Catering": [
     "Affitto sala",
@@ -91,57 +108,109 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Vini & Bevande",
     "Open bar",
     "Mise en place",
-    "Noleggio tovagliato / piatti"
+    "Noleggio tovagliato / piatti",
+    "Forfait location",
+    "Forfait catering (prezzo a persona)",
   ],
   "Musica & Intrattenimento": [
     "DJ / Band",
     "Audio / Luci",
     "Animazione",
     "Diritti SIAE",
-    "Guestbook phone / Postazioni"
+    "Guestbook phone / Postazioni",
+    "Forfait musica & intrattenimento",
+  ],
+  "Musica Cerimonia": [
+    "Coro",
+    "Organo",
+    "Arpa",
+    "Violino",
+    "Violoncello",
+    "Gruppo strumenti",
+    "Forfait musica cerimonia",
+  ],
+  "Musica Ricevimento": [
+    "DJ",
+    "Band live",
+    "Orchestra",
+    "Duo acustico",
+    "Pianista",
+    "Forfait musica ricevimento",
   ],
   "Trasporti": [
     "Auto sposi",
     "Navette ospiti",
-    "Carburante / Pedaggi"
+    "Carburante / Pedaggi",
   ],
   "Bomboniere & Regali": [
     "Bomboniere",
     "Confetti",
     "Packaging / Scatole",
-    "Allestimento tavolo bomboniere"
+    "Allestimento tavolo bomboniere",
+    "Regalo testimoni",
+    "Regalo damigelle",
+    "Regalo pagetti",
+    "Realizzazione bomboniere",
   ],
   "Ospitalità & Logistica": [
     "Alloggi ospiti",
     "Welcome bag / Kit",
-    "Cartellonistica / Segnaletica"
+    "Cartellonistica / Segnaletica",
   ],
   "Burocrazia": [
     "Pubblicazioni",
     "Certificati",
-    "Traduzioni / Apostille"
+    "Traduzioni / Apostille",
+  ],
+  "Addio al Nubilato": [
+    "Location addio al nubilato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al nubilato",
+  ],
+  "Addio al Celibato": [
+    "Location addio al celibato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al celibato",
   ],
   "Beauty & Benessere": [
     "Estetista",
     "SPA / Massaggi",
-    "Solarium"
+    "Solarium",
   ],
   "Viaggio di nozze": [
     "Quota viaggio",
     "Assicurazioni",
     "Visti / Documenti",
+    "Passaporto",
     "Extra",
-    "Lista nozze"
+    "Lista nozze",
+  ],
+  "Wedding Planner": [
+    "Consulenza",
+    "Full planning",
+    "Partial planning",
+    "Coordinamento giorno del matrimonio",
+    "Forfait wedding planner",
   ],
   "Comunicazione & Media": [
     "Sito web / QR",
     "Social media",
-    "Grafica / Design"
+    "Grafica / Design",
   ],
   "Extra & Contingenze": [
     "Imprevisti",
-    "Spese varie"
-  ]
+    "Spese varie",
+  ],
 };
 
 const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
@@ -315,6 +384,9 @@ export default function SpesePage() {
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-6">Spese</h2>
+
+      {/* Carosello immagini */}
+      <ImageCarousel images={PAGE_IMAGES.spese} height="280px" />
 
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">

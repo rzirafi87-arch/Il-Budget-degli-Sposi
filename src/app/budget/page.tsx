@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
 
 const supabase = getBrowserClient();
 
@@ -75,6 +77,9 @@ export default function BudgetPage() {
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-6">Budget - Spese Approvate</h2>
+
+      {/* Carosello immagini */}
+      <ImageCarousel images={PAGE_IMAGES.budget} height="280px" />
 
       <p className="text-sm text-gray-600 mb-4">
         Visualizzazione delle spese approvate dalla sezione "Spese", ordinate alfabeticamente per categoria e sottocategoria.

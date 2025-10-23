@@ -139,7 +139,27 @@ const CATEGORIES_MAP: Record<string, string[]> = {
   "Burocrazia": [
     "Pubblicazioni",
     "Certificati",
-    "Traduzioni / Apostille"
+    "Traduzioni / Apostille",
+  ],
+  "Addio al Nubilato": [
+    "Location addio al nubilato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al nubilato",
+  ],
+  "Addio al Celibato": [
+    "Location addio al celibato",
+    "Ristorante / Cena",
+    "Attività / Esperienze",
+    "Gadget / T-shirt",
+    "Decorazioni / Palloncini",
+    "Trasporti",
+    "Alloggio",
+    "Forfait addio al celibato",
   ],
   "Beauty & Benessere": [
     "Estetista",
@@ -290,11 +310,26 @@ export async function GET(req: NextRequest) {
       notes: e.notes || "",
     }));
 
+    // Merge con tutte le categorie disponibili
+    const allRows = generateAllRows();
+    const mergedRows: SpendRow[] = [];
+    
+    allRows.forEach((emptyRow) => {
+      const existing = rows.find(
+        (r) => r.category === emptyRow.category && r.subcategory === emptyRow.subcategory
+      );
+      if (existing) {
+        mergedRows.push(existing);
+      } else {
+        mergedRows.push(emptyRow);
+      }
+    });
+
     return NextResponse.json({
       totalBudget,
       brideBudget,
       groomBudget,
-      rows,
+      rows: mergedRows,
     });
   } catch (e: any) {
     console.error("DASHBOARD GET uncaught:", e);
