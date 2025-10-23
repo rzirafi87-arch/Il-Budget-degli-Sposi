@@ -121,7 +121,7 @@ FOR SELECT
 USING (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
@@ -131,7 +131,7 @@ FOR INSERT
 WITH CHECK (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
@@ -141,7 +141,7 @@ FOR UPDATE
 USING (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
@@ -151,7 +151,7 @@ FOR DELETE
 USING (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
@@ -162,7 +162,7 @@ FOR SELECT
 USING (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
@@ -172,7 +172,7 @@ FOR INSERT
 WITH CHECK (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
@@ -182,7 +182,7 @@ FOR UPDATE
 USING (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
@@ -192,7 +192,7 @@ FOR DELETE
 USING (
     event_id IN (
         SELECT id FROM public.events 
-        WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        WHERE owner_id = auth.uid()
     )
 );
 
