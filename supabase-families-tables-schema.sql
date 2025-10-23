@@ -76,7 +76,7 @@ CREATE POLICY "Users can view their own family groups"
   ON family_groups FOR SELECT
   USING (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -84,7 +84,7 @@ CREATE POLICY "Users can insert their own family groups"
   ON family_groups FOR INSERT
   WITH CHECK (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -92,7 +92,7 @@ CREATE POLICY "Users can update their own family groups"
   ON family_groups FOR UPDATE
   USING (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -100,7 +100,7 @@ CREATE POLICY "Users can delete their own family groups"
   ON family_groups FOR DELETE
   USING (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -111,7 +111,7 @@ CREATE POLICY "Users can view their own tables"
   ON tables FOR SELECT
   USING (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -119,7 +119,7 @@ CREATE POLICY "Users can insert their own tables"
   ON tables FOR INSERT
   WITH CHECK (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -127,7 +127,7 @@ CREATE POLICY "Users can update their own tables"
   ON tables FOR UPDATE
   USING (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -135,7 +135,7 @@ CREATE POLICY "Users can delete their own tables"
   ON tables FOR DELETE
   USING (
     event_id IN (
-      SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+      SELECT id FROM events WHERE owner_id = auth.uid()
     )
   );
 
@@ -147,7 +147,7 @@ CREATE POLICY "Users can view their own table assignments"
   USING (
     table_id IN (
       SELECT id FROM tables WHERE event_id IN (
-        SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        SELECT id FROM events WHERE owner_id = auth.uid()
       )
     )
   );
@@ -157,7 +157,7 @@ CREATE POLICY "Users can insert their own table assignments"
   WITH CHECK (
     table_id IN (
       SELECT id FROM tables WHERE event_id IN (
-        SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        SELECT id FROM events WHERE owner_id = auth.uid()
       )
     )
   );
@@ -167,7 +167,7 @@ CREATE POLICY "Users can update their own table assignments"
   USING (
     table_id IN (
       SELECT id FROM tables WHERE event_id IN (
-        SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        SELECT id FROM events WHERE owner_id = auth.uid()
       )
     )
   );
@@ -177,7 +177,7 @@ CREATE POLICY "Users can delete their own table assignments"
   USING (
     table_id IN (
       SELECT id FROM tables WHERE event_id IN (
-        SELECT id FROM events WHERE user_id = auth.uid() OR partner_user_id = auth.uid()
+        SELECT id FROM events WHERE owner_id = auth.uid()
       )
     )
   );
