@@ -1,0 +1,13 @@
+.env.local
+.env*.local
+*.log
+.DS_Store
+.vscode
+*.md
+docs/
+scripts/sync-all.ts
+supabase-*.sql
+CHANGELOG*.md
+NUOVE_FUNZIONALITA.md
+UX_IMPROVEMENTS_SUMMARY.md
+VERCEL-DEPLOYMENT.md

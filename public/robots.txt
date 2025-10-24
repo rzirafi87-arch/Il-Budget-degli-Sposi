@@ -1,0 +1,34 @@
+User-agent: *
+Allow: /
+
+# Pagine pubbliche
+Allow: /
+Allow: /welcome
+Allow: /chi-siamo
+Allow: /come-funziona
+Allow: /contatti
+Allow: /fornitori
+Allow: /location
+Allow: /chiese
+Allow: /esplora-fornitori
+
+# Blocca pagine private/autenticate
+Disallow: /dashboard
+Disallow: /budget
+Disallow: /spese
+Disallow: /entrate
+Disallow: /invitati
+Disallow: /preferiti
+Disallow: /timeline
+Disallow: /wedding-planner
+Disallow: /lista-nozze
+Disallow: /formazione-tavoli
+Disallow: /documenti
+Disallow: /api/my/*
+
+# Blocca sync endpoints (admin only)
+Disallow: /api/sync/*
+Disallow: /api/seed/*
+
+# Sitemap
+Sitemap: https://il-budget-degli-sposi.vercel.app/sitemap.xml
