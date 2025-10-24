@@ -8,6 +8,7 @@ import DynamicHeader from "@/components/DynamicHeader";
 import { ToastProvider } from "@/components/ToastProvider";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { JsonLd, LocalBusinessSchema } from "@/components/StructuredData";
+import { GoogleAnalytics } from "@/components/GoogleTracking";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -23,12 +24,20 @@ const inter = Inter({
   display: "swap",
 });
 
+// Base URL del sito (configurabile via env per ogni ambiente)
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
+    ? "https://il-budget-degli-sposi-kbg1.vercel.app"
+    : "http://localhost:3000");
+
 export const metadata: Metadata = {
   title: {
     default: "Il Budget degli Sposi - Organizza il Tuo Matrimonio",
     template: "%s | Il Budget degli Sposi",
   },
-  description: "Organizza il tuo matrimonio con Il Budget degli Sposi: gestisci il budget, trova fornitori, location e chiese in tutta Italia. Strumenti gratuiti per pianificare le nozze perfette.",
+  description:
+    "Organizza il tuo matrimonio con Il Budget degli Sposi: gestisci il budget, trova fornitori, location e chiese in tutta Italia. Strumenti gratuiti per pianificare le nozze perfette.",
   keywords: [
     "budget matrimonio",
     "organizzare matrimonio",
@@ -58,13 +67,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "it_IT",
-    url: "https://il-budget-degli-sposi.vercel.app",
+    url: SITE_URL,
     siteName: "Il Budget degli Sposi",
     title: "Il Budget degli Sposi - Organizza il Tuo Matrimonio",
-    description: "Strumenti gratuiti per organizzare il tuo matrimonio: gestione budget, fornitori, location e molto altro.",
+    description:
+      "Strumenti gratuiti per organizzare il tuo matrimonio: gestione budget, fornitori, location e molto altro.",
     images: [
       {
-        url: "https://il-budget-degli-sposi.vercel.app/og-image.jpg",
+        url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "Il Budget degli Sposi",
@@ -74,13 +84,14 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Il Budget degli Sposi - Organizza il Tuo Matrimonio",
-    description: "Strumenti gratuiti per organizzare il tuo matrimonio: gestione budget, fornitori, location e molto altro.",
-    images: ["https://il-budget-degli-sposi.vercel.app/og-image.jpg"],
+    description:
+      "Strumenti gratuiti per organizzare il tuo matrimonio: gestione budget, fornitori, location e molto altro.",
+    images: [`${SITE_URL}/og-image.jpg`],
   },
   verification: {
-    google: "google-site-verification-code-here", // Da aggiungere dopo registrazione su Google Search Console
+    google: "google-site-verification-code-here",
   },
-  metadataBase: new URL("https://il-budget-degli-sposi.vercel.app"),
+  metadataBase: new URL(SITE_URL),
 };
 
 // Ensure correct mobile scaling and full-viewport rendering on iOS/Android
@@ -97,6 +108,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <JsonLd />
         <LocalBusinessSchema />
+        {process.env.NEXT_PUBLIC_GA_ID ? (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        ) : null}
       </head>
       <body className="min-h-screen antialiased" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
         <ToastProvider>
