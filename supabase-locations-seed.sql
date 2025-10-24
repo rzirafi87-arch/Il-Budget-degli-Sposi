@@ -5,7 +5,6 @@ INSERT INTO locations (name, region, province, city, address, phone, email, webs
 
 -- Lazio
 ('Villa Miani', 'Lazio', 'Roma', 'Roma', 'Via Trionfale, 151', '+39 06 3574 8800', 'info@villamiani.it', 'https://www.villamiani.it', 'Villa - Villa storica con vista mozzafiato su Roma, giardini secolari e sale affrescate. Ideale per matrimoni eleganti.', 50, 300, true),
-('Villa Miani', 'Lazio', 'Roma', 'Roma', 'Via Trionfale, 151', '+39 06 3574 8800', 'info@villamiani.it', 'https://www.villamiani.it', 'Villa - Villa storica con vista mozzafiato su Roma, giardini secolari e sale affrescate. Ideale per matrimoni eleganti.', 50, 300, true),
 ('Castello Odescalchi', 'Lazio', 'Roma', 'Bracciano', 'Piazza Mazzini, 14', '+39 06 9980 4348', 'eventi@odescalchi.it', 'https://www.odescalchi.it', 'Castello - Castello medievale sul Lago di Bracciano, location da sogno per matrimoni principeschi.', 100, 400, true),
 ('Tenuta di Polline', 'Lazio', 'Roma', 'Soriano nel Cimino', 'Via della Polline, 1', '+39 0761 7456', 'info@tenutadipolline.it', 'https://www.tenutadipolline.it', 'Tenuta - Tenuta immersa nel verde con piscina, perfetta per matrimoni all\'aperto.', 30, 150, true),
 

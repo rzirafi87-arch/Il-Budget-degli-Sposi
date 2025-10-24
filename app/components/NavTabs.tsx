@@ -6,20 +6,24 @@ import { useState } from "react";
 import clsx from "clsx";
 
 const tabs = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/budget",    label: "Budget" },
-  { href: "/invitati",  label: "Invitati" },
-  { href: "/formazione-tavoli", label: "Formazione Tavoli" },
-  { href: "/spese",     label: "Spese" },
-  { href: "/entrate",   label: "Entrate" },
-  { href: "/fornitori", label: "Fornitori" },
-  { href: "/location",  label: "Location" },
-  { href: "/chiese",    label: "Chiese" },
-  { href: "/wedding-planner", label: "Wedding Planner" },
-  { href: "/musica-cerimonia", label: "Musica Cerimonia" },
-  { href: "/musica-ricevimento", label: "Musica Ricevimento" },
-  { href: "/cose-matrimonio", label: "Cose da Matrimonio" },
-  { href: "/save-the-date", label: "Save the Date" },
+  { href: "/dashboard", label: "Dashboard", icon: "📊" },
+  { href: "/timeline", label: "Timeline", icon: "📅" },
+  { href: "/budget", label: "Budget", icon: "💰" },
+  { href: "/invitati", label: "Invitati", icon: "👥" },
+  { href: "/formazione-tavoli", label: "Tavoli", icon: "🪑" },
+  { href: "/spese", label: "Spese", icon: "💸" },
+  { href: "/entrate", label: "Entrate", icon: "💵" },
+  { href: "/fornitori", label: "Fornitori", icon: "🏢" },
+  { href: "/ricevimento/location", label: "Location", icon: "🏛️" },
+  { href: "/cerimonia/chiesa", label: "Chiesa", icon: "⛪" },
+  { href: "/preferiti", label: "Preferiti", icon: "❤️" },
+  { href: "/documenti", label: "Documenti", icon: "📄" },
+  { href: "/lista-nozze", label: "Lista Nozze", icon: "🎁" },
+  { href: "/wedding-planner", label: "Wedding Planner", icon: "📋" },
+  { href: "/musica-cerimonia", label: "Musica Cerimonia", icon: "🎵" },
+  { href: "/musica-ricevimento", label: "Musica Ricevimento", icon: "🎶" },
+  { href: "/cose-matrimonio", label: "Cose Matrimonio", icon: "🎪" },
+  { href: "/save-the-date", label: "Save the Date", icon: "💌" },
 ];
 
 export default function NavTabs() {
@@ -39,13 +43,16 @@ export default function NavTabs() {
               key={t.href}
               href={t.href}
               className={clsx(
-                "px-4 py-2 rounded-full border text-sm transition-colors",
+                "px-4 py-2 rounded-full border text-sm transition-colors font-medium flex items-center gap-2",
                 active
-                  ? "bg-[#A3B59D]/70 text-white border-[#A3B59D]"
-                  : "bg-white/70 border-gray-200 hover:bg-gray-50"
+                  ? "text-white border-transparent shadow-sm"
+                  : "bg-white/70 border-gray-200 hover:bg-gray-50 text-gray-700"
               )}
+              style={active ? { background: "var(--color-sage)" } : {}}
+              title={t.label}
             >
-              {t.label}
+              <span>{t.icon}</span>
+              <span>{t.label}</span>
             </Link>
           );
         })}
@@ -56,10 +63,12 @@ export default function NavTabs() {
       <div className="md:hidden">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-[#8a9d84] to-[#7a8d74] text-white rounded-xl shadow-lg active:scale-95 transition-transform border-2 border-gray-700"
+          className="w-full flex items-center justify-between px-4 py-4 text-white rounded-xl shadow-lg active:scale-95 transition-transform border border-gray-300"
+          style={{ background: "linear-gradient(135deg, var(--color-sage) 0%, #8a9d84 100%)" }}
         >
-          <span className="font-bold text-base">
-            📋 {currentTab?.label || "Menu Navigazione"}
+          <span className="font-bold text-base flex items-center gap-2">
+            <span>{currentTab?.icon || "📋"}</span>
+            <span>{currentTab?.label || "Menu Navigazione"}</span>
           </span>
           <svg
             className={clsx(
@@ -92,14 +101,17 @@ export default function NavTabs() {
                     href={t.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={clsx(
-                      "block px-5 py-4 text-base font-bold border-b-2 border-gray-200 last:border-b-0 transition-all active:scale-95",
+                      "block px-5 py-4 text-base font-semibold border-b border-gray-200 last:border-b-0 transition-all active:scale-95",
                       active
-                        ? "bg-[#8a9d84] text-white"
-                        : "hover:bg-gray-100 active:bg-gray-200 text-gray-800"
+                        ? "text-white"
+                        : "hover:bg-gray-50 active:bg-gray-100 text-gray-700"
                     )}
+                    style={active ? { background: "var(--color-sage)" } : {}}
                   >
-                    <span className="flex items-center gap-2">
-                      {active && "✓"} {t.label}
+                    <span className="flex items-center gap-3">
+                      <span className="text-xl">{t.icon}</span>
+                      <span>{t.label}</span>
+                      {active && <span className="ml-auto">✓</span>}
                     </span>
                   </Link>
                 );

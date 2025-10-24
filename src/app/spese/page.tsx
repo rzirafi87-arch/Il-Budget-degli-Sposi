@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import { useToast } from "@/components/ToastProvider";
 
 const supabase = getBrowserClient();
 
@@ -31,11 +32,15 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Anello fidanzamento",
     "Accessori vari",
   ],
-  "Cerimonia": [
+  "Cerimonia/Chiesa Location": [
     "Chiesa / Comune",
     "Musiche",
     "Libretti Messa",
     "Fiori cerimonia",
+    "Wedding bag",
+    "Ventagli",
+    "Pulizia chiesa",
+    "Cesto doni",
     "Documenti e pratiche",
     "Offerte / Diritti",
     "Colombe uscita",
@@ -91,6 +96,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Parrucchiera",
     "Make-up",
     "Prove",
+    "e)",
     "Altro sposa",
   ],
   "Sposo": [
@@ -101,7 +107,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Prove",
     "Altro sposo",
   ],
-  "Location & Catering": [
+  "Ricevimento Location": [
     "Affitto sala",
     "Catering / Banqueting",
     "Torta nuziale",
@@ -216,6 +222,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
 const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 
 export default function SpesePage() {
+  const { showToast } = useToast();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -286,9 +293,9 @@ export default function SpesePage() {
 
       if (!r.ok) {
         const j = await r.json();
-        setMessage(`❌ Errore: ${j.error || "Impossibile salvare"}`);
+        showToast(`Errore: ${j.error || "Impossibile salvare"}`, "error");
       } else {
-        setMessage("✅ Spesa aggiunta con successo!");
+        showToast("✅ Spesa aggiunta con successo!", "success");
         setShowForm(false);
         loadExpenses();
         // Reset form
@@ -304,11 +311,10 @@ export default function SpesePage() {
           notes: "",
           fromDashboard: false,
         });
-        setTimeout(() => setMessage(null), 3000);
       }
     } catch (err) {
       console.error("Errore:", err);
-      setMessage("❌ Errore di rete");
+      showToast("❌ Errore di rete", "error");
     } finally {
       setSaving(false);
     }

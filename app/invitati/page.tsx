@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import ExportButton from "@/components/ExportButton";
 
 const supabase = getBrowserClient();
 
@@ -383,14 +384,24 @@ export default function InvitatiPage() {
 
       {/* Tabella Invitati */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
           <h3 className="font-semibold text-lg">Lista Invitati</h3>
-          <button
-            onClick={addGuest}
-            className="px-4 py-2 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] text-sm font-semibold"
-          >
-            + Aggiungi Invitato
-          </button>
+          <div className="flex gap-2">
+            <ExportButton
+              data={guests}
+              filename="invitati"
+              type="csv"
+              className="text-sm"
+            >
+              📥 Esporta CSV
+            </ExportButton>
+            <button
+              onClick={addGuest}
+              className="px-4 py-2 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] text-sm font-semibold"
+            >
+              + Aggiungi Invitato
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white/70 shadow-sm">

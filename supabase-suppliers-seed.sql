@@ -3,9 +3,8 @@
 
 -- Location & Catering - Lombardia
 INSERT INTO suppliers (name, category, region, province, city, phone, email, website, description, verified) VALUES
-('Villa Borromeo', 'Location & Catering', 'Lombardia', 'Milano', 'Senago', '+39 02 99010757', 'info@villaborromeo.it', 'https://www.villaborromeo.it', 'Affitto sala - Villa storica del 1600 con parco secolare, sale affrescate e servizio catering di alta qualità', true),
-('Villa Borromeo', 'Location & Catering', 'Lombardia', 'Milano', 'Senago', '+39 02 99010757', 'info@villaborromeo.it', 'https://www.villaborromeo.it', 'Affitto sala - Villa storica del 1600 con parco secolare, sale affrescate e servizio catering di alta qualità', true),
-('Castello di Rossino', 'Location & Catering', 'Lombardia', 'Lecco', 'Calolziocorte', '+39 0341 644444', 'info@castellodirossino.it', 'https://www.castellodirossino.it', 'Affitto sala - Castello medievale sul Lago di Como con vista mozzafiato e cucina gourmet', true),
+('Villa Borromeo', 'Ricevimento Location', 'Lombardia', 'Milano', 'Senago', '+39 02 99010757', 'info@villaborromeo.it', 'https://www.villaborromeo.it', 'Affitto sala - Villa storica del 1600 con parco secolare, sale affrescate e servizio catering di alta qualità', true),
+('Castello di Rossino', 'Ricevimento Location', 'Lombardia', 'Lecco', 'Calolziocorte', '+39 0341 644444', 'info@castellodirossino.it', 'https://www.castellodirossino.it', 'Affitto sala - Castello medievale sul Lago di Como con vista mozzafiato e cucina gourmet', true),
 ('Tenuta La Morra', 'Location & Catering', 'Lombardia', 'Pavia', 'Vigevano', '+39 0381 72345', 'eventi@tenutalamorra.it', 'https://www.tenutalamorra.com', 'Affitto sala - Tenuta di campagna con limonaia e giardini, cucina tradizionale lombarda', true),
 ('Palazzo Monti', 'Location & Catering', 'Lombardia', 'Brescia', 'Brescia', '+39 030 234567', 'info@palazzomonti.it', 'https://www.palazzomonti.it', 'Affitto sala - Palazzo nobiliare nel centro storico con sale affrescate e terrazza panoramica', true),
 

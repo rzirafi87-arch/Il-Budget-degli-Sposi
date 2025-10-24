@@ -27,11 +27,15 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Anello fidanzamento",
     "Accessori vari"
   ],
-  "Cerimonia": [
+  "Cerimonia/Chiesa Location": [
     "Chiesa / Comune",
     "Musiche",
     "Libretti Messa",
     "Fiori cerimonia",
+    "Wedding bag",
+    "Ventagli",
+    "Pulizia chiesa",
+    "Cesto doni",
     "Documenti e pratiche",
     "Offerte / Diritti",
     "Colombe uscita",
@@ -87,6 +91,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Parrucchiera",
     "Make-up",
     "Prove",
+    "e)",
     "Altro sposa"
   ],
   "Sposo": [
@@ -97,7 +102,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Prove",
     "Altro sposo"
   ],
-  "Location & Catering": [
+  "Ricevimento Location": [
     "Affitto sala",
     "Catering / Banqueting",
     "Torta nuziale",

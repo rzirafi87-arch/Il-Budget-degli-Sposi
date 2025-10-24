@@ -4,8 +4,30 @@ import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import { useToast } from "@/components/ToastProvider";
 
 const supabase = getBrowserClient();
+
+// Icone per categorie
+const CATEGORY_ICONS: Record<string, string> = {
+  "Abiti & Accessori (altri)": "👗",
+  "Cerimonia/Chiesa Location": "⛪",
+  "Fiori & Decor": "💐",
+  "Foto & Video": "📸",
+  "Inviti & Stationery": "💌",
+  "Sposa": "👰",
+  "Sposo": "🤵",
+  "Ricevimento Location": "🏛️",
+  "Musica & Intrattenimento": "🎵",
+  "Trasporti": "🚗",
+  "Bomboniere & Regali": "🎁",
+  "Ospitalità & Logistica": "🏨",
+  "Burocrazia": "📋",
+  "Beauty & Benessere": "💆",
+  "Viaggio di nozze": "✈️",
+  "Comunicazione & Media": "📱",
+  "Extra & Contingenze": "✨",
+};
 
 type Supplier = {
   id: string;
@@ -35,14 +57,15 @@ const REGIONS = [
 
 // Stesse categorie della dashboard
 const CATEGORIES = [
-  "Abiti & Accessori (altri)", "Cerimonia", "Fiori & Decor", "Foto & Video",
-  "Inviti & Stationery", "Sposa", "Sposo", "Location & Catering",
+  "Abiti & Accessori (altri)", "Cerimonia/Chiesa Location", "Fiori & Decor", "Foto & Video",
+  "Inviti & Stationery", "Sposa", "Sposo", "Ricevimento Location",
   "Musica & Intrattenimento", "Trasporti", "Bomboniere & Regali",
   "Ospitalità & Logistica", "Burocrazia", "Beauty & Benessere",
   "Viaggio di nozze", "Comunicazione & Media", "Extra & Contingenze"
 ];
 
 export default function FornitoriPage() {
+  const { showToast } = useToast();
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState<string>("");
@@ -50,6 +73,7 @@ export default function FornitoriPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [message, setMessage] = useState<string | null>(null);
 
   const [newSupplier, setNewSupplier] = useState<Partial<Supplier>>({
@@ -370,52 +394,168 @@ export default function FornitoriPage() {
         </div>
       )}
 
-      {/* Lista fornitori */}
-      <div className="space-y-4">
-        {loading ? (
-          <p className="text-gray-500">Caricamento...</p>
-        ) : filteredSuppliers.length === 0 ? (
-          <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
-            Nessun fornitore trovato con questi filtri
-          </div>
-        ) : (
-          filteredSuppliers.map((supplier) => (
+      {/* Toggle Vista */}
+      <div className="mb-6 flex justify-between items-center">
+        <p className="text-sm text-gray-600">
+          {filteredSuppliers.length} {filteredSuppliers.length === 1 ? "fornitore trovato" : "fornitori trovati"}
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              viewMode === "grid"
+                ? "bg-[#A3B59D] text-white"
+                : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            🔲 Griglia
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              viewMode === "list"
+                ? "bg-[#A3B59D] text-white"
+                : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            📋 Lista
+          </button>
+        </div>
+      </div>
+
+      {/* Lista/Griglia Fornitori */}
+      {loading ? (
+        <p className="text-gray-500">Caricamento...</p>
+      ) : filteredSuppliers.length === 0 ? (
+        <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
+          <div className="text-5xl mb-4">🔍</div>
+          <p className="text-lg font-medium">Nessun fornitore trovato</p>
+          <p className="text-sm mt-2">Prova a modificare i filtri o proponi un nuovo fornitore</p>
+        </div>
+      ) : viewMode === "grid" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredSuppliers.map((supplier) => (
+            <div
+              key={supplier.id}
+              className="p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-soft hover:shadow-soft-lg hover:scale-105 transition-all cursor-pointer"
+            >
+              {/* Icona Categoria */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#EAD9D4] to-[#A6B5A0] flex items-center justify-center text-3xl">
+                  {CATEGORY_ICONS[supplier.category] || "🏢"}
+                </div>
+                {supplier.rating > 0 && (
+                  <div className="flex items-center gap-1 text-sm">
+                    <span className="text-yellow-500">⭐</span>
+                    <span className="font-bold text-gray-800">{supplier.rating.toFixed(1)}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Nome e Categoria */}
+              <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                {supplier.name}
+              </h3>
+              <p className="text-sm text-gray-600 mb-3 flex items-center gap-1">
+                <span>{CATEGORY_ICONS[supplier.category] || "🏢"}</span>
+                <span>{supplier.category}</span>
+              </p>
+
+              {/* Località */}
+              <p className="text-sm text-gray-700 mb-3 flex items-center gap-1">
+                <span>📍</span>
+                <span>{supplier.city}, {supplier.province}</span>
+              </p>
+
+              {/* Prezzo */}
+              <div className="mb-4">
+                <span className="inline-block bg-[#A6B5A0] text-white px-3 py-1 rounded-full text-sm font-bold">
+                  {supplier.priceRange}
+                </span>
+              </div>
+
+              {/* Descrizione */}
+              {supplier.description && (
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                  {supplier.description}
+                </p>
+              )}
+
+              {/* Azioni */}
+              <div className="flex flex-col gap-2 mt-auto">
+                {supplier.website && (
+                  <a
+                    href={supplier.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-center bg-white border-2 border-[#A6B5A0] text-[#A6B5A0] px-4 py-2 rounded-lg font-medium hover:bg-[#A6B5A0] hover:text-white transition-colors text-sm"
+                  >
+                    🌐 Visita sito
+                  </a>
+                )}
+                <button
+                  onClick={() => {
+                    showToast(`${supplier.name} aggiunto ai preferiti!`, "success");
+                  }}
+                  className="text-center bg-[#A6B5A0] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#8a9d84] transition-colors text-sm"
+                >
+                  ❤️ Aggiungi al mio evento
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredSuppliers.map((supplier) => (
             <div key={supplier.id} className="p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-gray-800">{supplier.name}</h3>
-                  <div className="text-sm text-gray-600 mt-1">
-                    {supplier.category} • {supplier.city}, {supplier.province} ({supplier.region})
+                <div className="flex gap-4 flex-1">
+                  {/* Icona */}
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#EAD9D4] to-[#A6B5A0] flex items-center justify-center text-2xl flex-shrink-0">
+                    {CATEGORY_ICONS[supplier.category] || "🏢"}
                   </div>
-                  {supplier.description && (
-                    <p className="text-sm text-gray-700 mt-2">{supplier.description}</p>
-                  )}
-                  <div className="flex gap-4 mt-3 text-xs text-gray-500">
-                    {supplier.phone && <span>📞 {supplier.phone}</span>}
-                    {supplier.email && <span>✉️ {supplier.email}</span>}
-                    {supplier.website && (
-                      <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                        🌐 Sito web
-                      </a>
+
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-gray-800">{supplier.name}</h3>
+                    <div className="text-sm text-gray-600 mt-1">
+                      {supplier.category} • {supplier.city}, {supplier.province} ({supplier.region})
+                    </div>
+                    {supplier.description && (
+                      <p className="text-sm text-gray-700 mt-2">{supplier.description}</p>
                     )}
+                    <div className="flex gap-4 mt-3 text-xs text-gray-500">
+                      {supplier.phone && <span>📞 {supplier.phone}</span>}
+                      {supplier.email && <span>✉️ {supplier.email}</span>}
+                      {supplier.website && (
+                        <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                          🌐 Sito web
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex flex-col gap-2">
                   <div className="text-sm font-medium text-gray-700">{supplier.priceRange}</div>
                   {supplier.rating > 0 && (
-                    <div className="text-xs text-yellow-600 mt-1">
-                      {"⭐".repeat(Math.round(supplier.rating))}
+                    <div className="text-xs text-yellow-600">
+                      ⭐ {supplier.rating.toFixed(1)}
                     </div>
                   )}
-                  <div className="text-xs text-gray-400 mt-2">
-                    {supplier.source}
-                  </div>
+                  <button
+                    onClick={() => {
+                      showToast(`${supplier.name} aggiunto ai preferiti!`, "success");
+                    }}
+                    className="mt-2 bg-[#A6B5A0] text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-[#8a9d84] transition-colors"
+                  >
+                    ❤️ Aggiungi
+                  </button>
                 </div>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

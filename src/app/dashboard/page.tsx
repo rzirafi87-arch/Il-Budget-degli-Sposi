@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import BudgetChart from "@/components/BudgetChart";
+import CategoryBars from "@/components/CategoryBars";
+import { useToast } from "@/components/ToastProvider";
 
 const supabase = getBrowserClient();
 
@@ -26,11 +29,15 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Anello fidanzamento",
     "Accessori vari",
   ],
-  "Cerimonia": [
+  "Cerimonia/Chiesa Location": [
     "Chiesa / Comune",
     "Musiche",
     "Libretti Messa",
     "Fiori cerimonia",
+    "Wedding bag",
+    "Ventagli",
+    "Pulizia chiesa",
+    "Cesto doni",
     "Documenti e pratiche",
     "Offerte / Diritti",
     "Colombe uscita",
@@ -86,6 +93,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Parrucchiera",
     "Make-up",
     "Prove",
+    "e)",
     "Altro sposa",
   ],
   "Sposo": [
@@ -96,7 +104,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Prove",
     "Altro sposo",
   ],
-  "Location & Catering": [
+  "Ricevimento Location": [
     "Affitto sala",
     "Catering / Banqueting",
     "Torta nuziale",
@@ -211,6 +219,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
 const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 
 export default function DashboardPage() {
+  const { showToast } = useToast();
   const [brideBudget, setBrideBudget] = useState<number>(0);
   const [groomBudget, setGroomBudget] = useState<number>(0);
   const [rows, setRows] = useState<SpendRow[]>([]);
@@ -295,14 +304,13 @@ export default function DashboardPage() {
 
       if (!r.ok) {
         const j = await r.json();
-        setMessage(`❌ Errore: ${j.error || "Impossibile salvare"}`);
+        showToast(`Errore: ${j.error || "Impossibile salvare"}`, "error");
       } else {
-        setMessage("✅ Dati salvati con successo!");
-        setTimeout(() => setMessage(null), 3000);
+        showToast("✅ Dati salvati con successo!", "success");
       }
     } catch (err) {
       console.error("Errore salvataggio:", err);
-      setMessage("❌ Errore di rete");
+      showToast("❌ Errore di rete", "error");
     } finally {
       setSaving(false);
     }
@@ -316,6 +324,22 @@ export default function DashboardPage() {
   const remainingBride = brideBudget - totalBride;
   const remainingGroom = groomBudget - totalGroom;
   const remaining = totalBudget - totalSpent;
+
+  // Calcola spese per categoria per il grafico a barre
+  const categorySpends = useMemo(() => {
+    const categoryMap = new Map<string, number>();
+    
+    rows.forEach((row) => {
+      const current = categoryMap.get(row.category) || 0;
+      categoryMap.set(row.category, current + row.amount);
+    });
+
+    return Array.from(categoryMap.entries()).map(([category, amount]) => ({
+      category,
+      amount,
+      percentage: totalBudget > 0 ? (amount / totalBudget) * 100 : 0,
+    }));
+  }, [rows, totalBudget]);
 
   if (loading) {
     return (
@@ -400,6 +424,27 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Sezione Grafici Visuali */}
+      {totalBudget > 0 && (
+        <div className="mb-6 sm:mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Grafico a torta */}
+          <div className="p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
+            <BudgetChart 
+              totalBudget={totalBudget}
+              spentAmount={totalSpent}
+            />
+          </div>
+
+          {/* Barre per categoria */}
+          <div className="p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
+            <CategoryBars 
+              categories={categorySpends}
+              totalBudget={totalBudget}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Tabella con scroll orizzontale su mobile */}
       <div className="overflow-x-auto rounded-xl sm:rounded-2xl border border-gray-200 bg-white/70 shadow-sm -mx-4 sm:mx-0">
