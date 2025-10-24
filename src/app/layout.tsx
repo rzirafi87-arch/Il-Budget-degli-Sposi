@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import DynamicHeader from "@/components/DynamicHeader";
 import { ToastProvider } from "@/components/ToastProvider";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { JsonLd, LocalBusinessSchema } from "@/components/StructuredData";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -23,7 +24,63 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Il Mio Budget Matrimonio",
+  title: {
+    default: "Il Budget degli Sposi - Organizza il Tuo Matrimonio",
+    template: "%s | Il Budget degli Sposi",
+  },
+  description: "Organizza il tuo matrimonio con Il Budget degli Sposi: gestisci il budget, trova fornitori, location e chiese in tutta Italia. Strumenti gratuiti per pianificare le nozze perfette.",
+  keywords: [
+    "budget matrimonio",
+    "organizzare matrimonio",
+    "wedding planner",
+    "location matrimonio",
+    "fornitori matrimonio",
+    "chiese matrimonio",
+    "gestione budget nozze",
+    "pianificazione matrimonio",
+    "matrimonio italia",
+    "calcolo budget matrimonio",
+  ],
+  authors: [{ name: "Il Budget degli Sposi" }],
+  creator: "Il Budget degli Sposi",
+  publisher: "Il Budget degli Sposi",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "it_IT",
+    url: "https://il-budget-degli-sposi.vercel.app",
+    siteName: "Il Budget degli Sposi",
+    title: "Il Budget degli Sposi - Organizza il Tuo Matrimonio",
+    description: "Strumenti gratuiti per organizzare il tuo matrimonio: gestione budget, fornitori, location e molto altro.",
+    images: [
+      {
+        url: "https://il-budget-degli-sposi.vercel.app/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Il Budget degli Sposi",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Il Budget degli Sposi - Organizza il Tuo Matrimonio",
+    description: "Strumenti gratuiti per organizzare il tuo matrimonio: gestione budget, fornitori, location e molto altro.",
+    images: ["https://il-budget-degli-sposi.vercel.app/og-image.jpg"],
+  },
+  verification: {
+    google: "google-site-verification-code-here", // Da aggiungere dopo registrazione su Google Search Console
+  },
+  metadataBase: new URL("https://il-budget-degli-sposi.vercel.app"),
 };
 
 // Ensure correct mobile scaling and full-viewport rendering on iOS/Android
@@ -37,6 +94,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it" className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        <JsonLd />
+        <LocalBusinessSchema />
+      </head>
       <body className="min-h-screen antialiased" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
         <ToastProvider>
           {/* Header sticky su mobile per facile accesso alla navigazione */}

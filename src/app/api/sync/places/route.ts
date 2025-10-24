@@ -10,7 +10,7 @@ import { getServiceClient } from "@/lib/supabaseServer";
  * Syncs wedding vendors from Google Places API to normalized schema
  */
 
-const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY || "AIzaSyCn_d4D8Y174q4NF4Z373iCTFp0JWClwSA";
+const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const PLACES_API_BASE = "https://places.googleapis.com/v1/places";
 
 // Type to Google Places includedTypes mapping
