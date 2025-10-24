@@ -150,7 +150,11 @@ export default function EntratePage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Entrate</h2>
+      <h2 className="font-serif text-3xl mb-2">💵 Entrate</h2>
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+        Traccia tutte le entrate che contribuiscono al budget del matrimonio: regali dei genitori, contributi familiari, 
+        risparmi personali o altre fonti. Specifica se l'entrata è della sposa, dello sposo o comune.
+      </p>
 
       {/* Carosello immagini */}
       <ImageCarousel images={PAGE_IMAGES.entrate} height="280px" />

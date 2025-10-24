@@ -148,8 +148,16 @@ export default function ChiesePage() {
         {/* Carosello immagini */}
         <ImageCarousel images={PAGE_IMAGES.chiese} height="280px" />
         
+        <div className="mb-4">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">⛪ Chiese e Luoghi di Cerimonia</h1>
+          <p className="text-gray-700 text-sm sm:text-base leading-relaxed max-w-3xl">
+            Trova la chiesa perfetta per la tua cerimonia religiosa: cattoliche, ortodosse, protestanti e altri luoghi di culto. 
+            Scopri requisiti, capienza e informazioni di contatto. Filtra per regione, provincia e tipologia.
+          </p>
+        </div>
+        
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Chiese per Matrimoni</h1>
+          <div></div>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] transition-colors font-semibold"

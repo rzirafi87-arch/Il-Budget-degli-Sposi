@@ -389,7 +389,11 @@ export default function SpesePage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Spese</h2>
+      <h2 className="font-serif text-3xl mb-2">💸 Spese</h2>
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+        Registra e gestisci tutte le spese del matrimonio. Puoi inserire preventivi, confermarli come spese approvate, 
+        e tenere traccia degli stati di pagamento. Filtra per categoria, tipo di spesa (comune/sposa/sposo) e stato.
+      </p>
 
       {/* Carosello immagini */}
       <ImageCarousel images={PAGE_IMAGES.spese} height="280px" />

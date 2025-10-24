@@ -265,7 +265,7 @@ export async function GET(req: NextRequest) {
     // Prendi il primo evento dell'utente
     const { data: ev, error: e1 } = await db
       .from("events")
-      .select("id, total_budget, bride_initial_budget, groom_initial_budget")
+      .select("id, total_budget, bride_initial_budget, groom_initial_budget, wedding_date")
       .eq("owner_id", userId)
       .order("inserted_at", { ascending: true })
       .limit(1)
@@ -282,6 +282,7 @@ export async function GET(req: NextRequest) {
   const totalBudget = ev.total_budget || 0;
   const brideBudget = ev.bride_initial_budget || 0;
   const groomBudget = ev.groom_initial_budget || 0;
+  const weddingDate = ev.wedding_date || "";
 
     // Carica tutte le spese con categoria e sottocategoria
     const { data: expenses, error: e2 } = await db
@@ -334,6 +335,7 @@ export async function GET(req: NextRequest) {
       totalBudget,
       brideBudget,
       groomBudget,
+      weddingDate,
       rows: mergedRows,
     });
   } catch (e: any) {
@@ -352,7 +354,7 @@ export async function POST(req: NextRequest) {
     }
 
   const body = await req.json();
-  const { totalBudget, brideBudget, groomBudget, rows } = body as { totalBudget: number; brideBudget?: number; groomBudget?: number; rows: SpendRow[] };
+  const { totalBudget, brideBudget, groomBudget, weddingDate, rows } = body as { totalBudget: number; brideBudget?: number; groomBudget?: number; weddingDate?: string; rows: SpendRow[] };
 
     const db = getServiceClient();
 
@@ -379,13 +381,14 @@ export async function POST(req: NextRequest) {
 
     const eventId = ev.id;
 
-    // 1. Aggiorna il budget totale nell'evento
+    // 1. Aggiorna il budget totale e la data matrimonio nell'evento
     await db
       .from("events")
       .update({
         total_budget: totalBudget,
         bride_initial_budget: brideBudget ?? null,
         groom_initial_budget: groomBudget ?? null,
+        wedding_date: weddingDate ?? null,
       })
       .eq("id", eventId);
 

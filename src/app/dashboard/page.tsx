@@ -222,6 +222,7 @@ export default function DashboardPage() {
   const { showToast } = useToast();
   const [brideBudget, setBrideBudget] = useState<number>(0);
   const [groomBudget, setGroomBudget] = useState<number>(0);
+  const [weddingDate, setWeddingDate] = useState<string>("");
   const [rows, setRows] = useState<SpendRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -265,6 +266,7 @@ export default function DashboardPage() {
 
         setBrideBudget(j.brideBudget || 0);
         setGroomBudget(j.groomBudget || 0);
+        setWeddingDate(j.weddingDate || "");
         if (j.rows && j.rows.length > 0) setRows(j.rows);
         else setRows(generateAllRows());
       } catch (err) {
@@ -299,7 +301,7 @@ export default function DashboardPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${jwt}`,
         },
-  body: JSON.stringify({ totalBudget, brideBudget, groomBudget, rows }),
+  body: JSON.stringify({ totalBudget, brideBudget, groomBudget, weddingDate, rows }),
       });
 
       if (!r.ok) {
@@ -352,7 +354,12 @@ export default function DashboardPage() {
 
   return (
     <section>
-      <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">💰 Dashboard Budget</h2>
+      <h2 className="font-serif text-2xl sm:text-3xl mb-2 sm:mb-4 font-bold">💰 Dashboard Budget</h2>
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+        Gestisci il budget del tuo matrimonio in modo trasparente. Imposta i budget iniziali di sposa e sposo, 
+        definisci la data del matrimonio e traccia tutte le spese per ogni categoria. 
+        Ogni riga rappresenta una sottocategoria dove puoi inserire fornitore, importo previsto e note.
+      </p>
 
       {/* Carosello immagini - height dinamica per mobile */}
       <ImageCarousel images={PAGE_IMAGES.dashboard} height="180px" />
@@ -362,8 +369,8 @@ export default function DashboardPage() {
       )}
 
       <div className="mb-6 sm:mb-8 p-5 sm:p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
-        <h3 className="font-semibold text-lg mb-4 text-gray-700">💵 Imposta Budget Iniziale</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4">
+        <h3 className="font-semibold text-lg mb-4 text-gray-700">💵 Imposta Budget e Data Matrimonio</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 sm:gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">💐 Budget Sposa (€)</label>
             <input
@@ -394,27 +401,36 @@ export default function DashboardPage() {
               placeholder="0"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">📅 Data Matrimonio</label>
+            <input
+              type="date"
+              className="border-2 border-[#A3B59D] rounded-lg px-4 py-3 w-full text-base focus:ring-2 focus:ring-[#A3B59D] focus:border-[#A3B59D]"
+              value={weddingDate || ""}
+              onChange={(e) => setWeddingDate(e.target.value)}
+            />
+          </div>
         </div>
 
-        <div className="mt-5 sm:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-4">
-          <div className="p-4 sm:p-5 rounded-xl border-3 border-pink-600 bg-gradient-to-br from-pink-100 to-pink-200 shadow-xl">
-            <h4 className="font-bold text-base sm:text-lg text-pink-900 mb-3">💐 Budget Sposa</h4>
+        <div className="mt-5 sm:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-4 justify-items-center md:justify-items-stretch">
+          <div className="w-full max-w-md md:max-w-none p-4 sm:p-5 rounded-xl border-3 border-pink-600 bg-gradient-to-br from-pink-100 to-pink-200 shadow-xl">
+            <h4 className="font-bold text-base sm:text-lg text-pink-900 mb-3 text-center md:text-left">💐 Budget Sposa</h4>
             <div className="space-y-2 text-sm sm:text-base">
               <div className="flex justify-between"><span className="text-gray-800 font-semibold">Disponibile:</span><span className="font-bold text-gray-900">€ {formatEuro(brideBudget)}</span></div>
               <div className="flex justify-between"><span className="text-gray-800 font-semibold">Speso:</span><span className="font-bold text-pink-700">€ {formatEuro(totalBride)}</span></div>
               <div className="flex justify-between border-t-2 border-pink-400 pt-2"><span className="text-gray-900 font-bold">Residuo:</span><span className={`font-bold text-lg ${remainingBride < 0 ? "text-red-700" : "text-green-700"}`}>€ {formatEuro(remainingBride)}</span></div>
             </div>
           </div>
-          <div className="p-4 sm:p-5 rounded-xl border-3 border-blue-600 bg-gradient-to-br from-blue-100 to-blue-200 shadow-xl">
-            <h4 className="font-bold text-base sm:text-lg text-blue-900 mb-3">🤵 Budget Sposo</h4>
+          <div className="w-full max-w-md md:max-w-none p-4 sm:p-5 rounded-xl border-3 border-blue-600 bg-gradient-to-br from-blue-100 to-blue-200 shadow-xl">
+            <h4 className="font-bold text-base sm:text-lg text-blue-900 mb-3 text-center md:text-left">🤵 Budget Sposo</h4>
             <div className="space-y-2 text-sm sm:text-base">
               <div className="flex justify-between"><span className="text-gray-800 font-semibold">Disponibile:</span><span className="font-bold text-gray-900">€ {formatEuro(groomBudget)}</span></div>
               <div className="flex justify-between"><span className="text-gray-800 font-semibold">Speso:</span><span className="font-bold text-blue-700">€ {formatEuro(totalGroom)}</span></div>
               <div className="flex justify-between border-t-2 border-blue-400 pt-2"><span className="text-gray-900 font-bold">Residuo:</span><span className={`font-bold text-lg ${remainingGroom < 0 ? "text-red-700" : "text-green-700"}`}>€ {formatEuro(remainingGroom)}</span></div>
             </div>
           </div>
-          <div className="p-4 sm:p-5 rounded-xl border-3 border-gray-600 bg-gradient-to-br from-gray-200 to-gray-300 shadow-xl">
-            <h4 className="font-bold text-base sm:text-lg text-gray-900 mb-3">💑 Budget Totale</h4>
+          <div className="w-full max-w-md md:max-w-none p-4 sm:p-5 rounded-xl border-3 border-gray-600 bg-gradient-to-br from-gray-200 to-gray-300 shadow-xl">
+            <h4 className="font-bold text-base sm:text-lg text-gray-900 mb-3 text-center md:text-left">💑 Budget Totale</h4>
             <div className="space-y-2 text-sm sm:text-base">
               <div className="flex justify-between"><span className="text-gray-800 font-semibold">Disponibile:</span><span className="font-bold text-gray-900">€ {formatEuro(totalBudget)}</span></div>
               <div className="flex justify-between"><span className="text-gray-800 font-semibold">Speso:</span><span className="font-bold text-gray-900">€ {formatEuro(totalSpent)}</span></div>

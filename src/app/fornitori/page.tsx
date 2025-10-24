@@ -179,7 +179,11 @@ export default function FornitoriPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Fornitori</h2>
+      <h2 className="font-serif text-3xl mb-2">🏢 Fornitori</h2>
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+        Esplora il database di fornitori per il tuo matrimonio: location, fotografi, fioristi, catering e molto altro. 
+        Filtra per regione, provincia e categoria. Puoi anche aggiungere fornitori personalizzati.
+      </p>
 
       {/* Carosello immagini */}
       <ImageCarousel images={PAGE_IMAGES.fornitori} height="280px" />

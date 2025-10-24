@@ -18,7 +18,7 @@ type TimelineTask = {
 
 const DEFAULT_TIMELINE: Omit<TimelineTask, "id" | "completed">[] = [
   // 12+ mesi prima
-  { title: "Annuncio fidanzamento", description: "Condividete la notizia con famiglia e amici stretti", monthsBefore: 12, category: "Inizio", priority: "alta" },
+  { title: "Annuncio Matrimonio", description: "Condividete la notizia con famiglia e amici", monthsBefore: 12, category: "Inizio", priority: "alta" },
   { title: "Definite il budget", description: "Stabilite quanto potete spendere in totale", monthsBefore: 12, category: "Budget", priority: "alta" },
   { title: "Create la lista invitati preliminare", description: "Numero approssimativo di ospiti", monthsBefore: 12, category: "Invitati", priority: "alta" },
   

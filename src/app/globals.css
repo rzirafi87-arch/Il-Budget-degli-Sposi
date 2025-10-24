@@ -8,7 +8,8 @@
   /* Palette neutra e naturale */
   --color-cream: #FAF8F5; /* Aggiornato */
   --color-beige: #E8E0D6;
-  --color-sage: #A6B5A0;
+  --color-sage: #8da182; /* Scurito per migliore contrasto mobile (era #A6B5A0) */
+  --color-sage-light: #A6B5A0; /* Versione originale per sfondi */
   --color-rose: #EAD9D4;
   --color-warm-gray: #4A4A4A;
   
