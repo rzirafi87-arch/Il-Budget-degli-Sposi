@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseServer";
@@ -136,17 +137,13 @@ export default function AtelierPage() {
   return (
     <section className="pt-6">
       {/* Breadcrumb */}
-      <nav className="mb-4 flex items-center gap-2 text-sm text-gray-600">
-        <Link href="/" className="hover:text-[#A3B59D] transition-colors">
-          🏠 Home
-        </Link>
-        <span>›</span>
-        <Link href="/fornitori" className="hover:text-[#A3B59D] transition-colors">
-          Fornitori
-        </Link>
-        <span>›</span>
-        <span className="text-gray-900 font-medium">Atelier</span>
-      </nav>
+      <Breadcrumb
+        items={[
+          { label: "🏠 Home", href: "/" },
+          { label: "Fornitori", href: "/fornitori" },
+          { label: "Atelier" },
+        ]}
+      />
 
       {/* Header con bottone Torna a Fornitori */}
       <div className="flex items-start justify-between mb-4">
