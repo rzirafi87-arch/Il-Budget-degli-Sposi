@@ -41,7 +41,13 @@ type NonInvitedRecipient = {
   notes: string;
 };
 
+type Table = {
+  totalSeats: number;
+  assignedGuests: { id: string }[];
+};
+
 export default function InvitatiPage() {
+  const [activeTab, setActiveTab] = useState<"guests" | "tables">("guests");
   const [guests, setGuests] = useState<Guest[]>([]);
   const [familyGroups, setFamilyGroups] = useState<FamilyGroup[]>([]);
   const [nonInvitedRecipients, setNonInvitedRecipients] = useState<NonInvitedRecipient[]>([]);
@@ -51,10 +57,30 @@ export default function InvitatiPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  
+  // Table arrangement state
+  const [tables, setTables] = useState<Table[]>([]);
+  const [loadingTables, setLoadingTables] = useState(true);
 
   useEffect(() => {
     loadData();
+    loadTables();
   }, []);
+
+  const loadTables = async () => {
+    try {
+      const res = await fetch("/api/my/tables");
+      const json = await res.json();
+      setTables((json.tables || []).map((t: any) => ({
+        totalSeats: Number(t.totalSeats || 0),
+        assignedGuests: t.assignedGuests || [],
+      })));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingTables(false);
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -229,10 +255,48 @@ export default function InvitatiPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Gestione Invitati</h2>
+      <h2 className="font-serif text-3xl mb-2">Gestione Invitati</h2>
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+        Organizza la lista degli invitati, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli.
+      </p>
 
-      {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES.invitati} height="280px" />
+      {/* Tabs */}
+      <div className="mb-6 flex gap-2 border-b border-gray-200">
+        <button
+          onClick={() => setActiveTab("guests")}
+          className={`px-6 py-3 font-semibold transition-all ${
+            activeTab === "guests"
+              ? "text-white border-b-4 rounded-t-lg"
+              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-t-lg"
+          }`}
+          style={activeTab === "guests" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
+        >
+          👥 Invitati
+        </button>
+        <button
+          onClick={() => setActiveTab("tables")}
+          className={`px-6 py-3 font-semibold transition-all ${
+            activeTab === "tables"
+              ? "text-white border-b-4 rounded-t-lg"
+              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-t-lg"
+          }`}
+          style={activeTab === "tables" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
+        >
+          🪑 Tavoli
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === "guests" && renderGuestsTab()}
+      {activeTab === "tables" && renderTablesTab()}
+    </section>
+  );
+
+  function renderGuestsTab() {
+    return (
+      <>
+        {/* Carosello immagini */}
+        <ImageCarousel images={PAGE_IMAGES.invitati} height="280px" />
 
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">{message}</div>
@@ -650,6 +714,54 @@ export default function InvitatiPage() {
           {saving ? "Salvataggio..." : "💾 Salva tutto"}
         </button>
       </div>
-    </section>
+    </>
   );
+  }
+
+  function renderTablesTab() {
+    const totalTables = tables.length;
+    const totalSeats = tables.reduce((sum, t) => sum + (t.totalSeats || 0), 0);
+    const assignedSeats = tables.reduce((sum, t) => sum + (t.assignedGuests?.length || 0), 0);
+    const availableSeats = totalSeats - assignedSeats;
+
+    if (loadingTables) {
+      return <p className="text-gray-500">Caricamento tavoli...</p>;
+    }
+
+    return (
+      <>
+        <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-gradient-to-br from-gray-200 to-gray-300 shadow-xl">
+          <h3 className="font-bold text-lg mb-4 text-gray-900">📊 Riepilogo Tavoli</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
+            <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
+              <div className="text-gray-800 font-bold">Tavoli Totali</div>
+              <div className="text-3xl font-bold text-blue-700">{totalTables}</div>
+            </div>
+            <div className="p-4 bg-white rounded-xl border-2 border-green-500 shadow-md">
+              <div className="text-gray-800 font-bold">Posti Totali</div>
+              <div className="text-3xl font-bold text-green-700">{totalSeats}</div>
+            </div>
+            <div className="p-4 bg-white rounded-xl border-2 border-purple-500 shadow-md">
+              <div className="text-gray-800 font-bold">Posti Assegnati</div>
+              <div className="text-3xl font-bold text-purple-700">{assignedSeats}</div>
+            </div>
+            <div className="p-4 bg-white rounded-xl border-2 border-orange-500 shadow-md">
+              <div className="text-gray-800 font-bold">Posti Liberi</div>
+              <div className="text-3xl font-bold text-orange-700">{availableSeats}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 rounded-lg border border-gray-300 bg-white/70">
+          <p className="text-sm text-gray-600">
+            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l'API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
+            Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.
+          </p>
+          <p className="text-sm text-gray-600 mt-2">
+            Per una gestione avanzata della disposizione, considera di implementare un'interfaccia drag-and-drop dedicata.
+          </p>
+        </div>
+      </>
+    );
+  }
 }

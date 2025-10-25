@@ -201,16 +201,20 @@ COMMENT ON TABLE public.musica_ricevimento IS
 -- Payment reminders
 ALTER TABLE public.payment_reminders ENABLE ROW LEVEL SECURITY;
 
+-- Make policies idempotent
+DROP POLICY IF EXISTS "Users can view their own payment reminders" ON public.payment_reminders;
+DROP POLICY IF EXISTS "Users can manage their own payment reminders" ON public.payment_reminders;
+
 CREATE POLICY "Users can view their own payment reminders"
 ON public.payment_reminders
 FOR SELECT
 USING (
-    expense_id IN (
-        SELECT e.id FROM public.expenses e
-        JOIN public.subcategories s ON e.subcategory_id = s.id
-        JOIN public.categories c ON s.category_id = c.id
-        JOIN public.events ev ON c.event_id = ev.id
-        WHERE ev.user_id = auth.uid() OR ev.partner_user_id = auth.uid()
+    EXISTS (
+        SELECT 1
+        FROM public.expenses e
+        JOIN public.events ev ON ev.id = e.event_id
+        WHERE e.id = payment_reminders.expense_id
+          AND (ev.owner_id = auth.uid() OR ev.owner_id IS NULL)
     )
 );
 
@@ -218,12 +222,21 @@ CREATE POLICY "Users can manage their own payment reminders"
 ON public.payment_reminders
 FOR ALL
 USING (
-    expense_id IN (
-        SELECT e.id FROM public.expenses e
-        JOIN public.subcategories s ON e.subcategory_id = s.id
-        JOIN public.categories c ON s.category_id = c.id
-        JOIN public.events ev ON c.event_id = ev.id
-        WHERE ev.user_id = auth.uid() OR ev.partner_user_id = auth.uid()
+    EXISTS (
+        SELECT 1
+        FROM public.expenses e
+        JOIN public.events ev ON ev.id = e.event_id
+        WHERE e.id = payment_reminders.expense_id
+          AND (ev.owner_id = auth.uid() OR ev.owner_id IS NULL)
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1
+        FROM public.expenses e
+        JOIN public.events ev ON ev.id = e.event_id
+        WHERE e.id = payment_reminders.expense_id
+          AND (ev.owner_id = auth.uid() OR ev.owner_id IS NULL)
     )
 );
 

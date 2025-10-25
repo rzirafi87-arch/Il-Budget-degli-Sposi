@@ -1,4 +1,4 @@
---- Script SQL per aggiungere gestione famiglie e formazione tavoli
+-- Script SQL per aggiungere gestione famiglie e formazione tavoli
 -- Eseguire in Supabase SQL Editor dopo le altre migrations
 
 -- =====================================================

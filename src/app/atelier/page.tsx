@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseServer";
@@ -134,11 +135,35 @@ export default function AtelierPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2">👗🤵 Atelier</h2>
-      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
-        Scopri gli atelier più prestigiosi per l'abito da sposa e da sposo. 
-        Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.
-      </p>
+      {/* Breadcrumb */}
+      <nav className="mb-4 flex items-center gap-2 text-sm text-gray-600">
+        <Link href="/" className="hover:text-[#A3B59D] transition-colors">
+          🏠 Home
+        </Link>
+        <span>›</span>
+        <Link href="/fornitori" className="hover:text-[#A3B59D] transition-colors">
+          Fornitori
+        </Link>
+        <span>›</span>
+        <span className="text-gray-900 font-medium">Atelier</span>
+      </nav>
+
+      {/* Header con bottone Torna a Fornitori */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1">
+          <h2 className="font-serif text-3xl mb-2">👗🤵 Atelier</h2>
+          <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+            Scopri gli atelier più prestigiosi per l'abito da sposa e da sposo. 
+            Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.
+          </p>
+        </div>
+        <Link
+          href="/fornitori"
+          className="ml-4 px-4 py-2 bg-white border-2 border-[#A3B59D] text-[#A3B59D] rounded-lg hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold text-sm whitespace-nowrap"
+        >
+          ← Tutti i Fornitori
+        </Link>
+      </div>
 
       {/* Carosello immagini */}
       <ImageCarousel images={PAGE_IMAGES.atelier || PAGE_IMAGES.dashboard} height="280px" />

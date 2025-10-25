@@ -27,6 +27,31 @@ export const PAGE_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=400&fit=crop", // Flowers
     "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=400&fit=crop", // Catering
   ],
+  fotografi: [
+    "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=1200&h=400&fit=crop", // Camera gear
+    "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&h=400&fit=crop", // Wedding couple photo
+    "https://images.unsplash.com/photo-1520975916090-3105956dac38?w=1200&h=400&fit=crop", // Photographer at work
+  ],
+  fiorai: [
+    "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=400&fit=crop", // Flowers close-up
+    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1200&h=400&fit=crop", // Floral arrangement
+    "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=1200&h=400&fit=crop", // Bouquet
+  ],
+  catering: [
+    "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=1200&h=400&fit=crop", // Banquet table
+    "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=1200&h=400&fit=crop", // Catering service
+    "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=1200&h=400&fit=crop", // Food spread
+  ],
+  beauty: [
+    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1200&h=400&fit=crop", // Make-up
+    "https://images.unsplash.com/photo-1506806732259-39c2d0268443?w=1200&h=400&fit=crop", // Hair stylist
+    "https://images.unsplash.com/photo-1505577058444-a3dab90d4253?w=1200&h=400&fit=crop", // Beauty accessories
+  ],
+  gioiellerie: [
+    "https://images.unsplash.com/photo-1520962918287-7448c2878f65?w=1200&h=400&fit=crop", // Rings close-up
+    "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&h=400&fit=crop", // Jewelry showcase
+    "https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?w=1200&h=400&fit=crop", // Ring box
+  ],
   location: [
     "https://images.unsplash.com/photo-1519167758481-83f29da8856c?w=1200&h=400&fit=crop", // Venue hall
     "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&h=400&fit=crop", // Garden venue

@@ -12,7 +12,7 @@ INSERT INTO churches (name, region, province, city, address, phone, email, websi
 -- Toscana
 ('Duomo di Firenze', 'Toscana', 'Firenze', 'Firenze', 'Piazza del Duomo', '+39 055 230 2885', 'info@duomofirenze.it', 'https://www.duomofirenze.it', 'Cattedrale di Santa Maria del Fiore, icona del Rinascimento fiorentino.', 'cattolica', 30000, true, true, true),
 ('Basilica di San Miniato al Monte', 'Toscana', 'Firenze', 'Firenze', 'Via delle Porte Sante, 34', '+39 055 234 2731', 'info@sanminiatoalmonte.it', 'https://www.sanminiatoalmonte.it', 'Chiesa romanica sulla collina, vista mozzafiato su Firenze.', 'cattolica', 200, true, true, true),
-('Abbazia di Sant\'Antimo', 'Toscana', 'Siena', 'Montalcino', 'Castelnuovo dell\'Abate', '+39 0577 835659', 'info@antimo.it', 'https://www.antimo.it', 'Abbazia benedettina del XII secolo, canti gregoriani e architettura romanica.', 'cattolica', 150, true, true, true),
+('Abbazia di Sant''Antimo', 'Toscana', 'Siena', 'Montalcino', 'Castelnuovo dell''Abate', '+39 0577 835659', 'info@antimo.it', 'https://www.antimo.it', 'Abbazia benedettina del XII secolo, canti gregoriani e architettura romanica.', 'cattolica', 150, true, true, true),
 ('Pieve di San Leolino', 'Toscana', 'Firenze', 'Panzano in Chianti', 'Località Pieve di San Leolino', '+39 055 852621', 'info@pievesanleolino.it', 'https://www.pievesanleolino.it', 'Pieve romanica del X secolo nel cuore del Chianti.', 'cattolica', 100, true, true, true),
 
 -- Lombardia
@@ -31,17 +31,17 @@ INSERT INTO churches (name, region, province, city, address, phone, email, websi
 ('Chiesa Matrice di Polignano', 'Puglia', 'Bari', 'Polignano a Mare', 'Piazza Vittorio Emanuele II', '+39 080 424 2583', 'info@chiesamatrice.it', 'https://www.chiesamatrice.polignano.it', 'Chiesa settecentesca nel centro storico affacciato sul mare.', 'cattolica', 250, true, true, true),
 
 -- Sicilia
-('Duomo di Monreale', 'Sicilia', 'Palermo', 'Monreale', 'Piazza Guglielmo II', '+39 091 640 4413', 'info@duomomonreale.it', 'https://www.monrealeduomo.it', 'Capolavoro dell\'arte normanna, mosaici bizantini dorati patrimonio UNESCO.', 'cattolica', 1000, true, true, true),
+('Duomo di Monreale', 'Sicilia', 'Palermo', 'Monreale', 'Piazza Guglielmo II', '+39 091 640 4413', 'info@duomomonreale.it', 'https://www.monrealeduomo.it', 'Capolavoro dell''arte normanna, mosaici bizantini dorati patrimonio UNESCO.', 'cattolica', 1000, true, true, true),
 ('Cattedrale di Siracusa', 'Sicilia', 'Siracusa', 'Siracusa', 'Piazza Duomo, 5', '+39 0931 65328', 'info@duomosiracusa.it', 'https://www.duomosiracusa.it', 'Tempio greco trasformato in cattedrale cristiana, unica al mondo.', 'cattolica', 400, true, true, true),
 ('Chiesa di San Giuseppe dei Teatini', 'Sicilia', 'Palermo', 'Palermo', 'Corso Vittorio Emanuele', '+39 091 331779', 'info@sangiuseppeteatini.it', 'https://www.sangiuseppedeiteatini.it', 'Chiesa barocca con stucchi e marmi policromi, una delle più belle di Palermo.', 'cattolica', 200, true, true, true),
 
 -- Veneto
-('Basilica di San Marco', 'Veneto', 'Venezia', 'Venezia', 'Piazza San Marco', '+39 041 270 8311', 'info@basilicasanmarco.it', 'https://www.basilicasanmarco.it', 'Basilica bizantina simbolo di Venezia, mosaici dorati e Pala d\'Oro.', 'cattolica', 4000, true, true, true),
+('Basilica di San Marco', 'Veneto', 'Venezia', 'Venezia', 'Piazza San Marco', '+39 041 270 8311', 'info@basilicasanmarco.it', 'https://www.basilicasanmarco.it', 'Basilica bizantina simbolo di Venezia, mosaici dorati e Pala d''Oro.', 'cattolica', 4000, true, true, true),
 ('Chiesa di San Giorgio Maggiore', 'Veneto', 'Venezia', 'Venezia', 'Isola di San Giorgio Maggiore', '+39 041 522 7827', 'info@sangiorgio.org', 'https://www.abbaziasangiorgio.it', 'Chiesa palladiana sull\'isola, vista incantevole su Venezia e la laguna.', 'cattolica', 300, true, true, true),
 ('Basilica del Santo', 'Veneto', 'Padova', 'Padova', 'Piazza del Santo, 11', '+39 049 878 9722', 'info@basilicadelsanto.org', 'https://www.basilicadelsanto.org', 'Basilica dedicata a Sant\'Antonio, meta di pellegrinaggio mondiale.', 'cattolica', 3000, true, true, true),
 
 -- Emilia-Romagna
-('Basilica di San Petronio', 'Emilia-Romagna', 'Bologna', 'Bologna', 'Piazza Maggiore', '+39 051 225442', 'info@basilicadisanpetronio.it', 'https://www.basilicadisanpetronio.it', 'Una delle chiese più grandi d\'Europa, meridiana solare e cappelle affrescate.', 'cattolica', 3000, true, true, true),
+('Basilica di San Petronio', 'Emilia-Romagna', 'Bologna', 'Bologna', 'Piazza Maggiore', '+39 051 225442', 'info@basilicadisanpetronio.it', 'https://www.basilicadisanpetronio.it', 'Una delle chiese più grandi d''Europa, meridiana solare e cappelle affrescate.', 'cattolica', 3000, true, true, true),
 ('Basilica di Sant\'Apollinare in Classe', 'Emilia-Romagna', 'Ravenna', 'Ravenna', 'Via Romea Sud, 224', '+39 0544 473569', 'info@santapollinare.it', 'https://www.ravennamosaici.it', 'Basilica paleocristiana del VI secolo, mosaici bizantini patrimonio UNESCO.', 'cattolica', 200, true, true, true),
 
 -- Piemonte

@@ -13,9 +13,16 @@ const pages: string[] = [
   "/come-funziona",
   "/contatti",
   "/fornitori",
-  "/esplora-fornitori",
+  
   "/location",
   "/chiese",
+  // Categorie fornitori
+  "/atelier",
+  "/fotografi",
+  "/fiorai",
+  "/beauty",
+  "/gioiellerie",
+  "/wedding-planner",
   "/privacy-policy",
   "/cookie-policy",
   "/termini-servizio",

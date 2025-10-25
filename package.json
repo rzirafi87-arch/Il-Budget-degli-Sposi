@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sql:exec": "node scripts/run-sql.mjs",
+    "sql:init:all": "node scripts/run-sql.mjs supabase-COMPLETE-SETUP.sql supabase-seed-functions.sql supabase-suppliers-seed.sql supabase-locations-seed.sql supabase-churches-seed.sql supabase-total-budget-patch.sql supabase-per-spouse-budget-patch.sql supabase-spend-type-patch.sql supabase-expenses-patch.sql supabase-payment-providers-patch.sql supabase-wedding-cards-table.sql"
   },
   "engines": {
     "node": ">=18.17.0"
@@ -17,6 +19,7 @@
     "jspdf": "^3.0.3",
     "next": "16.0.0",
     "node-fetch": "^3.3.2",
+    "dotenv": "^16.4.5",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
@@ -27,6 +30,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
+    "pg": "^8.13.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

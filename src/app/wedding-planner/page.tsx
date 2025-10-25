@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
 
@@ -107,15 +108,38 @@ export default function WeddingPlannerPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Wedding Planner</h2>
+      {/* Breadcrumb */}
+      <nav className="mb-4 flex items-center gap-2 text-sm text-gray-600">
+        <Link href="/" className="hover:text-[#A3B59D] transition-colors">
+          🏠 Home
+        </Link>
+        <span>›</span>
+        <Link href="/fornitori" className="hover:text-[#A3B59D] transition-colors">
+          Fornitori
+        </Link>
+        <span>›</span>
+        <span className="text-gray-900 font-medium">Wedding Planner</span>
+      </nav>
+
+      {/* Header con bottone Torna a Fornitori */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1">
+          <h2 className="font-serif text-3xl mb-2">Wedding Planner</h2>
+          <p className="text-sm text-gray-600">
+            Trova wedding planner verificati per organizzare il tuo matrimonio perfetto.
+            Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.
+          </p>
+        </div>
+        <Link
+          href="/fornitori"
+          className="ml-4 px-4 py-2 bg-white border-2 border-[#A3B59D] text-[#A3B59D] rounded-lg hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold text-sm whitespace-nowrap"
+        >
+          ← Tutti i Fornitori
+        </Link>
+      </div>
 
       {/* Carosello immagini */}
       <ImageCarousel images={PAGE_IMAGES["wedding-planner"]} height="280px" />
-
-      <p className="text-sm text-gray-600 mb-6">
-        Trova wedding planner verificati per organizzare il tuo matrimonio perfetto.
-        Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.
-      </p>
 
       {/* Filtri */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">

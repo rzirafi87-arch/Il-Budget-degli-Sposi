@@ -15,6 +15,30 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/spese",
+        destination: "/contabilita",
+        permanent: true,
+      },
+      {
+        source: "/entrate",
+        destination: "/contabilita",
+        permanent: true,
+      },
+      {
+        source: "/formazione-tavoli",
+        destination: "/invitati",
+        permanent: true,
+      },
+      {
+        source: "/esplora-fornitori",
+        destination: "/fornitori",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
