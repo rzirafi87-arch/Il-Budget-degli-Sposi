@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
 
@@ -83,13 +83,17 @@ export default function CoseMatrimonioPage() {
   const [selections, setSelections] = useState<Selection[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
+  // ID deterministici per evitare funzioni impure durante il render
+  const idCounter = useRef(0);
+
   const filteredOptions = ENTERTAINMENT_OPTIONS.filter((item) =>
     activeTab === "cerimonia" ? item.forCerimonia : item.forRicevimento
   );
 
   const addSelection = (item: EntertainmentItem) => {
+    idCounter.current += 1;
     const newSelection: Selection = {
-      id: `sel-${Date.now()}-${Math.random()}`,
+      id: `sel-${idCounter.current}`,
       itemId: item.id,
       name: item.name,
       category: item.category,

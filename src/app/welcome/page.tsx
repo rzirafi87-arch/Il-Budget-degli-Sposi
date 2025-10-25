@@ -18,13 +18,12 @@ export default function WelcomePage() {
     })();
   }, []);
 
-  // Se l'utente è già loggato, reindirizza alla dashboard
-  if (!loading && isLoggedIn) {
-    if (typeof window !== "undefined") {
-      window.location.href = "/";
+  // Reindirizza dopo il render quando l'utente è loggato (evita mutazioni durante il render)
+  useEffect(() => {
+    if (!loading && isLoggedIn && typeof window !== "undefined") {
+      window.location.assign("/");
     }
-    return null;
-  }
+  }, [loading, isLoggedIn]);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#FDFBF7] via-[#FAF8F5] to-[#F5F1EB]">
