@@ -1,0 +1,2 @@
+build-trigger: 2025-10-25T00:00:00Z
+reason: trigger Vercel Git deployment after linking repo
