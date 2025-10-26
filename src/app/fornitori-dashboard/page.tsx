@@ -12,6 +12,10 @@ type SupplierProfile = {
   subscription_expires_at: string | null;
   is_featured: boolean;
   verified: boolean;
+  profile_views: number;
+  contact_clicks: number;
+  website_clicks: number;
+  last_view_at: string | null;
 };
 
 type Transaction = {
@@ -212,6 +216,32 @@ export default function FornitoriDashboardPage() {
             </p>
           </button>
         </div>
+
+        {/* Analytics - Solo per Premium e Premium Plus */}
+        {(profile.subscription_tier === "premium" || profile.subscription_tier === "premium_plus") && (
+          <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-[#A3B59D]/5">
+            <h3 className="font-semibold text-lg mb-4">📊 Analytics</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-lg bg-white border border-gray-200">
+                <div className="text-3xl font-bold text-[#A3B59D]">{profile.profile_views || 0}</div>
+                <div className="text-sm text-gray-600 mt-1">Visualizzazioni Profilo</div>
+              </div>
+              <div className="p-4 rounded-lg bg-white border border-gray-200">
+                <div className="text-3xl font-bold text-blue-600">{profile.contact_clicks || 0}</div>
+                <div className="text-sm text-gray-600 mt-1">Click su Contatti</div>
+              </div>
+              <div className="p-4 rounded-lg bg-white border border-gray-200">
+                <div className="text-3xl font-bold text-purple-600">{profile.website_clicks || 0}</div>
+                <div className="text-sm text-gray-600 mt-1">Click su Sito Web</div>
+              </div>
+            </div>
+            {profile.last_view_at && (
+              <p className="text-xs text-gray-500 mt-3">
+                Ultima visualizzazione: {new Date(profile.last_view_at).toLocaleString("it-IT")}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Visibilità Info */}
         <div className="mb-6 p-6 rounded-2xl border border-blue-200 bg-blue-50">

@@ -7,5 +7,11 @@
   "env": {
     "NEXT_PUBLIC_APP_NAME": "Il Budget degli Sposi",
     "NEXT_PUBLIC_ENVIRONMENT": "production"
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/check-subscriptions",
+      "schedule": "0 9 * * *"
+    }
+  ]
 }

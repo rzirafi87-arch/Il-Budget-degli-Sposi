@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabaseClient";
+import { useSearchParams } from "next/navigation";
 
 type Package = {
   id: string;
@@ -14,14 +16,24 @@ type Package = {
   display_order: number;
 };
 
-export default function PacchettiFornitoriPage() {
+function PacchettiContent() {
+  const searchParams = useSearchParams();
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
+  const [processingPayment, setProcessingPayment] = useState<string | null>(null);
 
   useEffect(() => {
     loadPackages();
-  }, []);
+    
+    // Mostra messaggio successo/errore pagamento
+    const paymentStatus = searchParams.get("payment");
+    if (paymentStatus === "success") {
+      alert("✓ Pagamento completato con successo! Il tuo abbonamento è ora attivo.");
+    } else if (paymentStatus === "cancelled") {
+      alert("Pagamento annullato. Puoi riprovare quando vuoi.");
+    }
+  }, [searchParams]);
 
   async function loadPackages() {
     try {
@@ -71,6 +83,68 @@ export default function PacchettiFornitoriPage() {
         return "👑 BEST VALUE";
       default:
         return null;
+    }
+  }
+
+  async function handlePurchase(pkg: Package) {
+    if (pkg.tier === "free") {
+      alert("Il piano gratuito è sempre disponibile!");
+      return;
+    }
+
+    setProcessingPayment(pkg.tier);
+
+    try {
+      // Verifica autenticazione
+      const { data: sessionData } = await supabase.auth.getSession();
+      const jwt = sessionData.session?.access_token;
+
+      if (!jwt) {
+        alert("Devi effettuare il login per acquistare un abbonamento.");
+        window.location.href = "/auth";
+        return;
+      }
+
+      // Ottieni profilo fornitore
+      const headers: HeadersInit = { Authorization: `Bearer ${jwt}` };
+      const resProfile = await fetch("/api/my/supplier-profile", { headers });
+      const dataProfile = await resProfile.json();
+
+      if (!dataProfile.profile) {
+        alert("Devi prima creare un profilo fornitore. Vai a /fornitori e proponi la tua attività.");
+        return;
+      }
+
+      // Crea sessione Stripe Checkout
+      const resCheckout = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          tier: pkg.tier,
+          billing_period: billingPeriod,
+          supplier_id: dataProfile.profile.id,
+        }),
+      });
+
+      const dataCheckout = await resCheckout.json();
+
+      if (!resCheckout.ok) {
+        throw new Error(dataCheckout.error || "Errore creazione checkout");
+      }
+
+      // Reindirizza a Stripe Checkout
+      if (dataCheckout.url) {
+        window.location.href = dataCheckout.url;
+      } else {
+        throw new Error("URL checkout non disponibile");
+      }
+    } catch (e: any) {
+      console.error("Purchase error:", e);
+      alert(`Errore: ${e.message}`);
+      setProcessingPayment(null);
     }
   }
 
@@ -180,16 +254,15 @@ export default function PacchettiFornitoriPage() {
                         : pkg.tier === "premium_plus"
                         ? "bg-amber-500 text-white hover:bg-amber-600"
                         : "bg-[#A3B59D] text-white hover:bg-[#8a9d84]"
-                    }`}
-                    onClick={() => {
-                      if (pkg.tier === "free") {
-                        alert("Il piano gratuito è sempre disponibile!");
-                      } else {
-                        alert(`Funzionalità di pagamento in arrivo per ${pkg.name_it}!`);
-                      }
-                    }}
+                    } ${processingPayment === pkg.tier ? "opacity-50 cursor-not-allowed" : ""}`}
+                    disabled={processingPayment === pkg.tier}
+                    onClick={() => handlePurchase(pkg)}
                   >
-                    {pkg.tier === "free" ? "Piano Attivo" : "Acquista Ora"}
+                    {processingPayment === pkg.tier 
+                      ? "Reindirizzamento..." 
+                      : pkg.tier === "free" 
+                      ? "Piano Attivo" 
+                      : "Acquista Ora"}
                   </button>
                 </div>
               );
@@ -261,5 +334,13 @@ export default function PacchettiFornitoriPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function PacchettiFornitoriPage() {
+  return (
+    <Suspense fallback={<div className="pt-6 text-center">Caricamento...</div>}>
+      <PacchettiContent />
+    </Suspense>
   );
 }

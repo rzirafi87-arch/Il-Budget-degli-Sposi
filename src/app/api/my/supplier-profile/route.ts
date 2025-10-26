@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     // Cerca profilo fornitore dell'utente
     const { data: profile, error } = await db
       .from("suppliers")
-      .select("id, name, category, subscription_tier, subscription_expires_at, is_featured, verified")
+      .select("id, name, category, subscription_tier, subscription_expires_at, is_featured, verified, profile_views, contact_clicks, website_clicks, last_view_at")
       .eq("user_id", userId)
       .single();
 

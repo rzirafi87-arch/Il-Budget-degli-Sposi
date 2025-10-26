@@ -1,0 +1,103 @@
+import { NextRequest, NextResponse } from "next/server";
+export const runtime = "nodejs";
+import { getServiceClient } from "@/lib/supabaseServer";
+import Stripe from "stripe";
+
+const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2025-09-30.clover" })
+  : null;
+
+type CheckoutRequest = {
+  tier: "base" | "premium" | "premium_plus";
+  billing_period: "monthly" | "yearly";
+  supplier_id?: string;
+  location_id?: string;
+  church_id?: string;
+};
+
+export async function POST(req: NextRequest) {
+  try {
+    if (!stripe) {
+      return NextResponse.json({ error: "Stripe non configurato" }, { status: 503 });
+    }
+
+    const authHeader = req.headers.get("authorization");
+    const jwt = authHeader?.split(" ")[1];
+
+    if (!jwt) {
+      return NextResponse.json({ error: "Autenticazione richiesta" }, { status: 401 });
+    }
+
+    const db = getServiceClient();
+    const { data: userData, error: authError } = await db.auth.getUser(jwt);
+    if (authError || !userData?.user) {
+      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
+    }
+
+    const body = (await req.json()) as CheckoutRequest;
+    const { tier, billing_period, supplier_id, location_id, church_id } = body;
+
+    // Validazione
+    if (!tier || !billing_period) {
+      return NextResponse.json({ error: "tier e billing_period richiesti" }, { status: 400 });
+    }
+
+    if (!supplier_id && !location_id && !church_id) {
+      return NextResponse.json({ error: "Specificare supplier_id, location_id o church_id" }, { status: 400 });
+    }
+
+    // Ottieni prezzo dal database
+    const { data: packageData, error: pkgError } = await db
+      .from("subscription_packages")
+      .select("price_monthly, price_yearly, name_it")
+      .eq("tier", tier)
+      .single();
+
+    if (pkgError || !packageData) {
+      return NextResponse.json({ error: "Pacchetto non trovato" }, { status: 404 });
+    }
+
+    const amount = billing_period === "monthly" 
+      ? packageData.price_monthly 
+      : packageData.price_yearly;
+
+    const amountInCents = Math.round(amount * 100);
+
+    // Crea Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `${packageData.name_it} - ${billing_period === "monthly" ? "Mensile" : "Annuale"}`,
+              description: `Abbonamento ${tier} per Il Budget degli Sposi`,
+            },
+            unit_amount: amountInCents,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/fornitori-dashboard?payment=success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/pacchetti-fornitori?payment=cancelled`,
+      metadata: {
+        user_id: userData.user.id,
+        tier,
+        billing_period,
+        supplier_id: supplier_id || "",
+        location_id: location_id || "",
+        church_id: church_id || "",
+      },
+    });
+
+    return NextResponse.json({ 
+      sessionId: session.id, 
+      url: session.url 
+    });
+  } catch (e: any) {
+    console.error("STRIPE CHECKOUT error:", e);
+    return NextResponse.json({ error: e?.message || "Errore creazione sessione" }, { status: 500 });
+  }
+}
