@@ -1,12 +1,18 @@
 import Script from 'next/script'
 
 export function JsonLd() {
+  const SITE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
+      ? "https://il-budget-degli-sposi-kbg1.vercel.app"
+      : "http://localhost:3000");
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Il Budget degli Sposi",
     "description": "Strumenti gratuiti per organizzare il matrimonio: gestione budget, fornitori, location e chiese in tutta Italia",
-    "url": "https://il-budget-degli-sposi.vercel.app",
+    "url": SITE_URL,
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Web",
     "offers": {
@@ -22,7 +28,7 @@ export function JsonLd() {
     "creator": {
       "@type": "Organization",
       "name": "Il Budget degli Sposi",
-      "url": "https://il-budget-degli-sposi.vercel.app"
+      "url": SITE_URL
     },
     "featureList": [
       "Gestione budget matrimonio",
@@ -37,7 +43,7 @@ export function JsonLd() {
     "inLanguage": "it-IT",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://il-budget-degli-sposi.vercel.app/esplora-fornitori?q={search_term_string}",
+      "target": `${SITE_URL}/esplora-fornitori?q={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
   };
@@ -52,12 +58,18 @@ export function JsonLd() {
 }
 
 export function LocalBusinessSchema() {
+  const SITE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
+      ? "https://il-budget-degli-sposi-kbg1.vercel.app"
+      : "http://localhost:3000");
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "Il Budget degli Sposi",
     "description": "Servizio gratuito di pianificazione matrimoni online",
-    "url": "https://il-budget-degli-sposi.vercel.app",
+    "url": SITE_URL,
     "areaServed": {
       "@type": "Country",
       "name": "Italy"

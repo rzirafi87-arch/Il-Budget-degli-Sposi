@@ -134,7 +134,20 @@ CREATE INDEX IF NOT EXISTS idx_transactions_church ON public.subscription_transa
 
 -- RLS Policies for subscription_packages (public read)
 ALTER TABLE public.subscription_packages ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public read subscription_packages" ON public.subscription_packages FOR SELECT USING (is_active = true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE schemaname = 'public' 
+      AND tablename = 'subscription_packages' 
+      AND policyname = 'Allow public read subscription_packages'
+  ) THEN
+    CREATE POLICY "Allow public read subscription_packages" 
+      ON public.subscription_packages 
+      FOR SELECT 
+      USING (is_active = true);
+  END IF;
+END$$;
 
 -- RLS Policies for subscription_transactions (users can view their own)
 ALTER TABLE public.subscription_transactions ENABLE ROW LEVEL SECURITY;
