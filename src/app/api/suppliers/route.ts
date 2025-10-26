@@ -33,8 +33,29 @@ export async function GET(req: NextRequest) {
     const jwt = authHeader?.split(" ")[1];
 
     if (!jwt) {
-      // Dati demo per utenti non autenticati
-      const allDemoSuppliers = [
+      // Dati demo per utenti non autenticati - SOLO fornitori con tier premium_plus
+      const db = getServiceClient();
+      
+      let query = db
+        .from("suppliers")
+        .select("*")
+        .eq("verified", true)
+        .eq("subscription_tier", "premium_plus")
+        .gte("subscription_expires_at", new Date().toISOString());
+
+      if (region) query = query.eq("region", region);
+      if (province) query = query.ilike("province", `%${province}%`);
+      if (category) query = query.eq("category", category);
+      if (search) query = query.ilike("name", `%${search}%`);
+
+      const { data: premiumSuppliers } = await query
+        .order("is_featured", { ascending: false })
+        .order("name");
+
+      // Fallback ai dati demo hardcoded se non ci sono fornitori premium_plus
+      const allDemoSuppliers = premiumSuppliers && premiumSuppliers.length > 0 
+        ? premiumSuppliers 
+        : [
         {
           id: "demo-catering-1",
           name: "Villa Romantica",
@@ -181,20 +202,23 @@ export async function GET(req: NextRequest) {
         },
       ];
 
-      // Filtra i dati demo in base ai parametri
+      // Filtra i dati demo solo se stiamo usando il fallback hardcoded
       let filteredDemo = allDemoSuppliers;
       
-      if (category) {
-        filteredDemo = filteredDemo.filter(s => s.category === category);
-      }
-      if (region) {
-        filteredDemo = filteredDemo.filter(s => s.region === region);
-      }
-      if (province) {
-        filteredDemo = filteredDemo.filter(s => s.province.toLowerCase().includes(province.toLowerCase()));
-      }
-      if (search) {
-        filteredDemo = filteredDemo.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
+      // Se stiamo usando dati reali dal DB, sono già filtrati
+      if (!premiumSuppliers || premiumSuppliers.length === 0) {
+        if (category) {
+          filteredDemo = filteredDemo.filter(s => s.category === category);
+        }
+        if (region) {
+          filteredDemo = filteredDemo.filter(s => s.region === region);
+        }
+        if (province) {
+          filteredDemo = filteredDemo.filter(s => s.province.toLowerCase().includes(province.toLowerCase()));
+        }
+        if (search) {
+          filteredDemo = filteredDemo.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
+        }
       }
 
       return NextResponse.json({
@@ -208,15 +232,23 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
     }
 
-    // Query con filtri
-    let query = db.from("suppliers").select("*").eq("verified", true);
+    // Query con filtri - utenti autenticati vedono base, premium e premium_plus
+    let query = db
+      .from("suppliers")
+      .select("*")
+      .eq("verified", true)
+      .in("subscription_tier", ["base", "premium", "premium_plus"])
+      .or(`subscription_tier.eq.free,and(subscription_expires_at.gte.${new Date().toISOString()})`);
 
     if (region) query = query.eq("region", region);
     if (province) query = query.ilike("province", `%${province}%`);
     if (category) query = query.eq("category", category);
     if (search) query = query.ilike("name", `%${search}%`);
 
-    const { data: suppliers, error } = await query.order("name");
+    const { data: suppliers, error } = await query
+      .order("is_featured", { ascending: false })
+      .order("subscription_tier", { ascending: false })
+      .order("name");
 
     if (error) {
       console.error("SUPPLIERS GET error:", error);
