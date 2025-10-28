@@ -166,7 +166,7 @@ export default function EntratePage() {
       )}
 
       {/* Riepilogo */}
-      <div className="mb-6 grid grid-cols-4 gap-4">
+      <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-lg bg-pink-50 border border-pink-200">
           <div className="text-sm text-gray-600">Entrate Sposa</div>
           <div className="text-2xl font-semibold">€ {formatEuro(totalBride)}</div>
@@ -200,7 +200,7 @@ export default function EntratePage() {
       {showForm && (
         <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
           <h3 className="font-semibold mb-4">Nuova entrata</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nome persona/famiglia *</label>
               <input
@@ -283,7 +283,7 @@ export default function EntratePage() {
 
       {/* Tabella entrate */}
       <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[920px] text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50/50">
               <th className="px-4 py-3 text-left font-medium text-gray-700">Data</th>

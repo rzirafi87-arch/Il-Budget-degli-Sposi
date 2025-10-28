@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabaseServer";
+import { useRouter } from "next/navigation";
 
 const supabase = getBrowserClient();
 
@@ -13,6 +14,7 @@ type EventData = {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [event, setEvent] = useState<EventData | null>(null);
   const [loading, setLoading] = useState(true);
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
@@ -58,6 +60,10 @@ export default function Home() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    router.replace("/select-country");
+  }, [router]);
 
   const progress = event?.totalBudget 
     ? Math.min(100, ((event.spentAmount || 0) / event.totalBudget) * 100)

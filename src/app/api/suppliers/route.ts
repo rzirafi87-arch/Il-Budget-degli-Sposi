@@ -256,9 +256,10 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ suppliers: suppliers || [] });
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const errorMsg = e instanceof Error ? e.message : "Unexpected";
     console.error("SUPPLIERS GET uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
 
@@ -307,8 +308,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const errorMsg = e instanceof Error ? e.message : "Unexpected";
     console.error("SUPPLIERS POST uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Pattern elegante con foglie e petali">
+  <defs>
+    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <pattern id="leaves" width="120" height="120" patternUnits="userSpaceOnUse">
+      <path d="M20,60 C40,20 80,20 100,60 C80,100 40,100 20,60 Z" fill="#a6bca8"/>
+      <circle cx="60" cy="60" r="8" fill="#6f8a73"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g3)"/>
+  <rect x="80" y="80" width="1040" height="640" fill="url(#leaves)" opacity="0.35" rx="24"/>
+  <rect x="120" y="120" width="960" height="560" fill="#ffffff" opacity="0.7" rx="20"/>
+</svg>

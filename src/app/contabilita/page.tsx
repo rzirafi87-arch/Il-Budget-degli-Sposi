@@ -19,7 +19,7 @@ export default function ContabilitaPage() {
       <div className="mb-6 flex gap-2 border-b border-gray-200">
         <button
           onClick={() => setActiveTab("spese")}
-          className={`px-6 py-3 font-semibold transition-all ${
+          className={`px-4 sm:px-6 py-3 font-semibold transition-all flex-1 sm:flex-none ${
             activeTab === "spese"
               ? "text-white border-b-4 rounded-t-lg"
               : "text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-t-lg"
@@ -30,7 +30,7 @@ export default function ContabilitaPage() {
         </button>
         <button
           onClick={() => setActiveTab("entrate")}
-          className={`px-6 py-3 font-semibold transition-all ${
+          className={`px-4 sm:px-6 py-3 font-semibold transition-all flex-1 sm:flex-none ${
             activeTab === "entrate"
               ? "text-white border-b-4 rounded-t-lg"
               : "text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-t-lg"

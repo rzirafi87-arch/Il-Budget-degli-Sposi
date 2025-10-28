@@ -5,20 +5,81 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import clsx from "clsx";
 
+const LABELS = {
+  it: {
+    dashboard: "Dashboard",
+    timeline: "Timeline",
+    budget: "Budget",
+    weddingThings: "Cose Matrimonio",
+    saveTheDate: "Save the Date",
+    guests: "Invitati",
+    accounting: "Contabilità",
+    suppliers: "Fornitori",
+    location: "Location",
+    churches: "Chiese",
+    documents: "Documenti",
+    giftList: "Lista Nozze",
+    favorites: "Preferiti",
+    suggestions: "Suggerimenti & Consigli",
+  },
+  es: {
+    dashboard: "Panel",
+    timeline: "Cronología",
+    budget: "Presupuesto",
+    weddingThings: "Cosas de la boda",
+    saveTheDate: "Save the Date",
+    guests: "Invitados",
+    accounting: "Contabilidad",
+    suppliers: "Proveedores",
+    location: "Locación",
+    churches: "Iglesias",
+    documents: "Documentos",
+    giftList: "Lista de regalos",
+    favorites: "Favoritos",
+    suggestions: "Sugerencias & Consejos",
+  },
+  en: {
+    dashboard: "Dashboard",
+    timeline: "Timeline",
+    budget: "Budget",
+    weddingThings: "Wedding Things",
+    saveTheDate: "Save the Date",
+    guests: "Guests",
+    accounting: "Accounting",
+    suppliers: "Suppliers",
+    location: "Location",
+    churches: "Churches",
+    documents: "Documents",
+    giftList: "Gift List",
+    favorites: "Favorites",
+    suggestions: "Suggestions & Tips",
+  },
+};
+
+function getLang() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("lang") || "it";
+  }
+  return "it";
+}
+
+const lang = typeof window !== "undefined" ? getLang() : "it";
+
 const tabs = [
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/timeline", label: "Timeline", icon: "📅" },
-  { href: "/budget", label: "Budget", icon: "💰" },
-  { href: "/cose-matrimonio", label: "Cose Matrimonio", icon: "🎪" },
-  { href: "/save-the-date", label: "Save the Date", icon: "💌" },
-  { href: "/invitati", label: "Invitati", icon: "👥" },
-  { href: "/contabilita", label: "Contabilità", icon: "�" },
-  { href: "/fornitori", label: "Fornitori", icon: "🏢" },
-  { href: "/location", label: "Location", icon: "�️" },
-  { href: "/chiese", label: "Chiese", icon: "⛪" },
-  { href: "/documenti", label: "Documenti", icon: "📄" },
-  { href: "/lista-nozze", label: "Lista Nozze", icon: "🎁" },
-  { href: "/preferiti", label: "Preferiti", icon: "❤️" },
+  { href: "/dashboard", label: LABELS[lang].dashboard, icon: "📊" },
+  { href: "/timeline", label: LABELS[lang].timeline, icon: "📅" },
+  { href: "/budget", label: LABELS[lang].budget, icon: "💰" },
+  { href: "/cose-matrimonio", label: LABELS[lang].weddingThings, icon: "🎪" },
+  { href: "/save-the-date", label: LABELS[lang].saveTheDate, icon: "💌" },
+  { href: "/invitati", label: LABELS[lang].guests, icon: "👥" },
+  { href: "/contabilita", label: LABELS[lang].accounting, icon: "📒" },
+  { href: "/fornitori", label: LABELS[lang].suppliers, icon: "🏢" },
+  { href: "/location", label: LABELS[lang].location, icon: "📍" },
+  { href: "/chiese", label: LABELS[lang].churches, icon: "⛪" },
+  { href: "/documenti", label: LABELS[lang].documents, icon: "📄" },
+  { href: "/lista-nozze", label: LABELS[lang].giftList, icon: "🎁" },
+  { href: "/preferiti", label: LABELS[lang].favorites, icon: "❤️" },
+  { href: "/suggerimenti", label: LABELS[lang].suggestions, icon: "💡" },
 ];
 
 export default function NavTabs() {

@@ -87,10 +87,11 @@ interface PlaceResult {
   nationalPhoneNumber?: string;
   internationalPhoneNumber?: string;
   websiteUri?: string;
-  regularOpeningHours?: any;
-  photos?: any[];
+  regularOpeningHours?: Record<string, unknown>;
+  photos?: Record<string, unknown>[];
   priceLevel?: string;
   types?: string[];
+  editorialSummary?: { text?: string };
 }
 
 async function searchPlaces(
@@ -113,7 +114,7 @@ async function searchPlaces(
     throw new Error(`Unknown region: ${region}`);
   }
 
-  const body: any = {
+  const body: Record<string, unknown> = {
     textQuery: keyword,
     locationBias: {
       circle: {
@@ -176,7 +177,7 @@ function parseAddress(formattedAddress?: string): {
   
   let city = "Unknown";
   let province = "Unknown";
-  let region = "Unknown";
+  const region = "Unknown";
   let postalCode: string | undefined;
 
   // Extract city and province from "90100 Palermo PA" format
@@ -211,7 +212,7 @@ function calculatePriceRange(priceLevel?: string): string | null {
   return mapping[priceLevel] || null;
 }
 
-async function getPlaceDetails(placeId: string): Promise<any> {
+async function getPlaceDetails(placeId: string): Promise<Record<string, unknown> | null> {
   if (!GOOGLE_API_KEY) {
     throw new Error("GOOGLE_PLACES_API_KEY not configured");
   }
@@ -290,10 +291,10 @@ async function syncRegionType(
 
         for (const place of results) {
           // Get detailed info
-          const details = await getPlaceDetails(place.id);
+          const details = await getPlaceDetails(place.id) as PlaceResult | null;
           if (!details) continue;
 
-          const addressParts = parseAddress(details.formattedAddress);
+          const addressParts = parseAddress(details.formattedAddress as string | undefined);
 
           // Upsert vendor using stored procedure
           const { error } = await db.rpc("upsert_vendor", {
@@ -305,12 +306,12 @@ async function syncRegionType(
             p_website: details.websiteUri,
             p_rating: details.rating,
             p_rating_count: details.userRatingCount || 0,
-            p_description: details.editorialSummary?.text,
-            p_price_range: calculatePriceRange(details.priceLevel),
+            p_description: (details.editorialSummary as { text?: string })?.text,
+            p_price_range: calculatePriceRange(details.priceLevel as string | undefined),
             p_metadata: {
               types: details.types,
               opening_hours: details.regularOpeningHours,
-              photos: details.photos?.slice(0, 5),
+              photos: Array.isArray(details.photos) ? details.photos.slice(0, 5) : [],
             },
             p_google_place_id: details.id,
             p_lat: details.location?.latitude,
@@ -355,13 +356,14 @@ async function syncRegionType(
       .eq("id", jobId);
 
     return { count: totalCount, newCount };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Sync failed";
     // Update job as failed
     await db
       .from("sync_jobs")
       .update({
         status: "failed",
-        error_message: error.message,
+        error_message: errorMsg,
         completed_at: new Date().toISOString(),
       })
       .eq("id", jobId);
@@ -394,10 +396,11 @@ export async function GET(req: NextRequest) {
       newCount: result.newCount,
       message: `Synced ${result.count} vendors (${result.newCount} new) for ${type} in ${region}`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Sync failed";
     console.error("Sync error:", error);
     return NextResponse.json(
-      { error: error.message || "Sync failed" },
+      { error: errorMsg },
       { status: 500 }
     );
   }

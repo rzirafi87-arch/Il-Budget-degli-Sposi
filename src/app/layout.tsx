@@ -1,14 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import NavTabs from "@/components/NavTabs";
-import Background from "@/components/Background";
-import Footer from "@/components/Footer";
-import DynamicHeader from "@/components/DynamicHeader";
-import { ToastProvider } from "@/components/ToastProvider";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import { JsonLd, LocalBusinessSchema } from "@/components/StructuredData";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
+import ClientLayoutShell from "@/components/ClientLayoutShell";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -104,58 +99,31 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="it" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="it" className={`${playfair.variable} ${inter.variable}`}> 
       <head>
         <JsonLd />
         <LocalBusinessSchema />
+        {/* PWA manifest */}
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#A3B59D" />
+        {/* PWA icons for iOS/Android */}
+        <link rel="icon" type="image/png" sizes="192x192" href="/backgrounds/icon-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/backgrounds/icon-512.png" />
+        <link rel="apple-touch-icon" href="/backgrounds/icon-192.png" />
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         ) : null}
+        {/* Service Worker registration */}
+        <script dangerouslySetInnerHTML={{
+          __html: `if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/service-worker.js');
+            });
+          }`
+        }} />
       </head>
       <body className="min-h-screen antialiased" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
-        <ToastProvider>
-          {/* Header sticky su mobile per facile accesso alla navigazione */}
-          <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-soft">
-            {/* Countdown dinamico - solo se utente loggato */}
-            <DynamicHeader />
-            
-            <div className="border-b border-gray-200">
-              <div className="max-w-6xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <h1 className="text-lg sm:text-2xl font-serif font-bold" style={{ color: "var(--color-warm-gray)" }}>
-                    💍 Il Budget degli Sposi
-                  </h1>
-                  <div className="flex items-center gap-2 text-xs sm:text-sm">
-                    <a 
-                      className="bg-green-600 text-white px-3 py-2 rounded-full font-semibold hover:bg-green-700 transition-colors whitespace-nowrap flex items-center gap-1 shadow-sm" 
-                      href="https://wa.me/393001234567?text=Ciao!%20Vorrei%20informazioni%20su%20Il%20Budget%20degli%20Sposi"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      💬 Chat
-                    </a>
-                    <a 
-                      className="text-white px-3 py-2 rounded-full font-semibold hover:opacity-90 transition-opacity shadow-sm" 
-                      style={{ background: "var(--color-sage)" }}
-                      href="/auth"
-                    >
-                      Accedi
-                    </a>
-                  </div>
-                </div>
-                <NavTabs />
-              </div>
-            </div>
-          </header>
-
-          <main className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-8 sm:pb-16 min-h-screen">
-            <Breadcrumbs />
-            {children}
-          </main>
-          
-          <Footer />
-          <Background />
-        </ToastProvider>
+        <ClientLayoutShell>{children}</ClientLayoutShell>
       </body>
     </html>
   );

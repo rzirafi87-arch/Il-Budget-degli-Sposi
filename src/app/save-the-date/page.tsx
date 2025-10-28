@@ -1,9 +1,11 @@
-'use client';
-
+"use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+// src/components/SaveTheDateVideoPreview.tsx
+import SaveTheDateVideoPreview from '@/components/SaveTheDateVideoPreview';
+import { SaveTheDateVideo } from '@/components/SaveTheDateVideo';
 
 interface WeddingCardConfig {
   bride_name: string;
@@ -140,6 +142,26 @@ export default function PartecipazionePage() {
     } finally {
       setGenerating(false);
     }
+  };
+
+  // Stub: Generazione video Save the Date
+  const handleGenerateVideo = async () => {
+    setGenerating(true);
+    try {
+      // Qui si potrà integrare Remotion o ffmpeg.js per generare il video
+      alert('Funzione video in sviluppo: sarà possibile scaricare un video Save the Date personalizzato!');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  // Props per il video
+  const videoProps = {
+    bride: config.bride_name,
+    groom: config.groom_name,
+    date: config.wedding_date,
+    location: config.location_name,
+    message: config.custom_message
   };
 
   return (
@@ -358,6 +380,19 @@ export default function PartecipazionePage() {
             >
               {generating ? 'Generazione...' : '📥 Genera PDF'}
             </button>
+            <button
+              onClick={handleGenerateVideo}
+              disabled={generating || !config.bride_name || !config.groom_name}
+              className="flex-1 bg-pink-600 text-white py-3 px-6 rounded font-semibold hover:bg-pink-700 disabled:opacity-50"
+            >
+              {generating ? 'Generazione...' : '🎬 Genera Video'}
+            </button>
+          </div>
+
+          {/* Preview Video Save the Date */}
+          <div className="mt-10">
+            <h2 className="text-xl font-semibold mb-4 text-[#A3B59D]">Anteprima Video Save the Date</h2>
+            <SaveTheDateVideoPreview {...videoProps} />
           </div>
         </div>
       </div>

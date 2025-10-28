@@ -93,9 +93,9 @@ export async function GET(req: NextRequest) {
       .order("created_at", { ascending: true });
 
     // Mappa i dati per includere familyGroupName
-    const mappedGuests = (guestsData || []).map((g: any) => ({
+    const mappedGuests = (guestsData || []).map((g: Record<string, unknown>) => ({
       ...g,
-      familyGroupName: g.family_groups?.family_name,
+      familyGroupName: (g.family_groups as { family_name?: string })?.family_name,
     }));
 
     // Carica i non invitati
@@ -111,9 +111,10 @@ export async function GET(req: NextRequest) {
       nonInvitedRecipients: nonInvitedData || [],
       defaultRsvpDeadline,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Internal error";
     console.error("GET /api/my/guests error:", err);
-    return NextResponse.json({ error: err.message || "Internal error" }, { status: 500 });
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
 
@@ -136,7 +137,7 @@ export async function POST(req: NextRequest) {
     const userId = userData.user.id;
 
     // Ottieni l'evento dell'utente (o crealo se non esiste)
-    let { data: events, error: eventError } = await db
+    const { data: events, error: eventError } = await db
       .from("events")
       .select("id")
       .eq("owner_id", userId)
@@ -181,8 +182,8 @@ export async function POST(req: NextRequest) {
 
       // Inserisci i nuovi gruppi famiglia
       const familyGroupsToInsert = familyGroups
-        .filter((f: any) => f.familyName?.trim())
-        .map((f: any) => ({
+        .filter((f: { familyName?: string }) => f.familyName?.trim())
+        .map((f: { familyName?: string; mainContactGuestId?: string; notes?: string }) => ({
           event_id: eventId,
           family_name: f.familyName,
           main_contact_guest_id: f.mainContactGuestId || null,
@@ -200,7 +201,7 @@ export async function POST(req: NextRequest) {
       await db.from("guests").delete().eq("event_id", eventId);
 
       // Inserisci i nuovi invitati
-      const guestsToInsert = guests.map((g: any) => ({
+      const guestsToInsert = guests.map((g: Guest & { familyGroupId?: string }) => ({
         event_id: eventId,
         name: g.name,
         guest_type: g.guestType,
@@ -240,8 +241,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Internal error";
     console.error("POST /api/my/guests error:", err);
-    return NextResponse.json({ error: err.message || "Internal error" }, { status: 500 });
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }

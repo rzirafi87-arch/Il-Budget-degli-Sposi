@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+// Mittente configurabile da env per evitare modifiche al codice tra ambienti
+// Esempi validi:
+//   Il Budget degli Sposi <onboarding@resend.dev>
+//   Il Budget degli Sposi <noreply@ilbudgetdeglisposi.it>
+const FROM = process.env.RESEND_FROM || "Il Budget degli Sposi <onboarding@resend.dev>";
 
 export async function sendSubscriptionExpiryWarning(
   email: string,
@@ -16,7 +21,7 @@ export async function sendSubscriptionExpiryWarning(
 
   try {
     await resend.emails.send({
-      from: "Il Budget degli Sposi <noreply@ilbudgetdeglisposi.it>",
+      from: FROM,
       to: email,
       subject: `⚠️ Il tuo abbonamento ${tier} scade tra ${daysRemaining} giorni`,
       html: `
@@ -101,7 +106,7 @@ export async function sendSubscriptionActivated(
 
   try {
     await resend.emails.send({
-      from: "Il Budget degli Sposi <noreply@ilbudgetdeglisposi.it>",
+      from: FROM,
       to: email,
       subject: `✓ Abbonamento ${tier} attivato con successo!`,
       html: `

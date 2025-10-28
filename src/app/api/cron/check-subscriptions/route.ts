@@ -7,11 +7,22 @@ import { sendSubscriptionExpiryWarning } from "@/lib/emailService";
 // Configurazione in vercel.json
 export async function GET(req: NextRequest) {
   try {
-    // Verifica authorization header (secret per cron jobs)
+    // Verifica secret (due modalità):
+    // 1) Authorization: Bearer <CRON_SECRET>  (per run manuali)
+    // 2) Token via query string ?token=<CRON_SECRET> (opzione compatibile con cron esterni)
+    // In alternativa, se la richiesta proviene dal Cron di Vercel, è presente l'header x-vercel-cron
     const authHeader = req.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
+    const token = req.nextUrl.searchParams.get("token");
+    const isVercelCron = req.headers.get("x-vercel-cron") === "1";
 
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    const authorized = Boolean(
+      (cronSecret && authHeader === `Bearer ${cronSecret}`) ||
+      (cronSecret && token === cronSecret) ||
+      isVercelCron
+    );
+
+    if (!authorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -126,8 +137,9 @@ export async function GET(req: NextRequest) {
 
             results.warnings_sent++;
             console.log(`✓ Sent ${threshold.label} warning to ${supplier.name}`);
-          } catch (error: any) {
-            results.errors.push(`Email failed for ${supplier.name}: ${error.message}`);
+          } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Unknown error";
+            results.errors.push(`Email failed for ${supplier.name}: ${message}`);
           }
         }
       }
@@ -138,11 +150,12 @@ export async function GET(req: NextRequest) {
       timestamp: now.toISOString(),
       results,
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Cron job failed";
     console.error("CRON JOB error:", e);
     return NextResponse.json({ 
       success: false, 
-      error: e?.message || "Cron job failed" 
+      error: message 
     }, { status: 500 });
   }
 }

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Motivo floreale astratto in verde">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g1)"/>
+  <g fill="none" stroke="#6f8a73" stroke-width="2" opacity="0.6">
+    <path d="M200,600 C280,520 340,500 420,440 C540,350 600,300 720,280 C840,260 940,300 1000,360"/>
+    <path d="M150,520 C230,440 350,420 470,380 C620,330 730,330 880,360 C980,380 1060,420 1100,470"/>
+  </g>
+  <g fill="#88a58f" opacity="0.85">
+    <circle cx="240" cy="220" r="80"/>
+    <circle cx="320" cy="220" r="60"/>
+    <circle cx="290" cy="280" r="40"/>
+  </g>
+  <g fill="#7a947f" opacity="0.9">
+    <path d="M960,520 a60,60 0 1,0 120,0 a60,60 0 1,0 -120,0"/>
+    <rect x="980" y="540" width="80" height="8" rx="4"/>
+  </g>
+</svg>

@@ -14,6 +14,7 @@
     "node": ">=18.17.0"
   },
   "dependencies": {
+    "@remotion/player": "^4.0.366",
     "@stripe/stripe-js": "^8.1.0",
     "@supabase/supabase-js": "^2.76.1",
     "clsx": "^2.1.1",
@@ -23,6 +24,7 @@
     "node-fetch": "^3.3.2",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "remotion": "^4.0.366",
     "resend": "^6.2.2",
     "stripe": "^19.1.0"
   },

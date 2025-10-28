@@ -754,11 +754,11 @@ export default function InvitatiPage() {
 
         <div className="p-6 rounded-lg border border-gray-300 bg-white/70">
           <p className="text-sm text-gray-600">
-            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l'API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
+            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
             Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.
           </p>
           <p className="text-sm text-gray-600 mt-2">
-            Per una gestione avanzata della disposizione, considera di implementare un'interfaccia drag-and-drop dedicata.
+            Per una gestione avanzata della disposizione, considera di implementare un&apos;interfaccia drag-and-drop dedicata.
           </p>
         </div>
       </>
