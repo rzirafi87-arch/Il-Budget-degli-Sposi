@@ -1,48 +1,69 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
-
+import { useTranslations } from "next-intl";
+import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 
 const countries = [
-  { code: "it", name: "Italia", flag: "🇮🇹" },
-  { code: "mx", name: "Messico", flag: "🇲🇽" },
-  { code: "es", name: "Spagna", flag: "🇪🇸" },
-  { code: "fr", name: "Francia", flag: "🇫🇷" },
-  { code: "in", name: "India", flag: "🇮🇳" },
-  { code: "jp", name: "Giappone", flag: "🇯🇵" },
-  { code: "uk", name: "UK", flag: "🇬🇧" },
-  { code: "ae", name: "UAE", flag: "🇦🇪" },
-  { code: "us", name: "USA", flag: "🇺🇸" },
+  { code: "it", nameKey: "countries.it", flag: "🇮🇹" },
+  { code: "mx", nameKey: "countries.mx", flag: "🇲🇽" },
+  { code: "es", nameKey: "countries.es", flag: "🇪🇸" },
+  { code: "fr", nameKey: "countries.fr", flag: "🇫🇷" },
+  { code: "in", nameKey: "countries.in", flag: "🇮🇳" },
+  { code: "jp", nameKey: "countries.jp", flag: "🇯🇵" },
+  { code: "uk", nameKey: "countries.uk", flag: "🇬🇧" },
+  { code: "ae", nameKey: "countries.ae", flag: "🇦🇪" },
+  { code: "us", nameKey: "countries.us", flag: "🇺🇸" },
 ];
 
 export default function SelectCountryPage() {
-  // On mount, se la lingua non è selezionata, torna a /select-language
-  // Se la nazione è già selezionata, vai avanti
-  React.useEffect(() => {
-    const lang = localStorage.getItem("language");
-    if (!lang) {
-      window.location.href = "/select-language";
-      return;
-    }
-    const country = localStorage.getItem("country");
-    if (country) {
-      window.location.href = "/select-event-type";
-    }
-  }, []);
+  const t = useTranslations();
   const router = useRouter();
 
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [tradition, setTradition] = useState<WeddingTradition | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  // Prefetch tradition preview when country changes
+  useEffect(() => {
+    if (!selectedCountry) return setTradition(null);
+    fetch(`/api/traditions?country=${encodeURIComponent(selectedCountry)}`)
+      .then((r) => r.json())
+      .then((d) => setTradition((d.traditions && d.traditions[0]) || null))
+      .catch(() => setTradition(null));
+  }, [selectedCountry]);
+
+  // Ensure language/country cookies, redirect if already set
+  useEffect(() => {
+    try {
+      const cookieLang = document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1];
+      const lsLang = localStorage.getItem("language");
+      const lang = cookieLang || lsLang;
+      if (!lang) {
+        router.replace("/select-language");
+        return;
+      }
+      if (!cookieLang && lsLang) {
+        document.cookie = `language=${lsLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
+      }
+      const cookieCountry = document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1];
+      const lsCountry = localStorage.getItem("country");
+      if (cookieCountry || lsCountry) {
+        if (!cookieCountry && lsCountry) {
+          document.cookie = `country=${lsCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
+        }
+        router.replace("/select-event-type");
+      }
+    } catch {}
+  }, []);
 
   async function handleSelect(code: string) {
     setError(null);
     localStorage.setItem("country", code);
+    document.cookie = `country=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
     setSelectedCountry(code);
-    // Chiamata API in background, non blocca il pulsante
     (async () => {
       try {
         const supabase = getBrowserClient();
@@ -59,16 +80,31 @@ export default function SelectCountryPage() {
           body: JSON.stringify({ country: code }),
         });
       } catch (e) {
-        // Silenzia errori, la dashboard gestirà eventuali fallback
+        // non bloccare la UI
       }
     })();
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#A3B59D]/30 to-[#F9F9F9]">
+    <main
+      className="min-h-screen flex flex-col items-center justify-center"
+      style={{
+        background:
+          "radial-gradient(1000px 500px at 0% 100%, rgba(163,181,157,0.2), transparent)," +
+          "radial-gradient(800px 500px at 100% 0%, rgba(232,240,233,0.6), transparent)," +
+          "linear-gradient(180deg, #f8fbf8, #eef5ef)",
+        backgroundImage: "url(/backgrounds/select-country.svg)",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      }}
+    >
       <div className="max-w-md w-full p-8 rounded-2xl shadow-lg bg-white/90 border border-gray-200">
-        <h1 className="text-3xl font-serif font-bold text-center mb-6">Dove si svolgerà il matrimonio?</h1>
-        <p className="text-center text-gray-600 mb-6 text-base">Seleziona la nazione in cui si terrà l’evento, indipendentemente da dove vivi o dalla lingua del browser.</p>
+        <h1 className="text-3xl font-serif font-bold text-center mb-6">
+          {t("onboarding.selectCountryTitle", { fallback: "Scegli il paese" })}
+        </h1>
+        <p className="text-center text-gray-600 mb-6 text-base">
+          {t("onboarding.selectCountryDesc", { fallback: "Seleziona il paese per personalizzare i contenuti" })}
+        </p>
         <div className="grid grid-cols-2 gap-4">
           {countries.map((c) => (
             <button
@@ -77,21 +113,26 @@ export default function SelectCountryPage() {
               onClick={() => handleSelect(c.code)}
               disabled={loading}
             >
-              <span className="text-2xl">{c.flag}</span>
-              <span>{c.name}</span>
+              <span className="text-2xl" aria-hidden="true">{c.flag}</span>
+              <span>{t(c.nameKey, { fallback: c.code.toUpperCase() })}</span>
             </button>
           ))}
         </div>
+        {tradition && (
+          <div className="mt-6">
+            <WeddingTraditionInfo tradition={tradition} />
+          </div>
+        )}
         {selectedCountry && (
           <button
             className="mt-8 w-full bg-[#A3B59D] text-white py-3 px-6 rounded font-semibold hover:bg-[#8da182] transition-colors text-lg"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/select-event-type")}
           >
-            Vai alla Dashboard
+            {t("onboarding.nextBtn", { fallback: "Avanti" })}
           </button>
         )}
         {loading && (
-          <div className="mt-6 text-center text-[#A3B59D] font-semibold">Creazione evento in corso...</div>
+          <div className="mt-6 text-center text-[#A3B59D] font-semibold">{t("onboarding.creatingEvent", { fallback: "Creazione evento in corso..." })}</div>
         )}
         {error && (
           <div className="mt-4 text-center text-red-500 font-semibold">{error}</div>
