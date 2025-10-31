@@ -1,43 +1,72 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function SuggerimentiPage() {
-  // Stato per suggerimenti personalizzati
+  const t = useTranslations();
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  // Esempio: logica per suggerimenti in base alle scelte (mock)
   useEffect(() => {
-    // Qui si può integrare la logica che analizza le scelte e il budget
-    setSuggestions([
-      "Hai scelto la location: ti consigliamo una mise en place floreale coordinata.",
-      "Budget residuo: suggeriamo fornitori con offerte speciali per la tua fascia di spesa.",
-      "Carica le foto del vestito per ricevere consigli su accessori abbinati.",
-      "Scopri le palette colori più adatte alle tue scelte!",
-    ]);
+    const country = typeof window !== 'undefined' ? (localStorage.getItem('country') || 'it') : 'it';
+    if (country === 'mx') {
+      setSuggestions([
+        'Ricorda di prenotare il Mariachi!',
+        'Verifica la disponibilità della location almeno 6 mesi prima.',
+        'Considera una fotocabina a tema per la festa.',
+        'Controlla i documenti legali richiesti in Messico.',
+      ]);
+    } else {
+      setSuggestions([
+        'Prenota il fotografo con largo anticipo.',
+        'Verifica la lista invitati e aggiorna le preferenze.',
+        'Controlla le tradizioni locali per arricchire la cerimonia.',
+      ]);
+    }
   }, []);
 
   return (
     <section className="max-w-3xl mx-auto py-8 px-4">
-      <h1 className="font-serif text-3xl mb-6 text-[#A3B59D] font-bold flex items-center gap-2">
-        <span>💡</span> Suggerimenti & Consigli
+      <h1 className="font-serif text-3xl mb-4 text-[#A3B59D] font-bold flex items-center gap-2">
+        <span>💡</span> {t('suggestions', { fallback: 'Suggerimenti & Consigli' })}
       </h1>
-      <p className="mb-6 text-gray-700 text-base">
-        Qui troverai consigli personalizzati in base alle scelte che stai facendo, al budget e ai documenti/foto caricati. Più aggiorni la tua dashboard, più i suggerimenti saranno precisi!
+      <div className="mb-4 flex justify-end">
+        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"><span aria-hidden>🏠</span> Torna in Dashboard</a>
+      </div>
+      <div className="mb-6">
+        <a
+          href="/chat-ia"
+          className="inline-block px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
+        >
+          🤖 Chatta con IA
+        </a>
+      </div>
+      <p className="mb-4 text-gray-700 text-base">
+        Qui troverai consigli personalizzati in base alle scelte che stai facendo, al budget e ai documenti/foto caricati.
       </p>
       <ul className="space-y-4">
         {suggestions.map((s, i) => (
-          <li key={i} className="bg-white border-l-4 border-[#A3B59D] shadow rounded-xl p-4 text-gray-800 font-medium">
+          <li
+            key={i}
+            className="bg-white border-l-4 border-[#A3B59D] shadow rounded-xl p-4 text-gray-800 font-medium"
+          >
             {s}
           </li>
         ))}
       </ul>
-      {/* Esempio: sezione per caricare foto */}
-      <div className="mt-8">
-        <h2 className="font-semibold text-lg mb-2">Carica una foto per consigli ancora più mirati</h2>
-        <input type="file" accept="image/*" className="block mb-4" />
-        {/* Qui si può integrare la logica di analisi immagine */}
+
+      <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-[#A3B59D] bg-[#F7FBF7]">
+        <h2 className="font-semibold text-lg mb-2">🖼️ Carica una foto</h2>
+        <p className="text-gray-700 mb-3">
+          Qui puoi caricare un'immagine (abito, palette, location) per ricevere consigli mirati.
+        </p>
+        <label
+          className="inline-block px-4 py-2 rounded-full text-white cursor-pointer"
+          style={{ background: "var(--color-sage)" }}
+        >
+          Seleziona file…
+          <input type="file" accept="image/*" className="hidden" />
+        </label>
       </div>
     </section>
   );
