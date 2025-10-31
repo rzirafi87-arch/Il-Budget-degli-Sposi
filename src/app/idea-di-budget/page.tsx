@@ -200,7 +200,10 @@ export default function IdeaDiBudgetPage() {
     <div className="max-w-6xl mx-auto p-6">
       <div className="flex items-start justify-between mb-4">
         <h1 className="text-3xl font-serif font-bold">Idea di Budget</h1>
-        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"><span aria-hidden>🏠</span> Torna in Dashboard</a>
+        <div className="flex gap-2">
+          <a href="/budget" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"><span aria-hidden>💶</span> Torna a Budget</a>
+          <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"><span aria-hidden>🏠</span> Torna in Dashboard</a>
+        </div>
       </div>
       {/* Controlli principali: Budget e Data matrimonio */}
       <div className="mb-6 p-5 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
