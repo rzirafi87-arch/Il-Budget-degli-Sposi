@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseServer";
@@ -134,7 +134,7 @@ export default function InvitatiPage() {
 
   const createFamily = () => {
     if (!newFamilyName.trim()) {
-      setMessage("❌ Inserisci un nome per la famiglia");
+      setMessage("âŒ Inserisci un nome per la famiglia");
       return;
     }
     const newFamily: FamilyGroup = {
@@ -145,7 +145,7 @@ export default function InvitatiPage() {
     setFamilyGroups([...familyGroups, newFamily]);
     setNewFamilyName("");
     setShowFamilyModal(false);
-    setMessage("✅ Famiglia creata! Ora assegna gli invitati alla famiglia.");
+    setMessage("âœ… Famiglia creata! Ora assegna gli invitati alla famiglia.");
   };
 
   const deleteFamily = (familyId: string | undefined) => {
@@ -198,7 +198,7 @@ export default function InvitatiPage() {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
+        setMessage("âŒ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
         setSaving(false);
         return;
       }
@@ -214,14 +214,14 @@ export default function InvitatiPage() {
 
       if (!res.ok) {
         const json = await res.json();
-        setMessage(`❌ Errore: ${json.error || "Impossibile salvare"}`);
+        setMessage(`âŒ Errore: ${json.error || "Impossibile salvare"}`);
       } else {
-        setMessage("✅ Invitati salvati con successo!");
+        setMessage("âœ… Invitati salvati con successo!");
         setTimeout(() => setMessage(null), 3000);
       }
     } catch (err) {
       console.error("Errore salvataggio:", err);
-      setMessage("❌ Errore di rete");
+      setMessage("âŒ Errore di rete");
     } finally {
       setSaving(false);
     }
@@ -271,7 +271,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "guests" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          👥 Invitati
+          ðŸ‘¥ Invitati
         </button>
         <button
           onClick={() => setActiveTab("tables")}
@@ -282,7 +282,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "tables" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          🪑 Tavoli
+          ðŸª‘ Tavoli
         </button>
       </div>
 
@@ -339,34 +339,34 @@ export default function InvitatiPage() {
 
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🍖 Carne:</span>
+            <span>ðŸ– Carne:</span>
             <span className="font-semibold">{menuCounts.carne}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🐟 Pesce:</span>
+            <span>ðŸŸ Pesce:</span>
             <span className="font-semibold">{menuCounts.pesce}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>👶 Baby:</span>
+            <span>ðŸ‘¶ Baby:</span>
             <span className="font-semibold">{menuCounts.baby}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🎪 Animazione:</span>
+            <span>ðŸŽª Animazione:</span>
             <span className="font-semibold">{menuCounts.animazione}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🥗 Vegetariano:</span>
+            <span>ðŸ¥— Vegetariano:</span>
             <span className="font-semibold">{menuCounts.vegetariano}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🪑 Posto tavolo:</span>
+            <span>ðŸª‘ Posto tavolo:</span>
             <span className="font-semibold">{menuCounts.posto_tavolo}</span>
           </div>
         </div>
 
         <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-700">🎁 Bomboniere necessarie:</span>
+            <span className="text-gray-700">ðŸŽ Bomboniere necessarie:</span>
             <span className="font-bold text-purple-600">{totalBomboniere}</span>
           </div>
         </div>
@@ -375,7 +375,7 @@ export default function InvitatiPage() {
       {/* Gestione Famiglie */}
       <div className="mb-6 p-6 rounded-2xl border-3 border-purple-600 bg-purple-50/70 shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg text-gray-900">👨‍👩‍👧‍👦 Gruppi Famiglia</h3>
+          <h3 className="font-bold text-lg text-gray-900">ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦ Gruppi Famiglia</h3>
           <button
             onClick={() => setShowFamilyModal(true)}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-bold shadow-md"
@@ -401,12 +401,12 @@ export default function InvitatiPage() {
                       onClick={() => deleteFamily(family.id)}
                       className="text-red-500 hover:text-red-700 text-xs font-bold"
                     >
-                      ✕
+                      âœ•
                     </button>
                   </div>
                   <div className="text-xs text-gray-600">
-                    <div className="mb-1">👤 Contatto: {mainContact?.name || "Non assegnato"}</div>
-                    <div>👥 Membri: {familyMembers.length}</div>
+                    <div className="mb-1">ðŸ‘¤ Contatto: {mainContact?.name || "Non assegnato"}</div>
+                    <div>ðŸ‘¥ Membri: {familyMembers.length}</div>
                   </div>
                 </div>
               );
@@ -457,7 +457,7 @@ export default function InvitatiPage() {
               type="csv"
               className="text-sm"
             >
-              📥 Esporta CSV
+              ðŸ“¥ Esporta CSV
             </ExportButton>
             <button
               onClick={addGuest}
@@ -576,12 +576,12 @@ export default function InvitatiPage() {
                                 : "bg-gray-100 text-gray-600"
                             }`}
                           >
-                            {pref === "carne" && "🍖"}
-                            {pref === "pesce" && "🐟"}
-                            {pref === "baby" && "👶"}
-                            {pref === "animazione" && "🎪"}
-                            {pref === "vegetariano" && "🥗"}
-                            {pref === "posto_tavolo" && "🪑"}
+                            {pref === "carne" && "ðŸ–"}
+                            {pref === "pesce" && "ðŸŸ"}
+                            {pref === "baby" && "ðŸ‘¶"}
+                            {pref === "animazione" && "ðŸŽª"}
+                            {pref === "vegetariano" && "ðŸ¥—"}
+                            {pref === "posto_tavolo" && "ðŸª‘"}
                           </button>
                         ))}
                       </div>
@@ -609,7 +609,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        ✕
+                        âœ•
                       </button>
                     </td>
                   </tr>
@@ -693,7 +693,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        ✕
+                        âœ•
                       </button>
                     </td>
                   </tr>
@@ -711,7 +711,7 @@ export default function InvitatiPage() {
           disabled={saving}
           className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] disabled:opacity-50 font-semibold"
         >
-          {saving ? "Salvataggio..." : "💾 Salva tutto"}
+          {saving ? "Salvataggio..." : "ðŸ’¾ Salva tutto"}
         </button>
       </div>
     </>
@@ -731,7 +731,7 @@ export default function InvitatiPage() {
     return (
       <>
         <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-gradient-to-br from-gray-200 to-gray-300 shadow-xl">
-          <h3 className="font-bold text-lg mb-4 text-gray-900">📊 Riepilogo Tavoli</h3>
+          <h3 className="font-bold text-lg mb-4 text-gray-900">ðŸ“Š Riepilogo Tavoli</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
             <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
               <div className="text-gray-800 font-bold">Tavoli Totali</div>
@@ -754,14 +754,20 @@ export default function InvitatiPage() {
 
         <div className="p-6 rounded-lg border border-gray-300 bg-white/70">
           <p className="text-sm text-gray-600">
-            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
+            La gestione dettagliata della disposizione dei tavoli Ã¨ disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
             Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.
           </p>
           <p className="text-sm text-gray-600 mt-2">
             Per una gestione avanzata della disposizione, considera di implementare un&apos;interfaccia drag-and-drop dedicata.
           </p>
+          <div className="mt-4">
+            <a href="/invitati/tavoli" className="inline-block px-4 py-2 rounded-full text-white hover:opacity-90" style={{ background: 'var(--color-sage)' }}>
+              Apri pagina Tavoli
+            </a>
+          </div>
         </div>
       </>
     );
   }
 }
+

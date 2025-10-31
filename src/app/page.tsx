@@ -1,6 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
+﻿"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabaseServer";
 import { useRouter } from "next/navigation";
@@ -62,7 +61,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    router.replace("/select-country");
+    try { const lang = localStorage.getItem("language"); const country = localStorage.getItem("country"); const eventType = localStorage.getItem("eventType"); if (!lang) router.replace("/select-language"); else if (!country) router.replace("/select-country"); else if (!eventType) router.replace("/select-event-type"); } catch { router.replace("/select-language"); }
   }, [router]);
 
   const progress = event?.totalBudget 
@@ -81,11 +80,11 @@ export default function Home() {
                 Organizza il tuo<br />
                 <span className="text-[#A6B5A0]">matrimonio</span><br />
                 in modo semplice<br />
-                e senza stress 💍
+                e senza stress ðŸ’
               </h1>
               <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto">
-                L'unica app che unisce <strong>budget, fornitori e serenità</strong><br />
-                — senza pubblicità né caos.
+                L'unica app che unisce <strong>budget, fornitori e serenitÃ </strong><br />
+                â€” senza pubblicitÃ  nÃ© caos.
               </p>
             </div>
 
@@ -94,7 +93,7 @@ export default function Home() {
                 href="/auth"
                 className="w-full sm:w-auto bg-[#A6B5A0] text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-[#8a9d84] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
               >
-                🎉 Inizia ora — È gratis
+                ðŸŽ‰ Inizia ora â€” Ãˆ gratis
               </Link>
               <button
                 onClick={() => {
@@ -103,12 +102,12 @@ export default function Home() {
                 }}
                 className="w-full sm:w-auto bg-white text-[#A6B5A0] border-2 border-[#A6B5A0] px-10 py-5 rounded-full font-bold text-lg hover:bg-[#A6B5A0] hover:text-white transition-all shadow-lg hover:shadow-xl"
               >
-                👀 Guarda la demo
+                ðŸ‘€ Guarda la demo
               </button>
             </div>
 
             <p className="text-sm text-gray-500 pt-4">
-              ✨ Non serve carta di credito • Crea il tuo evento in 2 minuti
+              âœ¨ Non serve carta di credito â€¢ Crea il tuo evento in 2 minuti
             </p>
           </div>
         </section>
@@ -117,24 +116,24 @@ export default function Home() {
         <section className="container mx-auto px-6 py-16">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-12">
-              Tutto quello di cui hai bisogno 🌿
+              Tutto quello di cui hai bisogno ðŸŒ¿
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <USPCard
-                icon="🧭"
+                icon="ðŸ§­"
                 title="Chiarezza"
-                description="Ogni spesa è visibile. Ogni passo è guidato. Zero confusione, solo organizzazione."
+                description="Ogni spesa Ã¨ visibile. Ogni passo Ã¨ guidato. Zero confusione, solo organizzazione."
               />
               <USPCard
-                icon="📊"
+                icon="ðŸ“Š"
                 title="Controllo"
-                description="Budget, fornitori, invitati, timeline — tutto sotto controllo in un unico posto."
+                description="Budget, fornitori, invitati, timeline â€” tutto sotto controllo in un unico posto."
               />
               <USPCard
-                icon="✨"
+                icon="âœ¨"
                 title="Ispirazione"
-                description="Design curato, interfaccia serena e suggerimenti utili per rendere tutto più bello."
+                description="Design curato, interfaccia serena e suggerimenti utili per rendere tutto piÃ¹ bello."
               />
             </div>
           </div>
@@ -145,45 +144,45 @@ export default function Home() {
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-4">
-                Esplora le funzionalità 💕
+                Esplora le funzionalitÃ  ðŸ’•
               </h2>
               <p className="text-center text-gray-600 mb-12">
-                Navigazione libera senza registrazione — aggiungi dati e sperimenta!
+                Navigazione libera senza registrazione â€” aggiungi dati e sperimenta!
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <DemoFeature
-                  icon="💰"
+                  icon="ðŸ’°"
                   title="Budget intelligente"
                   description="Traccia spese previste e effettive, dividi tra sposa/sposo/comune"
                   href="/dashboard"
                 />
                 <DemoFeature
-                  icon="📅"
+                  icon="ðŸ“…"
                   title="Timeline automatica"
                   description="To-do cronologiche da 12 mesi prima fino al grande giorno"
                   href="/timeline"
                 />
                 <DemoFeature
-                  icon="👥"
+                  icon="ðŸ‘¥"
                   title="Gestione invitati"
                   description="Lista completa, RSVP, assegnazione tavoli e conteggi"
                   href="/invitati"
                 />
                 <DemoFeature
-                  icon="🏢"
+                  icon="ðŸ¢"
                   title="Directory fornitori"
                   description="Trova location, fotografi, fioristi nella tua zona"
                   href="/fornitori"
                 />
                 <DemoFeature
-                  icon="❤️"
+                  icon="â¤ï¸"
                   title="Preferiti e documenti"
                   description="Salva fornitori e organizza preventivi"
                   href="/preferiti"
                 />
                 <DemoFeature
-                  icon="🎁"
+                  icon="ðŸŽ"
                   title="Lista nozze"
                   description="Gestisci i regali che desiderate ricevere"
                   href="/lista-nozze"
@@ -196,12 +195,12 @@ export default function Home() {
         {/* Privacy */}
         <section className="container mx-auto px-6 py-16">
           <div className="max-w-3xl mx-auto bg-gradient-to-br from-[#EAD9D4]/40 to-[#E8E0D6]/40 rounded-3xl p-12 text-center border-2 border-[#E8E0D6] shadow-xl">
-            <div className="text-5xl mb-6">🔒</div>
+            <div className="text-5xl mb-6">ðŸ”’</div>
             <h3 className="text-2xl font-bold text-gray-800 mb-4">
-              Privacy e serenità garantite
+              Privacy e serenitÃ  garantite
             </h3>
             <p className="text-gray-700 text-lg leading-relaxed">
-              <strong>Zero pubblicità.</strong> Zero email spam.<br />
+              <strong>Zero pubblicitÃ .</strong> Zero email spam.<br />
               I tuoi dati restano tuoi. Nessuna vendita a terzi.<br />
               Solo tu e il tuo matrimonio, senza distrazioni.
             </p>
@@ -212,16 +211,16 @@ export default function Home() {
         <section className="container mx-auto px-6 py-20 text-center">
           <div className="max-w-2xl mx-auto space-y-6">
             <h2 className="text-4xl font-serif font-bold text-gray-800">
-              Pronto a iniziare? 🎊
+              Pronto a iniziare? ðŸŽŠ
             </h2>
             <p className="text-xl text-gray-600">
-              Unisciti alle coppie che hanno organizzato il loro matrimonio con serenità.
+              Unisciti alle coppie che hanno organizzato il loro matrimonio con serenitÃ .
             </p>
             <Link
               href="/auth"
               className="inline-block bg-[#A6B5A0] text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-[#8a9d84] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
-              Crea il tuo evento ora 💍
+              Crea il tuo evento ora ðŸ’
             </Link>
           </div>
         </section>
@@ -236,7 +235,7 @@ export default function Home() {
       <section className="text-center py-12 px-6 rounded-3xl bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] border-2 border-[#E8E0D6] shadow-lg">
         <div className="max-w-2xl mx-auto space-y-4">
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-gray-800 mb-4">
-            Il vostro grande giorno<br />inizia qui 💍
+            Il vostro grande giorno<br />inizia qui ðŸ’
           </h1>
           
           {loading ? (
@@ -246,7 +245,7 @@ export default function Home() {
               <div className="bg-white rounded-2xl p-8 shadow-md border-2 border-[#A6B5A0]">
                 <div className="text-6xl font-bold text-[#A6B5A0] mb-2">{daysLeft}</div>
                 <div className="text-xl text-gray-700">
-                  {daysLeft === 0 ? "È oggi! 🎉" : daysLeft === 1 ? "giorno al matrimonio" : "giorni al matrimonio"}
+                  {daysLeft === 0 ? "Ãˆ oggi! ðŸŽ‰" : daysLeft === 1 ? "giorno al matrimonio" : "giorni al matrimonio"}
                 </div>
               </div>
               <p className="text-sm text-gray-600 italic">
@@ -268,7 +267,7 @@ export default function Home() {
                 href="/auth"
                 className="inline-block bg-[#A6B5A0] text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-[#8a9d84] transition-all shadow-lg hover:shadow-xl"
               >
-                Inizia ora — È gratis ✨
+                Inizia ora â€” Ãˆ gratis âœ¨
               </Link>
               <p className="text-xs text-gray-500 mt-2">
                 Non serve carta di credito. Crea il tuo evento in 2 minuti.
@@ -282,16 +281,16 @@ export default function Home() {
       {event && (
         <section className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">💰 Budget Overview</h2>
+            <h2 className="text-2xl font-bold text-gray-800">ðŸ’° Budget Overview</h2>
             <Link href="/dashboard" className="text-[#A6B5A0] hover:underline font-semibold">
-              Vedi dettagli →
+              Vedi dettagli â†’
             </Link>
           </div>
           
           <div className="space-y-3">
             <div className="flex justify-between text-sm text-gray-600">
-              <span>Previsto: <strong>€ {event.totalBudget?.toLocaleString("it-IT") || 0}</strong></span>
-              <span>Speso: <strong>€ {event.spentAmount?.toLocaleString("it-IT") || 0}</strong></span>
+              <span>Previsto: <strong>â‚¬ {event.totalBudget?.toLocaleString("it-IT") || 0}</strong></span>
+              <span>Speso: <strong>â‚¬ {event.spentAmount?.toLocaleString("it-IT") || 0}</strong></span>
             </div>
             
             <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
@@ -305,12 +304,12 @@ export default function Home() {
             
             <p className="text-sm text-gray-500 italic text-center">
               {progress < 30 
-                ? "Ottimo inizio! Continua così 🌟"
+                ? "Ottimo inizio! Continua cosÃ¬ ðŸŒŸ"
                 : progress < 70
-                ? "Stai andando alla grande! 💪"
+                ? "Stai andando alla grande! ðŸ’ª"
                 : progress < 100
-                ? "Quasi tutto definito, bravissimi! 🎉"
-                : "Budget raggiunto! 🎊"}
+                ? "Quasi tutto definito, bravissimi! ðŸŽ‰"
+                : "Budget raggiunto! ðŸŽŠ"}
             </p>
           </div>
         </section>
@@ -320,42 +319,42 @@ export default function Home() {
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <QuickActionCard
           href="/timeline"
-          icon="�"
+          icon="ï¿½"
           title="Timeline"
           description="To-do cronologiche"
           accent="bg-[#A6B5A0]"
         />
         <QuickActionCard
           href="/dashboard"
-          icon="�"
+          icon="ï¿½"
           title="Budget"
           description="Gestisci tutte le spese"
           accent="bg-[#E8E0D6]"
         />
         <QuickActionCard
           href="/invitati"
-          icon="👥"
+          icon="ðŸ‘¥"
           title="Invitati"
           description="Lista e RSVP"
           accent="bg-[#EAD9D4]"
         />
         <QuickActionCard
           href="/fornitori"
-          icon="�"
+          icon="ï¿½"
           title="Fornitori"
           description="Trova i migliori servizi"
           accent="bg-[#A6B5A0]"
         />
         <QuickActionCard
           href="/preferiti"
-          icon="❤️"
+          icon="â¤ï¸"
           title="Preferiti"
           description="I tuoi salvati"
           accent="bg-[#EAD9D4]"
         />
         <QuickActionCard
           href="/documenti"
-          icon="📄"
+          icon="ðŸ“„"
           title="Documenti"
           description="Preventivi e contratti"
           accent="bg-[#E8E0D6]"
@@ -364,7 +363,7 @@ export default function Home() {
 
       {/* Prossimi passi */}
       <section className="bg-gradient-to-br from-[#EAD9D4]/30 to-[#E8E0D6]/30 rounded-2xl p-6 border border-gray-200">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">📋 Prossimi Passi Consigliati</h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">ðŸ“‹ Prossimi Passi Consigliati</h3>
         <div className="space-y-3">
           <TodoItem text="Definisci il budget totale" done={!!event?.totalBudget} />
           <TodoItem text="Scegli la location del ricevimento" done={false} />
@@ -372,7 +371,7 @@ export default function Home() {
           <TodoItem text="Inizia la lista invitati" done={false} />
         </div>
         <p className="text-xs text-gray-500 mt-4 italic text-center">
-          💡 Segui questi passi per una pianificazione serena e senza stress
+          ðŸ’¡ Segui questi passi per una pianificazione serena e senza stress
         </p>
       </section>
     </main>
@@ -406,7 +405,7 @@ function TodoItem({ text, done }: { text: string; done: boolean }) {
       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
         done ? "bg-[#A6B5A0] border-[#A6B5A0]" : "border-gray-300"
       }`}>
-        {done && <span className="text-white text-sm">✓</span>}
+        {done && <span className="text-white text-sm">âœ“</span>}
       </div>
       <span className={`flex-1 ${done ? "line-through text-gray-400" : "text-gray-700"}`}>
         {text}
@@ -448,3 +447,5 @@ function DemoFeature({ icon, title, description, href }: {
     </Link>
   );
 }
+
+
