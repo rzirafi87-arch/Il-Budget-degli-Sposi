@@ -27,6 +27,18 @@ const LANGUAGES = [
   { code: "ar", labelKey: "languages.ar" },
 ];
 
+const LANGUAGE_ICONS: Record<string, string> = {
+  it: "🇮🇹",
+  es: "🇪🇸",
+  en: "🇬🇧",
+  fr: "🇫🇷",
+  de: "🇩🇪",
+  ru: "🇷🇺",
+  zh: "🇨🇳",
+  ja: "🇯🇵",
+  ar: "🇦🇪",
+};
+
 export default function SelectLanguagePage() {
   const t = useTranslations();
   const router = useRouter();
@@ -67,6 +79,7 @@ export default function SelectLanguagePage() {
     >
       <div className="max-w-xl w-full mx-4 p-8 rounded-3xl bg-white/80 backdrop-blur border border-gray-200 shadow-xl">
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
+          <span aria-hidden="true" className="mr-2">🌐</span>
           {t("onboarding.selectLanguageTitle", { fallback: "Scegli la lingua" })}
         </h1>
         <p className="text-center text-gray-600 mb-6">
@@ -80,6 +93,9 @@ export default function SelectLanguagePage() {
               onClick={() => handleSelect(lang.code)}
               aria-label={NATIVE_LABELS[lang.code] || lang.code.toUpperCase()}
             >
+              <span aria-hidden="true" className="mr-2 text-lg">
+                {LANGUAGE_ICONS[lang.code] || "🌍"}
+              </span>
               {NATIVE_LABELS[lang.code] || lang.code.toUpperCase()}
             </button>
           ))}

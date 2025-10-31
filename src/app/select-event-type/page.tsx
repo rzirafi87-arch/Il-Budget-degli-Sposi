@@ -81,6 +81,7 @@ export default function SelectEventTypePage() {
     >
       <div className="max-w-3xl w-full mx-4 p-8 rounded-3xl bg-white/80 backdrop-blur border border-gray-200 shadow-xl">
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
+          <span aria-hidden="true" className="mr-2">🎉</span>
           {t("onboarding.selectEventTypeTitle", { fallback: "Scegli il tipo di evento" })}
         </h1>
         {/* Tradizione preview per il paese selezionato */}
@@ -90,15 +91,29 @@ export default function SelectEventTypePage() {
           </div>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {EVENT_TYPES.map((ev) => (
-            <button
-              key={ev.code}
-              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === ev.code ? "bg-[#A3B59D] text-white" : ""}`}
-              onClick={() => handleSelect(ev.code)}
-            >
-              {t(ev.labelKey, { fallback: ev.code })}
-            </button>
-          ))}
+          {EVENT_TYPES.map((ev) => {
+            const icon =
+              ev.code === "wedding" ? "💍" :
+              ev.code === "baptism" ? "👶" :
+              ev.code === "turning-18" ? "🎉" :
+              ev.code === "anniversary" ? "💞" :
+              ev.code === "gender-reveal" ? "🎈" :
+              ev.code === "birthday" ? "🎂" :
+              ev.code === "turning-50" ? "🎊" :
+              ev.code === "retirement" ? "🧓" :
+              ev.code === "confirmation" ? "✝️" :
+              ev.code === "graduation" ? "🎓" : "✨";
+            return (
+              <button
+                key={ev.code}
+                className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === ev.code ? "bg-[#A3B59D] text-white" : ""}`}
+                onClick={() => handleSelect(ev.code)}
+              >
+                <span aria-hidden="true" className="mr-2">{icon}</span>
+                {t(ev.labelKey, { fallback: ev.code })}
+              </button>
+            );
+          })}
         </div>
       </div>
     </main>

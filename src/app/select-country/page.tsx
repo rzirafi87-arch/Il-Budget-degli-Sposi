@@ -100,6 +100,7 @@ export default function SelectCountryPage() {
     >
       <div className="max-w-md w-full p-8 rounded-2xl shadow-lg bg-white/90 border border-gray-200">
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
+          <span aria-hidden="true" className="mr-2">🗺️</span>
           {t("onboarding.selectCountryTitle", { fallback: "Scegli il paese" })}
         </h1>
         <p className="text-center text-gray-600 mb-6 text-base">

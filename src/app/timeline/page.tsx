@@ -154,13 +154,18 @@ export default function TimelinePage() {
 
   return (
     <section className="space-y-6">
-      <div className="bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200 shadow-sm">
+      <div className="flex items-center justify-between hidden">
+        <div />
+        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">← Torna in Dashboard</a>
+      </div>
+      <div className="bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200 shadow-sm relative">
         <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
           📅 Timeline del Matrimonio
         </h1>
         <p className="text-gray-600">
           Organizzate ogni fase della pianificazione senza stress. Spuntate le attività man mano che le completate! 💍
         </p>
+        <a href="/dashboard" className="absolute top-4 right-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"><span aria-hidden="true">🏠</span> Torna in Dashboard</a>
       </div>
 
       {/* Progress Overview */}
