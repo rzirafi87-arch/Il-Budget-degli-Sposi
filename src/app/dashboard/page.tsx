@@ -156,7 +156,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg">Idea di Budget</h3>
             <p className="text-sm text-gray-600">Compila le voci e applicale al budget.</p>
           </div>
-          <a href="/idea-di-budget" className="px-4 py-2 rounded-full text-white" style={{ background: 'var(--color-sage)' }}>Apri Idea di Budget</a>
+          <a href="/idea-di-budget" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-[160px]" style={{ background: 'var(--color-sage)' }}>Apri Idea di Budget</a>
         </div>
       </div>
 
@@ -172,7 +172,7 @@ export default function DashboardPage() {
               </p>
             )}
           </div>
-          <a href="/timeline" className="px-4 py-2 rounded-full text-white" style={{ background: 'var(--color-sage)' }}>Apri Timeline</a>
+          <a href="/timeline" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-[160px]" style={{ background: 'var(--color-sage)' }}>Apri Timeline</a>
         </div>
       </div>
 
