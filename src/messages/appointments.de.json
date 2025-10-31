@@ -1,0 +1,10 @@
+{
+  "appointments.title": "Termine und Fristen",
+  "appointments.formTitle": "Terminbezeichnung",
+  "appointments.formLocation": "Ort",
+  "appointments.formNotes": "Notizen",
+  "appointments.addBtn": "Termin hinzufügen",
+  "appointments.empty": "Keine Termine hinzugefügt.",
+  "appointments.dateLabel": "Datum",
+  "appointments.locationLabel": "Ort"
+}

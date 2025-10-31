@@ -1,0 +1,21 @@
+{
+  "dashboard": "Panel principal",
+  "timeline": "Cronología",
+  "budget": "Presupuesto",
+  "weddingThings": "Elementos de la boda",
+  "saveTheDate": "Reserva la fecha",
+  "guests": "Invitados",
+  "accounting": "Contabilidad",
+  "suppliers": "Proveedores",
+  "location": "Lugar",
+  "churches": "Iglesias",
+  "documents": "Documentos",
+  "giftList": "Lista de regalos",
+  "favorites": "Favoritos",
+  "suggestions": "Sugerencias y Consejos",
+  "ideaBudget": "Idea de Presupuesto",
+  "auth": "Acceder",
+  "chat": "Chatea con nosotros en WhatsApp",
+  "settings": "Configuración",
+  "loading": "Cargando…"
+}

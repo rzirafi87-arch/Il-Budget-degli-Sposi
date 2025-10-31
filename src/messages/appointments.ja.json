@@ -1,0 +1,10 @@
+{
+  "appointments.title": "予定と締切",
+  "appointments.formTitle": "予定のタイトル",
+  "appointments.formLocation": "場所",
+  "appointments.formNotes": "メモ",
+  "appointments.addBtn": "予定を追加",
+  "appointments.empty": "予定は追加されていません。",
+  "appointments.dateLabel": "日付",
+  "appointments.locationLabel": "場所"
+}

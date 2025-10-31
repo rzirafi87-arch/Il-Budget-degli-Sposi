@@ -1,0 +1,10 @@
+{
+  "appointments.title": "Rendez-vous et échéances",
+  "appointments.formTitle": "Titre du rendez-vous",
+  "appointments.formLocation": "Lieu",
+  "appointments.formNotes": "Notes",
+  "appointments.addBtn": "Ajouter un rendez-vous",
+  "appointments.empty": "Aucun rendez-vous ajouté.",
+  "appointments.dateLabel": "Date",
+  "appointments.locationLabel": "Lieu"
+}

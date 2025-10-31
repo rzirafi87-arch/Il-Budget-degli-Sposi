@@ -1,0 +1,21 @@
+{
+  "dashboard": "Панель управления",
+  "timeline": "Хронология",
+  "budget": "Бюджет",
+  "weddingThings": "Свадебные вещи",
+  "saveTheDate": "Сохранить дату",
+  "guests": "Гости",
+  "accounting": "Бухгалтерия",
+  "suppliers": "Поставщики",
+  "location": "Место проведения",
+  "churches": "Церкви",
+  "documents": "Документы",
+  "giftList": "Список подарков",
+  "favorites": "Избранное",
+  "suggestions": "Советы и предложения",
+  "ideaBudget": "Идея бюджета",
+  "auth": "Войти",
+  "chat": "Свяжитесь с нами в WhatsApp",
+  "settings": "Настройки",
+  "loading": "Загрузка…"
+}

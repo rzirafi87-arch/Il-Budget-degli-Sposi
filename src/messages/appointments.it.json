@@ -1,0 +1,10 @@
+{
+  "appointments.title": "Appuntamenti e Scadenze",
+  "appointments.formTitle": "Titolo appuntamento",
+  "appointments.formLocation": "Luogo",
+  "appointments.formNotes": "Note",
+  "appointments.addBtn": "Aggiungi appuntamento",
+  "appointments.empty": "Nessun appuntamento inserito.",
+  "appointments.dateLabel": "Data",
+  "appointments.locationLabel": "Luogo"
+}

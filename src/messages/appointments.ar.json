@@ -1,0 +1,10 @@
+{
+  "appointments.title": "المواعيد والمواعيد النهائية",
+  "appointments.formTitle": "عنوان الموعد",
+  "appointments.formLocation": "المكان",
+  "appointments.formNotes": "ملاحظات",
+  "appointments.addBtn": "إضافة موعد",
+  "appointments.empty": "لم تتم إضافة أي مواعيد.",
+  "appointments.dateLabel": "التاريخ",
+  "appointments.locationLabel": "المكان"
+}

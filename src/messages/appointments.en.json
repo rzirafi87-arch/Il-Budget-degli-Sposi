@@ -1,0 +1,10 @@
+{
+  "appointments.title": "Appointments & Deadlines",
+  "appointments.formTitle": "Appointment title",
+  "appointments.formLocation": "Location",
+  "appointments.formNotes": "Notes",
+  "appointments.addBtn": "Add appointment",
+  "appointments.empty": "No appointments added.",
+  "appointments.dateLabel": "Date",
+  "appointments.locationLabel": "Location"
+}
