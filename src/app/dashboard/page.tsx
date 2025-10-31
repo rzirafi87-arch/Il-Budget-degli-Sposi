@@ -1,3 +1,21 @@
+"use client";
+import { useMemo, useState, useEffect } from "react";
+import { getBrowserClient } from "@/lib/supabaseServer";
+import ImageCarousel from "@/components/ImageCarousel";
+import { PAGE_IMAGES } from "@/lib/pageImages";
+import BudgetChart from "@/components/BudgetChart";
+import CategoryBars from "@/components/CategoryBars";
+import { useToast } from "@/components/ToastProvider";
+
+/*
+const [userLang, setUserLang] = useState<string>("");
+const [userCountry, setUserCountry] = useState<string>("");
+const [userEventType, setUserEventType] = useState<string>("");
+useEffect(() => {
+  setUserLang(localStorage.getItem("language") || "it");
+  setUserCountry(localStorage.getItem("country") || "it");
+  setUserEventType(localStorage.getItem("eventType") || "wedding");
+}, []);
   // Stato checklist interattiva
   const [checkedChecklist, setCheckedChecklist] = useState<{[key:string]:boolean}>({});
   // Suggerimenti dinamici
@@ -22,8 +40,7 @@
     if (type === "country") window.location.href = "/select-country";
     if (type === "eventType") window.location.href = "/select-event-type";
   }
-"use client";
-
+*/
 // --- Localizzazione Messico ---
 const CATEGORIES_MAP_MX: Record<string, string[]> = {
   "Novia": ["Vestido de novia", "Zapatos", "Accesorios", "Maquillaje", "Pettinatura"],
@@ -137,14 +154,6 @@ const LABELS_IT = {
 
 // ...existing code...
 
-import { useMemo, useState, useEffect } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
-import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
-import BudgetChart from "@/components/BudgetChart";
-import CategoryBars from "@/components/CategoryBars";
-import { useToast } from "@/components/ToastProvider";
-
 const supabase = getBrowserClient();
 
 type SpendRow = {
@@ -166,6 +175,30 @@ function DashboardPage() {
     setUserCountry(localStorage.getItem("country") || "it");
     setUserEventType(localStorage.getItem("eventType") || "wedding");
   }, []);
+  // Quick change (spostato all'interno del componente)
+  function handleQuickChange(type: "language" | "country" | "eventType") {
+    if (type === "language") window.location.href = "/select-language";
+    if (type === "country") window.location.href = "/select-country";
+    if (type === "eventType") window.location.href = "/select-event-type";
+  }
+  // Stato checklist interattiva
+  const [checkedChecklist, setCheckedChecklist] = useState<{ [key: string]: boolean }>({});
+  // Suggerimenti dinamici
+  const SUGGESTIONS = useMemo(() => {
+    if (userCountry === "mx") {
+      return [
+        "Ricorda di prenotare il Mariachi!",
+        "Verifica la disponibilità della location almeno 6 mesi prima.",
+        "Considera una fotocabina a tema messicano per la festa.",
+        "Controlla i documenti legali richiesti in Messico.",
+      ];
+    }
+    return [
+      "Prenota il fotografo con largo anticipo.",
+      "Verifica la lista invitati e aggiorna le preferenze.",
+      "Controlla le tradizioni locali per arricchire la cerimonia.",
+    ];
+  }, [userCountry]);
   // Variabili di esempio per la demo
   const LABELS_RENDER = {
     dashboard: "Dashboard",

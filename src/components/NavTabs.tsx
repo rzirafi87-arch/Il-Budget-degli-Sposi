@@ -65,21 +65,24 @@ function getLang() {
 
 const lang = typeof window !== "undefined" ? getLang() : "it";
 
+type LangKey = keyof typeof LABELS;
+const safeLang = (lang as LangKey);
+
 const tabs = [
-  { href: "/dashboard", label: LABELS[lang].dashboard, icon: "📊" },
-  { href: "/timeline", label: LABELS[lang].timeline, icon: "📅" },
-  { href: "/budget", label: LABELS[lang].budget, icon: "💰" },
-  { href: "/cose-matrimonio", label: LABELS[lang].weddingThings, icon: "🎪" },
-  { href: "/save-the-date", label: LABELS[lang].saveTheDate, icon: "💌" },
-  { href: "/invitati", label: LABELS[lang].guests, icon: "👥" },
-  { href: "/contabilita", label: LABELS[lang].accounting, icon: "📒" },
-  { href: "/fornitori", label: LABELS[lang].suppliers, icon: "🏢" },
-  { href: "/location", label: LABELS[lang].location, icon: "📍" },
-  { href: "/chiese", label: LABELS[lang].churches, icon: "⛪" },
-  { href: "/documenti", label: LABELS[lang].documents, icon: "📄" },
-  { href: "/lista-nozze", label: LABELS[lang].giftList, icon: "🎁" },
-  { href: "/preferiti", label: LABELS[lang].favorites, icon: "❤️" },
-  { href: "/suggerimenti", label: LABELS[lang].suggestions, icon: "💡" },
+  { href: "/dashboard", label: LABELS[safeLang].dashboard, icon: "📊" },
+  { href: "/timeline", label: LABELS[safeLang].timeline, icon: "📅" },
+  { href: "/budget", label: LABELS[safeLang].budget, icon: "💰" },
+  { href: "/cose-matrimonio", label: LABELS[safeLang].weddingThings, icon: "🎪" },
+  { href: "/save-the-date", label: LABELS[safeLang].saveTheDate, icon: "💌" },
+  { href: "/invitati", label: LABELS[safeLang].guests, icon: "👥" },
+  { href: "/contabilita", label: LABELS[safeLang].accounting, icon: "📒" },
+  { href: "/fornitori", label: LABELS[safeLang].suppliers, icon: "🏢" },
+  { href: "/location", label: LABELS[safeLang].location, icon: "📍" },
+  { href: "/chiese", label: LABELS[safeLang].churches, icon: "⛪" },
+  { href: "/documenti", label: LABELS[safeLang].documents, icon: "📄" },
+  { href: "/lista-nozze", label: LABELS[safeLang].giftList, icon: "🎁" },
+  { href: "/preferiti", label: LABELS[safeLang].favorites, icon: "❤️" },
+  { href: "/suggerimenti", label: LABELS[safeLang].suggestions, icon: "💡" },
 ];
 
 export default function NavTabs() {
