@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "next-intl": [
+        "./src/vendor/next-intl.tsx"
       ]
     }
   },
