@@ -25,6 +25,8 @@
         "sql:seed:all": "node scripts/run-sql.mjs supabase-events-seed.sql supabase-india-seed.sql supabase-mexico-seed.sql supabase-mx-seed-locations.sql supabase-mx-seed-suppliers.sql supabase-traditions-extend-and-seed.sql supabase-traditions-seed-more.sql supabase-traditions-policies.sql",
         "geo:import": "node scripts/geo-import.mjs",
         "autocommit": "node scripts/autocommit-once.mjs",
+        "check:utf8": "node scripts/check-utf8.mjs",
+        "check:utf8:strict": "node scripts/check-utf8.mjs --strict",
         "dev:ac": "npm run autocommit && next dev",
         "autocommit:watch": "node scripts/autocommit-watch.mjs"
     },
