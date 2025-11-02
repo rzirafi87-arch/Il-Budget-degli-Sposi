@@ -27,8 +27,12 @@ describe('API routes', () => {
   });
 
   it('GET /api/traditions returns traditions for country', async () => {
+    // Mock both the view (schema/app) and legacy table access; return empty view to trigger fallback
     jest.doMock('@/lib/supabaseServer', () => ({
-      getServiceClient: () => ({ from: () => createQuery([{ id: 't1', country_code: 'mx' }]) }),
+      getServiceClient: () => ({
+        schema: () => ({ from: () => createQuery([]) }),
+        from: () => createQuery([{ id: 't1', country_code: 'mx' }]),
+      }),
     }));
 
     const traditionsRoute = require('../api/traditions/route');
