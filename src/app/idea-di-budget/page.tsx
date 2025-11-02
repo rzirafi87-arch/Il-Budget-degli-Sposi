@@ -165,7 +165,15 @@ export default function IdeaDiBudgetPage() {
         if (Array.isArray(json?.data) && json.data.length > 0) {
           const aggregated = new Map<string, BudgetIdeaRow>();
           json.data.forEach((entry: Record<string, unknown>) => {
-            const category = String(entry.categories?.name || entry.category || "");
+            const relation = entry.categories;
+            let categoryFromRelation = "";
+            if (relation && typeof relation === "object" && "name" in relation) {
+              const maybeName = (relation as { name?: unknown }).name;
+              if (typeof maybeName === "string") {
+                categoryFromRelation = maybeName;
+              }
+            }
+            const category = String(categoryFromRelation || entry.category || "");
             const subcategory = String(entry.subcategory || "");
             if (!category || !subcategory) return;
             const key = `${category}|||${subcategory}`;
