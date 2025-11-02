@@ -1,6 +1,6 @@
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function GET(req: NextRequest) {
   try {
@@ -25,7 +25,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ categories: data || [] });
   } catch (e: unknown) {
-    console.error("Route /api/categories error:", e);
-    return NextResponse.json({ error: e.message ?? "Server error" }, { status: 500 });
+    const err = e instanceof Error ? e : new Error(String(e));
+    console.error("Route /api/categories error:", err);
+    return NextResponse.json({ error: err.message ?? "Server error" }, { status: 500 });
   }
 }

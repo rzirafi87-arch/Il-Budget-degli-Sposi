@@ -1,8 +1,8 @@
+import { getBearer, requireUser } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { requireUser, getBearer } from "@/lib/apiAuth";
-import { logger } from "@/lib/logger";
 
 type Expense = {
   id?: string;
@@ -116,8 +116,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ expenses });
   } catch (e: unknown) {
-    logger.error("EXPENSES GET uncaught", { message: e?.message });
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("EXPENSES GET uncaught", { message: err.message });
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }
 
@@ -190,7 +191,7 @@ export async function POST(req: NextRequest) {
     const subcategoryId = sub.id;
 
     // Inserisci la spesa
-    const { error: insertError } = await db.from("expenses").insert({
+    const { data: created, error: insertError } = await db.from("expenses").insert({
       subcategory_id: subcategoryId,
       supplier: expense.supplier,
       description: expense.description,
@@ -201,16 +202,17 @@ export async function POST(req: NextRequest) {
       expense_date: expense.date,
       notes: expense.notes,
       from_dashboard: expense.fromDashboard,
-    });
+    }).select().single();
 
     if (insertError) {
       logger.error("EXPENSES POST error", { error: insertError });
       return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ expense: created });
   } catch (e: unknown) {
-    logger.error("EXPENSES POST uncaught", { message: e?.message });
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("EXPENSES POST uncaught", { message: err.message });
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }

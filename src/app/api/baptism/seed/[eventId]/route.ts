@@ -1,7 +1,7 @@
+import { createBaptismSeed } from "@/data/templates/baptism";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { createBaptismSeed } from "@/data/templates/baptism";
 
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ eventId: string }> }) {
   try {
@@ -29,9 +29,10 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ eventId: 
     const country = url.searchParams.get('country') || undefined;
     await createBaptismSeed(db, eventId, country);
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error("/api/baptism/seed error", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const err = e instanceof Error ? e : new Error(String(e));
+    console.error("/api/baptism/seed error", err);
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }
 

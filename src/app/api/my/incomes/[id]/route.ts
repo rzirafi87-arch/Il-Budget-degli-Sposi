@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 import { requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
+export const runtime = "nodejs";
 
 export async function DELETE(
   req: NextRequest,
@@ -26,8 +26,9 @@ export async function DELETE(
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    logger.error("INCOMES DELETE uncaught", { message: e?.message });
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("INCOMES DELETE uncaught", { message: err.message });
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }

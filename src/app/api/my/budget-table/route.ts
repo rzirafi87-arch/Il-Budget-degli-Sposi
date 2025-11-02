@@ -1,8 +1,8 @@
+import { getBearer, requireUser } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { requireUser, getBearer } from "@/lib/apiAuth";
-import { logger } from "@/lib/logger";
 
 /**
  * Ritorna:
@@ -228,12 +228,13 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ rows, totals, eventId }, { status: 200 });
   } catch (e: unknown) {
-    logger.error("BUDGET-TABLE Uncaught", { message: e?.message });
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("BUDGET-TABLE Uncaught", { message: err.message });
     return NextResponse.json({
       rows: [],
       totals: { total: 0, common: 0, bride: 0, groom: 0 },
       eventId: null,
-      error: e?.message || "Unexpected",
+      error: err.message || "Unexpected",
     }, { status: 500 });
   }
 }

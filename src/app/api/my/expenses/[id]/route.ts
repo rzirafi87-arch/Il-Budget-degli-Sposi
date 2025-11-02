@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 import { requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
+export const runtime = "nodejs";
 
 export async function PATCH(
   req: NextRequest,

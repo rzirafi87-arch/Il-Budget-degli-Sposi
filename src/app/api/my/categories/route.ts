@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 import { requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   try {
@@ -39,8 +39,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ eventId: ev.id, categories: data || [] });
   } catch (e: unknown) {
-    logger.error("MY/CATEGORIES Uncaught", { message: e?.message });
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("MY/CATEGORIES Uncaught", { message: err.message });
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }
 

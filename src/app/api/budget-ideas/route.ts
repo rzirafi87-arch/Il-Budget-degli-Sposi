@@ -1,6 +1,6 @@
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 async function currentEventId(db: any, userId: string) {
   const { data: ev, error } = await db

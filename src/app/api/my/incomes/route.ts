@@ -1,8 +1,8 @@
+import { getBearer, requireUser } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { requireUser, getBearer } from "@/lib/apiAuth";
-import { logger } from "@/lib/logger";
 
 type Income = {
   id?: string;
@@ -121,14 +121,14 @@ export async function POST(req: NextRequest) {
     const eventId = ev.id;
 
     // Inserisci l'entrata
-    const { error: insertError } = await db.from("incomes").insert({
+    const { data: created, error: insertError } = await db.from("incomes").insert({
       event_id: eventId,
       name: income.name,
       type: income.type,
       amount: income.type === "regalo" ? 0 : income.amount,
       notes: income.notes,
       date: income.date,
-    });
+    }).select().single();
 
     if (insertError) {
       logger.error("INCOMES POST error", { error: insertError });
