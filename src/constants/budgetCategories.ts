@@ -1,13 +1,15 @@
-<<<<<<< ours
-// Mappatura completa categorie/sottocategorie come nella Dashboard storica
-export const BUDGET_CATEGORIES: Record<string, string[]> = {
+import { EVENT_CONFIGS } from "./eventConfigs";
+
+export type BudgetCategoryMap = Record<string, string[]>;
+
+export const BUDGET_CATEGORIES: BudgetCategoryMap = {
   "Abiti & Accessori (altri)": [
     "Abiti ospiti / Genitori",
     "Accessori damigelle",
     "Accessori testimoni",
     "Fedi nuziali",
     "Anello fidanzamento",
-    "Accessori vari"
+    "Accessori vari",
   ],
   "Cerimonia/Chiesa Location": [
     "Chiesa / Comune",
@@ -24,7 +26,7 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Riso/Petali",
     "Bottiglia per brindisi",
     "Bicchieri per brindisi",
-    "Forfait cerimonia"
+    "Forfait cerimonia",
   ],
   "Fuochi d'artificio": [
     "Fuochi d'artificio tradizionali",
@@ -32,18 +34,18 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Spettacolo pirotecnico",
     "Bengala per ospiti",
     "Lancio palloncini luminosi",
-    "Forfait fuochi d'artificio"
+    "Forfait fuochi d'artificio",
   ],
   "Fiori & Decor": [
     "Bouquet",
-    "Boutonnière",
+    "Boutonniere",
     "Centrotavola",
     "Allestimenti",
     "Candele",
     "Tableau",
     "Segnaposto",
     "Noleggi (vasi / strutture)",
-    "Forfait fioraio"
+    "Forfait fioraio",
   ],
   "Foto & Video": [
     "Servizio fotografico",
@@ -52,20 +54,20 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Album",
     "Stampe",
     "Secondo fotografo",
-    "Forfait fotografo"
+    "Forfait fotografo",
   ],
   "Inviti & Stationery": [
     "Partecipazioni",
     "Menu",
     "Segnaposto",
     "Libretti Messa",
-    "Timbri / Cliché",
+    "Timbri / Cliche",
     "Francobolli / Spedizioni",
     "Calligrafia",
     "Cartoncini / Tag",
-    "QR Code / Stampa"
+    "QR Code / Stampa",
   ],
-  "Sposa": [
+  Sposa: [
     "Abito sposa",
     "Scarpe sposa",
     "Accessori (velo, gioielli, ecc.)",
@@ -73,16 +75,15 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Parrucchiera",
     "Make-up",
     "Prove",
-    "e)",
-    "Altro sposa"
+    "Altro sposa",
   ],
-  "Sposo": [
+  Sposo: [
     "Abito sposo",
     "Scarpe sposo",
     "Accessori (cravatta, gemelli, ecc.)",
     "Barbiere / Grooming",
     "Prove",
-    "Altro sposo"
+    "Altro sposo",
   ],
   "Ricevimento Location": [
     "Affitto sala",
@@ -93,7 +94,7 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Mise en place",
     "Noleggio tovagliato / piatti",
     "Forfait location",
-    "Forfait catering (prezzo a persona)"
+    "Forfait catering (prezzo a persona)",
   ],
   "Musica & Intrattenimento": [
     "DJ / Band",
@@ -101,13 +102,9 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Animazione",
     "Diritti SIAE",
     "Guestbook phone / Postazioni",
-    "Forfait musica & intrattenimento"
+    "Forfait musica & intrattenimento",
   ],
-  "Trasporti": [
-    "Auto sposi",
-    "Navette ospiti",
-    "Carburante / Pedaggi"
-  ],
+  Trasporti: ["Auto sposi", "Navette ospiti", "Carburante / Pedaggi"],
   "Bomboniere & Regali": [
     "Bomboniere",
     "Confetti",
@@ -116,22 +113,18 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Regalo testimoni",
     "Regalo damigelle",
     "Regalo pagetti",
-    "Realizzazione bomboniere"
+    "Realizzazione bomboniere",
   ],
-  "Ospitalità & Logistica": [
+  "Ospitalita & Logistica": [
     "Alloggi ospiti",
     "Welcome bag / Kit",
-    "Cartellonistica / Segnaletica"
+    "Cartellonistica / Segnaletica",
   ],
-  "Burocrazia": [
-    "Pubblicazioni",
-    "Certificati",
-    "Traduzioni / Apostille",
-  ],
+  Burocrazia: ["Pubblicazioni", "Certificati", "Traduzioni / Apostille"],
   "Addio al Nubilato": [
     "Location addio al nubilato",
     "Ristorante / Cena",
-    "Attività / Esperienze",
+    "Attivita / Esperienze",
     "Gadget / T-shirt",
     "Decorazioni / Palloncini",
     "Trasporti",
@@ -141,32 +134,28 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
   "Addio al Celibato": [
     "Location addio al celibato",
     "Ristorante / Cena",
-    "Attività / Esperienze",
+    "Attivita / Esperienze",
     "Gadget / T-shirt",
     "Decorazioni / Palloncini",
     "Trasporti",
     "Alloggio",
     "Forfait addio al celibato",
   ],
-  "Beauty & Benessere": [
-    "Estetista",
-    "SPA / Massaggi",
-    "Solarium"
-  ],
+  "Beauty & Benessere": ["Estetista", "SPA / Massaggi", "Solarium"],
   "Viaggio di nozze": [
     "Quota viaggio",
     "Assicurazioni",
     "Visti / Documenti",
     "Passaporto",
     "Extra",
-    "Lista nozze"
+    "Lista nozze",
   ],
   "Wedding Planner": [
     "Consulenza",
     "Full planning",
     "Partial planning",
     "Coordinamento giorno del matrimonio",
-    "Forfait wedding planner"
+    "Forfait wedding planner",
   ],
   "Musica Cerimonia": [
     "Coro",
@@ -175,7 +164,7 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Violino",
     "Violoncello",
     "Gruppo strumenti",
-    "Forfait musica cerimonia"
+    "Forfait musica cerimonia",
   ],
   "Musica Ricevimento": [
     "DJ",
@@ -183,30 +172,20 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Orchestra",
     "Duo acustico",
     "Pianista",
-    "Forfait musica ricevimento"
+    "Forfait musica ricevimento",
   ],
   "Comunicazione & Media": [
     "Sito web / QR",
     "Social media",
-    "Grafica / Design"
+    "Grafica / Design",
   ],
-  "Extra & Contingenze": [
-    "Imprevisti",
-    "Spese varie"
-  ]
+  "Extra & Contingenze": ["Imprevisti", "Spese varie"],
 };
-=======
-import { EVENT_CONFIGS } from "./eventConfigs";
 
-/**
- * @deprecated Usa EVENT_CONFIGS direttamente per ottenere le categorie. Questo export
- *              viene mantenuto per retrocompatibilità ma restituisce le categorie
- *              organizzate per tipo di evento.
- */
-export const BUDGET_CATEGORIES = Object.fromEntries(
-  Object.entries(EVENT_CONFIGS).map(([code, config]) => [code, config.budgetCategories])
-);
-
-export type BudgetCategoryMap = typeof BUDGET_CATEGORIES;
->>>>>>> theirs
-
+export const EVENT_BUDGET_CATEGORIES: Record<string, BudgetCategoryMap> =
+  Object.fromEntries(
+    Object.entries(EVENT_CONFIGS).map(([code, config]) => [
+      code,
+      config.budgetCategories,
+    ]),
+  );
