@@ -62,15 +62,35 @@ export default function EntratePage() {
 
       type IncomeRow = {
         id: string;
-        type: string;
+        name: string;
+        type: "busta" | "bonifico" | "regalo";
         amount: number;
-        description: string;
+        notes: string;
         date: string;
-        incomeSource: string;
+        incomeSource: "bride" | "groom" | "common";
       };
       const raw: IncomeRow[] = j.incomes || [];
       // For Battesimo, force incomeSource to 'common' on UI side
-      setIncomes(isBaptism ? raw.map((i) => ({ ...i, incomeSource: "common" })) : raw);
+      const mapped: Income[] = isBaptism 
+        ? raw.map((i) => ({ 
+            id: i.id,
+            name: i.name,
+            type: i.type,
+            amount: i.amount,
+            notes: i.notes,
+            date: i.date,
+            incomeSource: "common" as const 
+          })) 
+        : raw.map(i => ({ 
+            id: i.id,
+            name: i.name,
+            type: i.type,
+            amount: i.amount,
+            notes: i.notes,
+            date: i.date,
+            incomeSource: i.incomeSource
+          }));
+      setIncomes(mapped);
     } catch (err) {
       console.error("Errore caricamento:", err);
       setIncomes([]);
