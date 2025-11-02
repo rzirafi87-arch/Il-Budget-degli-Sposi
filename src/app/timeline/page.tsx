@@ -1,17 +1,6 @@
 ﻿"use client";
 
-<<<<<<< ours
-import ExportButton from "@/components/ExportButton";
-import PageInfoNote from "@/components/PageInfoNote";
-import { formatDate } from "@/lib/locale";
-import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useEffect, useState } from "react";
-=======
-import { useEffect, useMemo, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
-import ExportButton from "@/components/ExportButton";
-import { getEventConfig, resolveEventType, DEFAULT_EVENT_TYPE, TimelineBucket } from "@/constants/eventConfigs";
->>>>>>> theirs
+
 
 const supabase = getBrowserClient();
 
@@ -113,61 +102,11 @@ export default function TimelinePage() {
     <section className="space-y-6">
       <div className="hidden md:flex items-center justify-between">
         <div />
-<<<<<<< ours
-        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
-=======
-        <a
-          href="/dashboard"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
-        >
-          ← Torna in Dashboard
-        </a>
->>>>>>> theirs
+
       </div>
       <div className="bg-linear-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200 shadow-sm relative">
         <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
-<<<<<<< ours
-          Timeline del Matrimonio
-        </h1>
-        <p className="text-gray-600">
-          Organizzate ogni fase della pianificazione senza stress. Spuntate le attività man mano che le completate! ✨
-        </p>
-        <a href="/dashboard" className="absolute top-4 right-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
-      </div>
 
-      <PageInfoNote
-        icon="📅"
-        title="Timeline Organizzativa del Tuo Evento"
-        description="La timeline è una checklist cronologica che ti guida passo-passo nella pianificazione. Ogni task è posizionato temporalmente (mesi prima dell'evento) e categorizzato per priorità. Spunta le attività completate per monitorare i progressi e assicurarti di non dimenticare nulla."
-        tips={[
-          "Le attività sono organizzate per 'mesi prima' - più lontane sono, prima dovresti occupartene",
-          "Usa le priorità per capire cosa è urgente (alta) e cosa può aspettare (bassa)",
-          "Aggiungi task personalizzate per esigenze specifiche del tuo evento",
-          "Filtra per categoria (Budget, Fornitori, Abiti, etc.) per focalizzarti su un'area alla volta",
-          "Esporta la timeline in CSV per condividerla con partner, famiglia o wedding planner"
-        ]}
-        eventTypeSpecific={{
-          wedding: "La timeline del matrimonio copre 12 mesi di preparazione, dalle prime decisioni (budget, location) fino ai dettagli finali (tableau, segnaposto). Segui questa roadmap per un'organizzazione serena!",
-          baptism: "La timeline del battesimo è più breve (3-6 mesi): chiesa, padrini, bomboniere, rinfresco. Concentrati sugli aspetti religiosi e la celebrazione familiare.",
-          birthday: "La timeline del compleanno dipende dalla grandezza: per feste importanti (18, 30, 50 anni) inizia 3-4 mesi prima con location e catering.",
-          graduation: "La timeline della laurea è concentrata (1-2 mesi): location, inviti, buffet/pranzo, decorazioni. Ricorda che molti laureati organizzano anche un viaggio!"
-        }}
-      />
-
-      {/* Progress Overview */}
-=======
-          {eventConfig.emoji} {eventConfig.timelineTitle}
-        </h1>
-        <p className="text-gray-600">{eventConfig.timelineDescription}</p>
-        <a
-          href="/dashboard"
-          className="absolute top-4 right-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
-        >
-          <span aria-hidden="true">🏠</span> Torna in Dashboard
-        </a>
-      </div>
-
->>>>>>> theirs
       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
         <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
           <h3 className="font-bold text-lg">I vostri progressi</h3>
@@ -200,19 +139,7 @@ export default function TimelinePage() {
             }}
           />
         </div>
-<<<<<<< ours
-        <p className="text-sm text-gray-500 text-center">
-          {progressPercent < 30 
-            ? "Appena iniziato - siete sulla strada giusta!"
-            : progressPercent < 70
-            ? "State andando alla grande! Continuate cosi!"
-            : progressPercent < 100
-            ? "Quasi pronti! Mancano gli ultimi dettagli!"
-            : "Tutto fatto! Siete pronti per il grande giorno!"}
-=======
-        <p className="text-sm text-gray-600">
-          Hai completato il {progressPercent}% della timeline. Continua così!
->>>>>>> theirs
+
         </p>
       </div>
 
@@ -236,68 +163,7 @@ export default function TimelinePage() {
           const bucketTasks = getTasksForBucket(bucket);
           if (bucketTasks.length === 0) return null;
           return (
-<<<<<<< ours
-            <div key={value} className="relative">
-              <div className="sticky top-20 z-10 bg-white/95 backdrop-blur-sm rounded-lg px-4 py-2 border border-gray-200 shadow-sm mb-4 inline-block">
-                <h3 className="font-bold text-lg" style={{ color: "var(--color-sage)" }}>
-                  {label}
-                </h3>
-              </div>
 
-              <div className="space-y-3 pl-4 border-l-2" style={{ borderColor: "var(--color-beige)" }}>
-                {monthTasks.map(task => (
-                  <div
-                    key={task.id}
-                    className={`bg-white rounded-xl p-4 border-2 transition-all hover:shadow-md ${
-                      task.completed ? "border-green-300 bg-green-50" : "border-gray-200"
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <button
-                        onClick={() => toggleTask(task.id)}
-                        className={`mt-1 w-6 h-6 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${
-                          task.completed 
-                            ? "border-green-500 bg-green-500" 
-                            : "border-gray-300 hover:border-gray-400"
-                        }`}
-                      >
-                        {task.completed && <span className="text-white text-sm font-bold">âœ“</span>}
-                      </button>
-
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className={`font-semibold ${task.completed ? "line-through text-gray-400" : "text-gray-800"}`}>
-                            {task.title}
-                          </h4>
-                          <span className={`text-xs px-2 py-0.5 rounded-full ${
-                            task.priority === "alta" 
-=======
-            <div key={bucket.label} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">{bucket.label}</h3>
-              <div className="space-y-3">
-                {bucketTasks.map((task) => (
-                  <div key={task.id} className="flex items-start gap-4">
-                    <button
-                      type="button"
-                      onClick={() => toggleTask(task.id)}
-                      aria-label={task.completed ? "Segna come da completare" : "Segna come completato"}
-                      className={`mt-1 w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
-                        task.completed
-                          ? "border-green-500 bg-green-500"
-                          : "border-gray-300 hover:border-gray-400"
-                      }`}
-                    >
-                      {task.completed && <span className="text-white text-sm font-bold">✓</span>}
-                    </button>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className={`font-semibold ${task.completed ? "line-through text-gray-400" : "text-gray-800"}`}>
-                          {task.title}
-                        </h4>
-                        <span
-                          className={`text-xs px-2 py-0.5 rounded-full ${
-                            task.priority === "alta"
->>>>>>> theirs
                               ? "bg-red-100 text-red-700"
                               : task.priority === "media"
                               ? "bg-yellow-100 text-yellow-700"
@@ -318,19 +184,7 @@ export default function TimelinePage() {
         })}
       </div>
 
-<<<<<<< ours
-      {weddingDate && (
-        <div className="bg-linear-to-r from-rose-50 to-blue-50 rounded-xl p-6 text-center border border-gray-200">
-          <p className="text-sm text-gray-600 mb-1">Il vostro matrimonio è il</p>
-          <p className="text-xl font-bold text-gray-800">
-            {formatDate(weddingDate, {
-=======
-      {eventDate && (
-        <div className="bg-gradient-to-r from-rose-50 to-blue-50 rounded-xl p-6 text-center border border-gray-200">
-          <p className="text-sm text-gray-600 mb-1">{eventConfig.eventDateMessage}</p>
-          <p className="text-xl font-bold text-gray-800">
-            {eventDate.toLocaleDateString("it-IT", {
->>>>>>> theirs
+
               weekday: "long",
               year: "numeric",
               month: "long",
