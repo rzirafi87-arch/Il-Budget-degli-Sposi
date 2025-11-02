@@ -1,7 +1,7 @@
+import { magicLinkTemplate, sendMail, siteUrl } from "@/lib/mailer";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { magicLinkTemplate, sendMail, siteUrl } from "@/lib/mailer";
 
 // POST /api/auth/register
 // Body: { primaryEmail, password, partnerEmail?, weddingDate? }
@@ -117,6 +117,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, eventId: ev.id });
   } catch (e: unknown) {
     console.error("REGISTER Uncaught:", e);
-    return NextResponse.json({ ok: false, error: e?.message || "Unexpected" }, { status: 500 });
+    const err = (e && typeof e === "object" && "message" in e) ? (e as Error) : new Error(String(e));
+    return NextResponse.json({ ok: false, error: err.message || "Unexpected" }, { status: 500 });
   }
 }

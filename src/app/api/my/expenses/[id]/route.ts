@@ -47,8 +47,9 @@ export async function PATCH(
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    logger.error("EXPENSE PATCH uncaught", { message: e?.message });
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("EXPENSE PATCH uncaught", { message: err.message });
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }

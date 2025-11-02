@@ -90,8 +90,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ incomes: formattedIncomes });
   } catch (e: unknown) {
-    logger.error("INCOMES GET uncaught", { message: e?.message });
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("INCOMES GET uncaught", { message: err.message });
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }
 
@@ -134,9 +135,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ income: created });
   } catch (e: unknown) {
-    logger.error("INCOMES POST uncaught", { message: e?.message });
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+    const err = e instanceof Error ? e : new Error(String(e));
+    logger.error("INCOMES POST uncaught", { message: err.message });
+    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }
