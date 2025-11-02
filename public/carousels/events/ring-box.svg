@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Scatolina porta fedi con dettagli floreali</title>
+  <desc id="desc">Un cofanetto vellutato con fedi nuziali dorate, petali di rosa e perle su sfondo beige raffinato.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5eee6" />
+      <stop offset="100%" stop-color="#e7d7c6" />
+    </linearGradient>
+    <linearGradient id="velvet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c9a4b2" />
+      <stop offset="100%" stop-color="#b07d8d" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6c67d" />
+      <stop offset="100%" stop-color="#bf9444" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#d2c1b0" flood-opacity="0.4" />
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <g transform="translate(360 200)">
+    <path d="M180 360c80-220 280-360 460-300 180 60 260 280 160 440-90 140-320 180-460 40-60-60-120-120-160-180z" fill="#fbf6ef" filter="url(#shadow)" />
+    <path d="M240 380c70-180 240-280 380-230 150 50 210 220 120 340-80 110-260 140-360 30-40-42-82-90-140-140z" fill="#eaded0" />
+  </g>
+  <g transform="translate(540 280)">
+    <rect x="0" y="0" width="520" height="360" rx="60" fill="url(#velvet)" filter="url(#shadow)" />
+    <rect x="70" y="60" width="380" height="240" rx="40" fill="#f4e9e2" />
+    <rect x="100" y="90" width="320" height="180" rx="36" fill="#fffaf5" />
+    <path d="M100 180c120-80 220-80 320 0" fill="none" stroke="#d9c4b6" stroke-width="16" stroke-linecap="round" />
+  </g>
+  <g transform="translate(640 360)">
+    <circle cx="80" cy="80" r="80" fill="#fff" filter="url(#shadow)" />
+    <circle cx="70" cy="80" r="30" stroke="url(#gold)" stroke-width="14" fill="none" />
+    <circle cx="120" cy="80" r="30" stroke="url(#gold)" stroke-width="14" fill="none" />
+  </g>
+  <g transform="translate(860 360)">
+    <circle cx="80" cy="80" r="80" fill="#fff" filter="url(#shadow)" />
+    <circle cx="70" cy="80" r="30" stroke="url(#gold)" stroke-width="14" fill="none" />
+    <circle cx="120" cy="80" r="30" stroke="url(#gold)" stroke-width="14" fill="none" />
+  </g>
+  <g transform="translate(1080 320)">
+    <path d="M0 100c32-70 96-100 150-70 54 30 58 100-4 130-48 26-120 8-146-60z" fill="#f7ece1" filter="url(#shadow)" />
+    <path d="M30 110c26-52 74-70 110-46 40 24 34 78-10 100-34 18-88 8-100-54z" fill="#e7d2c2" />
+  </g>
+  <g transform="translate(380 320)">
+    <path d="M0 100c36-78 110-110 170-74 60 34 60 112-8 150-58 32-144 12-162-76z" fill="#f5e7dc" filter="url(#shadow)" />
+    <path d="M34 110c28-56 88-78 132-52 46 26 42 90-10 118-40 22-104 10-122-66z" fill="#e5d3c4" />
+  </g>
+  <g transform="translate(540 560)">
+    <path d="M0 60c60-80 140-100 220-60 80 44 80 132 0 180-70 42-168 18-220-120z" fill="#f2e6d8" filter="url(#shadow)" />
+    <path d="M42 70c42-62 110-82 164-50 60 34 52 108-12 142-52 28-130 10-152-92z" fill="#dec9b9" />
+  </g>
+</svg>

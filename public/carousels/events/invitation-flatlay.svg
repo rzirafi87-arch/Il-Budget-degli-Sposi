@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Inviti di matrimonio con fedi e rosa avorio</title>
+  <desc id="desc">Una composizione elegante con un invito scritto, due anelli nuziali dorati, una rosa bianca e foglie verdi su sfondo raffinato.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3ede4" />
+      <stop offset="100%" stop-color="#e8dfd2" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6c980" />
+      <stop offset="100%" stop-color="#c79a3d" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#d4c1aa" flood-opacity="0.45" />
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <rect x="340" y="140" width="520" height="620" rx="32" fill="#fffdfa" filter="url(#shadow)" />
+  <rect x="390" y="210" width="420" height="490" rx="24" fill="#ffffff" />
+  <text x="430" y="320" font-family="'Playfair Display', serif" font-size="90" fill="#3c332b">Invito</text>
+  <text x="430" y="400" font-family="'Playfair Display', serif" font-size="50" fill="#5c4d42">Sophie &amp; Luca</text>
+  <text x="430" y="470" font-family="'Inter', sans-serif" font-size="30" fill="#6f6258" letter-spacing="6">CERIMONIA • 18:00</text>
+  <text x="430" y="520" font-family="'Inter', sans-serif" font-size="26" fill="#7d7066">Villa dei Tigli • Sabato 22 Giugno</text>
+  <g transform="translate(970 170)">
+    <ellipse cx="200" cy="220" rx="200" ry="220" fill="#fff7f2" filter="url(#shadow)" />
+    <path d="M120 250c50 120 200 140 260-10" fill="#d8c4b8" />
+    <circle cx="220" cy="120" r="110" fill="#fff" stroke="#decbb8" stroke-width="16" />
+    <path d="M180 120c0-50 30-80 80-80 35 0 70 26 70 68 0 44-26 70-58 94-22 17-42 34-52 56-4-12-14-28-34-44-30-26-46-52-46-94 0-40 32-70 70-70" fill="#f6f0e6" stroke="#e7d9ca" stroke-width="12" stroke-linecap="round" />
+    <circle cx="264" cy="84" r="12" fill="#f3d7c6" />
+    <circle cx="200" cy="96" r="12" fill="#f3d7c6" />
+  </g>
+  <g transform="translate(1010 560)">
+    <path d="M0 120c60-110 160-160 250-100 80 52 100 158 26 220-66 56-174 32-214-50-12-24-18-48-62-70z" fill="#e3e1cd" filter="url(#shadow)" />
+    <path d="M60 126c54-82 132-110 192-60 66 54 52 144-18 182-56 30-140 18-162-122z" fill="#bacaa7" />
+    <path d="M98 156c36-54 90-76 126-44 40 36 34 94-8 116-36 18-90 10-118-72z" fill="#8faa7c" />
+  </g>
+  <g transform="translate(760 560)">
+    <circle cx="70" cy="70" r="70" fill="#ffffff" filter="url(#shadow)" />
+    <circle cx="56" cy="70" r="28" stroke="url(#gold)" stroke-width="14" fill="none" />
+    <circle cx="110" cy="70" r="28" stroke="url(#gold)" stroke-width="14" fill="none" />
+  </g>
+  <g transform="translate(540 660)">
+    <rect x="0" y="0" width="300" height="110" rx="55" fill="url(#gold)" filter="url(#shadow)" />
+    <text x="74" y="72" font-family="'Inter', sans-serif" font-size="36" fill="#fff9f0" letter-spacing="6">RSVP</text>
+  </g>
+</svg>

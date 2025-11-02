@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">DJ set per ricevimento con luci e consolle</title>
+  <desc id="desc">Una consolle DJ con vinili, mixer e luci soffuse per l'intrattenimento del ricevimento nuziale.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f1ebe4" />
+      <stop offset="100%" stop-color="#e2d2c3" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9bb3a4" />
+      <stop offset="100%" stop-color="#7f9a88" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#cdbca8" flood-opacity="0.45" />
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <g transform="translate(320 260)">
+    <rect x="0" y="0" width="960" height="420" rx="36" fill="#2e2a2a" filter="url(#shadow)" />
+    <rect x="60" y="80" width="840" height="260" rx="30" fill="#1f1c1c" />
+    <rect x="120" y="60" width="720" height="300" rx="30" fill="#2f2b2b" />
+    <g transform="translate(160 120)" fill="#1b1818">
+      <rect x="0" y="0" width="220" height="220" rx="30" />
+      <rect x="360" y="0" width="220" height="220" rx="30" />
+    </g>
+    <g transform="translate(180 140)">
+      <circle cx="90" cy="90" r="90" fill="#282424" stroke="#3b3636" stroke-width="12" />
+      <circle cx="90" cy="90" r="60" fill="#181515" stroke="#9bb3a4" stroke-width="14" />
+      <circle cx="90" cy="90" r="20" fill="#d3c1b2" />
+    </g>
+    <g transform="translate(540 140)">
+      <circle cx="90" cy="90" r="90" fill="#282424" stroke="#3b3636" stroke-width="12" />
+      <circle cx="90" cy="90" r="60" fill="#181515" stroke="#9bb3a4" stroke-width="14" />
+      <circle cx="90" cy="90" r="20" fill="#d3c1b2" />
+    </g>
+    <g transform="translate(320 80)">
+      <rect x="0" y="0" width="80" height="300" rx="30" fill="#242020" />
+      <rect x="120" y="0" width="80" height="300" rx="30" fill="#242020" />
+      <rect x="240" y="0" width="80" height="300" rx="30" fill="#242020" />
+    </g>
+    <g transform="translate(160 340)">
+      <rect x="0" y="0" width="200" height="30" rx="15" fill="#484040" />
+      <rect x="400" y="0" width="200" height="30" rx="15" fill="#484040" />
+    </g>
+  </g>
+  <g transform="translate(440 520)">
+    <rect x="0" y="0" width="720" height="200" rx="32" fill="#383131" filter="url(#shadow)" />
+    <rect x="40" y="60" width="200" height="80" rx="20" fill="#1e1b1b" />
+    <rect x="280" y="40" width="160" height="120" rx="24" fill="url(#accent)" />
+    <rect x="500" y="60" width="200" height="80" rx="20" fill="#1e1b1b" />
+  </g>
+  <g transform="translate(340 160)">
+    <path d="M0 120c40-80 120-112 190-70 70 46 70 134 0 180-66 44-156 22-190-110z" fill="#f5ece0" filter="url(#shadow)" />
+    <path d="M40 130c32-58 92-80 140-50 50 32 42 96-10 126-42 24-108 8-130-76z" fill="#dfccbc" />
+  </g>
+  <g transform="translate(1140 160)">
+    <path d="M0 120c46-88 132-120 204-70 72 50 68 146-12 190-70 38-176 14-192-120z" fill="#eae2d6" filter="url(#shadow)" />
+    <path d="M42 130c36-62 106-86 156-54 52 34 44 106-16 138-48 26-124 10-140-84z" fill="#d5c4b4" />
+  </g>
+  <g transform="translate(720 120)">
+    <rect x="0" y="0" width="160" height="60" rx="28" fill="#9bb3a4" filter="url(#shadow)" />
+    <rect x="0" y="120" width="160" height="60" rx="28" fill="#d8c5b5" filter="url(#shadow)" />
+    <rect x="0" y="240" width="160" height="60" rx="28" fill="#9bb3a4" filter="url(#shadow)" />
+  </g>
+</svg>

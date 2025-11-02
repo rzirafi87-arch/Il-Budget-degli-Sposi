@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Scrivania di wedding planner con quaderno e bouquet</title>
+  <desc id="desc">Un layout fotografico illustrato che mostra un quaderno spiralato aperto, fiori crema, anelli nuziali e accessori dorati su una scrivania beige.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6f1ea" />
+      <stop offset="50%" stop-color="#f0e5da" />
+      <stop offset="100%" stop-color="#e7d7c6" />
+    </linearGradient>
+    <linearGradient id="notebook" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fffefa" />
+      <stop offset="100%" stop-color="#f2ede4" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d9b16d" />
+      <stop offset="100%" stop-color="#b98b48" />
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#cebba7" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <rect x="150" y="120" width="600" height="660" rx="32" fill="url(#notebook)" filter="url(#softShadow)" />
+  <rect x="190" y="170" width="520" height="560" rx="20" fill="#ffffff" />
+  <g fill="none" stroke="#d8c6b3" stroke-width="6">
+    <rect x="220" y="210" width="460" height="110" rx="18" />
+    <rect x="220" y="350" width="460" height="60" rx="12" />
+    <rect x="220" y="430" width="460" height="60" rx="12" />
+    <rect x="220" y="510" width="460" height="60" rx="12" />
+    <rect x="220" y="590" width="460" height="60" rx="12" />
+  </g>
+  <text x="250" y="260" font-family="'Playfair Display', serif" font-size="72" fill="#4a3f37" letter-spacing="4">
+    WEDDING PLAN
+  </text>
+  <text x="250" y="395" font-family="'Inter', sans-serif" font-size="32" fill="#6d5b50" letter-spacing="3">
+    IDEE • FORNITORI • BUDGET
+  </text>
+  <g transform="translate(780 140)">
+    <rect x="0" y="0" width="560" height="360" rx="36" fill="#fffaf2" filter="url(#softShadow)" />
+    <path d="M70 80h420" stroke="#c6b49f" stroke-width="10" stroke-linecap="round" />
+    <path d="M70 150h420" stroke="#c6b49f" stroke-width="10" stroke-linecap="round" />
+    <path d="M70 220h420" stroke="#c6b49f" stroke-width="10" stroke-linecap="round" />
+    <text x="90" y="140" font-family="'Inter', sans-serif" font-size="60" fill="#3d342f">Moodboard</text>
+    <text x="90" y="210" font-family="'Inter', sans-serif" font-size="34" fill="#6b5a51">Location | Palette | Timeline</text>
+  </g>
+  <g transform="translate(1080 510)">
+    <ellipse cx="130" cy="110" rx="130" ry="110" fill="#fff8f2" filter="url(#softShadow)" />
+    <circle cx="120" cy="80" r="58" fill="#f5d7c9" />
+    <circle cx="170" cy="140" r="46" fill="#e5c3b5" />
+    <circle cx="70" cy="140" r="36" fill="#d6bfae" />
+    <path d="M60 150c30 50 90 70 150 40" fill="none" stroke="#caa488" stroke-width="18" stroke-linecap="round" />
+  </g>
+  <g transform="translate(760 520)">
+    <rect x="0" y="0" width="260" height="200" rx="28" fill="#f9f4ec" filter="url(#softShadow)" />
+    <rect x="34" y="40" width="192" height="120" rx="14" fill="#fff" stroke="#d9c6b3" stroke-width="6" />
+    <text x="68" y="110" font-family="'Playfair Display', serif" font-size="44" fill="#4a3f37">LOVE</text>
+  </g>
+  <g transform="translate(640 640)">
+    <circle cx="70" cy="70" r="70" fill="#fff" filter="url(#softShadow)" />
+    <circle cx="56" cy="70" r="26" stroke="url(#gold)" stroke-width="12" fill="none" />
+    <circle cx="108" cy="70" r="26" stroke="url(#gold)" stroke-width="12" fill="none" />
+  </g>
+  <g transform="translate(380 640)">
+    <rect x="0" y="0" width="200" height="80" rx="40" fill="url(#gold)" />
+    <text x="48" y="54" font-family="'Inter', sans-serif" font-size="28" fill="#fff9f2" letter-spacing="4">AMORE</text>
+  </g>
+</svg>

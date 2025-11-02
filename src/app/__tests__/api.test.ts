@@ -1,23 +1,39 @@
 // Mock next/server to avoid edge runtime globals
 jest.mock('next/server', () => ({
   NextResponse: {
-    json: (body: any, init?: any) => ({ json: async () => body, status: init?.status ?? 200 }),
+    json: (body: unknown, init?: { status?: number }) => (
+      { json: async () => body, status: init?.status ?? 200 } as { json: () => Promise<unknown>; status: number }
+    ),
   },
 }));
 
 // Build a tiny chainable query mock that is awaitable
-function createQuery(data: any) {
-  const q: any = {
+type Query<T> = {
+  _data: T;
+  select: (..._args: unknown[]) => Query<T>;
+  eq: (..._args: unknown[]) => Query<T>;
+  is: (..._args: unknown[]) => Query<T>;
+  order: (..._args: unknown[]) => Query<T>;
+  limit: (..._args: unknown[]) => Query<T>;
+  single: () => Promise<{ data: T; error: null }>;
+  maybeSingle?: () => Promise<{ data: T | null; error: null }>;
+  then: (res: (value: { data: T; error: null }) => void) => Promise<void>;
+  insert?: (payload: unknown) => { select: () => { data: unknown } };
+};
+
+function createQuery<T>(data: T): Query<T> {
+  const self: Query<T> = {
     _data: data,
-    select() { return this; },
-    eq() { return this; },
-    is() { return this; },
-    order() { return this; },
-    limit() { return this; },
-    single() { return Promise.resolve({ data: this._data, error: null }); },
-    then(res: any) { res({ data: this._data, error: null }); return Promise.resolve(); },
+    select: () => self,
+    eq: () => self,
+    is: () => self,
+    order: () => self,
+    limit: () => self,
+    single: () => Promise.resolve({ data, error: null }),
+    maybeSingle: () => Promise.resolve({ data, error: null }),
+    then: (res) => { res({ data, error: null }); return Promise.resolve(); },
   };
-  return q;
+  return self;
 }
 
 describe('API routes', () => {
@@ -35,11 +51,11 @@ describe('API routes', () => {
       }),
     }));
 
-    const traditionsRoute = require('../api/traditions/route');
-    const req: any = { nextUrl: new URL('http://localhost/api/traditions?country=mx') };
-    const res = await traditionsRoute.GET(req as any);
-    const json = await (res as any).json();
-    expect(json.traditions).toHaveLength(1);
+    const traditionsRoute = await import('../api/traditions/route');
+    const req = { nextUrl: new URL('http://localhost/api/traditions?country=mx') };
+    const res = await traditionsRoute.GET(req as unknown as Request);
+    const json = await (res as { json: () => Promise<unknown> }).json() as { traditions: unknown[] };
+    expect(Array.isArray(json.traditions) ? json.traditions.length : 0).toBe(1);
   });
 
   it('GET /api/checklist-modules returns modules', async () => {
@@ -47,11 +63,11 @@ describe('API routes', () => {
       getServiceClient: () => ({ from: () => createQuery([{ id: 'c1' }]) }),
     }));
 
-    const checklistRoute = require('../api/checklist-modules/route');
-    const req: any = { nextUrl: new URL('http://localhost/api/checklist-modules?country=mx') };
-    const res = await checklistRoute.GET(req as any);
-    const json = await (res as any).json();
-    expect(json.modules).toHaveLength(1);
+    const checklistRoute = await import('../api/checklist-modules/route');
+    const req = { nextUrl: new URL('http://localhost/api/checklist-modules?country=mx') };
+    const res = await checklistRoute.GET(req as unknown as Request);
+    const json = await (res as { json: () => Promise<unknown> }).json() as { modules: unknown[] };
+    expect(Array.isArray(json.modules) ? json.modules.length : 0).toBe(1);
   });
 
   it('GET /api/budget-items (public) returns items template', async () => {
@@ -59,11 +75,11 @@ describe('API routes', () => {
       getServiceClient: () => ({ from: () => createQuery([{ id: 'b1' }]) }),
     }));
 
-    const budgetItemsRoute = require('../api/budget-items/route');
-    const req: any = { nextUrl: new URL('http://localhost/api/budget-items?country=mx'), headers: new Headers() };
-    const res = await budgetItemsRoute.GET(req as any);
-    const json = await (res as any).json();
-    expect(json.items).toHaveLength(1);
+    const budgetItemsRoute = await import('../api/budget-items/route');
+    const req = { nextUrl: new URL('http://localhost/api/budget-items?country=mx'), headers: new Headers() };
+    const res = await budgetItemsRoute.GET(req as unknown as Request);
+    const json = await (res as { json: () => Promise<unknown> }).json() as { items: unknown[] };
+    expect(Array.isArray(json.items) ? json.items.length : 0).toBe(1);
   });
 
   it('POST /api/budget-items inserts for authenticated user', async () => {
@@ -72,8 +88,8 @@ describe('API routes', () => {
         return createQuery({ id: 'evt-1' });
       }
       if (table === 'budget_items') {
-        const query: any = createQuery([]);
-        query.insert = (payload: any) => ({ select: () => ({ data: payload.map((p: any, i: number) => ({ id: 'new-' + i, ...p })) }) });
+        const query = createQuery([] as unknown[]);
+        query.insert = (payload: unknown) => ({ select: () => ({ data: (payload as Record<string, unknown>[]).map((p, i) => ({ id: 'new-' + i, ...p })) }) });
         return query;
       }
       return createQuery([]);
@@ -84,12 +100,11 @@ describe('API routes', () => {
         from: fromMock,
       }),
     }));
-
-    const budgetItemsRoute = require('../api/budget-items/route');
+    const budgetItemsRoute = await import('../api/budget-items/route');
     const body = { name: 'Item', country_code: 'it' };
-    const req: any = { headers: new Headers({ authorization: 'Bearer token' }), json: async () => body };
-    const res = await budgetItemsRoute.POST(req as any);
-    const json = await (res as any).json();
+    const req = { headers: new Headers({ authorization: 'Bearer token' }), json: async () => body };
+    const res = await budgetItemsRoute.POST(req as unknown as Request);
+    const json = await (res as { json: () => Promise<unknown> }).json() as { item: { event_id: string } };
     expect(json.item).toBeTruthy();
     expect(json.item.event_id).toBe('evt-1');
   });

@@ -14,46 +14,58 @@ export type CarouselKey =
 
 export const CAROUSEL_IMAGES: Record<CarouselKey, { src: string; alt: string; title?: string }[]> = {
   default: [
-    { src: "/carousels/default/01.svg", alt: "Motivo floreale astratto in verde", title: "Ispirazioni matrimonio" },
-    { src: "/carousels/default/02.svg", alt: "Cuori e anelli stilizzati su sfondo tenue", title: "Idee creative" },
-    { src: "/carousels/default/03.svg", alt: "Pattern elegante con foglie e petali", title: "Stile e dettagli" },
+    {
+      src: "/carousels/events/planning-desk.svg",
+      alt: "Scrivania da wedding planner con quaderno, bouquet e fedi",
+      title: "Organizza il tuo grande giorno",
+    },
+    {
+      src: "/carousels/events/invitation-flatlay.svg",
+      alt: "Invito calligrafato con fedi dorate e rosa avorio",
+      title: "Inviti e coordinati eleganti",
+    },
+    {
+      src: "/carousels/events/budget-overview.svg",
+      alt: "Documento budget con grafici e candela accesa",
+      title: "Budget sempre sotto controllo",
+    },
   ],
   atelier: [
-    { src: "/carousels/default/02.svg", alt: "Dettagli sartoriali stilizzati" },
-    { src: "/carousels/default/01.svg", alt: "Tessuti e motivi floreali" },
+    { src: "/carousels/events/atelier-fitting.svg", alt: "Atelier con abito da sposa su manichino" },
+    { src: "/carousels/events/planning-desk.svg", alt: "Moodboard con tessuti e quaderno matrimonio" },
   ],
   catering: [
-    { src: "/carousels/default/03.svg", alt: "Tavola imbandita astratta" },
-    { src: "/carousels/default/01.svg", alt: "Palette verde delicata" },
+    { src: "/carousels/events/menu-table.svg", alt: "Tavola apparecchiata con menu gourmet" },
+    { src: "/carousels/events/wedding-accessories.svg", alt: "Flat lay con bouquet e dettagli da tavola" },
   ],
   fotografi: [
-    { src: "/carousels/default/01.svg", alt: "Cornici fotografiche minimal" },
-    { src: "/carousels/default/03.svg", alt: "Scatti artistici astratti" },
+    { src: "/carousels/events/photography-moodboard.svg", alt: "Moodboard fotografico con macchina analogica" },
+    { src: "/carousels/events/invitation-flatlay.svg", alt: "Dettaglio invito con scatto stampato" },
   ],
   fiorai: [
-    { src: "/carousels/default/01.svg", alt: "Bouquet stilizzato" },
-    { src: "/carousels/default/03.svg", alt: "Petali e foglie" },
+    { src: "/carousels/events/floral-arrangement.svg", alt: "Bouquet avorio con foglie verde salvia" },
+    { src: "/carousels/events/wedding-accessories.svg", alt: "Accessori floreali per matrimonio" },
   ],
   beauty: [
-    { src: "/carousels/default/02.svg", alt: "Make-up elegante astratto" },
+    { src: "/carousels/events/beauty-vanity.svg", alt: "Postazione trucco sposa con palette e pennelli" },
   ],
   "wedding-planner": [
-    { src: "/carousels/default/03.svg", alt: "Planning e timeline" },
+    { src: "/carousels/events/planning-desk.svg", alt: "Scrivania di wedding planner con timeline e bouquet" },
   ],
   "musica-cerimonia": [
-    { src: "/carousels/default/01.svg", alt: "Note musicali stilizzate" },
+    { src: "/carousels/events/ceremony-music.svg", alt: "Arpa dorata con spartiti per la cerimonia" },
   ],
   "musica-ricevimento": [
-    { src: "/carousels/default/02.svg", alt: "DJ e festa astratta" },
+    { src: "/carousels/events/reception-dj.svg", alt: "Consolle DJ per festa di matrimonio" },
   ],
   gioiellerie: [
-    { src: "/carousels/default/02.svg", alt: "Anelli intrecciati" },
+    { src: "/carousels/events/ring-box.svg", alt: "Cofanetto vellutato con fedi nuziali" },
   ],
   "save-the-date": [
-    { src: "/carousels/default/03.svg", alt: "Calendario e inviti" },
+    { src: "/carousels/events/invitation-flatlay.svg", alt: "Invito con fedi e rosa per il save the date" },
   ],
   "cose-matrimonio": [
-    { src: "/carousels/default/01.svg", alt: "Accessori per matrimonio" },
+    { src: "/carousels/events/wedding-accessories.svg", alt: "Accessori coordinati per il matrimonio" },
   ],
 };
 
