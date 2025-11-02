@@ -3,7 +3,9 @@ import { getGraduationTemplate } from "@/data/templates/graduation";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, { params }: { params: { eventId: string } }) {
+type CtxEvent = { params: Promise<{ eventId: string }> };
+
+export async function POST(req: NextRequest, ctx: CtxEvent) {
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
   if (!jwt) {
@@ -15,7 +17,7 @@ export async function POST(req: NextRequest, { params }: { params: { eventId: st
   if (userErr) return NextResponse.json({ ok: false, error: userErr.message }, { status: 401 });
 
   const userId = userData.user.id;
-  const eventId = params.eventId;
+  const { eventId } = await ctx.params;
   const country = new URL(req.url).searchParams.get("country") || "it";
 
   // Verify event ownership

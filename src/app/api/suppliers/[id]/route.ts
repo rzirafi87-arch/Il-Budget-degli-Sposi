@@ -32,8 +32,10 @@ type SupplierRow = SupplierPublic & {
   subscription_expires_at?: string | null;
 };
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = params.id;
+type CtxId = { params: Promise<{ id: string }> };
+
+export async function GET(req: NextRequest, ctx: CtxId) {
+  const { id } = await ctx.params;
   const jwt = getBearer(req);
   const db = getServiceClient();
 
@@ -100,8 +102,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({ ...publicData, canEdit });
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = params.id;
+export async function PUT(req: NextRequest, ctx: CtxId) {
+  const { id } = await ctx.params;
   const jwt = getBearer(req);
   if (!jwt) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 

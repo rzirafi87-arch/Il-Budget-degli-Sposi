@@ -3,9 +3,11 @@ import { getCommunionTemplate } from "@/data/templates/communion";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
+type CtxEvent = { params: Promise<{ eventId: string }> };
+
 export async function POST(
   req: NextRequest,
-  { params }: { params: { eventId: string } }
+  ctx: CtxEvent
 ) {
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
@@ -16,7 +18,7 @@ export async function POST(
   if (authErr || !userData?.user) return NextResponse.json({ ok: false, error: authErr?.message || "Auth error" }, { status: 401 });
 
   const userId = userData.user.id;
-  const eventId = params.eventId;
+  const { eventId } = await ctx.params;
   const country = new URL(req.url).searchParams.get("country") || "it";
 
   // Ensure event belongs to user
