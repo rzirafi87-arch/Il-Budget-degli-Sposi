@@ -1,6 +1,6 @@
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 type CreateEventBody = {
   type_slug?: string;
@@ -30,8 +30,8 @@ export async function POST(req: NextRequest) {
     }
     const userId = authData.user.id as string;
 
-    // 2) Resolve type_id
-    // db già istanziato
+  // 2) Resolve type_id
+  // db already instantiated
     let typeId = body.type_id;
     if (!typeId && body.type_slug) {
       const { data: trows, error: terr } = await db
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 4) Ensure owner membership (best-effort)
-        try {
+    try {
       await db
         .from("event_members")
         .insert({ event_id: evtId, user_id: userId, role: "owner" });
