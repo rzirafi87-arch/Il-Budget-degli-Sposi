@@ -1,37 +1,26 @@
 "use client";
-import React from "react";
-import { useEffect, useState } from "react";
-
-const EVENT_TYPES = [
-  { code: "wedding", labelKey: "events.wedding" },
-  { code: "baptism", labelKey: "events.baptism" },
-  { code: "turning-18", labelKey: "events.turning18" },
-  { code: "anniversary", labelKey: "events.anniversary" },
-  { code: "gender-reveal", labelKey: "events.genderReveal" },
-  { code: "birthday", labelKey: "events.birthday" },
-  { code: "turning-50", labelKey: "events.turning50" },
-  { code: "retirement", labelKey: "events.retirement" },
-  { code: "confirmation", labelKey: "events.confirmation" },
-  { code: "graduation", labelKey: "events.graduation" },
-];
-import { useTranslations } from "next-intl";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
+import { EVENTS } from "@/lib/loadConfigs";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function SelectEventTypePage() {
   const t = useTranslations();
   const router = useRouter();
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
-  const [country, setCountry] = useState<string>(typeof window !== 'undefined' ? (localStorage.getItem('country') || (document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1]) || 'it') : 'it');
+  const country = typeof window !== "undefined"
+    ? localStorage.getItem("country") || document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] || "it"
+    : "it";
+
   useEffect(() => {
     if (!country) return;
     fetch(`/api/traditions?country=${encodeURIComponent(country)}`)
-      .then(r => r.json())
-      .then(d => setTradition((d.traditions && d.traditions[0]) || null))
+      .then((r) => r.json())
+      .then((d) => setTradition((d.traditions && d.traditions[0]) || null))
       .catch(() => setTradition(null));
   }, [country]);
-  // On mount, se lingua o nazione non sono selezionate, torna agli step precedenti
-  // Se tipologia evento già selezionata, vai a dashboard
+
   React.useEffect(() => {
     try {
       const cookieLang = document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1];
@@ -53,18 +42,56 @@ export default function SelectEventTypePage() {
       if (cookieEventType || lsEventType) {
         if (!cookieEventType && lsEventType) document.cookie = `eventType=${lsEventType}; Path=/; Max-Age=15552000; SameSite=Lax`;
         const ev = cookieEventType || lsEventType;
-        router.replace(ev === "wedding" ? "/dashboard" : "/coming-soon");
+        router.replace(
+          ev === "wedding"
+            ? "/dashboard"
+            : ev === "baptism"
+            ? "/dashboard"
+            : ev === "eighteenth"
+            ? "/dashboard"
+            : ev === "graduation"
+            ? "/dashboard"
+            : ev === "confirmation"
+            ? "/dashboard"
+            : ev === "communion"
+            ? "/dashboard"
+            : "/coming-soon"
+        );
       }
-    } catch {}
-  }, []);
+    } catch {
+      // Ignore errors in SSR
+    }
+  }, [router]);
+
   const [selected, setSelected] = useState<string>("");
+
+  // Update cookies when event type is selected
+  useEffect(() => {
+    if (!selected) return;
+    localStorage.setItem("eventType", selected);
+    document.cookie = `eventType=${selected}; Path=/; Max-Age=15552000; SameSite=Lax`;
+  }, [selected]);
 
   function handleSelect(code: string) {
     setSelected(code);
-    localStorage.setItem("eventType", code);
-    document.cookie = `eventType=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
-    router.push(code === "wedding" ? "/dashboard" : "/coming-soon");
+    if (code === "wedding") {
+      router.push("/dashboard");
+    } else if (code === "baptism") {
+      router.push("/dashboard");
+    } else if (code === "eighteenth") {
+      router.push("/dashboard");
+    } else if (code === "graduation") {
+      router.push("/dashboard");
+    } else if (code === "confirmation") {
+      router.push("/dashboard");
+    } else if (code === "communion") {
+      router.push("/dashboard");
+    } else {
+      router.push("/coming-soon");
+    }
   }
+
+  // Mostra tutti gli eventi per tutte le nazioni
 
   return (
     <main
@@ -84,36 +111,27 @@ export default function SelectEventTypePage() {
           <span aria-hidden="true" className="mr-2">🎉</span>
           {t("onboarding.selectEventTypeTitle", { fallback: "Scegli il tipo di evento" })}
         </h1>
-        {/* Tradizione preview per il paese selezionato */}
         {tradition && (
           <div className="mb-6">
             <WeddingTraditionInfo tradition={tradition} />
           </div>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {EVENT_TYPES.map((ev) => {
-            const icon =
-              ev.code === "wedding" ? "💍" :
-              ev.code === "baptism" ? "👶" :
-              ev.code === "turning-18" ? "🎉" :
-              ev.code === "anniversary" ? "💞" :
-              ev.code === "gender-reveal" ? "🎈" :
-              ev.code === "birthday" ? "🎂" :
-              ev.code === "turning-50" ? "🎊" :
-              ev.code === "retirement" ? "🧓" :
-              ev.code === "confirmation" ? "✝️" :
-              ev.code === "graduation" ? "🎓" : "✨";
-            return (
-              <button
-                key={ev.code}
-                className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === ev.code ? "bg-[#A3B59D] text-white" : ""}`}
-                onClick={() => handleSelect(ev.code)}
-              >
-                <span aria-hidden="true" className="mr-2">{icon}</span>
-                {t(ev.labelKey, { fallback: ev.code })}
-              </button>
-            );
-          })}
+          {EVENTS.map((ev) => (
+            <button
+              key={ev.slug}
+              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === ev.slug ? "bg-[#A3B59D] text-white" : ""}`}
+              onClick={() => handleSelect(ev.slug)}
+            >
+              <span aria-hidden="true" className="mr-2">{ev.emoji || "✨"}</span>
+              {t(`events.${ev.slug}`, { fallback: ev.label })}
+              {ev.available === false && (
+                <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                  {t("comingSoon", { fallback: "In arrivo" })}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
       </div>
     </main>

@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import clsx from "clsx";
 import ImageCarousel from "@/components/ImageCarousel";
+import { GEO, getUserCountrySafe } from "@/constants/geo";
+import { getGeographyLevels } from "@/lib/geographyFilters";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 
 type Church = {
   id: string;
@@ -23,12 +25,11 @@ type Church = {
   verified: boolean;
 };
 
-const ITALIAN_REGIONS = [
-  "Abruzzo", "Basilicata", "Calabria", "Campania", "Emilia-Romagna",
-  "Friuli-Venezia Giulia", "Lazio", "Liguria", "Lombardia", "Marche",
-  "Molise", "Piemonte", "Puglia", "Sardegna", "Sicilia", "Toscana",
-  "Trentino-Alto Adige", "Umbria", "Valle d'Aosta", "Veneto"
-];
+function useGeographyOptions() {
+  const country = getUserCountrySafe();
+  const levels = getGeographyLevels(country);
+  return { country, levels };
+}
 
 const CHURCH_TYPES = [
   "Cattolica",
@@ -42,17 +43,28 @@ const CHURCH_TYPES = [
 ];
 
 export default function ChiesePage() {
+  const { country, levels } = useGeographyOptions();
   const [churches, setChurches] = useState<Church[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRegion, setSelectedRegion] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: string }>({});
   const [selectedType, setSelectedType] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
-  
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    city: string;
+    address: string;
+    phone: string;
+    email: string;
+    website: string;
+    description: string;
+    church_type: string;
+    capacity: string;
+    requires_baptism: boolean;
+    requires_marriage_course: boolean;
+    [key: string]: string | boolean;
+  }>({
     name: "",
-    region: "",
-    province: "",
+    ...Object.fromEntries(levels.map(l => [l.key, ""])),
     city: "",
     address: "",
     phone: "",
@@ -67,15 +79,18 @@ export default function ChiesePage() {
 
   useEffect(() => {
     loadChurches();
-  }, [selectedRegion, selectedProvince, selectedType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFilters, selectedType]);
 
   async function loadChurches() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (selectedRegion) params.append("region", selectedRegion);
-      if (selectedProvince) params.append("province", selectedProvince);
+      Object.entries(selectedFilters).forEach(([key, value]) => {
+        if (value) params.append(key, value);
+      });
       if (selectedType) params.append("type", selectedType);
+      try { if (country) params.append("country", country); } catch {}
 
       const res = await fetch(`/api/churches?${params.toString()}`);
       const data = await res.json();
@@ -89,7 +104,7 @@ export default function ChiesePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
+
     const jwt = localStorage.getItem("sb_jwt");
     if (!jwt) {
       alert("Devi essere autenticato per aggiungere una chiesa");
@@ -105,6 +120,7 @@ export default function ChiesePage() {
         },
         body: JSON.stringify({
           ...formData,
+          country,
           capacity: formData.capacity ? parseInt(formData.capacity) : null,
         }),
       });
@@ -117,8 +133,7 @@ export default function ChiesePage() {
       setShowAddForm(false);
       setFormData({
         name: "",
-        region: "",
-        province: "",
+        ...Object.fromEntries(levels.map(l => [l.key, ""])),
         city: "",
         address: "",
         phone: "",
@@ -131,19 +146,15 @@ export default function ChiesePage() {
         requires_marriage_course: false,
       });
       loadChurches();
-    } catch (e: any) {
-      alert(e.message || "Errore durante l'aggiunta");
+    } catch (e) {
+      alert((e as Error).message || "Errore durante l'aggiunta");
     }
   }
-
-  const provinces = selectedRegion
-    ? Array.from(new Set(churches.filter(c => c.region === selectedRegion).map(c => c.province))).sort()
-    : [];
 
   const filteredChurches = churches;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
+    <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
         {/* Carosello immagini */}
         <ImageCarousel images={PAGE_IMAGES.chiese} height="280px" />
@@ -196,32 +207,37 @@ export default function ChiesePage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">Regione *</label>
-                <select
-                  required
-                  value={formData.region}
-                  onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                >
-                  <option value="">Seleziona...</option>
-                  {ITALIAN_REGIONS.map(r => (
-                    <option key={r} value={r}>{r}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">Provincia *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="es. Roma, Milano, Napoli"
-                  value={formData.province}
-                  onChange={(e) => setFormData({ ...formData, province: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
+              {/* Geography levels dynamic fields */}
+              {levels.map((level, idx) => {
+                // Opzioni dinamiche per ogni livello
+                const cc = country.toLowerCase();
+                let options: string[] = [];
+                if (level.key === "region" || level.key === "state") {
+                  options = (GEO[cc]?.regions ?? []).map((r: { name: string; provinces?: string[] }) => r.name);
+                }
+                if (level.key === "province" && formData.region) {
+                  const regionObj = (GEO[cc]?.regions ?? []).find((r: { name: string; provinces?: string[] }) => r.name === formData.region);
+                  options = regionObj?.provinces ?? [];
+                }
+                const isDisabled = idx > 0 && !formData[levels[idx - 1].key];
+                return (
+                  <div key={level.key}>
+                    <label className="block text-sm font-semibold mb-1">{level.label} *</label>
+                    <select
+                      required
+                      value={(formData[level.key] as string) || ""}
+                      onChange={e => setFormData({ ...formData, [level.key]: e.target.value })}
+                      className="w-full border rounded px-3 py-2"
+                      disabled={isDisabled}
+                    >
+                      <option value="">Tutte</option>
+                      {options.map((opt: string) => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })}
 
               <div>
                 <label className="block text-sm font-semibold mb-1">Città *</label>
@@ -329,42 +345,38 @@ export default function ChiesePage() {
           </div>
         )}
 
-        {/* Filtri */}
+        {/* Filtri dinamici */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-xl font-bold mb-4">Filtri</h2>
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-semibold mb-2">Regione</label>
-              <select
-                value={selectedRegion}
-                onChange={(e) => {
-                  setSelectedRegion(e.target.value);
-                  setSelectedProvince("");
-                }}
-                className="w-full border rounded px-3 py-2"
-              >
-                <option value="">Tutte</option>
-                {ITALIAN_REGIONS.map(r => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2">Provincia</label>
-              <select
-                value={selectedProvince}
-                onChange={(e) => setSelectedProvince(e.target.value)}
-                disabled={!selectedRegion}
-                className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
-              >
-                <option value="">Tutte</option>
-                {provinces.map(p => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-            </div>
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {levels.map((level, idx) => {
+              const cc = country.toLowerCase();
+              let options: string[] = [];
+              if (level.key === "region" || level.key === "state") {
+                options = (GEO[cc]?.regions ?? []).map((r: { name: string; provinces?: string[] }) => r.name);
+              }
+              if (level.key === "province" && selectedFilters.region) {
+                const regionObj = (GEO[cc]?.regions ?? []).find((r: { name: string; provinces?: string[] }) => r.name === selectedFilters.region);
+                options = regionObj?.provinces ?? [];
+              }
+              const isDisabled = idx > 0 && !selectedFilters[levels[idx - 1].key];
+              return (
+                <div key={level.key}>
+                  <label className="block text-sm font-semibold mb-2">{level.label}</label>
+                  <select
+                    value={selectedFilters[level.key] || ""}
+                    onChange={e => setSelectedFilters({ ...selectedFilters, [level.key]: e.target.value })}
+                    className="w-full border rounded px-3 py-2"
+                    disabled={isDisabled}
+                  >
+                    <option value="">Tutte</option>
+                    {options.map((opt: string) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })}
             <div>
               <label className="block text-sm font-semibold mb-2">Tipo</label>
               <select
@@ -481,3 +493,4 @@ export default function ChiesePage() {
     </div>
   );
 }
+

@@ -1,0 +1,19 @@
+{
+  "dashboard": "Panel",
+  "timeline": "Cronología",
+  "budget": "Presupuesto",
+  "weddingThings": "Cosas de la boda",
+  "saveTheDate": "Reserva la fecha",
+  "guests": "Invitados",
+  "accounting": "Contabilidad",
+  "suppliers": "Proveedores",
+  "location": "Ubicación",
+  "churches": "Iglesias",
+  "documents": "Documentos",
+  "giftList": "Lista de regalos",
+  "favorites": "Favoritos",
+  "suggestions": "Sugerencias y Consejos",
+  "choose_language": "Elige el idioma",
+  "choose_country": "Elige el país",
+  "choose_event": "Elige el tipo de evento"
+}

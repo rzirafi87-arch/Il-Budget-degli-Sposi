@@ -1,27 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireUser } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
-
-    if (!jwt) {
-      return NextResponse.json({ error: "Autenticazione richiesta" }, { status: 401 });
-    }
+    await requireUser(req);
 
     const body = await req.json();
     const { status } = body as { status: "approved" | "rejected" };
 
     const db = getServiceClient();
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
-    }
 
     const { id } = await params;
     const expenseId = id;
@@ -49,13 +42,13 @@ export async function PATCH(
       .eq("id", expenseId);
 
     if (error) {
-      console.error("EXPENSE PATCH error:", error);
+      logger.error("EXPENSE PATCH error", { error });
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ ok: true });
   } catch (e: any) {
-    console.error("EXPENSE PATCH uncaught:", e);
+    logger.error("EXPENSE PATCH uncaught", { message: e?.message });
     return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
   }
 }

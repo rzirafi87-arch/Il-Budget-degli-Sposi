@@ -1,10 +1,14 @@
 {
-  "dashboard.curiosityTitle": "Curiosités et conseils",
-  "dashboard.suggestions.mariachi": "N'oubliez pas de réserver le Mariachi !",
-  "dashboard.suggestions.location": "Vérifiez la disponibilité du lieu au moins 6 mois à l'avance.",
-  "dashboard.suggestions.photobooth": "Pensez à un photomaton mexicain pour la fête.",
-  "dashboard.suggestions.documents": "Vérifiez les documents légaux requis au Mexique.",
-  "dashboard.suggestions.photographer": "Réservez le photographe bien à l'avance.",
-  "dashboard.suggestions.guests": "Vérifiez la liste des invités et mettez à jour les préférences.",
-  "dashboard.suggestions.traditions": "Consultez les traditions locales pour enrichir la cérémonie."
+  "dashboard": {
+    "curiosityTitle": "Curiosités et conseils",
+    "suggestions": {
+      "mariachi": "N'oubliez pas de réserver le Mariachi !",
+      "location": "Vérifiez la disponibilité du lieu au moins 6 mois à l'avance.",
+      "photobooth": "Pensez à un photomaton mexicain pour la fête.",
+      "documents": "Vérifiez les documents légaux requis au Mexique.",
+      "photographer": "Réservez le photographe bien à l'avance.",
+      "guests": "Vérifiez la liste des invités et mettez à jour les préférences.",
+      "traditions": "Consultez les traditions locales pour enrichir la cérémonie."
+    }
+  }
 }

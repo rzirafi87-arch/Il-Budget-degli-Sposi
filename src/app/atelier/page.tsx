@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
-import { getBrowserClient } from "@/lib/supabaseServer";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -57,16 +57,18 @@ export default function AtelierPage() {
     services: "",
   });
 
-  useEffect(() => {
-    loadAtelier();
-  }, [activeTab, selectedRegion]);
-
-  async function loadAtelier() {
+  const loadAtelier = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
       params.append("category", activeTab);
       if (selectedRegion) params.append("region", selectedRegion);
+      try {
+        const cookieCountry = document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1];
+        const lsCountry = localStorage.getItem("country");
+        const country = cookieCountry || lsCountry;
+        if (country) params.append("country", country);
+      } catch {}
 
       const res = await fetch(`/api/atelier?${params.toString()}`);
       const data = await res.json();
@@ -76,7 +78,11 @@ export default function AtelierPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [activeTab, selectedRegion]);
+
+  useEffect(() => {
+    loadAtelier();
+  }, [loadAtelier]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -150,7 +156,7 @@ export default function AtelierPage() {
         <div className="flex-1">
           <h2 className="font-serif text-3xl mb-2">👗🤵 Atelier</h2>
           <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-            Scopri gli atelier più prestigiosi per l'abito da sposa e da sposo. 
+            Scopri gli atelier più prestigiosi per l&apos;abito da sposa e da sposo. 
             Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.
           </p>
         </div>
@@ -516,10 +522,10 @@ export default function AtelierPage() {
       )}
 
       {/* Info Footer */}
-      <div className="mt-12 p-6 bg-gradient-to-br from-pink-50 to-blue-50 rounded-xl border border-gray-200">
+      <div className="mt-12 p-6 bg-linear-to-br from-pink-50 to-blue-50 rounded-xl border border-gray-200">
         <h4 className="font-bold text-lg mb-2 text-gray-800">💡 Suggerimenti per la scelta</h4>
         <ul className="text-sm text-gray-700 space-y-1 leading-relaxed">
-          <li>• Prenota l'appuntamento con almeno 8-12 mesi di anticipo</li>
+          <li>• Prenota l&apos;appuntamento con almeno 8-12 mesi di anticipo</li>
           <li>• Porta con te scarpe con il tacco che indosserai il giorno del matrimonio</li>
           <li>• Considera almeno 2-3 prove per aggiustamenti e ritocchi</li>
           <li>• Chiedi informazioni su tempi di consegna e modifiche incluse nel prezzo</li>

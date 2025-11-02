@@ -17,5 +17,254 @@
   "auth": "Accedi",
   "chat": "Chatta con noi su WhatsApp",
   "settings": "Impostazioni",
-  "loading": "Caricamento…"
+  "loading": "Caricamento…",
+  "comingSoon": "In arrivo",
+  "budgetPage": {
+    "approvedExpenses": "Spese approvate",
+    "ctaIdeaBudget": "💡 Vai a Idea di Budget",
+    "description": "Visualizzazione delle spese approvate dalla sezione 'Spese', ordinate alfabeticamente per categoria e sottocategoria.",
+    "totals": {
+      "title": "Totale spese approvate",
+      "common": "Comune",
+      "bride": "Sposa",
+      "groom": "Sposo"
+    },
+    "table": {
+      "category": "Categoria",
+      "subcategory": "Sottocategoria",
+      "spendType": "Tipo di spesa",
+      "paymentMethod": "Metodo pagamento",
+      "budget": "Budget",
+      "committed": "Impegnato",
+      "paid": "Pagato",
+      "residual": "Residuo",
+      "fromQuote": "Da preventivo",
+      "difference": "Differenza"
+    },
+    "spendType": {
+      "common": "Comune",
+      "bride": "Sposa",
+      "groom": "Sposo",
+      "gift": "Regalo"
+    },
+    "paymentMethod": {
+      "common": "💰 Comune",
+      "bride": "👰 Sposa",
+      "groom": "🤵 Sposo",
+      "gift": "🎁 Regalo"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessuna spesa approvata. Vai alla sezione 'Spese' per approvare le tue spese.",
+    "plannedVsActual": {
+      "title": "Pianificato vs Effettivo",
+      "totalPlanned": "Totale pianificato",
+      "totalActualApproved": "Totale effettivo (approvato)",
+      "difference": "Differenza",
+      "over": "+ oltre il previsto",
+      "under": "sotto il previsto",
+      "item": "Voce",
+      "planned": "Pianificato",
+      "actual": "Effettivo",
+      "empty": "Nessun dato da confrontare. Usa 'Idea di Budget' per pianificare e approva spese nella sezione 'Spese'."
+    }
+  },
+  "expensesPage": {
+    "info": {
+      "lead": "Registra e gestisci tutte le spese del matrimonio. Puoi inserire preventivi, confermarli come spese approvate, e tenere traccia degli stati di pagamento. Filtra per categoria, tipo di spesa (comune/sposa/sposo) e stato.",
+      "title": "Gestione Completa delle Spese",
+      "description": "In questa pagina puoi registrare tutte le spese effettive e i preventivi. Ogni spesa può essere categorizzata, assegnata a sposa/sposo/comune, e tracciata con stato di approvazione e pagamento. Le spese confermate dalla dashboard appaiono qui automaticamente.",
+      "tips": {
+        "tip1": "Usa lo stato 'Preventivo' per le offerte ricevute, poi cambiale in 'Approvato' quando confermi",
+        "tip2": "Il campo 'Da preventivo' indica se la spesa proviene dalla dashboard (già budgetata)",
+        "tip3": "Aggiungi sempre il fornitore per tenere traccia di chi ti ha fornito ogni servizio",
+        "tip4": "Filtra per categoria o tipo di spesa per analizzare dove stai spendendo di più"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Per il matrimonio, puoi dividere le spese tra sposa, sposo e comuni. Questo aiuta a capire il contributo di ciascuno e a gestire le finanze in modo trasparente.",
+        "baptism": "Per il battesimo, tutte le spese sono automaticamente impostate come 'comuni' - non è necessario specificare chi paga.",
+        "eighteenth": "Per il diciottesimo, tutte le spese sono comuni. Pianifica location, catering, intrattenimento e ricordi per rendere indimenticabile questa festa!",
+        "confirmation": "Per la cresima, tutte le spese sono comuni. Organizza cerimonia, ricevimento, bomboniere e ricordi per celebrare questo momento speciale di crescita spirituale.",
+        "birthday": "Per il compleanno, dividi le spese tra l'organizzatore principale e quelle condivise con altri.",
+        "graduation": "Per la laurea, traccia tutte le spese legate all'evento: location, catering, inviti, decorazioni e ricordi."
+      }
+    },
+    "title": "Spese",
+    "loading": "Caricamento...",
+    "summary": {
+      "pending": "In attesa di approvazione",
+      "approved": "Spese approvate"
+    },
+    "buttons": {
+      "add": "+ Aggiungi spesa",
+      "cancel": "Annulla",
+      "save": "Salva spesa",
+      "approve": "Approva",
+      "reject": "Rifiuta"
+    },
+    "form": {
+      "new": "Nuova spesa",
+      "category": "Categoria",
+      "subcategory": "Sottocategoria",
+      "supplier": "Fornitore",
+      "amount": "Importo",
+      "spendType": "Tipo spesa",
+      "date": "Data",
+      "description": "Descrizione",
+      "notes": "Note",
+      "placeholders": {
+        "supplier": "Nome fornitore",
+        "amount": "0",
+        "description": "Descrizione dettagliata",
+        "notes": "Note aggiuntive..."
+      },
+      "spendTypeOptions": {
+        "common": "Comune",
+        "bride": "Sposa",
+        "groom": "Sposo"
+      }
+    },
+    "table": {
+      "supplier": "Fornitore",
+      "description": "Descrizione",
+      "amount": "Importo",
+      "type": "Tipo",
+      "date": "Data",
+      "status": "Stato",
+      "fromQuote": "Da preventivo",
+      "actions": "Azioni"
+    },
+    "status": {
+      "approved": "✓ Approvato",
+      "rejected": "✗ Rifiutato",
+      "pending": "In attesa"
+    },
+    "spendType": {
+      "common": "Comune",
+      "bride": "Sposa",
+      "groom": "Sposo"
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Devi essere autenticato per aggiungere spese. Clicca su 'Registrati' in alto.",
+      "networkError": "❌ Errore di rete",
+      "successAdded": "✅ Spesa aggiunta con successo!",
+      "none": "Nessuna spesa registrata",
+      "confirmed": "Confermato",
+      "discarded": "Scartato"
+    }
+  },
+  "incomesPage": {
+    "info": {
+      "lead": "Traccia tutte le entrate che contribuiscono al budget del matrimonio: regali dei genitori, contributi familiari, risparmi personali o altre fonti. Specifica se l'entrata è della sposa, dello sposo o comune.",
+      "title": "Traccia Tutte le Entrate",
+      "description": "Qui puoi registrare tutte le fonti di denaro che contribuiscono al budget del tuo evento: contributi familiari, regali in busta, bonifici, risparmi personali. Ogni entrata può essere categorizzata per sapere chi la porta (sposa/sposo/comune) e da chi proviene.",
+      "tips": {
+        "tip1": "Usa 'Busta' per regali in contanti ricevuti durante l'evento",
+        "tip2": "Usa 'Bonifico' per contributi ricevuti prima dell'evento",
+        "tip3": "Usa 'Regalo' per registrare doni materiali (senza importo specifico)",
+        "tip4": "Il totale delle entrate ti aiuta a capire quanto budget effettivo hai a disposizione"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Durante il matrimonio è tradizione ricevere buste con contributi economici dagli invitati. Registra ogni busta ricevuta per tenere traccia completa.",
+        "baptism": "Per il battesimo, registra i contributi di padrino, madrina e familiari che vogliono partecipare alle spese.",
+        "birthday": "Per il compleanno, traccia i contributi di amici e parenti che vogliono aiutare nell'organizzazione.",
+        "graduation": "Per la laurea, registra contributi familiari e regali ricevuti per celebrare il traguardo."
+      }
+    },
+    "title": "Entrate",
+    "loading": "Caricamento...",
+    "toolbar": {
+      "giftList": "Lista Nozze",
+      "backDashboard": "Torna in Dashboard"
+    },
+    "summary": {
+      "bride": "Entrate Sposa",
+      "groom": "Entrate Sposo",
+      "common": "Entrate Comuni",
+      "totalMoney": "Totale denaro",
+      "physicalGifts": "Regali fisici"
+    },
+    "buttons": {
+      "add": "+ Aggiungi entrata",
+      "cancel": "Annulla",
+      "save": "Salva entrata",
+      "delete": "Elimina"
+    },
+    "form": {
+      "new": "Nuova entrata",
+      "name": "Nome persona/famiglia *",
+      "type": "Tipologia *",
+      "incomeSource": "Fonte entrata *",
+      "amount": "Importo (€) *",
+      "date": "Data",
+      "notes": "Note",
+      "giftDescription": "Descrizione regalo *",
+      "placeholders": {
+        "name": "Es. Famiglia Rossi",
+        "amount": "0",
+        "notes": "Note aggiuntive...",
+        "gift": "Es. Servizio piatti completo"
+      },
+      "typeOptions": {
+        "busta": "Busta",
+        "bonifico": "Bonifico",
+        "regalo": "Regalo fisico"
+      },
+      "sourceOptions": {
+        "common": "Comune",
+        "bride": "Sposa",
+        "groom": "Sposo"
+      }
+    },
+    "table": {
+      "date": "Data",
+      "name": "Nome",
+      "type": "Tipologia",
+      "source": "Fonte",
+      "amount": "Importo",
+      "notes": "Note / Descrizione",
+      "actions": "Azioni"
+    },
+    "empty": "Nessuna entrata registrata",
+    "badges": {
+      "type": {
+        "busta": "💵 Busta",
+        "bonifico": "🏦 Bonifico",
+        "regalo": "🎁 Regalo"
+      },
+      "source": {
+        "bride": "👰 Sposa",
+        "groom": "🤵 Sposo",
+        "common": "💑 Comune"
+      }
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Devi essere autenticato per aggiungere entrate. Clicca su 'Registrati' in alto.",
+      "networkError": "❌ Errore di rete",
+      "successAdded": "✅ Entrata registrata con successo!",
+      "deleted": "✅ Entrata eliminata",
+      "confirmDelete": "Sei sicuro di voler eliminare questa entrata?"
+    }
+  },
+  "events": {
+    "wedding": "Matrimonio",
+    "baptism": "Battesimo",
+    "eighteenth": "Diciottesimo",
+    "anniversary": "Anniversario di matrimonio",
+    "gender-reveal": "Gender Reveal",
+    "birthday": "Compleanno",
+    "fifty": "50 anni",
+    "retirement": "Pensione",
+    "confirmation": "Cresima",
+    "graduation": "Laurea",
+    "baby-shower": "Baby Shower",
+    "engagement": "Festa di fidanzamento",
+    "corporate": "Evento aziendale",
+    "milestone-birthday": "Compleanno (traguardo)",
+    "gender-reveal-party": "Gender Reveal Party",
+    "proposal": "Festa proposta (Proposal)",
+    "communion": "Comunione",
+    "bar-mitzvah": "Bar Mitzvah",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Evento culturale/Charity/Gala"
+  }
 }

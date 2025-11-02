@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
     const region = searchParams.get("region");
     const province = searchParams.get("province");
     const city = searchParams.get("city");
+    const country = searchParams.get("country");
 
     const db = getServiceClient();
 
@@ -33,7 +34,27 @@ export async function GET(req: NextRequest) {
     if (province) query = query.eq("province", province);
     if (city) query = query.ilike("city", `%${city}%`);
 
-    const { data, error } = await query;
+    let { data, error } = await query;
+    if (country) {
+      try {
+        ({ data, error } = await db
+          .from("atelier")
+          .select("*")
+          .match({
+            category: category || undefined,
+            region: region || undefined,
+            province: province || undefined,
+          })
+          .ilike("city", city ? `%${city}%` : "%%")
+          .eq("country", country)
+          .order("name", { ascending: true }));
+      } catch (e: unknown) {
+        if (country !== "it") {
+          data = [] as any;
+          error = null as any;
+        }
+      }
+    }
 
     if (error) {
       console.error("Atelier fetch error:", error);
@@ -41,9 +62,10 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ atelier: data || [] });
-  } catch (e: any) {
-    console.error("Atelier API error:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected error" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("Atelier API error:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected error" }, { status: 500 });
   }
 }
 
@@ -130,8 +152,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ atelier: data }, { status: 201 });
-  } catch (e: any) {
-    console.error("Atelier POST error:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected error" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("Atelier POST error:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected error" }, { status: 500 });
   }
 }

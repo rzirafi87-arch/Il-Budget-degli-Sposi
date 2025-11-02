@@ -1,10 +1,130 @@
 {
-  "files.exclude": {
-    "**/.git": false,
-    "**/.github": false,
-    "**/.vscode": false,
-    "**/.DS_Store": false
+  // ===== PostgreSQL Extension Settings =====
+  "postgres.connections": [
+    {
+      "label": "Supabase Cloud (Il Budget degli Sposi)",
+      "connectionString": "postgresql://postgres:12LuglioRocco!@db.vsguhivizuneylqhygfk.supabase.co:5432/postgres?sslmode=require"
+    },
+    {
+      "label": "Local Postgres (Docker - ibds)",
+      "host": "localhost",
+      "port": 5433,
+      "user": "postgres",
+      "password": "postgres",
+      "database": "ibds",
+      "ssl": false
+    }
+  ],
+  // ===== Supabase Extension Settings =====
+  "supabase.connectionString": "${env:SUPABASE_DB_URL}",
+  // ===== MSSQL Extension Settings =====
+  "mssql.connections": [],
+  "mssql.enableSqlcmdMode": false,
+  // Disable MSSQL validation for .sql files (we use PostgreSQL)
+  "files.associations": {
+    "*.sql": "postgres"
   },
-  "explorer.excludeGitIgnore": false,
-  "files.watcherExclude": {}
+  // ===== SQL Database Projects Settings =====
+  "sqlDatabaseProjects.netCoreDoNotAsk": true,
+  "sqlDatabaseProjects.dotnetSDK Location": "",
+  // ===== Data Workspace Settings =====
+  "dataworkspace.excludedProjects": [],
+  // ===== Editor Settings =====
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  // ===== File Associations =====
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "ms-ossdata.vscode-pgsql"
+  },
+  // ===== Tailwind CSS Settings =====
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "clsx\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ],
+    [
+      "cn\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  // ===== i18n Ally Settings =====
+  "i18n-ally.localesPaths": [
+    "src/messages"
+  ],
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.enabledFrameworks": [
+    "next-international",
+    "general"
+  ],
+  "i18n-ally.namespace": false,
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.displayLanguage": "it",
+  // ===== ESLint Settings =====
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  // ===== GitHub Copilot Settings =====
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": true,
+    "markdown": true,
+    "sql": true
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
+  // ===== Files Settings =====
+  "files.exclude": {
+    "**/.git": true,
+    "**/.next": true,
+    "**/.vercel": true,
+    "**/node_modules": true,
+    "**/*.tsbuildinfo": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/.vercel/**": true
+  },
+  // ===== TypeScript Settings =====
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  // ===== Search Settings =====
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/.vercel": true,
+    "**/dist": true,
+    "**/.git": true
+  }
 }

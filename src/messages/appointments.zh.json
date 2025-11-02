@@ -1,10 +1,12 @@
 {
-  "appointments.title": "约会和截止日期",
-  "appointments.formTitle": "约会标题",
-  "appointments.formLocation": "地点",
-  "appointments.formNotes": "备注",
-  "appointments.addBtn": "添加约会",
-  "appointments.empty": "尚未添加约会。",
-  "appointments.dateLabel": "日期",
-  "appointments.locationLabel": "地点"
+  "appointments": {
+    "title": "约会和截止日期",
+    "formTitle": "约会标题",
+    "formLocation": "地点",
+    "formNotes": "备注",
+    "addBtn": "添加约会",
+    "empty": "尚未添加约会。",
+    "dateLabel": "日期",
+    "locationLabel": "地点"
+  }
 }

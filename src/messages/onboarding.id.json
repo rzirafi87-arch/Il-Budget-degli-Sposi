@@ -1,0 +1,57 @@
+{
+  "onboarding": {
+    "selectLanguageTitle": "Pilih bahasa",
+    "selectLanguageDesc": "Pilih bahasa antarmuka yang Anda inginkan.",
+    "selectCountryTitle": "Di mana acara akan berlangsung?",
+    "selectCountryDesc": "Pilih negara tempat acara akan diadakan, terlepas dari tempat tinggal atau bahasa browser Anda.",
+    "selectEventTypeTitle": "Pilih jenis acara",
+    "nextBtn": "Lanjut",
+    "creatingEvent": "Membuat acara..."
+  },
+  "languages": {
+    "it": "Bahasa Italia",
+    "es": "Bahasa Spanyol",
+    "en": "Bahasa Inggris",
+    "fr": "Bahasa Prancis",
+    "de": "Bahasa Jerman",
+    "ru": "Bahasa Rusia",
+    "zh": "Bahasa Mandarin",
+    "ja": "Bahasa Jepang",
+    "ar": "Bahasa Arab",
+    "pt": "Bahasa Portugis",
+    "id": "Bahasa Indonesia"
+  },
+  "countries": {
+    "it": "Italia",
+    "mx": "Meksiko",
+    "es": "Spanyol",
+    "fr": "Prancis",
+    "in": "India",
+    "jp": "Jepang",
+    "uk": "Inggris Raya",
+    "ae": "Uni Emirat Arab",
+    "us": "Amerika Serikat"
+  },
+  "events": {
+    "wedding": "Pernikahan",
+    "baptism": "Pembaptisan",
+    "eighteenth": "Ulang tahun ke-18",
+    "anniversary": "Ulang tahun pernikahan",
+    "gender-reveal": "Pengungkapan jenis kelamin",
+    "birthday": "Ulang tahun",
+    "fifty": "50 tahun",
+    "retirement": "Pensiun",
+    "confirmation": "Krisma",
+    "graduation": "Wisuda",
+    "baby-shower": "Baby Shower",
+    "engagement": "Pesta pertunangan",
+    "corporate": "Acara perusahaan",
+    "milestone-birthday": "Ulang tahun istimewa",
+    "gender-reveal-party": "Pesta pengungkapan jenis kelamin",
+    "proposal": "Pesta lamaran",
+    "communion": "Komuni pertama",
+    "bar-mitzvah": "Bar Mitzvah",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Acara amal/Gala"
+  }
+}

@@ -7,23 +7,68 @@
   "background_color": "#F9F9F9",
   "theme_color": "#A3B59D",
   "lang": "it-IT",
-  "orientation": "portrait",
+  "orientation": "any",
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "categories": ["lifestyle", "finance", "productivity"],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile-dashboard.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dashboard Budget su Mobile"
+    },
+    {
+      "src": "/screenshots/desktop-dashboard.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard Budget su Desktop"
+    }
+  ],
   "icons": [
     {
       "src": "/backgrounds/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/backgrounds/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/backgrounds/icon-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "related_applications": [],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Apri la dashboard del budget",
+      "url": "/dashboard",
+      "icons": [{ "src": "/backgrounds/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Aggiungi Spesa",
+      "short_name": "Spesa",
+      "description": "Aggiungi una nuova spesa",
+      "url": "/budget?action=add",
+      "icons": [{ "src": "/backgrounds/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Invitati",
+      "short_name": "Invitati",
+      "description": "Gestisci lista invitati",
+      "url": "/invitati",
+      "icons": [{ "src": "/backgrounds/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

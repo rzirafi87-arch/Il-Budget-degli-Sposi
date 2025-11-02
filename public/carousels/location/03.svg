@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Location: setup e allestimenti">
+  <defs>
+    <linearGradient id="loc3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#9fb59a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#loc3)"/>
+  <g stroke="#6f8a73" stroke-width="2" opacity="0.28" fill="none">
+    <rect x="200" y="560" width="800" height="180" rx="18"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Setup e allestimenti</text>
+  </g>
+</svg>
+

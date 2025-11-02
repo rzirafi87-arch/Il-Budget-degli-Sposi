@@ -1,21 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { getBrowserClient } from "@/lib/supabaseServer";
-import { useTranslations } from "next-intl";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
-
-const countries = [
-  { code: "it", nameKey: "countries.it", flag: "🇮🇹" },
-  { code: "mx", nameKey: "countries.mx", flag: "🇲🇽" },
-  { code: "es", nameKey: "countries.es", flag: "🇪🇸" },
-  { code: "fr", nameKey: "countries.fr", flag: "🇫🇷" },
-  { code: "in", nameKey: "countries.in", flag: "🇮🇳" },
-  { code: "jp", nameKey: "countries.jp", flag: "🇯🇵" },
-  { code: "uk", nameKey: "countries.uk", flag: "🇬🇧" },
-  { code: "ae", nameKey: "countries.ae", flag: "🇦🇪" },
-  { code: "us", nameKey: "countries.us", flag: "🇺🇸" },
-];
+import { COUNTRIES } from "@/lib/loadConfigs";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SelectCountryPage() {
   const t = useTranslations();
@@ -23,12 +12,41 @@ export default function SelectCountryPage() {
 
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // Update cookies when country is selected
+  useEffect(() => {
+    if (!selectedCountry) return;
+    // Salvataggio già fatto in handleSelect per reattività immediata
+    // Aggiorna evento in background
+    (async () => {
+      try {
+        setLoading(true);
+        const supabase = getBrowserClient();
+        const { data } = await supabase.auth.getSession();
+        const jwt = data.session?.access_token;
+        const headers: HeadersInit = {};
+        if (jwt) headers.Authorization = `Bearer ${jwt}`;
+        await fetch("/api/event/ensure-default", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...headers,
+          },
+          body: JSON.stringify({ country: selectedCountry }),
+        });
+      } catch {
+        // Non bloccare la UI
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [selectedCountry]);
 
   // Prefetch tradition preview when country changes
   useEffect(() => {
-    if (!selectedCountry) return setTradition(null);
+    if (!selectedCountry) return;
     fetch(`/api/traditions?country=${encodeURIComponent(selectedCountry)}`)
       .then((r) => r.json())
       .then((d) => setTradition((d.traditions && d.traditions[0]) || null))
@@ -56,33 +74,21 @@ export default function SelectCountryPage() {
         }
         router.replace("/select-event-type");
       }
-    } catch {}
-  }, []);
+    } catch {
+      // Ignore errors in SSR
+    }
+  }, [router]);
 
-  async function handleSelect(code: string) {
+  function handleSelect(code: string) {
     setError(null);
-    localStorage.setItem("country", code);
-    document.cookie = `country=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    // Aggiorna subito storage e cookie per evitare ritardi nei test/UX
+    try {
+      localStorage.setItem("country", code);
+      document.cookie = `country=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    } catch {
+      // ignore
+    }
     setSelectedCountry(code);
-    (async () => {
-      try {
-        const supabase = getBrowserClient();
-        const { data } = await supabase.auth.getSession();
-        const jwt = data.session?.access_token;
-        const headers: HeadersInit = {};
-        if (jwt) headers.Authorization = `Bearer ${jwt}`;
-        await fetch("/api/event/ensure-default", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...headers,
-          },
-          body: JSON.stringify({ country: code }),
-        });
-      } catch (e) {
-        // non bloccare la UI
-      }
-    })();
   }
 
   return (
@@ -107,15 +113,15 @@ export default function SelectCountryPage() {
           {t("onboarding.selectCountryDesc", { fallback: "Seleziona il paese per personalizzare i contenuti" })}
         </p>
         <div className="grid grid-cols-2 gap-4">
-          {countries.map((c) => (
+          {COUNTRIES.map((c) => (
             <button
               key={c.code}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 hover:bg-[#A3B59D]/10 text-lg font-semibold transition-all w-full justify-center ${selectedCountry === c.code ? 'ring-2 ring-[#A3B59D]' : ''}`}
               onClick={() => handleSelect(c.code)}
               disabled={loading}
             >
-              <span className="text-2xl" aria-hidden="true">{c.flag}</span>
-              <span>{t(c.nameKey, { fallback: c.code.toUpperCase() })}</span>
+              <span className="text-2xl" aria-hidden="true">{c.emoji}</span>
+              <span>{new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of(c.code.toUpperCase()) || c.label}</span>
             </button>
           ))}
         </div>

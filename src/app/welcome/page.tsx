@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
-import { getBrowserClient } from "@/lib/supabaseServer";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -26,7 +26,7 @@ export default function WelcomePage() {
   }, [loading, isLoggedIn]);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#FDFBF7] via-[#FAF8F5] to-[#F5F1EB]">
+    <main className="min-h-screen bg-linear-to-br from-[#FDFBF7] via-[#FAF8F5] to-[#F5F1EB]">
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-20 text-center">
         <div className="max-w-4xl mx-auto space-y-8">
@@ -39,7 +39,7 @@ export default function WelcomePage() {
               e senza stress 💍
             </h1>
             <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto">
-              L'unica app che unisce <strong>budget, fornitori e serenità</strong><br />
+              L&apos;unica app che unisce <strong>budget, fornitori e serenità</strong><br />
               — senza pubblicità né caos.
             </p>
           </div>
@@ -144,7 +144,7 @@ export default function WelcomePage() {
 
       {/* Privacy & No spam */}
       <section className="container mx-auto px-6 py-16">
-        <div className="max-w-3xl mx-auto bg-gradient-to-br from-[#EAD9D4]/40 to-[#E8E0D6]/40 rounded-3xl p-12 text-center border-2 border-[#E8E0D6] shadow-xl">
+        <div className="max-w-3xl mx-auto bg-linear-to-br from-[#EAD9D4]/40 to-[#E8E0D6]/40 rounded-3xl p-12 text-center border-2 border-[#E8E0D6] shadow-xl">
           <div className="text-5xl mb-6">🔒</div>
           <h3 className="text-2xl font-bold text-gray-800 mb-4">
             Privacy e serenità garantite
@@ -217,7 +217,7 @@ function FeatureListItem({ icon, title, description }: {
 }) {
   return (
     <div className="flex gap-4 p-5 bg-white rounded-xl border border-gray-200 hover:border-[#A6B5A0] hover:shadow-md transition-all">
-      <div className="text-3xl flex-shrink-0">{icon}</div>
+      <div className="text-3xl shrink-0">{icon}</div>
       <div>
         <h4 className="font-bold text-gray-800 mb-1">{title}</h4>
         <p className="text-sm text-gray-600">{description}</p>

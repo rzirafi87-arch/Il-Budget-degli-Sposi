@@ -1,4 +1,5 @@
 import React from "react";
+import { formatCurrency } from "@/lib/locale";
 
 type Item = { name: string; amount?: number };
 
@@ -11,7 +12,7 @@ export default function BudgetItemsSection({ budgetItems }: { budgetItems: Item[
         {budgetItems.map((it, idx) => (
           <li key={idx} className="flex justify-between text-sm">
             <span>{it.name}</span>
-            {typeof it.amount === 'number' ? <span>€ {it.amount.toLocaleString('it-IT')}</span> : null}
+            {typeof it.amount === 'number' ? <span>{formatCurrency(it.amount)}</span> : null}
           </li>
         ))}
       </ul>

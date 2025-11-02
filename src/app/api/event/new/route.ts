@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getBrowserClient, getServiceClient } from "@/lib/supabaseServer";
+import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function POST(_req: NextRequest) {
   try {
-    // 1) Recupera utente autenticato (dal client anon, ma eseguito lato server)
-    const browser = getBrowserClient();
-    const { data: authData, error: authErr } = await browser.auth.getUser();
-    if (authErr || !authData?.user) {
+    // 1) Recupera utente autenticato da Authorization: Bearer <JWT>
+    const authHeader = _req.headers.get("authorization");
+    const jwt = authHeader?.split(" ")[1];
+    const db = getServiceClient();
+    if (!jwt) {
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
+    }
+    const { data: authData, error: authErr } = await db.auth.getUser(jwt);
+    if (authErr || !authData?.user) {
+      return NextResponse.json({ error: "Token non valido" }, { status: 401 });
     }
     const userId = authData.user.id;
 
     // 2) Crea evento con service client
-    const db = getServiceClient();
     const publicId = Math.random().toString(36).slice(2, 10);
 
     const { data: evt, error: evtErr } = await db
@@ -77,9 +81,10 @@ export async function POST(_req: NextRequest) {
     }
 
     return NextResponse.json({ event: { id: evt.id, public_id: publicId } }, { status: 200 });
-  } catch (e: any) {
-    console.error("EVENT NEW – Uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("EVENT NEW Uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }
 
@@ -87,3 +92,4 @@ export async function POST(_req: NextRequest) {
 export async function GET(req: NextRequest) {
   return POST(req);
 }
+

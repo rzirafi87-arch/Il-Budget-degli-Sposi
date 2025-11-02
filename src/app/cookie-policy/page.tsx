@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDate } from "@/lib/locale";
+
 export default function CookiePolicyPage() {
   return (
     <section className="pt-6 max-w-4xl mx-auto">
@@ -7,7 +9,7 @@ export default function CookiePolicyPage() {
       
       <div className="prose prose-lg max-w-none bg-white/70 rounded-2xl p-8 shadow-sm">
         <p className="text-sm text-gray-500 mb-6">
-          <strong>Ultimo aggiornamento:</strong> {new Date().toLocaleDateString("it-IT")}
+          <strong>Ultimo aggiornamento:</strong> {formatDate(new Date())}
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">1. Cosa sono i Cookie?</h2>
@@ -55,7 +57,7 @@ export default function CookiePolicyPage() {
 
         <h3 className="text-xl font-semibold mt-6 mb-3">2.2 Cookie di Preferenze 🎨</h3>
         <p>
-          Ricordano le tue scelte (lingua, tema, visualizzazione) per migliorare l'esperienza.
+          Ricordano le tue scelte (lingua, tema, visualizzazione) per migliorare l&apos;esperienza.
         </p>
         <div className="bg-gray-50 p-4 rounded-lg mt-2">
           <table className="w-full text-sm">
@@ -148,7 +150,7 @@ export default function CookiePolicyPage() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">5. Do Not Track (DNT)</h2>
         <p>
-          Rispettiamo il segnale "Do Not Track" del browser. Se abilitato, non tracciamo 
+          Rispettiamo il segnale &quot;Do Not Track&quot; del browser. Se abilitato, non tracciamo 
           la tua navigazione a fini analitici o pubblicitari.
         </p>
 
@@ -164,7 +166,7 @@ export default function CookiePolicyPage() {
         <h2 className="text-2xl font-semibold mt-8 mb-4">7. Aggiornamenti della Cookie Policy</h2>
         <p>
           Ci riserviamo il diritto di modificare questa Cookie Policy per adeguarla a normative 
-          o cambiamenti nei servizi. La data dell'ultimo aggiornamento è indicata in alto. 
+          o cambiamenti nei servizi. La data dell&apos;ultimo aggiornamento è indicata in alto. 
           Ti invitiamo a consultare periodicamente questa pagina.
         </p>
 
@@ -176,7 +178,7 @@ export default function CookiePolicyPage() {
           <li>I cookie tecnici non richiedono consenso</li>
           <li>I cookie di profilazione richiedono consenso preventivo e informato</li>
           <li>Il consenso può essere revocato in qualsiasi momento</li>
-          <li>Forniamo informazioni chiare e complete sull'uso dei cookie</li>
+          <li>Forniamo informazioni chiare e complete sull&apos;uso dei cookie</li>
         </ul>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">9. Contatti</h2>

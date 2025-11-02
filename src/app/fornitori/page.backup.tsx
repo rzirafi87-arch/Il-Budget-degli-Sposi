@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
 import { useToast } from "@/components/ToastProvider";

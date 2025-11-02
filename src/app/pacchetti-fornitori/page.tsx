@@ -2,8 +2,9 @@
 
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useSearchParams } from "next/navigation";
+import { formatCurrency } from "@/lib/locale";
 
 type Package = {
   id: string;
@@ -25,11 +26,10 @@ function PacchettiContent() {
 
   useEffect(() => {
     loadPackages();
-    
-    // Mostra messaggio successo/errore pagamento
+
     const paymentStatus = searchParams.get("payment");
     if (paymentStatus === "success") {
-      alert("✓ Pagamento completato con successo! Il tuo abbonamento è ora attivo.");
+      alert("Pagamento completato con successo! Il tuo abbonamento è ora attivo.");
     } else if (paymentStatus === "cancelled") {
       alert("Pagamento annullato. Puoi riprovare quando vuoi.");
     }
@@ -49,15 +49,8 @@ function PacchettiContent() {
   }
 
   function getPrice(pkg: Package) {
-    return billingPeriod === "monthly" ? pkg.price_monthly : pkg.price_yearly;
-  }
-
-  function getSavings(pkg: Package) {
-    if (billingPeriod === "monthly") return null;
-    const yearlyTotal = pkg.price_monthly * 12;
-    const savings = yearlyTotal - pkg.price_yearly;
-    const percentage = Math.round((savings / yearlyTotal) * 100);
-    return { amount: savings, percentage };
+    const amount = billingPeriod === "monthly" ? pkg.price_monthly : pkg.price_yearly;
+    return formatCurrency(amount, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   }
 
   function getTierColor(tier: string) {
@@ -78,9 +71,9 @@ function PacchettiContent() {
   function getTierBadge(tier: string) {
     switch (tier) {
       case "premium":
-        return "🌟 POPOLARE";
+        return "POPOLARE";
       case "premium_plus":
-        return "👑 BEST VALUE";
+        return "BEST VALUE";
       default:
         return null;
     }
@@ -96,7 +89,7 @@ function PacchettiContent() {
 
     try {
       // Verifica autenticazione
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData } = await getBrowserClient().auth.getSession();
       const jwt = sessionData.session?.access_token;
 
       if (!jwt) {
@@ -135,7 +128,6 @@ function PacchettiContent() {
         throw new Error(dataCheckout.error || "Errore creazione checkout");
       }
 
-      // Reindirizza a Stripe Checkout
       if (dataCheckout.url) {
         window.location.href = dataCheckout.url;
       } else {
@@ -151,100 +143,56 @@ function PacchettiContent() {
   return (
     <section className="pt-6 pb-12">
       <div className="max-w-7xl mx-auto">
-        {/* ...existing code... */}
-        {/* FAQ Section */}
-        <div className="mt-16 max-w-3xl mx-auto">
-          <h2 className="font-serif text-3xl text-center mb-8">Domande Frequenti</h2>
-          <div className="space-y-6">
-            <div className="p-6 rounded-xl border border-gray-200 bg-white/70">
-              <h3 className="font-semibold mb-2">Come funziona la visibilità Demo?</h3>
-              <p className="text-sm text-gray-600">
-                Solo i fornitori con piano <strong>Premium Plus</strong> appaiono nei risultati quando gli utenti 
-                navigano senza essere registrati. Questo garantisce massima esposizione anche a chi sta solo esplorando la piattaforma.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl border border-gray-200 bg-white/70">
-              <h3 className="font-semibold mb-2">Posso cambiare piano in qualsiasi momento?</h3>
-              <p className="text-sm text-gray-600">
-                Sì! Puoi fare upgrade o downgrade in qualsiasi momento. Se passi a un piano superiore, 
-                la differenza viene calcolata proporzionalmente. Se passi a un piano inferiore, il credito 
-                residuo viene applicato al periodo successivo.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl border border-gray-200 bg-white/70">
-              <h3 className="font-semibold mb-2">Quali metodi di pagamento accettate?</h3>
-              <p className="text-sm text-gray-600">
-                Accettiamo carte di credito/debito (Visa, Mastercard, American Express), PayPal e bonifico bancario 
-                per i piani annuali. Tutti i pagamenti sono sicuri e gestiti tramite provider certificati.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl border border-gray-200 bg-white/70">
-              <h3 className="font-semibold mb-2">Cosa include il badge "Fornitore Certificato"?</h3>
-              <p className="text-sm text-gray-600">
-                Il badge viene assegnato dopo una verifica manuale dei tuoi dati. Include controllo della partita IVA, 
-                referenze e portfolio. Aumenta la fiducia degli utenti e migliora il tuo posizionamento nei risultati.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl border border-gray-200 bg-white/70">
-              <h3 className="font-semibold mb-2">Perché i vostri prezzi sono più bassi di Matrimonio.com?</h3>
-              <p className="text-sm text-gray-600">
-                Siamo una piattaforma innovativa e vogliamo supportare i fornitori con tariffe trasparenti e sostenibili. 
-                Offriamo lo stesso livello di visibilità a prezzi più competitivi, reinvestendo nel miglioramento continuo 
-                della piattaforma.
-              </p>
-            </div>
-          </div>
-          {/* FAQPage JSON-LD */}
-          <script type="application/ld+json" dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": "Come funziona la visibilità Demo?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Solo i fornitori con piano Premium Plus appaiono nei risultati quando gli utenti navigano senza essere registrati. Questo garantisce massima esposizione anche a chi sta solo esplorando la piattaforma."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Posso cambiare piano in qualsiasi momento?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Sì! Puoi fare upgrade o downgrade in qualsiasi momento. Se passi a un piano superiore, la differenza viene calcolata proporzionalmente. Se passi a un piano inferiore, il credito residuo viene applicato al periodo successivo."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Quali metodi di pagamento accettate?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Accettiamo carte di credito/debito (Visa, Mastercard, American Express), PayPal e bonifico bancario per i piani annuali. Tutti i pagamenti sono sicuri e gestiti tramite provider certificati."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Cosa include il badge 'Fornitore Certificato'?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Il badge viene assegnato dopo una verifica manuale dei tuoi dati. Include controllo della partita IVA, referenze e portfolio. Aumenta la fiducia degli utenti e migliora il tuo posizionamento nei risultati."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Perché i vostri prezzi sono più bassi di Matrimonio.com?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Siamo una piattaforma innovativa e vogliamo supportare i fornitori con tariffe trasparenti e sostenibili. Offriamo lo stesso livello di visibilità a prezzi più competitivi, reinvestendo nel miglioramento continuo della piattaforma."
-                  }
-                }
-              ]
-            })
-          }} />
+        {/* Toggle fatturazione */}
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <button
+            onClick={() => setBillingPeriod("monthly")}
+            className={`px-4 py-2 rounded-full border ${billingPeriod === "monthly" ? "bg-[#A3B59D] text-white" : "bg-white"}`}
+          >
+            Mensile
+          </button>
+          <button
+            onClick={() => setBillingPeriod("yearly")}
+            className={`px-4 py-2 rounded-full border ${billingPeriod === "yearly" ? "bg-[#A3B59D] text-white" : "bg-white"}`}
+          >
+            Annuale
+          </button>
         </div>
-        {/* ...existing code... */}
+
+        {loading ? (
+          <div className="text-center">Caricamento...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {packages.sort((a, b) => a.display_order - b.display_order).map((pkg) => (
+              <div key={pkg.id} className={`p-6 rounded-xl border ${getTierColor(pkg.tier)}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl font-serif font-bold">{pkg.name_it}</h3>
+                  {getTierBadge(pkg.tier) && (
+                    <span className="text-xs px-2 py-1 rounded-full border bg-white">{getTierBadge(pkg.tier)}</span>
+                  )}
+                </div>
+                <p className="text-gray-600 text-sm mb-4">{pkg.description_it}</p>
+                <div className="text-3xl font-bold mb-4">{getPrice(pkg)}</div>
+                <ul className="text-sm text-gray-700 space-y-1 mb-4">
+                  {pkg.features?.map((f, i) => (
+                    <li key={i}>• {f}</li>
+                  ))}
+                </ul>
+                <button
+                  disabled={processingPayment === pkg.tier}
+                  onClick={() => handlePurchase(pkg)}
+                  className="w-full px-4 py-2 rounded-lg border bg-white hover:bg-gray-50"
+                >
+                  {processingPayment === pkg.tier ? "Elaborazione..." : "Acquista"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-12 text-center text-sm text-gray-500">
+          <Link href="/fornitori">Scopri come funziona</Link>
+        </div>
       </div>
     </section>
   );

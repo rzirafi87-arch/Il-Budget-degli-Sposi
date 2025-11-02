@@ -17,5 +17,28 @@
   "auth": "登录",
   "chat": "在 WhatsApp 上与我们聊天",
   "settings": "设置",
-  "loading": "加载中…"
+  "loading": "加载中…",
+  "comingSoon": "即将推出",
+  "events": {
+    "wedding": "婚礼",
+    "baptism": "洗礼",
+    "eighteenth": "18岁生日",
+    "anniversary": "结婚纪念日",
+    "gender-reveal": "性别揭晓",
+    "birthday": "生日",
+    "fifty": "50岁",
+    "retirement": "退休",
+    "confirmation": "坚振礼",
+    "graduation": "毕业",
+    "baby-shower": "迎婴派对",
+    "engagement": "订婚派对",
+    "corporate": "企业活动",
+    "milestone-birthday": "里程碑生日",
+    "gender-reveal-party": "性别揭晓派对",
+    "proposal": "求婚派对",
+    "communion": "初领圣体",
+    "bar-mitzvah": "巴米茨瓦成年礼",
+    "quinceanera": "十五岁礼",
+    "charity-gala": "慈善/晚会"
+  }
 }

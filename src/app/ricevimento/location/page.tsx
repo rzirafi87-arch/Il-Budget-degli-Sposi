@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import { GEO, getUserCountrySafe } from "@/constants/geo";
+import { useProvinceList } from "@/lib/geoClient";
+import { getProvinceLabel, getRegionLabel } from "@/lib/geoLabels";
 
 type Location = {
   id: string;
@@ -23,12 +26,12 @@ type Location = {
   verified: boolean;
 };
 
-const ITALIAN_REGIONS = [
-  "Abruzzo", "Basilicata", "Calabria", "Campania", "Emilia-Romagna",
-  "Friuli-Venezia Giulia", "Lazio", "Liguria", "Lombardia", "Marche",
-  "Molise", "Piemonte", "Puglia", "Sardegna", "Sicilia", "Toscana",
-  "Trentino-Alto Adige", "Umbria", "Valle d'Aosta", "Veneto"
-];
+function useRegionOptions() {
+  const [country, setCountry] = useState<string>("it");
+  useEffect(() => { setCountry(getUserCountrySafe()); }, []);
+  const regions = (GEO[country]?.regions || GEO.it.regions).map(r => r.name);
+  return { country, regions };
+}
 
 const LOCATION_TYPES = [
   "Villa",
@@ -51,6 +54,7 @@ export default function LocationRicevimentoPage() {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const { country, regions } = useRegionOptions();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -79,6 +83,7 @@ export default function LocationRicevimentoPage() {
       if (selectedRegion) params.append("region", selectedRegion);
       if (selectedProvince) params.append("province", selectedProvince);
       if (selectedType) params.append("type", selectedType);
+      try { if (country) params.append("country", country); } catch {}
 
       const res = await fetch(`/api/locations?${params.toString()}`);
       const data = await res.json();
@@ -108,6 +113,7 @@ export default function LocationRicevimentoPage() {
         },
         body: JSON.stringify({
           ...formData,
+          country,
           capacity_min: formData.capacity_min ? parseInt(formData.capacity_min) : null,
           capacity_max: formData.capacity_max ? parseInt(formData.capacity_max) : null,
         }),
@@ -140,9 +146,9 @@ export default function LocationRicevimentoPage() {
     }
   }
 
-  const provinces = selectedRegion
-    ? Array.from(new Set(locations.filter(l => l.region === selectedRegion).map(l => l.province))).sort()
-    : [];
+  const { provinces } = useProvinceList(country, selectedRegion, () =>
+    Array.from(new Set(locations.filter(l => l.region === selectedRegion).map(l => l.province))).sort()
+  );
 
   const filteredLocations = locations;
 
@@ -193,7 +199,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Regione *</label>
+                <label className="block text-sm font-semibold mb-1">{getRegionLabel(country)} *</label>
                 <select
                   required
                   value={formData.region}
@@ -201,22 +207,36 @@ export default function LocationRicevimentoPage() {
                   className="w-full border rounded px-3 py-2"
                 >
                   <option value="">Seleziona...</option>
-                  {ITALIAN_REGIONS.map(r => (
+                  {regions.map(r => (
                     <option key={r} value={r}>{r}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Provincia *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="es. Roma, Milano, Napoli"
-                  value={formData.province}
-                  onChange={(e) => setFormData({ ...formData, province: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
+                <label className="block text-sm font-semibold mb-1">{getProvinceLabel(country)} *</label>
+                {provinces.length ? (
+                  <select
+                    required
+                    value={formData.province}
+                    onChange={(e) => setFormData({ ...formData, province: e.target.value })}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">Seleziona...</option>
+                    {provinces.map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    required
+                    placeholder="es. Roma, Milano, Napoli"
+                    value={formData.province}
+                    onChange={(e) => setFormData({ ...formData, province: e.target.value })}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                )}
               </div>
 
               <div>
@@ -330,7 +350,7 @@ export default function LocationRicevimentoPage() {
           <h2 className="text-xl font-bold mb-4">Filtri</h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-2">Regione</label>
+              <label className="block text-sm font-semibold mb-2">{getRegionLabel(country)}</label>
               <select
                 value={selectedRegion}
                 onChange={(e) => {
@@ -340,14 +360,14 @@ export default function LocationRicevimentoPage() {
                 className="w-full border rounded px-3 py-2"
               >
                 <option value="">Tutte</option>
-                {ITALIAN_REGIONS.map(r => (
+                {regions.map(r => (
                   <option key={r} value={r}>{r}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Provincia</label>
+              <label className="block text-sm font-semibold mb-2">{getProvinceLabel(country)}</label>
               <select
                 value={selectedProvince}
                 onChange={(e) => setSelectedProvince(e.target.value)}

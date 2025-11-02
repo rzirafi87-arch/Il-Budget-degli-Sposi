@@ -1,10 +1,12 @@
 {
-  "appointments.title": "Citas y plazos",
-  "appointments.formTitle": "Título de la cita",
-  "appointments.formLocation": "Lugar",
-  "appointments.formNotes": "Notas",
-  "appointments.addBtn": "Agregar cita",
-  "appointments.empty": "No se han agregado citas.",
-  "appointments.dateLabel": "Fecha",
-  "appointments.locationLabel": "Lugar"
+  "appointments": {
+    "title": "Citas y plazos",
+    "formTitle": "Título de la cita",
+    "formLocation": "Lugar",
+    "formNotes": "Notas",
+    "addBtn": "Agregar cita",
+    "empty": "No se han agregado citas.",
+    "dateLabel": "Fecha",
+    "locationLabel": "Lugar"
+  }
 }

@@ -6,10 +6,10 @@ export async function GET() {
   try {
     const supabase = getServiceClient();
     
-    // Get current user's event
+    // Get current user's event with wedding date
     const { data: eventData } = await supabase
       .from('events')
-      .select('id')
+      .select('id, wedding_date, bride_email, groom_email')
       .limit(1)
       .single();
 
@@ -29,7 +29,26 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ config });
+    // Se esiste la configurazione, usala; altrimenti crea una configurazione base con la data dell'evento
+    const finalConfig = config || {
+      bride_name: '',
+      groom_name: '',
+      wedding_date: eventData.wedding_date || '',
+      church_name: '',
+      church_address: '',
+      location_name: '',
+      location_address: '',
+      iban: '',
+      bank_name: '',
+      ceremony_time: '',
+      reception_time: '',
+      font_family: 'Playfair Display',
+      color_scheme: 'classic',
+      template_style: 'elegant',
+      custom_message: ''
+    };
+
+    return NextResponse.json({ config: finalConfig });
   } catch (err: any) {
     console.error('Unexpected error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
@@ -51,6 +70,14 @@ export async function POST(request: NextRequest) {
     if (!eventData) {
       return NextResponse.json({ error: 'No event found' }, { status: 404 });
     }
+
+      // Se la data matrimonio è presente nel body, aggiorna anche l'evento
+      if (body.wedding_date) {
+        await supabase
+          .from('events')
+          .update({ wedding_date: body.wedding_date })
+          .eq('id', eventData.id);
+      }
 
     // Upsert wedding card configuration
     const { data, error } = await supabase

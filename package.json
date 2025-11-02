@@ -1,42 +1,68 @@
 {
-  "name": "il-budget-degli-sposi",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "sql:exec": "node scripts/run-sql.mjs",
-    "sql:init:all": "node scripts/run-sql.mjs supabase-COMPLETE-SETUP.sql supabase-seed-functions.sql supabase-suppliers-seed.sql supabase-locations-seed.sql supabase-churches-seed.sql supabase-total-budget-patch.sql supabase-per-spouse-budget-patch.sql supabase-spend-type-patch.sql supabase-expenses-patch.sql supabase-payment-providers-patch.sql supabase-wedding-cards-table.sql"
-  },
-  "engines": {
-    "node": ">=18.17.0"
-  },
-  "dependencies": {
-    "@remotion/player": "^4.0.366",
-    "@stripe/stripe-js": "^8.1.0",
-    "@supabase/supabase-js": "^2.76.1",
-    "clsx": "^2.1.1",
-    "dotenv": "^16.4.5",
-    "jspdf": "^3.0.3",
-    "next": "16.0.0",
-    "node-fetch": "^3.3.2",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "remotion": "^4.0.366",
-    "resend": "^6.2.2",
-    "stripe": "^19.1.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.0",
-    "pg": "^8.13.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "name": "il-budget-degli-sposi",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "npm run autocommit && next dev",
+        "build": "next build",
+        "start": "next start",
+        "clean": "node -e \"require(\u0027fs\u0027).rmSync(\u0027.next\u0027,{recursive:true,force:true});console.log(\u0027Cleaned .next\u0027)\"",
+        "lint": "eslint",
+        "check:integrations": "node scripts/check-integrations.mjs",
+        "env:verify": "node scripts/verify-env.mjs",
+        "db:up": "docker compose up -d",
+        "db:down": "docker compose down -v",
+        "db:connect": "node connect-databases.mjs",
+        "db:test": "node test-db-connection.mjs",
+        "sql:exec": "node scripts/run-sql.mjs",
+        "sql:init:all": "node scripts/run-sql.mjs supabase-COMPLETE-SETUP.sql supabase-seed-functions.sql supabase-suppliers-seed.sql supabase-locations-seed.sql supabase-churches-seed.sql supabase-total-budget-patch.sql supabase-per-spouse-budget-patch.sql supabase-spend-type-patch.sql supabase-expenses-patch.sql supabase-payment-providers-patch.sql supabase-wedding-cards-table.sql supabase-traditions-mx.sql supabase-traditions-extend-and-seed.sql supabase-traditions-indexes.sql supabase-traditions-policies.sql supabase-supported-lists.sql supabase-storage-policies.sql",
+        "sql:init:traditions": "node scripts/run-sql.mjs supabase-traditions-mx.sql supabase-traditions-extend-and-seed.sql supabase-traditions-seed-more.sql supabase-traditions-policies.sql",
+        "sql:init:lists": "node scripts/run-sql.mjs supabase-supported-lists.sql",
+        "sql:init:storage": "node scripts/run-sql.mjs supabase-storage-policies.sql",
+        "sql:seed:events": "node scripts/run-sql.mjs supabase-events-seed.sql",
+        "sql:init:core-events": "node scripts/run-sql.mjs supabase-core-events-schema.sql supabase-seed-event-types.sql supabase-seed-event-categories.sql",
+        "sql:seed:core-demo": "node scripts/run-sql.mjs supabase-demo-public-event.sql",
+        "sql:seed:all": "node scripts/run-sql.mjs supabase-events-seed.sql supabase-india-seed.sql supabase-mexico-seed.sql supabase-mx-seed-locations.sql supabase-mx-seed-suppliers.sql supabase-traditions-extend-and-seed.sql supabase-traditions-seed-more.sql supabase-traditions-policies.sql",
+        "geo:import": "node scripts/geo-import.mjs",
+        "autocommit": "node scripts/autocommit-once.mjs",
+        "dev:ac": "npm run autocommit && next dev",
+        "autocommit:watch": "node scripts/autocommit-watch.mjs"
+    },
+    "engines": {
+        "node": "\u003e=18.17.0"
+    },
+    "dependencies": {
+        "@remotion/player": "^4.0.366",
+        "@stripe/stripe-js": "^8.1.0",
+        "@supabase/supabase-js": "^2.76.1",
+        "clsx": "^2.1.1",
+        "dotenv": "^16.4.5",
+        "jspdf": "^3.0.3",
+        "next": "16.0.0",
+        "next-intl": "^4.4.0",
+        "node-fetch": "^3.3.2",
+        "react": "19.2.0",
+        "react-dom": "19.2.0",
+        "remotion": "^4.0.366",
+        "resend": "^6.2.2",
+        "stripe": "^19.1.0"
+    },
+    "devDependencies": {
+        "@babel/preset-react": "^7.28.5",
+        "@babel/preset-typescript": "^7.28.5",
+        "@tailwindcss/postcss": "^4",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.0",
+        "@types/jest": "^30.0.0",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "16.0.0",
+        "jest": "^30.2.0",
+        "jest-environment-jsdom": "^30.2.0",
+        "pg": "^8.13.1",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+    }
 }

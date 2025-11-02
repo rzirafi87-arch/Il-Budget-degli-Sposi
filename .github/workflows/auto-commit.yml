@@ -1,0 +1,30 @@
+name: Auto Commit
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # ogni 6 ore
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  autocommit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Auto commit updated files
+        run: |
+          git add -A
+          git commit -m "chore: auto commit scheduled update" || echo "No changes"
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}

@@ -1,10 +1,14 @@
 {
-  "dashboard.curiosityTitle": "Curiosities & Tips",
-  "dashboard.suggestions.mariachi": "Remember to book the Mariachi!",
-  "dashboard.suggestions.location": "Check venue availability at least 6 months in advance.",
-  "dashboard.suggestions.photobooth": "Consider a Mexican-themed photobooth for the party.",
-  "dashboard.suggestions.documents": "Check the legal documents required in Mexico.",
-  "dashboard.suggestions.photographer": "Book your photographer well in advance.",
-  "dashboard.suggestions.guests": "Review your guest list and update preferences.",
-  "dashboard.suggestions.traditions": "Check local traditions to enrich your ceremony."
+  "dashboard": {
+    "curiosityTitle": "Curiosities & Tips",
+    "suggestions": {
+      "mariachi": "Remember to book the Mariachi!",
+      "location": "Check venue availability at least 6 months in advance.",
+      "photobooth": "Consider a Mexican-themed photobooth for the party.",
+      "documents": "Check the legal documents required in Mexico.",
+      "photographer": "Book your photographer well in advance.",
+      "guests": "Review your guest list and update preferences.",
+      "traditions": "Check local traditions to enrich your ceremony."
+    }
+  }
 }

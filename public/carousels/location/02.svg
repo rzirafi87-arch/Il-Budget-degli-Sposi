@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Location: spazi interni ed esterni">
+  <defs>
+    <linearGradient id="loc2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#edf6ea"/>
+      <stop offset="100%" stop-color="#9db39a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#loc2)"/>
+  <g stroke="#6f8a73" stroke-width="2" opacity="0.25" fill="none">
+    <rect x="160" y="540" width="880" height="200" rx="18"/>
+    <line x1="160" y1="620" x2="1040" y2="620"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Spazi interni ed esterni</text>
+  </g>
+</svg>
+

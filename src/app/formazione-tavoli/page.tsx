@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Table = {
   totalSeats: number;
@@ -17,7 +17,7 @@ export default function TavoliRiepilogoPage() {
       try {
         const res = await fetch("/api/my/tables");
         const json = await res.json();
-        setTables((json.tables || []).map((t: any) => ({
+        setTables((json.tables || []).map((t: { totalSeats?: number; assignedGuests?: { id: string }[] }) => ({
           totalSeats: Number(t.totalSeats || 0),
           assignedGuests: t.assignedGuests || [],
         })));
@@ -55,7 +55,7 @@ export default function TavoliRiepilogoPage() {
         </Link>
       </div>
 
-      <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-gradient-to-br from-gray-200 to-gray-300 shadow-xl">
+      <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-linear-to-br from-gray-200 to-gray-300 shadow-xl">
         <h3 className="font-bold text-lg mb-4 text-gray-900">📊 Riepilogo Tavoli</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
           <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">

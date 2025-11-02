@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireUser } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
 
 export const runtime = "nodejs";
 
@@ -87,6 +89,7 @@ export async function GET(req: NextRequest) {
       id,
       name,
       guest_type,
+      exclude_from_family_table,
       family_group_id,
       family_groups (
         family_name
@@ -100,6 +103,7 @@ export async function GET(req: NextRequest) {
     id: g.id,
     name: g.name,
     guestType: g.guest_type,
+    excludeFromFamilyTable: g.exclude_from_family_table === true,
     familyGroupId: g.family_group_id,
     familyName: g.family_groups?.family_name,
   }));
@@ -112,19 +116,8 @@ export async function GET(req: NextRequest) {
 
 // POST: Salva tavoli e assegnazioni
 export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-
-  if (!jwt) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
   const db = getServiceClient();
-  const { data: userData, error: userError } = await db.auth.getUser(jwt);
-  if (userError) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-  const userId = userData.user.id;
+  const { userId } = await requireUser(req);
 
   // Ottieni event_id
   const { data: events } = await db
@@ -159,7 +152,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (tableError || !newTable) {
-      console.error("Errore inserimento tavolo:", tableError);
+      logger.error("Errore inserimento tavolo", { error: tableError });
       continue;
     }
 
@@ -176,7 +169,7 @@ export async function POST(req: NextRequest) {
         .insert(assignments);
 
       if (assignError) {
-        console.error("Errore inserimento assegnazioni:", assignError);
+        logger.error("Errore inserimento assegnazioni", { error: assignError });
       }
     }
   }

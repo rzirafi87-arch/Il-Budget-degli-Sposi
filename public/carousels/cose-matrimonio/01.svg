@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Cose Matrimonio: accessori e dettagli">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#edf6ea"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+    <pattern id="orn" width="120" height="120" patternUnits="userSpaceOnUse">
+      <path d="M20,60 C40,20 80,20 100,60 C80,100 40,100 20,60 Z" fill="#a6bca8"/>
+      <circle cx="60" cy="60" r="8" fill="#6f8a73"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect x="140" y="520" width="920" height="220" rx="18" fill="url(#orn)" opacity="0.35"/>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="70" font-weight="700">Cose Matrimonio</text>
+    <text x="120" y="418" font-size="28" opacity="0.9">Accessori e dettagli</text>
+  </g>
+</svg>
+

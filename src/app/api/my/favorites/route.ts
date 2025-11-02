@@ -2,6 +2,8 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireUser, getBearer } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
 
 type Favorite = {
   id?: string;
@@ -12,20 +14,11 @@ type Favorite = {
 };
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-
-  if (!jwt) {
-    return NextResponse.json({ favorites: [] });
-  }
+  const jwt = getBearer(req);
+  if (!jwt) return NextResponse.json({ favorites: [] });
 
   const db = getServiceClient();
-  const { data: userData, error } = await db.auth.getUser(jwt);
-  if (error || !userData?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-
-  const userId = userData.user.id;
+  const { userId } = await requireUser(req);
 
   // Fetch user favorites
   const { data: favorites, error: favError } = await db
@@ -35,7 +28,7 @@ export async function GET(req: NextRequest) {
     .order("created_at", { ascending: false });
 
   if (favError) {
-    console.error("Favorites GET error:", favError);
+    logger.error("Favorites GET error", { error: favError });
     return NextResponse.json({ error: favError.message }, { status: 500 });
   }
 
@@ -43,20 +36,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-
-  if (!jwt) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
+  const { userId } = await requireUser(req);
   const db = getServiceClient();
-  const { data: userData, error } = await db.auth.getUser(jwt);
-  if (error || !userData?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-
-  const userId = userData.user.id;
 
   let body: Favorite;
   try {
@@ -82,7 +63,7 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (insertError) {
-    console.error("Favorite INSERT error:", insertError);
+    logger.error("Favorite INSERT error", { error: insertError });
     return NextResponse.json({ error: insertError.message }, { status: 500 });
   }
 
@@ -90,20 +71,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-
-  if (!jwt) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
+  const { userId } = await requireUser(req);
   const db = getServiceClient();
-  const { data: userData, error } = await db.auth.getUser(jwt);
-  if (error || !userData?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-
-  const userId = userData.user.id;
   const { searchParams } = new URL(req.url);
   const favoriteId = searchParams.get("id");
 
@@ -118,7 +87,7 @@ export async function DELETE(req: NextRequest) {
     .eq("user_id", userId);
 
   if (deleteError) {
-    console.error("Favorite DELETE error:", deleteError);
+    logger.error("Favorite DELETE error", { error: deleteError });
     return NextResponse.json({ error: deleteError.message }, { status: 500 });
   }
 

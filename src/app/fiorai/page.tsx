@@ -5,7 +5,7 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
-import { getBrowserClient } from "@/lib/supabaseServer";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useToast } from "@/components/ToastProvider";
 
 const supabase = getBrowserClient();
@@ -57,10 +57,16 @@ export default function FioraiPage() {
       if (jwt) headers.Authorization = `Bearer ${jwt}`;
 
       const params = new URLSearchParams();
-  params.append("category", "Fiorai");
+      params.append("category", "Fiorai");
       if (region) params.append("region", region);
       if (province) params.append("province", province);
       if (search) params.append("search", search);
+      try {
+        const cookieCountry = document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1];
+        const lsCountry = localStorage.getItem("country");
+        const country = cookieCountry || lsCountry;
+        if (country) params.append("country", country);
+      } catch {}
 
       const r = await fetch(`/api/suppliers?${params.toString()}`, { headers });
       const j = await r.json();

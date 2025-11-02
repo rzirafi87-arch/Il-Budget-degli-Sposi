@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { formatCurrency, formatDate, formatDateTime } from "@/lib/locale";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type SupplierProfile = {
   id: string;
@@ -41,7 +42,7 @@ export default function FornitoriDashboardPage() {
   async function loadData() {
     try {
       setLoading(true);
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData } = await getBrowserClient().auth.getSession();
       const jwt = sessionData.session?.access_token;
 
       if (!jwt) {
@@ -176,7 +177,7 @@ export default function FornitoriDashboardPage() {
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Scadenza</p>
                   <p className="font-semibold">
-                    {new Date(profile.subscription_expires_at).toLocaleDateString("it-IT")}
+                    {formatDate(new Date(profile.subscription_expires_at))}
                   </p>
                 </div>
                 <div>
@@ -191,7 +192,7 @@ export default function FornitoriDashboardPage() {
         </div>
 
         {/* Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Link
             href="/pacchetti-fornitori"
             className="p-6 rounded-2xl border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D]/10 transition-all text-center"
@@ -215,11 +216,19 @@ export default function FornitoriDashboardPage() {
               Modifica dati, carica foto e ottimizza la tua scheda
             </p>
           </button>
+
+          <Link
+            href={`/fornitori/${profile.id}`}
+            className="p-6 rounded-2xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all text-center"
+          >
+            <h3 className="font-semibold text-lg mb-2">Pagina pubblica</h3>
+            <p className="text-sm text-gray-600">Visualizza come ti vedono gli sposi</p>
+          </Link>
         </div>
 
         {/* Analytics - Solo per Premium e Premium Plus */}
         {(profile.subscription_tier === "premium" || profile.subscription_tier === "premium_plus") && (
-          <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-[#A3B59D]/5">
+          <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-linear-to-br from-white to-[#A3B59D]/5">
             <h3 className="font-semibold text-lg mb-4">📊 Analytics</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-lg bg-white border border-gray-200">
@@ -237,7 +246,7 @@ export default function FornitoriDashboardPage() {
             </div>
             {profile.last_view_at && (
               <p className="text-xs text-gray-500 mt-3">
-                Ultima visualizzazione: {new Date(profile.last_view_at).toLocaleString("it-IT")}
+                Ultima visualizzazione: {formatDateTime(new Date(profile.last_view_at))}
               </p>
             )}
           </div>
@@ -295,7 +304,7 @@ export default function FornitoriDashboardPage() {
                       </span>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold">€{tx.amount.toFixed(2)}</div>
+                      <div className="font-semibold">{formatCurrency(tx.amount)}</div>
                       <div className={`text-xs ${
                         tx.status === "completed" ? "text-green-600" :
                         tx.status === "pending" ? "text-orange-600" :
@@ -308,9 +317,8 @@ export default function FornitoriDashboardPage() {
                     </div>
                   </div>
                   <div className="text-xs text-gray-500">
-                    Dal {new Date(tx.starts_at).toLocaleDateString("it-IT")} 
-                    {" "}al {new Date(tx.expires_at).toLocaleDateString("it-IT")}
-                    {" • "}Acquistato il {new Date(tx.created_at).toLocaleDateString("it-IT")}
+                    Dal {formatDate(new Date(tx.starts_at))} al {formatDate(new Date(tx.expires_at))}
+                    {" • "}Acquistato il {formatDate(new Date(tx.created_at))}
                   </div>
                 </div>
               ))}

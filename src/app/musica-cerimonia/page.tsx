@@ -59,6 +59,12 @@ export default function MusicaCerimoniaPage() {
       const params = new URLSearchParams();
       if (selectedRegion) params.append("region", selectedRegion);
       if (selectedProvince) params.append("province", selectedProvince);
+      try {
+        const cookieCountry = document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1];
+        const lsCountry = localStorage.getItem("country");
+        const country = cookieCountry || lsCountry;
+        if (country) params.append("country", country);
+      } catch {}
 
       const res = await fetch(`/api/musica-cerimonia?${params.toString()}`);
       const data = await res.json();

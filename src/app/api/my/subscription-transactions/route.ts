@@ -43,8 +43,9 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ transactions: transactions || [] });
-  } catch (e: any) {
-    console.error("SUBSCRIPTION_TRANSACTIONS GET uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("SUBSCRIPTION_TRANSACTIONS GET uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }

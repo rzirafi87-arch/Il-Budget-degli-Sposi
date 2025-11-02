@@ -1,8 +1,10 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
 import ExportButton from "@/components/ExportButton";
+import PageInfoNote from "@/components/PageInfoNote";
+import { formatDate } from "@/lib/locale";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -154,19 +156,38 @@ export default function TimelinePage() {
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between hidden">
+      <div className="hidden md:flex items-center justify-between">
         <div />
-        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">← Torna in Dashboard</a>
+        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
       </div>
-      <div className="bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200 shadow-sm relative">
+      <div className="bg-linear-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200 shadow-sm relative">
         <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
-          📅 Timeline del Matrimonio
+          Timeline del Matrimonio
         </h1>
         <p className="text-gray-600">
-          Organizzate ogni fase della pianificazione senza stress. Spuntate le attività man mano che le completate! 💍
+          Organizzate ogni fase della pianificazione senza stress. Spuntate le attività man mano che le completate! ✨
         </p>
-        <a href="/dashboard" className="absolute top-4 right-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"><span aria-hidden="true">🏠</span> Torna in Dashboard</a>
+        <a href="/dashboard" className="absolute top-4 right-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
       </div>
+
+      <PageInfoNote
+        icon="📅"
+        title="Timeline Organizzativa del Tuo Evento"
+        description="La timeline è una checklist cronologica che ti guida passo-passo nella pianificazione. Ogni task è posizionato temporalmente (mesi prima dell'evento) e categorizzato per priorità. Spunta le attività completate per monitorare i progressi e assicurarti di non dimenticare nulla."
+        tips={[
+          "Le attività sono organizzate per 'mesi prima' - più lontane sono, prima dovresti occupartene",
+          "Usa le priorità per capire cosa è urgente (alta) e cosa può aspettare (bassa)",
+          "Aggiungi task personalizzate per esigenze specifiche del tuo evento",
+          "Filtra per categoria (Budget, Fornitori, Abiti, etc.) per focalizzarti su un'area alla volta",
+          "Esporta la timeline in CSV per condividerla con partner, famiglia o wedding planner"
+        ]}
+        eventTypeSpecific={{
+          wedding: "La timeline del matrimonio copre 12 mesi di preparazione, dalle prime decisioni (budget, location) fino ai dettagli finali (tableau, segnaposto). Segui questa roadmap per un'organizzazione serena!",
+          baptism: "La timeline del battesimo è più breve (3-6 mesi): chiesa, padrini, bomboniere, rinfresco. Concentrati sugli aspetti religiosi e la celebrazione familiare.",
+          birthday: "La timeline del compleanno dipende dalla grandezza: per feste importanti (18, 30, 50 anni) inizia 3-4 mesi prima con location e catering.",
+          graduation: "La timeline della laurea è concentrata (1-2 mesi): location, inviti, buffet/pranzo, decorazioni. Ricorda che molti laureati organizzano anche un viaggio!"
+        }}
+      />
 
       {/* Progress Overview */}
       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
@@ -185,7 +206,7 @@ export default function TimelinePage() {
               type="csv"
               className="text-sm"
             >
-              📥 Esporta
+              Esporta
             </ExportButton>
             <span className="text-2xl font-bold" style={{ color: "var(--color-sage)" }}>
               {completedCount}/{tasks.length}
@@ -203,12 +224,12 @@ export default function TimelinePage() {
         </div>
         <p className="text-sm text-gray-500 text-center">
           {progressPercent < 30 
-            ? "🌱 Appena iniziato — siete sulla strada giusta!"
+            ? "Appena iniziato - siete sulla strada giusta!"
             : progressPercent < 70
-            ? "🎯 State andando alla grande! Continuate così!"
+            ? "State andando alla grande! Continuate cosi!"
             : progressPercent < 100
-            ? "🎉 Quasi pronti! Mancano gli ultimi dettagli!"
-            : "✨ Tutto fatto! Siete pronti per il grande giorno!"}
+            ? "Quasi pronti! Mancano gli ultimi dettagli!"
+            : "Tutto fatto! Siete pronti per il grande giorno!"}
         </p>
       </div>
 
@@ -255,13 +276,13 @@ export default function TimelinePage() {
                     <div className="flex items-start gap-3">
                       <button
                         onClick={() => toggleTask(task.id)}
-                        className={`mt-1 w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                        className={`mt-1 w-6 h-6 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${
                           task.completed 
                             ? "border-green-500 bg-green-500" 
                             : "border-gray-300 hover:border-gray-400"
                         }`}
                       >
-                        {task.completed && <span className="text-white text-sm font-bold">✓</span>}
+                        {task.completed && <span className="text-white text-sm font-bold">âœ“</span>}
                       </button>
 
                       <div className="flex-1">
@@ -296,10 +317,10 @@ export default function TimelinePage() {
       </div>
 
       {weddingDate && (
-        <div className="bg-gradient-to-r from-rose-50 to-blue-50 rounded-xl p-6 text-center border border-gray-200">
+        <div className="bg-linear-to-r from-rose-50 to-blue-50 rounded-xl p-6 text-center border border-gray-200">
           <p className="text-sm text-gray-600 mb-1">Il vostro matrimonio è il</p>
           <p className="text-xl font-bold text-gray-800">
-            {weddingDate.toLocaleDateString("it-IT", {
+            {formatDate(weddingDate, {
               weekday: "long",
               year: "numeric",
               month: "long",
@@ -311,3 +332,7 @@ export default function TimelinePage() {
     </section>
   );
 }
+
+
+
+

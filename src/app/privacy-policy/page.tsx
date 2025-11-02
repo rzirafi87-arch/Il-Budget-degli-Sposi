@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDate } from "@/lib/locale";
+
 export default function PrivacyPolicyPage() {
   return (
     <section className="pt-6 max-w-4xl mx-auto">
@@ -7,7 +9,7 @@ export default function PrivacyPolicyPage() {
       
       <div className="prose prose-lg max-w-none bg-white/70 rounded-2xl p-8 shadow-sm">
         <p className="text-sm text-gray-500 mb-6">
-          <strong>Ultimo aggiornamento:</strong> {new Date().toLocaleDateString("it-IT")}
+          <strong>Ultimo aggiornamento:</strong> {formatDate(new Date())}
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">1. Introduzione</h2>
@@ -29,9 +31,9 @@ export default function PrivacyPolicyPage() {
         <p>Raccogliamo le seguenti categorie di dati personali:</p>
         <ul className="list-disc pl-6 space-y-2">
           <li><strong>Dati di registrazione:</strong> nome, cognome, email, password (criptata)</li>
-          <li><strong>Dati dell'evento:</strong> data del matrimonio, budget, preferenze</li>
+          <li><strong>Dati dell&apos;evento:</strong> data del matrimonio, budget, preferenze</li>
           <li><strong>Dati di navigazione:</strong> indirizzo IP, tipo di browser, pagine visitate</li>
-          <li><strong>Dati degli invitati:</strong> nomi, email, preferenze alimentari (se inseriti dall'utente)</li>
+          <li><strong>Dati degli invitati:</strong> nomi, email, preferenze alimentari (se inseriti dall&apos;utente)</li>
           <li><strong>Dati di pagamento:</strong> informazioni fornitori selezionati (non conserviamo dati di carte di credito)</li>
         </ul>
 
@@ -59,7 +61,7 @@ export default function PrivacyPolicyPage() {
         <p>
           I dati personali vengono conservati per il tempo necessario a fornire i servizi richiesti e, 
           successivamente, per il periodo richiesto dalla normativa fiscale (10 anni). I dati di marketing 
-          vengono cancellati entro 24 mesi dall'ultimo consenso.
+          vengono cancellati entro 24 mesi dall&apos;ultimo consenso.
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">7. Condivisione dei Dati</h2>
@@ -73,12 +75,12 @@ export default function PrivacyPolicyPage() {
           <strong>Non vendiamo mai i tuoi dati a terzi.</strong>
         </p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">8. Diritti dell'Interessato</h2>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">8. Diritti dell&apos;Interessato</h2>
         <p>Hai diritto di:</p>
         <ul className="list-disc pl-6 space-y-2">
           <li><strong>Accesso:</strong> ottenere copia dei tuoi dati</li>
           <li><strong>Rettifica:</strong> correggere dati inesatti</li>
-          <li><strong>Cancellazione:</strong> richiedere l'eliminazione dei dati ("diritto all'oblio")</li>
+          <li><strong>Cancellazione:</strong> richiedere l&apos;eliminazione dei dati (&quot;diritto all&apos;oblio&quot;)</li>
           <li><strong>Limitazione:</strong> limitare il trattamento in determinate circostanze</li>
           <li><strong>Portabilità:</strong> ricevere i dati in formato strutturato</li>
           <li><strong>Opposizione:</strong> opporti al trattamento per finalità di marketing</li>
@@ -125,7 +127,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">14. Reclami</h2>
         <p>
-          Hai il diritto di presentare reclamo all'autorità di controllo competente:<br />
+          Hai il diritto di presentare reclamo all&apos;autorità di controllo competente:<br />
           <strong>Garante per la Protezione dei Dati Personali</strong><br />
           Piazza di Monte Citorio n. 121, 00186 Roma<br />
           Email: garante@gpdp.it<br />

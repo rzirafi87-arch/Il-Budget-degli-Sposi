@@ -32,9 +32,10 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ planners: data || [] });
-  } catch (e: any) {
-    console.error("Wedding planners GET uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("Wedding planners GET uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }
 
@@ -85,8 +86,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error("Wedding planners POST uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("Wedding planners POST uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }

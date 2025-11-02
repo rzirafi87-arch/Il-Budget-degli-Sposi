@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -12,7 +12,7 @@ export default function SuggerimentiPage() {
     if (country === 'mx') {
       setSuggestions([
         'Ricorda di prenotare il Mariachi!',
-        'Verifica la disponibilità della location almeno 6 mesi prima.',
+        'Verifica la disponibilitÃ  della location almeno 6 mesi prima.',
         'Considera una fotocabina a tema per la festa.',
         'Controlla i documenti legali richiesti in Messico.',
       ]);
@@ -27,18 +27,18 @@ export default function SuggerimentiPage() {
 
   return (
     <section className="max-w-3xl mx-auto py-8 px-4">
-      <h1 className="font-serif text-3xl mb-4 text-[#A3B59D] font-bold flex items-center gap-2">
-        <span>💡</span> {t('suggestions', { fallback: 'Suggerimenti & Consigli' })}
+      <h1 className="font-serif text-3xl mb-4 text-[#A3B59D] font-bold">
+        {t('suggestions', { fallback: 'Suggerimenti & Consigli' })}
       </h1>
       <div className="mb-4 flex justify-end">
-        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"><span aria-hidden>🏠</span> Torna in Dashboard</a>
+        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
       </div>
       <div className="mb-6">
         <a
           href="/chat-ia"
           className="inline-block px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
         >
-          🤖 Chatta con IA
+          Chatta con IA
         </a>
       </div>
       <p className="mb-4 text-gray-700 text-base">
@@ -56,7 +56,7 @@ export default function SuggerimentiPage() {
       </ul>
 
       <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-[#A3B59D] bg-[#F7FBF7]">
-        <h2 className="font-semibold text-lg mb-2">🖼️ Carica una foto</h2>
+        <h2 className="font-semibold text-lg mb-2">Carica una foto</h2>
         <p className="text-gray-700 mb-3">
           Qui puoi caricare un'immagine (abito, palette, location) per ricevere consigli mirati.
         </p>
@@ -64,10 +64,15 @@ export default function SuggerimentiPage() {
           className="inline-block px-4 py-2 rounded-full text-white cursor-pointer"
           style={{ background: "var(--color-sage)" }}
         >
-          Seleziona file…
+          Seleziona file...
           <input type="file" accept="image/*" className="hidden" />
         </label>
       </div>
     </section>
   );
 }
+
+
+
+
+

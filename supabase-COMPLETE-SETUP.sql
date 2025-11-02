@@ -83,12 +83,15 @@ CREATE TABLE IF NOT EXISTS public.suppliers (
   phone TEXT,
   email TEXT,
   website TEXT,
-  description TEXT,
   category TEXT,
   verified BOOLEAN DEFAULT false,
   user_id UUID,
   inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+  description TEXT,
+  photo_urls TEXT[],
+  video_urls TEXT[],
+  discount_info TEXT
 );
 
 -- STEP 7: Create locations table

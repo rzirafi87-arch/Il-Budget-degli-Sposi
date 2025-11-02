@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Chiese: dettagli e tradizione">
+  <defs>
+    <linearGradient id="chi3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#chi3)"/>
+  <g opacity="0.24" stroke="#6f8a73" stroke-width="3" fill="none">
+    <path d="M360,640 v-80 h80 v80 M400,560 v-60 h40 v60"/>
+    <path d="M780,640 v-120 h90 v120 M820,520 v-50 h50 v50"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Dettagli e tradizione</text>
+  </g>
+</svg>
+

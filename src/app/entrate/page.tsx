@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
 import ImageCarousel from "@/components/ImageCarousel";
+import PageInfoNote from "@/components/PageInfoNote";
+import { formatCurrency, formatDate } from "@/lib/locale";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -18,6 +21,10 @@ type Income = {
 };
 
 export default function EntratePage() {
+  const t = useTranslations();
+  const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
+  const isBaptism = userEventType === "baptism";
+  const isWedding = userEventType === "wedding";
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -33,11 +40,14 @@ export default function EntratePage() {
     date: new Date().toISOString().split("T")[0],
   });
 
+  // For Battesimo, keep income source to common only
   useEffect(() => {
-    loadIncomes();
-  }, []);
+    if (isBaptism && newIncome.incomeSource !== "common") {
+      setNewIncome((prev) => ({ ...prev, incomeSource: "common" }));
+    }
+  }, [isBaptism, newIncome.incomeSource]);
 
-  const loadIncomes = async () => {
+  const loadIncomes = useCallback(async () => {
     try {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
@@ -50,14 +60,28 @@ export default function EntratePage() {
       const r = await fetch("/api/my/incomes", { headers });
       const j = await r.json();
 
-      setIncomes(j.incomes || []);
+      type IncomeRow = {
+        id: string;
+        type: string;
+        amount: number;
+        description: string;
+        date: string;
+        incomeSource: string;
+      };
+      const raw: IncomeRow[] = j.incomes || [];
+      // For Battesimo, force incomeSource to 'common' on UI side
+      setIncomes(isBaptism ? raw.map((i) => ({ ...i, incomeSource: "common" })) : raw);
     } catch (err) {
       console.error("Errore caricamento:", err);
       setIncomes([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [isBaptism]);
+
+  useEffect(() => {
+    loadIncomes();
+  }, [loadIncomes]);
 
   const addIncome = async () => {
     setSaving(true);
@@ -67,7 +91,7 @@ export default function EntratePage() {
       const jwt = data.session?.access_token;
 
       if (!jwt) {
-        setMessage("❌ Devi essere autenticato per aggiungere entrate. Clicca su 'Registrati' in alto.");
+        setMessage(t("incomesPage.messages.mustAuthAdd"));
         setSaving(false);
         return;
       }
@@ -83,9 +107,9 @@ export default function EntratePage() {
 
       if (!r.ok) {
         const j = await r.json();
-        setMessage(`❌ Errore: ${j.error || "Impossibile salvare"}`);
+        setMessage(`${t("incomesPage.messages.networkError")}: ${j.error || "Impossibile salvare"}`);
       } else {
-        setMessage("✅ Entrata registrata con successo!");
+        setMessage(t("incomesPage.messages.successAdded"));
         setShowForm(false);
         loadIncomes();
         // Reset form
@@ -101,14 +125,14 @@ export default function EntratePage() {
       }
     } catch (err) {
       console.error("Errore:", err);
-      setMessage("❌ Errore di rete");
+      setMessage(t("incomesPage.messages.networkError"));
     } finally {
       setSaving(false);
     }
   };
 
   const deleteIncome = async (id: string) => {
-    if (!confirm("Sei sicuro di voler eliminare questa entrata?")) return;
+  if (!confirm(t("incomesPage.messages.confirmDelete"))) return;
 
     try {
       const { data } = await supabase.auth.getSession();
@@ -122,7 +146,7 @@ export default function EntratePage() {
       });
 
       loadIncomes();
-      setMessage("✅ Entrata eliminata");
+      setMessage(t("incomesPage.messages.deleted"));
       setTimeout(() => setMessage(null), 3000);
     } catch (err) {
       console.error("Errore:", err);
@@ -142,19 +166,43 @@ export default function EntratePage() {
   if (loading) {
     return (
       <section className="pt-6">
-        <h2 className="font-serif text-3xl mb-6">Entrate</h2>
-        <p className="text-gray-500">Caricamento...</p>
+        <h2 className="font-serif text-3xl mb-6">{t("incomesPage.title")}</h2>
+        <p className="text-gray-500">{t("incomesPage.loading")}</p>
       </section>
     );
   }
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2">💵 Entrate</h2>
-      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
-        Traccia tutte le entrate che contribuiscono al budget del matrimonio: regali dei genitori, contributi familiari, 
-        risparmi personali o altre fonti. Specifica se l'entrata è della sposa, dello sposo o comune.
-      </p>
+      <div className="flex items-start justify-between mb-2">
+        <h2 className="font-serif text-3xl">{t("incomesPage.title")}</h2>
+        <div className="flex gap-2">
+          {isWedding && (
+            <a href="/lista-nozze" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("incomesPage.toolbar.giftList")}</a>
+          )}
+          <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("incomesPage.toolbar.backDashboard")}</a>
+        </div>
+      </div>
+      {/* titolo rimosso: già presente nella toolbar sopra */}
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">{t("incomesPage.info.lead")}</p>
+
+      <PageInfoNote
+        icon="💵"
+        title={t("incomesPage.info.title")}
+        description={t("incomesPage.info.description")}
+        tips={[
+          t("incomesPage.info.tips.tip1"),
+          t("incomesPage.info.tips.tip2"),
+          t("incomesPage.info.tips.tip3"),
+          t("incomesPage.info.tips.tip4"),
+        ]}
+        eventTypeSpecific={{
+          wedding: t("incomesPage.info.eventTypeSpecific.wedding"),
+          baptism: t("incomesPage.info.eventTypeSpecific.baptism"),
+          birthday: t("incomesPage.info.eventTypeSpecific.birthday"),
+          graduation: t("incomesPage.info.eventTypeSpecific.graduation"),
+        }}
+      />
 
       {/* Carosello immagini */}
       <ImageCarousel images={PAGE_IMAGES.entrate} height="280px" />
@@ -168,21 +216,21 @@ export default function EntratePage() {
       {/* Riepilogo */}
       <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-lg bg-pink-50 border border-pink-200">
-          <div className="text-sm text-gray-600">Entrate Sposa</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalBride)}</div>
+          <div className="text-sm text-gray-600">{t("incomesPage.summary.bride")}</div>
+          <div className="text-2xl font-semibold">{formatEuro(totalBride)}</div>
         </div>
         <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-          <div className="text-sm text-gray-600">Entrate Sposo</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalGroom)}</div>
+          <div className="text-sm text-gray-600">{t("incomesPage.summary.groom")}</div>
+          <div className="text-2xl font-semibold">{formatEuro(totalGroom)}</div>
         </div>
         <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
-          <div className="text-sm text-gray-600">Entrate Comuni</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalCommon)}</div>
+          <div className="text-sm text-gray-600">{t("incomesPage.summary.common")}</div>
+          <div className="text-2xl font-semibold">{formatEuro(totalCommon)}</div>
         </div>
         <div className="p-4 rounded-lg bg-[#A3B59D]/20 border border-[#A3B59D]">
-          <div className="text-sm text-gray-600">Totale denaro</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalMoney)}</div>
-          <div className="text-xs text-gray-500 mt-1">Regali fisici: {totalRegali}</div>
+          <div className="text-sm text-gray-600">{t("incomesPage.summary.totalMoney")}</div>
+          <div className="text-2xl font-semibold">{formatEuro(totalMoney)}</div>
+          <div className="text-xs text-gray-500 mt-1">{t("incomesPage.summary.physicalGifts")}: {totalRegali}</div>
         </div>
       </div>
 
@@ -192,63 +240,63 @@ export default function EntratePage() {
           onClick={() => setShowForm(!showForm)}
           className="bg-[#A3B59D] text-white rounded-lg px-4 py-2 hover:bg-[#8a9d84]"
         >
-          {showForm ? "Annulla" : "+ Aggiungi entrata"}
+          {showForm ? t("incomesPage.buttons.cancel") : t("incomesPage.buttons.add")}
         </button>
       </div>
 
       {/* Form nuova entrata */}
       {showForm && (
         <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold mb-4">Nuova entrata</h3>
+          <h3 className="font-semibold mb-4">{t("incomesPage.form.new")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nome persona/famiglia *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("incomesPage.form.name")}</label>
               <input
                 type="text"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newIncome.name}
                 onChange={(e) => setNewIncome({ ...newIncome, name: e.target.value })}
-                placeholder="Es. Famiglia Rossi"
+                placeholder={t("incomesPage.form.placeholders.name")}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tipologia *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("incomesPage.form.type")}</label>
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newIncome.type}
-                onChange={(e) => setNewIncome({ ...newIncome, type: e.target.value as any })}
+                onChange={(e) => setNewIncome({ ...newIncome, type: e.target.value as Income["type"] })}
               >
-                <option value="busta">Busta</option>
-                <option value="bonifico">Bonifico</option>
-                <option value="regalo">Regalo fisico</option>
+                <option value="busta">{t("incomesPage.form.typeOptions.busta")}</option>
+                <option value="bonifico">{t("incomesPage.form.typeOptions.bonifico")}</option>
+                <option value="regalo">{t("incomesPage.form.typeOptions.regalo")}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fonte entrata *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("incomesPage.form.incomeSource")}</label>
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newIncome.incomeSource}
-                onChange={(e) => setNewIncome({ ...newIncome, incomeSource: e.target.value as any })}
+                onChange={(e) => setNewIncome({ ...newIncome, incomeSource: e.target.value as Income["incomeSource"] })}
               >
-                <option value="common">Comune</option>
-                <option value="bride">Sposa</option>
-                <option value="groom">Sposo</option>
+                <option value="common">{t("incomesPage.form.sourceOptions.common")}</option>
+                {!isBaptism && <option value="bride">{t("incomesPage.form.sourceOptions.bride")}</option>}
+                {!isBaptism && <option value="groom">{t("incomesPage.form.sourceOptions.groom")}</option>}
               </select>
             </div>
             {(newIncome.type === "busta" || newIncome.type === "bonifico") && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Importo (€) *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("incomesPage.form.amount")}</label>
                 <input
                   type="number"
                   className="border border-gray-300 rounded px-3 py-2 w-full"
                   value={newIncome.amount || ""}
                   onChange={(e) => setNewIncome({ ...newIncome, amount: Number(e.target.value) || 0 })}
-                  placeholder="0"
+                  placeholder={t("incomesPage.form.placeholders.amount")}
                 />
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("incomesPage.form.date")}</label>
               <input
                 type="date"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
@@ -258,14 +306,14 @@ export default function EntratePage() {
             </div>
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {newIncome.type === "regalo" ? "Descrizione regalo *" : "Note"}
+                {newIncome.type === "regalo" ? t("incomesPage.form.giftDescription") : t("incomesPage.form.notes")}
               </label>
               <textarea
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 rows={2}
                 value={newIncome.notes}
                 onChange={(e) => setNewIncome({ ...newIncome, notes: e.target.value })}
-                placeholder={newIncome.type === "regalo" ? "Es. Servizio piatti completo" : "Note aggiuntive..."}
+                placeholder={newIncome.type === "regalo" ? t("incomesPage.form.placeholders.gift") : t("incomesPage.form.placeholders.notes")}
               />
             </div>
           </div>
@@ -275,7 +323,7 @@ export default function EntratePage() {
               disabled={saving}
               className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84] disabled:opacity-50"
             >
-              {saving ? "Salvataggio..." : "Salva entrata"}
+              {saving ? t("loading", { fallback: "Salvataggio..." }) : t("incomesPage.buttons.save")}
             </button>
           </div>
         </div>
@@ -286,26 +334,26 @@ export default function EntratePage() {
         <table className="w-full min-w-[920px] text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50/50">
-              <th className="px-4 py-3 text-left font-medium text-gray-700">Data</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-700">Nome</th>
-              <th className="px-4 py-3 text-center font-medium text-gray-700">Tipologia</th>
-              <th className="px-4 py-3 text-center font-medium text-gray-700">Fonte</th>
-              <th className="px-4 py-3 text-right font-medium text-gray-700">Importo (€)</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-700">Note / Descrizione</th>
-              <th className="px-4 py-3 text-center font-medium text-gray-700">Azioni</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-700">{t("incomesPage.table.date")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-700">{t("incomesPage.table.name")}</th>
+              <th className="px-4 py-3 text-center font-medium text-gray-700">{t("incomesPage.table.type")}</th>
+              <th className="px-4 py-3 text-center font-medium text-gray-700">{t("incomesPage.table.source")}</th>
+              <th className="px-4 py-3 text-right font-medium text-gray-700">{t("incomesPage.table.amount")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-700">{t("incomesPage.table.notes")}</th>
+              <th className="px-4 py-3 text-center font-medium text-gray-700">{t("incomesPage.table.actions")}</th>
             </tr>
           </thead>
           <tbody>
             {incomes.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-10 text-center text-gray-400">
-                  Nessuna entrata registrata
+                  {t("incomesPage.empty")}
                 </td>
               </tr>
             ) : (
               incomes.map((income) => (
                 <tr key={income.id} className="border-b border-gray-50 hover:bg-gray-50/60">
-                  <td className="px-4 py-3">{new Date(income.date).toLocaleDateString("it-IT")}</td>
+                  <td className="px-4 py-3">{formatDate(new Date(income.date))}</td>
                   <td className="px-4 py-3 font-medium">{income.name}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-block px-2 py-1 rounded text-xs ${
@@ -313,9 +361,9 @@ export default function EntratePage() {
                       income.type === "bonifico" ? "bg-blue-100 text-blue-800" :
                       "bg-purple-100 text-purple-800"
                     }`}>
-                      {income.type === "busta" ? "💵 Busta" : 
-                       income.type === "bonifico" ? "🏦 Bonifico" : 
-                       "🎁 Regalo"}
+                      {income.type === "busta" ? t("incomesPage.badges.type.busta") : 
+                       income.type === "bonifico" ? t("incomesPage.badges.type.bonifico") : 
+                       t("incomesPage.badges.type.regalo")}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
@@ -324,13 +372,13 @@ export default function EntratePage() {
                       income.incomeSource === "groom" ? "bg-blue-100 text-blue-700" :
                       "bg-gray-100 text-gray-700"
                     }`}>
-                      {income.incomeSource === "bride" ? "👰 Sposa" :
-                       income.incomeSource === "groom" ? "🤵 Sposo" :
-                       "💑 Comune"}
+                      {income.incomeSource === "bride" ? t("incomesPage.badges.source.bride") :
+                       income.incomeSource === "groom" ? t("incomesPage.badges.source.groom") :
+                       t("incomesPage.badges.source.common")}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold">
-                    {income.type === "regalo" ? "—" : `€ ${formatEuro(income.amount)}`}
+                    {income.type === "regalo" ? "—" : formatEuro(income.amount)}
                   </td>
                   <td className="px-4 py-3 text-gray-600">{income.notes || "—"}</td>
                   <td className="px-4 py-3 text-center">
@@ -338,7 +386,7 @@ export default function EntratePage() {
                       onClick={() => deleteIncome(income.id!)}
                       className="text-red-600 hover:text-red-800 text-xs"
                     >
-                      Elimina
+                      {t("incomesPage.buttons.delete")}
                     </button>
                   </td>
                 </tr>
@@ -352,5 +400,5 @@ export default function EntratePage() {
 }
 
 function formatEuro(n: number) {
-  return (n || 0).toLocaleString("it-IT", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return formatCurrency(n, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }

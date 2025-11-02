@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Fiorai: bouquet e centrotavola">
+  <defs>
+    <linearGradient id="fio3" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+    <pattern id="leaf3" width="120" height="120" patternUnits="userSpaceOnUse">
+      <path d="M20,60 C40,20 80,20 100,60 C80,100 40,100 20,60 Z" fill="#a6bca8"/>
+      <circle cx="60" cy="60" r="8" fill="#6f8a73"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="url(#fio3)"/>
+  <rect x="200" y="540" width="820" height="200" rx="18" fill="url(#leaf3)" opacity="0.35"/>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Bouquet e centrotavola</text>
+  </g>
+</svg>
+

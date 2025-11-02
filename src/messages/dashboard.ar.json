@@ -1,10 +1,14 @@
 {
-  "dashboard.curiosityTitle": "حقائق ونصائح",
-  "dashboard.suggestions.mariachi": "تذكر حجز فرقة المارياتشي!",
-  "dashboard.suggestions.location": "تحقق من توفر المكان قبل 6 أشهر على الأقل.",
-  "dashboard.suggestions.photobooth": "فكر في كشك تصوير بطابع مكسيكي للحفل.",
-  "dashboard.suggestions.documents": "تحقق من المستندات القانونية المطلوبة في المكسيك.",
-  "dashboard.suggestions.photographer": "احجز المصور مسبقًا.",
-  "dashboard.suggestions.guests": "راجع قائمة الضيوف وقم بتحديث التفضيلات.",
-  "dashboard.suggestions.traditions": "اطلع على التقاليد المحلية لإثراء الحفل."
+  "dashboard": {
+    "curiosityTitle": "حقائق ونصائح",
+    "suggestions": {
+      "mariachi": "تذكر حجز فرقة المارياتشي!",
+      "location": "تحقق من توفر المكان قبل 6 أشهر على الأقل.",
+      "photobooth": "فكر في كشك تصوير بطابع مكسيكي للحفل.",
+      "documents": "تحقق من المستندات القانونية المطلوبة في المكسيك.",
+      "photographer": "احجز المصور مسبقًا.",
+      "guests": "راجع قائمة الضيوف وقم بتحديث التفضيلات.",
+      "traditions": "اطلع على التقاليد المحلية لإثراء الحفل."
+    }
+  }
 }

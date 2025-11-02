@@ -10,7 +10,7 @@ export default function ChiSiamoPage() {
           <h3 className="text-xl font-bold text-[#A3B59D] mb-4">💍 Il Budget degli Sposi</h3>
           <p className="text-gray-700 mb-4">
             Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale.
-            Nata dall'esperienza diretta di coppie che hanno vissuto le sfide dell'organizzazione 
+            Nata dall&apos;esperienza diretta di coppie che hanno vissuto le sfide dell&apos;organizzazione 
             di un matrimonio, la nostra missione è rendere questo processo più semplice, trasparente 
             e piacevole.
           </p>

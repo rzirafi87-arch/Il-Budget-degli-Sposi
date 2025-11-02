@@ -17,5 +17,28 @@
   "auth": "Войти",
   "chat": "Свяжитесь с нами в WhatsApp",
   "settings": "Настройки",
-  "loading": "Загрузка…"
+  "loading": "Загрузка…",
+  "comingSoon": "Скоро",
+  "events": {
+    "wedding": "Свадьба",
+    "baptism": "Крестины",
+    "eighteenth": "18-летие",
+    "anniversary": "Годовщина свадьбы",
+    "gender-reveal": "Гендер-пати",
+    "birthday": "День рождения",
+    "fifty": "50 лет",
+    "retirement": "Выход на пенсию",
+    "confirmation": "Миропомазание (конфирмация)",
+    "graduation": "Выпускной",
+    "baby-shower": "Беби-шауэр",
+    "engagement": "Вечеринка помолвки",
+    "corporate": "Корпоративное мероприятие",
+    "milestone-birthday": "Юбилей",
+    "gender-reveal-party": "Гендер-пати",
+    "proposal": "Вечеринка предложения",
+    "communion": "Первое причастие",
+    "bar-mitzvah": "Бар-мицва",
+    "quinceanera": "Кинсеаньера",
+    "charity-gala": "Благотворительное мероприятие/Гала"
+  }
 }

@@ -1,6 +1,8 @@
+import { getBearer, requireUser } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 type MenuPreference = "carne" | "pesce" | "baby" | "animazione" | "vegetariano" | "posto_tavolo";
 
@@ -9,6 +11,7 @@ type Guest = {
   name: string;
   guestType: "bride" | "groom" | "common";
   isMainContact: boolean;
+  excludeFromFamilyTable: boolean;
   invitationDate: string;
   rsvpDeadline: string;
   rsvpReceived: boolean;
@@ -28,8 +31,7 @@ type NonInvitedRecipient = {
 
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
+    const jwt = getBearer(req);
 
     if (!jwt) {
       // Dati demo per utenti non autenticati
@@ -46,13 +48,7 @@ export async function GET(req: NextRequest) {
     }
 
     const db = getServiceClient();
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
-    const userId = userData.user.id;
+    const { userId } = await requireUser(req);
 
     // Ottieni l'evento dell'utente
     const { data: events, error: eventError } = await db
@@ -74,14 +70,14 @@ export async function GET(req: NextRequest) {
     const defaultRsvpDeadline = events[0].default_rsvp_deadline || "";
 
     // Carica i gruppi famiglia
-    const { data: familyGroupsData, error: familyError } = await db
+    const { data: familyGroupsData } = await db
       .from("family_groups")
       .select("*")
       .eq("event_id", eventId)
       .order("created_at", { ascending: true });
 
     // Carica gli invitati con informazioni famiglia
-    const { data: guestsData, error: guestsError } = await db
+    const { data: guestsData } = await db
       .from("guests")
       .select(`
         *,
@@ -99,7 +95,7 @@ export async function GET(req: NextRequest) {
     }));
 
     // Carica i non invitati
-    const { data: nonInvitedData, error: nonInvitedError } = await db
+    const { data: nonInvitedData } = await db
       .from("non_invited_recipients")
       .select("*")
       .eq("event_id", eventId)
@@ -113,28 +109,15 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : "Internal error";
-    console.error("GET /api/my/guests error:", err);
+    logger.error("GET /api/my/guests error", { message: errorMsg });
     return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
-
-    if (!jwt) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
     const db = getServiceClient();
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
-    const userId = userData.user.id;
+    const { userId } = await requireUser(req);
 
     // Ottieni l'evento dell'utente (o crealo se non esiste)
     const { data: events, error: eventError } = await db
@@ -207,6 +190,7 @@ export async function POST(req: NextRequest) {
         guest_type: g.guestType,
         is_main_contact: g.isMainContact,
         family_group_id: g.familyGroupId || null,
+          exclude_from_family_table: g.excludeFromFamilyTable || false,
         invitation_date: g.invitationDate || null,
         rsvp_deadline: g.rsvpDeadline || null,
         rsvp_received: g.rsvpReceived,
@@ -243,7 +227,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : "Internal error";
-    console.error("POST /api/my/guests error:", err);
+    logger.error("POST /api/my/guests error", { message: errorMsg });
     return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }

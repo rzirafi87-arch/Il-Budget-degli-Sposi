@@ -17,5 +17,252 @@
   "auth": "Sign In",
   "chat": "Chat with us on WhatsApp",
   "settings": "Settings",
-  "loading": "Loading…"
+  "loading": "Loading…",
+  "comingSoon": "Coming soon",
+  "budgetPage": {
+    "approvedExpenses": "Approved expenses",
+    "ctaIdeaBudget": "💡 Go to Budget Idea",
+    "description": "View of expenses approved from the 'Expenses' section, sorted alphabetically by category and subcategory.",
+    "totals": {
+      "title": "Approved expenses total",
+      "common": "Common",
+      "bride": "Bride",
+      "groom": "Groom"
+    },
+    "table": {
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "spendType": "Spend type",
+      "paymentMethod": "Payment method",
+      "budget": "Budget",
+      "committed": "Committed",
+      "paid": "Paid",
+      "residual": "Residual",
+      "fromQuote": "From quote",
+      "difference": "Difference"
+    },
+    "spendType": {
+      "common": "Common",
+      "bride": "Bride",
+      "groom": "Groom",
+      "gift": "Gift"
+    },
+    "paymentMethod": {
+      "common": "💰 Common",
+      "bride": "👰 Bride",
+      "groom": "🤵 Groom",
+      "gift": "🎁 Gift"
+    },
+    "loading": "Loading...",
+    "empty": "No approved expenses. Go to the 'Expenses' section to approve your expenses.",
+    "plannedVsActual": {
+      "title": "Planned vs Actual",
+      "totalPlanned": "Total planned",
+      "totalActualApproved": "Total actual (approved)",
+      "difference": "Difference",
+      "over": "+ over plan",
+      "under": "under plan",
+      "item": "Item",
+      "planned": "Planned",
+      "actual": "Actual",
+      "empty": "No data to compare. Use 'Budget Idea' to plan and approve expenses in the 'Expenses' section."
+    }
+  },
+  "expensesPage": {
+    "info": {
+      "lead": "Record and manage all wedding expenses. You can enter quotes, confirm them as approved expenses, and track payment statuses. Filter by category, spend type (common/bride/groom), and status.",
+      "title": "Complete Expense Management",
+      "description": "On this page you can record all actual expenses and quotes. Each expense can be categorized, assigned to bride/groom/common, and tracked with approval and payment status. Expenses confirmed from the dashboard automatically appear here.",
+      "tips": {
+        "tip1": "Use the 'Quote' status for received offers, then change to 'Approved' when you confirm",
+        "tip2": "The 'From quote' field indicates if the expense comes from the dashboard (already budgeted)",
+        "tip3": "Always add the supplier to keep track of who provided each service",
+        "tip4": "Filter by category or spend type to analyze where you're spending more"
+      },
+      "eventTypeSpecific": {
+        "wedding": "For a wedding, you can split expenses between bride, groom, and common. This helps understand each contribution and manage finances transparently.",
+        "baptism": "For a baptism, all expenses are automatically set as 'common' — no need to specify who pays.",
+        "birthday": "For a birthday, split expenses between the main organizer and any shared costs.",
+        "graduation": "For a graduation, track all event-related expenses: venue, catering, invitations, decorations, and keepsakes."
+      }
+    },
+    "title": "Expenses",
+    "loading": "Loading...",
+    "summary": {
+      "pending": "Pending approval",
+      "approved": "Approved expenses"
+    },
+    "buttons": {
+      "add": "+ Add expense",
+      "cancel": "Cancel",
+      "save": "Save expense",
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "form": {
+      "new": "New expense",
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "supplier": "Supplier",
+      "amount": "Amount",
+      "spendType": "Spend type",
+      "date": "Date",
+      "description": "Description",
+      "notes": "Notes",
+      "placeholders": {
+        "supplier": "Supplier name",
+        "amount": "0",
+        "description": "Detailed description",
+        "notes": "Additional notes..."
+      },
+      "spendTypeOptions": {
+        "common": "Common",
+        "bride": "Bride",
+        "groom": "Groom"
+      }
+    },
+    "table": {
+      "supplier": "Supplier",
+      "description": "Description",
+      "amount": "Amount",
+      "type": "Type",
+      "date": "Date",
+      "status": "Status",
+      "fromQuote": "From quote",
+      "actions": "Actions"
+    },
+    "status": {
+      "approved": "✓ Approved",
+      "rejected": "✗ Rejected",
+      "pending": "Pending"
+    },
+    "spendType": {
+      "common": "Common",
+      "bride": "Bride",
+      "groom": "Groom"
+    },
+    "messages": {
+      "mustAuthAdd": "You must be authenticated to add expenses. Click 'Register' at the top.",
+      "networkError": "Network error",
+      "successAdded": "Expense added successfully!",
+      "none": "No expenses recorded",
+      "confirmed": "Confirmed",
+      "discarded": "Discarded"
+    }
+  },
+  "incomesPage": {
+    "info": {
+      "lead": "Track all incomes that contribute to the wedding budget: parents' gifts, family contributions, personal savings, or other sources. Specify whether the income is from the bride, the groom, or common.",
+      "title": "Track All Incomes",
+      "description": "Here you can record all sources of money contributing to your event budget: family contributions, cash gifts, bank transfers, personal savings. Each income can be categorized to know who brings it (bride/groom/common) and from whom it comes.",
+      "tips": {
+        "tip1": "Use 'Envelope' for cash gifts received during the event",
+        "tip2": "Use 'Bank transfer' for contributions received before the event",
+        "tip3": "Use 'Physical gift' to record material gifts (without a specific amount)",
+        "tip4": "The total of incomes helps you understand how much effective budget you have available"
+      },
+      "eventTypeSpecific": {
+        "wedding": "During weddings, it's customary to receive envelopes with monetary contributions from guests. Record every envelope received for a complete tracking.",
+        "baptism": "For a baptism, record contributions from godparents and family members who want to participate in the expenses.",
+        "birthday": "For a birthday, track contributions from friends and relatives who want to help with the organization.",
+        "graduation": "For a graduation, record family contributions and gifts received to celebrate the milestone."
+      }
+    },
+    "title": "Incomes",
+    "loading": "Loading...",
+    "toolbar": {
+      "giftList": "Gift List",
+      "backDashboard": "Back to Dashboard"
+    },
+    "summary": {
+      "bride": "Bride incomes",
+      "groom": "Groom incomes",
+      "common": "Common incomes",
+      "totalMoney": "Total money",
+      "physicalGifts": "Physical gifts"
+    },
+    "buttons": {
+      "add": "+ Add income",
+      "cancel": "Cancel",
+      "save": "Save income",
+      "delete": "Delete"
+    },
+    "form": {
+      "new": "New income",
+      "name": "Person/Family name *",
+      "type": "Type *",
+      "incomeSource": "Income source *",
+      "amount": "Amount (€) *",
+      "date": "Date",
+      "notes": "Notes",
+      "giftDescription": "Gift description *",
+      "placeholders": {
+        "name": "e.g. Rossi Family",
+        "amount": "0",
+        "notes": "Additional notes...",
+        "gift": "e.g. Full dinnerware set"
+      },
+      "typeOptions": {
+        "busta": "Envelope",
+        "bonifico": "Bank transfer",
+        "regalo": "Physical gift"
+      },
+      "sourceOptions": {
+        "common": "Common",
+        "bride": "Bride",
+        "groom": "Groom"
+      }
+    },
+    "table": {
+      "date": "Date",
+      "name": "Name",
+      "type": "Type",
+      "source": "Source",
+      "amount": "Amount",
+      "notes": "Notes / Description",
+      "actions": "Actions"
+    },
+    "empty": "No incomes recorded",
+    "badges": {
+      "type": {
+        "busta": "💵 Envelope",
+        "bonifico": "🏦 Bank transfer",
+        "regalo": "🎁 Gift"
+      },
+      "source": {
+        "bride": "👰 Bride",
+        "groom": "🤵 Groom",
+        "common": "💑 Common"
+      }
+    },
+    "messages": {
+      "mustAuthAdd": "You must be authenticated to add incomes. Click 'Register' at the top.",
+      "networkError": "Network error",
+      "successAdded": "Income saved successfully!",
+      "deleted": "Income deleted",
+      "confirmDelete": "Are you sure you want to delete this income?"
+    }
+  },
+  "events": {
+    "wedding": "Wedding",
+    "baptism": "Baptism",
+    "eighteenth": "18th Birthday",
+    "anniversary": "Wedding Anniversary",
+    "gender-reveal": "Gender Reveal",
+    "birthday": "Birthday",
+    "fifty": "50 Years",
+    "retirement": "Retirement",
+    "confirmation": "Confirmation",
+    "graduation": "Graduation",
+    "baby-shower": "Baby Shower",
+    "engagement": "Engagement Party",
+    "corporate": "Corporate Event",
+    "milestone-birthday": "Milestone Birthday",
+    "gender-reveal-party": "Gender Reveal Party",
+    "proposal": "Proposal Party",
+    "communion": "First Communion",
+    "bar-mitzvah": "Bar Mitzvah",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Charity/Gala"
+  }
 }

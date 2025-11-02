@@ -2,42 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-
-const NATIVE_LABELS: Record<string, string> = {
-  it: "Italiano",
-  es: "Español",
-  en: "English",
-  fr: "Français",
-  de: "Deutsch",
-  ru: "Русский",
-  zh: "中文",
-  ja: "日本語",
-  ar: "العربية",
-};
-
-const LANGUAGES = [
-  { code: "it", labelKey: "languages.it" },
-  { code: "es", labelKey: "languages.es" },
-  { code: "en", labelKey: "languages.en" },
-  { code: "fr", labelKey: "languages.fr" },
-  { code: "de", labelKey: "languages.de" },
-  { code: "ru", labelKey: "languages.ru" },
-  { code: "zh", labelKey: "languages.zh" },
-  { code: "ja", labelKey: "languages.ja" },
-  { code: "ar", labelKey: "languages.ar" },
-];
-
-const LANGUAGE_ICONS: Record<string, string> = {
-  it: "🇮🇹",
-  es: "🇪🇸",
-  en: "🇬🇧",
-  fr: "🇫🇷",
-  de: "🇩🇪",
-  ru: "🇷🇺",
-  zh: "🇨🇳",
-  ja: "🇯🇵",
-  ar: "🇦🇪",
-};
+import { LANGS } from "@/lib/loadConfigs";
 
 export default function SelectLanguagePage() {
   const t = useTranslations();
@@ -59,7 +24,6 @@ export default function SelectLanguagePage() {
   function handleSelect(code: string) {
     setSelected(code);
     localStorage.setItem("language", code);
-    // Persisti anche nei cookie per middleware/server
     document.cookie = `language=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
     router.push("/select-country");
   }
@@ -86,17 +50,17 @@ export default function SelectLanguagePage() {
           {t("onboarding.selectLanguageDesc", { fallback: "Seleziona la lingua che preferisci per continuare" })}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {LANGUAGES.map((lang) => (
+          {LANGS.map((lang) => (
             <button
-              key={lang.code}
-              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === lang.code ? "bg-[#A3B59D] text-white" : ""}`}
-              onClick={() => handleSelect(lang.code)}
-              aria-label={NATIVE_LABELS[lang.code] || lang.code.toUpperCase()}
+              key={lang.slug}
+              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === lang.slug ? "bg-[#A3B59D] text-white" : ""}`}
+              onClick={() => handleSelect(lang.slug)}
+              aria-label={lang.label || lang.slug.toUpperCase()}
             >
               <span aria-hidden="true" className="mr-2 text-lg">
-                {LANGUAGE_ICONS[lang.code] || "🌍"}
+                {lang.emoji || "🌐"}
               </span>
-              {NATIVE_LABELS[lang.code] || lang.code.toUpperCase()}
+              {lang.label || lang.slug.toUpperCase()}
             </button>
           ))}
         </div>
@@ -104,3 +68,4 @@ export default function SelectLanguagePage() {
     </main>
   );
 }
+

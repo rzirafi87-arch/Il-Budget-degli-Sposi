@@ -1,9 +1,6 @@
-import React from 'react';
+// Re-export the official next-intl APIs so any remaining imports from
+// "@/vendor/next-intl" keep working consistently with the app Provider.
+// This prevents future mismatches between custom hooks and the real Provider.
+export { IntlProvider, useTranslations } from 'next-intl';
+export type { AbstractIntlMessages } from 'next-intl';
 
-export function useTranslations(_ns?: string) {
-  return (key: string, opts?: any) => (opts?.fallback ?? opts?.default ?? key);
-}
-
-export function IntlProvider({ children }: { children: React.ReactNode; messages?: any; locale?: string; timeZone?: string }) {
-  return <>{children}</>;
-}

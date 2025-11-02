@@ -1,10 +1,12 @@
 {
-  "appointments.title": "Rendez-vous et échéances",
-  "appointments.formTitle": "Titre du rendez-vous",
-  "appointments.formLocation": "Lieu",
-  "appointments.formNotes": "Notes",
-  "appointments.addBtn": "Ajouter un rendez-vous",
-  "appointments.empty": "Aucun rendez-vous ajouté.",
-  "appointments.dateLabel": "Date",
-  "appointments.locationLabel": "Lieu"
+  "appointments": {
+    "title": "Rendez-vous et échéances",
+    "formTitle": "Titre du rendez-vous",
+    "formLocation": "Lieu",
+    "formNotes": "Notes",
+    "addBtn": "Ajouter un rendez-vous",
+    "empty": "Aucun rendez-vous ajouté.",
+    "dateLabel": "Date",
+    "locationLabel": "Lieu"
+  }
 }

@@ -1,6 +1,6 @@
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 type TrackEventRequest = {
   entity_type: "supplier" | "location" | "church";
@@ -30,7 +30,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Traccia evento dettagliato
-    const eventData: any = {
+    type AnalyticsEventInsert = {
+      event_type: string;
+      user_id: string | null;
+      referrer: string | null;
+      user_agent: string | null;
+      supplier_id?: string;
+      location_id?: string;
+      church_id?: string;
+    };
+
+    const eventData: AnalyticsEventInsert = {
       event_type,
       user_id: userId,
       referrer: req.headers.get("referer") || null,
@@ -57,8 +67,9 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (e: any) {
-    console.error("ANALYTICS TRACK error:", e);
-    return NextResponse.json({ error: e?.message || "Tracking failed" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("ANALYTICS TRACK error:", error);
+    return NextResponse.json({ error: error?.message || "Tracking failed" }, { status: 500 });
   }
 }

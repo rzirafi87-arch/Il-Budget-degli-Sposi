@@ -4,8 +4,9 @@ import { getServiceClient } from "@/lib/supabaseServer";
 import { sendSubscriptionActivated } from "@/lib/emailService";
 import Stripe from "stripe";
 
+// Initialize Stripe using account default API version to avoid mismatches
 const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2025-09-30.clover" })
+  ? new Stripe(process.env.STRIPE_SECRET_KEY)
   : null;
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
@@ -34,35 +35,35 @@ export async function POST(req: NextRequest) {
 
     const db = getServiceClient();
 
-    // Gestisci eventi Stripe
+    // Handle Stripe events
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        
+
         const metadata = session.metadata;
         if (!metadata) break;
 
-        const { user_id, tier, billing_period, supplier_id, location_id, church_id } = metadata;
+        const { tier, billing_period, supplier_id, location_id, church_id } = metadata as Record<string, string>;
         const amount = (session.amount_total || 0) / 100;
 
-        // Calcola date di inizio e scadenza
+        // Calculate start and expiry dates
         const startsAt = new Date();
         const expiresAt = new Date();
-        
+
         if (billing_period === "monthly") {
           expiresAt.setMonth(expiresAt.getMonth() + 1);
         } else {
           expiresAt.setFullYear(expiresAt.getFullYear() + 1);
         }
 
-        // Crea transazione
+        // Create transaction
         const transactionData: any = {
           tier,
           amount,
           currency: "EUR",
           billing_period,
           payment_provider: "stripe",
-          payment_id: session.payment_intent as string,
+          payment_id: String(session.payment_intent || ""),
           status: "completed",
           starts_at: startsAt.toISOString(),
           expires_at: expiresAt.toISOString(),
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
           break;
         }
 
-        // Aggiorna supplier/location/church con nuovo tier
+        // Update related entity with new tier
         let entityEmail = "";
         let entityName = "";
 
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
             .eq("id", supplier_id)
             .select("email, name")
             .single();
-          
+
           if (supplier) {
             entityEmail = supplier.email || "";
             entityName = supplier.name || "";
@@ -110,7 +111,7 @@ export async function POST(req: NextRequest) {
             .eq("id", location_id)
             .select("email, name")
             .single();
-          
+
           if (location) {
             entityEmail = location.email || "";
             entityName = location.name || "";
@@ -125,14 +126,14 @@ export async function POST(req: NextRequest) {
             .eq("id", church_id)
             .select("email, name")
             .single();
-          
+
           if (church) {
             entityEmail = church.email || "";
             entityName = church.name || "";
           }
         }
 
-        // Invia email di conferma
+        // Send confirmation email
         if (entityEmail && entityName) {
           await sendSubscriptionActivated(
             entityEmail,
@@ -143,15 +144,15 @@ export async function POST(req: NextRequest) {
           );
         }
 
-        console.log("✓ Subscription activated:", { tier, billing_period, supplier_id, location_id, church_id });
+        console.log("Subscription activated:", { tier, billing_period, supplier_id, location_id, church_id });
         break;
       }
 
       case "payment_intent.payment_failed": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         console.error("Payment failed:", paymentIntent.id);
-        
-        // Aggiorna transazione come failed
+
+        // Update transaction as failed
         await db
           .from("subscription_transactions")
           .update({ status: "failed" })
@@ -164,8 +165,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (e: any) {
-    console.error("STRIPE WEBHOOK error:", e);
-    return NextResponse.json({ error: e?.message || "Webhook error" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("STRIPE WEBHOOK error:", error);
+    return NextResponse.json({ error: error?.message || "Webhook error" }, { status: 500 });
   }
 }
+

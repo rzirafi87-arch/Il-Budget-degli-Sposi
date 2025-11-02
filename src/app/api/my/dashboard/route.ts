@@ -1,6 +1,7 @@
+import { BUDGET_CATEGORIES } from "@/constants/budgetCategories";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 /**
  * GET: Carica i dati della dashboard (budget totale + spese)
@@ -17,202 +18,8 @@ type SpendRow = {
   notes: string;
 };
 
-// Stesse categorie della dashboard
-const CATEGORIES_MAP: Record<string, string[]> = {
-  "Abiti & Accessori (altri)": [
-    "Abiti ospiti / Genitori",
-    "Accessori damigelle",
-    "Accessori testimoni",
-    "Fedi nuziali",
-    "Anello fidanzamento",
-    "Accessori vari"
-  ],
-  "Cerimonia/Chiesa Location": [
-    "Chiesa / Comune",
-    "Musiche",
-    "Libretti Messa",
-    "Fiori cerimonia",
-    "Wedding bag",
-    "Ventagli",
-    "Pulizia chiesa",
-    "Cesto doni",
-    "Documenti e pratiche",
-    "Offerte / Diritti",
-    "Colombe uscita",
-    "Riso/Petali",
-    "Bottiglia per brindisi",
-    "Bicchieri per brindisi",
-    "Forfait cerimonia"
-  ],
-  "Fuochi d'artificio": [
-    "Fuochi d'artificio tradizionali",
-    "Fontane luminose",
-    "Spettacolo pirotecnico",
-    "Bengala per ospiti",
-    "Lancio palloncini luminosi",
-    "Forfait fuochi d'artificio"
-  ],
-  "Fiori & Decor": [
-    "Bouquet",
-    "Boutonnière",
-    "Centrotavola",
-    "Allestimenti",
-    "Candele",
-    "Tableau",
-    "Segnaposto",
-    "Noleggi (vasi / strutture)",
-    "Forfait fioraio"
-  ],
-  "Foto & Video": [
-    "Servizio fotografico",
-    "Video",
-    "Drone",
-    "Album",
-    "Stampe",
-    "Secondo fotografo",
-    "Forfait fotografo"
-  ],
-  "Inviti & Stationery": [
-    "Partecipazioni",
-    "Menu",
-    "Segnaposto",
-    "Libretti Messa",
-    "Timbri / Cliché",
-    "Francobolli / Spedizioni",
-    "Calligrafia",
-    "Cartoncini / Tag",
-    "QR Code / Stampa"
-  ],
-  "Sposa": [
-    "Abito sposa",
-    "Scarpe sposa",
-    "Accessori (velo, gioielli, ecc.)",
-    "Intimo / sottogonna",
-    "Parrucchiera",
-    "Make-up",
-    "Prove",
-    "e)",
-    "Altro sposa"
-  ],
-  "Sposo": [
-    "Abito sposo",
-    "Scarpe sposo",
-    "Accessori (cravatta, gemelli, ecc.)",
-    "Barbiere / Grooming",
-    "Prove",
-    "Altro sposo"
-  ],
-  "Ricevimento Location": [
-    "Affitto sala",
-    "Catering / Banqueting",
-    "Torta nuziale",
-    "Vini & Bevande",
-    "Open bar",
-    "Mise en place",
-    "Noleggio tovagliato / piatti",
-    "Forfait location",
-    "Forfait catering (prezzo a persona)"
-  ],
-  "Musica & Intrattenimento": [
-    "DJ / Band",
-    "Audio / Luci",
-    "Animazione",
-    "Diritti SIAE",
-    "Guestbook phone / Postazioni",
-    "Forfait musica & intrattenimento"
-  ],
-  "Trasporti": [
-    "Auto sposi",
-    "Navette ospiti",
-    "Carburante / Pedaggi"
-  ],
-  "Bomboniere & Regali": [
-    "Bomboniere",
-    "Confetti",
-    "Packaging / Scatole",
-    "Allestimento tavolo bomboniere",
-    "Regalo testimoni",
-    "Regalo damigelle",
-    "Regalo pagetti",
-    "Realizzazione bomboniere"
-  ],
-  "Ospitalità & Logistica": [
-    "Alloggi ospiti",
-    "Welcome bag / Kit",
-    "Cartellonistica / Segnaletica"
-  ],
-  "Burocrazia": [
-    "Pubblicazioni",
-    "Certificati",
-    "Traduzioni / Apostille",
-  ],
-  "Addio al Nubilato": [
-    "Location addio al nubilato",
-    "Ristorante / Cena",
-    "Attività / Esperienze",
-    "Gadget / T-shirt",
-    "Decorazioni / Palloncini",
-    "Trasporti",
-    "Alloggio",
-    "Forfait addio al nubilato",
-  ],
-  "Addio al Celibato": [
-    "Location addio al celibato",
-    "Ristorante / Cena",
-    "Attività / Esperienze",
-    "Gadget / T-shirt",
-    "Decorazioni / Palloncini",
-    "Trasporti",
-    "Alloggio",
-    "Forfait addio al celibato",
-  ],
-  "Beauty & Benessere": [
-    "Estetista",
-    "SPA / Massaggi",
-    "Solarium"
-  ],
-  "Viaggio di nozze": [
-    "Quota viaggio",
-    "Assicurazioni",
-    "Visti / Documenti",
-    "Passaporto",
-    "Extra",
-    "Lista nozze"
-  ],
-  "Wedding Planner": [
-    "Consulenza",
-    "Full planning",
-    "Partial planning",
-    "Coordinamento giorno del matrimonio",
-    "Forfait wedding planner"
-  ],
-  "Musica Cerimonia": [
-    "Coro",
-    "Organo",
-    "Arpa",
-    "Violino",
-    "Violoncello",
-    "Gruppo strumenti",
-    "Forfait musica cerimonia"
-  ],
-  "Musica Ricevimento": [
-    "DJ",
-    "Band live",
-    "Orchestra",
-    "Duo acustico",
-    "Pianista",
-    "Forfait musica ricevimento"
-  ],
-  "Comunicazione & Media": [
-    "Sito web / QR",
-    "Social media",
-    "Grafica / Design"
-  ],
-  "Extra & Contingenze": [
-    "Imprevisti",
-    "Spese varie"
-  ]
-};
+// Stesse categorie della dashboard, centralizzate nelle costanti condivise
+const CATEGORIES_MAP: Record<string, string[]> = BUDGET_CATEGORIES;
 
 const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 
@@ -306,15 +113,28 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: e2.message }, { status: 500 });
     }
 
-    const rows: SpendRow[] = (expenses || []).map((e: any) => ({
-      id: e.id,
-      category: e.subcategory?.category?.name || "",
-      subcategory: e.subcategory?.name || "",
-      supplier: e.supplier || "",
-      amount: Number(e.committed_amount || 0),
-      spendType: e.spend_type || "common",
-      notes: e.notes || "",
-    }));
+    const rows: SpendRow[] = (expenses || []).map((e: unknown) => {
+      const expense = e as {
+        id: string;
+        supplier: string | null;
+        committed_amount: number | null;
+        spend_type: string | null;
+        notes: string | null;
+        subcategory: {
+          name: string;
+          category: { name: string; event_id: string };
+        };
+      };
+      return {
+        id: expense.id,
+        category: expense.subcategory?.category?.name || "",
+        subcategory: expense.subcategory?.name || "",
+        supplier: expense.supplier || "",
+        amount: Number(expense.committed_amount || 0),
+        spendType: (expense.spend_type || "common") as SpendRow["spendType"],
+        notes: expense.notes || "",
+      };
+    });
 
     // Merge con tutte le categorie disponibili
     const allRows = generateAllRows();
@@ -338,9 +158,10 @@ export async function GET(req: NextRequest) {
       weddingDate,
       rows: mergedRows,
     });
-  } catch (e: any) {
-    console.error("DASHBOARD GET uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("DASHBOARD GET uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }
 
@@ -462,8 +283,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error("DASHBOARD POST uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("DASHBOARD POST uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { formatCurrency } from "@/lib/locale";
 import { useMemo } from "react";
 
 type BudgetChartProps = {
@@ -67,9 +68,7 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
             <span className="text-sm font-medium text-gray-700">Speso</span>
           </div>
-          <span className="text-sm font-bold text-gray-800">
-            € {spentAmount.toLocaleString("it-IT")}
-          </span>
+          <span className="text-sm font-bold text-gray-800">{formatCurrency(spentAmount)}</span>
         </div>
         
         <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
@@ -77,16 +76,12 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
             <div className="w-3 h-3 rounded-full bg-[#E8E0D6]"></div>
             <span className="text-sm font-medium text-gray-700">Restante</span>
           </div>
-          <span className="text-sm font-bold text-gray-800">
-            € {remaining.toLocaleString("it-IT")}
-          </span>
+          <span className="text-sm font-bold text-gray-800">{formatCurrency(remaining)}</span>
         </div>
         
         <div className="flex items-center justify-between p-3 bg-gradient-to-r from-[#EAD9D4]/20 to-[#A6B5A0]/20 rounded-lg border-2 border-[#A6B5A0]">
           <span className="text-sm font-bold text-gray-800">Budget Totale</span>
-          <span className="text-lg font-bold text-[#A6B5A0]">
-            € {totalBudget.toLocaleString("it-IT")}
-          </span>
+          <span className="text-lg font-bold text-[#A6B5A0]">{formatCurrency(totalBudget)}</span>
         </div>
       </div>
 

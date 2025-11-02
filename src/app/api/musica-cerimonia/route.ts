@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const region = searchParams.get("region");
     const province = searchParams.get("province");
+    const country = searchParams.get("country");
 
     const db = getServiceClient();
 
@@ -24,7 +25,25 @@ export async function GET(req: NextRequest) {
       query = query.ilike("province", `%${province}%`);
     }
 
-    const { data, error } = await query;
+    let { data, error } = await query;
+    if (!error && country) {
+      try {
+        ({ data, error } = await db
+          .from("musica_cerimonia")
+          .select("*")
+          .eq("status", "approved")
+          .match({ region: region || undefined })
+          .ilike("province", province ? `%${province}%` : "%%")
+          .eq("country", country)
+          .order("name"));
+      } catch (e: unknown) {
+        // If country column missing and requested non-IT, return empty
+        if (country !== "it") {
+          data = [] as any;
+          error = null as any;
+        }
+      }
+    }
 
     if (error) {
       console.error("Musica cerimonia GET error:", error);
@@ -32,9 +51,10 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ musicians: data || [] });
-  } catch (e: any) {
-    console.error("Musica cerimonia GET uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("Musica cerimonia GET uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }
 
@@ -85,8 +105,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error("Musica cerimonia POST uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("Musica cerimonia POST uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }

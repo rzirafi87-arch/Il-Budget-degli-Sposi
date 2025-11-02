@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Dashboard: widget e riepiloghi">
+  <defs>
+    <linearGradient id="bgd2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eaf4e6"/>
+      <stop offset="100%" stop-color="#9fb7a0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bgd2)"/>
+  <g fill="#ffffff" opacity="0.92">
+    <rect x="140" y="520" width="320" height="200" rx="16"/>
+    <rect x="480" y="520" width="320" height="200" rx="16"/>
+    <rect x="820" y="520" width="240" height="200" rx="16"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Widget e riepiloghi</text>
+  </g>
+</svg>
+

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import clsx from "clsx";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import clsx from "clsx";
+import { useCallback, useEffect, useState } from "react";
 
 type Church = {
   id: string;
@@ -65,11 +65,7 @@ export default function CerimoniaChiesaPage() {
     requires_marriage_course: false,
   });
 
-  useEffect(() => {
-    loadChurches();
-  }, [selectedRegion, selectedProvince, selectedType]);
-
-  async function loadChurches() {
+  const loadChurches = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -80,12 +76,16 @@ export default function CerimoniaChiesaPage() {
       const res = await fetch(`/api/churches?${params.toString()}`);
       const data = await res.json();
       setChurches(data.churches || []);
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // Ignore errors
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedRegion, selectedProvince, selectedType]);
+
+  useEffect(() => {
+    loadChurches();
+  }, [loadChurches]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -131,8 +131,9 @@ export default function CerimoniaChiesaPage() {
         requires_marriage_course: false,
       });
       loadChurches();
-    } catch (e: any) {
-      alert(e.message || "Errore durante l'aggiunta");
+    } catch (e) {
+      const error = e as Error;
+      alert(error.message || "Errore durante l'aggiunta");
     }
   }
 
@@ -143,7 +144,7 @@ export default function CerimoniaChiesaPage() {
   const filteredChurches = churches;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
+    <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
         {/* Carosello immagini */}
         <ImageCarousel images={PAGE_IMAGES.chiese} height="280px" />

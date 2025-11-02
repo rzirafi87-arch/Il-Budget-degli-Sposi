@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Gioiellerie: custodie e vetrine">
+  <defs>
+    <linearGradient id="gio3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#gio3)"/>
+  <g opacity="0.25" fill="#6f8a73">
+    <rect x="960" y="200" width="160" height="120" rx="12"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Custodie e vetrine</text>
+  </g>
+</svg>
+

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Musica Ricevimento: band, DJ, intrattenimento">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eaf6e7"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g opacity="0.25" stroke="#6f8a73" stroke-width="4" fill="none">
+    <circle cx="980" cy="220" r="70"/>
+    <circle cx="1030" cy="220" r="70"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="70" font-weight="700">Musica Ricevimento</text>
+    <text x="120" y="418" font-size="28" opacity="0.9">Band, DJ, intrattenimento</text>
+  </g>
+</svg>
+

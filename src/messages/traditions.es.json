@@ -1,10 +1,12 @@
 {
-  "traditions.title": "Tradiciones de boda · {country}",
-  "traditions.ritoLabel": "Rito y símbolos: ",
-  "traditions.stileLabel": "Estilo: ",
-  "traditions.coloriLabel": "Colores: ",
-  "traditions.regaliLabel": "Costumbres y regalos: ",
-  "traditions.durataLabel": "Duración/organización: ",
-  "traditions.festaLabel": "Fiesta y tradiciones: ",
-  "traditions.usanzeLabel": "Otras costumbres: "
+  "traditions": {
+    "title": "Tradiciones de boda · {country}",
+    "ritoLabel": "Rito y símbolos: ",
+    "stileLabel": "Estilo: ",
+    "coloriLabel": "Colores: ",
+    "regaliLabel": "Costumbres y regalos: ",
+    "durataLabel": "Duración/organización: ",
+    "festaLabel": "Fiesta y tradiciones: ",
+    "usanzeLabel": "Otras costumbres: "
+  }
 }

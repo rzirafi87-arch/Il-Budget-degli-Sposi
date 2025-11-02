@@ -1,0 +1,82 @@
+[
+    {
+        "country_code": "IT",
+        "country_name": "Italia",
+        "language": "it",
+        "event_types": [
+            {
+                "slug": "matrimonio",
+                "name": "Matrimonio",
+                "traditions": {
+                    "description": "Descrizione sintetica delle usanze per il matrimonio in questo paese.",
+                    "duration_days": 1,
+                    "legal_requirements": "Requisiti legali/registrazione.",
+                    "registry_style": "comune/parrocchia/altro",
+                    "outfits_count": 1,
+                    "alcohol_allowed_default": true,
+                    "gender_separation_possible": false,
+                    "destination_friendly": true,
+                    "main_colors": [
+                        "#A3B59D",
+                        "Bianco"
+                    ],
+                    "ceremony_types": [
+                        "Civile",
+                        "Religiosa"
+                    ],
+                    "rituals": [
+                        "Lancio del riso"
+                    ],
+                    "roles": [
+                        "Testimone",
+                        "Damigella"
+                    ],
+                    "vendor_types": [
+                        "Atelier",
+                        "Fotografo",
+                        "Fioraio",
+                        "Catering",
+                        "Wedding Planner"
+                    ],
+                    "timeline": [
+                        "Cerimonia",
+                        "Aperitivo",
+                        "Cena",
+                        "Torta",
+                        "Ballo"
+                    ],
+                    "gifts": [
+                        "Lista nozze",
+                        "Busta"
+                    ],
+                    "food_notes": [
+                        "Vegetariano",
+                        "Senza glutine"
+                    ],
+                    "music_styles": [
+                        "DJ",
+                        "Live band"
+                    ],
+                    "location_styles": [
+                        "Villa",
+                        "Ristorante",
+                        "Agriturismo"
+                    ],
+                    "invitation_channels": [
+                        "Cartaceo",
+                        "Digitale"
+                    ],
+                    "budget_focus_pct": {
+                        "catering": 35,
+                        "location": 20,
+                        "attire": 10,
+                        "photo_video": 12,
+                        "decor": 10,
+                        "entertainment": 8,
+                        "stationery_gifts": 5
+                    }
+                }
+            }
+        ]
+    }
+]

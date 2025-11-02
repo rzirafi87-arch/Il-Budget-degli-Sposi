@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Fornitori: servizi e contatti">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0f7ee"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g stroke="#6f8a73" stroke-width="2" opacity="0.25" fill="none">
+    <path d="M120,640 C280,560 440,600 620,520 C780,450 960,440 1100,420"/>
+  </g>
+  <g fill="#ffffff" opacity="0.95">
+    <rect x="140" y="520" width="240" height="200" rx="16"/>
+    <rect x="400" y="540" width="240" height="180" rx="16"/>
+    <rect x="660" y="520" width="240" height="200" rx="16"/>
+    <rect x="920" y="540" width="140" height="180" rx="16"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="80" font-weight="700">Fornitori</text>
+    <text x="120" y="418" font-size="28" opacity="0.9">Servizi e contatti</text>
+  </g>
+</svg>
+

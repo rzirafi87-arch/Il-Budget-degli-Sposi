@@ -1,10 +1,11 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
-import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
 import ExportButton from "@/components/ExportButton";
+import ImageCarousel from "@/components/ImageCarousel";
+import PageInfoNote from "@/components/PageInfoNote";
+import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -17,6 +18,7 @@ type Guest = {
   isMainContact: boolean;
   familyGroupId?: string;
   familyGroupName?: string;
+  excludeFromFamilyTable: boolean;
   invitationDate: string;
   rsvpDeadline: string;
   rsvpReceived: boolean;
@@ -71,9 +73,9 @@ export default function InvitatiPage() {
     try {
       const res = await fetch("/api/my/tables");
       const json = await res.json();
-      setTables((json.tables || []).map((t: any) => ({
+      setTables((json.tables || []).map((t: Record<string, unknown>) => ({
         totalSeats: Number(t.totalSeats || 0),
-        assignedGuests: t.assignedGuests || [],
+        assignedGuests: (t.assignedGuests as string[]) || [],
       })));
     } catch (e) {
       console.error(e);
@@ -111,6 +113,7 @@ export default function InvitatiPage() {
         name: "",
         guestType: "common",
         isMainContact: false,
+        excludeFromFamilyTable: false,
         invitationDate: "",
         rsvpDeadline: defaultRsvpDeadline,
         rsvpReceived: false,
@@ -122,9 +125,14 @@ export default function InvitatiPage() {
     ]);
   };
 
-  const updateGuest = (id: string | undefined, field: keyof Guest, value: any) => {
+  const updateGuest = (id: string | undefined, field: keyof Guest, value: string | boolean | string[]) => {
     if (!id) return;
     setGuests(guests.map((g) => (g.id === id ? { ...g, [field]: value } : g)));
+  };
+
+  const updateGuestMultiple = (id: string | undefined, updates: Partial<Guest>) => {
+    if (!id) return;
+    setGuests(guests.map((g) => (g.id === id ? { ...g, ...updates } : g)));
   };
 
   const deleteGuest = (id: string | undefined) => {
@@ -132,9 +140,9 @@ export default function InvitatiPage() {
     setGuests(guests.filter((g) => g.id !== id));
   };
 
-  const createFamily = () => {
+  const createFamily = async () => {
     if (!newFamilyName.trim()) {
-      setMessage("âŒ Inserisci un nome per la famiglia");
+      setMessage("❌ Inserisci un nome per la famiglia");
       return;
     }
     const newFamily: FamilyGroup = {
@@ -142,10 +150,51 @@ export default function InvitatiPage() {
       familyName: newFamilyName,
       notes: "",
     };
-    setFamilyGroups([...familyGroups, newFamily]);
+    const updatedFamilies = [...familyGroups, newFamily];
+    setFamilyGroups(updatedFamilies);
     setNewFamilyName("");
     setShowFamilyModal(false);
-    setMessage("âœ… Famiglia creata! Ora assegna gli invitati alla famiglia.");
+    setMessage("✅ Famiglia creata! Salvataggio in corso...");
+
+    // Salva automaticamente la nuova famiglia
+    try {
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) {
+        setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
+        return;
+      }
+
+      const res = await fetch("/api/my/guests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({ guests, familyGroups: updatedFamilies, nonInvitedRecipients, defaultRsvpDeadline }),
+      });
+
+      if (!res.ok) {
+        const json = await res.json();
+        setMessage(`❌ Errore salvataggio famiglia: ${json.error || "Impossibile salvare"}`);
+      } else {
+        setMessage("✅ Famiglia creata e salvata! Ora puoi assegnare gli invitati.");
+        setTimeout(() => setMessage(null), 3000);
+        // Ricarica i dati per ottenere l'ID reale dal database
+        await loadData();
+      }
+    } catch (err) {
+      console.error("Errore salvataggio famiglia:", err);
+      setMessage("❌ Errore di rete durante il salvataggio della famiglia");
+    }
+  };
+
+  const updateFamilyName = (familyId: string | undefined, newName: string) => {
+    if (!familyId) return;
+    // Aggiorna il nome della famiglia
+    setFamilyGroups(familyGroups.map(f => f.id === familyId ? { ...f, familyName: newName } : f));
+    // Aggiorna anche il nome negli invitati associati
+    setGuests(guests.map(g => g.familyGroupId === familyId ? { ...g, familyGroupName: newName } : g));
   };
 
   const deleteFamily = (familyId: string | undefined) => {
@@ -181,9 +230,9 @@ export default function InvitatiPage() {
     ]);
   };
 
-  const updateNonInvited = (id: string | undefined, field: keyof NonInvitedRecipient, value: any) => {
+  const updateNonInvited = (id: string | undefined, field: keyof NonInvitedRecipient, value: string | boolean) => {
     if (!id) return;
-    setNonInvitedRecipients(nonInvitedRecipients.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
+    setNonInvitedRecipients(nonInvitedRecipients.map((n) => (n.id === id ? { ...n, [field]: value } : n)));
   };
 
   const deleteNonInvited = (id: string | undefined) => {
@@ -198,7 +247,7 @@ export default function InvitatiPage() {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        setMessage("âŒ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
+        setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
         setSaving(false);
         return;
       }
@@ -214,14 +263,14 @@ export default function InvitatiPage() {
 
       if (!res.ok) {
         const json = await res.json();
-        setMessage(`âŒ Errore: ${json.error || "Impossibile salvare"}`);
+        setMessage(`❌ Errore: ${json.error || "Impossibile salvare"}`);
       } else {
-        setMessage("âœ… Invitati salvati con successo!");
+        setMessage("✅ Invitati salvati con successo!");
         setTimeout(() => setMessage(null), 3000);
       }
     } catch (err) {
       console.error("Errore salvataggio:", err);
-      setMessage("âŒ Errore di rete");
+  setMessage("❌ Errore di rete");
     } finally {
       setSaving(false);
     }
@@ -256,7 +305,7 @@ export default function InvitatiPage() {
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-2">Gestione Invitati</h2>
-      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+      <p className="text-gray-900 mb-6 text-sm sm:text-base leading-relaxed font-semibold">
         Organizza la lista degli invitati, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli.
       </p>
 
@@ -271,7 +320,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "guests" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          ðŸ‘¥ Invitati
+          👥 Invitati
         </button>
         <button
           onClick={() => setActiveTab("tables")}
@@ -282,7 +331,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "tables" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          ðŸª‘ Tavoli
+          🪑 Tavoli
         </button>
       </div>
 
@@ -302,6 +351,25 @@ export default function InvitatiPage() {
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">{message}</div>
       )}
 
+      <PageInfoNote
+        icon="👥"
+        title="Gestione Completa degli Invitati"
+        description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menù, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
+        tips={[
+          "Crea gruppi familiari per organizzare gli invitati e assegnarli automaticamente allo stesso tavolo",
+          "Usa il flag 'Escludi da tavolo famiglia' per separare alcuni membri (es. cugini vs genitori)",
+          "Traccia le conferme RSVP per sapere quanti parteciperanno realmente",
+          "Registra le preferenze del menù (carne, pesce, vegetariano, baby) per comunicarle al catering",
+          "La sezione 'Non Invitati' serve per chi riceve solo bomboniera/confetti senza partecipare"
+        ]}
+        eventTypeSpecific={{
+          wedding: "Per il matrimonio, gestisci invitati della sposa, dello sposo e comuni. Organizza per famiglie e assegna i tavoli in modo strategico per creare un'atmosfera piacevole.",
+          baptism: "Per il battesimo, traccia padrino, madrina, familiari e amici. La lista è generalmente più piccola e familiare.",
+          birthday: "Per il compleanno, organizza gli invitati per gruppi (famiglia, amici, colleghi) per una migliore gestione.",
+          graduation: "Per la laurea, invita familiari, amici e compagni di studi. Traccia le conferme per organizzare il buffet o il pranzo."
+        }}
+      />
+
       {/* Deadline RSVP Globale */}
       <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -320,53 +388,53 @@ export default function InvitatiPage() {
         <h3 className="font-semibold text-lg mb-4">Riepilogo Partecipanti</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div className="p-3 bg-pink-50 rounded-lg border border-pink-200">
-            <div className="text-gray-600">Sposa</div>
+            <div className="text-gray-800 font-semibold">Sposa</div>
             <div className="text-2xl font-bold text-pink-600">{totalByType.bride}</div>
           </div>
           <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="text-gray-600">Sposo</div>
+            <div className="text-gray-800 font-semibold">Sposo</div>
             <div className="text-2xl font-bold text-blue-600">{totalByType.groom}</div>
           </div>
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-300">
-            <div className="text-gray-600">Comuni</div>
+            <div className="text-gray-800 font-semibold">Comuni</div>
             <div className="text-2xl font-bold text-gray-700">{totalByType.common}</div>
           </div>
           <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-            <div className="text-gray-600">Totale partecipanti</div>
+            <div className="text-gray-800 font-semibold">Totale partecipanti</div>
             <div className="text-2xl font-bold text-green-600">{totalGuests}</div>
           </div>
         </div>
 
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>ðŸ– Carne:</span>
+            <span>🥩 Carne:</span>
             <span className="font-semibold">{menuCounts.carne}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>ðŸŸ Pesce:</span>
+            <span>🐟 Pesce:</span>
             <span className="font-semibold">{menuCounts.pesce}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>ðŸ‘¶ Baby:</span>
+            <span>🧒 Baby:</span>
             <span className="font-semibold">{menuCounts.baby}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>ðŸŽª Animazione:</span>
+            <span>🎪 Animazione:</span>
             <span className="font-semibold">{menuCounts.animazione}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>ðŸ¥— Vegetariano:</span>
+            <span>🥗 Vegetariano:</span>
             <span className="font-semibold">{menuCounts.vegetariano}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>ðŸª‘ Posto tavolo:</span>
+            <span>🪑 Posto tavolo:</span>
             <span className="font-semibold">{menuCounts.posto_tavolo}</span>
           </div>
         </div>
 
         <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-700">ðŸŽ Bomboniere necessarie:</span>
+            <span className="text-gray-800 font-semibold">🎁 Bomboniere necessarie:</span>
             <span className="font-bold text-purple-600">{totalBomboniere}</span>
           </div>
         </div>
@@ -375,7 +443,7 @@ export default function InvitatiPage() {
       {/* Gestione Famiglie */}
       <div className="mb-6 p-6 rounded-2xl border-3 border-purple-600 bg-purple-50/70 shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg text-gray-900">ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦ Gruppi Famiglia</h3>
+          <h3 className="font-bold text-lg text-gray-900">👨‍👩‍👧‍👦 Gruppi Famiglia</h3>
           <button
             onClick={() => setShowFamilyModal(true)}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-bold shadow-md"
@@ -384,29 +452,47 @@ export default function InvitatiPage() {
           </button>
         </div>
         <p className="text-xs text-gray-600 mb-3">
-          Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia.
+         Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia. 
+         <strong className="text-purple-700">💡 Suggerimento:</strong> Usa la colonna &quot;🚫 Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
         </p>
         {familyGroups.length === 0 ? (
-          <div className="text-center text-gray-500 py-4">Nessuna famiglia creata. Clicca "Aggiungi Famiglia" per iniziare.</div>
+          <div className="text-center text-gray-500 py-4">Nessuna famiglia creata. Clicca &quot;Aggiungi Famiglia&quot; per iniziare.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {familyGroups.map((family) => {
               const familyMembers = guests.filter(g => g.familyGroupId === family.id);
+                const familyMembersIncluded = familyMembers.filter(g => !g.excludeFromFamilyTable);
+                const familyMembersExcluded = familyMembers.filter(g => g.excludeFromFamilyTable);
               const mainContact = familyMembers.find(g => g.isMainContact);
               return (
                 <div key={family.id} className="p-4 bg-white rounded-lg border-2 border-purple-300 shadow-sm">
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-bold text-gray-800">{family.familyName}</h4>
+                    <input
+                      type="text"
+                      className="font-bold text-gray-800 border-b-2 border-transparent hover:border-purple-300 focus:border-purple-500 focus:outline-none bg-transparent flex-1 mr-2"
+                      value={family.familyName}
+                      onChange={(e) => updateFamilyName(family.id, e.target.value)}
+                      placeholder="Nome famiglia"
+                    />
                     <button
                       onClick={() => deleteFamily(family.id)}
                       className="text-red-500 hover:text-red-700 text-xs font-bold"
+                      title="Elimina famiglia"
                     >
-                      âœ•
+                      ❌
                     </button>
                   </div>
                   <div className="text-xs text-gray-600">
-                    <div className="mb-1">ðŸ‘¤ Contatto: {mainContact?.name || "Non assegnato"}</div>
-                    <div>ðŸ‘¥ Membri: {familyMembers.length}</div>
+                    <div className="mb-1">🧑 Contatto: {mainContact?.name || "Non assegnato"}</div>
+                      <div className="flex justify-between items-center">
+                        <span>👥 Totale: {familyMembers.length}</span>
+                        <span className="text-green-700">✅ Tavolo famiglia: {familyMembersIncluded.length}</span>
+                      </div>
+                      {familyMembersExcluded.length > 0 && (
+                        <div className="mt-1 text-orange-600">
+                          🚫 Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
+                        </div>
+                      )}
                   </div>
                 </div>
               );
@@ -457,7 +543,7 @@ export default function InvitatiPage() {
               type="csv"
               className="text-sm"
             >
-              ðŸ“¥ Esporta CSV
+              📄 Esporta CSV
             </ExportButton>
             <button
               onClick={addGuest}
@@ -472,24 +558,25 @@ export default function InvitatiPage() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
-                <th className="px-3 py-2 text-left font-medium text-gray-700">Nome</th>
-                <th className="px-2 py-2 text-left font-medium text-gray-700">Tipo</th>
-                <th className="px-2 py-2 text-left font-medium text-gray-700">Famiglia</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Contatto principale</th>
-                <th className="px-2 py-2 text-left font-medium text-gray-700">Data invito</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Risposta ricevuta</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Partecipa</th>
-                <th className="px-2 py-2 text-left font-medium text-gray-700">Preferenze menu</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Bomboniera</th>
-                <th className="px-3 py-2 text-left font-medium text-gray-700">Note</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Azioni</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">Nome</th>
+                <th className="px-2 py-2 text-left font-semibold text-gray-900">Tipo</th>
+                <th className="px-2 py-2 text-left font-semibold text-gray-900">Famiglia</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Contatto principale</th>
+                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">🚫 Tavolo separato</th>
+                  <th className="px-2 py-2 text-left font-semibold text-gray-900">Data invito</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Risposta ricevuta</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Partecipa</th>
+                <th className="px-2 py-2 text-left font-semibold text-gray-900">Preferenze menu</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Bomboniera</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">Note</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Azioni</th>
               </tr>
             </thead>
             <tbody>
               {guests.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="px-6 py-8 text-center text-gray-500">
-                    Nessun invitato ancora. Clicca su "Aggiungi Invitato" per iniziare.
+                    <td colSpan={12} className="px-6 py-8 text-center text-gray-500">
+                    Nessun invitato ancora. Clicca su &quot;Aggiungi Invitato&quot; per iniziare.
                   </td>
                 </tr>
               ) : (
@@ -517,13 +604,18 @@ export default function InvitatiPage() {
                     </td>
                     <td className="px-2 py-2">
                       <select
-                        className="border border-gray-200 rounded px-1 py-1 w-full text-xs"
+                        className="border border-gray-200 rounded px-1 py-1 w-full text-xs bg-white"
                         value={guest.familyGroupId || ""}
                         onChange={(e) => {
                           const familyId = e.target.value || undefined;
-                          const familyName = familyGroups.find(f => f.id === familyId)?.familyName;
-                          updateGuest(guest.id, "familyGroupId", familyId);
-                          updateGuest(guest.id, "familyGroupName", familyName);
+                          const family = familyGroups.find(f => f.id === familyId);
+                          console.log("Famiglia selezionata - ID:", familyId, "Nome:", family?.familyName);
+                          console.log("Famiglie disponibili:", familyGroups);
+                          
+                          updateGuestMultiple(guest.id, {
+                            familyGroupId: familyId,
+                            familyGroupName: family?.familyName
+                          });
                         }}
                       >
                         <option value="">-- Nessuna --</option>
@@ -540,6 +632,16 @@ export default function InvitatiPage() {
                         className="w-4 h-4"
                       />
                     </td>
+                      <td className="px-2 py-2 text-center">
+                        <input
+                          type="checkbox"
+                          checked={guest.excludeFromFamilyTable}
+                          onChange={(e) => updateGuest(guest.id, "excludeFromFamilyTable", e.target.checked)}
+                          className="w-4 h-4"
+                          disabled={!guest.familyGroupId}
+                          title={guest.familyGroupId ? "Escludi questo invitato dal tavolo famiglia (es. per cugini)" : "Assegna prima a una famiglia"}
+                        />
+                      </td>
                     <td className="px-2 py-2">
                       <input
                         type="date"
@@ -576,12 +678,12 @@ export default function InvitatiPage() {
                                 : "bg-gray-100 text-gray-600"
                             }`}
                           >
-                            {pref === "carne" && "ðŸ–"}
-                            {pref === "pesce" && "ðŸŸ"}
-                            {pref === "baby" && "ðŸ‘¶"}
-                            {pref === "animazione" && "ðŸŽª"}
-                            {pref === "vegetariano" && "ðŸ¥—"}
-                            {pref === "posto_tavolo" && "ðŸª‘"}
+                            {pref === "carne" && "🥩"}
+                            {pref === "pesce" && "🐟"}
+                            {pref === "baby" && "🧒"}
+                            {pref === "animazione" && "🎪"}
+                            {pref === "vegetariano" && "🥗"}
+                            {pref === "posto_tavolo" && "🪑"}
                           </button>
                         ))}
                       </div>
@@ -609,7 +711,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        âœ•
+                        ❌
                       </button>
                     </td>
                   </tr>
@@ -636,11 +738,11 @@ export default function InvitatiPage() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
-                <th className="px-3 py-2 text-left font-medium text-gray-700">Nome</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Bomboniera</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Confetti</th>
-                <th className="px-3 py-2 text-left font-medium text-gray-700">Note</th>
-                <th className="px-2 py-2 text-center font-medium text-gray-700">Azioni</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">Nome</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Bomboniera</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Confetti</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">Note</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">Azioni</th>
               </tr>
             </thead>
             <tbody>
@@ -693,7 +795,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        âœ•
+                        ❌
                       </button>
                     </td>
                   </tr>
@@ -711,7 +813,7 @@ export default function InvitatiPage() {
           disabled={saving}
           className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] disabled:opacity-50 font-semibold"
         >
-          {saving ? "Salvataggio..." : "ðŸ’¾ Salva tutto"}
+          {saving ? "Salvataggio..." : "💾 Salva tutto"}
         </button>
       </div>
     </>
@@ -731,7 +833,7 @@ export default function InvitatiPage() {
     return (
       <>
         <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-gradient-to-br from-gray-200 to-gray-300 shadow-xl">
-          <h3 className="font-bold text-lg mb-4 text-gray-900">ðŸ“Š Riepilogo Tavoli</h3>
+          <h3 className="font-bold text-lg mb-4 text-gray-900">📋 Riepilogo Tavoli</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
             <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
               <div className="text-gray-800 font-bold">Tavoli Totali</div>
@@ -754,7 +856,7 @@ export default function InvitatiPage() {
 
         <div className="p-6 rounded-lg border border-gray-300 bg-white/70">
           <p className="text-sm text-gray-600">
-            La gestione dettagliata della disposizione dei tavoli Ã¨ disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
+            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
             Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.
           </p>
           <p className="text-sm text-gray-600 mt-2">
@@ -770,4 +872,7 @@ export default function InvitatiPage() {
     );
   }
 }
+
+
+
 

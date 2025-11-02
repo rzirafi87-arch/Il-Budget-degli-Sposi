@@ -1,9 +1,12 @@
+import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
+import { cookies, headers } from "next/headers";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { JsonLd, LocalBusinessSchema } from "@/components/StructuredData";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import ClientLayoutShell from "@/components/ClientLayoutShell";
+import { LANGS } from "@/lib/loadConfigs";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -97,9 +100,23 @@ export const viewport: Viewport = {
   themeColor: "#A6B5A0",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const store = await cookies();
+  let langCookie = store.get("language")?.value ?? "it";
+  if (!langCookie) {
+    const hdrs = await headers();
+    const raw = hdrs.get("cookie") || "";
+    const found = raw
+      .split(";")
+      .map((c: string) => c.trim())
+      .find((c: string) => c.startsWith("language="));
+    if (found) {
+      langCookie = decodeURIComponent(found.split("=")[1] || "it");
+    }
+  }
+  const dir = (LANGS.find(l => l.slug === langCookie)?.dir as "ltr" | "rtl") || (langCookie === "ar" ? "rtl" : "ltr");
   return (
-    <html lang="it" className={`${playfair.variable} ${inter.variable}`}> 
+    <html lang={langCookie} dir={dir} className={`${playfair.variable} ${inter.variable}`}>
       <head>
         <JsonLd />
         <LocalBusinessSchema />
@@ -113,14 +130,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         ) : null}
-        {/* Service Worker registration */}
-        <script dangerouslySetInnerHTML={{
-          __html: `if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-              navigator.serviceWorker.register('/service-worker.js');
-            });
-          }`
-        }} />
+        {/* Service Worker registration (solo in produzione) */}
+        {process.env.NODE_ENV === "production" ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/service-worker.js');
+                });
+              }`,
+            }}
+          />
+        ) : null}
       </head>
       <body className="min-h-screen antialiased" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
         <ClientLayoutShell>{children}</ClientLayoutShell>

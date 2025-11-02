@@ -1,6 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import React from 'react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 // Mock next/navigation router to avoid real navigation in jsdom
 jest.mock('next/navigation', () => ({
@@ -9,10 +8,9 @@ jest.mock('next/navigation', () => ({
 
 // Simple fetch mock for the traditions preview
 beforeAll(() => {
-  // @ts-ignore
   global.fetch = jest.fn(() =>
     Promise.resolve({ json: () => Promise.resolve({ traditions: [] }) })
-  ) as any;
+  ) as unknown as typeof fetch;
 });
 
 import SelectEventTypePage from '../select-event-type/page';
@@ -20,7 +18,7 @@ import SelectEventTypePage from '../select-event-type/page';
 describe('SelectEventTypePage', () => {
   beforeEach(() => {
     window.localStorage.clear();
-    (document as any).cookie = '';
+  (document as unknown as { cookie: string }).cookie = '';
   });
 
   it('mostra i tipi di evento e salva la scelta', () => {

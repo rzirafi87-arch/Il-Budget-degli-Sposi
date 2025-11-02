@@ -1,11 +1,13 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 type ExportButtonProps = {
   data: any[];
   filename: string;
   type: "csv" | "json";
   className?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 };
 
 export default function ExportButton({
@@ -13,7 +15,7 @@ export default function ExportButton({
   filename,
   type,
   className = "",
-  children = "📥 Esporta",
+  children = "Esporta",
 }: ExportButtonProps) {
   const handleExport = () => {
     if (type === "csv") {

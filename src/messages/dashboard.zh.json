@@ -1,10 +1,14 @@
 {
-  "dashboard.curiosityTitle": "趣事与建议",
-  "dashboard.suggestions.mariachi": "记得预订玛利亚奇乐队！",
-  "dashboard.suggestions.location": "请至少提前6个月确认场地的可用性。",
-  "dashboard.suggestions.photobooth": "为派对考虑一个墨西哥主题的拍照亭。",
-  "dashboard.suggestions.documents": "请检查在墨西哥所需的法律文件。",
-  "dashboard.suggestions.photographer": "请提前预订摄影师。",
-  "dashboard.suggestions.guests": "检查宾客名单并更新偏好。",
-  "dashboard.suggestions.traditions": "查阅当地传统以丰富您的仪式。"
+  "dashboard": {
+    "curiosityTitle": "趣事与建议",
+    "suggestions": {
+      "mariachi": "记得预订玛利亚奇乐队！",
+      "location": "请至少提前6个月确认场地的可用性。",
+      "photobooth": "为派对考虑一个墨西哥主题的拍照亭。",
+      "documents": "请检查在墨西哥所需的法律文件。",
+      "photographer": "请提前预订摄影师。",
+      "guests": "检查宾客名单并更新偏好。",
+      "traditions": "查阅当地传统以丰富您的仪式。"
+    }
+  }
 }

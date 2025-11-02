@@ -3,8 +3,9 @@ export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
 import Stripe from "stripe";
 
-const stripe = process.env.STRIPE_SECRET_KEY 
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2025-09-30.clover" })
+// Initialize Stripe using the account's default API version to avoid mismatches
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY)
   : null;
 
 type CheckoutRequest = {
@@ -80,8 +81,8 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/fornitori-dashboard?payment=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/pacchetti-fornitori?payment=cancelled`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/fornitori-dashboard?payment=success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/pacchetti-fornitori?payment=cancelled`,
       metadata: {
         user_id: userData.user.id,
         tier,
@@ -96,8 +97,9 @@ export async function POST(req: NextRequest) {
       sessionId: session.id, 
       url: session.url 
     });
-  } catch (e: any) {
-    console.error("STRIPE CHECKOUT error:", e);
-    return NextResponse.json({ error: e?.message || "Errore creazione sessione" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("STRIPE CHECKOUT error:", error);
+    return NextResponse.json({ error: error?.message || "Errore creazione sessione" }, { status: 500 });
   }
 }

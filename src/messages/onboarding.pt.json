@@ -1,0 +1,57 @@
+{
+  "onboarding": {
+    "selectLanguageTitle": "Escolha o idioma",
+    "selectLanguageDesc": "Selecione o idioma de preferência para a interface.",
+    "selectCountryTitle": "Onde será o evento?",
+    "selectCountryDesc": "Selecione o país onde o evento acontecerá, independentemente de onde você mora ou do idioma do navegador.",
+    "selectEventTypeTitle": "Escolha o tipo de evento",
+    "nextBtn": "Avançar",
+    "creatingEvent": "Criando evento..."
+  },
+  "languages": {
+    "it": "Italiano",
+    "es": "Espanhol",
+    "en": "Inglês",
+    "fr": "Francês",
+    "de": "Alemão",
+    "ru": "Russo",
+    "zh": "Chinês",
+    "ja": "Japonês",
+    "ar": "Árabe",
+    "pt": "Português",
+    "id": "Indonésio"
+  },
+  "countries": {
+    "it": "Itália",
+    "mx": "México",
+    "es": "Espanha",
+    "fr": "França",
+    "in": "Índia",
+    "jp": "Japão",
+    "uk": "Reino Unido",
+    "ae": "Emirados Árabes Unidos",
+    "us": "Estados Unidos"
+  },
+  "events": {
+    "wedding": "Casamento",
+    "baptism": "Batismo",
+    "eighteenth": "18 anos",
+    "anniversary": "Aniversário de casamento",
+    "gender-reveal": "Chá revelação",
+    "birthday": "Aniversário",
+    "fifty": "50 anos",
+    "retirement": "Aposentadoria",
+    "confirmation": "Crisma",
+    "graduation": "Graduação",
+    "baby-shower": "Chá de bebê",
+    "engagement": "Festa de noivado",
+    "corporate": "Evento corporativo",
+    "milestone-birthday": "Aniversário (marco)",
+    "gender-reveal-party": "Festa de revelação de gênero",
+    "proposal": "Festa de pedido de casamento",
+    "communion": "Primeira comunhão",
+    "bar-mitzvah": "Bar Mitzvá",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Evento beneficente/Gala"
+  }
+}

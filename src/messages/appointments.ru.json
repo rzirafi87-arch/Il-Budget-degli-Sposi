@@ -1,10 +1,12 @@
 {
-  "appointments.title": "Встречи и сроки",
-  "appointments.formTitle": "Название встречи",
-  "appointments.formLocation": "Место",
-  "appointments.formNotes": "Заметки",
-  "appointments.addBtn": "Добавить встречу",
-  "appointments.empty": "Встречи не добавлены.",
-  "appointments.dateLabel": "Дата",
-  "appointments.locationLabel": "Место"
+  "appointments": {
+    "title": "Встречи и сроки",
+    "formTitle": "Название встречи",
+    "formLocation": "Место",
+    "formNotes": "Заметки",
+    "addBtn": "Добавить встречу",
+    "empty": "Встречи не добавлены.",
+    "dateLabel": "Дата",
+    "locationLabel": "Место"
+  }
 }

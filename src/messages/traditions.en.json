@@ -1,10 +1,12 @@
 {
-  "traditions.title": "Wedding Traditions · {country}",
-  "traditions.ritoLabel": "Rite and symbols: ",
-  "traditions.stileLabel": "Style: ",
-  "traditions.coloriLabel": "Colors: ",
-  "traditions.regaliLabel": "Customs and gifts: ",
-  "traditions.durataLabel": "Duration/organization: ",
-  "traditions.festaLabel": "Party and traditions: ",
-  "traditions.usanzeLabel": "Other customs: "
+  "traditions": {
+    "title": "Wedding Traditions · {country}",
+    "ritoLabel": "Rite and symbols: ",
+    "stileLabel": "Style: ",
+    "coloriLabel": "Colors: ",
+    "regaliLabel": "Customs and gifts: ",
+    "durataLabel": "Duration/organization: ",
+    "festaLabel": "Party and traditions: ",
+    "usanzeLabel": "Other customs: "
+  }
 }

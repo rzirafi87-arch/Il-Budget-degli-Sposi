@@ -17,5 +17,28 @@
   "auth": "ログイン",
   "chat": "WhatsAppでお問い合わせ",
   "settings": "設定",
-  "loading": "読み込み中…"
+  "loading": "読み込み中…",
+  "comingSoon": "近日公開",
+  "events": {
+    "wedding": "結婚式",
+    "baptism": "洗礼",
+    "eighteenth": "18歳の誕生日",
+    "anniversary": "結婚記念日",
+    "gender-reveal": "ジェンダーリビール",
+    "birthday": "誕生日",
+    "fifty": "50歳",
+    "retirement": "退職",
+    "confirmation": "堅信式",
+    "graduation": "卒業",
+    "baby-shower": "ベビーシャワー",
+    "engagement": "婚約パーティー",
+    "corporate": "企業イベント",
+    "milestone-birthday": "節目の誕生日",
+    "gender-reveal-party": "ジェンダーリビール・パーティー",
+    "proposal": "プロポーズパーティー",
+    "communion": "初聖体",
+    "bar-mitzvah": "バル・ミツワー",
+    "quinceanera": "キンセアニェーラ",
+    "charity-gala": "チャリティー/ガラ"
+  }
 }

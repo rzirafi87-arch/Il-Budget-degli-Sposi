@@ -1,0 +1,206 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run SQL: Current File (local PG)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"${file}"
+			],
+			"options": {
+				"env": {
+					"SUPABASE_DB_URL": "postgres://postgres:postgres@localhost:5433/ibds"
+				}
+			},
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Init schema + patches (local PG)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"supabase-COMPLETE-SETUP.sql",
+				"supabase-ALL-PATCHES.sql"
+			],
+			"options": {
+				"env": {
+					"SUPABASE_DB_URL": "postgres://postgres:postgres@localhost:5433/ibds"
+				}
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Events seed (local PG)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"supabase-events-seed.sql"
+			],
+			"options": {
+				"env": {
+					"SUPABASE_DB_URL": "postgres://postgres:postgres@localhost:5433/ibds"
+				}
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Seeds (local PG – multi)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"supabase-events-seed.sql",
+				"supabase-india-seed.sql",
+				"supabase-mexico-seed.sql",
+				"supabase-mx-seed-locations.sql",
+				"supabase-mx-seed-suppliers.sql",
+				"supabase-traditions-extend-and-seed.sql",
+				"supabase-traditions-seed-more.sql",
+				"supabase-traditions-policies.sql"
+			],
+			"options": {
+				"env": {
+					"SUPABASE_DB_URL": "postgres://postgres:postgres@localhost:5433/ibds"
+				}
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Current File (Supabase Cloud)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"${file}"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Events seed (Supabase Cloud)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"supabase-events-seed.sql"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Seeds (Supabase Cloud – multi)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"supabase-events-seed.sql",
+				"supabase-india-seed.sql",
+				"supabase-mexico-seed.sql",
+				"supabase-mx-seed-locations.sql",
+				"supabase-mx-seed-suppliers.sql",
+				"supabase-traditions-extend-and-seed.sql",
+				"supabase-traditions-seed-more.sql",
+				"supabase-traditions-policies.sql"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Init schema + patches (local PG)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"supabase-COMPLETE-SETUP.sql",
+				"supabase-ALL-PATCHES.sql"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Auto-commit: Watch and push",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/autocommit-watch.mjs"
+			],
+			"isBackground": true,
+			"runOptions": {
+				"runOn": "folderOpen"
+			},
+			"presentation": {
+				"reveal": "never",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Run SQL: Init schema + patches (Supabase Cloud)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/run-sql.mjs",
+				"supabase-COMPLETE-SETUP.sql",
+				"supabase-ALL-PATCHES.sql"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Git: Auto-commit once",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"autocommit"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Pipeline: Cloud DB -> Commit+Push -> Vercel",
+			"dependsOn": [
+				"Run SQL: Init schema + patches (Supabase Cloud)",
+				"Git: Auto-commit once"
+			],
+			"dependsOrder": "sequence",
+			"problemMatcher": []
+		},
+		{
+			"label": "Pipeline: Local DB -> Commit+Push -> Vercel",
+			"dependsOn": [
+				"Run SQL: Init schema + patches (local PG)",
+				"Git: Auto-commit once"
+			],
+			"dependsOrder": "sequence",
+			"problemMatcher": []
+		}
+	]
+}

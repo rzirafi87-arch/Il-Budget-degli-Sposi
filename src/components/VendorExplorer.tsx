@@ -56,6 +56,42 @@ const ITALIAN_REGIONS = [
   "Trentino-Alto Adige", "Valle d'Aosta",
 ];
 
+// Stati/regioni del Messico
+const MEXICAN_STATES = [
+  "Aguascalientes",
+  "Baja California",
+  "Baja California Sur",
+  "Campeche",
+  "Chiapas",
+  "Chihuahua",
+  "Ciudad de México",
+  "Coahuila",
+  "Colima",
+  "Durango",
+  "Guanajuato",
+  "Guerrero",
+  "Hidalgo",
+  "Jalisco",
+  "México",
+  "Michoacán",
+  "Morelos",
+  "Nayarit",
+  "Nuevo León",
+  "Oaxaca",
+  "Puebla",
+  "Querétaro",
+  "Quintana Roo",
+  "San Luis Potosí",
+  "Sinaloa",
+  "Sonora",
+  "Tabasco",
+  "Tamaulipas",
+  "Tlaxcala",
+  "Veracruz",
+  "Yucatán",
+  "Zacatecas",
+];
+
 export default function VendorExplorer({
   initialType = "location",
   initialRegion,
@@ -171,7 +207,11 @@ export default function VendorExplorer({
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent"
               >
                 <option value="">Tutte le regioni</option>
-                {ITALIAN_REGIONS.map((r) => (
+                {(
+                  (typeof window !== 'undefined' && (localStorage.getItem('country') || 'it')) === 'mx'
+                    ? MEXICAN_STATES
+                    : ITALIAN_REGIONS
+                ).map((r) => (
                   <option key={r} value={r}>
                     {r}
                   </option>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
 import ImageCarousel from "@/components/ImageCarousel";
 import { PAGE_IMAGES } from "@/lib/pageImages";
+import { useRef, useState } from "react";
 
 type EntertainmentItem = {
   id: string;
@@ -242,7 +242,7 @@ export default function CoseMatrimonioPage() {
 
       {/* Riepilogo complessivo */}
       {selections.length > 0 && (
-        <div className="mt-8 p-6 bg-gradient-to-br from-green-50 to-blue-50 rounded-xl border-2 border-[#A3B59D]">
+        <div className="mt-8 p-6 bg-linear-to-br from-green-50 to-blue-50 rounded-xl border-2 border-[#A3B59D]">
           <h3 className="text-xl font-bold mb-4">📊 Riepilogo Totale</h3>
           <div className="grid grid-cols-2 gap-4 text-center">
             <div className="bg-white rounded-lg p-4 shadow">

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireUser, getBearer } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
 
 type Income = {
   id?: string;
@@ -13,8 +15,7 @@ type Income = {
 
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
+    const jwt = getBearer(req);
 
     if (!jwt) {
       // Dati demo per utenti non autenticati
@@ -49,12 +50,7 @@ export async function GET(req: NextRequest) {
     }
 
     const db = getServiceClient();
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
-    }
-
-    const userId = userData.user.id;
+    const { userId } = await requireUser(req);
 
     // Prendi il primo evento dell'utente
     const { data: ev } = await db
@@ -79,7 +75,7 @@ export async function GET(req: NextRequest) {
       .order("date", { ascending: false });
 
     if (error) {
-      console.error("INCOMES GET error:", error);
+      logger.error("INCOMES GET error", { error });
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
@@ -93,31 +89,20 @@ export async function GET(req: NextRequest) {
     }));
 
     return NextResponse.json({ incomes: formattedIncomes });
-  } catch (e: any) {
-    console.error("INCOMES GET uncaught:", e);
+  } catch (e: unknown) {
+    logger.error("INCOMES GET uncaught", { message: e?.message });
     return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
-
-    if (!jwt) {
-      return NextResponse.json({ error: "Autenticazione richiesta" }, { status: 401 });
-    }
+    const { userId } = await requireUser(req);
 
     const body = await req.json();
     const income = body as Income;
 
     const db = getServiceClient();
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
-    }
-
-    const userId = userData.user.id;
 
     // Prendi il primo evento dell'utente
     const { data: ev } = await db
@@ -145,13 +130,13 @@ export async function POST(req: NextRequest) {
     });
 
     if (insertError) {
-      console.error("INCOMES POST error:", insertError);
+      logger.error("INCOMES POST error", { error: insertError });
       return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error("INCOMES POST uncaught:", e);
+  } catch (e: unknown) {
+    logger.error("INCOMES POST uncaught", { message: e?.message });
     return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
   }
 }

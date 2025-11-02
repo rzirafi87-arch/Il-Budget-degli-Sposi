@@ -1,10 +1,14 @@
 {
-  "dashboard.curiosityTitle": "Curiosidades e dicas",
-  "dashboard.suggestions.mariachi": "Lembre-se de reservar o Mariachi!",
-  "dashboard.suggestions.location": "Verifique a disponibilidade do local com pelo menos 6 meses de antecedência.",
-  "dashboard.suggestions.photobooth": "Considere uma cabine de fotos temática mexicana para a festa.",
-  "dashboard.suggestions.documents": "Verifique os documentos legais exigidos no México.",
-  "dashboard.suggestions.photographer": "Reserve o fotógrafo com antecedência.",
-  "dashboard.suggestions.guests": "Revise a lista de convidados e atualize as preferências.",
-  "dashboard.suggestions.traditions": "Consulte as tradições locais para enriquecer sua cerimônia."
+  "dashboard": {
+    "curiosityTitle": "Curiosidades e dicas",
+    "suggestions": {
+      "mariachi": "Lembre-se de reservar o Mariachi!",
+      "location": "Verifique a disponibilidade do local com pelo menos 6 meses de antecedência.",
+      "photobooth": "Considere uma cabine de fotos temática mexicana para a festa.",
+      "documents": "Verifique os documentos legais exigidos no México.",
+      "photographer": "Reserve o fotógrafo com antecedência.",
+      "guests": "Revise a lista de convidados e atualize as preferências.",
+      "traditions": "Consulte as tradições locais para enriquecer sua cerimônia."
+    }
+  }
 }

@@ -1,0 +1,237 @@
+{
+  "gb": {
+    "England": [
+      "Greater London", "Greater Manchester", "Merseyside", "West Midlands", "West Yorkshire",
+      "Kent", "Surrey", "Essex", "Hampshire", "Berkshire", "Oxfordshire", "Cambridgeshire",
+      "Norfolk", "Suffolk", "East Sussex", "West Sussex", "Devon", "Cornwall", "Somerset",
+      "Dorset", "Gloucestershire", "Wiltshire", "Nottinghamshire", "Derbyshire", "Leicestershire",
+      "Lincolnshire", "Northamptonshire", "Warwickshire", "Worcestershire", "Staffordshire",
+      "Cheshire", "Lancashire", "Cumbria", "North Yorkshire", "South Yorkshire", "Tyne and Wear",
+      "Durham", "Northumberland", "Herefordshire", "Shropshire", "Isle of Wight", "Buckinghamshire",
+      "Bedfordshire", "Hertfordshire"
+    ],
+    "Scotland": [
+      "Aberdeen City", "Aberdeenshire", "Angus", "Argyll and Bute", "City of Edinburgh",
+      "Clackmannanshire", "Dumfries and Galloway", "Dundee City", "East Ayrshire", "East Dunbartonshire",
+      "East Lothian", "East Renfrewshire", "Falkirk", "Fife", "Glasgow City", "Highland",
+      "Inverclyde", "Midlothian", "Moray", "North Ayrshire", "North Lanarkshire", "Orkney Islands",
+      "Perth and Kinross", "Renfrewshire", "Scottish Borders", "Shetland Islands", "South Ayrshire",
+      "South Lanarkshire", "Stirling", "West Dunbartonshire", "West Lothian", "Na h-Eileanan Siar"
+    ],
+    "Wales": [
+      "Anglesey (Isle of Anglesey)", "Gwynedd", "Conwy", "Denbighshire", "Flintshire",
+      "Wrexham", "Powys", "Ceredigion", "Pembrokeshire", "Carmarthenshire",
+      "Swansea", "Neath Port Talbot", "Bridgend", "The Vale of Glamorgan",
+      "Cardiff", "Rhondda Cynon Taf", "Merthyr Tydfil", "Caerphilly",
+      "Blaenau Gwent", "Torfaen", "Monmouthshire", "Newport"
+    ],
+    "Northern Ireland": [
+      "Antrim and Newtownabbey", "Ards and North Down", "Armagh City, Banbridge and Craigavon",
+      "Belfast", "Causeway Coast and Glens", "Derry City and Strabane", "Fermanagh and Omagh",
+      "Lisburn and Castlereagh", "Mid and East Antrim", "Mid Ulster", "Newry, Mourne and Down"
+    ]
+  },
+  "us": {
+    "California": [
+      "Alameda", "Alpine", "Amador", "Butte", "Calaveras", "Colusa", "Contra Costa",
+      "Del Norte", "El Dorado", "Fresno", "Glenn", "Humboldt", "Imperial", "Inyo",
+      "Kern", "Kings", "Lake", "Lassen", "Los Angeles", "Madera", "Marin", "Mariposa",
+      "Mendocino", "Merced", "Modoc", "Mono", "Monterey", "Napa", "Nevada", "Orange",
+      "Placer", "Plumas", "Riverside", "Sacramento", "San Benito", "San Bernardino",
+      "San Diego", "San Francisco", "San Joaquin", "San Luis Obispo", "San Mateo",
+      "Santa Barbara", "Santa Clara", "Santa Cruz", "Shasta", "Sierra", "Siskiyou",
+      "Solano", "Sonoma", "Stanislaus", "Sutter", "Tehama", "Trinity", "Tulare",
+      "Tuolumne", "Ventura", "Yolo", "Yuba"
+    ],
+    "Florida": [
+      "Alachua", "Baker", "Bay", "Bradford", "Brevard", "Broward", "Calhoun", "Charlotte", "Citrus",
+      "Clay", "Collier", "Columbia", "DeSoto", "Dixie", "Duval", "Escambia", "Flagler", "Franklin",
+      "Gadsden", "Gilchrist", "Glades", "Gulf", "Hamilton", "Hardee", "Hendry", "Hernando", "Highlands",
+      "Hillsborough", "Holmes", "Indian River", "Jackson", "Jefferson", "Lafayette", "Lake", "Lee",
+      "Leon", "Levy", "Liberty", "Madison", "Manatee", "Marion", "Martin", "Miami-Dade", "Monroe",
+      "Nassau", "Okaloosa", "Okeechobee", "Orange", "Osceola", "Palm Beach", "Pasco", "Pinellas",
+      "Polk", "Putnam", "St. Johns", "St. Lucie", "Santa Rosa", "Sarasota", "Seminole", "Sumter",
+      "Suwannee", "Taylor", "Union", "Volusia", "Wakulla", "Walton", "Washington"
+    ],
+    "New York": [
+      "Albany", "Allegany", "Bronx", "Broome", "Cattaraugus", "Cayuga", "Chautauqua", "Chemung",
+      "Chenango", "Clinton", "Columbia", "Cortland", "Delaware", "Dutchess", "Erie", "Essex",
+      "Franklin", "Fulton", "Genesee", "Greene", "Hamilton", "Herkimer", "Jefferson", "Kings",
+      "Lewis", "Livingston", "Madison", "Monroe", "Montgomery", "Nassau", "New York", "Niagara",
+      "Oneida", "Onondaga", "Ontario", "Orange", "Orleans", "Oswego", "Otsego", "Putnam",
+      "Queens", "Rensselaer", "Richmond", "Rockland", "St. Lawrence", "Saratoga", "Schenectady",
+      "Schoharie", "Schuyler", "Seneca", "Steuben", "Suffolk", "Sullivan", "Tioga", "Tompkins",
+      "Ulster", "Warren", "Washington", "Wayne", "Westchester", "Wyoming", "Yates"
+    ],
+    "Texas": [
+      "Harris", "Dallas", "Tarrant", "Bexar", "Travis", "Collin", "El Paso", "Denton", "Hidalgo", "Fort Bend",
+      "Montgomery", "Williamson", "Cameron", "Nueces", "Galveston", "Brazoria", "Bell", "Lubbock", "Webb", "Jefferson"
+    ],
+    "Illinois": [
+      "Cook", "DuPage", "Lake", "Will", "Kane", "Winnebago", "Madison", "McHenry", "St. Clair", "Sangamon"
+    ],
+    "Pennsylvania": [
+      "Philadelphia", "Allegheny", "Montgomery", "Bucks", "Delaware", "Lancaster", "Chester"
+    ],
+    "Ohio": [
+      "Franklin", "Cuyahoga", "Hamilton", "Summit", "Montgomery", "Lucas", "Butler"
+    ],
+    "Georgia": [
+      "Fulton", "Gwinnett", "Cobb", "DeKalb", "Chatham", "Clayton"
+    ],
+    "North Carolina": [
+      "Mecklenburg", "Wake", "Guilford", "Forsyth", "Cumberland"
+    ],
+    "Michigan": [
+      "Wayne", "Oakland", "Macomb", "Kent", "Genesee", "Washtenaw"
+    ],
+    "Washington": [
+      "King", "Pierce", "Snohomish", "Spokane", "Clark"
+    ],
+    "Arizona": [
+      "Maricopa", "Pima", "Pinal", "Yavapai", "Yuma"
+    ],
+    "Massachusetts": [
+      "Suffolk", "Middlesex", "Norfolk", "Essex", "Worcester", "Plymouth"
+    ],
+    "Colorado": [
+      "Denver", "El Paso", "Arapahoe", "Jefferson", "Adams", "Douglas", "Boulder"
+    ]
+  },
+  "in": {
+    "Delhi": [
+      "New Delhi", "Central Delhi", "North Delhi", "South Delhi", "East Delhi", "North East Delhi",
+      "South East Delhi", "North West Delhi", "South West Delhi", "Shahdara", "West Delhi"
+    ],
+    "Karnataka": [
+      "Bagalkote", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar",
+      "Chikkaballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad",
+      "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru",
+      "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayapura", "Yadgir"
+    ],
+    "Maharashtra": [
+      "Mumbai City", "Mumbai Suburban", "Thane", "Palghar", "Raigad", "Ratnagiri", "Sindhudurg",
+      "Pune", "Satara", "Sangli", "Solapur", "Kolhapur",
+      "Nashik", "Ahmednagar", "Dhule", "Jalgaon", "Nandurbar",
+      "Aurangabad", "Beed", "Jalna", "Latur", "Osmanabad", "Parbhani", "Hingoli", "Nanded",
+      "Akola", "Amravati", "Buldhana", "Yavatmal", "Washim",
+      "Nagpur", "Wardha", "Bhandara", "Gondia", "Chandrapur", "Gadchiroli"
+    ],
+    "Tamil Nadu": [
+      "Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Tirunelveli", "Erode", "Salem", "Vellore", "Thoothukudi"
+    ],
+    "Uttar Pradesh": [
+      "Lucknow", "Kanpur Nagar", "Ghaziabad", "Agra", "Varanasi", "Meerut", "Prayagraj", "Bareilly"
+    ],
+    "Rajasthan": [
+      "Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer"
+    ],
+    "Gujarat": [
+      "Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar"
+    ],
+    "Kerala": [
+      "Thiruvananthapuram", "Kollam", "Ernakulam", "Thrissur", "Kozhikode", "Kannur"
+    ],
+    "Telangana": [
+      "Hyderabad", "Medchal–Malkajgiri", "Ranga Reddy", "Warangal", "Nalgonda"
+    ],
+    "Andhra Pradesh": [
+      "Visakhapatnam", "Vijayawada (NTR)", "Guntur", "Nellore", "Chittoor"
+    ],
+    "West Bengal": [
+      "Kolkata", "Howrah", "North 24 Parganas", "South 24 Parganas", "Darjeeling"
+    ],
+    "Bihar": [
+      "Patna", "Gaya", "Muzaffarpur", "Bhagalpur"
+    ],
+    "Punjab": [
+      "Amritsar", "Ludhiana", "Patiala", "Jalandhar"
+    ],
+    "Haryana": [
+      "Gurugram", "Faridabad", "Hisar", "Ambala"
+    ]
+  },
+  "jp": {
+    "Tōkyō": [
+      "Chiyoda", "Chūō", "Minato", "Shinjuku", "Bunkyō", "Taitō", "Sumida", "Kōtō",
+      "Shinagawa", "Meguro", "Ōta", "Setagaya", "Shibuya", "Nakano", "Suginami", "Toshima",
+      "Kita", "Arakawa", "Itabashi", "Nerima", "Adachi", "Katsushika", "Edogawa"
+    ],
+    "Osaka": [
+      "Osaka", "Sakai", "Toyonaka", "Takatsuki", "Higashiosaka", "Moriguchi", "Kadoma", "Suita",
+      "Ibaraki", "Hirakata", "Yao", "Izumi", "Kishiwada", "Izumisano", "Kawachinagano", "Matsubara",
+      "Tondabayashi", "Daitō", "Shijōnawate", "Katano", "Minoh", "Neyagawa", "Habikino", "Takaishi",
+      "Hannan", "Sennan", "Kaizuka", "Kashiwara", "Fujiidera", "Higashiōsaka", "Shimamoto", "Kanan",
+      "Chihayaakasaka"
+    ],
+    "Kanagawa": [
+      "Yokohama", "Kawasaki", "Sagamihara", "Yokosuka", "Fujisawa", "Kamakura", "Zushi",
+      "Chigasaki", "Atsugi", "Yamato", "Isehara", "Ebina", "Zama", "Ayase", "Miura",
+      "Hadano", "Odawara", "Hiratsuka", "Oiso", "Ninomiya"
+    ],
+    "Hokkaidō": [
+      "Sapporo", "Asahikawa", "Hakodate", "Otaru", "Obihiro", "Kushiro", "Kitami"
+    ],
+    "Aichi": [
+      "Nagoya", "Toyota", "Okazaki", "Ichinomiya", "Kasugai", "Toyohashi"
+    ],
+    "Fukuoka": [
+      "Fukuoka", "Kitakyushu", "Kurume", "Iizuka"
+    ],
+    "Kyōto": [
+      "Kyoto", "Uji", "Kameoka", "Maizuru"
+    ],
+    "Hyōgo": [
+      "Kobe", "Himeji", "Nishinomiya", "Amagasaki", "Ashiya"
+    ],
+    "Saitama": [
+      "Saitama", "Kawaguchi", "Koshigaya", "Kawagoe", "Tokorozawa"
+    ],
+    "Chiba": [
+      "Chiba", "Ichikawa", "Funabashi", "Matsudo", "Kashiwa"
+    ],
+    "Shizuoka": [
+      "Shizuoka", "Hamamatsu", "Numazu", "Fujieda"
+    ],
+    "Okinawa": [
+      "Naha", "Okinawa", "Urasoe", "Uruma", "Tomigusuku"
+    ]
+  },
+  "mx": {
+    "Ciudad de México": [
+      "Álvaro Obregón", "Azcapotzalco", "Benito Juárez", "Coyoacán", "Cuajimalpa de Morelos", "Cuauhtémoc",
+      "Gustavo A. Madero", "Iztacalco", "Iztapalapa", "La Magdalena Contreras", "Miguel Hidalgo", "Milpa Alta",
+      "Tláhuac", "Tlalpan", "Venustiano Carranza", "Xochimilco"
+    ],
+    "Quintana Roo": ["Benito Juárez (Cancún)", "Solidaridad (Playa del Carmen)", "Tulum", "Cozumel", "Isla Mujeres", "Puerto Morelos"],
+    "Yucatán": ["Mérida", "Valladolid", "Progreso", "Tizimín", "Izamal"],
+    "Jalisco": ["Guadalajara", "Zapopan", "Tlaquepaque", "Tlajomulco de Zúñiga", "Puerto Vallarta", "Tepatitlán de Morelos"],
+    "México": ["Toluca", "Metepec", "Naucalpan de Juárez", "Tlalnepantla de Baz", "Ecatepec de Morelos", "Nezahualcóyotl", "Valle de Bravo"],
+    "Veracruz": ["Veracruz", "Xalapa", "Boca del Río", "Coatzacoalcos"],
+    "Oaxaca": ["Oaxaca de Juárez", "Santa María Huatulco", "San Pedro Mixtepec", "Puerto Escondido", "San Cristóbal de las Casas"],
+    "Puebla": ["Puebla", "San Andrés Cholula", "San Pedro Cholula", "Atlixco"],
+    "Querétaro": ["Querétaro", "San Juan del Río", "Tequisquiapan", "Ezequiel Montes (Bernal)"],
+    "Guanajuato": ["San Miguel de Allende", "Guanajuato", "León", "Irapuato", "Celaya", "Salamanca"],
+    "Nayarit": ["Bahía de Banderas", "Tepic", "Compostela", "San Blas", "Sayulita (Bahía de Banderas)"],
+    "Michoacán": ["Morelia", "Pátzcuaro", "Uruapan", "Zamora"],
+    "Guerrero": ["Acapulco de Juárez", "Taxco de Alarcón", "Chilpancingo de los Bravo", "Zihuatanejo de Azueta"],
+    "Baja California Sur": ["La Paz", "Los Cabos", "Comondú", "Loreto", "Mulegé"],
+    "Sinaloa": ["Mazatlán", "Culiacán", "Los Mochis (Ahome)"],
+    "Nuevo León": ["Monterrey", "San Pedro Garza García", "San Nicolás de los Garza", "Guadalupe", "Apodaca", "Santa Catarina"],
+    "Baja California": ["Tijuana", "Mexicali", "Ensenada", "Tecate", "Playas de Rosarito"],
+    "Sonora": ["Hermosillo", "Cajeme (Ciudad Obregón)", "Nogales", "San Luis Río Colorado"],
+    "Chihuahua": ["Chihuahua", "Juárez", "Delicias", "Cuauhtémoc"],
+    "Coahuila": ["Saltillo", "Torreón", "Monclova", "Piedras Negras"],
+    "Tamaulipas": ["Tampico", "Ciudad Madero", "Reynosa", "Matamoros", "Nuevo Laredo"],
+    "San Luis Potosí": ["San Luis Potosí", "Soledad de Graciano Sánchez", "Ciudad Valles"],
+    "Zacatecas": ["Zacatecas", "Guadalupe"],
+    "Durango": ["Durango", "Gómez Palacio", "Lerdo"],
+    "Aguascalientes": ["Aguascalientes", "Jesús María", "Calvillo"],
+    "Colima": ["Colima", "Manzanillo", "Tecomán"],
+    "Campeche": ["Campeche", "Ciudad del Carmen"],
+    "Tabasco": ["Centro (Villahermosa)", "Cárdenas", "Comalcalco"],
+    "Tlaxcala": ["Tlaxcala", "Apizaco"],
+    "Hidalgo": ["Pachuca de Soto", "Tulancingo de Bravo", "Tizayuca"],
+    "Querétaro": ["Querétaro", "San Juan del Río", "Tequisquiapan", "Ezequiel Montes (Bernal)"]
+  }
+}

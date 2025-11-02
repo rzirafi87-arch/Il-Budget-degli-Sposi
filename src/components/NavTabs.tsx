@@ -1,9 +1,9 @@
 ﻿"use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useState } from "react";
 
 const TABS_ICONS = {
   dashboard: "",
@@ -27,10 +27,15 @@ export default function NavTabs() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = useTranslations();
+  const [eventType, setEventType] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    const lsEvt = typeof window !== 'undefined' ? localStorage.getItem('eventType') : null;
+    setEventType(lsEvt);
+  }, []);
 
   // Rimuoviamo Timeline, Idea di Budget e Suggerimenti dalla barra in alto;
   // restano accessibili dalla Dashboard.
-  const tabs = [
+  const weddingTabs = [
     { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
     { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
     { href: "/save-the-date", label: t("saveTheDate", { default: "Save the Date" }), icon: TABS_ICONS.saveTheDate },
@@ -40,9 +45,52 @@ export default function NavTabs() {
     { href: "/location", label: t("location"), icon: TABS_ICONS.location },
     { href: "/chiese", label: t("churches"), icon: TABS_ICONS.churches },
     { href: "/documenti", label: t("documents"), icon: TABS_ICONS.documents },
-    { href: "/lista-nozze", label: t("giftList", { default: "Lista Nozze" }), icon: TABS_ICONS.giftList },
     { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
+  const baptismTabs = [
+    { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { href: "/idea-di-budget", label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
+    { href: "/invitati", label: t("guests"), icon: TABS_ICONS.guests },
+    { href: "/chiese", label: t("churches"), icon: TABS_ICONS.churches },
+    { href: "/location", label: t("location"), icon: TABS_ICONS.location },
+    { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+  ];
+  const eighteenthTabs = [
+    { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { href: "/idea-di-budget", label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
+    { href: "/invitati", label: t("guests"), icon: TABS_ICONS.guests },
+    { href: "/location", label: t("location"), icon: TABS_ICONS.location },
+    { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+  ];
+  const confirmationTabs = [
+    { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { href: "/idea-di-budget", label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
+    { href: "/invitati", label: t("guests"), icon: TABS_ICONS.guests },
+    { href: "/chiese", label: t("churches"), icon: TABS_ICONS.churches },
+    { href: "/location", label: t("location"), icon: TABS_ICONS.location },
+    { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+  ];
+  const graduationTabs = [
+    { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { href: "/idea-di-budget", label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
+    { href: "/invitati", label: t("guests"), icon: TABS_ICONS.guests },
+    { href: "/location", label: t("location"), icon: TABS_ICONS.location },
+    { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+  ];
+  const communionTabs = [
+    { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { href: "/idea-di-budget", label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
+    { href: "/invitati", label: t("guests"), icon: TABS_ICONS.guests },
+    { href: "/chiese", label: t("churches"), icon: TABS_ICONS.churches },
+    { href: "/location", label: t("location"), icon: TABS_ICONS.location },
+    { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+  ];
+  const tabs = (eventType === 'baptism') ? baptismTabs : (eventType === 'eighteenth') ? eighteenthTabs : (eventType === 'confirmation') ? confirmationTabs : (eventType === 'graduation') ? graduationTabs : (eventType === 'communion') ? communionTabs : weddingTabs;
 
   const currentTab = tabs.find((tab) => pathname.startsWith(tab.href));
 
@@ -61,10 +109,10 @@ export default function NavTabs() {
               className={clsx(
                 "px-4 py-2 rounded-full border text-sm transition-colors font-medium flex items-center gap-2",
                 active
-                  ? "text-white border-transparent shadow-sm"
+                  ? "text-white shadow-sm"
                   : "bg-white/70 border-gray-200 hover:bg-gray-50 text-gray-700"
               )}
-              style={active ? { background: "var(--color-sage)" } : {}}
+              style={active ? { background: "var(--color-sage)", borderColor: "transparent" } : {}}
               title={tab.label}
             >
               {tab.icon ? <span aria-hidden>{tab.icon}</span> : null}

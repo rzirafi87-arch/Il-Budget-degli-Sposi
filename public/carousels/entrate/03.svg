@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Entrate: registrazioni e note">
+  <defs>
+    <linearGradient id="ent3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#9fb7a0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#ent3)"/>
+  <g stroke="#6f8a73" stroke-width="3" opacity="0.28" fill="none">
+    <polyline points="200,640 420,580 600,620 760,560 980,600"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Registrazioni e note</text>
+  </g>
+</svg>
+

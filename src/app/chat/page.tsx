@@ -18,7 +18,7 @@ export default function ChatPage() {
         const data = await res.json();
         if (!active) return;
         setEnabled(Boolean(data?.enabled));
-      } catch (_) {
+      } catch {
         if (!active) return;
         setEnabled(false);
       }
@@ -56,7 +56,7 @@ export default function ChatPage() {
 
   if (enabled === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
+  <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
         <div className="text-gray-700">Verifica disponibilità assistente…</div>
       </div>
     );
@@ -64,7 +64,7 @@ export default function ChatPage() {
 
   if (!enabled) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
+  <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
         <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 border border-gray-200 text-center">
           <h1 className="text-2xl font-bold mb-3">Assistente AI non disponibile</h1>
           <p className="text-gray-600">Configura la variabile <code>OPENAI_API_KEY</code> per abilitare la chat.</p>
@@ -74,7 +74,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
+  <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
       <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
         <h1 className="text-2xl font-bold mb-4 text-center">Chat con il tuo assistente AI</h1>
         <div className="mb-2 text-sm text-red-600 h-5">{error || ""}</div>

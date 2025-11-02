@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Dashboard: panoramica attività">
+  <defs>
+    <linearGradient id="bgd3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6f2e0"/>
+      <stop offset="100%" stop-color="#A3B59D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bgd3)"/>
+  <g stroke="#6f8a73" stroke-width="2" opacity="0.3" fill="none">
+    <polyline points="140,620 320,560 460,600 620,520 780,560 980,500 1080,540"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Panoramica attività</text>
+  </g>
+</svg>
+

@@ -1,0 +1,13 @@
+[
+  { "slug": "it", "label": "Italiano",  "locale": "it-IT", "dir": "ltr", "emoji": "🇮🇹" },
+  { "slug": "es", "label": "Español",   "locale": "es-ES", "dir": "ltr", "emoji": "🇪🇸" },
+  { "slug": "en", "label": "English",   "locale": "en-GB", "dir": "ltr", "emoji": "🇬🇧" },
+  { "slug": "fr", "label": "Français",  "locale": "fr-FR", "dir": "ltr", "emoji": "🇫🇷" },
+  { "slug": "de", "label": "Deutsch",   "locale": "de-DE", "dir": "ltr", "emoji": "🇩🇪" },
+  { "slug": "ru", "label": "Русский",   "locale": "ru-RU", "dir": "ltr", "emoji": "🇷🇺" },
+  { "slug": "zh", "label": "中文",       "locale": "zh-CN", "dir": "ltr", "emoji": "🇨🇳" },
+  { "slug": "ja", "label": "日本語",     "locale": "ja-JP", "dir": "ltr", "emoji": "🇯🇵" },
+  { "slug": "ar", "label": "العربية",   "locale": "ar-AE", "dir": "rtl", "emoji": "🇦🇪" },
+  { "slug": "pt", "label": "Português", "locale": "pt-BR", "dir": "ltr", "emoji": "🇧🇷" },
+  { "slug": "id", "label": "Bahasa Indonesia", "locale": "id-ID", "dir": "ltr", "emoji": "🇮🇩" }
+]

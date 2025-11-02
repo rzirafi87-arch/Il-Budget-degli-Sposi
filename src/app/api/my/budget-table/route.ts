@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireUser, getBearer } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
 
 /**
  * Ritorna:
@@ -11,8 +13,7 @@ import { getServiceClient } from "@/lib/supabaseServer";
  */
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
+    const jwt = getBearer(req);
 
     if (!jwt) {
       // Restituisci dati di esempio per utenti non autenticati
@@ -118,18 +119,7 @@ export async function GET(req: NextRequest) {
     }
 
     const db = getServiceClient();
-
-    // verifica token
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-    if (authError || !userData?.user) {
-      return NextResponse.json({
-        rows: [],
-        totals: { total: 0, common: 0, bride: 0, groom: 0 },
-        eventId: null,
-      });
-    }
-
-    const userId = userData.user.id;
+    const { userId } = await requireUser(req);
 
     // 1) prendi il PRIMO evento dell'utente (evento attivo di default)
     const { data: ev, error: e1 } = await db
@@ -163,7 +153,7 @@ export async function GET(req: NextRequest) {
       .order("name");
 
     if (e2) {
-      console.error("BUDGET-TABLE – Query error:", e2);
+      logger.error("BUDGET-TABLE Query error", { error: e2 });
       return NextResponse.json({
         rows: [],
         totals: { total: 0, common: 0, bride: 0, groom: 0 },
@@ -237,8 +227,8 @@ export async function GET(req: NextRequest) {
     };
 
     return NextResponse.json({ rows, totals, eventId }, { status: 200 });
-  } catch (e: any) {
-    console.error("BUDGET-TABLE – Uncaught:", e);
+  } catch (e: unknown) {
+    logger.error("BUDGET-TABLE Uncaught", { message: e?.message });
     return NextResponse.json({
       rows: [],
       totals: { total: 0, common: 0, bride: 0, groom: 0 },

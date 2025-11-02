@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="0.2.3-preview" />
+  <PropertyGroup>
+    <Name>il-budget-sposi</Name>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlPG160DatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
+    <ProjectGuid>{3E7F4A2B-8D9C-4F1E-9A5B-6C7D8E9F0A1B}</ProjectGuid>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <TargetLanguage>PostgreSQL</TargetLanguage>
+    <Description>Database schema per Il Budget degli Sposi - Wedding planning app</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Schema" />
+    <Folder Include="Schema\Tables" />
+    <Folder Include="Schema\Functions" />
+    <Folder Include="Schema\Seeds" />
+    <Folder Include="Schema\Patches" />
+  </ItemGroup>
+  <ItemGroup Label="Schema Setup">
+    <Build Include="..\supabase-COMPLETE-SETUP.sql">
+      <Link>Schema\supabase-COMPLETE-SETUP.sql</Link>
+    </Build>
+    <Build Include="..\supabase-ALL-PATCHES.sql">
+      <Link>Schema\Patches\supabase-ALL-PATCHES.sql</Link>
+    </Build>
+  </ItemGroup>
+  <ItemGroup Label="Seed Data">
+    <None Include="..\supabase-seed-functions.sql">
+      <Link>Schema\Functions\supabase-seed-functions.sql</Link>
+    </None>
+    <None Include="..\supabase-suppliers-seed.sql">
+      <Link>Schema\Seeds\supabase-suppliers-seed.sql</Link>
+    </None>
+    <None Include="..\supabase-locations-seed.sql">
+      <Link>Schema\Seeds\supabase-locations-seed.sql</Link>
+    </None>
+    <None Include="..\supabase-churches-seed.sql">
+      <Link>Schema\Seeds\supabase-churches-seed.sql</Link>
+    </None>
+    <None Include="..\supabase-events-seed.sql">
+      <Link>Schema\Seeds\supabase-events-seed.sql</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup Label="Additional Seeds">
+    <None Include="..\supabase-india-seed.sql">
+      <Link>Schema\Seeds\supabase-india-seed.sql</Link>
+    </None>
+    <None Include="..\supabase-mexico-seed.sql">
+      <Link>Schema\Seeds\supabase-mexico-seed.sql</Link>
+    </None>
+    <None Include="..\supabase-mx-seed-locations.sql">
+      <Link>Schema\Seeds\supabase-mx-seed-locations.sql</Link>
+    </None>
+    <None Include="..\supabase-mx-seed-suppliers.sql">
+      <Link>Schema\Seeds\supabase-mx-seed-suppliers.sql</Link>
+    </None>
+  </ItemGroup>
+  <Target Name="BeforeBuild">
+    <Message Text="Building Il Budget degli Sposi Database Project..." Importance="high" />
+  </Target>
+</Project>

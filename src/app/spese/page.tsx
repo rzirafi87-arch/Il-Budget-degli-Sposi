@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import PageInfoNote from "@/components/PageInfoNote";
 import { useToast } from "@/components/ToastProvider";
+import { formatCurrency, formatDate } from "@/lib/locale";
+import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -222,6 +225,9 @@ const CATEGORIES_MAP: Record<string, string[]> = {
 const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 
 export default function SpesePage() {
+  const t = useTranslations();
+  const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
+  const isBaptism = userEventType === "baptism";
   const { showToast } = useToast();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -241,6 +247,13 @@ export default function SpesePage() {
     notes: "",
     fromDashboard: false,
   });
+
+  // For Battesimo force spend type to common
+  useEffect(() => {
+    if (isBaptism && newExpense.spendType !== "common") {
+      setNewExpense((prev) => ({ ...prev, spendType: "common" }));
+    }
+  }, [isBaptism, newExpense.spendType]);
 
   // Carica le spese
   useEffect(() => {
@@ -277,7 +290,7 @@ export default function SpesePage() {
       const jwt = data.session?.access_token;
 
       if (!jwt) {
-        setMessage("❌ Devi essere autenticato per aggiungere spese. Clicca su 'Registrati' in alto.");
+        setMessage(t("expensesPage.messages.mustAuthAdd"));
         setSaving(false);
         return;
       }
@@ -295,7 +308,7 @@ export default function SpesePage() {
         const j = await r.json();
         showToast(`Errore: ${j.error || "Impossibile salvare"}`, "error");
       } else {
-        showToast("✅ Spesa aggiunta con successo!", "success");
+        showToast(t("expensesPage.messages.successAdded"), "success");
         setShowForm(false);
         loadExpenses();
         // Reset form
@@ -314,7 +327,7 @@ export default function SpesePage() {
       }
     } catch (err) {
       console.error("Errore:", err);
-      showToast("❌ Errore di rete", "error");
+      showToast(t("expensesPage.messages.networkError"), "error");
     } finally {
       setSaving(false);
     }
@@ -326,7 +339,7 @@ export default function SpesePage() {
       const jwt = data.session?.access_token;
 
       if (!jwt) {
-        setMessage("❌ Devi essere autenticato");
+        setMessage(t("expensesPage.messages.mustAuthAdd"));
         return;
       }
 
@@ -340,7 +353,7 @@ export default function SpesePage() {
       });
 
       if (r.ok) {
-        setMessage(`✅ Spesa ${status === "approved" ? "approvata" : "rifiutata"}!`);
+        setMessage(status === "approved" ? t("expensesPage.status.approved") : t("expensesPage.status.rejected"));
         loadExpenses();
         setTimeout(() => setMessage(null), 3000);
       }
@@ -381,19 +394,34 @@ export default function SpesePage() {
   if (loading) {
     return (
       <section className="pt-6">
-        <h2 className="font-serif text-3xl mb-6">Spese</h2>
-        <p className="text-gray-500">Caricamento...</p>
+        <h2 className="font-serif text-3xl mb-6">{t("expensesPage.title")}</h2>
+        <p className="text-gray-500">{t("expensesPage.loading")}</p>
       </section>
     );
   }
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2">💸 Spese</h2>
-      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
-        Registra e gestisci tutte le spese del matrimonio. Puoi inserire preventivi, confermarli come spese approvate, 
-        e tenere traccia degli stati di pagamento. Filtra per categoria, tipo di spesa (comune/sposa/sposo) e stato.
-      </p>
+  <h2 className="font-serif text-3xl mb-2">💸 {t("expensesPage.title")}</h2>
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">{t("expensesPage.info.lead")}</p>
+
+      <PageInfoNote
+        icon="💰"
+        title={t("expensesPage.info.title")}
+        description={t("expensesPage.info.description")}
+        tips={[
+          t("expensesPage.info.tips.tip1"),
+          t("expensesPage.info.tips.tip2"),
+          t("expensesPage.info.tips.tip3"),
+          t("expensesPage.info.tips.tip4"),
+        ]}
+        eventTypeSpecific={{
+          wedding: t("expensesPage.info.eventTypeSpecific.wedding"),
+          baptism: t("expensesPage.info.eventTypeSpecific.baptism"),
+          birthday: t("expensesPage.info.eventTypeSpecific.birthday"),
+          graduation: t("expensesPage.info.eventTypeSpecific.graduation"),
+        }}
+      />
 
       {/* Carosello immagini */}
       <ImageCarousel images={PAGE_IMAGES.spese} height="280px" />
@@ -407,12 +435,12 @@ export default function SpesePage() {
       {/* Riepilogo */}
       <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-          <div className="text-sm text-gray-600">In attesa di approvazione</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalPending)}</div>
+          <div className="text-sm text-gray-600">{t("expensesPage.summary.pending")}</div>
+          <div className="text-2xl font-semibold">{formatEuro(totalPending)}</div>
         </div>
         <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-          <div className="text-sm text-gray-600">Spese approvate</div>
-          <div className="text-2xl font-semibold">€ {formatEuro(totalApproved)}</div>
+          <div className="text-sm text-gray-600">{t("expensesPage.summary.approved")}</div>
+          <div className="text-2xl font-semibold">{formatEuro(totalApproved)}</div>
         </div>
       </div>
 
@@ -422,17 +450,17 @@ export default function SpesePage() {
           onClick={() => setShowForm(!showForm)}
           className="bg-[#A3B59D] text-white rounded-lg px-4 py-2 hover:bg-[#8a9d84]"
         >
-          {showForm ? "Annulla" : "+ Aggiungi spesa"}
+          {showForm ? t("expensesPage.buttons.cancel") : t("expensesPage.buttons.add")}
         </button>
       </div>
 
       {/* Form nuova spesa */}
       {showForm && (
         <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold mb-4">Nuova spesa</h3>
+          <h3 className="font-semibold mb-4">{t("expensesPage.form.new")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.category")}</label>
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newExpense.category}
@@ -448,7 +476,7 @@ export default function SpesePage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sottocategoria</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.subcategory")}</label>
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newExpense.subcategory}
@@ -460,39 +488,39 @@ export default function SpesePage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fornitore</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.supplier")}</label>
               <input
                 type="text"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newExpense.supplier}
                 onChange={(e) => setNewExpense({ ...newExpense, supplier: e.target.value })}
-                placeholder="Nome fornitore"
+                placeholder={t("expensesPage.form.placeholders.supplier")}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Importo (€)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.amount")}</label>
               <input
                 type="number"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newExpense.amount || ""}
                 onChange={(e) => setNewExpense({ ...newExpense, amount: Number(e.target.value) || 0 })}
-                placeholder="0"
+                placeholder={t("expensesPage.form.placeholders.amount")}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo spesa</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.spendType")}</label>
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newExpense.spendType}
                 onChange={(e) => setNewExpense({ ...newExpense, spendType: e.target.value as any })}
               >
-                <option value="common">Comune</option>
-                <option value="bride">Sposa</option>
-                <option value="groom">Sposo</option>
+                <option value="common">{t("expensesPage.form.spendTypeOptions.common")}</option>
+                {!isBaptism && <option value="bride">{t("expensesPage.form.spendTypeOptions.bride")}</option>}
+                {!isBaptism && <option value="groom">{t("expensesPage.form.spendTypeOptions.groom")}</option>}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.date")}</label>
               <input
                 type="date"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
@@ -501,23 +529,23 @@ export default function SpesePage() {
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Descrizione</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.description")}</label>
               <input
                 type="text"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newExpense.description}
                 onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
-                placeholder="Descrizione dettagliata"
+                placeholder={t("expensesPage.form.placeholders.description")}
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Note</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.notes")}</label>
               <textarea
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 rows={2}
                 value={newExpense.notes}
                 onChange={(e) => setNewExpense({ ...newExpense, notes: e.target.value })}
-                placeholder="Note aggiuntive..."
+                placeholder={t("expensesPage.form.placeholders.notes")}
               />
             </div>
           </div>
@@ -527,7 +555,7 @@ export default function SpesePage() {
               disabled={saving}
               className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84] disabled:opacity-50"
             >
-              {saving ? "Salvataggio..." : "Salva spesa"}
+              {saving ? t("loading", { fallback: "Salvataggio..." }) : t("expensesPage.buttons.save")}
             </button>
           </div>
         </div>
@@ -537,7 +565,7 @@ export default function SpesePage() {
       <div className="space-y-8">
         {orderedGroups.length === 0 ? (
           <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
-            Nessuna spesa registrata
+            {t("expensesPage.messages.none")}
           </div>
         ) : (
           orderedGroups.map((group, idx) => (
@@ -557,14 +585,14 @@ export default function SpesePage() {
               <table className="w-full min-w-[920px] text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                    <th className="px-4 py-2 text-left font-medium text-gray-700">Fornitore</th>
-                    <th className="px-4 py-2 text-left font-medium text-gray-700">Descrizione</th>
-                    <th className="px-4 py-2 text-right font-medium text-gray-700">Importo (€)</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">Tipo</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">Data</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">Stato</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">Da preventivo</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">Azioni</th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-700">{t("expensesPage.table.supplier")}</th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-700">{t("expensesPage.table.description")}</th>
+                    <th className="px-4 py-2 text-right font-medium text-gray-700">{t("expensesPage.table.amount")}</th>
+                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.type")}</th>
+                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.date")}</th>
+                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.status")}</th>
+                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.fromQuote")}</th>
+                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -578,20 +606,18 @@ export default function SpesePage() {
                     >
                       <td className="px-4 py-3 font-medium">{exp.supplier || "—"}</td>
                       <td className="px-4 py-3">{exp.description || "—"}</td>
-                      <td className="px-4 py-3 text-right font-semibold">€ {formatEuro(exp.amount)}</td>
+                      <td className="px-4 py-3 text-right font-semibold">{formatEuro(exp.amount)}</td>
                       <td className="px-4 py-3 text-center capitalize text-xs">
-                        {exp.spendType === "common" ? "Comune" : exp.spendType === "bride" ? "Sposa" : "Sposo"}
+                        {isBaptism ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}
                       </td>
-                      <td className="px-4 py-3 text-center text-xs">
-                        {new Date(exp.date).toLocaleDateString("it-IT")}
-                      </td>
+                      <td className="px-4 py-3 text-center text-xs">{formatDate(new Date(exp.date))}</td>
                       <td className="px-4 py-3 text-center">
                         <span className={`inline-block px-2 py-1 rounded text-xs ${
                           exp.status === "approved" ? "bg-green-100 text-green-800 font-semibold" :
                           exp.status === "rejected" ? "bg-red-100 text-red-800" :
                           "bg-yellow-100 text-yellow-800"
                         }`}>
-                          {exp.status === "approved" ? "✓ Approvato" : exp.status === "rejected" ? "✗ Rifiutato" : "In attesa"}
+                          {exp.status === "approved" ? t("expensesPage.status.approved") : exp.status === "rejected" ? t("expensesPage.status.rejected") : t("expensesPage.status.pending")}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center">
@@ -604,21 +630,21 @@ export default function SpesePage() {
                               onClick={() => updateExpenseStatus(exp.id!, "approved")}
                               className="text-green-600 hover:text-green-800 text-xs font-medium"
                             >
-                              Approva
+                              {t("expensesPage.buttons.approve")}
                             </button>
                             <button
                               onClick={() => updateExpenseStatus(exp.id!, "rejected")}
                               className="text-red-600 hover:text-red-800 text-xs font-medium"
                             >
-                              Rifiuta
+                              {t("expensesPage.buttons.reject")}
                             </button>
                           </div>
                         )}
                         {exp.status === "approved" && (
-                          <span className="text-xs text-gray-400">Confermato</span>
+                          <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
                         )}
                         {exp.status === "rejected" && (
-                          <span className="text-xs text-gray-400">Scartato</span>
+                          <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
                         )}
                       </td>
                     </tr>
@@ -635,5 +661,5 @@ export default function SpesePage() {
 }
 
 function formatEuro(n: number) {
-  return (n || 0).toLocaleString("it-IT", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return formatCurrency(n, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }

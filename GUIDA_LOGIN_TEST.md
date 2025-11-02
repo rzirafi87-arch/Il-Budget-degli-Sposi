@@ -9,14 +9,20 @@
 
 ## 📋 Passi per Usare l'Utente Test
 
-### 1. Esegui lo Script SQL in Supabase
+### 1. Esegui gli script SQL in Supabase
 
 1. Vai su [Supabase Dashboard](https://supabase.com/dashboard)
 2. Seleziona il tuo progetto **"Il Budget degli Sposi"**
 3. Nel menu laterale, clicca su **SQL Editor**
-4. Crea una nuova query (o usa "New query")
-5. Copia e incolla il contenuto di `supabase-test-user.sql`
-6. Clicca **RUN** per eseguire
+4. Crea una nuova query (o usa "New query") e esegui in ordine:
+   - `supabase-COMPLETE-SETUP.sql` (solo se non l'hai già eseguito una volta)
+   - `supabase-ALL-PATCHES.sql`
+   - `supabase-seed-full-event.sql`  ← crea la funzione `seed_full_event(...)`
+   - `supabase-test-user.sql`        ← crea utente, profilo, evento e popola categorie
+5. Clicca **RUN** per ogni script (uno alla volta)
+
+In alternativa, puoi eseguire direttamente:
+- `supabase-setup-test-user.sql`  (all-in-one che fa tutto in un colpo solo)
 
 **Output atteso:**
 ```

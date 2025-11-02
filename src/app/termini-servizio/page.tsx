@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDate } from "@/lib/locale";
+
 export default function TerminiServizioPage() {
   return (
     <section className="pt-6 max-w-4xl mx-auto">
@@ -7,7 +9,7 @@ export default function TerminiServizioPage() {
       
       <div className="prose prose-lg max-w-none bg-white/70 rounded-2xl p-8 shadow-sm">
         <p className="text-sm text-gray-500 mb-6">
-          <strong>Ultimo aggiornamento:</strong> {new Date().toLocaleDateString("it-IT")}
+          <strong>Ultimo aggiornamento:</strong> {formatDate(new Date())}
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">1. Accettazione dei Termini</h2>
@@ -115,7 +117,7 @@ export default function TerminiServizioPage() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">9. Limitazioni di Responsabilità</h2>
         <p>
-          Il servizio è fornito "così com'è" senza garanzie di alcun tipo. Non siamo responsabili per:
+          Il servizio è fornito &quot;così com&apos;è&quot; senza garanzie di alcun tipo. Non siamo responsabili per:
         </p>
         <ul className="list-disc pl-6 space-y-2">
           <li>Perdita di dati dovuta a errori tecnici o forza maggiore</li>
@@ -154,7 +156,7 @@ export default function TerminiServizioPage() {
         <ul className="list-disc pl-6 space-y-2">
           <li>Violi i presenti Termini di Servizio</li>
           <li>Usi il servizio per attività illegali</li>
-          <li>L'account rimane inattivo per oltre 24 mesi</li>
+          <li>L&apos;account rimane inattivo per oltre 24 mesi</li>
         </ul>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">12. Legge Applicabile e Foro Competente</h2>
@@ -176,7 +178,7 @@ export default function TerminiServizioPage() {
 
         <h3 className="text-xl font-semibold mt-4 mb-2">13.3 Comunicazioni</h3>
         <p>
-          Le comunicazioni ufficiali saranno inviate all'email registrata nel tuo account.
+          Le comunicazioni ufficiali saranno inviate all&apos;email registrata nel tuo account.
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">14. Contatti</h2>

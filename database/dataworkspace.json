@@ -1,0 +1,38 @@
+{
+    "version": "1.0.0",
+    "name": "Il Budget degli Sposi - Database Workspace",
+    "description": "PostgreSQL databases for wedding budget management application",
+    "projects": [
+        {
+            "name": "il-budget-sposi",
+            "type": "PostgreSQL",
+            "projectFilePath": "./il-budget-sposi.sqlproj",
+            "targetPlatform": "PostgreSQL",
+            "description": "Main database schema and seeds"
+        }
+    ],
+    "dataSources": [
+        {
+            "name": "Local PostgreSQL (Docker)",
+            "type": "PostgreSQL",
+            "server": "localhost",
+            "port": 5433,
+            "database": "ibds",
+            "username": "postgres",
+            "password": "postgres",
+            "ssl": false,
+            "description": "Local development database running in Docker"
+        },
+        {
+            "name": "Supabase Cloud",
+            "type": "PostgreSQL",
+            "connectionString": "postgresql://postgres:12LuglioRocco!@db.vsguhivizuneylqhygfk.supabase.co:5432/postgres?sslmode=require",
+            "description": "Production Supabase PostgreSQL database"
+        }
+    ],
+    "settings": {
+        "defaultConnection": "Local PostgreSQL (Docker)",
+        "autoSave": true,
+        "formatOnSave": true
+    }
+}

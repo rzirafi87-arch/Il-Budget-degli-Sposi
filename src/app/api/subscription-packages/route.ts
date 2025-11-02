@@ -18,8 +18,9 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ packages: packages || [] });
-  } catch (e: any) {
-    console.error("PACKAGES GET uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("PACKAGES GET uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }

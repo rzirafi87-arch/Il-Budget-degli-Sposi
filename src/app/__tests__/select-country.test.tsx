@@ -1,6 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import React from 'react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 // Mock next/navigation for useRouter
 jest.mock('next/navigation', () => ({
@@ -9,10 +8,9 @@ jest.mock('next/navigation', () => ({
 
 // Simple fetch mock for the traditions preview
 beforeAll(() => {
-  // @ts-ignore
   global.fetch = jest.fn(() =>
     Promise.resolve({ json: () => Promise.resolve({ traditions: [] }) })
-  ) as any;
+  ) as unknown as typeof fetch;
 });
 
 import SelectCountryPage from '../select-country/page';
@@ -23,21 +21,21 @@ describe('SelectCountryPage', () => {
     window.localStorage.clear();
     // Reset cookies by overwriting with empty string
     // jsdom allows setting document.cookie to clear; not a full clear, but fine for test isolation
-    (document as any).cookie = '';
+  (document as unknown as { cookie: string }).cookie = '';
   });
 
   it('mostra i paesi e consente la selezione', () => {
     render(<SelectCountryPage />);
 
     // Trova alcuni paesi noti (usa fallback in assenza di traduzioni)
-    expect(screen.getByText(/IT|Italia/i)).toBeInTheDocument();
-    expect(screen.getByText(/MX|Messico/i)).toBeInTheDocument();
+    expect(screen.queryAllByText(/^(IT|Italia)$/i).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText(/^(MX|Messico)$/i).length).toBeGreaterThan(0);
   });
 
   it('salva paese selezionato in localStorage e cookie e abilita Avanti', () => {
     render(<SelectCountryPage />);
 
-    const btn = screen.getByText(/MX|Messico/i);
+    const btn = screen.getByText(/^(MX|Messico)$/i);
     fireEvent.click(btn);
 
     expect(window.localStorage.getItem('country')).toBe('mx');

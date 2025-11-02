@@ -17,5 +17,28 @@
   "auth": "تسجيل الدخول",
   "chat": "تواصل معنا عبر WhatsApp",
   "settings": "الإعدادات",
-  "loading": "جارٍ التحميل…"
+  "loading": "جارٍ التحميل…",
+  "comingSoon": "قريباً",
+  "events": {
+    "wedding": "الزفاف",
+    "baptism": "المعمودية",
+    "eighteenth": "عيد الميلاد الثامن عشر",
+    "anniversary": "ذكرى الزواج",
+    "gender-reveal": "حفل كشف الجنس",
+    "birthday": "عيد ميلاد",
+    "fifty": "خمسون عامًا",
+    "retirement": "التقاعد",
+    "confirmation": "سر التثبيت",
+    "graduation": "التخرج",
+    "baby-shower": "حفلة استقبال المولود",
+    "engagement": "حفل الخطوبة",
+    "corporate": "فعالية شركات",
+    "milestone-birthday": "عيد ميلاد مميز",
+    "gender-reveal-party": "حفل كشف الجنس",
+    "proposal": "حفل عرض الزواج",
+    "communion": "المناولة الأولى",
+    "bar-mitzvah": "بار ميتسفا",
+    "quinceanera": "كوينسيانيرا",
+    "charity-gala": "فعالية خيرية/غالا"
+  }
 }

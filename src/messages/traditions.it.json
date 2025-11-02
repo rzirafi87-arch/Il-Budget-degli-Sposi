@@ -1,10 +1,12 @@
 {
-  "traditions.title": "Tradizioni Matrimoniali · {country}",
-  "traditions.ritoLabel": "Rito e simboli: ",
-  "traditions.stileLabel": "Stile: ",
-  "traditions.coloriLabel": "Colori: ",
-  "traditions.regaliLabel": "Usanze e regali: ",
-  "traditions.durataLabel": "Durata/organizzazione: ",
-  "traditions.festaLabel": "Festa e tradizioni: ",
-  "traditions.usanzeLabel": "Altre usanze: "
+  "traditions": {
+    "title": "Tradizioni Matrimoniali · {country}",
+    "ritoLabel": "Rito e simboli: ",
+    "stileLabel": "Stile: ",
+    "coloriLabel": "Colori: ",
+    "regaliLabel": "Usanze e regali: ",
+    "durataLabel": "Durata/organizzazione: ",
+    "festaLabel": "Festa e tradizioni: ",
+    "usanzeLabel": "Altre usanze: "
+  }
 }

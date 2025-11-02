@@ -17,5 +17,28 @@
   "auth": "Connexion",
   "chat": "Discutez avec nous sur WhatsApp",
   "settings": "Paramètres",
-  "loading": "Chargement…"
+  "loading": "Chargement…",
+  "comingSoon": "Bientôt disponible",
+  "events": {
+    "wedding": "Mariage",
+    "baptism": "Baptême",
+    "eighteenth": "18 ans",
+    "anniversary": "Anniversaire de mariage",
+    "gender-reveal": "Gender Reveal",
+    "birthday": "Anniversaire",
+    "fifty": "50 ans",
+    "retirement": "Retraite",
+    "confirmation": "Confirmation",
+    "graduation": "Remise de diplôme",
+    "baby-shower": "Baby Shower",
+    "engagement": "Fête de fiançailles",
+    "corporate": "Événement d’entreprise",
+    "milestone-birthday": "Anniversaire (jalon)",
+    "gender-reveal-party": "Gender Reveal Party",
+    "proposal": "Fête de demande (Proposal)",
+    "communion": "Première communion",
+    "bar-mitzvah": "Bar Mitzvah",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Événement caritatif/Gala"
+  }
 }

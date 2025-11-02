@@ -1,25 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { magicLinkTemplate, sendMail, siteUrl } from "@/lib/mailer";
 
 // POST /api/auth/register
-// Body: { primaryEmail, partnerEmail, password, brideBudget?: number, groomBudget?: number }
-// Creates owner user, invites partner, creates default event with per-spouse budgets
+// Body: { primaryEmail, password, partnerEmail?, weddingDate? }
+// Creates owner user, optionally creates partner, creates default event with wedding date
 export async function POST(req: NextRequest) {
   try {
-    const { primaryEmail, partnerEmail, password, brideBudget, groomBudget } = await req.json();
+    const { primaryEmail, password, partnerEmail, weddingDate } = await req.json();
 
-    if (!primaryEmail || !partnerEmail || !password) {
+    if (!primaryEmail || !password) {
       return NextResponse.json({ ok: false, error: "Missing required fields" }, { status: 400 });
     }
 
     const db = getServiceClient();
 
     // 1) Create owner user (or error if exists)
+    const emailConfirm = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
     const { data: ownerRes, error: createErr } = await db.auth.admin.createUser({
       email: primaryEmail,
       password,
-      email_confirm: false,
+      email_confirm: emailConfirm,
     });
     if (createErr || !ownerRes.user) {
       console.error("REGISTER create owner error:", createErr);
@@ -27,11 +29,28 @@ export async function POST(req: NextRequest) {
     }
     const ownerId = ownerRes.user.id;
 
-    // 2) Invite partner (they will set their own password)
-    const { error: inviteErr } = await db.auth.admin.inviteUserByEmail(partnerEmail);
-    if (inviteErr) {
-      console.error("REGISTER invite partner error:", inviteErr);
-      // do not abort; continue creating event
+    // 2) Partner opzionale
+    if (partnerEmail) {
+      const partnerConfirm = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
+      const { error: partnerCreateErr } = await db.auth.admin.createUser({
+        email: partnerEmail,
+        password,
+        email_confirm: partnerConfirm,
+      });
+      if (partnerCreateErr) {
+        console.error("REGISTER create partner error:", partnerCreateErr);
+        // fallback: prova a inviare un invito (imposta password al click)
+        const { error: inviteErr } = await db.auth.admin.inviteUserByEmail(partnerEmail);
+        if (inviteErr) {
+          console.error("REGISTER invite partner error:", inviteErr);
+        }
+      } else if (!partnerConfirm) {
+        // In produzione: invia comunque un invito di conferma via email
+        const { error: inviteErr } = await db.auth.admin.inviteUserByEmail(partnerEmail);
+        if (inviteErr) {
+          console.error("REGISTER invite partner after create error:", inviteErr);
+        }
+      }
     }
 
     // 3) Create event for the couple
@@ -42,11 +61,10 @@ export async function POST(req: NextRequest) {
         public_id: publicId,
         name: "Il nostro matrimonio",
         owner_id: ownerId,
-        total_budget: (Number(brideBudget || 0) + Number(groomBudget || 0)) || 0,
-        bride_initial_budget: Number(brideBudget || 0),
-        groom_initial_budget: Number(groomBudget || 0),
+        total_budget: 0,
         bride_email: primaryEmail,
-        groom_email: partnerEmail,
+        groom_email: partnerEmail || null,
+        wedding_date: weddingDate || null,
       })
       .select("id")
       .single();
@@ -63,9 +81,42 @@ export async function POST(req: NextRequest) {
       // Not fatal for registration, continue
     }
 
+    // 5) Invia magic link via Resend (sia al primario, sia al partner se presente)
+    try {
+      const redirectUrl = siteUrl();
+      const ownerLinkRes = await db.auth.admin.generateLink({
+        type: "magiclink",
+        email: primaryEmail,
+        options: { redirectTo: redirectUrl },
+      });
+      const ownerLink = ownerLinkRes?.data?.properties?.action_link;
+      if (ownerLink) {
+        await sendMail(primaryEmail, "Il tuo link di accesso", magicLinkTemplate(ownerLink));
+      }
+    } catch (mlErr) {
+      console.error("REGISTER send owner magic link error:", mlErr);
+    }
+
+    if (partnerEmail) {
+      try {
+        const redirectUrl = siteUrl();
+        const partnerLinkRes = await db.auth.admin.generateLink({
+          type: "magiclink",
+          email: partnerEmail,
+          options: { redirectTo: redirectUrl },
+        });
+        const partnerLink = partnerLinkRes?.data?.properties?.action_link;
+        if (partnerLink) {
+          await sendMail(partnerEmail, "Invito e link di accesso", magicLinkTemplate(partnerLink));
+        }
+      } catch (mlpErr) {
+        console.error("REGISTER send partner magic link error:", mlpErr);
+      }
+    }
+
     return NextResponse.json({ ok: true, eventId: ev.id });
-  } catch (e: any) {
-    console.error("REGISTER – Uncaught:", e);
+  } catch (e: unknown) {
+    console.error("REGISTER Uncaught:", e);
     return NextResponse.json({ ok: false, error: e?.message || "Unexpected" }, { status: 500 });
   }
 }

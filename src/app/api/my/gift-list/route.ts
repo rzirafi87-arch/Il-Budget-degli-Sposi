@@ -1,7 +1,8 @@
 export const runtime = "nodejs";
 
+import { getBearer, requireUser } from "@/lib/apiAuth";
+import { logger } from "@/lib/logger";
 import { NextRequest, NextResponse } from "next/server";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 type GiftItem = {
   id?: string;
@@ -16,28 +17,19 @@ type GiftItem = {
 };
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-
+  const jwt = getBearer(req);
   // Demo-first: unauthenticated returns placeholder
-  if (!jwt) {
-    return NextResponse.json({ items: [] });
-  }
+  if (!jwt) return NextResponse.json({ items: [] });
 
-  const db = getServiceClient();
-  const { data: userData, error } = await db.auth.getUser(jwt);
-  if (error || !userData?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
+  const { userId } = await requireUser(req);
 
   // TODO: Persist and fetch user's gift list from Supabase when table is available
+  logger.debug("GIFT LIST GET user", { userId });
   return NextResponse.json({ items: [] });
 }
 
 export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-
+  const jwt = getBearer(req);
   let body: GiftItem;
   try {
     body = await req.json();
@@ -56,13 +48,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ item }, { status: 201 });
   }
 
-  const db = getServiceClient();
-  const { data: userData, error } = await db.auth.getUser(jwt);
-  if (error || !userData?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
+  const { userId } = await requireUser(req);
+  logger.debug("GIFT LIST POST user", { userId });
 
   // TODO: Insert into Supabase table when available; for now, echo back
   const item = { ...body, id: `id-${Date.now()}` };
   return NextResponse.json({ item }, { status: 201 });
 }
+

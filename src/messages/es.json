@@ -17,5 +17,28 @@
   "auth": "Acceder",
   "chat": "Chatea con nosotros en WhatsApp",
   "settings": "Configuración",
-  "loading": "Cargando…"
+  "loading": "Cargando…",
+  "comingSoon": "Próximamente",
+  "events": {
+    "wedding": "Boda",
+    "baptism": "Bautizo",
+    "eighteenth": "18º cumpleaños",
+    "anniversary": "Aniversario de bodas",
+    "gender-reveal": "Revelación de género",
+    "birthday": "Cumpleaños",
+    "fifty": "50 años",
+    "retirement": "Jubilación",
+    "confirmation": "Confirmación",
+    "graduation": "Graduación",
+    "baby-shower": "Baby Shower",
+    "engagement": "Fiesta de compromiso",
+    "corporate": "Evento corporativo",
+    "milestone-birthday": "Cumpleaños (hito)",
+    "gender-reveal-party": "Fiesta de revelación de género",
+    "proposal": "Fiesta de propuesta",
+    "communion": "Primera comunión",
+    "bar-mitzvah": "Bar Mitzvah",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Evento benéfico/Gala"
+  }
 }

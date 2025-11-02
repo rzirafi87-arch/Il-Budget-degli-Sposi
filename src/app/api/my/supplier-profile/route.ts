@@ -32,8 +32,9 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ profile: profile || null });
-  } catch (e: any) {
-    console.error("SUPPLIER_PROFILE GET uncaught:", e);
-    return NextResponse.json({ error: e?.message || "Unexpected" }, { status: 500 });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error("SUPPLIER_PROFILE GET uncaught:", error);
+    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }

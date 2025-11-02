@@ -1,10 +1,12 @@
 {
-  "appointments.title": "Termine und Fristen",
-  "appointments.formTitle": "Terminbezeichnung",
-  "appointments.formLocation": "Ort",
-  "appointments.formNotes": "Notizen",
-  "appointments.addBtn": "Termin hinzufügen",
-  "appointments.empty": "Keine Termine hinzugefügt.",
-  "appointments.dateLabel": "Datum",
-  "appointments.locationLabel": "Ort"
+  "appointments": {
+    "title": "Termine und Fristen",
+    "formTitle": "Terminbezeichnung",
+    "formLocation": "Ort",
+    "formNotes": "Notizen",
+    "addBtn": "Termin hinzufügen",
+    "empty": "Keine Termine hinzugefügt.",
+    "dateLabel": "Datum",
+    "locationLabel": "Ort"
+  }
 }

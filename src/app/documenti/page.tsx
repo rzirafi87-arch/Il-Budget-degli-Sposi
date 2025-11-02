@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import PageInfoNote from "@/components/PageInfoNote";
+import { formatDate } from "@/lib/locale";
 
 type Document = {
   id: string;
@@ -76,6 +78,26 @@ export default function DocumentiPage() {
           Carica e organizza tutti i documenti del matrimonio: preventivi, contratti, ricevute e altro.
         </p>
       </div>
+
+      <PageInfoNote
+        icon="📁"
+        title="Archivio Digitale dei Tuoi Documenti"
+        description="Centralizza tutti i documenti importanti in un unico posto sicuro. Carica preventivi ricevuti dai fornitori, contratti firmati, fatture, ricevute di pagamento e certificati. Ogni documento può essere categorizzato, associato a un fornitore e dotato di note."
+        tips={[
+          "Carica i preventivi appena li ricevi per confrontarli facilmente",
+          "Associa ogni documento al fornitore corrispondente per una migliore organizzazione",
+          "Usa la categoria 'Contratto' per i documenti già firmati e confermati",
+          "Le ricevute e le fatture ti servono per la contabilità finale e le dichiarazioni fiscali",
+          "Filtra per categoria per trovare rapidamente ciò che cerchi",
+          "Formati supportati: PDF, DOC, DOCX, JPG, PNG (fino a 10MB per file)"
+        ]}
+        eventTypeSpecific={{
+          wedding: "Per il matrimonio, organizza documenti per: location, catering, fotografi, fioristi, abiti, musica, chiese. Tieni tutto sotto controllo in un archivio digitale!",
+          baptism: "Per il battesimo, carica: certificato di battesimo, preventivi della location per il rinfresco, contratti del fotografo, fatture del catering.",
+          birthday: "Per il compleanno, conserva: contratto della location, preventivi del catering/ristorante, accordi con DJ/intrattenimento, fatture delle decorazioni.",
+          graduation: "Per la laurea, archivia: prenotazione ristorante/location, preventivi del catering per il buffet, contratto fotografo, fatture per stampa inviti e gadget."
+        }}
+      />
 
       {/* Upload Area */}
       <div className="bg-white rounded-xl p-6 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
@@ -182,7 +204,7 @@ export default function DocumentiPage() {
                   <div className="flex items-center gap-4 text-xs text-gray-500">
                     <span>{formatFileSize(doc.fileSize)}</span>
                     <span>•</span>
-                    <span>{new Date(doc.uploadedAt).toLocaleDateString("it-IT")}</span>
+                    <span>{formatDate(new Date(doc.uploadedAt))}</span>
                   </div>
                   
                   {doc.notes && (

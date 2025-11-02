@@ -2,7 +2,20 @@
 
 Questo documento elenca tutti i file SQL seed da eseguire in ordine nel tuo progetto Supabase per popolare le pagine del marketplace.
 
+## 🎯 Setup Rapido Multi-Evento
+
+Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md)**
+
 ## ✅ Ordine di Esecuzione
+
+### 0. **Setup Multi-Evento (Nuovo Schema)** ⭐ OPZIONALE
+Files in ordine:
+1. `supabase-core-events-schema.sql` - Schema base multi-evento
+2. `supabase-seed-event-types.sql` - Tipi evento (include Matrimonio)
+3. `supabase-wedding-event-seed.sql` - Categorie complete Matrimonio (18 cat + 100+ subcat)
+4. `supabase-seed-event-categories.sql` - Altri eventi (Battesimo, Diciottesimo, etc.)
+
+**Note**: Questo è un sistema nuovo e separato dallo schema legacy. Vedi [MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md) per dettagli.
 
 ### 1. **Setup Completo Database** (Se non già fatto)
 File: `supabase-COMPLETE-SETUP.sql`
@@ -86,6 +99,14 @@ Questi file sono patch incrementali per aggiornare lo schema esistente:
 - `supabase-guests-tables.sql`
 
 **Eseguire solo se le colonne/tabelle menzionate non esistono già.**
+
+## ➕ Seeds Evento (Multi-Evento) — Opzionali
+
+Questi seed aggiungono categorie/sottocategorie per specifici tipi di evento nel modello multi-evento.
+
+- `supabase-communion-event-seed.sql` — Categorie e sottocategorie per "Prima Comunione"
+
+Nota: eseguire solo se stai adottando lo schema multi-evento e vuoi popolare il dizionario di categorie per la Comunione.
 
 ## 📝 Come Eseguire i Seeds
 

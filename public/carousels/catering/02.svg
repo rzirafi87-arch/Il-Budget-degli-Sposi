@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Catering: proposte menu">
+  <defs>
+    <linearGradient id="cat2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#edf7ea"/>
+      <stop offset="100%" stop-color="#9fb59a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#cat2)"/>
+  <g fill="#ffffff" opacity="0.95">
+    <rect x="220" y="540" width="260" height="180" rx="16"/>
+    <rect x="500" y="520" width="260" height="200" rx="16"/>
+    <rect x="780" y="560" width="220" height="160" rx="16"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Proposte menu</text>
+  </g>
+</svg>
+

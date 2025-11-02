@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ categories: data || [] });
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("Route /api/categories error:", e);
     return NextResponse.json({ error: e.message ?? "Server error" }, { status: 500 });
   }

@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseServer";
+import PageInfoNote from "@/components/PageInfoNote";
+import { formatDate } from "@/lib/locale";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -100,6 +102,25 @@ export default function FavoritesPage() {
           Tutti i fornitori, location e chiese che avete salvato in un unico posto.
         </p>
       </div>
+
+      <PageInfoNote
+        icon="❤️"
+        title="Raccogli i Tuoi Fornitori Preferiti"
+        description="Qui trovi tutti i fornitori, location e chiese che hai salvato mentre esploravi i database. Puoi aggiungere note personali, valutazioni e confrontarli facilmente. Quando sei pronto, contatta direttamente i preferiti o aggiungili alle spese."
+        tips={[
+          "Salva tutti i fornitori che ti interessano per confrontarli in seguito",
+          "Aggiungi note personali (es. 'Chiamato il 15/01, molto disponibile')",
+          "Usa le stelle per dare una valutazione personale a ciascun fornitore",
+          "Filtra per tipo (fornitori, location, chiese) per organizzare meglio la ricerca",
+          "Rimuovi dai preferiti ciò che hai scartato per mantenere la lista pulita"
+        ]}
+        eventTypeSpecific={{
+          wedding: "Per il matrimonio, salva tutti i professionisti che ti colpiscono: fotografi, fioristi, catering, location. Confronta i preferiti prima di decidere e prenotare!",
+          baptism: "Per il battesimo, concentrati su: chiese per la cerimonia, location per il rinfresco, fotografi. Salva 2-3 opzioni per categoria e confrontale.",
+          birthday: "Per il compleanno, salva: location per feste, catering/ristoranti, DJ e animatori. Confronta prezzi e servizi inclusi.",
+          graduation: "Per la laurea, usa i preferiti per: ristoranti/location per il ricevimento, fotografi, servizi di stampa per inviti personalizzati."
+        }}
+      />
 
       {/* Filtri */}
       <div className="flex gap-2 overflow-x-auto pb-2">
@@ -208,11 +229,11 @@ export default function FavoritesPage() {
               )}
 
               {fav.notes && (
-                <p className="text-sm text-gray-600 mb-3 italic">"{fav.notes}"</p>
+                <p className="text-sm text-gray-600 mb-3 italic">&quot;{fav.notes}&quot;</p>
               )}
 
               <p className="text-xs text-gray-400">
-                Salvato il {new Date(fav.created_at).toLocaleDateString("it-IT")}
+                Salvato il {formatDate(new Date(fav.created_at))}
               </p>
             </div>
           ))}

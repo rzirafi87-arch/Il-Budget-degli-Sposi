@@ -3,100 +3,100 @@
 
 export const PAGE_IMAGES: Record<string, string[]> = {
   dashboard: [
-    "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=400&fit=crop", // Wedding planning
-    "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&h=400&fit=crop", // Checklist
-    "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=400&fit=crop", // Budget planning
+    "/carousels/dashboard/01.svg",
+    "/carousels/dashboard/02.svg",
+    "/carousels/dashboard/03.svg",
   ],
   budget: [
-    "https://images.unsplash.com/photo-1554224311-beee4f0d696c?w=1200&h=400&fit=crop", // Calculator
-    "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&h=400&fit=crop", // Finance
-    "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&h=400&fit=crop", // Notes
+    "/carousels/budget/01.svg",
+    "/carousels/budget/02.svg",
+    "/carousels/budget/03.svg",
   ],
   spese: [
-    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=400&fit=crop", // Charts
-    "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1200&h=400&fit=crop", // Money
-    "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=1200&h=400&fit=crop", // Expenses
+    "/carousels/spese/01.svg",
+    "/carousels/spese/02.svg",
+    "/carousels/spese/03.svg",
   ],
   entrate: [
-    "https://images.unsplash.com/photo-1607863680198-23d4b2565df0?w=1200&h=400&fit=crop", // Gifts
-    "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=1200&h=400&fit=crop", // Cash
-    "https://images.unsplash.com/photo-1579621970795-87facc2f976d?w=1200&h=400&fit=crop", // Income
+    "/carousels/entrate/01.svg",
+    "/carousels/entrate/02.svg",
+    "/carousels/entrate/03.svg",
   ],
   fornitori: [
-    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=400&fit=crop", // Wedding services
-    "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=400&fit=crop", // Flowers
-    "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=400&fit=crop", // Catering
+    "/carousels/fornitori/01.svg",
+    "/carousels/fornitori/02.svg",
+    "/carousels/fornitori/03.svg",
   ],
   fotografi: [
-    "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=1200&h=400&fit=crop", // Camera gear
-    "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&h=400&fit=crop", // Wedding couple photo
-    "https://images.unsplash.com/photo-1520975916090-3105956dac38?w=1200&h=400&fit=crop", // Photographer at work
+    "/carousels/fotografi/01.svg",
+    "/carousels/fotografi/02.svg",
+    "/carousels/fotografi/03.svg",
   ],
   fiorai: [
-    "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=400&fit=crop", // Flowers close-up
-    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1200&h=400&fit=crop", // Floral arrangement
-    "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=1200&h=400&fit=crop", // Bouquet
+    "/carousels/fiorai/01.svg",
+    "/carousels/fiorai/02.svg",
+    "/carousels/fiorai/03.svg",
   ],
   catering: [
-    "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=1200&h=400&fit=crop", // Banquet table
-    "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=1200&h=400&fit=crop", // Catering service
-    "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=1200&h=400&fit=crop", // Food spread
+    "/carousels/catering/01.svg",
+    "/carousels/catering/02.svg",
+    "/carousels/catering/03.svg",
   ],
   beauty: [
-    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1200&h=400&fit=crop", // Make-up
-    "https://images.unsplash.com/photo-1506806732259-39c2d0268443?w=1200&h=400&fit=crop", // Hair stylist
-    "https://images.unsplash.com/photo-1505577058444-a3dab90d4253?w=1200&h=400&fit=crop", // Beauty accessories
+    "/carousels/beauty/01.svg",
+    "/carousels/beauty/02.svg",
+    "/carousels/beauty/03.svg",
   ],
   gioiellerie: [
-    "https://images.unsplash.com/photo-1520962918287-7448c2878f65?w=1200&h=400&fit=crop", // Rings close-up
-    "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&h=400&fit=crop", // Jewelry showcase
-    "https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?w=1200&h=400&fit=crop", // Ring box
+    "/carousels/gioiellerie/01.svg",
+    "/carousels/gioiellerie/02.svg",
+    "/carousels/gioiellerie/03.svg",
   ],
   location: [
-    "https://images.unsplash.com/photo-1519167758481-83f29da8856c?w=1200&h=400&fit=crop", // Venue hall
-    "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&h=400&fit=crop", // Garden venue
-    "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=1200&h=400&fit=crop", // Outdoor venue
+    "/carousels/location/01.svg",
+    "/carousels/location/02.svg",
+    "/carousels/location/03.svg",
   ],
   chiese: [
-    "https://images.unsplash.com/photo-1518599807935-37015b9cefcb?w=1200&h=400&fit=crop", // Church
-    "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1200&h=400&fit=crop", // Cathedral
-    "https://images.unsplash.com/photo-1583468323330-9032ad490fed?w=1200&h=400&fit=crop", // Chapel
+    "/carousels/chiese/01.svg",
+    "/carousels/chiese/02.svg",
+    "/carousels/chiese/03.svg",
   ],
   invitati: [
-    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=400&fit=crop", // Guests
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=400&fit=crop", // Party
-    "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&h=400&fit=crop", // Celebration
+    "/carousels/invitati/01.svg",
+    "/carousels/invitati/02.svg",
+    "/carousels/invitati/03.svg",
   ],
   "save-the-date": [
-    "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=1200&h=400&fit=crop", // Invitations
-    "https://images.unsplash.com/photo-1522673607212-f2f1e5b3d389?w=1200&h=400&fit=crop", // Cards
-    "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=400&fit=crop", // Stationery
+    "/carousels/save-the-date/01.svg",
+    "/carousels/save-the-date/02.svg",
+    "/carousels/save-the-date/03.svg",
   ],
   "musica-cerimonia": [
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=400&fit=crop", // Orchestra
-    "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&h=400&fit=crop", // Church music
-    "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=1200&h=400&fit=crop", // Violin
+    "/carousels/musica-cerimonia/01.svg",
+    "/carousels/musica-cerimonia/02.svg",
+    "/carousels/musica-cerimonia/03.svg",
   ],
   "musica-ricevimento": [
-    "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&h=400&fit=crop", // Live band
-    "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=1200&h=400&fit=crop", // DJ
-    "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&h=400&fit=crop", // Music
+    "/carousels/musica-ricevimento/01.svg",
+    "/carousels/musica-ricevimento/02.svg",
+    "/carousels/musica-ricevimento/03.svg",
   ],
   "wedding-planner": [
-    "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&h=400&fit=crop", // Planning
-    "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=400&fit=crop", // Organization
-    "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=400&fit=crop", // Coordination
+    "/carousels/wedding-planner/01.svg",
+    "/carousels/wedding-planner/02.svg",
+    "/carousels/wedding-planner/03.svg",
   ],
   "cose-matrimonio": [
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=400&fit=crop", // Wedding day
-    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=400&fit=crop", // Ceremony
-    "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=400&fit=crop", // Decorations
+    "/carousels/cose-matrimonio/01.svg",
+    "/carousels/cose-matrimonio/02.svg",
+    "/carousels/cose-matrimonio/03.svg",
   ],
 };
 
 // Immagini di default se non specificato
 export const DEFAULT_IMAGES = [
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=400&fit=crop",
+  "/carousels/default/01.svg",
+  "/carousels/default/02.svg",
+  "/carousels/default/03.svg",
 ];

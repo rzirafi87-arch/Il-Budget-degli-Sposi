@@ -1,4 +1,5 @@
 "use client";
+import { formatCurrency } from "@/lib/locale";
 
 type CategorySpend = {
   category: string;
@@ -48,7 +49,7 @@ export default function CategoryBars({ categories, totalBudget, className = "" }
                 {cat.category}
               </span>
               <span className="font-bold text-gray-800 ml-3">
-                € {cat.amount.toLocaleString("it-IT")}
+                {formatCurrency(cat.amount)}
               </span>
             </div>
             

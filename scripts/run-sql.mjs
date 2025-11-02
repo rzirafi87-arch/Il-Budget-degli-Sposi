@@ -1,12 +1,11 @@
 #!/usr/bin/env node
+import dotenv from 'dotenv';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import url from 'node:url';
-import dotenv from 'dotenv';
-import { Client } from 'pg';
 import readline from 'node:readline/promises';
 import tty from 'node:tty';
+import { Client } from 'pg';
 
 // Load env from .env.local (fall back to .env)
 const cwd = process.cwd();
@@ -59,8 +58,8 @@ async function main() {
     process.exit(1);
   }
 
-  // If the URL contains a YOUR_PASSWORD placeholder, prompt interactively (without saving it to disk)
-  if (url.includes('YOUR_PASSWORD')) {
+  // If the URL contains a YOUR_PASSWORD or YOUR_DB_PASSWORD placeholder, prompt interactively (without saving it to disk)
+  if (url.includes('YOUR_PASSWORD') || url.includes('YOUR_DB_PASSWORD')) {
     const isTTY = process.stdin.isTTY && process.stdout.isTTY;
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: isTTY });
     let pwd;
@@ -95,12 +94,21 @@ async function main() {
       rl.close();
     }
     const enc = encodeURIComponent(pwd);
-    url = url.replace('YOUR_PASSWORD', enc);
+    url = url.replace('YOUR_PASSWORD', enc).replace('YOUR_DB_PASSWORD', enc);
   }
+
+  // Choose SSL settings: disable for localhost/127.0.0.1, enable (no verify) otherwise
+  let sslOption = { rejectUnauthorized: false };
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+      sslOption = false;
+    }
+  } catch {}
 
   const client = new Client({
     connectionString: url,
-    ssl: { rejectUnauthorized: false },
+    ssl: sslOption,
     application_name: 'il-budget-degli-sposi-sql-runner',
   });
   try {
@@ -114,6 +122,6 @@ async function main() {
   }
 }
 
-main().catch((e) => {
+main().catch(() => {
   process.exitCode = 1;
 });

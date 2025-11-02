@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Save the Date: bozza e stile">
+  <defs>
+    <linearGradient id="std2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef8ec"/>
+      <stop offset="100%" stop-color="#9fb59d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#std2)"/>
+  <g opacity="0.22" fill="#6f8a73">
+    <rect x="920" y="200" width="200" height="140" rx="16"/>
+    <rect x="940" y="220" width="200" height="140" rx="16" fill="#7f9b83" opacity="0.7"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#ffffff">
+    <text x="120" y="360" font-size="64" font-weight="700">Bozza e stile</text>
+  </g>
+</svg>
+

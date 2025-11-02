@@ -1,18 +1,16 @@
 "use client";
-import React, { useEffect, useState, type ReactNode } from "react";
-import { usePathname } from "next/navigation";
-import NavTabs from "@/components/NavTabs";
 import Background from "@/components/Background";
-import Footer from "@/components/Footer";
-import DynamicHeader from "@/components/DynamicHeader";
-import { ToastProvider } from "@/components/ToastProvider";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { IntlProvider } from "next-intl";
+import DynamicHeader from "@/components/DynamicHeader";
+import Footer from "@/components/Footer";
+import NavTabs from "@/components/NavTabs";
 import QuickSettings from "@/components/QuickSettings";
+import { ToastProvider } from "@/components/ToastProvider";
 import TopBarSelector from "@/components/TopBarSelector";
+import { IntlProvider } from "next-intl";
+import { usePathname } from "next/navigation";
+import { useEffect, useState, type ReactNode } from "react";
 
-// Helpers to make next-intl happy: expand dotted keys (e.g. "onboarding.title")
-// into nested namespaces (e.g. { onboarding: { title: "..." } }) and deep-merge
 function expandDotted(input: Record<string, any>): Record<string, any> {
   const out: Record<string, any> = {};
   for (const [key, value] of Object.entries(input || {})) {
@@ -46,7 +44,6 @@ function mergeDeep(a: any, b: any): any {
 export default function ClientLayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isSaveTheDate = Boolean(pathname && pathname.startsWith("/save-the-date"));
-  // Onboarding pages where we hide the header
   const isOnboarding = Boolean(
     pathname && (
       pathname.startsWith("/select-language") ||
@@ -57,7 +54,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     )
   );
 
-  // Read the selected event type early to avoid header flicker
   const [eventType, setEventType] = useState<string | null>(() => {
     if (typeof document !== "undefined") {
       const cookieEvt = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
@@ -66,75 +62,59 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     }
     return null;
   });
-  const showHeader = !isOnboarding && eventType === "wedding";
+  const showHeader = !isOnboarding && (
+    eventType === "wedding" ||
+    eventType === "baptism" ||
+  eventType === "eighteenth" ||
+    eventType === "confirmation" ||
+  eventType === "communion" ||
+    (pathname?.startsWith("/dashboard") ?? false) ||
+    (pathname?.startsWith("/laurea") ?? false)
+  );
 
-  const [locale, setLocale] = useState<"it" | "es" | "en" | "ru" | "fr" | "de" | "zh" | "ja" | "ar">("it");
+  type Locale = "it" | "es" | "en" | "ru" | "fr" | "de" | "zh" | "ja" | "ar" | "pt" | "id";
+  const [locale, setLocale] = useState<Locale>("it");
   const [messages, setMessages] = useState<any | null>(null);
   const [chatEnabled, setChatEnabled] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const lang = (typeof window !== "undefined" ? localStorage.getItem("language") : null) as
-      | "it"
-      | "es"
-      | "en"
-      | "ru"
-      | "fr"
-      | "de"
-      | "zh"
-      | "ja"
-      | "ar"
-      | null;
-    const nextLocale = lang ?? "it";
+    const lang = (typeof window !== "undefined" ? localStorage.getItem("language") : null) as Locale | null;
+    const nextLocale: Locale = (lang as Locale) ?? "it";
     setLocale(nextLocale);
     if (typeof document !== "undefined") {
       document.documentElement.lang = nextLocale;
+      document.documentElement.dir = nextLocale === "ar" ? "rtl" : "ltr";
     }
     (async () => {
       try {
         const base = (await import(`../messages/${nextLocale}.json`)).default;
-        // Merge optional onboarding keys (flat) into root
         let merged: any = base;
         try {
           const onboarding = (await import(`../messages/onboarding.${nextLocale}.json`)).default;
           merged = mergeDeep(merged, expandDotted(onboarding));
         } catch {}
-        // Try to load optional footer namespace and merge under `footer`
         try {
           const footer = (await import(`../messages/footer.${nextLocale}.json`)).default;
-          const loveByLocale: Record<string, string> = {
-            it: "Fatto con ❤️ per le coppie italiane",
-            en: "Made with ❤️ for Italian couples",
-            es: "Hecho con ❤️ para parejas italianas",
-            fr: "Fait avec ❤️ pour les couples italiens",
-            de: "Mit ❤️ für italienische Paare",
-            ru: "Сделано с ❤️ для итальянских пар",
-            zh: "用 ❤️ 为意大利情侣打造",
-            ja: "イタリアのカップルのために❤️を込めて",
-            ar: "صُنع بحب ❤️ للأزواج الإيطاليين",
-          };
-          setMessages({ ...merged, footer: { ...footer, madeWithLove: loveByLocale[nextLocale] ?? footer?.madeWithLove } });
+          setMessages({ ...merged, footer });
         } catch {
           setMessages(merged);
         }
       } catch {
         const fallback = (await import("../messages/en.json")).default;
-        // Merge optional onboarding (EN) into root
         let merged: any = fallback;
         try {
           const onboarding = (await import(`../messages/onboarding.en.json`)).default;
           merged = mergeDeep(merged, expandDotted(onboarding));
         } catch {}
-        // Optional footer in EN
         try {
           const footer = (await import(`../messages/footer.en.json`)).default;
-          setMessages({ ...merged, footer: { ...footer, madeWithLove: "Made with ❤️ for Italian couples" } });
+          setMessages({ ...merged, footer });
         } catch {
           setMessages(merged);
         }
       }
     })();
 
-    // Keep event type in sync if user changes it in another tab
     const onStorage = (e: StorageEvent) => {
       if (e.key === "eventType") setEventType(e.newValue);
     };
@@ -142,7 +122,21 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  // Verifica disponibilità Chat IA (per pulsante top bar)
+  // Mantiene un cookie "language" allineato alla scelta utente per migliorare SSR (<html lang>)
+  useEffect(() => {
+    try {
+      const langLS = (typeof window !== "undefined" ? localStorage.getItem("language") : null) as string | null;
+      const next = (langLS || locale || "it").toLowerCase();
+      const cookieMatch = typeof document !== "undefined" ? document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1] : null;
+      if (typeof document !== "undefined") {
+        if (cookieMatch !== next) {
+          // 365 giorni
+          document.cookie = `language=${next}; Max-Age=31536000; Path=/; SameSite=Lax`;
+        }
+      }
+    } catch {}
+  }, [locale]);
+
   useEffect(() => {
     let active = true;
     (async () => {
@@ -239,7 +233,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                     )}
                   </div>
                 </div>
-                <NavTabs />
+                {(eventType === 'wedding' || eventType === 'baptism' || eventType === 'eighteenth' || eventType === 'confirmation' || eventType === 'graduation' || eventType === 'communion') && <NavTabs />}
               </div>
             </div>
           </header>
@@ -250,7 +244,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
         </main>
         <Footer />
         <Background />
-        {/* Floating quick settings hidden on save-the-date */}
         {!isSaveTheDate && <QuickSettings />}
       </IntlProvider>
     </ToastProvider>

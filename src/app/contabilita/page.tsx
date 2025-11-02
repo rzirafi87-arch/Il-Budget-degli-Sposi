@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import SpesePage from "../spese/page";
 import EntratePage from "../entrate/page";
+import { useTranslations } from "next-intl";
 
 export default function ContabilitaPage() {
+  const t = useTranslations();
   const [activeTab, setActiveTab] = useState<"spese" | "entrate">("spese");
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2">💼 Contabilità</h2>
+      <h2 className="font-serif text-3xl mb-2">{t("accounting")}</h2>
       <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
         Gestisci tutte le transazioni economiche del tuo matrimonio in un unico posto: 
         spese sostenute e entrate ricevute. Tieni traccia di preventivi, pagamenti confermati e contributi.
@@ -26,7 +28,7 @@ export default function ContabilitaPage() {
           }`}
           style={activeTab === "spese" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          💸 Spese
+          Spese
         </button>
         <button
           onClick={() => setActiveTab("entrate")}
@@ -37,7 +39,7 @@ export default function ContabilitaPage() {
           }`}
           style={activeTab === "entrate" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          💵 Entrate
+          Entrate
         </button>
       </div>
 
