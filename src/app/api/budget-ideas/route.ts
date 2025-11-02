@@ -1,8 +1,9 @@
 import { getServiceClient } from "@/lib/supabaseServer";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
-async function currentEventId(db: any, userId: string) {
+async function currentEventId(db: SupabaseClient, userId: string) {
   const { data: ev, error } = await db
     .from("events")
     .select("id")
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const items = Array.isArray(body?.items) ? body.items : [];
     // Upsert per categoria
-    const payload = items.map((it: any) => ({ event_id: eventId, category_id: it.category_id, idea_amount: Number(it.idea_amount || 0) }));
+    const payload = items.map((it: { category_id: string; idea_amount: number }) => ({ event_id: eventId, category_id: it.category_id, idea_amount: Number(it.idea_amount || 0) }));
     const { error } = await db.from("budget_ideas").upsert(payload, { onConflict: "event_id,category_id" });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true });

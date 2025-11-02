@@ -100,6 +100,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const expenses: Expense[] = (expensesData || []).map((e: any) => ({
       id: e.id,
       category: e.subcategory?.category?.name || "",

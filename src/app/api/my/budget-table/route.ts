@@ -178,6 +178,7 @@ export async function GET(req: NextRequest) {
     const rows: Row[] = [];
     let totalCommon = 0, totalBride = 0, totalGroom = 0;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (subs || []).forEach((s: any) => {
       const catName = s.category?.name || "";
       const subName = s.name;
@@ -187,6 +188,7 @@ export async function GET(req: NextRequest) {
       let budget = 0, committed = 0, paid = 0, residual = 0;
       let spendType = "common" as "common" | "bride" | "groom";
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expenses.forEach((e: any) => {
         // "budget": usiamo committed_amount per i planned/committed (è la colonna già in schema)
         const expenseSpendType = (e.spend_type as "common" | "bride" | "groom") || "common";
@@ -199,6 +201,7 @@ export async function GET(req: NextRequest) {
       residual = Math.max(0, budget - paid);
 
       // Verifica se almeno una spesa era from_dashboard
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const hasFromDashboard = expenses.some((e: any) => e.from_dashboard);
       const difference = paid - budget; // negativo = sotto budget, positivo = sopra budget
 

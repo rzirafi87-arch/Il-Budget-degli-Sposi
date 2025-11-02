@@ -79,7 +79,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const formattedIncomes: Income[] = (incomes || []).map((i: any) => ({
+    type IncomeRow = { id: string; name: string; type: "busta" | "bonifico" | "regalo"; amount: number; notes: string; date: string };
+    const formattedIncomes: Income[] = (incomes || []).map((i: IncomeRow) => ({
       id: i.id,
       name: i.name,
       type: i.type,

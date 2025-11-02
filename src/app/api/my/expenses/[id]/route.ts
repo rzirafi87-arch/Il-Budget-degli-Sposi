@@ -21,7 +21,7 @@ export async function PATCH(
 
     // Aggiorna lo stato della spesa
     // Se approvata, copia committed_amount in paid_amount
-    const updateData: any = { status };
+    const updateData: { status: string; paid_amount?: number } = { status };
     
     if (status === "approved") {
       // Prendi il committed_amount
