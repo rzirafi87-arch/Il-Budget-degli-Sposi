@@ -53,7 +53,7 @@ describe('API routes', () => {
 
     const traditionsRoute = await import('../api/traditions/route');
     const req = { nextUrl: new URL('http://localhost/api/traditions?country=mx') };
-    const res = await traditionsRoute.GET(req as unknown as Request);
+  const res = await traditionsRoute.GET(req as unknown as import('next/server').NextRequest);
     const json = await (res as { json: () => Promise<unknown> }).json() as { traditions: unknown[] };
     expect(Array.isArray(json.traditions) ? json.traditions.length : 0).toBe(1);
   });
@@ -65,7 +65,7 @@ describe('API routes', () => {
 
     const checklistRoute = await import('../api/checklist-modules/route');
     const req = { nextUrl: new URL('http://localhost/api/checklist-modules?country=mx') };
-    const res = await checklistRoute.GET(req as unknown as Request);
+  const res = await checklistRoute.GET(req as unknown as import('next/server').NextRequest);
     const json = await (res as { json: () => Promise<unknown> }).json() as { modules: unknown[] };
     expect(Array.isArray(json.modules) ? json.modules.length : 0).toBe(1);
   });
@@ -77,7 +77,7 @@ describe('API routes', () => {
 
     const budgetItemsRoute = await import('../api/budget-items/route');
     const req = { nextUrl: new URL('http://localhost/api/budget-items?country=mx'), headers: new Headers() };
-    const res = await budgetItemsRoute.GET(req as unknown as Request);
+  const res = await budgetItemsRoute.GET(req as unknown as import('next/server').NextRequest);
     const json = await (res as { json: () => Promise<unknown> }).json() as { items: unknown[] };
     expect(Array.isArray(json.items) ? json.items.length : 0).toBe(1);
   });
@@ -103,7 +103,7 @@ describe('API routes', () => {
     const budgetItemsRoute = await import('../api/budget-items/route');
     const body = { name: 'Item', country_code: 'it' };
     const req = { headers: new Headers({ authorization: 'Bearer token' }), json: async () => body };
-    const res = await budgetItemsRoute.POST(req as unknown as Request);
+  const res = await budgetItemsRoute.POST(req as unknown as import('next/server').NextRequest);
     const json = await (res as { json: () => Promise<unknown> }).json() as { item: { event_id: string } };
     expect(json.item).toBeTruthy();
     expect(json.item.event_id).toBe('evt-1');
