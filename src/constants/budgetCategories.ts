@@ -1,3 +1,4 @@
+<<<<<<< ours
 // Mappatura completa categorie/sottocategorie come nella Dashboard storica
 export const BUDGET_CATEGORIES: Record<string, string[]> = {
   "Abiti & Accessori (altri)": [
@@ -194,4 +195,18 @@ export const BUDGET_CATEGORIES: Record<string, string[]> = {
     "Spese varie"
   ]
 };
+=======
+import { EVENT_CONFIGS } from "./eventConfigs";
+
+/**
+ * @deprecated Usa EVENT_CONFIGS direttamente per ottenere le categorie. Questo export
+ *              viene mantenuto per retrocompatibilità ma restituisce le categorie
+ *              organizzate per tipo di evento.
+ */
+export const BUDGET_CATEGORIES = Object.fromEntries(
+  Object.entries(EVENT_CONFIGS).map(([code, config]) => [code, config.budgetCategories])
+);
+
+export type BudgetCategoryMap = typeof BUDGET_CATEGORIES;
+>>>>>>> theirs
 

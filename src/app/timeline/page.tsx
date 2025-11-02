@@ -1,10 +1,17 @@
 ﻿"use client";
 
+<<<<<<< ours
 import ExportButton from "@/components/ExportButton";
 import PageInfoNote from "@/components/PageInfoNote";
 import { formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useEffect, useState } from "react";
+=======
+import { useEffect, useMemo, useState } from "react";
+import { getBrowserClient } from "@/lib/supabaseServer";
+import ExportButton from "@/components/ExportButton";
+import { getEventConfig, resolveEventType, DEFAULT_EVENT_TYPE, TimelineBucket } from "@/constants/eventConfigs";
+>>>>>>> theirs
 
 const supabase = getBrowserClient();
 
@@ -18,133 +25,81 @@ type TimelineTask = {
   priority: "alta" | "media" | "bassa";
 };
 
-const DEFAULT_TIMELINE: Omit<TimelineTask, "id" | "completed">[] = [
-  // 12+ mesi prima
-  { title: "Annuncio Matrimonio", description: "Condividete la notizia con famiglia e amici", monthsBefore: 12, category: "Inizio", priority: "alta" },
-  { title: "Definite il budget", description: "Stabilite quanto potete spendere in totale", monthsBefore: 12, category: "Budget", priority: "alta" },
-  { title: "Create la lista invitati preliminare", description: "Numero approssimativo di ospiti", monthsBefore: 12, category: "Invitati", priority: "alta" },
-  
-  // 10-11 mesi prima
-  { title: "Scegliete la data del matrimonio", description: "Considerate stagione, disponibilità location", monthsBefore: 11, category: "Pianificazione", priority: "alta" },
-  { title: "Cercate e prenotate la location", description: "Ricevimento e eventualmente cerimonia", monthsBefore: 10, category: "Location", priority: "alta" },
-  { title: "Prenotate il fotografo/videomaker", description: "I migliori si prenotano con molto anticipo", monthsBefore: 10, category: "Fornitori", priority: "alta" },
-  
-  // 8-9 mesi prima
-  { title: "Scegliete i testimoni e le damigelle", description: "Chiedete alle persone speciali di farne parte", monthsBefore: 9, category: "Cerimonia", priority: "media" },
-  { title: "Prenotate il catering", description: "Menu degustazione e accordi", monthsBefore: 9, category: "Catering", priority: "alta" },
-  { title: "Cercate l'abito da sposa", description: "Visitate atelier e boutique", monthsBefore: 8, category: "Abiti", priority: "alta" },
-  { title: "Prenotate la musica (DJ o band)", description: "Cerimonia e/o ricevimento", monthsBefore: 8, category: "Intrattenimento", priority: "media" },
-  
-  // 6-7 mesi prima
-  { title: "Scegliete l'abito dello sposo", description: "Acquisto o noleggio", monthsBefore: 7, category: "Abiti", priority: "alta" },
-  { title: "Prenotate il fioraio", description: "Bouquet, centrotavola, allestimenti", monthsBefore: 7, category: "Fornitori", priority: "media" },
-  { title: "Inviate i Save the Date", description: "Avvisate gli ospiti della data", monthsBefore: 6, category: "Inviti", priority: "media" },
-  { title: "Prenotate l'hotel per gli ospiti", description: "Blocco camere per chi viene da fuori", monthsBefore: 6, category: "Logistica", priority: "bassa" },
-  
-  // 4-5 mesi prima
-  { title: "Ordinare le partecipazioni", description: "Grafica, stampa e buste", monthsBefore: 5, category: "Inviti", priority: "media" },
-  { title: "Provare l'abito da sposa", description: "Prima prova e modifiche", monthsBefore: 5, category: "Abiti", priority: "alta" },
-  { title: "Prenotare parrucchiera e make-up", description: "Prova trucco e acconciatura", monthsBefore: 4, category: "Beauty", priority: "media" },
-  { title: "Scegliere le fedi nuziali", description: "Visitate gioiellerie", monthsBefore: 4, category: "Accessori", priority: "alta" },
-  
-  // 2-3 mesi prima
-  { title: "Spedire le partecipazioni", description: "Almeno 8 settimane prima", monthsBefore: 3, category: "Inviti", priority: "alta" },
-  { title: "Finalizzare il menù", description: "Confermare scelte con catering", monthsBefore: 3, category: "Catering", priority: "alta" },
-  { title: "Acquistare le scarpe", description: "Sposa e sposo, iniziate a rodarle", monthsBefore: 2, category: "Accessori", priority: "media" },
-  { title: "Prenotare la luna di miele", description: "Voli, hotel, attività", monthsBefore: 2, category: "Viaggio", priority: "media" },
-  
-  // 1 mese prima
-  { title: "Ultima prova abiti", description: "Sposa e sposo", monthsBefore: 1, category: "Abiti", priority: "alta" },
-  { title: "Confermare numero ospiti", description: "RSVP definitivi", monthsBefore: 1, category: "Invitati", priority: "alta" },
-  { title: "Decidere la disposizione tavoli", description: "Tableau e segnaposto", monthsBefore: 1, category: "Allestimento", priority: "media" },
-  { title: "Prova trucco e acconciatura", description: "Trial completo", monthsBefore: 1, category: "Beauty", priority: "alta" },
-  
-  // 2 settimane prima
-  { title: "Confermare con tutti i fornitori", description: "Orari, dettagli, pagamenti", monthsBefore: 0.5, category: "Fornitori", priority: "alta" },
-  { title: "Preparare la borsa per il giorno", description: "Kit emergenza sposi", monthsBefore: 0.5, category: "Preparazione", priority: "media" },
-  { title: "Preparare le buste per fornitori", description: "Pagamenti e mance", monthsBefore: 0.5, category: "Budget", priority: "media" },
-  
-  // 1 settimana prima
-  { title: "Ritiro abiti finali", description: "Controllare che sia tutto perfetto", monthsBefore: 0.25, category: "Abiti", priority: "alta" },
-  { title: "Fare le valigie per luna di miele", description: "Preparare i documenti", monthsBefore: 0.25, category: "Viaggio", priority: "bassa" },
-  { title: "Rilassarsi e godersi l'attesa!", description: "Massaggio, cena romantica, riposo", monthsBefore: 0.1, category: "Benessere", priority: "alta" },
-];
-
 export default function TimelinePage() {
-  const [weddingDate, setWeddingDate] = useState<Date | null>(null);
+  const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
+  const eventConfig = getEventConfig(eventType);
+
+  const [eventDate, setEventDate] = useState<Date | null>(null);
   const [tasks, setTasks] = useState<TimelineTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("Tutti");
 
+  // Recupera tipo evento da storage/cookie
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+    const stored = window.localStorage.getItem("eventType");
+    const resolved = resolveEventType(stored || cookieMatch || DEFAULT_EVENT_TYPE);
+    setEventType(resolved);
+  }, []);
+
+  // Carica data evento e genera timeline
+  useEffect(() => {
+    let active = true;
     (async () => {
+      setLoading(true);
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         const jwt = sessionData.session?.access_token;
-
         if (jwt) {
           const res = await fetch("/api/event/resolve", {
             headers: { Authorization: `Bearer ${jwt}` },
           });
           const json = await res.json();
-          
-          if (json.event?.wedding_date) {
-            setWeddingDate(new Date(json.event.wedding_date));
+          if (active && json.event?.wedding_date) {
+            setEventDate(new Date(json.event.wedding_date));
           }
         }
-
-        // Genera tasks da default timeline
-        const generatedTasks: TimelineTask[] = DEFAULT_TIMELINE.map((task, idx) => ({
-          ...task,
-          id: `task-${idx}`,
-          completed: false,
-        }));
-        
-        setTasks(generatedTasks);
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error("Errore recupero evento", error);
+        if (active) setEventDate(null);
       } finally {
-        setLoading(false);
+        if (active) {
+          const generatedTasks: TimelineTask[] = eventConfig.timelineTasks.map((task, idx) => ({
+            ...task,
+            id: `${eventType}-task-${idx}`,
+            completed: false,
+          }));
+          setTasks(generatedTasks);
+          setLoading(false);
+        }
       }
     })();
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [eventConfig, eventType]);
 
   const toggleTask = (id: string) => {
-    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)));
   };
 
-  const categories = ["Tutti", ...Array.from(new Set(tasks.map(t => t.category)))];
-  const filteredTasks = selectedCategory === "Tutti" 
-    ? tasks 
-    : tasks.filter(t => t.category === selectedCategory);
+  const categories = useMemo(() => ["Tutti", ...Array.from(new Set(tasks.map((t) => t.category)))], [tasks]);
 
-  const getTasksForMonth = (month: number) => {
-    return filteredTasks.filter(t => {
-      const monthValue = t.monthsBefore;
-      if (month === 12) return monthValue >= 12;
-      if (month === 0) return monthValue < 1;
-      return Math.floor(monthValue) === month;
-    });
+  const filteredTasks = useMemo(
+    () => (selectedCategory === "Tutti" ? tasks : tasks.filter((task) => task.category === selectedCategory)),
+    [selectedCategory, tasks]
+  );
+
+  const getTasksForBucket = (bucket: TimelineBucket) => {
+    const min = bucket.minMonthsBefore;
+    const max = bucket.maxMonthsBefore ?? bucket.minMonthsBefore;
+    const upper = Number.isFinite(max) ? max : Number.POSITIVE_INFINITY;
+    return filteredTasks.filter((task) => task.monthsBefore >= min && task.monthsBefore <= upper);
   };
 
-  const completedCount = tasks.filter(t => t.completed).length;
-  const progressPercent = Math.round((completedCount / tasks.length) * 100);
-
-  const monthLabels = [
-    { value: 12, label: "12+ mesi prima" },
-    { value: 11, label: "11 mesi prima" },
-    { value: 10, label: "10 mesi prima" },
-    { value: 9, label: "9 mesi prima" },
-    { value: 8, label: "8 mesi prima" },
-    { value: 7, label: "7 mesi prima" },
-    { value: 6, label: "6 mesi prima" },
-    { value: 5, label: "5 mesi prima" },
-    { value: 4, label: "4 mesi prima" },
-    { value: 3, label: "3 mesi prima" },
-    { value: 2, label: "2 mesi prima" },
-    { value: 1, label: "1 mese prima" },
-    { value: 0, label: "Ultime settimane" },
-  ];
+  const completedCount = useMemo(() => tasks.filter((task) => task.completed).length, [tasks]);
+  const progressPercent = tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
 
   if (loading) {
     return (
@@ -158,10 +113,20 @@ export default function TimelinePage() {
     <section className="space-y-6">
       <div className="hidden md:flex items-center justify-between">
         <div />
+<<<<<<< ours
         <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
+=======
+        <a
+          href="/dashboard"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
+        >
+          ← Torna in Dashboard
+        </a>
+>>>>>>> theirs
       </div>
       <div className="bg-linear-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200 shadow-sm relative">
         <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
+<<<<<<< ours
           Timeline del Matrimonio
         </h1>
         <p className="text-gray-600">
@@ -190,19 +155,32 @@ export default function TimelinePage() {
       />
 
       {/* Progress Overview */}
+=======
+          {eventConfig.emoji} {eventConfig.timelineTitle}
+        </h1>
+        <p className="text-gray-600">{eventConfig.timelineDescription}</p>
+        <a
+          href="/dashboard"
+          className="absolute top-4 right-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
+        >
+          <span aria-hidden="true">🏠</span> Torna in Dashboard
+        </a>
+      </div>
+
+>>>>>>> theirs
       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
         <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
           <h3 className="font-bold text-lg">I vostri progressi</h3>
           <div className="flex items-center gap-3">
             <ExportButton
-              data={tasks.map(t => ({
-                task: t.title,
-                descrizione: t.description,
-                categoria: t.category,
-                priorita: t.priority,
-                completato: t.completed ? "Sì" : "No",
+              data={tasks.map((task) => ({
+                task: task.title,
+                descrizione: task.description,
+                categoria: task.category,
+                priorita: task.priority,
+                completato: task.completed ? "Sì" : "No",
               }))}
-              filename="timeline-matrimonio"
+              filename={`timeline-${eventType}`}
               type="csv"
               className="text-sm"
             >
@@ -216,12 +194,13 @@ export default function TimelinePage() {
         <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden mb-2">
           <div
             className="h-full rounded-full transition-all duration-500"
-            style={{ 
+            style={{
               width: `${progressPercent}%`,
-              background: "var(--color-sage)"
+              background: "var(--color-sage)",
             }}
           />
         </div>
+<<<<<<< ours
         <p className="text-sm text-gray-500 text-center">
           {progressPercent < 30 
             ? "Appena iniziato - siete sulla strada giusta!"
@@ -230,34 +209,34 @@ export default function TimelinePage() {
             : progressPercent < 100
             ? "Quasi pronti! Mancano gli ultimi dettagli!"
             : "Tutto fatto! Siete pronti per il grande giorno!"}
+=======
+        <p className="text-sm text-gray-600">
+          Hai completato il {progressPercent}% della timeline. Continua così!
+>>>>>>> theirs
         </p>
       </div>
 
-      {/* Category Filter */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-              selectedCategory === cat
-                ? "text-white shadow-md"
-                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-            }`}
-            style={selectedCategory === cat ? { background: "var(--color-sage)" } : {}}
-          >
-            {cat}
-          </button>
-        ))}
+      <div className="flex flex-wrap gap-3 items-center">
+        <label className="text-sm font-medium text-gray-700">Filtra per categoria:</label>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="border border-gray-300 rounded-full px-4 py-2 text-sm"
+        >
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Timeline */}
-      <div className="space-y-8">
-        {monthLabels.map(({ value, label }) => {
-          const monthTasks = getTasksForMonth(value);
-          if (monthTasks.length === 0) return null;
-
+      <div className="grid gap-6">
+        {eventConfig.timelineBuckets.map((bucket) => {
+          const bucketTasks = getTasksForBucket(bucket);
+          if (bucketTasks.length === 0) return null;
           return (
+<<<<<<< ours
             <div key={value} className="relative">
               <div className="sticky top-20 z-10 bg-white/95 backdrop-blur-sm rounded-lg px-4 py-2 border border-gray-200 shadow-sm mb-4 inline-block">
                 <h3 className="font-bold text-lg" style={{ color: "var(--color-sage)" }}>
@@ -292,21 +271,44 @@ export default function TimelinePage() {
                           </h4>
                           <span className={`text-xs px-2 py-0.5 rounded-full ${
                             task.priority === "alta" 
+=======
+            <div key={bucket.label} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">{bucket.label}</h3>
+              <div className="space-y-3">
+                {bucketTasks.map((task) => (
+                  <div key={task.id} className="flex items-start gap-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleTask(task.id)}
+                      aria-label={task.completed ? "Segna come da completare" : "Segna come completato"}
+                      className={`mt-1 w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
+                        task.completed
+                          ? "border-green-500 bg-green-500"
+                          : "border-gray-300 hover:border-gray-400"
+                      }`}
+                    >
+                      {task.completed && <span className="text-white text-sm font-bold">✓</span>}
+                    </button>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className={`font-semibold ${task.completed ? "line-through text-gray-400" : "text-gray-800"}`}>
+                          {task.title}
+                        </h4>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${
+                            task.priority === "alta"
+>>>>>>> theirs
                               ? "bg-red-100 text-red-700"
                               : task.priority === "media"
                               ? "bg-yellow-100 text-yellow-700"
                               : "bg-gray-100 text-gray-600"
-                          }`}>
-                            {task.priority}
-                          </span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
-                            {task.category}
-                          </span>
-                        </div>
-                        <p className={`text-sm ${task.completed ? "text-gray-400" : "text-gray-600"}`}>
-                          {task.description}
-                        </p>
+                          }`}
+                        >
+                          {task.priority}
+                        </span>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">{task.category}</span>
                       </div>
+                      <p className={`text-sm ${task.completed ? "text-gray-400" : "text-gray-600"}`}>{task.description}</p>
                     </div>
                   </div>
                 ))}
@@ -316,15 +318,23 @@ export default function TimelinePage() {
         })}
       </div>
 
+<<<<<<< ours
       {weddingDate && (
         <div className="bg-linear-to-r from-rose-50 to-blue-50 rounded-xl p-6 text-center border border-gray-200">
           <p className="text-sm text-gray-600 mb-1">Il vostro matrimonio è il</p>
           <p className="text-xl font-bold text-gray-800">
             {formatDate(weddingDate, {
+=======
+      {eventDate && (
+        <div className="bg-gradient-to-r from-rose-50 to-blue-50 rounded-xl p-6 text-center border border-gray-200">
+          <p className="text-sm text-gray-600 mb-1">{eventConfig.eventDateMessage}</p>
+          <p className="text-xl font-bold text-gray-800">
+            {eventDate.toLocaleDateString("it-IT", {
+>>>>>>> theirs
               weekday: "long",
               year: "numeric",
               month: "long",
-              day: "numeric"
+              day: "numeric",
             })}
           </p>
         </div>

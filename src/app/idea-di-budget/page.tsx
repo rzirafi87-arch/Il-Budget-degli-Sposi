@@ -1,4 +1,5 @@
 "use client";
+<<<<<<< ours
 import { BUDGET_CATEGORIES as WEDDING_BUDGET_CATEGORIES } from "@/constants/budgetCategories";
 import { BAPTISM_VENDOR_TYPES, getBaptismBudgetPercentages, getBaptismComplianceNotes, getBaptismTemplate } from "@/data/templates/baptism";
 import { getCommunionBudgetPercentages, getCommunionTemplate } from "@/data/templates/communion";
@@ -7,18 +8,31 @@ import { getEighteenthBudgetPercentages, getEighteenthTemplate } from "@/data/te
 import { getGraduationBudgetPercentages, getGraduationTemplate } from "@/data/templates/graduation";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useCallback, useEffect, useMemo, useState } from "react";
+=======
+import React, { useState, useEffect, useMemo } from "react";
+import { getBrowserClient } from "@/lib/supabaseServer";
+import { getEventConfig, resolveEventType, DEFAULT_EVENT_TYPE } from "@/constants/eventConfigs";
+
+type ContributorBudgets = Record<string, number>;
+
+type SpendTypeOption = {
+  value: string;
+  label: string;
+};
+>>>>>>> theirs
 
 // Struttura dati per idea di budget
 export type BudgetIdeaRow = {
   id?: string;
   category: string;
   subcategory: string;
-  spendType: "common" | "bride" | "groom" | "gift";
+  spendType: string;
   amount: number;
   supplier?: string;
   notes?: string;
 };
 
+<<<<<<< ours
 // Resolve categories based on selected event type
 function resolveCategories(): Record<string, string[]> {
   const et = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
@@ -87,13 +101,30 @@ export default function IdeaDiBudgetPage() {
     const country = localStorage.getItem("country") || "it";
     return country === "mx" ? "MXN" : "EUR";
   });
+=======
+export default function IdeaDiBudgetPage() {
+  const supabase = getBrowserClient();
+
+  const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
+  const eventConfig = getEventConfig(eventType);
+
+  const [rows, setRows] = useState<BudgetIdeaRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [contributorBudgets, setContributorBudgets] = useState<ContributorBudgets>({});
+  const [eventDate, setEventDate] = useState<string>("");
+  const [currency, setCurrency] = useState<string>(() =>
+    (typeof window !== "undefined" && localStorage.getItem("budgetIdea.currency")) || "EUR"
+  );
+>>>>>>> theirs
   const [contingencyPct, setContingencyPct] = useState<number>(() => {
     const v = typeof window !== "undefined" ? Number(localStorage.getItem("budgetIdea.contingencyPct") || 0) : 0;
-    return isFinite(v) ? v : 0;
+    return Number.isFinite(v) ? v : 0;
   });
   const [compactView, setCompactView] = useState<boolean>(() =>
     typeof window !== "undefined" ? localStorage.getItem("budgetIdea.compactView") === "1" : false
   );
+<<<<<<< ours
 
   const supabase = getBrowserClient();
   const fmt = useMemo(() => new Intl.NumberFormat("it-IT", { style: "currency", currency }), [currency]);
@@ -307,6 +338,104 @@ export default function IdeaDiBudgetPage() {
   }, [rows, categoriesMap, brideBudget, groomBudget, contingencyPct]);
 
   // Persist simple view preferences
+=======
+
+  // Recupera il tipo di evento selezionato
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+    const stored = window.localStorage.getItem("eventType");
+    const resolved = resolveEventType(stored || cookieMatch || DEFAULT_EVENT_TYPE);
+    setEventType(resolved);
+  }, []);
+
+  // Inizializza budget e data per il tipo di evento corrente
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const nextBudgets: ContributorBudgets = {};
+    eventConfig.contributors.forEach(({ value }) => {
+      const stored = window.localStorage.getItem(`budgetIdea.budget.${eventType}.${value}`);
+      nextBudgets[value] = stored ? Number(stored) || 0 : 0;
+    });
+    setContributorBudgets(nextBudgets);
+    const storedDate = window.localStorage.getItem(`budgetIdea.eventDate.${eventType}`) || "";
+    setEventDate(storedDate);
+  }, [eventConfig.contributors, eventType]);
+
+  // Carica idee di budget reali da Supabase o genera struttura base
+  useEffect(() => {
+    async function fetchBudgetIdeas() {
+      setLoading(true);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const jwt = sessionData.session?.access_token;
+      const headers: HeadersInit = {};
+      if (jwt) headers["Authorization"] = `Bearer ${jwt}`;
+      try {
+        const res = await fetch("/api/idea-di-budget", { headers });
+        const json = await res.json();
+        if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+          const byKey = new Map<string, BudgetIdeaRow>();
+          for (const r of json.data) {
+            const category = r.categories?.name || r.category || "";
+            const subcategory = r.subcategory || "";
+            const key = `${category}|||${subcategory}`;
+            const amount = Number(r.idea_amount ?? r.amount ?? 0) || 0;
+            const rawSpendType = (r.spendType || r.spend_type || eventConfig.defaultSpendType) as string;
+            const spendType = rawSpendType === "common" ? eventConfig.defaultSpendType : rawSpendType;
+            const supplier = r.supplier || "";
+            const notes = r.notes || "";
+            if (!byKey.has(key)) {
+              byKey.set(key, { category, subcategory, spendType, amount, supplier, notes });
+            } else {
+              const cur = byKey.get(key)!;
+              cur.amount = (Number(cur.amount) || 0) + amount;
+              if (!cur.supplier && supplier) cur.supplier = supplier;
+              if (!cur.notes && notes) cur.notes = notes;
+              if (cur.spendType === eventConfig.defaultSpendType && spendType !== eventConfig.defaultSpendType) cur.spendType = spendType;
+            }
+          }
+          setRows(Array.from(byKey.values()));
+        } else {
+          const allRows: BudgetIdeaRow[] = [];
+          Object.entries(eventConfig.budgetCategories).forEach(([category, subs]) => {
+            subs.forEach((subcategory) => {
+              allRows.push({
+                category,
+                subcategory,
+                spendType: eventConfig.defaultSpendType,
+                amount: 0,
+                supplier: "",
+                notes: "",
+              });
+            });
+          });
+          setRows(allRows);
+        }
+      } catch (error) {
+        console.error("Errore caricamento idea di budget", error);
+        const allRows: BudgetIdeaRow[] = [];
+        Object.entries(eventConfig.budgetCategories).forEach(([category, subs]) => {
+          subs.forEach((subcategory) => {
+            allRows.push({
+              category,
+              subcategory,
+              spendType: eventConfig.defaultSpendType,
+              amount: 0,
+              supplier: "",
+              notes: "",
+            });
+          });
+        });
+        setRows(allRows);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBudgetIdeas();
+  }, [eventConfig, eventType, supabase]);
+
+  // Persist semplice preferenze di visualizzazione
+>>>>>>> theirs
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("budgetIdea.currency", currency);
@@ -315,29 +444,90 @@ export default function IdeaDiBudgetPage() {
     }
   }, [currency, contingencyPct, compactView]);
 
-  // Persist top-level budget controls to localStorage so Dashboard li usa
+  // Persist budget per contributor (e compatibilità dashboard esistente)
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("brideBudget", String(brideBudget || 0));
-      localStorage.setItem("groomBudget", String(groomBudget || 0));
-      localStorage.setItem("weddingDate", weddingDate || "");
+    if (typeof window === "undefined") return;
+    eventConfig.contributors.forEach(({ value }) => {
+      const amount = contributorBudgets[value] || 0;
+      localStorage.setItem(`budgetIdea.budget.${eventType}.${value}`, String(amount));
+    });
+    const first = eventConfig.contributors[0]?.value;
+    const second = eventConfig.contributors[1]?.value;
+    if (first) localStorage.setItem("brideBudget", String(contributorBudgets[first] || 0));
+    if (second) {
+      localStorage.setItem("groomBudget", String(contributorBudgets[second] || 0));
+    } else {
+      localStorage.setItem("groomBudget", "0");
     }
-  }, [brideBudget, groomBudget, weddingDate]);
+  }, [contributorBudgets, eventConfig.contributors, eventType]);
 
+  // Persist data evento (compatibile con dashboard)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(`budgetIdea.eventDate.${eventType}`, eventDate || "");
+    localStorage.setItem("weddingDate", eventDate || "");
+  }, [eventDate, eventType]);
+
+  const spendTypeOptions: SpendTypeOption[] = useMemo(() => {
+    const base = eventConfig.spendTypes;
+    const extras = Array.from(
+      new Set(
+        rows
+          .map((row) => row.spendType)
+          .filter((value) => value && !base.some((opt) => opt.value === value))
+      )
+    ).map((value) => ({ value, label: value }));
+    return [...base, ...extras];
+  }, [eventConfig.spendTypes, rows]);
+
+<<<<<<< ours
   // Gestione input
   function handleChange(
     idx: number,
     field: keyof BudgetIdeaRow,
     value: string | number | BudgetIdeaRow["spendType"]
   ) {
+=======
+  const spendTypeLabelMap = useMemo(() => {
+    const map = new Map<string, string>();
+    spendTypeOptions.forEach((opt) => map.set(opt.value, opt.label));
+    return map;
+  }, [spendTypeOptions]);
+
+  // Gestione input righe tabella
+  function handleChange(idx: number, field: keyof BudgetIdeaRow, value: any) {
+>>>>>>> theirs
     setRows((prev) => prev.map((row, i) => (i === idx ? { ...row, [field]: value } : row)));
   }
 
-  // Calcoli riepilogo: somma importi per tipologia
-  const plannedBride = useMemo(() => rows.filter(r => r.spendType === "bride").reduce((s, r) => s + (Number(r.amount)||0), 0), [rows]);
-  const plannedGroom = useMemo(() => rows.filter(r => r.spendType === "groom").reduce((s, r) => s + (Number(r.amount)||0), 0), [rows]);
-  const plannedCommon = useMemo(() => rows.filter(r => r.spendType === "common").reduce((s, r) => s + (Number(r.amount)||0), 0), [rows]);
-  const plannedTotal = useMemo(() => plannedBride + plannedGroom + plannedCommon + rows.filter(r=>r.spendType==='gift').reduce((s,r)=>s+(Number(r.amount)||0),0), [plannedBride, plannedGroom, plannedCommon, rows]);
+  function handleBudgetChange(key: string, value: number) {
+    setContributorBudgets((prev) => ({ ...prev, [key]: value }));
+  }
+
+  const plannedBySpendType = useMemo(() => {
+    return rows.reduce<Record<string, number>>((acc, row) => {
+      const amount = Number(row.amount) || 0;
+      acc[row.spendType] = (acc[row.spendType] || 0) + amount;
+      return acc;
+    }, {});
+  }, [rows]);
+
+  const plannedTotal = useMemo(
+    () => rows.reduce((sum, row) => sum + (Number(row.amount) || 0), 0),
+    [rows]
+  );
+
+  const totalBudget = useMemo(
+    () => eventConfig.contributors.reduce((sum, c) => sum + (contributorBudgets[c.value] || 0), 0),
+    [contributorBudgets, eventConfig.contributors]
+  );
+
+  const extraSpendItems = useMemo(() => {
+    const contributorSet = new Set(eventConfig.contributors.map((c) => c.value));
+    return Object.entries(plannedBySpendType)
+      .filter(([value]) => !contributorSet.has(value))
+      .map(([value, amount]) => ({ value, amount }));
+  }, [eventConfig.contributors, plannedBySpendType]);
 
   // Salva su Supabase (tabella budget_ideas)
   async function handleSave() {
@@ -348,7 +538,7 @@ export default function IdeaDiBudgetPage() {
       "Content-Type": "application/json",
     };
     if (jwt) headers["Authorization"] = `Bearer ${jwt}`;
-    // 1) Salva righe idea di budget (come planned expenses da Idea)
+
     const ideaPayload = rows.map((row) => ({
       category: row.category,
       subcategory: row.subcategory,
@@ -357,6 +547,7 @@ export default function IdeaDiBudgetPage() {
       supplier: row.supplier,
       notes: row.notes,
     }));
+
     const res = await fetch("/api/idea-di-budget", {
       method: "POST",
       headers,
@@ -368,12 +559,21 @@ export default function IdeaDiBudgetPage() {
       return;
     }
 
-    // 2) Aggiorna budget Sposa/Sposo + data matrimonio sull'evento
-    const totalBudget = (brideBudget || 0) + (groomBudget || 0);
+    const firstContributor = eventConfig.contributors[0]?.value;
+    const secondContributor = eventConfig.contributors[1]?.value;
+    const firstBudget = firstContributor ? contributorBudgets[firstContributor] || 0 : 0;
+    const secondBudget = secondContributor ? contributorBudgets[secondContributor] || 0 : 0;
+
     await fetch("/api/my/dashboard", {
       method: "POST",
       headers,
-      body: JSON.stringify({ totalBudget, brideBudget, groomBudget, weddingDate, rows: [] }),
+      body: JSON.stringify({
+        totalBudget,
+        brideBudget: firstBudget,
+        groomBudget: secondBudget,
+        weddingDate: eventDate,
+        rows: [],
+      }),
     }).catch(() => {});
 
     setSaving(false);
@@ -407,6 +607,7 @@ export default function IdeaDiBudgetPage() {
       <div className="flex items-start justify-between mb-4">
         <h1 className="text-3xl font-serif font-bold">Idea di Budget</h1>
         <div className="flex gap-2">
+<<<<<<< ours
           <a href="/budget" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna a Budget</a>
           <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
         </div>
@@ -501,9 +702,96 @@ export default function IdeaDiBudgetPage() {
             <div className="text-sm text-gray-900">Disponibile: {fmt.format(((brideBudget||0)+(groomBudget||0)))}</div>
             <div className="text-sm text-gray-900">Speso (pianificato): {fmt.format(plannedTotal)}</div>
             <div className="text-sm font-semibold text-emerald-700">Residuo: {fmt.format(Math.max(((brideBudget||0)+(groomBudget||0))-plannedTotal,0))}</div>
+=======
+          <a
+            href="/budget"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
+          >
+            <span aria-hidden>💶</span> Torna a Budget
+          </a>
+          <a
+            href="/dashboard"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
+          >
+            <span aria-hidden>🏠</span> Torna in Dashboard
+          </a>
+        </div>
+      </div>
+
+      <div className="mb-6 p-5 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
+        <h3 className="text-lg font-semibold mb-3">{eventConfig.budgetSectionTitle}</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          {eventConfig.contributors.map((contributor) => (
+            <div key={contributor.value}>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {contributor.label} (EUR)
+              </label>
+              <input
+                type="number"
+                className="border-2 border-gray-200 rounded-lg px-3 py-2 w-full"
+                value={Number.isFinite(contributorBudgets[contributor.value]) ? contributorBudgets[contributor.value] : ""}
+                onChange={(e) => handleBudgetChange(contributor.value, Number(e.target.value) || 0)}
+                placeholder="Es. 1000"
+              />
+            </div>
+          ))}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{eventConfig.totalBudgetLabel} (EUR)</label>
+            <input
+              type="number"
+              className="border-2 border-gray-300 bg-gray-100 rounded-lg px-3 py-2 w-full font-bold"
+              value={totalBudget}
+              readOnly
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{eventConfig.dateLabel}</label>
+            <input
+              type="date"
+              className="border-2 border-[#A3B59D] rounded-lg px-3 py-2 w-full"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+          {eventConfig.contributors.map((contributor) => {
+            const available = contributorBudgets[contributor.value] || 0;
+            const planned = plannedBySpendType[contributor.value] || 0;
+            const residue = Math.max(available - planned, 0);
+            return (
+              <div key={contributor.value} className={`rounded-xl ${contributor.cardClass} p-4`}>
+                <h4 className="font-semibold mb-1">{contributor.label}</h4>
+                <div className="text-sm text-gray-700">Disponibile: € {available.toLocaleString()}</div>
+                <div className="text-sm text-gray-700">Speso (pianificato): € {planned.toLocaleString()}</div>
+                <div className="text-sm font-semibold text-emerald-700">Residuo: € {residue.toLocaleString()}</div>
+              </div>
+            );
+          })}
+          <div className="rounded-xl border-2 border-gray-300 bg-gray-50 p-4">
+            <h4 className="font-semibold mb-1">{eventConfig.totalBudgetLabel}</h4>
+            <div className="text-sm text-gray-700">Disponibile: € {totalBudget.toLocaleString()}</div>
+            <div className="text-sm text-gray-700">Speso (pianificato): € {plannedTotal.toLocaleString()}</div>
+            <div className="text-sm font-semibold text-emerald-700">
+              Residuo: € {Math.max(totalBudget - plannedTotal, 0).toLocaleString()}
+            </div>
+            {extraSpendItems.length > 0 && (
+              <div className="mt-3 text-xs text-gray-600">
+                <p className="font-semibold mb-1">Altri contributi:</p>
+                <ul className="space-y-1">
+                  {extraSpendItems.map(({ value, amount }) => (
+                    <li key={value}>
+                      {spendTypeLabelMap.get(value) || value}: € {amount.toLocaleString()}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+>>>>>>> theirs
           </div>
         </div>
       </div>
+
       {loading ? (
         <div className="text-center py-8 text-gray-500">Caricamento idee di budget...</div>
       ) : (
@@ -511,6 +799,7 @@ export default function IdeaDiBudgetPage() {
           <div className="mb-6 p-4 border rounded-lg bg-gray-50">
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
               <div>
+<<<<<<< ours
                 <label className="block text-sm font-medium text-gray-900 mb-1">Valuta</label>
                 <input type="text" value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-24 border rounded px-2 py-1" maxLength={4} />
               </div>
@@ -521,6 +810,39 @@ export default function IdeaDiBudgetPage() {
               <div className="sm:col-span-2 flex items-center gap-3">
                 <input id="compactView" type="checkbox" checked={compactView} onChange={(e) => setCompactView(e.target.checked)} className="h-4 w-4" />
                 <label htmlFor="compactView" className="text-sm text-gray-900">Vista compatta (righe più strette)</label>
+=======
+                <label className="block text-sm font-medium mb-1">Valuta</label>
+                <input
+                  type="text"
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="w-24 border rounded px-2 py-1"
+                  maxLength={4}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Imprevisti (%)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={50}
+                  value={contingencyPct}
+                  onChange={(e) => setContingencyPct(Number(e.target.value))}
+                  className="w-28 border rounded px-2 py-1"
+                />
+              </div>
+              <div className="sm:col-span-2 flex items-center gap-3">
+                <input
+                  id="compactView"
+                  type="checkbox"
+                  checked={compactView}
+                  onChange={(e) => setCompactView(e.target.checked)}
+                  className="h-4 w-4"
+                />
+                <label htmlFor="compactView" className="text-sm">
+                  Vista compatta (righe più strette)
+                </label>
+>>>>>>> theirs
               </div>
             </div>
             <div className="mt-4 text-sm text-gray-900">
@@ -530,23 +852,45 @@ export default function IdeaDiBudgetPage() {
                 const total = base + extra;
                 return (
                   <div className="flex flex-wrap gap-4">
+<<<<<<< ours
                     <div><strong>Totale ipotizzato:</strong> {fmt.format(base)}</div>
                     <div><strong>Imprevisti:</strong> {fmt.format(extra)} ({contingencyPct}%)</div>
                     <div><strong>Totale con imprevisti:</strong> {fmt.format(total)}</div>
+=======
+                    <div>
+                      <strong>Totale ipotizzato:</strong> {currency} {base.toLocaleString()}
+                    </div>
+                    <div>
+                      <strong>Imprevisti:</strong> {currency} {extra.toLocaleString()} ({contingencyPct}%)
+                    </div>
+                    <div>
+                      <strong>Totale con imprevisti:</strong> {currency} {total.toLocaleString()}
+                    </div>
+>>>>>>> theirs
                   </div>
                 );
               })()}
             </div>
           </div>
+
           <table className={`w-full border ${compactView ? "text-xs" : "text-sm"} mb-6`}>
             <thead>
               <tr className="bg-gray-100">
+<<<<<<< ours
                 <th className="p-2 text-gray-900 font-semibold">Categoria</th>
                 <th className="p-2 text-gray-900 font-semibold">Sottocategoria</th>
                 <th className="p-2 text-gray-900 font-semibold">Fornitore</th>
                 <th className="p-2 text-gray-900 font-semibold">Importo ({currency})</th>
                 <th className="p-2 text-gray-900 font-semibold">Tipo</th>
                 <th className="p-2 text-gray-900 font-semibold">Note</th>
+=======
+                <th className="p-2">Categoria</th>
+                <th className="p-2">Sottocategoria</th>
+                <th className="p-2">Fornitore</th>
+                <th className="p-2">Importo ({currency})</th>
+                <th className="p-2">{eventConfig.spendTypeLabel}</th>
+                <th className="p-2">Note</th>
+>>>>>>> theirs
               </tr>
             </thead>
             <tbody>
@@ -576,10 +920,17 @@ export default function IdeaDiBudgetPage() {
                     <select
                       className={`border rounded px-2 py-1 ${compactView ? "w-28" : "w-32"}`}
                       value={row.spendType}
-                      onChange={(e) => handleChange(idx, "spendType", e.target.value as BudgetIdeaRow["spendType"]) }
+                      onChange={(e) => handleChange(idx, "spendType", e.target.value)}
                     >
+<<<<<<< ours
                       {spendTypes.map((st) => (
                         <option key={st.value} value={st.value}>{st.label}</option>
+=======
+                      {spendTypeOptions.map((st) => (
+                        <option key={st.value} value={st.value}>
+                          {st.label}
+                        </option>
+>>>>>>> theirs
                       ))}
                     </select>
                   </td>
@@ -595,6 +946,7 @@ export default function IdeaDiBudgetPage() {
               ))}
             </tbody>
           </table>
+
           <div className="flex flex-wrap gap-3">
             <button
               className="px-6 py-2 bg-[#A3B59D] text-white rounded font-bold"
