@@ -65,30 +65,38 @@ export default function SelectEventTypePage() {
 
   const [selected, setSelected] = useState<string>("");
 
-  // Update cookies when event type is selected
+  // Keep effect for any future UI reacting to selection, but don't rely on it for persistence before navigation
   useEffect(() => {
     if (!selected) return;
-    localStorage.setItem("eventType", selected);
-    document.cookie = `eventType=${selected}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    try {
+      localStorage.setItem("eventType", selected);
+      document.cookie = `eventType=${selected}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    } catch {
+      // ignore
+    }
   }, [selected]);
 
   function handleSelect(code: string) {
-    setSelected(code);
-    if (code === "wedding") {
-      router.push("/dashboard");
-    } else if (code === "baptism") {
-      router.push("/dashboard");
-    } else if (code === "eighteenth") {
-      router.push("/dashboard");
-    } else if (code === "graduation") {
-      router.push("/dashboard");
-    } else if (code === "confirmation") {
-      router.push("/dashboard");
-    } else if (code === "communion") {
-      router.push("/dashboard");
-    } else {
-      router.push("/coming-soon");
+    // Persist immediately BEFORE navigating to ensure the dashboard can read it on first render
+    try {
+      localStorage.setItem("eventType", code);
+      document.cookie = `eventType=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    } catch {
+      // ignore storage errors
     }
+    setSelected(code);
+
+    // Navigate
+    const destination =
+      code === "wedding" ||
+      code === "baptism" ||
+      code === "eighteenth" ||
+      code === "graduation" ||
+      code === "confirmation" ||
+      code === "communion"
+        ? "/dashboard"
+        : "/coming-soon";
+    router.push(destination);
   }
 
   // Mostra tutti gli eventi per tutte le nazioni
