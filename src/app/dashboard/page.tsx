@@ -25,9 +25,16 @@ export default function DashboardPage() {
   const [localized, setLocalized] = useState<LocalizedWeddingData | null>(null);
   const [budgetFocus, setBudgetFocus] = useState<BudgetFocus | null>(null);
 
-  const userLang = typeof window !== "undefined" ? (localStorage.getItem("language") || "") : "";
-  const userCountry = typeof window !== "undefined" ? (localStorage.getItem("country") || "") : "";
-  const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "") : "";
+  // Read from localStorage with cookie fallback to make onboarding more robust
+  const userLang = typeof window !== "undefined"
+    ? (localStorage.getItem("language") || document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1] || "")
+    : "";
+  const userCountry = typeof window !== "undefined"
+    ? (localStorage.getItem("country") || document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] || "")
+    : "";
+  const userEventType = typeof window !== "undefined"
+    ? (localStorage.getItem("eventType") || document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1] || "")
+    : "";
   const isWedding = userEventType === "wedding";
 
   const isReady = useMemo(() => !!userLang && !!userCountry && !!userEventType, [userLang, userCountry, userEventType]);

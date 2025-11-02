@@ -80,7 +80,7 @@ export default function SelectEventTypePage() {
     // Persist immediately BEFORE navigating to ensure the dashboard can read it on first render
     try {
       localStorage.setItem("eventType", code);
-      document.cookie = `eventType=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
+      // cookie will be set by the effect above when the component is still mounted; not required for dashboard
     } catch {
       // ignore storage errors
     }
