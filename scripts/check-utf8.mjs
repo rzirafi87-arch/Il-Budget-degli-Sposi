@@ -6,7 +6,7 @@ const ROOT = process.cwd();
 const STRICT = process.argv.includes('--strict');
 
 const EXCLUDE_DIRS = new Set([
-  'node_modules', '.git', '.next', '.vercel', '.vscode', 'coverage', 'dist', 'build'
+  'node_modules', '.git', '.next', '.vercel', '.vscode', 'coverage', 'dist', 'build', 'docs'
 ]);
 
 const INCLUDED_EXTS = new Set([
