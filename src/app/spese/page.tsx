@@ -249,12 +249,13 @@ export default function SpesePage() {
     fromDashboard: false,
   });
 
-  // Detect single-budget events (baptism, communion, confirmation, birthday)
+  // Detect single-budget events (baptism, communion, confirmation, birthday, eighteenth)
   const isBaptism = userEventType === "baptism";
   const isCommunion = userEventType === "communion";
   const isConfirmation = userEventType === "confirmation";
   const isBirthday = userEventType === "birthday";
-  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday;
+  const isEighteenth = userEventType === "eighteenth";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth;
 
   // For single-budget events: force spend type to common
   useEffect(() => {

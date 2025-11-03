@@ -199,6 +199,7 @@ export default function DashboardPage() {
           communion: "Per la comunione, tutte le spese sono considerate comuni. Budget familiare unificato per la celebrazione.",
           confirmation: "Per la cresima, il budget è gestito come spese comuni della famiglia.",
           birthday: "Per il compleanno, puoi gestire il budget in modo flessibile, dividendo tra organizzatore e spese condivise.",
+          eighteenth: "Per il diciottesimo compleanno, il budget è gestito come evento unico. Perfetto per celebrare la maggiore età!",
           graduation: "Per la laurea, il budget può essere gestito come spese comuni o diviso tra famiglia e laureato."
         }}
       />
