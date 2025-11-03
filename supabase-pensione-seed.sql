@@ -26,7 +26,7 @@ INSERT INTO events (
 )
 VALUES (
   'Festa di Pensionamento',
-  'retirement-party',
+  'retirement',
   CURRENT_DATE + INTERVAL '60 days',
   'Da definire',
   4000.00,
@@ -258,5 +258,5 @@ FROM events e
 LEFT JOIN categories c ON c.event_id = e.id
 LEFT JOIN subcategories s ON s.category_id = c.id
 LEFT JOIN timeline_items t ON t.event_id = e.id
-WHERE e.event_type = 'retirement-party'
+WHERE e.event_type = 'retirement'
 GROUP BY e.id, e.name, e.event_type;
