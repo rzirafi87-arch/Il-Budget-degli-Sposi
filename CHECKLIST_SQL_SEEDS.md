@@ -35,11 +35,12 @@ Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIM
 4. `supabase-communion-event-seed.sql` - Prima Comunione
 5. `supabase-confirmation-event-seed.sql` - Cresima
 6. `supabase-eighteenth-event-seed.sql` - Diciottesimo
-7. `supabase-engagement-party-seed.sql` - **Festa di Fidanzamento** ⭐ NUOVO
- 8. `supabase-birthday-seed.sql` - Compleanno generico
- 9. `supabase-genderreveal-event-seed.sql` - Gender Reveal
-9. `supabase-graduation-event-seed.sql` - Laurea
-10. `supabase-wedding-event-seed.sql` - Matrimonio (18 cat + 100+ subcat)
+7. `supabase-engagement-party-seed.sql` - Festa di Fidanzamento
+8. `supabase-birthday-seed.sql` - Compleanno generico
+9. `supabase-genderreveal-event-seed.sql` - Gender Reveal
+10. `supabase-graduation-event-seed.sql` - Laurea
+11. `supabase-pensione-seed.sql` - **Festa di Pensionamento** ⭐ NUOVO
+12. `supabase-wedding-event-seed.sql` - Matrimonio (18 cat + 100+ subcat)
 
 **Installazione tipica**:
 ```
@@ -58,7 +59,9 @@ Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIM
 - [ANNIVERSARIO-SETUP-GUIDE.md](ANNIVERSARIO-SETUP-GUIDE.md)
 - [BABYSHOWER-SETUP-GUIDE.md](BABYSHOWER-SETUP-GUIDE.md)
 - [GENDERREVEAL-SETUP-GUIDE.md](GENDERREVEAL-SETUP-GUIDE.md)
-- [ENGAGEMENT-PARTY-SETUP-GUIDE.md](ENGAGEMENT-PARTY-SETUP-GUIDE.md) ⭐ NUOVO
+- [ENGAGEMENT-PARTY-SETUP-GUIDE.md](ENGAGEMENT-PARTY-SETUP-GUIDE.md)
+- [PENSIONE-SETUP-GUIDE.md](PENSIONE-SETUP-GUIDE.md) ⭐ NUOVO
+- [BIRTHDAY-SETUP-GUIDE.md](BIRTHDAY-SETUP-GUIDE.md)
 
 ### 1. **Setup Completo Database** (Se non già fatto)
 File: `supabase-COMPLETE-SETUP.sql`
