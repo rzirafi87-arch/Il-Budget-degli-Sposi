@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getPageImages } from "@/lib/pageImages";
 import Breadcrumb from "@/components/Breadcrumb";
 
 type WeddingPlanner = {
@@ -30,6 +31,7 @@ const ITALIAN_REGIONS = [
 ];
 
 export default function WeddingPlannerPage() {
+  const country = getUserCountrySafe();
   const [planners, setPlanners] = useState<WeddingPlanner[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState("");
@@ -136,7 +138,7 @@ export default function WeddingPlannerPage() {
       </div>
 
       {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES["wedding-planner"]} height="280px" />
+      <ImageCarousel images={getPageImages("wedding-planner", country)} height="280px" />
 
       {/* Filtri */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">

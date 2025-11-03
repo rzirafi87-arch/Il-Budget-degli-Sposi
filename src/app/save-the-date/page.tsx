@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getPageImages } from "@/lib/pageImages";
 import SaveTheDateVideoPreview from "@/components/SaveTheDateVideoPreview";
 import { SaveTheDateVideo } from "@/components/SaveTheDateVideo";
 
@@ -50,6 +51,7 @@ const templateStyles = [
 
 export default function PartecipazionePage() {
   const router = useRouter();
+  const country = getUserCountrySafe();
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [config, setConfig] = useState<WeddingCardConfig>({
@@ -160,7 +162,7 @@ export default function PartecipazionePage() {
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-3xl font-bold mb-6 text-[#A3B59D]">📣 Crea il tuo Save the Date</h1>
 
-        <ImageCarousel images={PAGE_IMAGES["save-the-date"]} height="280px" />
+        <ImageCarousel images={getPageImages("save-the-date", country)} height="280px" />
 
         <div className="space-y-6">
           {/* Informazioni Sposi */}
@@ -393,4 +395,3 @@ export default function PartecipazionePage() {
     </div>
   );
 }
-

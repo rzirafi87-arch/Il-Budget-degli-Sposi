@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getPageImages } from "@/lib/pageImages";
 import { GEO, getUserCountrySafe } from "@/constants/geo";
 import { useProvinceList } from "@/lib/geoClient";
 import { getProvinceLabel, getRegionLabel } from "@/lib/geoLabels";
@@ -156,7 +156,7 @@ export default function LocationRicevimentoPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
         {/* Carosello immagini */}
-        <ImageCarousel images={PAGE_IMAGES.location} height="280px" />
+        <ImageCarousel images={getPageImages("location", country)} height="280px" />
         
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">Ricevimento · Location</h1>

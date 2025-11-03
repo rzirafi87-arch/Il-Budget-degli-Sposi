@@ -1,7 +1,8 @@
 "use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getPageImages } from "@/lib/pageImages";
 import { useRef, useState } from "react";
 
 type EntertainmentItem = {
@@ -82,6 +83,7 @@ export default function CoseMatrimonioPage() {
   const [activeTab, setActiveTab] = useState<"cerimonia" | "ricevimento">("cerimonia");
   const [selections, setSelections] = useState<Selection[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const country = getUserCountrySafe();
 
   // ID deterministici per evitare funzioni impure durante il render
   const idCounter = useRef(0);
@@ -118,7 +120,7 @@ export default function CoseMatrimonioPage() {
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-6">Cose da Matrimonio · Intrattenimento</h2>
 
-      <ImageCarousel images={PAGE_IMAGES["cose-matrimonio"]} height="280px" />
+      <ImageCarousel images={getPageImages("cose-matrimonio", country)} height="280px" />
 
       <div className="my-6 flex gap-3">
         <button
