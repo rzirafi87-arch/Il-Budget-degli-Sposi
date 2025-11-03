@@ -196,56 +196,57 @@ INSERT INTO subcategories (category_id, name, estimated_cost, display_order, des
 -- 12. TIMELINE GENDER REVEAL
 -- =====================================================
 -- Timeline principale suddivisa per fasi temporali
+-- Nota: days_before indica giorni PRIMA dell'evento (es: 30 = 1 mese prima)
 
 -- FASE 1: 1 MESE PRIMA - Ideazione e Pianificazione
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Scegli data e location', 'Definisci data dell''evento e prenota o prepara la location (giardino, terrazza, sala, casa)', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 1),
-(v_event_id, 'Ricevi il referto del sesso del bambino', 'Busta sigillata dal ginecologo da consegnare al fornitore della torta o da aprire durante l''evento', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 2),
-(v_event_id, 'Scegli tema grafico e palette colori', 'Rosa vs azzurro, neutro natural chic, o tema personalizzato', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 3),
-(v_event_id, 'Prenota fotografo / videomaker', 'Servizio professionale per immortalare il momento rivelazione', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 4),
-(v_event_id, 'Richiedi preventivi per torta e catering', 'Contatta pasticceria e catering per sweet table e buffet', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 5),
-(v_event_id, 'Prepara lista invitati e inviti digitali', 'Crea la lista ospiti e prepara le grafiche per gli inviti', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 6),
-(v_event_id, 'Imposta budget nell''app', 'Definisci budget totale e suddivisione per categorie', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 7);
+(v_event_id, '1 mese prima', 'Scegli data e location', 'Definisci data dell''evento e prenota o prepara la location (giardino, terrazza, sala, casa)', 30, 'Ideazione e Pianificazione', false, 1),
+(v_event_id, '1 mese prima', 'Ricevi il referto del sesso del bambino', 'Busta sigillata dal ginecologo da consegnare al fornitore della torta o da aprire durante l''evento', 30, 'Ideazione e Pianificazione', false, 2),
+(v_event_id, '1 mese prima', 'Scegli tema grafico e palette colori', 'Rosa vs azzurro, neutro natural chic, o tema personalizzato', 30, 'Ideazione e Pianificazione', false, 3),
+(v_event_id, '1 mese prima', 'Prenota fotografo / videomaker', 'Servizio professionale per immortalare il momento rivelazione', 30, 'Ideazione e Pianificazione', false, 4),
+(v_event_id, '1 mese prima', 'Richiedi preventivi per torta e catering', 'Contatta pasticceria e catering per sweet table e buffet', 30, 'Ideazione e Pianificazione', false, 5),
+(v_event_id, '1 mese prima', 'Prepara lista invitati e inviti digitali', 'Crea la lista ospiti e prepara le grafiche per gli inviti', 30, 'Ideazione e Pianificazione', false, 6),
+(v_event_id, '1 mese prima', 'Imposta budget nell''app', 'Definisci budget totale e suddivisione per categorie', 30, 'Ideazione e Pianificazione', false, 7);
 
 -- FASE 2: 2-3 SETTIMANE PRIMA - Preparativi e Fornitori
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Invia inviti ufficiali', 'Invia gli inviti digitali o cartacei agli ospiti', CURRENT_DATE + INTERVAL '20 days', 'Preparativi e Fornitori', false, 8),
-(v_event_id, 'Ordina torta rivelazione', 'Conferma ordine torta con interno colorato o elemento sorpresa', CURRENT_DATE + INTERVAL '20 days', 'Preparativi e Fornitori', false, 9),
-(v_event_id, 'Prenota fornitore balloon / cannoni coriandoli', 'Balloon wall, palloncini, fuochi freddi, cannoni spara coriandoli', CURRENT_DATE + INTERVAL '20 days', 'Preparativi e Fornitori', false, 10),
-(v_event_id, 'Definisci allestimenti e fiori', 'Ordina composizioni floreali, pampas, gypsophila, foglie d''ulivo', CURRENT_DATE + INTERVAL '20 days', 'Preparativi e Fornitori', false, 11),
-(v_event_id, 'Scegli outfit coppia', 'Coordinato abbigliamento per i futuri genitori', CURRENT_DATE + INTERVAL '20 days', 'Preparativi e Fornitori', false, 12),
-(v_event_id, 'Conferma fotografo e regia del momento', 'Brief con fotografo su timing e posizionamento per il momento clou', CURRENT_DATE + INTERVAL '20 days', 'Preparativi e Fornitori', false, 13);
+(v_event_id, '2-3 settimane prima', 'Invia inviti ufficiali', 'Invia gli inviti digitali o cartacei agli ospiti', 20, 'Preparativi e Fornitori', false, 8),
+(v_event_id, '2-3 settimane prima', 'Ordina torta rivelazione', 'Conferma ordine torta con interno colorato o elemento sorpresa', 20, 'Preparativi e Fornitori', false, 9),
+(v_event_id, '2-3 settimane prima', 'Prenota fornitore balloon / cannoni coriandoli', 'Balloon wall, palloncini, fuochi freddi, cannoni spara coriandoli', 20, 'Preparativi e Fornitori', false, 10),
+(v_event_id, '2-3 settimane prima', 'Definisci allestimenti e fiori', 'Ordina composizioni floreali, pampas, gypsophila, foglie d''ulivo', 20, 'Preparativi e Fornitori', false, 11),
+(v_event_id, '2-3 settimane prima', 'Scegli outfit coppia', 'Coordinato abbigliamento per i futuri genitori', 20, 'Preparativi e Fornitori', false, 12),
+(v_event_id, '2-3 settimane prima', 'Conferma fotografo e regia del momento', 'Brief con fotografo su timing e posizionamento per il momento clou', 20, 'Preparativi e Fornitori', false, 13);
 
 -- FASE 3: 1 SETTIMANA PRIMA - Rifinitura e Coordinamento
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Brief finale con tutti i fornitori', 'Conferma orari, dettagli e coordinamento con tutti i fornitori', CURRENT_DATE + INTERVAL '7 days', 'Rifinitura e Coordinamento', false, 14),
-(v_event_id, 'Stampa cartellonistica e coordinato grafico', 'Segnaposti, backdrop, welcome board, cartelli direzionali', CURRENT_DATE + INTERVAL '7 days', 'Rifinitura e Coordinamento', false, 15),
-(v_event_id, 'Prepara playlist e countdown audio', 'Seleziona musica per il momento rivelazione e sottofondo', CURRENT_DATE + INTERVAL '7 days', 'Rifinitura e Coordinamento', false, 16),
-(v_event_id, 'Ricevi dolci personalizzati', 'Ritira cupcake, cake pops, biscotti colorati', CURRENT_DATE + INTERVAL '7 days', 'Rifinitura e Coordinamento', false, 17),
-(v_event_id, 'Prepara mini gift ospiti', 'Confeziona bomboniere o pensierini per i partecipanti', CURRENT_DATE + INTERVAL '7 days', 'Rifinitura e Coordinamento', false, 18);
+(v_event_id, '1 settimana prima', 'Brief finale con tutti i fornitori', 'Conferma orari, dettagli e coordinamento con tutti i fornitori', 7, 'Rifinitura e Coordinamento', false, 14),
+(v_event_id, '1 settimana prima', 'Stampa cartellonistica e coordinato grafico', 'Segnaposti, backdrop, welcome board, cartelli direzionali', 7, 'Rifinitura e Coordinamento', false, 15),
+(v_event_id, '1 settimana prima', 'Prepara playlist e countdown audio', 'Seleziona musica per il momento rivelazione e sottofondo', 7, 'Rifinitura e Coordinamento', false, 16),
+(v_event_id, '1 settimana prima', 'Ricevi dolci personalizzati', 'Ritira cupcake, cake pops, biscotti colorati', 7, 'Rifinitura e Coordinamento', false, 17),
+(v_event_id, '1 settimana prima', 'Prepara mini gift ospiti', 'Confeziona bomboniere o pensierini per i partecipanti', 7, 'Rifinitura e Coordinamento', false, 18);
 
 -- FASE 4: GIORNO DEL GENDER REVEAL
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Allestimento e test audio/video mattina', 'Setup completo location, test regia e impianto audio', CURRENT_DATE + INTERVAL '60 days', 'Giorno del Gender Reveal', false, 19),
-(v_event_id, 'Shooting iniziale di coppia', 'Servizio fotografico pre-evento con i futuri genitori', CURRENT_DATE + INTERVAL '60 days', 'Giorno del Gender Reveal', false, 20),
-(v_event_id, 'Accoglienza ospiti e presentazione', 'Welcome drink e introduzione all''evento', CURRENT_DATE + INTERVAL '60 days', 'Giorno del Gender Reveal', false, 21),
-(v_event_id, 'Countdown e rivelazione del sesso del bambino', 'IL MOMENTO CLOU: scoperta se maschio o femmina!', CURRENT_DATE + INTERVAL '60 days', 'Giorno del Gender Reveal', false, 22),
-(v_event_id, 'Taglio torta / lancio coriandoli', 'Momento celebrativo post-rivelazione', CURRENT_DATE + INTERVAL '60 days', 'Giorno del Gender Reveal', false, 23),
-(v_event_id, 'Musica, brindisi, giochi e foto', 'Festa, intrattenimento ospiti, photo booth', CURRENT_DATE + INTERVAL '60 days', 'Giorno del Gender Reveal', false, 24),
-(v_event_id, 'Ringraziamenti e saluti', 'Consegna mini gift e saluti finali agli ospiti', CURRENT_DATE + INTERVAL '60 days', 'Giorno del Gender Reveal', false, 25);
+(v_event_id, 'Giorno del Gender Reveal', 'Allestimento e test audio/video mattina', 'Setup completo location, test regia e impianto audio', 0, 'Giorno del Gender Reveal', false, 19),
+(v_event_id, 'Giorno del Gender Reveal', 'Shooting iniziale di coppia', 'Servizio fotografico pre-evento con i futuri genitori', 0, 'Giorno del Gender Reveal', false, 20),
+(v_event_id, 'Giorno del Gender Reveal', 'Accoglienza ospiti e presentazione', 'Welcome drink e introduzione all''evento', 0, 'Giorno del Gender Reveal', false, 21),
+(v_event_id, 'Giorno del Gender Reveal', 'Countdown e rivelazione del sesso del bambino', 'IL MOMENTO CLOU: scoperta se maschio o femmina!', 0, 'Giorno del Gender Reveal', false, 22),
+(v_event_id, 'Giorno del Gender Reveal', 'Taglio torta / lancio coriandoli', 'Momento celebrativo post-rivelazione', 0, 'Giorno del Gender Reveal', false, 23),
+(v_event_id, 'Giorno del Gender Reveal', 'Musica, brindisi, giochi e foto', 'Festa, intrattenimento ospiti, photo booth', 0, 'Giorno del Gender Reveal', false, 24),
+(v_event_id, 'Giorno del Gender Reveal', 'Ringraziamenti e saluti', 'Consegna mini gift e saluti finali agli ospiti', 0, 'Giorno del Gender Reveal', false, 25);
 
 -- FASE 5: DOPO L'EVENTO - Chiusura e Ricordi
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Invia ringraziamenti digitali o cartoline', 'Thank you message a tutti i partecipanti', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 26),
-(v_event_id, 'Condividi video rivelazione sui social', 'Pubblica reel o video emozionale del momento rivelazione', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 27),
-(v_event_id, 'Completa saldi fornitori', 'Pagamenti finali a tutti i fornitori coinvolti', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 28),
-(v_event_id, 'Aggiorna bilancio finale in app', 'Chiusura consuntivo e riepilogo spese effettive', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 29),
-(v_event_id, 'Crea mini album digitale', 'Raccogli le foto migliori e crea album ricordo', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 30);
+(v_event_id, 'Dopo l''evento', 'Invia ringraziamenti digitali o cartoline', 'Thank you message a tutti i partecipanti', -7, 'Chiusura e Ricordi', false, 26),
+(v_event_id, 'Dopo l''evento', 'Condividi video rivelazione sui social', 'Pubblica reel o video emozionale del momento rivelazione', -7, 'Chiusura e Ricordi', false, 27),
+(v_event_id, 'Dopo l''evento', 'Completa saldi fornitori', 'Pagamenti finali a tutti i fornitori coinvolti', -7, 'Chiusura e Ricordi', false, 28),
+(v_event_id, 'Dopo l''evento', 'Aggiorna bilancio finale in app', 'Chiusura consuntivo e riepilogo spese effettive', -7, 'Chiusura e Ricordi', false, 29),
+(v_event_id, 'Dopo l''evento', 'Crea mini album digitale', 'Raccogli le foto migliori e crea album ricordo', -7, 'Chiusura e Ricordi', false, 30);
 
 END $$;
 

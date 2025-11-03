@@ -183,64 +183,65 @@ INSERT INTO subcategories (category_id, name, estimated_cost, display_order, des
 -- 12. TIMELINE PENSIONAMENTO
 -- =====================================================
 -- Timeline: "DAL LAVORO ALLA FESTA"
+-- Nota: days_before indica giorni PRIMA dell'evento (es: 90 = 3 mesi prima)
 
 -- FASE 1: 2-3 MESI PRIMA - Ideazione e Pianificazione
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Scegli data e location', 'Definisci la data della festa e prenota la location (azienda, ristorante, sala eventi)', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 1),
-(v_event_id, 'Definisci tipo di festa', 'Decidi il formato: intima con amici, formale aziendale, o festa familiare', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 2),
-(v_event_id, 'Contatta fotografo / videomaker', 'Prenota servizio fotografico e video professionale', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 3),
-(v_event_id, 'Richiedi preventivi catering / ristorante / torta', 'Confronta preventivi per ristorazione e dolci', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 4),
-(v_event_id, 'Prenota musica o intrattenimento', 'Conferma DJ, band live o playlist curata', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 5),
-(v_event_id, 'Stila lista invitati', 'Compila lista completa di colleghi, amici e familiari', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 6),
-(v_event_id, 'Imposta budget nell''app', 'Definisci budget totale e suddivisione per categorie', CURRENT_DATE + INTERVAL '30 days', 'Ideazione e Pianificazione', false, 7);
+(v_event_id, '2-3 mesi prima', 'Scegli data e location', 'Definisci la data della festa e prenota la location (azienda, ristorante, sala eventi)', 90, 'Ideazione e Pianificazione', false, 1),
+(v_event_id, '2-3 mesi prima', 'Definisci tipo di festa', 'Decidi il formato: intima con amici, formale aziendale, o festa familiare', 90, 'Ideazione e Pianificazione', false, 2),
+(v_event_id, '2-3 mesi prima', 'Contatta fotografo / videomaker', 'Prenota servizio fotografico e video professionale', 90, 'Ideazione e Pianificazione', false, 3),
+(v_event_id, '2-3 mesi prima', 'Richiedi preventivi catering / ristorante / torta', 'Confronta preventivi per ristorazione e dolci', 90, 'Ideazione e Pianificazione', false, 4),
+(v_event_id, '2-3 mesi prima', 'Prenota musica o intrattenimento', 'Conferma DJ, band live o playlist curata', 90, 'Ideazione e Pianificazione', false, 5),
+(v_event_id, '2-3 mesi prima', 'Stila lista invitati', 'Compila lista completa di colleghi, amici e familiari', 90, 'Ideazione e Pianificazione', false, 6),
+(v_event_id, '2-3 mesi prima', 'Imposta budget nell''app', 'Definisci budget totale e suddivisione per categorie', 90, 'Ideazione e Pianificazione', false, 7);
 
 -- FASE 2: 1 MESE PRIMA - Conferme e Fornitori
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Invia inviti ufficiali', 'Invia partecipazioni digitali o cartacee agli ospiti', CURRENT_DATE + INTERVAL '30 days', 'Conferme e Fornitori', false, 8),
-(v_event_id, 'Conferma fiori e decorazioni', 'Ordina composizioni floreali e allestimenti location', CURRENT_DATE + INTERVAL '30 days', 'Conferme e Fornitori', false, 9),
-(v_event_id, 'Ordina torta e dolci personalizzati', 'Definisci design torta "Buona Pensione" e sweet table', CURRENT_DATE + INTERVAL '30 days', 'Conferme e Fornitori', false, 10),
-(v_event_id, 'Scegli outfit e accessori', 'Acquista o seleziona abbigliamento elegante', CURRENT_DATE + INTERVAL '30 days', 'Conferme e Fornitori', false, 11),
-(v_event_id, 'Conferma fotografo / videomaker', 'Brief dettagliato su momenti chiave da immortalare', CURRENT_DATE + INTERVAL '30 days', 'Conferme e Fornitori', false, 12),
-(v_event_id, 'Organizza regalo collettivo', 'Coordina raccolta fondi o acquisto regalo da colleghi', CURRENT_DATE + INTERVAL '30 days', 'Conferme e Fornitori', false, 13);
+(v_event_id, '1 mese prima', 'Invia inviti ufficiali', 'Invia partecipazioni digitali o cartacee agli ospiti', 30, 'Conferme e Fornitori', false, 8),
+(v_event_id, '1 mese prima', 'Conferma fiori e decorazioni', 'Ordina composizioni floreali e allestimenti location', 30, 'Conferme e Fornitori', false, 9),
+(v_event_id, '1 mese prima', 'Ordina torta e dolci personalizzati', 'Definisci design torta "Buona Pensione" e sweet table', 30, 'Conferme e Fornitori', false, 10),
+(v_event_id, '1 mese prima', 'Scegli outfit e accessori', 'Acquista o seleziona abbigliamento elegante', 30, 'Conferme e Fornitori', false, 11),
+(v_event_id, '1 mese prima', 'Conferma fotografo / videomaker', 'Brief dettagliato su momenti chiave da immortalare', 30, 'Conferme e Fornitori', false, 12),
+(v_event_id, '1 mese prima', 'Organizza regalo collettivo', 'Coordina raccolta fondi o acquisto regalo da colleghi', 30, 'Conferme e Fornitori', false, 13);
 
 -- FASE 3: 2 SETTIMANE PRIMA - Rifinitura
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Invia brief fornitori (orari, scaletta, colori)', 'Condividi timeline e dettagli operativi con tutti i fornitori', CURRENT_DATE + INTERVAL '46 days', 'Rifinitura', false, 14),
-(v_event_id, 'Prepara playlist e interventi musicali', 'Seleziona canzoni simboliche e momenti musicali speciali', CURRENT_DATE + INTERVAL '46 days', 'Rifinitura', false, 15),
-(v_event_id, 'Raccogli foto e video ricordi da proiettare', 'Organizza slideshow carriera e momenti salienti', CURRENT_DATE + INTERVAL '46 days', 'Rifinitura', false, 16),
-(v_event_id, 'Stampa menù, segnaposti, cartellonistica', 'Prepara welcome board, tableau, menù, segnaposti', CURRENT_DATE + INTERVAL '46 days', 'Rifinitura', false, 17),
-(v_event_id, 'Controlla acconti e saldi', 'Verifica acconti versati e pianifica saldi finali', CURRENT_DATE + INTERVAL '46 days', 'Rifinitura', false, 18);
+(v_event_id, '2 settimane prima', 'Invia brief fornitori (orari, scaletta, colori)', 'Condividi timeline e dettagli operativi con tutti i fornitori', 14, 'Rifinitura', false, 14),
+(v_event_id, '2 settimane prima', 'Prepara playlist e interventi musicali', 'Seleziona canzoni simboliche e momenti musicali speciali', 14, 'Rifinitura', false, 15),
+(v_event_id, '2 settimane prima', 'Raccogli foto e video ricordi da proiettare', 'Organizza slideshow carriera e momenti salienti', 14, 'Rifinitura', false, 16),
+(v_event_id, '2 settimane prima', 'Stampa menù, segnaposti, cartellonistica', 'Prepara welcome board, tableau, menù, segnaposti', 14, 'Rifinitura', false, 17),
+(v_event_id, '2 settimane prima', 'Controlla acconti e saldi', 'Verifica acconti versati e pianifica saldi finali', 14, 'Rifinitura', false, 18);
 
 -- FASE 4: 1 SETTIMANA PRIMA - Coordinamento Finale
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Ultimo check con location e catering', 'Sopralluogo finale e conferma dettagli operativi', CURRENT_DATE + INTERVAL '53 days', 'Coordinamento Finale', false, 19),
-(v_event_id, 'Organizza trasporto materiali e fornitori', 'Pianifica logistica trasporti decorazioni e attrezzature', CURRENT_DATE + INTERVAL '53 days', 'Coordinamento Finale', false, 20),
-(v_event_id, 'Stampa checklist evento', 'Prepara checklist finale per il giorno della festa', CURRENT_DATE + INTERVAL '53 days', 'Coordinamento Finale', false, 21),
-(v_event_id, 'Prepara regali e bomboniere', 'Organizza gift box e pensierini per ospiti', CURRENT_DATE + INTERVAL '53 days', 'Coordinamento Finale', false, 22);
+(v_event_id, '1 settimana prima', 'Ultimo check con location e catering', 'Sopralluogo finale e conferma dettagli operativi', 7, 'Coordinamento Finale', false, 19),
+(v_event_id, '1 settimana prima', 'Organizza trasporto materiali e fornitori', 'Pianifica logistica trasporti decorazioni e attrezzature', 7, 'Coordinamento Finale', false, 20),
+(v_event_id, '1 settimana prima', 'Stampa checklist evento', 'Prepara checklist finale per il giorno della festa', 7, 'Coordinamento Finale', false, 21),
+(v_event_id, '1 settimana prima', 'Prepara regali e bomboniere', 'Organizza gift box e pensierini per ospiti', 7, 'Coordinamento Finale', false, 22);
 
 -- FASE 5: GIORNO DELL'EVENTO 🎉
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Allestimento e preparazione', 'Setup completo location e area cerimonia', CURRENT_DATE + INTERVAL '60 days', 'Giorno dell''Evento', false, 23),
-(v_event_id, 'Shooting e accoglienza ospiti', 'Servizio fotografico e benvenuto agli invitati', CURRENT_DATE + INTERVAL '60 days', 'Giorno dell''Evento', false, 24),
-(v_event_id, 'Brindisi e discorso', 'Momento formale di ringraziamento e brindisi', CURRENT_DATE + INTERVAL '60 days', 'Giorno dell''Evento', false, 25),
-(v_event_id, 'Cena o buffet', 'Servizio ristorazione principale', CURRENT_DATE + INTERVAL '60 days', 'Giorno dell''Evento', false, 26),
-(v_event_id, 'Proiezione ricordi e momenti simbolici', 'Slideshow carriera e consegna omaggi', CURRENT_DATE + INTERVAL '60 days', 'Giorno dell''Evento', false, 27),
-(v_event_id, 'Taglio torta e musica', 'Taglio torta celebrativa e intrattenimento musicale', CURRENT_DATE + INTERVAL '60 days', 'Giorno dell''Evento', false, 28),
-(v_event_id, 'Ringraziamenti finali', 'Saluti e ringraziamenti a ospiti e fornitori', CURRENT_DATE + INTERVAL '60 days', 'Giorno dell''Evento', false, 29);
+(v_event_id, 'Giorno dell''Evento', 'Allestimento e preparazione', 'Setup completo location e area cerimonia', 0, 'Giorno dell''Evento', false, 23),
+(v_event_id, 'Giorno dell''Evento', 'Shooting e accoglienza ospiti', 'Servizio fotografico e benvenuto agli invitati', 0, 'Giorno dell''Evento', false, 24),
+(v_event_id, 'Giorno dell''Evento', 'Brindisi e discorso', 'Momento formale di ringraziamento e brindisi', 0, 'Giorno dell''Evento', false, 25),
+(v_event_id, 'Giorno dell''Evento', 'Cena o buffet', 'Servizio ristorazione principale', 0, 'Giorno dell''Evento', false, 26),
+(v_event_id, 'Giorno dell''Evento', 'Proiezione ricordi e momenti simbolici', 'Slideshow carriera e consegna omaggi', 0, 'Giorno dell''Evento', false, 27),
+(v_event_id, 'Giorno dell''Evento', 'Taglio torta e musica', 'Taglio torta celebrativa e intrattenimento musicale', 0, 'Giorno dell''Evento', false, 28),
+(v_event_id, 'Giorno dell''Evento', 'Ringraziamenti finali', 'Saluti e ringraziamenti a ospiti e fornitori', 0, 'Giorno dell''Evento', false, 29);
 
 -- FASE 6: DOPO L'EVENTO - Chiusura e Ricordi
-INSERT INTO timeline_items (event_id, title, description, due_date, category, completed, display_order)
+INSERT INTO timeline_items (event_id, phase, title, description, days_before, category, completed, display_order)
 VALUES
-(v_event_id, 'Invia ringraziamenti a colleghi e fornitori', 'Thank you message a tutti i partecipanti e fornitori', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 30),
-(v_event_id, 'Raccogli foto e video', 'Scarica tutte le foto da fotografo e ospiti', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 31),
-(v_event_id, 'Completa pagamenti', 'Versa tutti i saldi finali ai fornitori', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 32),
-(v_event_id, 'Aggiorna bilancio finale', 'Chiudi consuntivo spese nell''app', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 33),
-(v_event_id, 'Crea album digitale o video ricordo', 'Monta album fotografico o video emozionale della festa', CURRENT_DATE + INTERVAL '67 days', 'Chiusura e Ricordi', false, 34);
+(v_event_id, 'Dopo l''evento', 'Invia ringraziamenti a colleghi e fornitori', 'Thank you message a tutti i partecipanti e fornitori', -7, 'Chiusura e Ricordi', false, 30),
+(v_event_id, 'Dopo l''evento', 'Raccogli foto e video', 'Scarica tutte le foto da fotografo e ospiti', -7, 'Chiusura e Ricordi', false, 31),
+(v_event_id, 'Dopo l''evento', 'Completa pagamenti', 'Versa tutti i saldi finali ai fornitori', -7, 'Chiusura e Ricordi', false, 32),
+(v_event_id, 'Dopo l''evento', 'Aggiorna bilancio finale', 'Chiudi consuntivo spese nell''app', -7, 'Chiusura e Ricordi', false, 33),
+(v_event_id, 'Dopo l''evento', 'Crea album digitale o video ricordo', 'Monta album fotografico o video emozionale della festa', -7, 'Chiusura e Ricordi', false, 34);
 
 END $$;
 
