@@ -64,7 +64,18 @@ export default function PensionePage() {
         return;
       }
 
-      // refetch data
+      // persist selection in localStorage so NavTabs will show retirement tabs
+      if (json.event?.id) {
+        try {
+          localStorage.setItem("eventType", "retirement");
+          localStorage.setItem("activeEventId", json.event.id);
+        } catch {
+          // ignore storage errors
+        }
+      }
+
+      // set event name immediately and refetch rows
+      setEventName(json.event?.name ?? "Festa di Pensionamento");
       setLoading(true);
       const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
       const fetchJson = await fetchRes.json();

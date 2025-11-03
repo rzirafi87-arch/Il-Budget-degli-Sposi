@@ -91,15 +91,17 @@ export async function POST(req: NextRequest) {
 
   const userId = userData.user.id;
   // Find or create a retirement event for the user (very small helper behaviour)
-  const eventCheckRes = await db.from("events").select("id").eq("owner", userId).eq("event_type", "retirement").limit(1).maybeSingle() as unknown as { data?: { id?: string } | null; error?: unknown };
+  const eventCheckRes = await db.from("events").select("id, name").eq("owner", userId).eq("event_type", "retirement").limit(1).maybeSingle() as unknown as { data?: { id?: string; name?: string } | null; error?: unknown };
   if (eventCheckRes.error) return NextResponse.json({ error: "DB error" }, { status: 500 });
 
   let eventId = eventCheckRes.data?.id as string | undefined;
+  let eventName: string | undefined = eventCheckRes.data?.name;
   if (!eventId) {
-    const insertRes = await db.from("events").insert([{ name: "Festa di Pensionamento", owner: userId, event_type: "retirement", total_budget: body?.total_budget || 0 }]).select("id").maybeSingle() as unknown as { data?: { id?: string } | null; error?: unknown };
+    const insertRes = await db.from("events").insert([{ name: "Festa di Pensionamento", owner: userId, event_type: "retirement", total_budget: body?.total_budget || 0 }]).select("id, name").maybeSingle() as unknown as { data?: { id?: string; name?: string } | null; error?: unknown };
     if (insertRes.error) return NextResponse.json({ error: "DB error creating event" }, { status: 500 });
     if (!insertRes.data?.id) return NextResponse.json({ error: "DB error creating event (no id)" }, { status: 500 });
     eventId = insertRes.data.id;
+    eventName = insertRes.data.name ?? eventName;
   }
 
   // If the payload contains expenses array, upsert them (simple approach: insert new rows)
@@ -109,5 +111,5 @@ export async function POST(req: NextRequest) {
     if (insertExp.error) return NextResponse.json({ error: "DB error inserting expenses" }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, event: { id: eventId, name: eventName ?? "Festa di Pensionamento" } });
 }
