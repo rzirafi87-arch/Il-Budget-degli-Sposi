@@ -1,10 +1,11 @@
 import { GET, POST } from './route';
 
 // Minimal mocks for NextRequest-like objects
-function makeReq(authorizationHeader, body) {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function makeReq(authorizationHeader: any, body?: any): any {
   return {
     headers: {
-      get: (name) => {
+      get: (name: any) => {
         if (name.toLowerCase() === 'authorization') return authorizationHeader;
         return null;
       },
@@ -38,3 +39,4 @@ describe('retirement API', () => {
   expect(payload && payload.error).toBeDefined();
   });
 });
+/* eslint-enable @typescript-eslint/no-explicit-any */
