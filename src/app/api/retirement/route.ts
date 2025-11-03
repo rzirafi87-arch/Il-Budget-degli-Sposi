@@ -113,3 +113,63 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true, event: { id: eventId, name: eventName ?? "Festa di Pensionamento" } });
 }
+
+export async function PUT(req: NextRequest) {
+  const body = await req.json();
+  const authHeader = req.headers.get("authorization");
+  const jwt = authHeader?.split(" ")[1];
+  if (!jwt) return NextResponse.json({ error: "Missing token" }, { status: 401 });
+
+  const db = getServiceClient();
+  const { data: userData, error: userErr } = await db.auth.getUser(jwt);
+  if (userErr || !userData?.user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+
+  const userId = userData.user.id;
+  const eventCheckRes = await db.from("events").select("id").eq("owner", userId).eq("event_type", "retirement").limit(1).maybeSingle() as unknown as { data?: { id?: string } | null; error?: unknown };
+  if (eventCheckRes.error) return NextResponse.json({ error: "DB error" }, { status: 500 });
+  const eventId = eventCheckRes.data?.id;
+  if (!eventId) return NextResponse.json({ error: "No event" }, { status: 404 });
+
+  // update an expense
+  const expense = body?.expense as { id?: string; category?: string; subcategory?: string; supplier?: string | null; amount?: number; spend_type?: string | null; notes?: string | null } | undefined;
+  if (!expense?.id) return NextResponse.json({ error: "Missing expense id" }, { status: 400 });
+
+  const upd = {
+    category: expense.category,
+    subcategory: expense.subcategory,
+    supplier: expense.supplier ?? null,
+    amount: expense.amount ?? 0,
+    spend_type: expense.spend_type ?? null,
+    notes: expense.notes ?? null,
+  } as Record<string, unknown>;
+
+  const updateRes = await db.from("expenses").update(upd).eq("id", expense.id).eq("event_id", eventId).select().maybeSingle() as unknown as { data?: unknown; error?: unknown };
+  if (updateRes.error) return NextResponse.json({ error: "DB error updating expense" }, { status: 500 });
+
+  return NextResponse.json({ ok: true, expense: updateRes.data });
+}
+
+export async function DELETE(req: NextRequest) {
+  const body = await req.json();
+  const authHeader = req.headers.get("authorization");
+  const jwt = authHeader?.split(" ")[1];
+  if (!jwt) return NextResponse.json({ error: "Missing token" }, { status: 401 });
+
+  const db = getServiceClient();
+  const { data: userData, error: userErr } = await db.auth.getUser(jwt);
+  if (userErr || !userData?.user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+
+  const userId = userData.user.id;
+  const eventCheckRes = await db.from("events").select("id").eq("owner", userId).eq("event_type", "retirement").limit(1).maybeSingle() as unknown as { data?: { id?: string } | null; error?: unknown };
+  if (eventCheckRes.error) return NextResponse.json({ error: "DB error" }, { status: 500 });
+  const eventId = eventCheckRes.data?.id;
+  if (!eventId) return NextResponse.json({ error: "No event" }, { status: 404 });
+
+  const expenseId = body?.expenseId as string | undefined;
+  if (!expenseId) return NextResponse.json({ error: "Missing expenseId" }, { status: 400 });
+
+  const delRes = await db.from("expenses").delete().eq("id", expenseId).eq("event_id", eventId) as unknown as { data?: unknown; error?: unknown };
+  if (delRes.error) return NextResponse.json({ error: "DB error deleting expense" }, { status: 500 });
+
+  return NextResponse.json({ ok: true });
+}

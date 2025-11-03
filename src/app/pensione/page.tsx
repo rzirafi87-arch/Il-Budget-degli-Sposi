@@ -155,6 +155,82 @@ export default function PensionePage() {
     }
   }
 
+  // Inline edit/delete
+  const [editingId, setEditingId] = React.useState<string | null>(null);
+  const [editCat, setEditCat] = React.useState("");
+  const [editSubcat, setEditSubcat] = React.useState("");
+  const [editSupplier, setEditSupplier] = React.useState("");
+  const [editAmount, setEditAmount] = React.useState<string>("");
+  const [editNotes, setEditNotes] = React.useState("");
+  const [editSpendType, setEditSpendType] = React.useState<string>("common");
+
+  function startEdit(r: LocalRow) {
+    setEditingId(r.id ?? null);
+    setEditCat(r.category || "");
+    setEditSubcat(r.subcategory || "");
+    setEditSupplier(r.supplier || "");
+    setEditAmount(r.amount ? String(r.amount) : "");
+    setEditNotes(r.notes || "");
+    setEditSpendType(r.spend_type || "common");
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+  }
+
+  async function saveEdit() {
+    if (!editingId) return;
+    try {
+      setCreating(true);
+  const supabase = getBrowserClient();
+  const { data } = await supabase.auth.getSession();
+  const sessionData = data as { session?: { access_token?: string } } | null;
+  const jwt = sessionData?.session?.access_token;
+      if (!jwt) { window.location.href = "/auth"; return; }
+
+      const expense = { id: editingId, category: editCat, subcategory: editSubcat, supplier: editSupplier || null, amount: Number(editAmount) || 0, spend_type: editSpendType, notes: editNotes || null };
+      const res = await fetch("/api/retirement", { method: "PUT", headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` }, body: JSON.stringify({ expense }) });
+      const json = await res.json();
+      if (!res.ok) { console.error("Errore update:", json); alert("Errore aggiornamento"); return; }
+
+      // refetch
+      const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
+      const fetchJson = await fetchRes.json();
+      setRows(fetchJson.rows || []);
+      setEditingId(null);
+    } catch (err) {
+      console.error(err);
+      alert("Errore imprevisto");
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  async function deleteExpense(id: string) {
+    if (!confirm("Eliminare questa spesa?")) return;
+    try {
+      setCreating(true);
+  const supabase = getBrowserClient();
+  const { data } = await supabase.auth.getSession();
+  const sessionData = data as { session?: { access_token?: string } } | null;
+  const jwt = sessionData?.session?.access_token;
+      if (!jwt) { window.location.href = "/auth"; return; }
+
+      const res = await fetch("/api/retirement", { method: "DELETE", headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` }, body: JSON.stringify({ expenseId: id }) });
+      const json = await res.json();
+      if (!res.ok) { console.error("Errore delete:", json); alert("Errore eliminazione"); return; }
+
+      const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
+      const fetchJson = await fetchRes.json();
+      setRows(fetchJson.rows || []);
+    } catch (err) {
+      console.error(err);
+      alert("Errore imprevisto");
+    } finally {
+      setCreating(false);
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold mb-4">Festa di Pensionamento</h1>
@@ -184,16 +260,44 @@ export default function PensionePage() {
             <ul className="mt-3 divide-y">
               {rows.length === 0 && <li className="py-3 text-sm text-gray-500">Nessuna voce</li>}
               {rows.map((r, idx) => (
-                <li key={r.id ?? idx} className="py-3 flex justify-between items-center">
-                  <div>
-                    <div className="font-medium">{r.category} — {r.subcategory}</div>
-                    {r.supplier && <div className="text-sm text-gray-500">Fornitore: {r.supplier}</div>}
-                    {r.notes && <div className="text-sm text-gray-500">Note: {r.notes}</div>}
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium">€ {Number(r.amount || 0).toFixed(2)}</div>
-                    {r.spend_type && <div className="text-sm text-gray-500">{r.spend_type}</div>}
-                  </div>
+                <li key={r.id ?? idx} className="py-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                  {editingId === r.id ? (
+                    <div className="w-full">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <input value={editCat} onChange={(e) => setEditCat(e.target.value)} className="p-2 border rounded" />
+                        <input value={editSubcat} onChange={(e) => setEditSubcat(e.target.value)} className="p-2 border rounded" />
+                        <input value={editSupplier} onChange={(e) => setEditSupplier(e.target.value)} className="p-2 border rounded" />
+                        <input value={editAmount} onChange={(e) => setEditAmount(e.target.value)} type="number" className="p-2 border rounded" />
+                        <select value={editSpendType} onChange={(e) => setEditSpendType(e.target.value)} className="p-2 border rounded">
+                          <option value="common">Comune</option>
+                          <option value="bride">Sposa</option>
+                          <option value="groom">Sposo</option>
+                          <option value="retirement">Pensione</option>
+                        </select>
+                        <input value={editNotes} onChange={(e) => setEditNotes(e.target.value)} className="p-2 border rounded" />
+                      </div>
+                      <div className="mt-2 flex gap-2">
+                        <button onClick={saveEdit} disabled={creating} className="px-3 py-1 rounded bg-(--color-sage) text-white">Salva</button>
+                        <button onClick={cancelEdit} className="px-3 py-1 rounded border">Annulla</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <div className="font-medium">{r.category} — {r.subcategory}</div>
+                        {r.supplier && <div className="text-sm text-gray-500">Fornitore: {r.supplier}</div>}
+                        {r.notes && <div className="text-sm text-gray-500">Note: {r.notes}</div>}
+                      </div>
+                      <div className="text-right flex flex-col items-end gap-2">
+                        <div className="font-medium">€ {Number(r.amount || 0).toFixed(2)}</div>
+                        {r.spend_type && <div className="text-sm text-gray-500">{r.spend_type}</div>}
+                        <div className="flex gap-2 mt-2">
+                          <button onClick={() => startEdit(r)} className="px-2 py-1 rounded border">Modifica</button>
+                          {r.id && <button onClick={() => deleteExpense(r.id!)} className="px-2 py-1 rounded border text-red-600">Elimina</button>}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </li>
               ))}
             </ul>
