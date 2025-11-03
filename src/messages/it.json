@@ -85,7 +85,8 @@
         "eighteenth": "Per il diciottesimo, tutte le spese sono comuni. Pianifica location, catering, intrattenimento e ricordi per rendere indimenticabile questa festa!",
         "confirmation": "Per la cresima, tutte le spese sono comuni. Organizza cerimonia, ricevimento, bomboniere e ricordi per celebrare questo momento speciale di crescita spirituale.",
         "birthday": "Per il compleanno, dividi le spese tra l'organizzatore principale e quelle condivise con altri.",
-        "graduation": "Per la laurea, traccia tutte le spese legate all'evento: location, catering, inviti, decorazioni e ricordi."
+        "graduation": "Per la laurea, traccia tutte le spese legate all'evento: location, catering, inviti, decorazioni e ricordi.",
+        "anniversary": "Per l'anniversario di matrimonio, gestisci insieme le spese per la celebrazione. Che sia 25° (argento), 50° (oro) o un anniversario più intimo, ogni dettaglio conta per rendere speciale questo momento di rinnovo dell'amore."
       }
     },
     "title": "Spese",
@@ -167,7 +168,8 @@
         "wedding": "Durante il matrimonio è tradizione ricevere buste con contributi economici dagli invitati. Registra ogni busta ricevuta per tenere traccia completa.",
         "baptism": "Per il battesimo, registra i contributi di padrino, madrina e familiari che vogliono partecipare alle spese.",
         "birthday": "Per il compleanno, traccia i contributi di amici e parenti che vogliono aiutare nell'organizzazione.",
-        "graduation": "Per la laurea, registra contributi familiari e regali ricevuti per celebrare il traguardo."
+        "graduation": "Per la laurea, registra contributi familiari e regali ricevuti per celebrare il traguardo.",
+        "anniversary": "Per l'anniversario di matrimonio, registra contributi di figli, nipoti e parenti che vogliono partecipare alla celebrazione. Spesso le famiglie si uniscono per organizzare la festa a sorpresa o contribuire alle spese."
       }
     },
     "title": "Entrate",

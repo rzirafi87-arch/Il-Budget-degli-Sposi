@@ -6,6 +6,11 @@
 -- Mix di celebrazione sentimentale e festa conviviale
 -- =====================================================
 
+-- Assicurati che il tipo evento esista
+INSERT INTO event_types (slug, name) VALUES
+  ('anniversary', 'Anniversario di Matrimonio')
+ON CONFLICT (slug) DO NOTHING;
+
 -- 1️⃣ CERIMONIA E RINNOVO PROMESSE
 INSERT INTO categories (name, icon, description, event_type, display_order) 
 VALUES (

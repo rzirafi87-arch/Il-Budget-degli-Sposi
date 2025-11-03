@@ -11,11 +11,23 @@ Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIM
 ### 0. **Setup Multi-Evento (Nuovo Schema)** ⭐ OPZIONALE
 Files in ordine:
 1. `supabase-core-events-schema.sql` - Schema base multi-evento
-2. `supabase-seed-event-types.sql` - Tipi evento (include Matrimonio)
+2. `supabase-seed-event-types.sql` - Tipi evento (include Matrimonio, Battesimo, Anniversario, etc.)
 3. `supabase-wedding-event-seed.sql` - Categorie complete Matrimonio (18 cat + 100+ subcat)
-4. `supabase-seed-event-categories.sql` - Altri eventi (Battesimo, Diciottesimo, etc.)
+4. `supabase-baptism-event-seed.sql` - Categorie Battesimo
+5. `supabase-eighteenth-event-seed.sql` - Categorie Diciottesimo
+6. `supabase-confirmation-event-seed.sql` - Categorie Cresima
+7. `supabase-graduation-event-seed.sql` - Categorie Laurea
+8. `supabase-communion-event-seed.sql` - Categorie Prima Comunione
+9. `supabase-anniversary-event-seed.sql` - Categorie Anniversario di Matrimonio ⭐ NUOVO
 
-**Note**: Questo è un sistema nuovo e separato dallo schema legacy. Vedi [MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md) per dettagli.
+**Note**: Questo è un sistema nuovo e separato dallo schema legacy. Vedi guide specifiche:
+- [MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md)
+- [BATTESIMO-SETUP-GUIDE.md](BATTESIMO-SETUP-GUIDE.md) 
+- [DICIOTTESIMO-SETUP-GUIDE.md](DICIOTTESIMO-SETUP-GUIDE.md)
+- [CRESIMA-SETUP-GUIDE.md](CRESIMA-SETUP-GUIDE.md)
+- [LAUREA-SETUP-GUIDE.md](LAUREA-SETUP-GUIDE.md)
+- [COMUNIONE-SETUP-GUIDE.md](COMUNIONE-SETUP-GUIDE.md)
+- [ANNIVERSARIO-SETUP-GUIDE.md](ANNIVERSARIO-SETUP-GUIDE.md) ⭐ NUOVO
 
 ### 1. **Setup Completo Database** (Se non già fatto)
 File: `supabase-COMPLETE-SETUP.sql`
