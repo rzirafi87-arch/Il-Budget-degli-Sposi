@@ -1,8 +1,21 @@
 # ✅ Evento "Battesimo" - Implementazione Completa
 
+**Data verifica**: 3 Novembre 2025  
+**Status**: ✅ **COMPLETAMENTE FUNZIONANTE**  
+**Available in production**: ✅ **SÌ** (`available: true`)
+
 ## 📋 Panoramica
 
-L'evento **Battesimo** è ora completamente implementato e disponibile nell'applicazione. Gli utenti possono selezionare "Battesimo" come tipo di evento e gestire budget, spese e fornitori con categorie specifiche per questa cerimonia.
+L'evento **Battesimo** è **completamente implementato e operativo** nell'applicazione. Gli utenti possono selezionare "Battesimo" come tipo di evento e gestire budget, spese e fornitori con categorie specifiche per questa cerimonia.
+
+### ✅ Verifica Completata - Tutti i Componenti Presenti
+
+✔️ Database seed SQL  
+✔️ Template TypeScript  
+✔️ API routes (seed + dashboard)  
+✔️ Integrazione frontend (dashboard, spese, entrate)  
+✔️ Configurazione attiva in production  
+✔️ Documentazione completa
 
 ---
 
@@ -41,13 +54,37 @@ Include:
 
 ### 3. **API Routes** ✅
 
-#### `/api/baptism/seed/[eventId]` (POST)
-- Seed iniziale categorie/sottocategorie per evento battesimo
-- Supporta parametro `country` per localizzazione
-- Autenticazione JWT richiesta
+#### `/api/baptism/seed/[eventId]` (POST + GET)
+**File**: `src/app/api/baptism/seed/[eventId]/route.ts`
+
+- ✅ Seed iniziale categorie/sottocategorie per evento battesimo
+- ✅ Supporta parametro `country` per localizzazione
+- ✅ Autenticazione JWT richiesta
+- ✅ Verifica ownership evento (solo owner può fare seed)
+- ✅ Usa `createBaptismSeed()` da template TypeScript
+- ✅ GET supportato per testing convenience
+
+**Esempio utilizzo**:
+```bash
+POST /api/baptism/seed/[eventId]?country=it
+Authorization: Bearer [JWT]
+```
 
 #### `/api/my/baptism-dashboard` (GET/POST)
-- **GET**: Recupera dati dashboard con tutte le categorie
+**File**: `src/app/api/my/baptism-dashboard/route.ts`
+
+- **GET**: Recupera dati dashboard con tutte le categorie/sottocategorie
+  - ✅ Demo mode per utenti non autenticati (template vuoto)
+  - ✅ Autenticazione JWT per dati utente reali
+  - ✅ Ritorna rows con categorie + subcategorie + expenses
+  - ✅ Include totalBudget ed eventDate
+  - ✅ Supporto parametro `country` per localizzazione template
+
+- **POST**: Salva modifiche budget
+  - ✅ Upsert expenses per ogni riga
+  - ✅ Update totalBudget ed eventDate dell'evento
+  - ✅ Mapping automatico categoria/sottocategoria → IDs
+  - ✅ Sempre `spend_type: "common"` per battesimo
   - Ritorna template vuoto se non autenticato (demo)
   - Ritorna dati reali per utenti autenticati
 - **POST**: Salva budget totale, data evento, spese
