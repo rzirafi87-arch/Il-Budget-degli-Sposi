@@ -27,7 +27,8 @@ export default function EntratePage() {
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isBaptism = userEventType === "baptism";
   const isCommunion = userEventType === "communion";
-  const isSingleBudgetEvent = isBaptism || isCommunion;
+  const isConfirmation = userEventType === "confirmation";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation;
   const isWedding = userEventType === "wedding";
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,8 +75,8 @@ export default function EntratePage() {
         incomeSource: "bride" | "groom" | "common";
       };
       const raw: IncomeRow[] = j.incomes || [];
-      // For Battesimo, force incomeSource to 'common' on UI side
-      const mapped: Income[] = isBaptism 
+      // For Battesimo, Comunione, and Cresima: force incomeSource to 'common' on UI side
+      const mapped: Income[] = isSingleBudgetEvent 
         ? raw.map((i) => ({ 
             id: i.id,
             name: i.name,
@@ -101,7 +102,7 @@ export default function EntratePage() {
     } finally {
       setLoading(false);
     }
-  }, [isBaptism]);
+  }, [isSingleBudgetEvent]);
 
   useEffect(() => {
     loadIncomes();

@@ -249,12 +249,13 @@ export default function SpesePage() {
     fromDashboard: false,
   });
 
-  // Detect baptism or communion to force spend type to common
+  // Detect baptism, communion, or confirmation to force spend type to common
   const isBaptism = userEventType === "baptism";
   const isCommunion = userEventType === "communion";
-  const isSingleBudgetEvent = isBaptism || isCommunion;
+  const isConfirmation = userEventType === "confirmation";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation;
 
-  // For Battesimo and Comunione force spend type to common
+  // For Battesimo, Comunione, and Cresima force spend type to common
   useEffect(() => {
     if (isSingleBudgetEvent && newExpense.spendType !== "common") {
       setNewExpense((prev) => ({ ...prev, spendType: "common" }));
