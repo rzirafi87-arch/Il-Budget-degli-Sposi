@@ -7,7 +7,7 @@ import SaveTheDateVideo, { SaveTheDateVideoProps } from './SaveTheDateVideo';
 // Remotion root used by the Remotion renderer/CLI
 // Ensure TS sees the component as a compatible type for Remotion (React 19 vs Remotion v4 typings)
 type AnyComponent = React.ComponentType<any>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 const VideoComponent = SaveTheDateVideo as unknown as AnyComponent;
 
 const DEFAULT_PROPS: SaveTheDateVideoProps = {
