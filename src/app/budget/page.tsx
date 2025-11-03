@@ -1,8 +1,9 @@
 ﻿"use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
+import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, getUserLanguage } from "@/lib/locale";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -25,6 +26,7 @@ type Row = {
 };
 
 export default function BudgetPage() {
+  const country = getUserCountrySafe();
   const t = useTranslations();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isSingleEvent = userEventType === "baptism" || userEventType === "graduation";
@@ -120,7 +122,7 @@ export default function BudgetPage() {
       <h3 className="sr-only">{t("budgetPage.approvedExpenses")}</h3>
 
       {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES.budget} height="280px" />
+      <ImageCarousel images={getPageImages("budget", country)} height="280px" />
 
       {/* CTA per Idea di Budget */}
       <div className="flex justify-end mt-3">

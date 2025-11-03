@@ -2,7 +2,8 @@
 
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -35,6 +36,7 @@ const ITALIAN_REGIONS = [
 ];
 
 export default function AtelierPage() {
+  const country = getUserCountrySafe();
   const [activeTab, setActiveTab] = useState<"sposa" | "sposo">("sposa");
   const [atelier, setAtelier] = useState<AtelierItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -169,7 +171,7 @@ export default function AtelierPage() {
       </div>
 
       {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES.atelier || PAGE_IMAGES.dashboard} height="280px" />
+      <ImageCarousel images={getPageImages("atelier", country)} height="280px" />
 
       {/* Tab Navigation */}
       <div className="mb-6 flex gap-4 border-b border-gray-200">

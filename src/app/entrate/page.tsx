@@ -2,8 +2,9 @@
 
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
+import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, formatDate } from "@/lib/locale";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -22,6 +23,7 @@ type Income = {
 
 export default function EntratePage() {
   const t = useTranslations();
+  const country = getUserCountrySafe();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isBaptism = userEventType === "baptism";
   const isWedding = userEventType === "wedding";
@@ -225,7 +227,7 @@ export default function EntratePage() {
       />
 
       {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES.entrate} height="280px" />
+      <ImageCarousel images={getPageImages("entrate", country)} height="280px" />
 
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">

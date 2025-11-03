@@ -19,7 +19,8 @@ Files in ordine:
 6. `supabase-graduation-event-seed.sql` - Categorie Laurea
 7. `supabase-communion-event-seed.sql` - Categorie Prima Comunione
 8. `supabase-anniversary-event-seed.sql` - Categorie Anniversario di Matrimonio
-9. `supabase-babyshower-event-seed.sql` - Categorie Baby Shower ⭐ NUOVO
+9. `supabase-babyshower-event-seed.sql` - Categorie Baby Shower
+10. `supabase-genderreveal-event-seed.sql` - Categorie Gender Reveal ⭐ NUOVO
 
 **Note**: Questo è un sistema nuovo e separato dallo schema legacy. Vedi guide specifiche:
 - [MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md)
@@ -29,7 +30,8 @@ Files in ordine:
 - [LAUREA-SETUP-GUIDE.md](LAUREA-SETUP-GUIDE.md)
 - [COMUNIONE-SETUP-GUIDE.md](COMUNIONE-SETUP-GUIDE.md)
 - [ANNIVERSARIO-SETUP-GUIDE.md](ANNIVERSARIO-SETUP-GUIDE.md)
-- [BABYSHOWER-SETUP-GUIDE.md](BABYSHOWER-SETUP-GUIDE.md) ⭐ NUOVO
+- [BABYSHOWER-SETUP-GUIDE.md](BABYSHOWER-SETUP-GUIDE.md)
+- [GENDERREVEAL-SETUP-GUIDE.md](GENDERREVEAL-SETUP-GUIDE.md) ⭐ NUOVO
 
 ### 1. **Setup Completo Database** (Se non già fatto)
 File: `supabase-COMPLETE-SETUP.sql`
