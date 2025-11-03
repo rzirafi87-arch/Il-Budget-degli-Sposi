@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
+import { useFavorites } from "@/hooks/useFavorites";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useFavorites } from "@/hooks/useFavorites";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -238,8 +238,6 @@ export default function FotografiPage() {
                   }`}
                 >
                   {isFavorite(p.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
-                </button>
-                </button
                 </button>
               </div>
             </div>
