@@ -1,32 +1,58 @@
--- Seed evento Compleanno (birthday)
--- Struttura coerente con altri eventi, stile Natural Chic
+-- =====================================================
+-- BIRTHDAY EVENT SEED
+-- =====================================================
+-- Seed completo per evento Compleanno con categorie,
+-- sottocategorie in stile Natural Chic / La Trama.
+-- Evento versatile adattabile a tutte le età (1-80+ anni).
+-- =====================================================
 
--- 1. Crea evento principale
-INSERT INTO events (name, event_type, total_budget, icon)
-VALUES ('Compleanno', 'birthday', 3000, '🎂');
+DO $$
+DECLARE
+  v_event_id UUID;
+  v_cat_id UUID;
+BEGIN
 
--- 2. Categorie principali
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Location e Allestimento', '🏠' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Catering / Ristorazione', '🍽️' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Inviti e Grafica', '💌' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Foto e Video', '📸' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Musica e Intrattenimento', '🎶' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Abbigliamento e Beauty', '👗' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Regali e Ringraziamenti', '🎁' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Intrattenimento Extra', '🧸' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Trasporti e Logistica', '🚗' FROM events WHERE event_type = 'birthday';
-INSERT INTO categories (event_id, name, icon) SELECT id, 'Gestione Budget', '💶' FROM events WHERE event_type = 'birthday';
+-- =====================================================
+-- 1. CREAZIONE EVENTO COMPLEANNO
+-- =====================================================
+INSERT INTO events (
+  name,
+  event_type,
+  event_date,
+  event_location,
+  total_budget,
+  description,
+  color_theme
+)
+VALUES (
+  'Compleanno',
+  'birthday',
+  CURRENT_DATE + INTERVAL '60 days',
+  'Da definire',
+  3000.00,
+  'Compleanno adattabile a ogni età - Dal primo anno ai milestone speciali',
+  '#FFA07A,#F0E68C,#98D8C8'
+)
+RETURNING id INTO v_event_id;
 
--- 3. Sottocategorie (esempi, da estendere)
--- Location e Allestimento
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Scelta location' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Affitto sala/spazio esterno' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Allestimento tavoli e mise en place' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Decorazioni a tema' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Balloon wall / backdrop' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Fiori e centrotavola' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Luci decorative e candele' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
-INSERT INTO subcategories (category_id, name) SELECT c.id, 'Photobooth / cornice selfie' FROM categories c WHERE c.name = 'Location e Allestimento' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');
+RAISE NOTICE 'Created Birthday event with ID: %', v_event_id;
+
+-- =====================================================
+-- 2. CATEGORIA: LOCATION E ALLESTIMENTO
+-- =====================================================
+INSERT INTO categories (event_id, name, display_order, icon)
+VALUES (v_event_id, 'Location e Allestimento', 1, '🏠')
+RETURNING id INTO v_cat_id;
+
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
+(v_cat_id, 'Scelta location', 0.00, 1, 'Casa, ristorante, terrazza, villa o parco'),
+(v_cat_id, 'Affitto sala/spazio esterno', 500.00, 2, 'Costo location se non casa privata'),
+(v_cat_id, 'Allestimento tavoli e mise en place', 200.00, 3, 'Tovaglie, centrotavola, stoviglie coordinate'),
+(v_cat_id, 'Decorazioni a tema', 300.00, 4, 'Colori, età, stile personalizzato'),
+(v_cat_id, 'Balloon wall / backdrop', 150.00, 5, 'Parete palloncini o fondale fotografico'),
+(v_cat_id, 'Fiori e centrotavola', 200.00, 6, 'Composizioni naturali coordinate'),
+(v_cat_id, 'Luci decorative e candele', 100.00, 7, 'Illuminazione scenografica'),
+(v_cat_id, 'Photobooth / cornice selfie', 150.00, 8, 'Angolo foto con props');
 
 -- Catering / Ristorazione
 INSERT INTO subcategories (category_id, name) SELECT c.id, 'Pranzo/cena/apericena/buffet' FROM categories c WHERE c.name = 'Catering / Ristorazione' AND c.event_id = (SELECT id FROM events WHERE event_type = 'birthday');

@@ -267,3 +267,5 @@ export default function GioielleriePage() {
                   >
                     {isFavorite(p.id) ? "Rimuovi" : "Aggiungi"}
                   </button>
+                </div>
+                  </button>
