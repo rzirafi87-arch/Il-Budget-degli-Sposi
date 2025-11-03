@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
-import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
 
 // Minimal API for the retirement (pensione) event.
 // GET: returns demo-generated rows when unauthenticated; when JWT provided, validates user and returns merged expenses for the user's retirement event (if any).
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
   // If the payload contains expenses array, upsert them (simple approach: insert new rows)
   if (Array.isArray(body.expenses) && body.expenses.length > 0) {
     const toInsert = body.expenses.map((r: Partial<ExpenseRow>) => ({ event_id: eventId, category: r.category, subcategory: r.subcategory, supplier: r.supplier ?? null, amount: r.amount ?? 0, spend_type: r.spend_type ?? 'common', notes: r.notes ?? null }));
-    const insertExp = await db.from("expenses").insert(toInsert) as unknown as { data?: any; error?: unknown };
+    const insertExp = await db.from("expenses").insert(toInsert) as unknown as { data?: unknown; error?: unknown };
     if (insertExp.error) return NextResponse.json({ error: "DB error inserting expenses" }, { status: 500 });
   }
 

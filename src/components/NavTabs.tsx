@@ -90,7 +90,15 @@ export default function NavTabs() {
     { href: "/location", label: t("location"), icon: TABS_ICONS.location },
     { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
-  const tabs = (eventType === 'baptism') ? baptismTabs : (eventType === 'eighteenth') ? eighteenthTabs : (eventType === 'confirmation') ? confirmationTabs : (eventType === 'graduation') ? graduationTabs : (eventType === 'communion') ? communionTabs : weddingTabs;
+  const retirementTabs = [
+    { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { href: "/pensione", label: t("retirement", { default: "Pensione" }), icon: TABS_ICONS.timeline },
+    { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
+    { href: "/fornitori", label: t("suppliers"), icon: TABS_ICONS.suppliers },
+    { href: "/location", label: t("location"), icon: TABS_ICONS.location },
+    { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+  ];
+  const tabs = (eventType === 'baptism') ? baptismTabs : (eventType === 'eighteenth') ? eighteenthTabs : (eventType === 'confirmation') ? confirmationTabs : (eventType === 'graduation') ? graduationTabs : (eventType === 'communion') ? communionTabs : (eventType === 'retirement') ? retirementTabs : weddingTabs;
 
   const currentTab = tabs.find((tab) => pathname.startsWith(tab.href));
 
