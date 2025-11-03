@@ -6,6 +6,7 @@ export default function PensionePage() {
   type LocalRow = { id?: string; category: string; subcategory: string; supplier?: string | null; amount?: number | null; spend_type?: string | null; notes?: string | null };
   const [rows, setRows] = React.useState<LocalRow[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [creating, setCreating] = React.useState(false);
   const [demo, setDemo] = React.useState<boolean | null>(null);
   const [eventName, setEventName] = React.useState<string | null>(null);
 
@@ -38,6 +39,47 @@ export default function PensionePage() {
     };
   }, []);
 
+  async function createEvent() {
+    try {
+      setCreating(true);
+      const supabase = getBrowserClient();
+      const { data } = await supabase.auth.getSession();
+      const sessionData = data as { session?: { access_token?: string } } | null;
+      const jwt = sessionData?.session?.access_token;
+      if (!jwt) {
+        // no session: prompt user to authenticate
+        window.location.href = "/auth";
+        return;
+      }
+
+      const res = await fetch("/api/retirement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+        body: JSON.stringify({ total_budget: 0, expenses: [] }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        console.error("Errore creando evento:", json);
+        alert("Si è verificato un errore durante la creazione dell'evento.");
+        return;
+      }
+
+      // refetch data
+      setLoading(true);
+      const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
+      const fetchJson = await fetchRes.json();
+      setDemo(Boolean(fetchJson.demo));
+      if (fetchJson.event?.name) setEventName(fetchJson.event.name);
+      setRows(fetchJson.rows || []);
+    } catch (err) {
+      console.error(err);
+      alert("Errore imprevisto");
+    } finally {
+      setCreating(false);
+      setLoading(false);
+    }
+  }
+
   const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
 
   return (
@@ -49,7 +91,18 @@ export default function PensionePage() {
         <>
           {demo === true && <p className="mb-4 text-sm text-gray-600">Esempio demo (utente non autenticato)</p>}
           {demo === false && !eventName && (
-            <p className="mb-4 text-sm text-gray-700">Non hai ancora creato una Festa di Pensionamento &mdash; crea l&apos;evento dalla dashboard per iniziare.</p>
+            <div className="mb-4 text-sm text-gray-700">
+              <p>Non hai ancora creato una Festa di Pensionamento &mdash; puoi crearla subito per iniziare a salvare il budget.</p>
+              <div className="mt-3">
+                <button
+                  onClick={createEvent}
+                  disabled={creating}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-(--color-sage) text-white font-semibold hover:brightness-95"
+                >
+                  {creating ? "Creazione..." : "Crea Evento Pensione"}
+                </button>
+              </div>
+            </div>
           )}
           {eventName && <p className="mb-4 text-sm text-gray-700">Evento: {eventName}</p>}
 
