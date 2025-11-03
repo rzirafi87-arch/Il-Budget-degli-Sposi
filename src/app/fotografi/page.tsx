@@ -7,7 +7,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useToast } from "@/components/ToastProvider";
+import { useFavorites } from "@/hooks/useFavorites";
 
 const supabase = getBrowserClient();
 
@@ -36,7 +36,7 @@ const REGIONS = [
 
 export default function FotografiPage() {
   const country = getUserCountrySafe();
-  const { showToast } = useToast();
+  const { isFavorite, toggleFavorite, pending } = useFavorites("supplier");
   const [items, setItems] = useState<Photographer[]>([]);
   const [loading, setLoading] = useState(true);
   const [region, setRegion] = useState("");
@@ -84,40 +84,6 @@ export default function FotografiPage() {
   const filtered = items.filter((it) =>
     search ? it.name.toLowerCase().includes(search.toLowerCase()) : true
   );
-
-  async function addToFavorites(photographerId: string, photographerName: string) {
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-
-      if (!jwt) {
-        showToast("Accedi per salvare i preferiti", "error");
-        return;
-      }
-
-      const res = await fetch("/api/my/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify({
-          item_type: "supplier",
-          item_id: photographerId,
-        }),
-      });
-
-      if (res.ok) {
-        showToast(`${photographerName} aggiunto ai preferiti!`, "success");
-      } else {
-        const error = await res.json();
-        showToast(error.error || "Errore durante il salvataggio", "error");
-      }
-    } catch (e) {
-      console.error("Errore favorites:", e);
-      showToast("Errore durante il salvataggio", "error");
-    }
-  }
 
   return (
     <section className="pt-6">
