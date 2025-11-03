@@ -19,6 +19,234 @@
   "settings": "Paramètres",
   "loading": "Chargement…",
   "comingSoon": "Bientôt disponible",
+  "budgetPage": {
+    "approvedExpenses": "Dépenses approuvées",
+    "ctaIdeaBudget": "💡 Aller à Idée de budget",
+    "description": "Visualisation des dépenses approuvées de la section 'Dépenses', triées par ordre alphabétique par catégorie et sous-catégorie.",
+    "totals": {
+      "title": "Total des dépenses approuvées",
+      "common": "Commun",
+      "bride": "Mariée",
+      "groom": "Marié"
+    },
+    "table": {
+      "category": "Catégorie",
+      "subcategory": "Sous-catégorie",
+      "spendType": "Type de dépense",
+      "paymentMethod": "Méthode de paiement",
+      "budget": "Budget",
+      "committed": "Engagé",
+      "paid": "Payé",
+      "residual": "Résiduel",
+      "fromQuote": "Du devis",
+      "difference": "Différence"
+    },
+    "spendType": {
+      "common": "Commun",
+      "bride": "Mariée",
+      "groom": "Marié",
+      "gift": "Cadeau"
+    },
+    "paymentMethod": {
+      "common": "💰 Commun",
+      "bride": "👰 Mariée",
+      "groom": "🤵 Marié",
+      "gift": "🎁 Cadeau"
+    },
+    "loading": "Chargement...",
+    "empty": "Aucune dépense approuvée. Allez dans la section 'Dépenses' pour approuver vos dépenses.",
+    "plannedVsActual": {
+      "title": "Planifié vs Réel",
+      "totalPlanned": "Total planifié",
+      "totalActualApproved": "Total réel (approuvé)",
+      "difference": "Différence",
+      "over": "+ au-dessus du prévu",
+      "under": "en dessous du prévu",
+      "item": "Élément",
+      "planned": "Planifié",
+      "actual": "Réel",
+      "empty": "Aucune donnée à comparer. Utilisez 'Idée de budget' pour planifier et approuver les dépenses dans la section 'Dépenses'."
+    }
+  },
+  "expensesPage": {
+    "info": {
+      "lead": "Enregistrez et gérez toutes les dépenses du mariage. Vous pouvez saisir des devis, les confirmer comme dépenses approuvées et suivre les états de paiement. Filtrez par catégorie, type de dépense (commun/mariée/marié) et statut.",
+      "title": "Gestion Complète des Dépenses",
+      "description": "Sur cette page, vous pouvez enregistrer toutes les dépenses réelles et les devis. Chaque dépense peut être catégorisée, assignée à mariée/marié/commun et suivie avec l'état d'approbation et de paiement. Les dépenses confirmées depuis le tableau de bord apparaissent ici automatiquement.",
+      "tips": {
+        "tip1": "Utilisez le statut 'Devis' pour les offres reçues, puis changez-les en 'Approuvé' lorsque vous confirmez",
+        "tip2": "Le champ 'Du devis' indique si la dépense provient du tableau de bord (déjà budgétée)",
+        "tip3": "Ajoutez toujours le fournisseur pour suivre qui vous a fourni chaque service",
+        "tip4": "Filtrez par catégorie ou type de dépense pour analyser où vous dépensez le plus"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Pour le mariage, vous pouvez diviser les dépenses entre mariée, marié et communes. Cela aide à comprendre la contribution de chacun et à gérer les finances de manière transparente.",
+        "baptism": "Pour le baptême, toutes les dépenses sont automatiquement définies comme 'communes' - pas besoin de spécifier qui paie.",
+        "eighteenth": "Pour les 18 ans, toutes les dépenses sont communes. Planifiez le lieu, la restauration, le divertissement et les souvenirs pour rendre cette fête inoubliable !",
+        "confirmation": "Pour la confirmation, toutes les dépenses sont communes. Organisez la cérémonie, la réception, les souvenirs et les cadeaux pour célébrer ce moment spécial de croissance spirituelle.",
+        "birthday": "Pour l'anniversaire, divisez les dépenses entre l'organisateur principal et celles partagées avec d'autres.",
+        "graduation": "Pour la remise de diplôme, suivez toutes les dépenses liées à l'événement : lieu, restauration, invitations, décorations et souvenirs.",
+        "anniversary": "Pour l'anniversaire de mariage, gérez ensemble les dépenses pour la célébration. Que ce soit le 25e (argent), le 50e (or) ou un anniversaire plus intime, chaque détail compte pour rendre spécial ce moment de renouvellement de l'amour."
+      }
+    },
+    "title": "Dépenses",
+    "loading": "Chargement...",
+    "summary": {
+      "pending": "En attente d'approbation",
+      "approved": "Dépenses approuvées"
+    },
+    "buttons": {
+      "add": "+ Ajouter une dépense",
+      "cancel": "Annuler",
+      "save": "Enregistrer la dépense",
+      "approve": "Approuver",
+      "reject": "Rejeter"
+    },
+    "form": {
+      "new": "Nouvelle dépense",
+      "category": "Catégorie",
+      "subcategory": "Sous-catégorie",
+      "supplier": "Fournisseur",
+      "amount": "Montant",
+      "spendType": "Type de dépense",
+      "date": "Date",
+      "description": "Description",
+      "notes": "Notes",
+      "placeholders": {
+        "supplier": "Nom du fournisseur",
+        "amount": "0",
+        "description": "Description détaillée",
+        "notes": "Notes supplémentaires..."
+      },
+      "spendTypeOptions": {
+        "common": "Commun",
+        "bride": "Mariée",
+        "groom": "Marié"
+      }
+    },
+    "table": {
+      "supplier": "Fournisseur",
+      "description": "Description",
+      "amount": "Montant",
+      "type": "Type",
+      "date": "Date",
+      "status": "Statut",
+      "fromQuote": "Du devis",
+      "actions": "Actions"
+    },
+    "status": {
+      "approved": "✓ Approuvé",
+      "rejected": "✗ Rejeté",
+      "pending": "En attente"
+    },
+    "spendType": {
+      "common": "Commun",
+      "bride": "Mariée",
+      "groom": "Marié"
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Vous devez être authentifié pour ajouter des dépenses. Cliquez sur 'S'inscrire' en haut.",
+      "networkError": "❌ Erreur réseau",
+      "successAdded": "✅ Dépense ajoutée avec succès !",
+      "none": "Aucune dépense enregistrée",
+      "confirmed": "Confirmé",
+      "discarded": "Écarté"
+    }
+  },
+  "incomesPage": {
+    "info": {
+      "lead": "Suivez tous les revenus qui contribuent au budget du mariage : cadeaux des parents, contributions familiales, économies personnelles ou autres sources. Spécifiez si le revenu provient de la mariée, du marié ou est commun.",
+      "title": "Suivez Tous les Revenus",
+      "description": "Ici, vous pouvez enregistrer toutes les sources d'argent qui contribuent au budget de votre événement : contributions familiales, cadeaux en enveloppe, virements, économies personnelles. Chaque revenu peut être catégorisé pour savoir qui l'apporte (mariée/marié/commun) et de qui il provient.",
+      "tips": {
+        "tip1": "Utilisez 'Enveloppe' pour les cadeaux en espèces reçus pendant l'événement",
+        "tip2": "Utilisez 'Virement' pour les contributions reçues avant l'événement",
+        "tip3": "Utilisez 'Cadeau' pour enregistrer les cadeaux matériels (sans montant spécifique)",
+        "tip4": "Le total des revenus vous aide à comprendre combien de budget effectif vous avez disponible"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Pendant le mariage, il est traditionnel de recevoir des enveloppes avec des contributions financières des invités. Enregistrez chaque enveloppe reçue pour un suivi complet.",
+        "baptism": "Pour le baptême, enregistrez les contributions du parrain, de la marraine et des membres de la famille qui souhaitent participer aux dépenses.",
+        "birthday": "Pour l'anniversaire, suivez les contributions des amis et des parents qui souhaitent aider à l'organisation.",
+        "graduation": "Pour la remise de diplôme, enregistrez les contributions familiales et les cadeaux reçus pour célébrer la réussite.",
+        "anniversary": "Pour l'anniversaire de mariage, enregistrez les contributions des enfants, petits-enfants et parents qui souhaitent participer à la célébration. Souvent, les familles s'unissent pour organiser la fête surprise ou contribuer aux dépenses."
+      }
+    },
+    "title": "Revenus",
+    "loading": "Chargement...",
+    "toolbar": {
+      "giftList": "Liste de Cadeaux",
+      "backDashboard": "Retour au Tableau de bord"
+    },
+    "summary": {
+      "bride": "Revenus Mariée",
+      "groom": "Revenus Marié",
+      "common": "Revenus Communs",
+      "totalMoney": "Total argent",
+      "physicalGifts": "Cadeaux physiques"
+    },
+    "buttons": {
+      "add": "+ Ajouter un revenu",
+      "cancel": "Annuler",
+      "save": "Enregistrer le revenu",
+      "delete": "Supprimer"
+    },
+    "form": {
+      "new": "Nouveau revenu",
+      "name": "Nom personne/famille *",
+      "type": "Typologie *",
+      "incomeSource": "Source de revenu *",
+      "amount": "Montant (€) *",
+      "date": "Date",
+      "notes": "Notes",
+      "giftDescription": "Description du cadeau *",
+      "placeholders": {
+        "name": "Ex. Famille Dupont",
+        "amount": "0",
+        "notes": "Notes supplémentaires...",
+        "gift": "Ex. Service de vaisselle complet"
+      },
+      "typeOptions": {
+        "busta": "Enveloppe",
+        "bonifico": "Virement",
+        "regalo": "Cadeau physique"
+      },
+      "sourceOptions": {
+        "common": "Commun",
+        "bride": "Mariée",
+        "groom": "Marié"
+      }
+    },
+    "table": {
+      "date": "Date",
+      "name": "Nom",
+      "type": "Typologie",
+      "source": "Source",
+      "amount": "Montant",
+      "notes": "Notes / Description",
+      "actions": "Actions"
+    },
+    "empty": "Aucun revenu enregistré",
+    "badges": {
+      "type": {
+        "busta": "💵 Enveloppe",
+        "bonifico": "🏦 Virement",
+        "regalo": "🎁 Cadeau"
+      },
+      "source": {
+        "bride": "👰 Mariée",
+        "groom": "🤵 Marié",
+        "common": "💑 Commun"
+      }
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Vous devez être authentifié pour ajouter des revenus. Cliquez sur 'S'inscrire' en haut.",
+      "networkError": "❌ Erreur réseau",
+      "successAdded": "✅ Revenu enregistré avec succès !",
+      "deleted": "✅ Revenu supprimé",
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce revenu ?"
+    }
+  },
   "events": {
     "wedding": "Mariage",
     "baptism": "Baptême",

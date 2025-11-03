@@ -19,6 +19,234 @@
   "settings": "Configurações",
   "loading": "Carregando...",
   "comingSoon": "Em breve",
+  "budgetPage": {
+    "approvedExpenses": "Despesas aprovadas",
+    "ctaIdeaBudget": "💡 Ir para Ideia de Orçamento",
+    "description": "Visualização das despesas aprovadas da seção 'Despesas', ordenadas alfabeticamente por categoria e subcategoria.",
+    "totals": {
+      "title": "Total de despesas aprovadas",
+      "common": "Comum",
+      "bride": "Noiva",
+      "groom": "Noivo"
+    },
+    "table": {
+      "category": "Categoria",
+      "subcategory": "Subcategoria",
+      "spendType": "Tipo de despesa",
+      "paymentMethod": "Método de pagamento",
+      "budget": "Orçamento",
+      "committed": "Comprometido",
+      "paid": "Pago",
+      "residual": "Residual",
+      "fromQuote": "Do orçamento",
+      "difference": "Diferença"
+    },
+    "spendType": {
+      "common": "Comum",
+      "bride": "Noiva",
+      "groom": "Noivo",
+      "gift": "Presente"
+    },
+    "paymentMethod": {
+      "common": "💰 Comum",
+      "bride": "👰 Noiva",
+      "groom": "🤵 Noivo",
+      "gift": "🎁 Presente"
+    },
+    "loading": "Carregando...",
+    "empty": "Nenhuma despesa aprovada. Vá para a seção 'Despesas' para aprovar suas despesas.",
+    "plannedVsActual": {
+      "title": "Planejado vs Real",
+      "totalPlanned": "Total planejado",
+      "totalActualApproved": "Total real (aprovado)",
+      "difference": "Diferença",
+      "over": "+ acima do previsto",
+      "under": "abaixo do previsto",
+      "item": "Item",
+      "planned": "Planejado",
+      "actual": "Real",
+      "empty": "Nenhum dado para comparar. Use 'Ideia de Orçamento' para planejar e aprovar despesas na seção 'Despesas'."
+    }
+  },
+  "expensesPage": {
+    "info": {
+      "lead": "Registre e gerencie todas as despesas do casamento. Você pode inserir orçamentos, confirmá-los como despesas aprovadas e acompanhar os status de pagamento. Filtre por categoria, tipo de despesa (comum/noiva/noivo) e status.",
+      "title": "Gestão Completa de Despesas",
+      "description": "Nesta página você pode registrar todas as despesas reais e os orçamentos. Cada despesa pode ser categorizada, atribuída a noiva/noivo/comum e rastreada com status de aprovação e pagamento. As despesas confirmadas do painel aparecem aqui automaticamente.",
+      "tips": {
+        "tip1": "Use o status 'Orçamento' para as ofertas recebidas, depois mude para 'Aprovado' quando confirmar",
+        "tip2": "O campo 'Do orçamento' indica se a despesa vem do painel (já orçada)",
+        "tip3": "Sempre adicione o fornecedor para acompanhar quem forneceu cada serviço",
+        "tip4": "Filtre por categoria ou tipo de despesa para analisar onde você está gastando mais"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Para o casamento, você pode dividir as despesas entre noiva, noivo e comuns. Isso ajuda a entender a contribuição de cada um e a gerenciar as finanças de forma transparente.",
+        "baptism": "Para o batismo, todas as despesas são automaticamente definidas como 'comuns' - não é necessário especificar quem paga.",
+        "eighteenth": "Para os 18 anos, todas as despesas são comuns. Planeje o local, catering, entretenimento e lembranças para tornar esta festa inesquecível!",
+        "confirmation": "Para a crisma, todas as despesas são comuns. Organize a cerimônia, recepção, lembranças e presentes para celebrar este momento especial de crescimento espiritual.",
+        "birthday": "Para o aniversário, divida as despesas entre o organizador principal e as compartilhadas com outros.",
+        "graduation": "Para a graduação, acompanhe todas as despesas relacionadas ao evento: local, catering, convites, decorações e lembranças.",
+        "anniversary": "Para o aniversário de casamento, gerencie juntos as despesas para a celebração. Seja o 25º (prata), 50º (ouro) ou um aniversário mais íntimo, cada detalhe conta para tornar especial este momento de renovação do amor."
+      }
+    },
+    "title": "Despesas",
+    "loading": "Carregando...",
+    "summary": {
+      "pending": "Aguardando aprovação",
+      "approved": "Despesas aprovadas"
+    },
+    "buttons": {
+      "add": "+ Adicionar despesa",
+      "cancel": "Cancelar",
+      "save": "Salvar despesa",
+      "approve": "Aprovar",
+      "reject": "Rejeitar"
+    },
+    "form": {
+      "new": "Nova despesa",
+      "category": "Categoria",
+      "subcategory": "Subcategoria",
+      "supplier": "Fornecedor",
+      "amount": "Valor",
+      "spendType": "Tipo de despesa",
+      "date": "Data",
+      "description": "Descrição",
+      "notes": "Observações",
+      "placeholders": {
+        "supplier": "Nome do fornecedor",
+        "amount": "0",
+        "description": "Descrição detalhada",
+        "notes": "Observações adicionais..."
+      },
+      "spendTypeOptions": {
+        "common": "Comum",
+        "bride": "Noiva",
+        "groom": "Noivo"
+      }
+    },
+    "table": {
+      "supplier": "Fornecedor",
+      "description": "Descrição",
+      "amount": "Valor",
+      "type": "Tipo",
+      "date": "Data",
+      "status": "Status",
+      "fromQuote": "Do orçamento",
+      "actions": "Ações"
+    },
+    "status": {
+      "approved": "✓ Aprovado",
+      "rejected": "✗ Rejeitado",
+      "pending": "Pendente"
+    },
+    "spendType": {
+      "common": "Comum",
+      "bride": "Noiva",
+      "groom": "Noivo"
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Você deve estar autenticado para adicionar despesas. Clique em 'Registrar' no topo.",
+      "networkError": "❌ Erro de rede",
+      "successAdded": "✅ Despesa adicionada com sucesso!",
+      "none": "Nenhuma despesa registrada",
+      "confirmed": "Confirmado",
+      "discarded": "Descartado"
+    }
+  },
+  "incomesPage": {
+    "info": {
+      "lead": "Acompanhe todas as receitas que contribuem para o orçamento do casamento: presentes dos pais, contribuições familiares, economias pessoais ou outras fontes. Especifique se a receita é da noiva, do noivo ou comum.",
+      "title": "Acompanhe Todas as Receitas",
+      "description": "Aqui você pode registrar todas as fontes de dinheiro que contribuem para o orçamento do seu evento: contribuições familiares, presentes em envelope, transferências, economias pessoais. Cada receita pode ser categorizada para saber quem traz (noiva/noivo/comum) e de quem vem.",
+      "tips": {
+        "tip1": "Use 'Envelope' para presentes em dinheiro recebidos durante o evento",
+        "tip2": "Use 'Transferência' para contribuições recebidas antes do evento",
+        "tip3": "Use 'Presente' para registrar presentes materiais (sem valor específico)",
+        "tip4": "O total de receitas ajuda você a entender quanto de orçamento efetivo você tem disponível"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Durante o casamento é tradição receber envelopes com contribuições financeiras dos convidados. Registre cada envelope recebido para um acompanhamento completo.",
+        "baptism": "Para o batismo, registre as contribuições do padrinho, madrinha e familiares que querem participar das despesas.",
+        "birthday": "Para o aniversário, acompanhe as contribuições de amigos e parentes que querem ajudar na organização.",
+        "graduation": "Para a graduação, registre contribuições familiares e presentes recebidos para celebrar a conquista.",
+        "anniversary": "Para o aniversário de casamento, registre contribuições de filhos, netos e parentes que querem participar da celebração. Frequentemente as famílias se unem para organizar a festa surpresa ou contribuir com as despesas."
+      }
+    },
+    "title": "Receitas",
+    "loading": "Carregando...",
+    "toolbar": {
+      "giftList": "Lista de Presentes",
+      "backDashboard": "Voltar ao Painel"
+    },
+    "summary": {
+      "bride": "Receitas Noiva",
+      "groom": "Receitas Noivo",
+      "common": "Receitas Comuns",
+      "totalMoney": "Total em dinheiro",
+      "physicalGifts": "Presentes físicos"
+    },
+    "buttons": {
+      "add": "+ Adicionar receita",
+      "cancel": "Cancelar",
+      "save": "Salvar receita",
+      "delete": "Excluir"
+    },
+    "form": {
+      "new": "Nova receita",
+      "name": "Nome pessoa/família *",
+      "type": "Tipo *",
+      "incomeSource": "Fonte de receita *",
+      "amount": "Valor (€) *",
+      "date": "Data",
+      "notes": "Observações",
+      "giftDescription": "Descrição do presente *",
+      "placeholders": {
+        "name": "Ex. Família Silva",
+        "amount": "0",
+        "notes": "Observações adicionais...",
+        "gift": "Ex. Jogo de pratos completo"
+      },
+      "typeOptions": {
+        "busta": "Envelope",
+        "bonifico": "Transferência",
+        "regalo": "Presente físico"
+      },
+      "sourceOptions": {
+        "common": "Comum",
+        "bride": "Noiva",
+        "groom": "Noivo"
+      }
+    },
+    "table": {
+      "date": "Data",
+      "name": "Nome",
+      "type": "Tipo",
+      "source": "Fonte",
+      "amount": "Valor",
+      "notes": "Observações / Descrição",
+      "actions": "Ações"
+    },
+    "empty": "Nenhuma receita registrada",
+    "badges": {
+      "type": {
+        "busta": "💵 Envelope",
+        "bonifico": "🏦 Transferência",
+        "regalo": "🎁 Presente"
+      },
+      "source": {
+        "bride": "👰 Noiva",
+        "groom": "🤵 Noivo",
+        "common": "💑 Comum"
+      }
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Você deve estar autenticado para adicionar receitas. Clique em 'Registrar' no topo.",
+      "networkError": "❌ Erro de rede",
+      "successAdded": "✅ Receita registrada com sucesso!",
+      "deleted": "✅ Receita excluída",
+      "confirmDelete": "Tem certeza de que deseja excluir esta receita?"
+    }
+  },
   "events": {
     "wedding": "Casamento",
     "baptism": "Batismo",
