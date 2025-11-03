@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { getFallbackChurches } from "@/data/fallbackContent";
 
 export async function GET(req: NextRequest) {
   try {
@@ -47,9 +48,30 @@ export async function GET(req: NextRequest) {
       ({ data, error } = await query);
     }
 
+    const normalizedCountry = country?.toLowerCase() ?? "";
+
     if (error) {
       console.error("CHURCHES GET error:", error);
+      const fallback = getFallbackChurches(normalizedCountry, {
+        region,
+        province,
+        churchType,
+      });
+      if (fallback.length > 0) {
+        return NextResponse.json({ churches: fallback });
+      }
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      const fallback = getFallbackChurches(normalizedCountry, {
+        region,
+        province,
+        churchType,
+      });
+      if (fallback.length > 0) {
+        return NextResponse.json({ churches: fallback });
+      }
     }
 
     return NextResponse.json({ churches: data || [] });

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { getFallbackSuppliers } from "@/data/fallbackContent";
 
 export const runtime = "nodejs";
 
@@ -13,7 +14,21 @@ export async function GET(req: NextRequest) {
   if (category) query = query.eq("category", category);
 
   const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("Suppliers GET error:", error);
+    const fallback = getFallbackSuppliers(country, category ?? undefined);
+    if (fallback.length > 0) {
+      return NextResponse.json({ suppliers: fallback });
+    }
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (!data || data.length === 0) {
+    const fallback = getFallbackSuppliers(country, category ?? undefined);
+    if (fallback.length > 0) {
+      return NextResponse.json({ suppliers: fallback });
+    }
+  }
+
   return NextResponse.json({ suppliers: data ?? [] });
 }
-

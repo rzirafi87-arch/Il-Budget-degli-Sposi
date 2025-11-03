@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { getFallbackLocations } from "@/data/fallbackContent";
 
 export async function GET(req: NextRequest) {
   try {
@@ -49,9 +50,30 @@ export async function GET(req: NextRequest) {
       ({ data, error } = await query);
     }
 
+    const normalizedCountry = country?.toLowerCase() ?? "";
+
     if (error) {
       console.error("LOCATIONS GET error:", error);
+      const fallback = getFallbackLocations(normalizedCountry, {
+        region,
+        province,
+        locationType,
+      });
+      if (fallback.length > 0) {
+        return NextResponse.json({ locations: fallback });
+      }
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      const fallback = getFallbackLocations(normalizedCountry, {
+        region,
+        province,
+        locationType,
+      });
+      if (fallback.length > 0) {
+        return NextResponse.json({ locations: fallback });
+      }
     }
 
     return NextResponse.json({ locations: data || [] });
