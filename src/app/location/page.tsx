@@ -4,7 +4,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import { GB_HIERARCHY } from "@/constants/gbHierarchy";
 import { GEO, getUserCountrySafe } from "@/constants/geo";
 import { getGeographyLevels } from "@/lib/geographyFilters";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
 import { useState } from "react";
 
@@ -99,7 +99,7 @@ export default function LocationiPage() {
   return (
   <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
-        <ImageCarousel images={PAGE_IMAGES.location} height="280px" />
+        <ImageCarousel images={getPageImages("location", country)} height="280px" />
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-xl font-bold mb-4">Filtri</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

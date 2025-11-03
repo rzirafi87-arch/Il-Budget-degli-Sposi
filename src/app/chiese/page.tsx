@@ -3,7 +3,7 @@
 import ImageCarousel from "@/components/ImageCarousel";
 import { GEO, getUserCountrySafe } from "@/constants/geo";
 import { getGeographyLevels } from "@/lib/geographyFilters";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
@@ -157,7 +157,7 @@ export default function ChiesePage() {
     <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
         {/* Carosello immagini */}
-        <ImageCarousel images={PAGE_IMAGES.chiese} height="280px" />
+        <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
         
         <div className="mb-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">⛪ Chiese e Luoghi di Cerimonia</h1>
