@@ -16,9 +16,10 @@ Files in ordine:
 4. `supabase-baptism-event-seed.sql` - Categorie Battesimo
 5. `supabase-eighteenth-event-seed.sql` - Categorie Diciottesimo
 6. `supabase-confirmation-event-seed.sql` - Categorie Cresima
-7. `supabase-graduation-event-seed.sql` - Categorie Laurea
-8. `supabase-communion-event-seed.sql` - Categorie Prima Comunione
-9. `supabase-anniversary-event-seed.sql` - Categorie Anniversario di Matrimonio ⭐ NUOVO
+6. `supabase-graduation-event-seed.sql` - Categorie Laurea
+7. `supabase-communion-event-seed.sql` - Categorie Prima Comunione
+8. `supabase-anniversary-event-seed.sql` - Categorie Anniversario di Matrimonio
+9. `supabase-babyshower-event-seed.sql` - Categorie Baby Shower ⭐ NUOVO
 
 **Note**: Questo è un sistema nuovo e separato dallo schema legacy. Vedi guide specifiche:
 - [MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md)
@@ -27,7 +28,8 @@ Files in ordine:
 - [CRESIMA-SETUP-GUIDE.md](CRESIMA-SETUP-GUIDE.md)
 - [LAUREA-SETUP-GUIDE.md](LAUREA-SETUP-GUIDE.md)
 - [COMUNIONE-SETUP-GUIDE.md](COMUNIONE-SETUP-GUIDE.md)
-- [ANNIVERSARIO-SETUP-GUIDE.md](ANNIVERSARIO-SETUP-GUIDE.md) ⭐ NUOVO
+- [ANNIVERSARIO-SETUP-GUIDE.md](ANNIVERSARIO-SETUP-GUIDE.md)
+- [BABYSHOWER-SETUP-GUIDE.md](BABYSHOWER-SETUP-GUIDE.md) ⭐ NUOVO
 
 ### 1. **Setup Completo Database** (Se non già fatto)
 File: `supabase-COMPLETE-SETUP.sql`
