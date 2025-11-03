@@ -7,8 +7,11 @@ type PageInfoNoteProps = {
   eventTypeSpecific?: {
     wedding?: string;
     baptism?: string;
+    communion?: string;
+    confirmation?: string;
     birthday?: string;
     graduation?: string;
+    eighteenth?: string;
   };
   icon?: string;
 };

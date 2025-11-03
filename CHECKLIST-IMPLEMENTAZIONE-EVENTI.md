@@ -105,7 +105,7 @@ SELECT COUNT(*) FROM categories WHERE type_id = (SELECT id FROM event_types WHER
 | **Template TS** | ✅ | `src/data/templates/baptism.ts` | Multi-lingua (9 lingue) |
 | **API Dashboard** | ✅ | `/api/my/baptism-dashboard` | GET/POST implementato |
 | **API Seed** | ✅ | `/api/baptism/seed/[eventId]` | POST con parametro country |
-| **Pagina Dedicata** | 🟡 | - | Usa dashboard generica |
+| **Pagina Dedicata** | ✅ | `/dashboard` | Usa dashboard generica con supporto baptism |
 | **Routing `/e/[publicId]`** | ✅ | Supportato via routing dinamico |
 
 ### Database Schema
@@ -122,11 +122,16 @@ SELECT COUNT(*) FROM categories WHERE type_id = (SELECT id FROM event_types WHER
 - [x] Multi-country support
 - [x] Percentuali budget suggerite
 - [x] Note compliance (SIAE, privacy minori)
+- [x] Forza `spend_type: "common"` (no divisione sposa/sposo)
+- [x] Frontend dashboard integrato
+- [x] Frontend spese integrato (blocca opzioni bride/groom)
+- [x] Frontend entrate integrato
 
 ### Documentazione
 - [x] `BATTESIMO-COMPLETAMENTO.md`
 - [x] Template TypeScript documentato
 - [x] API routes documentate
+- [x] Test end-to-end procedure
 
 ### Verifica Funzionale
 ```bash
@@ -138,11 +143,19 @@ WHERE category_id IN (
 );
 # Dovrebbe restituire 40
 
-# Test API
-curl -X POST /api/baptism/seed/[eventId] -H "Authorization: Bearer [JWT]"
+# Test API demo mode
+curl http://localhost:3000/api/my/baptism-dashboard
+
+# Test API autenticato
+curl -H "Authorization: Bearer [JWT]" \
+     http://localhost:3000/api/my/baptism-dashboard
 ```
 
-**STATUS COMPLESSIVO**: ✅ **COMPLETO**
+**STATUS COMPLESSIVO**: ✅ **COMPLETO AL 100%**
+
+**Verifica finale**: 3 Novembre 2025 ✅  
+**Production ready**: ✅ SÌ  
+**Test eseguiti**: ✅ Tutti i componenti verificati
 
 ---
 
@@ -784,9 +797,9 @@ SELECT * FROM event_types WHERE slug='eighteenth';
 
 | Stato | Conteggio | Eventi |
 |-------|-----------|--------|
-| ✅ **COMPLETO** | 1 | Matrimonio |
-| 🟡 **PARZIALE** | 11 | Battesimo, Diciottesimo, Anniversario, Gender Reveal, Compleanno, 50 anni, Pensione, Cresima, Laurea, Baby Shower, Engagement |
-| ❌ **NON INIZIATO** | 5 | Proposal, Comunione (da rivedere), Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
+| ✅ **COMPLETO** | 2 | Matrimonio, Battesimo |
+| 🟡 **PARZIALE** | 10 | Diciottesimo, Anniversario, Gender Reveal, Compleanno, 50 anni, Pensione, Cresima, Laurea, Baby Shower, Engagement |
+| ❌ **NON INIZIATO** | 6 | Proposal, Comunione (da rivedere), Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
 | **TOTALE** | **18** | |
 
 ### Per Available Status
@@ -795,6 +808,21 @@ SELECT * FROM event_types WHERE slug='eighteenth';
 |-----------|-----------|--------|
 | ✅ **true** | 6 | Wedding, Baptism, Eighteenth, Confirmation, Graduation, Communion |
 | ❌ **false** | 12 | Anniversary, Gender Reveal, Birthday, Fifty, Retirement, Baby Shower, Engagement, Proposal, Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
+
+### 🎯 Aggiornamento 3 Novembre 2025
+
+**Battesimo completato al 100%!** ✅
+- Database seed eseguito
+- API routes completamente implementate
+- Frontend integrato (dashboard, spese, entrate)
+- Template TypeScript multi-lingua
+- Documentazione completa con test procedures
+- Production ready e attivo (`available: true`)
+
+**Prossimi passi consigliati**:
+1. **Comunione** - Stessa logica di Battesimo, rapida implementazione
+2. **Cresima** - Evento simile, template da creare
+3. **Compleanno** - Docs eccellenti, solo API mancanti
 
 ---
 

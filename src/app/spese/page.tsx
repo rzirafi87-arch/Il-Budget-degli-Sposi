@@ -250,12 +250,17 @@ export default function SpesePage() {
     fromDashboard: false,
   });
 
-  // For Battesimo force spend type to common
+    // Detect baptism or communion to force spend type to common
+  const isBaptism = userEventType === "baptism";
+  const isCommunion = userEventType === "communion";
+  const isSingleBudgetEvent = isBaptism || isCommunion;
+
+  // For Battesimo and Comunione force spend type to common
   useEffect(() => {
-    if (isBaptism && newExpense.spendType !== "common") {
+    if (isSingleBudgetEvent && newExpense.spendType !== "common") {
       setNewExpense((prev) => ({ ...prev, spendType: "common" }));
     }
-  }, [isBaptism, newExpense.spendType]);
+  }, [isSingleBudgetEvent, newExpense.spendType]);
 
   // Carica le spese
   useEffect(() => {
@@ -420,6 +425,7 @@ export default function SpesePage() {
         eventTypeSpecific={{
           wedding: t("expensesPage.info.eventTypeSpecific.wedding"),
           baptism: t("expensesPage.info.eventTypeSpecific.baptism"),
+          communion: t("expensesPage.info.eventTypeSpecific.communion", { fallback: "Per la comunione, tutte le spese sono considerate comuni, senza divisione tra genitori." }),
           birthday: t("expensesPage.info.eventTypeSpecific.birthday"),
           graduation: t("expensesPage.info.eventTypeSpecific.graduation"),
         }}
@@ -517,8 +523,8 @@ export default function SpesePage() {
                 onChange={(e) => setNewExpense({ ...newExpense, spendType: e.target.value as any })}
               >
                 <option value="common">{t("expensesPage.form.spendTypeOptions.common")}</option>
-                {!isBaptism && <option value="bride">{t("expensesPage.form.spendTypeOptions.bride")}</option>}
-                {!isBaptism && <option value="groom">{t("expensesPage.form.spendTypeOptions.groom")}</option>}
+                {!isSingleBudgetEvent && <option value="bride">{t("expensesPage.form.spendTypeOptions.bride")}</option>}
+                {!isSingleBudgetEvent && <option value="groom">{t("expensesPage.form.spendTypeOptions.groom")}</option>}
               </select>
             </div>
             <div>
@@ -610,7 +616,7 @@ export default function SpesePage() {
                       <td className="px-4 py-3">{exp.description || "—"}</td>
                       <td className="px-4 py-3 text-right font-semibold">{formatEuro(exp.amount)}</td>
                       <td className="px-4 py-3 text-center capitalize text-xs">
-                        {isBaptism ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}
+                        {isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}
                       </td>
                       <td className="px-4 py-3 text-center text-xs">{formatDate(new Date(exp.date))}</td>
                       <td className="px-4 py-3 text-center">
