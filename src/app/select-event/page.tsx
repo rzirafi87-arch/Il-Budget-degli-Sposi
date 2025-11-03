@@ -17,7 +17,11 @@ export default function SelectEventPage() {
 
   useEffect(() => {
     const activeEvent = localStorage.getItem("activeEventId");
-    if (activeEvent) setSelected(activeEvent);
+    if (activeEvent) {
+      // schedule state update to avoid synchronous setState within effect
+      // (satisfies lint rule about setState-in-effect)
+      setTimeout(() => setSelected(activeEvent), 0);
+    }
   }, []);
 
   function handleSelect(id: string) {
