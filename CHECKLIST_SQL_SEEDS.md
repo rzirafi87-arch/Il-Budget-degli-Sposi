@@ -8,20 +8,44 @@ Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIM
 
 ## ✅ Ordine di Esecuzione
 
-### 0. **Setup Multi-Evento (Nuovo Schema)** ⭐ OPZIONALE
-Files in ordine:
-1. `supabase-core-events-schema.sql` - Schema base multi-evento
-2. `supabase-seed-event-types.sql` - Tipi evento (include Matrimonio, Battesimo, Anniversario, etc.)
-3. `supabase-wedding-event-seed.sql` - Categorie complete Matrimonio (18 cat + 100+ subcat)
-4. `supabase-baptism-event-seed.sql` - Categorie Battesimo
-5. `supabase-eighteenth-event-seed.sql` - Categorie Diciottesimo
-6. `supabase-confirmation-event-seed.sql` - Categorie Cresima
-6. `supabase-graduation-event-seed.sql` - Categorie Laurea
-8. `supabase-communion-event-seed.sql` - Categorie Prima Comunione
-9. `supabase-anniversary-event-seed.sql` - Categorie Anniversario di Matrimonio
-10. `supabase-babyshower-event-seed.sql` - Categorie Baby Shower
-11. `supabase-genderreveal-event-seed.sql` - Categorie Gender Reveal
-12. `supabase-engagement-party-seed.sql` - Categorie Festa di Fidanzamento ⭐ NUOVO
+### 0. **Setup Multi-Evento (Nuovo Schema)** ⭐ RACCOMANDATO
+
+#### ⚠️ PREREQUISITO OBBLIGATORIO: Patch Colonne Multi-Evento
+**File**: `supabase-multi-event-columns-patch.sql`  
+**Quando**: PRIMA di installare qualsiasi evento seed  
+**Frequenza**: UNA SOLA VOLTA
+
+**Cosa fa**:
+- Aggiunge colonne `event_type`, `event_date`, `event_location`, `description`, `color_theme` a `public.events`
+- Crea tabella `public.timeline_items`
+- Aggiunge colonne `display_order`, `icon` a `categories`
+- Aggiunge colonne `estimated_cost`, `display_order`, `description` a `subcategories`
+
+**Come eseguire** (via Supabase Dashboard - CONSIGLIATO):
+1. Dashboard → SQL Editor → New Query
+2. Copia/incolla contenuto `supabase-multi-event-columns-patch.sql`
+3. Run
+
+---
+
+#### Eventi Disponibili (dopo la patch):
+1. `supabase-anniversary-event-seed.sql` - Anniversario di Matrimonio
+2. `supabase-baptism-event-seed.sql` - Battesimo
+3. `supabase-babyshower-event-seed.sql` - Baby Shower
+4. `supabase-communion-event-seed.sql` - Prima Comunione
+5. `supabase-confirmation-event-seed.sql` - Cresima
+6. `supabase-eighteenth-event-seed.sql` - Diciottesimo
+7. `supabase-engagement-party-seed.sql` - **Festa di Fidanzamento** ⭐ NUOVO
+8. `supabase-genderreveal-event-seed.sql` - Gender Reveal
+9. `supabase-graduation-event-seed.sql` - Laurea
+10. `supabase-wedding-event-seed.sql` - Matrimonio (18 cat + 100+ subcat)
+
+**Installazione tipica**:
+```
+1. Patch colonne (una volta)
+2. Seed evento/i desiderato/i (ripetibile per ogni evento)
+3. Verifica con query (vedi guide specifiche)
+```
 
 **Note**: Questo è un sistema nuovo e separato dallo schema legacy. Vedi guide specifiche:
 - [MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md)

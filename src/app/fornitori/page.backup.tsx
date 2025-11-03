@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getPageImages } from "@/lib/pageImages";
 import { useToast } from "@/components/ToastProvider";
 
 const supabase = getBrowserClient();
@@ -65,6 +66,7 @@ const CATEGORIES = [
 ];
 
 export default function FornitoriPage() {
+  const country = getUserCountrySafe();
   const { showToast } = useToast();
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
@@ -186,7 +188,7 @@ export default function FornitoriPage() {
       </p>
 
       {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES.fornitori} height="280px" />
+      <ImageCarousel images={getPageImages("fornitori", country)} height="280px" />
 
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">

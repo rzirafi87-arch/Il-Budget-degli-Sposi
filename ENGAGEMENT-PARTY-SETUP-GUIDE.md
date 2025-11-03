@@ -27,31 +27,72 @@ La **Festa di Fidanzamento** è un evento elegante e romantico che celebra l'imp
 ### PREREQUISITI
 - ✅ Supabase project attivo o PostgreSQL locale
 - ✅ Schema base eventi installato (`supabase-COMPLETE-SETUP.sql`)
-- ✅ Tabelle `events`, `categories`, `subcategories`, `timeline_items` esistenti
+- ✅ Tabelle `events`, `categories`, `subcategories` esistenti
+
+### ⚠️ IMPORTANTE: Esegui PRIMA la patch colonne
+
+Prima di installare il seed Festa di Fidanzamento, devi aggiungere le colonne necessarie alla tabella `events`:
+
+#### STEP 0: Patch Colonne Multi-Evento (OBBLIGATORIO)
+
+**Via Supabase Dashboard** (CONSIGLIATO):
+1. Apri [Supabase Dashboard](https://supabase.com/dashboard)
+2. Seleziona il tuo progetto
+3. Vai su **SQL Editor** (icona `</>` nella sidebar)
+4. Clicca **New Query**
+5. Copia e incolla il contenuto di `supabase-multi-event-columns-patch.sql`
+6. Clicca **Run** (o `Ctrl+Enter`)
+7. Verifica output: "SELECT 5" (significa 5 colonne aggiunte)
+
+Questo aggiunge:
+- `event_type` TEXT
+- `event_date` DATE
+- `event_location` TEXT
+- `description` TEXT
+- `color_theme` TEXT
+- Tabella `timeline_items`
+- Colonne display a `categories` e `subcategories`
 
 ### STEP 1: Esegui seed SQL
 
-#### Opzione A: Supabase Cloud (Dashboard)
-1. Apri Supabase Dashboard
-2. Vai su **SQL Editor**
-3. Apri file `supabase-engagement-party-seed.sql`
-4. Clicca **Run**
-5. Verifica output: "Created Engagement Party event with ID: [uuid]"
+**⭐ CONSIGLIATO: Via Supabase Dashboard**
 
-#### Opzione B: Supabase Cloud (CLI)
+1. Apri [Supabase Dashboard](https://supabase.com/dashboard)
+2. Seleziona il tuo progetto
+3. Vai su **SQL Editor**
+4. Clicca **New Query**
+5. Copia e incolla il contenuto di `supabase-engagement-party-seed.sql`
+6. Clicca **Run**
+7. Verifica output: Messaggio "Created Engagement Party event with ID: [uuid]"
+
+#### Opzione B: Supabase CLI (se installato)
 ```bash
-supabase db push supabase-engagement-party-seed.sql
+# Prima la patch
+supabase db execute -f supabase-multi-event-columns-patch.sql
+
+# Poi il seed
+supabase db execute -f supabase-engagement-party-seed.sql
 ```
 
 #### Opzione C: PostgreSQL Locale (psql)
 ```bash
+# Prima la patch
+psql -U postgres -d ibds -f supabase-multi-event-columns-patch.sql
+
+# Poi il seed
 psql -U postgres -d ibds -f supabase-engagement-party-seed.sql
 ```
 
-#### Opzione D: VS Code Task (per dev locale)
-1. Apri `supabase-engagement-party-seed.sql` in VS Code
-2. `Ctrl+Shift+P` → "Tasks: Run Task"
-3. Seleziona: **"Run SQL: Current File (local PG)"**
+#### Opzione D: Script Node.js (se connessione funzionante)
+```bash
+# Prima la patch
+node scripts/run-sql.mjs supabase-multi-event-columns-patch.sql
+
+# Poi il seed
+node scripts/run-sql.mjs supabase-engagement-party-seed.sql
+```
+
+**Nota**: Se ricevi errori di connessione con lo script Node.js, usa il metodo Dashboard (Opzione A).
 
 ### STEP 2: Verifica installazione
 Esegui questa query per confermare:

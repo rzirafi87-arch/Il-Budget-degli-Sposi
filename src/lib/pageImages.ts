@@ -57,6 +57,13 @@ const PAGE_IMAGE_CONFIG: Record<string, PageImageConfig> = {
       "/carousels/fiorai/03.svg",
     ],
   },
+  atelier: {
+    default: [
+      "/carousels/atelier/01.svg",
+      "/carousels/atelier/02.svg",
+      "/carousels/atelier/03.svg",
+    ],
+  },
   catering: {
     default: [
       "/carousels/catering/01.svg",
@@ -143,6 +150,7 @@ const KEY_TO_CATEGORIES: Record<string, CarouselCategory[]> = {
   fornitori: ["vendors"],
   fotografi: ["photography", "vendors"],
   fiorai: ["flowers", "vendors"],
+  atelier: ["fashion", "vendors"],
   catering: ["catering", "venues"],
   beauty: ["beauty", "fashion"],
   gioiellerie: ["jewelry", "fashion"],

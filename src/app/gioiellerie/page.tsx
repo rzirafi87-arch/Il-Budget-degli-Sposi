@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useToast } from "@/components/ToastProvider";
 
@@ -34,6 +35,7 @@ const REGIONS = [
 ];
 
 export default function GioielleriePage() {
+  const country = getUserCountrySafe();
   const { showToast } = useToast();
   const [items, setItems] = useState<Jeweler[]>([]);
   const [loading, setLoading] = useState(true);
@@ -144,7 +146,7 @@ export default function GioielleriePage() {
         </Link>
       </div>
 
-      <ImageCarousel images={PAGE_IMAGES.gioiellerie || PAGE_IMAGES.fornitori} height="280px" />
+      <ImageCarousel images={getPageImages("gioiellerie", country)} height="280px" />
 
       {/* Filtri */}
       <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
