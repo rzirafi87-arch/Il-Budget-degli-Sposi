@@ -85,40 +85,6 @@ export default function CateringPage() {
     search ? it.name.toLowerCase().includes(search.toLowerCase()) : true
   );
 
-  async function addToFavorites(cateringId: string, cateringName: string) {
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-
-      if (!jwt) {
-        showToast("Accedi per salvare i preferiti", "error");
-        return;
-      }
-
-      const res = await fetch("/api/my/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify({
-          item_type: "supplier",
-          item_id: cateringId,
-        }),
-      });
-
-      if (res.ok) {
-        showToast(`${cateringName} aggiunto ai preferiti!`, "success");
-      } else {
-        const error = await res.json();
-        showToast(error.error || "Errore durante il salvataggio", "error");
-      }
-    } catch (e) {
-      console.error("Errore favorites:", e);
-      showToast("Errore durante il salvataggio", "error");
-    }
-  }
-
   return (
     <section className="pt-6">
       {/* Breadcrumb */}
@@ -261,10 +227,15 @@ export default function CateringPage() {
                   <a href={`mailto:${p.email}`} className="text-center bg-white border-2 border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50">✉️ Email</a>
                 )}
                 <button
-                  onClick={() => addToFavorites(p.id, p.name)}
-                  className="text-center bg-[#A6B5A0] text-white px-3 py-1.5 rounded-lg text-sm hover:bg-[#8a9d84]"
+                  onClick={() => toggleFavorite(p.id, { name: p.name })}
+                  disabled={pending[p.id]}
+                  className={`text-center px-3 py-1.5 rounded-lg text-sm text-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                    isFavorite(p.id)
+                      ? "bg-[#2f4231] hover:bg-[#2f4231]/90"
+                      : "bg-[#A6B5A0] hover:bg-[#8a9d84]"
+                  }`}
                 >
-                  ❤️ Preferiti
+                  {isFavorite(p.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
                 </button>
               </div>
             </div>
@@ -291,10 +262,15 @@ export default function CateringPage() {
                   {p.priceRange && <div className="text-sm font-medium text-gray-700">{p.priceRange}</div>}
                   {p.rating && p.rating > 0 && <div className="text-xs text-yellow-600">⭐ {p.rating.toFixed(1)}</div>}
                   <button
-                    onClick={() => addToFavorites(p.id, p.name)}
-                    className="mt-2 bg-[#A6B5A0] text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-[#8a9d84]"
+                    onClick={() => toggleFavorite(p.id, { name: p.name })}
+                    disabled={pending[p.id]}
+                    className={`mt-2 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                      isFavorite(p.id)
+                        ? "bg-[#2f4231] hover:bg-[#2f4231]/90"
+                        : "bg-[#A6B5A0] hover:bg-[#8a9d84]"
+                    }`}
                   >
-                    ❤️ Aggiungi
+                    {isFavorite(p.id) ? "Rimuovi" : "Aggiungi"}
                   </button>
                 </div>
               </div>
