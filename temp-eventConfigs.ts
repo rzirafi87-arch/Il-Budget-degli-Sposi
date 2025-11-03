@@ -362,16 +362,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Conferma fornitori e scaletta", description: "Timeline dettagliata della serata", monthsBefore: 1, category: "Organizzazione", priority: "media" },
       { title: "Prepara sorprese e discorsi", description: "Video, ringraziamenti o charity", monthsBefore: 0.5, category: "Esperienze", priority: "media" },
     ],
-    budgetCategories: {
-      "Location": ["Affitto", "Permessi", "Sicurezza", "Pulizie"],
-      "Catering": ["Menu gourmet", "Wine pairing", "Open bar", "Dessert"],
-      "Design": ["Allestimenti", "Luci scenografiche", "Inviti", "Installazioni"],
-      "Intrattenimento": ["Band/DJ", "Performer", "Speaker", "Spettacolo"],
-      "Stile personale": ["Outfit", "Stylist", "Make-up", "Wellness"],
-      "Esperienze": ["Viaggio", "Attivit+á speciali", "Regali charity", "After party"],
-      "Organizzazione": ["Planner", "Foto/Video", "Trasporti", "Contingenze"],
-    },
-    spendTypes: [
+    budgetCategories: TURNING50_BUDGET_CATEGORIES,`r`n    spendTypes: [
       { value: "celebrant", label: "Festeggiato/a" },
       { value: "partner", label: "Partner" },
       { value: "family", label: "Famiglia" },
@@ -414,17 +405,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara discorso finale", description: "Ringraziamenti e prospettive future", monthsBefore: 0.5, category: "Programma", priority: "media" },
       { title: "Allestisci location e welcome area", description: "Timeline carriera, book firme", monthsBefore: 0.25, category: "Decor", priority: "bassa" },
     ],
-    budgetCategories: {
-      "Location": ["Affitto", "Pulizie", "Permessi", "Allestimento"],
-      "Catering": ["Buffet", "Brindisi", "Torta", "Servizio"],
-      "Programma": ["Speaker", "Video tributo", "Tecnico audio", "Intrattenimento"],
-      "Ricordi": ["Album", "Photobooth", "Regali", "Stampa foto"],
-      "Comunicazione": ["Inviti", "Streaming", "Ringraziamenti", "Grafica"],
-      "Decor": ["Timeline", "Fiori", "Segnaletica", "Illuminazione"],
-      "Trasporti": ["Navette", "Parcheggi", "Taxi", "Logistica"],
-      "Extra": ["Mance", "Assicurazione", "Contingenze", "Beneficenza"],
-    },
-    spendTypes: [
+    budgetCategories: RETIREMENT_BUDGET_CATEGORIES,`r`n    spendTypes: [
       { value: "retiree", label: "Festeggiato/a" },
       { value: "family", label: "Famiglia" },
       { value: "colleagues", label: "Colleghi" },
@@ -468,16 +449,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara kit ricordi e ringraziamenti", description: "Guestbook, lettera al cresimando", monthsBefore: 0.5, category: "Ricordi", priority: "bassa" },
       { title: "Allestisci chiesa e location", description: "Fiori, segnaposto e simboli", monthsBefore: 0.25, category: "Decor", priority: "media" },
     ],
-    budgetCategories: {
-      "Preparazione": ["Catechesi", "Ritiri", "Materiali", "Offerte"],
-      "Burocrazia": ["Documenti", "Certificati", "Marche da bollo", "Offerte parrocchia"],
-      "Stile personale": ["Abito", "Scarpe", "Parrucchiere", "Make-up"],
-      "Ricevimento": ["Location", "Catering", "Torta", "Bevande"],
-      "Ricordi": ["Bomboniere", "Confetti", "Album", "Regali padrini"],
-      "Decor": ["Fiori", "Allestimenti", "Segnaposto", "Illuminazione"],
-      "Organizzazione": ["Inviti", "Trasporti", "Fotografo", "Contingenze"],
-    },
-    spendTypes: [
+    budgetCategories: CONFIRMATION_BUDGET_CATEGORIES,`r`n    spendTypes: [
       { value: "parents", label: "Genitori" },
       { value: "godparents", label: "Padrino/Madrina" },
       { value: "parish", label: "Parrocchia" },
@@ -522,16 +494,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara discorso e ringraziamenti", description: "Dedica parole a famiglia e amici", monthsBefore: 0.5, category: "Tesi", priority: "media" },
       { title: "Allestisci location festa", description: "Decorazioni rosso laurea e gadget", monthsBefore: 0.25, category: "Festa", priority: "media" },
     ],
-    budgetCategories: {
-      "Burocrazia": ["Tasse", "Domanda laurea", "Marche da bollo", "Certificati"],
-      "Tesi": ["Stampa", "Rilegatura", "Grafica", "Materiali"],
-      "Festa": ["Location", "Catering", "Torta", "Bevande"],
-      "Stile personale": ["Abito", "Scarpe", "Parrucchiere", "Make-up"],
-      "Ricordi": ["Fotografo", "Video", "Bomboniere", "Album"],
-      "Comunicazione": ["Inviti", "Ringraziamenti", "Social", "Guestbook"],
-      "Extra": ["Trasporti", "Mance", "Esperienze", "Contingenze"],
-    },
-    spendTypes: [
+    budgetCategories: GRADUATION_BUDGET_CATEGORIES,`r`n    spendTypes: [
       { value: "graduate", label: "Laureando/a" },
       { value: "parents", label: "Genitori" },
       { value: "gift", label: "Regalo" },
@@ -554,4 +517,5 @@ export function resolveEventType(raw?: string | null): EventType {
 export function getEventConfig(eventType?: string | null): EventConfiguration {
   return EVENT_CONFIGS[resolveEventType(eventType)];
 }
+
 

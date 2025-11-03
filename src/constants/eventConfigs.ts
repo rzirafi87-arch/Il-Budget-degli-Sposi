@@ -76,15 +76,15 @@ export const DEFAULT_EVENT_TYPE: EventType = "wedding";
 export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   wedding: {
     name: "Matrimonio",
-    emoji: "­ƒÆì",
+    emoji: "ï¿½ï¿½ï¿½ï¿½",
     budgetSectionTitle: "Imposta Budget e Data Matrimonio",
     dateLabel: "Data Matrimonio",
     totalBudgetLabel: "Budget Totale",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "Il vostro matrimonio +¿ il",
+    eventDateMessage: "Il vostro matrimonio +ï¿½ il",
     timelineTitle: "Timeline del Matrimonio",
     timelineDescription:
-      "Organizzate ogni fase della pianificazione senza stress. Spuntate le attivit+á man mano che le completate!",
+      "Organizzate ogni fase della pianificazione senza stress. Spuntate le attivit+ï¿½ man mano che le completate!",
     timelineBuckets: [
       { label: "12+ mesi prima", minMonthsBefore: 12, maxMonthsBefore: INFINITY },
       { label: "9-11 mesi prima", minMonthsBefore: 9, maxMonthsBefore: 11 },
@@ -95,13 +95,13 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
     ],
     timelineTasks: [
       { title: "Annunciate il fidanzamento", description: "Condividete la notizia con chi amate", monthsBefore: 12, category: "Inizio", priority: "alta" },
-      { title: "Definite budget e stile", description: "Scegliete priorit+á e moodboard", monthsBefore: 10, category: "Budget", priority: "alta" },
+      { title: "Definite budget e stile", description: "Scegliete priorit+ï¿½ e moodboard", monthsBefore: 10, category: "Budget", priority: "alta" },
       { title: "Prenotate location e data", description: "Allineate cerimonia e ricevimento", monthsBefore: 9.5, category: "Cerimonia", priority: "alta" },
       { title: "Selezionate fornitori chiave", description: "Foto, video, musica e catering", monthsBefore: 8, category: "Servizi", priority: "alta" },
       { title: "Scegliete abiti degli sposi", description: "Avviate prove e personalizzazioni", monthsBefore: 7, category: "Sposa", priority: "media" },
       { title: "Invii Save the Date", description: "Avvisate gli ospiti", monthsBefore: 6, category: "Invitati", priority: "media" },
       { title: "Curate inviti e decor", description: "Grafica, fiori e scenografie", monthsBefore: 4, category: "Decor", priority: "media" },
-      { title: "Definite men+¦ e logistica", description: "Tavoli, ospiti e trasporti", monthsBefore: 3, category: "Ricevimento", priority: "media" },
+      { title: "Definite men+ï¿½ e logistica", description: "Tavoli, ospiti e trasporti", monthsBefore: 3, category: "Ricevimento", priority: "media" },
       { title: "Ultimate prove beauty", description: "Trucco, acconciatura e accessori", monthsBefore: 1.5, category: "Sposa", priority: "media" },
       { title: "Confermate fornitori e pagamenti", description: "Verificate timeline della giornata", monthsBefore: 0.5, category: "Servizi", priority: "alta" },
       { title: "Preparatevi al viaggio di nozze", description: "Documenti, valigie e assicurazioni", monthsBefore: 0.25, category: "Viaggio", priority: "bassa" },
@@ -122,12 +122,12 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   baptism: {
     name: "Battesimo",
-    emoji: "­ƒòè´©Å",
+    emoji: "ï¿½ï¿½ï¿½è´©ï¿½",
     budgetSectionTitle: "Imposta Budget per il Battesimo",
     dateLabel: "Data Battesimo",
     totalBudgetLabel: "Budget Familiare",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "Il battesimo +¿ il",
+    eventDateMessage: "Il battesimo +ï¿½ il",
     timelineTitle: "Timeline del Battesimo",
     timelineDescription: "Prepara il primo grande evento del tuo bimbo con una checklist su misura.",
     timelineBuckets: [
@@ -139,10 +139,10 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { label: "Ultime settimane", minMonthsBefore: 0, maxMonthsBefore: 0.99 },
     ],
     timelineTasks: [
-      { title: "Scegli chiesa e data", description: "Verifica disponibilit+á del parroco", monthsBefore: 6, category: "Cerimonia", priority: "alta" },
-      { title: "Nomina padrino e madrina", description: "Condividi ruolo e responsabilit+á", monthsBefore: 5, category: "Famiglia", priority: "alta" },
+      { title: "Scegli chiesa e data", description: "Verifica disponibilit+ï¿½ del parroco", monthsBefore: 6, category: "Cerimonia", priority: "alta" },
+      { title: "Nomina padrino e madrina", description: "Condividi ruolo e responsabilit+ï¿½", monthsBefore: 5, category: "Famiglia", priority: "alta" },
       { title: "Raccogli documenti", description: "Certificati e pratiche parrocchiali", monthsBefore: 4, category: "Burocrazia", priority: "media" },
-      { title: "Definisci budget e lista ospiti", description: "Stabilisci priorit+á con la famiglia", monthsBefore: 3, category: "Budget", priority: "media" },
+      { title: "Definisci budget e lista ospiti", description: "Stabilisci priorit+ï¿½ con la famiglia", monthsBefore: 3, category: "Budget", priority: "media" },
       { title: "Prenota location e catering", description: "Scegli ristorante o pranzo in casa", monthsBefore: 2.5, category: "Ricevimento", priority: "media" },
       { title: "Scegli abito e accessori", description: "Completa corredino del battesimo", monthsBefore: 2, category: "Bambino/a", priority: "media" },
       { title: "Ordina bomboniere e inviti", description: "Personalizza confetti e grafiche", monthsBefore: 1.5, category: "Ricordi", priority: "media" },
@@ -166,12 +166,12 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   "turning-18": {
     name: "Festa dei 18 anni",
-    emoji: "­ƒÄë",
+    emoji: "ï¿½ï¿½ï¿½ï¿½",
     budgetSectionTitle: "Imposta Budget per il Diciottesimo",
     dateLabel: "Data Festa",
     totalBudgetLabel: "Budget Festa",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "Il diciottesimo +¿ il",
+    eventDateMessage: "Il diciottesimo +ï¿½ il",
     timelineTitle: "Timeline Festa dei 18 anni",
     timelineDescription: "Una roadmap completa per organizzare la festa dei 18 anni perfetta.",
     timelineBuckets: [
@@ -208,12 +208,12 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   anniversary: {
     name: "Anniversario di matrimonio",
-    emoji: "­ƒÆ×",
+    emoji: "ï¿½ï¿½ï¿½ï¿½",
     budgetSectionTitle: "Imposta Budget per l'Anniversario",
     dateLabel: "Data Anniversario",
     totalBudgetLabel: "Budget di Coppia",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "La vostra celebrazione +¿ il",
+    eventDateMessage: "La vostra celebrazione +ï¿½ il",
     timelineTitle: "Timeline Anniversario",
     timelineDescription: "Rinnova le promesse con un percorso organizzato e romantico.",
     timelineBuckets: [
@@ -252,12 +252,12 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   "gender-reveal": {
     name: "Gender reveal",
-    emoji: "­ƒÄê",
+    emoji: "ï¿½ï¿½ï¿½ï¿½",
     budgetSectionTitle: "Imposta Budget per il Gender Reveal",
     dateLabel: "Data Evento",
     totalBudgetLabel: "Budget Famiglia",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "La rivelazione +¿ il",
+    eventDateMessage: "La rivelazione +ï¿½ il",
     timelineTitle: "Timeline Gender Reveal",
     timelineDescription: "Organizza un gender reveal creativo e coinvolgente passo dopo passo.",
     timelineBuckets: [
@@ -292,14 +292,14 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   birthday: {
     name: "Compleanno",
-    emoji: "­ƒÑ¦",
+    emoji: "ï¿½ï¿½Ñ¦",
     budgetSectionTitle: "Imposta Budget Compleanno",
     dateLabel: "Data Festa",
     totalBudgetLabel: "Budget Festa",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "Il compleanno +¿ il",
+    eventDateMessage: "Il compleanno +ï¿½ il",
     timelineTitle: "Timeline Compleanno",
-    timelineDescription: "Adatta questa guida ad ogni et+á per un compleanno memorabile.",
+    timelineDescription: "Adatta questa guida ad ogni et+ï¿½ per un compleanno memorabile.",
     timelineBuckets: [
       { label: "4 mesi prima", minMonthsBefore: 4, maxMonthsBefore: INFINITY },
       { label: "3 mesi prima", minMonthsBefore: 3, maxMonthsBefore: 3 },
@@ -312,7 +312,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Stabilisci budget", description: "Bilancia contributi di famiglia e amici", monthsBefore: 4, category: "Budget", priority: "alta" },
       { title: "Prenota location", description: "Spazio in casa, all'aperto o locale", monthsBefore: 3, category: "Location", priority: "media" },
       { title: "Pianifica catering e torta", description: "Menu personalizzato e dolci", monthsBefore: 2.5, category: "Catering", priority: "media" },
-      { title: "Organizza intrattenimento", description: "Playlist, animazione o attivit+á", monthsBefore: 2, category: "Intrattenimento", priority: "media" },
+      { title: "Organizza intrattenimento", description: "Playlist, animazione o attivit+ï¿½", monthsBefore: 2, category: "Intrattenimento", priority: "media" },
       { title: "Invia inviti", description: "Gestisci conferme e preferenze", monthsBefore: 1.5, category: "Ospiti", priority: "media" },
       { title: "Definisci decorazioni", description: "Allestimenti, luci e photo corner", monthsBefore: 1, category: "Decor", priority: "media" },
       { title: "Prepara regali e gadget", description: "Bomboniere o ringraziamenti", monthsBefore: 0.5, category: "Regali", priority: "bassa" },
@@ -333,14 +333,14 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
     defaultSpendType: "celebrant",
   },
   "turning-50": {
-    name: "50-¦ compleanno",
-    emoji: "­ƒÄé",
+    name: "50-ï¿½ compleanno",
+    emoji: "ï¿½ï¿½ï¿½ï¿½",
     budgetSectionTitle: "Imposta Budget per i 50 anni",
     dateLabel: "Data Celebrazione",
     totalBudgetLabel: "Budget Festa",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "Il cinquantesimo +¿ il",
-    timelineTitle: "Timeline 50-¦ Compleanno",
+    eventDateMessage: "Il cinquantesimo +ï¿½ il",
+    timelineTitle: "Timeline 50-ï¿½ Compleanno",
     timelineDescription: "Celebra il traguardo dei 50 anni con una pianificazione elegante.",
     timelineBuckets: [
       { label: "8+ mesi prima", minMonthsBefore: 8, maxMonthsBefore: INFINITY },
@@ -362,15 +362,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Conferma fornitori e scaletta", description: "Timeline dettagliata della serata", monthsBefore: 1, category: "Organizzazione", priority: "media" },
       { title: "Prepara sorprese e discorsi", description: "Video, ringraziamenti o charity", monthsBefore: 0.5, category: "Esperienze", priority: "media" },
     ],
-    budgetCategories: {
-      "Location": ["Affitto", "Permessi", "Sicurezza", "Pulizie"],
-      "Catering": ["Menu gourmet", "Wine pairing", "Open bar", "Dessert"],
-      "Design": ["Allestimenti", "Luci scenografiche", "Inviti", "Installazioni"],
-      "Intrattenimento": ["Band/DJ", "Performer", "Speaker", "Spettacolo"],
-      "Stile personale": ["Outfit", "Stylist", "Make-up", "Wellness"],
-      "Esperienze": ["Viaggio", "Attivit+á speciali", "Regali charity", "After party"],
-      "Organizzazione": ["Planner", "Foto/Video", "Trasporti", "Contingenze"],
-    },
+    budgetCategories: TURNING50_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "celebrant", label: "Festeggiato/a" },
       { value: "partner", label: "Partner" },
@@ -386,12 +378,12 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   retirement: {
     name: "Pensione",
-    emoji: "­ƒÅû´©Å",
+    emoji: "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
     budgetSectionTitle: "Imposta Budget Festa di Pensionamento",
     dateLabel: "Data Celebrazione",
     totalBudgetLabel: "Budget Complessivo",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "La festa di pensionamento +¿ il",
+    eventDateMessage: "La festa di pensionamento +ï¿½ il",
     timelineTitle: "Timeline Pensionamento",
     timelineDescription: "Festeggia un nuovo inizio coordinando colleghi, famiglia e amici.",
     timelineBuckets: [
@@ -414,16 +406,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara discorso finale", description: "Ringraziamenti e prospettive future", monthsBefore: 0.5, category: "Programma", priority: "media" },
       { title: "Allestisci location e welcome area", description: "Timeline carriera, book firme", monthsBefore: 0.25, category: "Decor", priority: "bassa" },
     ],
-    budgetCategories: {
-      "Location": ["Affitto", "Pulizie", "Permessi", "Allestimento"],
-      "Catering": ["Buffet", "Brindisi", "Torta", "Servizio"],
-      "Programma": ["Speaker", "Video tributo", "Tecnico audio", "Intrattenimento"],
-      "Ricordi": ["Album", "Photobooth", "Regali", "Stampa foto"],
-      "Comunicazione": ["Inviti", "Streaming", "Ringraziamenti", "Grafica"],
-      "Decor": ["Timeline", "Fiori", "Segnaletica", "Illuminazione"],
-      "Trasporti": ["Navette", "Parcheggi", "Taxi", "Logistica"],
-      "Extra": ["Mance", "Assicurazione", "Contingenze", "Beneficenza"],
-    },
+    budgetCategories: RETIREMENT_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "retiree", label: "Festeggiato/a" },
       { value: "family", label: "Famiglia" },
@@ -439,14 +422,14 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   confirmation: {
     name: "Cresima",
-    emoji: "­ƒò»´©Å",
+    emoji: "ï¿½ï¿½ò»´©ï¿½",
     budgetSectionTitle: "Imposta Budget per la Cresima",
     dateLabel: "Data Cresima",
     totalBudgetLabel: "Budget Familiare",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "La cresima +¿ il",
+    eventDateMessage: "La cresima +ï¿½ il",
     timelineTitle: "Timeline Cresima",
-    timelineDescription: "Guida pratica per preparare la cresima con serenit+á e cura.",
+    timelineDescription: "Guida pratica per preparare la cresima con serenit+ï¿½ e cura.",
     timelineBuckets: [
       { label: "6 mesi prima", minMonthsBefore: 6, maxMonthsBefore: INFINITY },
       { label: "4-5 mesi prima", minMonthsBefore: 4, maxMonthsBefore: 5 },
@@ -464,19 +447,11 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Scegli abito e accessori", description: "Coordinati con padrino/madrina", monthsBefore: 2.5, category: "Stile personale", priority: "media" },
       { title: "Ordina bomboniere e inviti", description: "Personalizza confetti e biglietti", monthsBefore: 2, category: "Ricordi", priority: "media" },
       { title: "Organizza foto e video", description: "Prenota fotografo o servizio streaming", monthsBefore: 1.5, category: "Ricordi", priority: "media" },
-      { title: "Conferma ospiti e men+¦", description: "Adatta men+¦ a eventuali esigenze", monthsBefore: 1, category: "Ricevimento", priority: "media" },
+      { title: "Conferma ospiti e men+ï¿½", description: "Adatta men+ï¿½ a eventuali esigenze", monthsBefore: 1, category: "Ricevimento", priority: "media" },
       { title: "Prepara kit ricordi e ringraziamenti", description: "Guestbook, lettera al cresimando", monthsBefore: 0.5, category: "Ricordi", priority: "bassa" },
       { title: "Allestisci chiesa e location", description: "Fiori, segnaposto e simboli", monthsBefore: 0.25, category: "Decor", priority: "media" },
     ],
-    budgetCategories: {
-      "Preparazione": ["Catechesi", "Ritiri", "Materiali", "Offerte"],
-      "Burocrazia": ["Documenti", "Certificati", "Marche da bollo", "Offerte parrocchia"],
-      "Stile personale": ["Abito", "Scarpe", "Parrucchiere", "Make-up"],
-      "Ricevimento": ["Location", "Catering", "Torta", "Bevande"],
-      "Ricordi": ["Bomboniere", "Confetti", "Album", "Regali padrini"],
-      "Decor": ["Fiori", "Allestimenti", "Segnaposto", "Illuminazione"],
-      "Organizzazione": ["Inviti", "Trasporti", "Fotografo", "Contingenze"],
-    },
+    budgetCategories: CONFIRMATION_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "parents", label: "Genitori" },
       { value: "godparents", label: "Padrino/Madrina" },
@@ -492,12 +467,12 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
   },
   graduation: {
     name: "Laurea",
-    emoji: "­ƒÄô",
+    emoji: "ï¿½ï¿½ï¿½ï¿½",
     budgetSectionTitle: "Imposta Budget per la Laurea",
     dateLabel: "Data Laurea",
     totalBudgetLabel: "Budget Festa",
     spendTypeLabel: "Pagato da",
-    eventDateMessage: "La laurea +¿ il",
+    eventDateMessage: "La laurea +ï¿½ il",
     timelineTitle: "Timeline Laurea",
     timelineDescription: "Segui questa tabella di marcia per arrivare alla proclamazione senza stress.",
     timelineBuckets: [
@@ -522,15 +497,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara discorso e ringraziamenti", description: "Dedica parole a famiglia e amici", monthsBefore: 0.5, category: "Tesi", priority: "media" },
       { title: "Allestisci location festa", description: "Decorazioni rosso laurea e gadget", monthsBefore: 0.25, category: "Festa", priority: "media" },
     ],
-    budgetCategories: {
-      "Burocrazia": ["Tasse", "Domanda laurea", "Marche da bollo", "Certificati"],
-      "Tesi": ["Stampa", "Rilegatura", "Grafica", "Materiali"],
-      "Festa": ["Location", "Catering", "Torta", "Bevande"],
-      "Stile personale": ["Abito", "Scarpe", "Parrucchiere", "Make-up"],
-      "Ricordi": ["Fotografo", "Video", "Bomboniere", "Album"],
-      "Comunicazione": ["Inviti", "Ringraziamenti", "Social", "Guestbook"],
-      "Extra": ["Trasporti", "Mance", "Esperienze", "Contingenze"],
-    },
+    budgetCategories: GRADUATION_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "graduate", label: "Laureando/a" },
       { value: "parents", label: "Genitori" },
@@ -554,4 +521,7 @@ export function resolveEventType(raw?: string | null): EventType {
 export function getEventConfig(eventType?: string | null): EventConfiguration {
   return EVENT_CONFIGS[resolveEventType(eventType)];
 }
+
+
+
 
