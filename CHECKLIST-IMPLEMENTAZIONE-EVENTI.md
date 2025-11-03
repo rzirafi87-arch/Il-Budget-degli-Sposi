@@ -1,0 +1,1062 @@
+# 📋 CHECKLIST IMPLEMENTAZIONE EVENTI - Il Budget degli Sposi
+
+**Data creazione**: 3 Novembre 2025  
+**Scopo**: Verificare completezza implementazione per ogni tipo di evento
+
+---
+
+## 🎯 LOGICA DELL'APPLICAZIONE
+
+### Architettura Multi-Evento
+L'applicazione gestisce diversi tipi di eventi (matrimonio, battesimo, compleanno, etc.) con questa gerarchia:
+
+```
+event_types (tabella master tipi evento)
+    ↓
+events (istanze evento utente)
+    ↓
+categories (categorie per tipo evento)
+    ↓
+subcategories (voci di spesa dettagliate)
+    ↓
+expenses / incomes (transazioni effettive)
+```
+
+### Pattern Implementazione
+Ogni evento richiede:
+1. **Database seed** - Categorie e sottocategorie predefinite
+2. **Configurazione frontend** - Entry in `events.json`
+3. **Template dati** - Struttura TypeScript opzionale
+4. **API routes** - Endpoint per dashboard e seeding
+5. **Pagina dedicata** - UI per gestione evento (opzionale)
+6. **Documentazione** - Guide setup e completamento
+
+---
+
+## 📊 MATRICE IMPLEMENTAZIONE EVENTI
+
+### Legenda
+- ✅ **COMPLETATO** - Tutti i componenti implementati e documentati
+- 🟡 **PARZIALE** - Alcune componenti mancanti
+- ❌ **NON INIZIATO** - Da implementare
+- 🔒 **BLOCCATO** - Dipendenze mancanti
+- 📝 **IN REVISIONE** - Necessita verifica
+
+---
+
+## 1️⃣ MATRIMONIO (Wedding)
+
+**Slug**: `wedding` | **Emoji**: 💍 | **Gruppo**: personale | **Available**: ✅ true
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-wedding-event-seed.sql` | 18 categorie, ~100 sottocategorie |
+| **Event Type Config** | ✅ | `events.json` | Configurato e attivo |
+| **Template TS** | ❌ | - | Non necessario (legacy compatibile) |
+| **API Dashboard** | ✅ | `/api/my/dashboard` | Usa schema legacy |
+| **API Seed** | ❌ | - | Non implementato (non necessario) |
+| **Pagina Dedicata** | ✅ | `/dashboard` | UI principale esistente |
+| **Routing `/e/[publicId]`** | ✅ | `/app/e/[publicId]/page.tsx` | Supportato |
+
+### Database Schema
+- [x] `event_types` entry: `('wedding','Matrimonio')`
+- [x] Categorie specifiche (18)
+- [x] Sottocategorie dettagliate (~100)
+- [x] Budget split (sposa/sposo/comune)
+- [x] Seed idempotente (ON CONFLICT DO NOTHING)
+
+### Features Specifiche
+- [x] Budget separati sposa/sposo
+- [x] Gestione fornitori (location, chiese, catering)
+- [x] Generazione partecipazioni PDF
+- [x] Timeline matrimonio
+- [x] Gestione invitati
+- [x] Formazione tavoli
+
+### Documentazione
+- [x] `MATRIMONIO-COMPLETAMENTO.md`
+- [x] `MATRIMONIO-SETUP-GUIDE.md`
+- [x] Sezione in `CHECKLIST_SQL_SEEDS.md`
+
+### Verifica Funzionale
+```bash
+# Test database
+SELECT COUNT(*) FROM categories WHERE type_id = (SELECT id FROM event_types WHERE slug='wedding');
+# Dovrebbe restituire 18
+
+# Test frontend
+# Vai su /select-event-type → Seleziona "Matrimonio" → Verifica redirect
+```
+
+**STATUS COMPLESSIVO**: ✅ **COMPLETO**
+
+---
+
+## 2️⃣ BATTESIMO (Baptism)
+
+**Slug**: `baptism` | **Emoji**: 👶 | **Gruppo**: famiglia | **Available**: ✅ true
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-baptism-event-seed.sql` | 9 categorie, 40 sottocategorie |
+| **Event Type Config** | ✅ | `events.json` | Configurato e attivo |
+| **Template TS** | ✅ | `src/data/templates/baptism.ts` | Multi-lingua (9 lingue) |
+| **API Dashboard** | ✅ | `/api/my/baptism-dashboard` | GET/POST implementato |
+| **API Seed** | ✅ | `/api/baptism/seed/[eventId]` | POST con parametro country |
+| **Pagina Dedicata** | 🟡 | - | Usa dashboard generica |
+| **Routing `/e/[publicId]`** | ✅ | Supportato via routing dinamico |
+
+### Database Schema
+- [x] `event_types` entry: `('baptism','Battesimo')`
+- [x] Categorie specifiche (9)
+- [x] Sottocategorie dettagliate (40)
+- [x] Campi evento specifici (nome bambino, parrocchia, padrini)
+- [x] Seed idempotente
+
+### Features Specifiche
+- [x] Campi personalizzati (padrini, parrocchia)
+- [x] Timeline 8 settimane
+- [x] Checklist cerimonia
+- [x] Multi-country support
+- [x] Percentuali budget suggerite
+- [x] Note compliance (SIAE, privacy minori)
+
+### Documentazione
+- [x] `BATTESIMO-COMPLETAMENTO.md`
+- [x] Template TypeScript documentato
+- [x] API routes documentate
+
+### Verifica Funzionale
+```bash
+# Test database
+SELECT COUNT(*) FROM subcategories 
+WHERE category_id IN (
+  SELECT id FROM categories 
+  WHERE type_id = (SELECT id FROM event_types WHERE slug='baptism')
+);
+# Dovrebbe restituire 40
+
+# Test API
+curl -X POST /api/baptism/seed/[eventId] -H "Authorization: Bearer [JWT]"
+```
+
+**STATUS COMPLESSIVO**: ✅ **COMPLETO**
+
+---
+
+## 3️⃣ DICIOTTESIMO (Eighteenth Birthday)
+
+**Slug**: `eighteenth` | **Emoji**: 🎈 | **Gruppo**: personale | **Available**: ✅ true
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-eighteenth-event-seed.sql` | Categorie complete |
+| **Event Type Config** | ✅ | `events.json` | Configurato e attivo |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | 🟡 | - | Usa dashboard generica? |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | ✅ | Supportato via routing dinamico |
+
+### Database Schema
+- [x] `event_types` entry verificato
+- [x] Categorie specifiche
+- [x] Sottocategorie dettagliate
+- [ ] Campi evento specifici (da verificare)
+- [x] Seed idempotente
+
+### Features Specifiche
+- [ ] Campi personalizzati (da definire)
+- [ ] Timeline evento (da definire)
+- [ ] Checklist specifica (da implementare)
+- [ ] Budget suggerito (da definire)
+
+### Documentazione
+- [x] `DICIOTTESIMO-COMPLETAMENTO.md`
+- [x] `DICIOTTESIMO-SETUP-GUIDE.md`
+- [ ] API documentation (mancante)
+
+### Verifica Funzionale
+```bash
+# Test database
+SELECT * FROM event_types WHERE slug='eighteenth';
+```
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database OK, API/UI da completare)
+
+---
+
+## 4️⃣ ANNIVERSARIO DI MATRIMONIO (Anniversary)
+
+**Slug**: `anniversary` | **Emoji**: 💞 | **Gruppo**: famiglia | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-anniversary-event-seed.sql` | Seed presente |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato da available=false |
+
+### Database Schema
+- [x] `event_types` entry presente
+- [x] Categorie specifiche
+- [x] Sottocategorie dettagliate
+- [ ] Integrazione frontend (bloccata)
+
+### Features Specifiche
+- [ ] Logica anni matrimonio (da implementare)
+- [ ] Milestone anniversari (25°, 50°)
+- [ ] Rinnovo promesse (opzionale)
+
+### Documentazione
+- [x] `ANNIVERSARIO-COMPLETAMENTO.md`
+- [x] `ANNIVERSARIO-SETUP-GUIDE.md`
+
+### TODO per Attivazione
+1. [ ] Implementare API routes
+2. [ ] Creare template TypeScript
+3. [ ] Testare flusso completo
+4. [ ] Settare `available: true` in `events.json`
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database OK, Frontend disabilitato)
+
+---
+
+## 5️⃣ GENDER REVEAL
+
+**Slug**: `gender-reveal` | **Emoji**: 🍼 | **Gruppo**: famiglia | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-genderreveal-event-seed.sql` | Seed completo |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [x] `event_types` entry: `('genderreveal','Gender Reveal')`
+- [x] Categorie specifiche
+- [x] Sottocategorie dettagliate
+- [x] Seed idempotente (ON CONFLICT DO NOTHING)
+
+### Features Specifiche
+- [ ] Reveal mechanism (palloncini, torta, etc.)
+- [ ] Gestione sorpresa (chi sa/chi non sa)
+- [ ] Photo/video capture
+- [ ] Tema colori (rosa/azzurro neutral)
+
+### Documentazione
+- [x] `GENDERREVEAL-COMPLETAMENTO.md`
+- [x] `GENDERREVEAL-IMPLEMENTATION-SUMMARY.md`
+- [x] `GENDERREVEAL-SETUP-GUIDE.md`
+
+### TODO per Attivazione
+1. [ ] Implementare API routes
+2. [ ] Creare template TS
+3. [ ] UI componenti specifici
+4. [ ] Test end-to-end
+5. [ ] Attivare in `events.json`
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database completo, Frontend non attivo)
+
+---
+
+## 6️⃣ COMPLEANNO (Birthday)
+
+**Slug**: `birthday` | **Emoji**: 🎂 | **Gruppo**: personale | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-birthday-seed.sql` | 10 categorie, 51 sottocategorie |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [x] `event_types` entry verificato
+- [x] Categorie specifiche (10)
+- [x] Sottocategorie dettagliate (51)
+- [x] Budget default €3.000
+- [x] Seed idempotente
+
+### Features Specifiche
+- [ ] Gestione età (bambini/adulti/milestone)
+- [ ] Temi decorativi
+- [ ] Animazione bambini
+- [ ] Lista regali
+- [ ] Timeline 2 mesi
+
+### Documentazione
+- [x] `BIRTHDAY-COMPLETAMENTO.md`
+- [x] `BIRTHDAY-IMPLEMENTATION-SUMMARY.md`
+- [x] `BIRTHDAY-SETUP-GUIDE.md`
+- [x] `BIRTHDAY-QUICK-START.md`
+- [x] `FATTO-BIRTHDAY.md`
+
+### TODO per Attivazione
+1. [ ] API routes (`/api/my/birthday-dashboard`)
+2. [ ] Template TypeScript
+3. [ ] UI specifica (opzionale)
+4. [ ] Test completo
+5. [ ] Attivare `available: true`
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Documentazione eccellente, implementazione backend mancante)
+
+---
+
+## 7️⃣ 50 ANNI (Fifty)
+
+**Slug**: `fifty` | **Emoji**: 🎉 | **Gruppo**: personale | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-50th-birthday-seed.sql` | Seed presente |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [x] Seed SQL presente
+- [ ] Verifica `event_types` entry
+- [ ] Categorie specifiche (da verificare)
+
+### Features Specifiche
+- [ ] Milestone celebration
+- [ ] Memorie e retrospettive
+- [ ] Sorprese e tributi
+- [ ] Budget medio-alto
+
+### Documentazione
+- [ ] File COMPLETAMENTO (mancante)
+- [ ] Setup guide (mancante)
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Solo seed database)
+
+---
+
+## 8️⃣ PENSIONE (Retirement)
+
+**Slug**: `retirement` | **Emoji**: 🧳 | **Gruppo**: famiglia | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ❓ | Da verificare | Seed esistente? |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [ ] Verifica seed esistente
+- [ ] Event type entry
+- [ ] Categorie specifiche
+
+### Features Specifiche
+- [ ] Celebrazione carriera
+- [ ] Regali colleghi
+- [ ] Cena/pranzo formale
+- [ ] Video tributo
+
+### Documentazione
+- [x] `PENSIONE-COMPLETAMENTO.md`
+- [x] `PENSIONE-IMPLEMENTATION-SUMMARY.md`
+- [x] `PENSIONE-SETUP-GUIDE.md`
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Documentazione presente, implementazione da verificare)
+
+---
+
+## 9️⃣ CRESIMA (Confirmation)
+
+**Slug**: `confirmation` | **Emoji**: ✝️ | **Gruppo**: famiglia | **Available**: ✅ true
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-confirmation-event-seed.sql` | Seed completo |
+| **Event Type Config** | ✅ | `events.json` | Configurato e attivo |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | ✅ | Supportato via routing dinamico |
+
+### Database Schema
+- [x] `event_types` entry presente
+- [x] Categorie specifiche
+- [x] Sottocategorie dettagliate
+- [x] Seed idempotente
+
+### Features Specifiche
+- [ ] Campi padrino/madrina
+- [ ] Parrocchia e celebrante
+- [ ] Catechismo e preparazione
+- [ ] Ricevimento post-cerimonia
+
+### Documentazione
+- [x] `CRESIMA-COMPLETAMENTO.md`
+- [x] `CRESIMA-IMPLEMENTATION-SUMMARY.md`
+- [x] `CRESIMA-SETUP-GUIDE.md`
+
+### TODO
+1. [ ] API routes
+2. [ ] Template TypeScript
+3. [ ] Test funzionale
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database OK, API da implementare)
+
+---
+
+## 🔟 LAUREA (Graduation)
+
+**Slug**: `graduation` | **Emoji**: 🎓 | **Gruppo**: personale | **Available**: ✅ true
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-graduation-event-seed.sql` | Seed completo |
+| **Event Type Config** | ✅ | `events.json` | Configurato e attivo |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | ✅ | Supportato |
+
+### Database Schema
+- [x] `event_types` entry: `('graduation','Laurea')`
+- [x] Categorie specifiche
+- [x] Sottocategorie dettagliate
+- [x] Seed idempotente
+
+### Features Specifiche
+- [ ] Tipologia laurea (triennale/magistrale/dottorato)
+- [ ] Facoltà e università
+- [ ] Cerimonia accademica
+- [ ] Festeggiamenti post-laurea
+- [ ] Corona di alloro
+- [ ] Pergamena e toga
+
+### Documentazione
+- [x] `LAUREA-COMPLETAMENTO.md`
+- [x] `LAUREA-SETUP-GUIDE.md`
+
+### TODO
+1. [ ] API routes complete
+2. [ ] Template TypeScript
+3. [ ] Test end-to-end
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database completo, API mancanti)
+
+---
+
+## 1️⃣1️⃣ BABY SHOWER
+
+**Slug**: `baby-shower` | **Emoji**: 🧸 | **Gruppo**: famiglia | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-babyshower-event-seed.sql` | Seed completo |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [x] `event_types` entry presente
+- [x] Categorie specifiche
+- [x] Sottocategorie dettagliate
+- [x] Seed idempotente
+
+### Features Specifiche
+- [ ] Gestione genere bebè (se noto)
+- [ ] Lista regali nascita
+- [ ] Giochi baby shower
+- [ ] Temi decorativi
+- [ ] Torta e dolci personalizzati
+
+### Documentazione
+- [x] `BABYSHOWER-COMPLETAMENTO.md`
+- [x] `BABYSHOWER-IMPLEMENTATION-SUMMARY.md`
+- [x] `BABYSHOWER-SETUP-GUIDE.md`
+
+### TODO per Attivazione
+1. [ ] API routes
+2. [ ] Template TS
+3. [ ] UI componenti
+4. [ ] Test
+5. [ ] Attivare in config
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database e docs OK, frontend mancante)
+
+---
+
+## 1️⃣2️⃣ FESTA DI FIDANZAMENTO (Engagement Party)
+
+**Slug**: `engagement` | **Emoji**: 💘 | **Gruppo**: personale | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-engagement-party-seed.sql` | 11 categorie, 58 sottocategorie |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [x] `event_types` entry presente
+- [x] Categorie specifiche (11)
+- [x] Sottocategorie dettagliate (58)
+- [x] Budget €5.000 default
+- [x] Seed idempotente
+
+### Features Specifiche
+- [ ] Cerimonia scambio anelli
+- [ ] Stile (Natural Chic/Boho/Elegante)
+- [ ] Palette colori (Oro/Beige/Salvia)
+- [ ] Storia coppia display
+- [ ] Photobooth personalizzato
+
+### Documentazione
+- [x] `ENGAGEMENT-PARTY-COMPLETAMENTO.md`
+- [x] `ENGAGEMENT-PARTY-IMPLEMENTATION-SUMMARY.md`
+- [x] `ENGAGEMENT-PARTY-QUICK-START.md`
+- [x] `ENGAGEMENT-PARTY-README.md`
+- [x] `ENGAGEMENT-PARTY-SETUP-GUIDE.md`
+- [x] `FATTO-ENGAGEMENT-PARTY.md`
+
+### TODO per Attivazione
+1. [ ] API `/api/my/engagement-dashboard` (GET/POST)
+2. [ ] API `/api/engagement/seed/[eventId]` (POST)
+3. [ ] Template TypeScript
+4. [ ] Test funzionale completo
+5. [ ] Settare `available: true`
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Documentazione eccellente, implementazione backend mancante)
+
+---
+
+## 1️⃣3️⃣ FESTA PROPOSTA (Proposal Party)
+
+**Slug**: `proposal` | **Emoji**: 💍 | **Gruppo**: personale | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ❌ | - | Non implementato |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [ ] Event type entry (da creare)
+- [ ] Categorie (da definire)
+- [ ] Sottocategorie (da definire)
+
+### Features Specifiche
+- [ ] Pianificazione sorpresa
+- [ ] Location romantica
+- [ ] Fotoreporter nascosto
+- [ ] Anello e presentazione
+- [ ] Testimoni/amici complici
+
+### Documentazione
+- [ ] Nessuna documentazione presente
+
+**STATUS COMPLESSIVO**: ❌ **NON INIZIATO**
+
+---
+
+## 1️⃣4️⃣ COMUNIONE (Communion)
+
+**Slug**: `communion` | **Emoji**: ✝️ | **Gruppo**: famiglia | **Available**: ✅ true
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ✅ | `supabase-communion-event-seed.sql` | Seed completo |
+| **Event Type Config** | ✅ | `events.json` | Configurato e attivo |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | ✅ | Supportato |
+
+### Database Schema
+- [x] `event_types` entry presente
+- [x] Categorie specifiche
+- [x] Sottocategorie dettagliate
+- [x] Seed idempotente
+
+### Features Specifiche
+- [ ] Campi bambino/a
+- [ ] Parrocchia e catechismo
+- [ ] Abito comunione
+- [ ] Ricevimento famiglia
+- [ ] Bomboniere religiose
+
+### Documentazione
+- [x] `COMUNIONE-COMPLETAMENTO.md`
+- [x] `COMUNIONE-IMPLEMENTATION-SUMMARY.md`
+- [x] `COMUNIONE-SETUP-GUIDE.md`
+
+### TODO
+1. [ ] API routes
+2. [ ] Template TS
+3. [ ] Test funzionale
+
+**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database OK, API da implementare)
+
+---
+
+## 1️⃣5️⃣ BAR MITZVAH
+
+**Slug**: `bar-mitzvah` | **Emoji**: 🕎 | **Gruppo**: famiglia | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ❌ | - | Non implementato |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [ ] Event type entry (da creare)
+- [ ] Categorie specifiche ebraiche
+- [ ] Sottocategorie religiose
+
+### Features Specifiche
+- [ ] Sinagoga e rabbino
+- [ ] Torah reading
+- [ ] Ricevimento kosher
+- [ ] Tradizioni ebraiche
+- [ ] Kippah e tallit
+
+### Documentazione
+- [ ] Nessuna documentazione
+
+**STATUS COMPLESSIVO**: ❌ **NON INIZIATO**
+
+---
+
+## 1️⃣6️⃣ QUINCEAÑERA
+
+**Slug**: `quinceanera` | **Emoji**: 👗 | **Gruppo**: famiglia | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ❌ | - | Non implementato |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [ ] Event type entry (da creare)
+- [ ] Categorie tradizione latina
+- [ ] Sottocategorie specifiche
+
+### Features Specifiche
+- [ ] Corte de honor (14 damigelle + 14 cavalieri)
+- [ ] Valzer con il padre
+- [ ] Cambio scarpe
+- [ ] Tiara e corona
+- [ ] Messa di ringraziamento
+- [ ] Tradizioni messicane/latine
+
+### Documentazione
+- [ ] Nessuna documentazione
+
+**STATUS COMPLESSIVO**: ❌ **NON INIZIATO**
+
+---
+
+## 1️⃣7️⃣ EVENTO AZIENDALE (Corporate)
+
+**Slug**: `corporate` | **Emoji**: 🏢 | **Gruppo**: professionale | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ❌ | - | Non implementato |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [ ] Event type entry (da creare)
+- [ ] Categorie business
+- [ ] Sottocategorie corporate
+
+### Features Specifiche
+- [ ] Team building
+- [ ] Conferenze e seminari
+- [ ] Catering business
+- [ ] Branding e sponsorship
+- [ ] Audio/video professionale
+- [ ] Networking events
+
+### Documentazione
+- [ ] Nessuna documentazione
+
+**STATUS COMPLESSIVO**: ❌ **NON INIZIATO**
+
+---
+
+## 1️⃣8️⃣ EVENTO CULTURALE/CHARITY/GALA
+
+**Slug**: `charity-gala` | **Emoji**: 🎗️ | **Gruppo**: professionale | **Available**: ❌ false
+
+### Componenti Core
+| Componente | Stato | File | Note |
+|------------|-------|------|------|
+| **Database Seed** | ❌ | - | Non implementato |
+| **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
+| **Template TS** | ❌ | - | Non implementato |
+| **API Dashboard** | ❌ | - | Non implementato |
+| **API Seed** | ❌ | - | Non implementato |
+| **Pagina Dedicata** | ❌ | - | Non implementata |
+| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+
+### Database Schema
+- [ ] Event type entry (da creare)
+- [ ] Categorie fundraising
+- [ ] Sottocategorie gala
+
+### Features Specifiche
+- [ ] Raccolta fondi
+- [ ] Aste benefiche
+- [ ] Sponsor management
+- [ ] Dress code formale
+- [ ] Cerimonia premiazione
+- [ ] Live streaming
+
+### Documentazione
+- [ ] Nessuna documentazione
+
+**STATUS COMPLESSIVO**: ❌ **NON INIZIATO**
+
+---
+
+## 📊 RIEPILOGO GENERALE
+
+### Per Stato di Completamento
+
+| Stato | Conteggio | Eventi |
+|-------|-----------|--------|
+| ✅ **COMPLETO** | 1 | Matrimonio |
+| 🟡 **PARZIALE** | 11 | Battesimo, Diciottesimo, Anniversario, Gender Reveal, Compleanno, 50 anni, Pensione, Cresima, Laurea, Baby Shower, Engagement |
+| ❌ **NON INIZIATO** | 5 | Proposal, Comunione (da rivedere), Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
+| **TOTALE** | **18** | |
+
+### Per Available Status
+
+| Available | Conteggio | Eventi |
+|-----------|-----------|--------|
+| ✅ **true** | 6 | Wedding, Baptism, Eighteenth, Confirmation, Graduation, Communion |
+| ❌ **false** | 12 | Anniversary, Gender Reveal, Birthday, Fifty, Retirement, Baby Shower, Engagement, Proposal, Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
+
+---
+
+## 🎯 CHECKLIST STANDARD PER OGNI EVENTO
+
+Usa questa checklist per implementare un nuovo evento o completare uno esistente:
+
+### 1. DATABASE ✅
+- [ ] Creare file `supabase-[slug]-event-seed.sql`
+- [ ] Definire entry in `event_types`: `('[slug]','[Nome]')`
+- [ ] Creare categorie appropriate (min 5, max 20)
+- [ ] Creare sottocategorie dettagliate (min 30, max 100)
+- [ ] Usare `ON CONFLICT DO NOTHING` per idempotenza
+- [ ] Aggiungere sort_order per ordinamento
+- [ ] Testare seed: `node scripts/run-sql.mjs supabase-[slug]-event-seed.sql`
+
+### 2. CONFIGURAZIONE FRONTEND 🎨
+- [ ] Aggiungere entry in `src/data/config/events.json`:
+  ```json
+  {
+    "slug": "event-slug",
+    "label": "Nome Evento",
+    "emoji": "🎉",
+    "group": "personale|famiglia|professionale",
+    "available": true
+  }
+  ```
+- [ ] Verificare che emoji sia unica o appropriata
+- [ ] Settare `available: false` durante sviluppo
+- [ ] Settare `available: true` solo quando tutto è pronto
+
+### 3. TEMPLATE TYPESCRIPT (Opzionale ma consigliato) 📝
+- [ ] Creare `src/data/templates/[slug].ts`
+- [ ] Definire interfaccia `[EventName]Event extends BaseEvent`
+- [ ] Implementare campi evento specifici
+- [ ] Creare template categorie/sottocategorie
+- [ ] Aggiungere percentuali budget suggerite
+- [ ] Implementare checklist timeline
+- [ ] Aggiungere note compliance (legali, privacy, etc.)
+- [ ] Creare funzione `create[EventName]Seed(db, eventId, country)`
+- [ ] Supportare multi-lingua (min italiano + inglese)
+
+### 4. API ROUTES 🔌
+- [ ] Creare `/api/[slug]/seed/[eventId]` (POST)
+  - [ ] Autenticazione JWT
+  - [ ] Verifica ownership evento
+  - [ ] Seed categorie/sottocategorie
+  - [ ] Parametro `country` per localizzazione
+  - [ ] Return: `{ success: true, categories: X, subcategories: Y }`
+  
+- [ ] Creare `/api/my/[slug]-dashboard` (GET/POST)
+  - [ ] GET: Recupera dati evento con categorie/sottocategorie
+  - [ ] POST: Salva modifiche spese
+  - [ ] Calcola totali e budget rimanente
+  - [ ] Support per demo mode (no JWT = dati vuoti)
+  
+- [ ] Aggiungere `export const runtime = "nodejs"` in ogni route
+
+### 5. UI COMPONENTI (Opzionale) 🖥️
+- [ ] Creare pagina dedicata `/app/[slug]/page.tsx` (opzionale)
+- [ ] O riusare dashboard generica (`/dashboard`)
+- [ ] Implementare campi personalizzati evento
+- [ ] UI per categorie/sottocategorie specifiche
+- [ ] Form validazione
+- [ ] Calcolo budget real-time
+- [ ] Export/import dati (opzionale)
+
+### 6. ROUTING DINAMICO 🔀
+- [ ] Verificare che `/app/e/[publicId]/page.tsx` supporti il tipo evento
+- [ ] Testare redirect da `/select-event-type`
+- [ ] Verificare cookie/localStorage: `eventType=[slug]`
+- [ ] Test link condivisione pubblico
+
+### 7. DOCUMENTAZIONE 📚
+- [ ] Creare `[SLUG]-COMPLETAMENTO.md`:
+  - [ ] Stato attuale
+  - [ ] File creati/modificati
+  - [ ] Struttura categorie/sottocategorie
+  - [ ] Features implementate
+  - [ ] Esempi query SQL
+  
+- [ ] Creare `[SLUG]-SETUP-GUIDE.md`:
+  - [ ] Prerequisiti
+  - [ ] Installazione step-by-step
+  - [ ] Comandi SQL
+  - [ ] Testing
+  - [ ] Troubleshooting
+  
+- [ ] Opzionale: `[SLUG]-QUICK-START.md` (versione 3 minuti)
+- [ ] Opzionale: `[SLUG]-IMPLEMENTATION-SUMMARY.md`
+- [ ] Aggiornare `CHECKLIST_SQL_SEEDS.md`
+
+### 8. TESTING 🧪
+- [ ] Test database:
+  ```sql
+  SELECT COUNT(*) FROM categories 
+  WHERE type_id = (SELECT id FROM event_types WHERE slug='[slug]');
+  
+  SELECT COUNT(*) FROM subcategories 
+  WHERE category_id IN (
+    SELECT id FROM categories 
+    WHERE type_id = (SELECT id FROM event_types WHERE slug='[slug]')
+  );
+  ```
+
+- [ ] Test API (unauthenticated):
+  ```bash
+  curl http://localhost:3000/api/my/[slug]-dashboard
+  # Dovrebbe restituire dati demo vuoti
+  ```
+
+- [ ] Test API (authenticated):
+  ```bash
+  curl -H "Authorization: Bearer [JWT]" \
+       http://localhost:3000/api/my/[slug]-dashboard
+  # Dovrebbe restituire dati utente
+  ```
+
+- [ ] Test frontend:
+  - [ ] Vai su `/select-event-type`
+  - [ ] Seleziona evento
+  - [ ] Verifica redirect corretto
+  - [ ] Controlla localStorage/cookie
+  - [ ] Test dashboard/spese
+  - [ ] Verifica calcoli budget
+
+- [ ] Test end-to-end:
+  - [ ] Signup nuovo utente
+  - [ ] Selezione tipo evento
+  - [ ] Creazione evento automatica
+  - [ ] Seed automatico categorie
+  - [ ] Aggiunta spese
+  - [ ] Salvataggio persistente
+  - [ ] Logout/login
+  - [ ] Verifica dati recuperati
+
+### 9. FEATURES AVANZATE (Opzionali) 🚀
+- [ ] Multi-country support
+- [ ] Multi-language (i18n)
+- [ ] Suggerimenti budget intelligenti
+- [ ] Template predefiniti (minimal/standard/lusso)
+- [ ] Integrazione fornitori
+- [ ] Export PDF/Excel
+- [ ] Condivisione sociale
+- [ ] Analytics e statistiche
+- [ ] Promemoria e notifiche
+- [ ] Collaborazione partner/famiglia
+
+### 10. GO-LIVE ✈️
+- [ ] Code review completo
+- [ ] Test su ambiente staging
+- [ ] Backup database
+- [ ] Run seed su production Supabase
+- [ ] Deploy frontend (Vercel)
+- [ ] Settare `available: true` in `events.json`
+- [ ] Monitoring post-deploy (24h)
+- [ ] Raccolta feedback utenti
+- [ ] Iterazione e miglioramenti
+
+---
+
+## 🔧 SCRIPT AUTOMATICI DISPONIBILI
+
+### Database Setup
+```bash
+# Schema base + patches
+node scripts/run-sql.mjs supabase-COMPLETE-SETUP.sql supabase-ALL-PATCHES.sql
+
+# Seed specifico evento
+node scripts/run-sql.mjs supabase-[slug]-event-seed.sql
+
+# Seed multipli
+node scripts/run-sql.mjs supabase-wedding-event-seed.sql \
+                         supabase-baptism-event-seed.sql \
+                         supabase-birthday-seed.sql
+```
+
+### Verifica
+```bash
+# Check event types
+node scripts/run-sql.mjs <<EOF
+SELECT slug, name FROM event_types ORDER BY slug;
+EOF
+
+# Count categorie per evento
+node scripts/run-sql.mjs <<EOF
+SELECT et.slug, COUNT(c.id) as categories
+FROM event_types et
+LEFT JOIN categories c ON c.type_id = et.id
+GROUP BY et.slug
+ORDER BY categories DESC;
+EOF
+```
+
+---
+
+## 📈 PRIORITÀ IMPLEMENTAZIONE
+
+### Alta Priorità (Q4 2025)
+1. **Compleanno (Birthday)** - Documentazione già eccellente
+2. **Engagement Party** - Documenti completi, serve solo API
+3. **Baby Shower** - Richiesta alta, documenti OK
+
+### Media Priorità (Q1 2026)
+4. **Anniversario** - Database OK, serve frontend
+5. **Gender Reveal** - Trend in crescita
+6. **Pensione** - Mercato senior in espansione
+
+### Bassa Priorità (Q2 2026+)
+7. **Proposal Party** - Nicchia molto specifica
+8. **Bar Mitzvah** - Comunità target limitata
+9. **Quinceañera** - Mercato latino (espansione geografica)
+10. **Corporate Events** - B2B (diverso target)
+11. **Charity Gala** - Non-profit (logica diversa)
+
+---
+
+## 🎓 BEST PRACTICES
+
+### Naming Conventions
+- **Slug**: kebab-case, inglese (es: `baby-shower`)
+- **Label**: Italiano, capital case (es: "Baby Shower")
+- **File SQL**: `supabase-[slug]-event-seed.sql`
+- **Docs**: `[SLUG-UPPERCASE]-[TIPO].md`
+- **API**: `/api/[slug]/...` o `/api/my/[slug]-dashboard`
+
+### Database
+- Sempre `ON CONFLICT DO NOTHING` per idempotenza
+- Foreign keys con `ON DELETE CASCADE`
+- Timestamp: `inserted_at`, `updated_at` con default NOW()
+- UUID primary keys con `uuid_generate_v4()`
+
+### API
+- JWT verification in tutte le route POST/PUT/DELETE
+- Demo mode per GET senza JWT (dati vuoti)
+- Gestione errori: `{ error: "Messaggio", status: 401/404/500 }`
+- Success: `{ success: true, data: {...} }`
+
+### Frontend
+- `"use client"` per componenti interattivi
+- `getBrowserClient()` per Supabase client-side
+- `fetch()` con header `Authorization: Bearer ${jwt}`
+- Validazione input lato client + server
+
+### Documentazione
+- Markdown con syntax highlighting
+- Esempi copy-paste ready
+- Screenshots UI (opzionale)
+- Troubleshooting section sempre presente
+
+---
+
+## 📞 SUPPORTO
+
+Per domande sull'implementazione:
+1. Consulta questa checklist
+2. Leggi `COMPLETAMENTO.md` dell'evento simile
+3. Controlla `SETUP-GUIDE.md` eventi esistenti
+4. Vedi `.github/copilot-instructions.md` per pattern architetturali
+
+---
+
+**Ultimo aggiornamento**: 3 Novembre 2025  
+**Versione**: 1.0.0  
+**Maintainer**: AI Coding Agent
