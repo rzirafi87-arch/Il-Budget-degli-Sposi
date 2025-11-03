@@ -30,7 +30,8 @@ export default function EntratePage() {
   const isConfirmation = userEventType === "confirmation";
   const isBirthday = userEventType === "birthday";
   const isEighteenth = userEventType === "eighteenth";
-  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth;
+  const isGraduation = userEventType === "graduation";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation;
   const isWedding = userEventType === "wedding";
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);

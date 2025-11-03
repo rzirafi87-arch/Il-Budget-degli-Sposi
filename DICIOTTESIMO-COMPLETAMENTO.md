@@ -96,11 +96,32 @@ L'evento "Diciottesimo" (18th Birthday Party) è **100% completo** nel sistema m
 - Diciottesimo selezionabile
 - Redirect a `/dashboard` quando selezionato
 
-#### `dashboard/page.tsx`
+#### `dashboard/page.tsx` ✅ **COMPLETATO OGGI**
+- **Messaggio single-budget**: "Per il diciottesimo compleanno, il budget è gestito come evento unico. Perfetto per celebrare la maggiore età!"
 - Chiama `ensure-default` con `eventType` all'avvio
 - Componente `BudgetSummary` già gestisce diciottesimo con logica `isSingle`
   - Un solo campo "Budget Totale" (no divisione sposa/sposo)
   - Label dinamica: "Data Festa"
+
+#### `spese/page.tsx` ✅ **COMPLETATO OGGI**
+- **Logica single-budget**:
+  ```typescript
+  const isEighteenth = userEventType === "eighteenth";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth;
+  ```
+- Force `spendType="common"` per diciottesimo
+- Nasconde opzioni "Sposa"/"Sposo" nel form
+- Frontend completamente integrato
+
+#### `entrate/page.tsx` ✅ **COMPLETATO OGGI**
+- **Logica single-budget**:
+  ```typescript
+  const isEighteenth = userEventType === "eighteenth";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth;
+  ```
+- Force `incomeSource="common"` per diciottesimo
+- Nasconde opzioni "Sposa"/"Sposo" nel form
+- Mappatura incomes forzata a "common"
 
 #### `NavTabs.tsx`
 - Tabs dedicati per diciottesimo:
@@ -120,22 +141,41 @@ L'evento "Diciottesimo" (18th Birthday Party) è **100% completo** nel sistema m
 
 ## 🗂️ File Modificati/Creati
 
-### File Creati
+### File Creati (già esistenti prima della verifica)
 ```
 ✅ supabase-eighteenth-event-seed.sql
-   - Schema completo DB diciottesimo
+   - Schema completo DB diciottesimo (11 categorie, ~50 sottocategorie)
 
 ✅ src/data/templates/eighteenth.ts
-   - Template categorie, timeline, budget %
+   - Template categorie, timeline, budget % (270 righe)
 
 ✅ src/app/api/eighteenth/seed/[eventId]/route.ts
-   - Endpoint seed categorie
+   - Endpoint seed categorie (POST con JWT auth)
 
 ✅ src/app/api/my/eighteenth-dashboard/route.ts
    - GET/POST dashboard diciottesimo
 ```
 
-### File Modificati
+### File Modificati (durante questa verifica)
+```
+✅ src/app/dashboard/page.tsx
+   - Aggiunto: eighteenth: "Per il diciottesimo compleanno..."
+   - Messaggio single-budget specifico
+
+✅ src/app/spese/page.tsx
+   - Aggiunto: const isEighteenth = userEventType === "eighteenth"
+   - Aggiunto isEighteenth a isSingleBudgetEvent
+   - Commento aggiornato per includere eighteenth
+
+✅ src/app/entrate/page.tsx
+   - Aggiunto: const isEighteenth = userEventType === "eighteenth"
+   - Aggiunto isEighteenth a isSingleBudgetEvent
+
+✅ DICIOTTESIMO-COMPLETAMENTO.md
+   - Aggiornato con stato 100%, tabella componenti, sezione test
+```
+
+### File Già Completi (nessuna modifica necessaria)
 ```
 ✅ src/data/config/events.json
    - "eighteenth": { available: true }
@@ -342,6 +382,76 @@ WHERE et.slug = 'eighteenth';
 
 ---
 
+## ✅ Procedura di Test e Verifica
+
+### Test Backend
+```sql
+-- 1. Verifica event_type esistente
+SELECT * FROM event_types WHERE slug = 'eighteenth';
+
+-- 2. Verifica categorie seed
+SELECT c.name, COUNT(s.id) as subcategories
+FROM categories c
+LEFT JOIN subcategories s ON s.category_id = c.id
+WHERE c.event_id IN (SELECT id FROM events WHERE event_type = 'eighteenth')
+GROUP BY c.name
+ORDER BY c.name;
+-- Expected: 11 categorie, ~50 sottocategorie totali
+
+-- 3. Verifica template TypeScript
+-- File: src/data/templates/eighteenth.ts
+-- Funzioni: getEighteenthTemplate(), getEighteenthBudgetPercentages()
+
+-- 4. Test API seed endpoint
+-- POST /api/eighteenth/seed/[eventId]?country=it
+-- Richiede JWT valido
+
+-- 5. Test API dashboard
+-- GET /api/my/eighteenth-dashboard
+-- Ritorna template vuoto se non autenticato
+-- Ritorna categorie reali se autenticato + evento esiste
+```
+
+### Test Frontend
+```typescript
+// 1. Seleziona evento Diciottesimo
+// → Vai a /select-event-type
+// → Clicca su "Diciottesimo"
+// → Verifica redirect a /dashboard
+
+// 2. Verifica Dashboard
+// → Messaggio: "Per il diciottesimo compleanno, il budget è gestito come evento unico..."
+// → Campo singolo "Budget Totale" (no bride/groom)
+// → Label "Data Festa"
+
+// 3. Test Pagina Spese
+// → Aggiungi nuova spesa
+// → Verifica che campo spend_type sia nascosto (forzato a "common")
+// → Solo opzione "Comune" visibile
+
+// 4. Test Pagina Entrate
+// → Aggiungi nuova entrata
+// → Verifica che campo incomeSource sia nascosto (forzato a "common")
+// → Solo opzione "Comune" visibile
+
+// 5. TypeScript Check
+npm run build
+// → No errori di compilazione
+// → isEighteenth definito correttamente
+// → isSingleBudgetEvent include eighteenth
+```
+
+### Risultati Attesi
+- ✅ 11 categorie create
+- ✅ ~50 sottocategorie create
+- ✅ Tutte le spese con spend_type="common"
+- ✅ Tutte le entrate con incomeSource="common"
+- ✅ Nessun errore TypeScript
+- ✅ UI mostra solo opzione "Comune" (no Sposa/Sposo)
+- ✅ Messaggio single-budget visibile in dashboard
+
+---
+
 ## 💰 Budget Medio Riferimento
 
 **Italia (2025)**:
@@ -366,6 +476,14 @@ WHERE et.slug = 'eighteenth';
 5. **Black & White** - Classico bianco e nero
 6. **Boho** - Stile bohemien, piume, macramè
 7. **Vintage** - Anni '20, '50, '80
+
+---
+
+**Creato**: Dicembre 2024  
+**Aggiornato**: 2025-11-03  
+**Versione**: 2.0  
+**Autore**: AI Copilot + rzirafi87-arch  
+**Status**: ✅ Production Ready - 100% Completo
 
 ---
 
