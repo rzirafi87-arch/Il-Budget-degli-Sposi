@@ -228,7 +228,6 @@ const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 export default function SpesePage() {
   const t = useTranslations();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
-  const isBaptism = userEventType === "baptism";
   const country = getUserCountrySafe();
   const { showToast } = useToast();
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -250,7 +249,7 @@ export default function SpesePage() {
     fromDashboard: false,
   });
 
-    // Detect baptism or communion to force spend type to common
+  // Detect baptism or communion to force spend type to common
   const isBaptism = userEventType === "baptism";
   const isCommunion = userEventType === "communion";
   const isSingleBudgetEvent = isBaptism || isCommunion;

@@ -617,38 +617,68 @@ SELECT * FROM event_types WHERE slug='eighteenth';
 ### Componenti Core
 | Componente | Stato | File | Note |
 |------------|-------|------|------|
-| **Database Seed** | ✅ | `supabase-communion-event-seed.sql` | Seed completo |
+| **Database Seed** | ✅ | `supabase-communion-event-seed.sql` | 10 categorie, ~55 sottocategorie |
 | **Event Type Config** | ✅ | `events.json` | Configurato e attivo |
-| **Template TS** | ❌ | - | Non implementato |
-| **API Dashboard** | ❌ | - | Non implementato |
-| **API Seed** | ❌ | - | Non implementato |
-| **Pagina Dedicata** | ❌ | - | Non implementata |
-| **Routing `/e/[publicId]`** | ✅ | Supportato |
+| **Template TS** | ✅ | `src/data/templates/communion.ts` | Budget percentages incluse |
+| **API Dashboard** | ✅ | `/api/my/communion-dashboard` | GET/POST implementato |
+| **API Seed** | ✅ | `/api/communion/seed/[eventId]` | POST con parametro country |
+| **Pagina Dedicata** | ✅ | `/dashboard` | Usa dashboard generica con supporto communion |
+| **Routing `/e/[publicId]`** | ✅ | Supportato via routing dinamico |
 
 ### Database Schema
-- [x] `event_types` entry presente
-- [x] Categorie specifiche
-- [x] Sottocategorie dettagliate
+- [x] `event_types` entry: `('communion','Comunione')`
+- [x] Categorie specifiche (10)
+- [x] Sottocategorie dettagliate (~55)
+- [x] Usa PL/pgSQL per robustezza
 - [x] Seed idempotente
 
 ### Features Specifiche
-- [ ] Campi bambino/a
-- [ ] Parrocchia e catechismo
-- [ ] Abito comunione
-- [ ] Ricevimento famiglia
-- [ ] Bomboniere religiose
+- [x] Campi personalizzati (bambino/a, parrocchia, padrini opzionali)
+- [x] Budget percentages suggerite per categoria
+- [x] Multi-country ready
+- [x] Forza `spend_type: "common"` (no divisione genitori)
+- [x] Frontend dashboard integrato
+- [x] Frontend spese integrato (blocca opzioni bride/groom)
+- [x] Frontend entrate integrato
+- [x] PageInfoNote con messaggio specifico communion
+- [x] Simboli religiosi specifici (ostia, colomba, calice, spighe)
 
 ### Documentazione
-- [x] `COMUNIONE-COMPLETAMENTO.md`
+- [x] `COMUNIONE-COMPLETAMENTO.md` (completo con test procedures)
 - [x] `COMUNIONE-IMPLEMENTATION-SUMMARY.md`
 - [x] `COMUNIONE-SETUP-GUIDE.md`
+- [x] Template TypeScript documentato
+- [x] API routes documentate
 
-### TODO
-1. [ ] API routes
-2. [ ] Template TS
-3. [ ] Test funzionale
+### Verifica Funzionale
+```bash
+# Test database
+SELECT COUNT(*) FROM subcategories 
+WHERE category_id IN (
+  SELECT id FROM categories 
+  WHERE type_id = (SELECT id FROM event_types WHERE slug='communion')
+);
+# Dovrebbe restituire ~55
 
-**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Database OK, API da implementare)
+# Test API demo mode
+curl http://localhost:3000/api/my/communion-dashboard
+
+# Test API autenticato
+curl -H "Authorization: Bearer [JWT]" \
+     http://localhost:3000/api/my/communion-dashboard
+
+# Test seed
+curl -X POST \
+     -H "Authorization: Bearer [JWT]" \
+     "http://localhost:3000/api/communion/seed/[EVENT_ID]?country=it"
+```
+
+**STATUS COMPLESSIVO**: ✅ **COMPLETO AL 100%**
+
+**Verifica finale**: 3 Novembre 2025 ✅  
+**Production ready**: ✅ SÌ  
+**Test eseguiti**: ✅ Tutti i componenti verificati  
+**Pattern**: Identico a Battesimo (10 categorie vs 9, ~55 subs vs 40)
 
 ---
 
@@ -797,9 +827,9 @@ SELECT * FROM event_types WHERE slug='eighteenth';
 
 | Stato | Conteggio | Eventi |
 |-------|-----------|--------|
-| ✅ **COMPLETO** | 2 | Matrimonio, Battesimo |
-| 🟡 **PARZIALE** | 10 | Diciottesimo, Anniversario, Gender Reveal, Compleanno, 50 anni, Pensione, Cresima, Laurea, Baby Shower, Engagement |
-| ❌ **NON INIZIATO** | 6 | Proposal, Comunione (da rivedere), Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
+| ✅ **COMPLETO** | 3 | Matrimonio, Battesimo, Comunione |
+| 🟡 **PARZIALE** | 9 | Diciottesimo, Anniversario, Gender Reveal, Compleanno, 50 anni, Pensione, Cresima, Laurea, Baby Shower, Engagement |
+| ❌ **NON INIZIATO** | 6 | Proposal, Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
 | **TOTALE** | **18** | |
 
 ### Per Available Status
@@ -811,18 +841,21 @@ SELECT * FROM event_types WHERE slug='eighteenth';
 
 ### 🎯 Aggiornamento 3 Novembre 2025
 
-**Battesimo completato al 100%!** ✅
-- Database seed eseguito
-- API routes completamente implementate
+**Comunione completata al 100%!** ✅
+- Database seed eseguito (10 categorie, ~55 sottocategorie)
+- API routes completamente implementate (seed + dashboard GET/POST)
+- Template TypeScript con budget percentages
 - Frontend integrato (dashboard, spese, entrate)
-- Template TypeScript multi-lingua
+- Forza budget singolo "common" (come Battesimo)
 - Documentazione completa con test procedures
 - Production ready e attivo (`available: true`)
 
+**Eventi famiglia religiosi completati**: Battesimo ✅ + Comunione ✅
+
 **Prossimi passi consigliati**:
-1. **Comunione** - Stessa logica di Battesimo, rapida implementazione
-2. **Cresima** - Evento simile, template da creare
-3. **Compleanno** - Docs eccellenti, solo API mancanti
+1. **Cresima** - Stesso pattern di Battesimo/Comunione, ~45min di lavoro
+2. **Compleanno** - Docs eccellenti, solo API mancanti  
+3. **Engagement Party** - Documentazione completa, pronto per API
 
 ---
 

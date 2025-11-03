@@ -26,6 +26,8 @@ export default function EntratePage() {
   const country = getUserCountrySafe();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isBaptism = userEventType === "baptism";
+  const isCommunion = userEventType === "communion";
+  const isSingleBudgetEvent = isBaptism || isCommunion;
   const isWedding = userEventType === "wedding";
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,12 +44,12 @@ export default function EntratePage() {
     date: new Date().toISOString().split("T")[0],
   });
 
-  // For Battesimo, keep income source to common only
+    // For single-budget events (baptism, communion), force incomeSource to common
   useEffect(() => {
-    if (isBaptism && newIncome.incomeSource !== "common") {
+    if (isSingleBudgetEvent && newIncome.incomeSource !== "common") {
       setNewIncome((prev) => ({ ...prev, incomeSource: "common" }));
     }
-  }, [isBaptism, newIncome.incomeSource]);
+  }, [isSingleBudgetEvent, newIncome.incomeSource]);
 
   const loadIncomes = useCallback(async () => {
     try {
@@ -298,11 +300,11 @@ export default function EntratePage() {
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newIncome.incomeSource}
-                onChange={(e) => setNewIncome({ ...newIncome, incomeSource: e.target.value as Income["incomeSource"] })}
+                onChange={(e) => setNewIncome({ ...newIncome, incomeSource: e.target.value as any })}
               >
                 <option value="common">{t("incomesPage.form.sourceOptions.common")}</option>
-                {!isBaptism && <option value="bride">{t("incomesPage.form.sourceOptions.bride")}</option>}
-                {!isBaptism && <option value="groom">{t("incomesPage.form.sourceOptions.groom")}</option>}
+                {!isSingleBudgetEvent && <option value="bride">{t("incomesPage.form.sourceOptions.bride")}</option>}
+                {!isSingleBudgetEvent && <option value="groom">{t("incomesPage.form.sourceOptions.groom")}</option>}
               </select>
             </div>
             {(newIncome.type === "busta" || newIncome.type === "bonifico") && (

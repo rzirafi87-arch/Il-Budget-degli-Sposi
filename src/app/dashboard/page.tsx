@@ -196,6 +196,8 @@ export default function DashboardPage() {
         eventTypeSpecific={{
           wedding: "Per il matrimonio, il budget è diviso tra sposa, sposo e spese comuni. Questo ti aiuta a tenere traccia di chi contribuisce a cosa.",
           baptism: "Per il battesimo, tutte le spese sono considerate comuni. Non c'è divisione tra budget individuali.",
+          communion: "Per la comunione, tutte le spese sono considerate comuni. Budget familiare unificato per la celebrazione.",
+          confirmation: "Per la cresima, il budget è gestito come spese comuni della famiglia.",
           birthday: "Per il compleanno, puoi gestire il budget in modo flessibile, dividendo tra organizzatore e spese condivise.",
           graduation: "Per la laurea, il budget può essere gestito come spese comuni o diviso tra famiglia e laureato."
         }}
