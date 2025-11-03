@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
+import { useFavorites } from "@/hooks/useFavorites";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useFavorites } from "@/hooks/useFavorites";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -237,6 +237,11 @@ export default function GioielleriePage() {
                 >
                   {isFavorite(p.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
                 </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
         <div className="space-y-4">
           {filtered.map((p) => (
             <div key={p.id} className="p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
@@ -253,9 +258,9 @@ export default function GioielleriePage() {
                     )}
                   </div>
                 </div>
-                <div className="text-right flex flex-col items-end gap-2 min-w-[80px]">
+                <div className="text-right flex flex-col items-end gap-2 min-w-20">
                   {p.priceRange && <div className="text-sm font-medium text-gray-700">{p.priceRange}</div>}
-                  {p.rating && p.rating > 0 && <div className="text-xs text-yellow-600">??? {p.rating.toFixed(1)}</div>}
+                  {p.rating && p.rating > 0 && <div className="text-xs text-yellow-600">⭐ {p.rating.toFixed(1)}</div>}
                   <button
                     onClick={() => toggleFavorite(p.id, { name: p.name })}
                     disabled={pending[p.id]}
@@ -268,4 +273,11 @@ export default function GioielleriePage() {
                     {isFavorite(p.id) ? "Rimuovi" : "Aggiungi"}
                   </button>
                 </div>
-                  </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
