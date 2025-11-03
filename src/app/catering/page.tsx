@@ -7,7 +7,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useToast } from "@/components/ToastProvider";
+import { useFavorites } from "@/hooks/useFavorites";
 
 const supabase = getBrowserClient();
 
@@ -36,7 +36,7 @@ const REGIONS = [
 
 export default function CateringPage() {
   const country = getUserCountrySafe();
-  const { showToast } = useToast();
+  const { isFavorite, toggleFavorite, pending } = useFavorites("supplier");
   const [items, setItems] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
   const [region, setRegion] = useState("");

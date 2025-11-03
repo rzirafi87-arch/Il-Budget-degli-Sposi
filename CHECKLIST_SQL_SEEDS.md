@@ -36,7 +36,8 @@ Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIM
 5. `supabase-confirmation-event-seed.sql` - Cresima
 6. `supabase-eighteenth-event-seed.sql` - Diciottesimo
 7. `supabase-engagement-party-seed.sql` - **Festa di Fidanzamento** ⭐ NUOVO
-8. `supabase-genderreveal-event-seed.sql` - Gender Reveal
+ 8. `supabase-birthday-seed.sql` - Compleanno generico
+ 9. `supabase-genderreveal-event-seed.sql` - Gender Reveal
 9. `supabase-graduation-event-seed.sql` - Laurea
 10. `supabase-wedding-event-seed.sql` - Matrimonio (18 cat + 100+ subcat)
 
