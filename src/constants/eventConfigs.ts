@@ -1,3 +1,16 @@
+import {
+  ANNIVERSARY_BUDGET_CATEGORIES,
+  BAPTISM_BUDGET_CATEGORIES,
+  BIRTHDAY_BUDGET_CATEGORIES,
+  CONFIRMATION_BUDGET_CATEGORIES,
+  EIGHTEENTH_BUDGET_CATEGORIES,
+  GENDER_REVEAL_BUDGET_CATEGORIES,
+  GRADUATION_BUDGET_CATEGORIES,
+  RETIREMENT_BUDGET_CATEGORIES,
+  TURNING50_BUDGET_CATEGORIES,
+  WEDDING_BUDGET_CATEGORIES,
+} from "./budgetCategories";
+
 export type EventType =
   | "wedding"
   | "baptism"
@@ -93,16 +106,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Confermate fornitori e pagamenti", description: "Verificate timeline della giornata", monthsBefore: 0.5, category: "Servizi", priority: "alta" },
       { title: "Preparatevi al viaggio di nozze", description: "Documenti, valigie e assicurazioni", monthsBefore: 0.25, category: "Viaggio", priority: "bassa" },
     ],
-    budgetCategories: {
-      "Sposa": ["Abito", "Accessori", "Beauty", "Scarpe"],
-      "Sposo": ["Abito", "Accessori", "Barbiere", "Scarpe"],
-      "Cerimonia": ["Location", "Documenti", "Allestimenti", "Musica"],
-      "Ricevimento": ["Catering", "Beverage", "Torta", "Open bar"],
-      "Decor": ["Fiori", "Illuminazione", "Tableau", "Bomboniere"],
-      "Servizi": ["Foto/Video", "Musica", "Planner", "Trasporti"],
-      "Viaggio": ["Voli", "Hotel", "Esperienze", "Assicurazione"],
-      "Extra": ["Mance", "Contingenze", "Regali", "Welcome kit"],
-    },
+    budgetCategories: WEDDING_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "bride", label: "Sposa" },
       { value: "groom", label: "Sposo" },
@@ -146,14 +150,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara kit per il bimbo", description: "Cambia abiti di scorta e necessaire", monthsBefore: 0.5, category: "Bambino/a", priority: "media" },
       { title: "Allestisci chiesa e tavolo confetti", description: "Coordina fiori e decorazioni", monthsBefore: 0.25, category: "Decor", priority: "bassa" },
     ],
-    budgetCategories: {
-      "Cerimonia": ["Prenotazione", "Offerta", "Allestimenti", "Musica"],
-      "Bambino/a": ["Abito", "Accessori", "Culla/Carrozzina", "Ricordo personalizzato"],
-      "Ricevimento": ["Location", "Pranzo", "Torta", "Beverage"],
-      "Decor": ["Fiori", "Palloncini", "Table styling", "Segnaposto"],
-      "Ricordi": ["Bomboniere", "Confetti", "Foto/Album", "Regali padrini"],
-      "Organizzazione": ["Inviti", "Baby-sitting", "Trasporti", "Contingenze"],
-    },
+    budgetCategories: BAPTISM_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "parents", label: "Genitori" },
       { value: "godparents", label: "Padrino/Madrina" },
@@ -197,16 +194,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Coordina outfit e beauty", description: "Prove trucco, acconciatura e look", monthsBefore: 1, category: "Stile personale", priority: "media" },
       { title: "Rifinisci scaletta e sorprese", description: "Video, speech e playlist finale", monthsBefore: 0.5, category: "Programma", priority: "media" },
     ],
-    budgetCategories: {
-      "Location": ["Affitto", "Permessi", "Sicurezza", "Pulizie"],
-      "Catering": ["Buffet", "Drink list", "Torta", "Servizio"],
-      "Intrattenimento": ["DJ/Band", "Animazione", "Performer", "Giochi"],
-      "Decor": ["Allestimenti", "Luci", "Palloncini", "Photo corner"],
-      "Ricordi": ["Fotografo", "Video", "Guestbook", "Bomboniere"],
-      "Comunicazione": ["Inviti", "Social", "Ringraziamenti", "Hashtag"],
-      "Stile personale": ["Outfit", "Make-up", "Parrucchiere", "Accessori"],
-      "Extra": ["Trasporti", "Mance", "Sicurezza", "Esperienze post festa"],
-    },
+    budgetCategories: EIGHTEENTH_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "celebrant", label: "Festeggiato/a" },
       { value: "parents", label: "Genitori" },
@@ -248,15 +236,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Confermate fornitori e timeline", description: "Foto, ristorante e scaletta", monthsBefore: 1, category: "Organizzazione", priority: "media" },
       { title: "Dedicatevi un momento relax", description: "Spa o giornata di benessere", monthsBefore: 0.25, category: "Benessere", priority: "bassa" },
     ],
-    budgetCategories: {
-      "Cerimonia": ["Celebrante", "Fedi simboliche", "Allestimento", "Musica"],
-      "Viaggio": ["Voli", "Hotel", "Esperienze", "Assicurazione"],
-      "Regali": ["Gioielli", "Lettere", "Album", "Sorpresa"],
-      "Decor": ["Fiori", "Illuminazione", "Tavola", "Profumazioni"],
-      "Ospiti": ["Inviti", "Welcome kit", "Bomboniere", "Trasporti"],
-      "Stile personale": ["Outfit", "Make-up", "Parrucchiere", "Benessere"],
-      "Extra": ["Fotografo", "Video", "Mance", "Contingenze"],
-    },
+    budgetCategories: ANNIVERSARY_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "partner1", label: "Partner 1" },
       { value: "partner2", label: "Partner 2" },
@@ -298,15 +278,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara giochi e sorprese", description: "Pronostici, guestbook e reveal box", monthsBefore: 0.5, category: "Intrattenimento", priority: "media" },
       { title: "Conferma fornitori e scaletta", description: "Coordina fotografo e momento reveal", monthsBefore: 0.25, category: "Organizzazione", priority: "media" },
     ],
-    budgetCategories: {
-      "Location": ["Affitto", "Pulizie", "Permessi", "Illuminazione"],
-      "Catering": ["Dolci", "Snack salati", "Bevande", "Torta reveal"],
-      "Decor": ["Backdrop", "Balloon art", "Fiori", "Stationery"],
-      "Intrattenimento": ["Giochi pronostico", "Animazione", "Playlist", "Photobooth"],
-      "Comunicazione": ["Inviti", "Ringraziamenti", "Social", "Streaming"],
-      "Ricordi": ["Fotografo", "Video", "Album", "Regali ospiti"],
-      "Extra": ["Baby sitter", "Trasporti", "Mance", "Contingenze"],
-    },
+    budgetCategories: GENDER_REVEAL_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "parents", label: "Genitori" },
       { value: "family", label: "Famiglie" },
@@ -346,15 +318,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { title: "Prepara regali e gadget", description: "Bomboniere o ringraziamenti", monthsBefore: 0.5, category: "Regali", priority: "bassa" },
       { title: "Verifica logistica", description: "Trasporti, orari e supporti tecnici", monthsBefore: 0.25, category: "Organizzazione", priority: "media" },
     ],
-    budgetCategories: {
-      "Location": ["Affitto", "Pulizie", "Permessi", "Allestimento"],
-      "Catering": ["Buffet", "Torta", "Bevande", "Servizio"],
-      "Decor": ["Allestimenti", "Luci", "Palloncini", "Fiori"],
-      "Intrattenimento": ["Musica", "Giochi", "Animazione", "Spettacoli"],
-      "Ospiti": ["Inviti", "Segnaposto", "Regali ospiti", "Ringraziamenti"],
-      "Regali": ["Regalo principale", "Esperienza", "Donation", "Pacchetti sorpresa"],
-      "Organizzazione": ["Fotografo", "Video", "Trasporti", "Contingenze"],
-    },
+    budgetCategories: BIRTHDAY_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "celebrant", label: "Festeggiato/a" },
       { value: "family", label: "Famiglia" },
