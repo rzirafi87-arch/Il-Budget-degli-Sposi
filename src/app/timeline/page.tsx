@@ -5,10 +5,12 @@ import ExportButton from "@/components/ExportButton";
 import {
   DEFAULT_EVENT_TYPE,
   TimelineBucket,
+  TimelineTaskTemplate,
   getEventConfig,
   resolveEventType,
 } from "@/constants/eventConfigs";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { getUserCountrySafe } from "@/constants/geo";
 
 const supabase = getBrowserClient();
 
@@ -25,11 +27,13 @@ type TimelineTask = {
 export default function TimelinePage() {
   const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
   const eventConfig = getEventConfig(eventType);
+  const [country] = useState(() => getUserCountrySafe());
 
   const [eventDate, setEventDate] = useState<Date | null>(null);
   const [tasks, setTasks] = useState<TimelineTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("Tutti");
+  const [localizedTemplates, setLocalizedTemplates] = useState<TimelineTaskTemplate[] | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -62,12 +66,6 @@ export default function TimelinePage() {
         if (!disposed) setEventDate(null);
       } finally {
         if (!disposed) {
-          const generated = eventConfig.timelineTasks.map((task, index) => ({
-            ...task,
-            id: `${eventType}-task-${index}`,
-            completed: false,
-          }));
-          setTasks(generated);
           setLoading(false);
         }
       }
@@ -76,7 +74,52 @@ export default function TimelinePage() {
     return () => {
       disposed = true;
     };
-  }, [eventConfig, eventType]);
+  }, [eventType]);
+
+  useEffect(() => {
+    if (eventType !== "wedding") {
+      setLocalizedTemplates(null);
+      return;
+    }
+
+    let disposed = false;
+    async function loadLocalizedTimeline() {
+      try {
+        const res = await fetch(
+          `/api/my/wedding/localized?country=${country.toUpperCase()}&event=matrimonio`,
+        );
+        if (!res.ok) {
+          if (!disposed) setLocalizedTemplates(null);
+          return;
+        }
+        const json = await res.json();
+        const steps = json?.data?.timeline;
+        if (!disposed) {
+          if (Array.isArray(steps) && steps.length > 0) {
+            setLocalizedTemplates(convertStepsToTemplates(steps));
+          } else {
+            setLocalizedTemplates(null);
+          }
+        }
+      } catch {
+        if (!disposed) setLocalizedTemplates(null);
+      }
+    }
+    loadLocalizedTimeline();
+    return () => {
+      disposed = true;
+    };
+  }, [country, eventType]);
+
+  useEffect(() => {
+    const baseTemplates = localizedTemplates ?? eventConfig.timelineTasks;
+    const generated = baseTemplates.map((template, index) => ({
+      ...template,
+      id: `${eventType}-task-${index}`,
+      completed: false,
+    }));
+    setTasks(generated);
+  }, [localizedTemplates, eventConfig, eventType]);
 
   const categories = useMemo(
     () => ["Tutti", ...Array.from(new Set(tasks.map((task) => task.category)))],
@@ -280,4 +323,22 @@ export default function TimelinePage() {
       )}
     </section>
   );
+}
+
+function convertStepsToTemplates(steps: string[]): TimelineTaskTemplate[] {
+  if (!Array.isArray(steps) || steps.length === 0) return [];
+  const maxMonths = 12;
+  const lastIndex = Math.max(steps.length - 1, 1);
+
+  return steps.map((label, index) => {
+    const ratio = (lastIndex - index) / lastIndex;
+    const monthsBefore = Math.round(ratio * maxMonths);
+    return {
+      title: label,
+      description: "",
+      monthsBefore,
+      category: "Organizzazione",
+      priority: "media",
+    };
+  });
 }
