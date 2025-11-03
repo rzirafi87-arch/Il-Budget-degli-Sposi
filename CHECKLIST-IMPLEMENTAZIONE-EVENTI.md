@@ -931,8 +931,8 @@ curl -X POST \
 
 | Stato | Conteggio | Eventi |
 |-------|-----------|--------|
-| ✅ **COMPLETO** | 8 | Matrimonio, Battesimo, Comunione, Cresima, Compleanno, Diciottesimo, Laurea, Anniversario |
-| 🟡 **PARZIALE** | 4 | Gender Reveal, 50 anni, Pensione, Baby Shower, Engagement |
+| ✅ **COMPLETO** | 9 | Matrimonio, Battesimo, Comunione, Cresima, Compleanno, Diciottesimo, Laurea, Anniversario, Gender Reveal |
+| 🟡 **PARZIALE** | 3 | 50 anni, Pensione, Baby Shower, Engagement |
 | ❌ **NON INIZIATO** | 6 | Proposal, Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
 | **TOTALE** | **18** | |
 
@@ -945,12 +945,12 @@ curl -X POST \
 
 ### 🎯 Aggiornamento 3 Novembre 2025
 
-**Anniversario completato al 100%!** ✅
-- Backend completo: Template (285 righe), API seed (98 righe), API dashboard (175 righe)
+**Gender Reveal completato al 100%!** ✅
+- Backend completo: Template (280 righe), API seed (99 righe), API dashboard (180 righe)
 - TypeScript compilation verificata (no errors)
-- Tempo implementazione: ~35 minuti (pattern dual-budget)
+- Tempo implementazione: ~30 minuti (pattern dual-budget consolidato)
 - Dual-budget support (bride/groom/common) nativo - no modifiche frontend necessarie
-- 8 eventi ora production-ready (44% completamento totale)
+- 9 eventi ora production-ready (50% completamento totale)
 - Note: `available: false` in events.json - da attivare manualmente quando richiesto
 - Database seed eseguito (10 categorie, ~55 sottocategorie)
 - API routes completamente implementate (seed + dashboard GET/POST)
