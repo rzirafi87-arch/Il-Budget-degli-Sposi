@@ -19,6 +19,234 @@
   "settings": "Pengaturan",
   "loading": "Memuat...",
   "comingSoon": "Segera hadir",
+  "budgetPage": {
+    "approvedExpenses": "Pengeluaran yang disetujui",
+    "ctaIdeaBudget": "💡 Pergi ke Ide Anggaran",
+    "description": "Tampilan pengeluaran yang disetujui dari bagian 'Pengeluaran', diurutkan berdasarkan abjad menurut kategori dan subkategori.",
+    "totals": {
+      "title": "Total pengeluaran yang disetujui",
+      "common": "Bersama",
+      "bride": "Pengantin wanita",
+      "groom": "Pengantin pria"
+    },
+    "table": {
+      "category": "Kategori",
+      "subcategory": "Subkategori",
+      "spendType": "Jenis pengeluaran",
+      "paymentMethod": "Metode pembayaran",
+      "budget": "Anggaran",
+      "committed": "Dikomitmenkan",
+      "paid": "Dibayar",
+      "residual": "Sisa",
+      "fromQuote": "Dari penawaran",
+      "difference": "Selisih"
+    },
+    "spendType": {
+      "common": "Bersama",
+      "bride": "Pengantin wanita",
+      "groom": "Pengantin pria",
+      "gift": "Hadiah"
+    },
+    "paymentMethod": {
+      "common": "💰 Bersama",
+      "bride": "👰 Pengantin wanita",
+      "groom": "🤵 Pengantin pria",
+      "gift": "🎁 Hadiah"
+    },
+    "loading": "Memuat...",
+    "empty": "Tidak ada pengeluaran yang disetujui. Pergi ke bagian 'Pengeluaran' untuk menyetujui pengeluaran Anda.",
+    "plannedVsActual": {
+      "title": "Rencana vs Aktual",
+      "totalPlanned": "Total yang direncanakan",
+      "totalActualApproved": "Total aktual (disetujui)",
+      "difference": "Selisih",
+      "over": "+ melebihi rencana",
+      "under": "di bawah rencana",
+      "item": "Item",
+      "planned": "Direncanakan",
+      "actual": "Aktual",
+      "empty": "Tidak ada data untuk dibandingkan. Gunakan 'Ide Anggaran' untuk merencanakan dan menyetujui pengeluaran di bagian 'Pengeluaran'."
+    }
+  },
+  "expensesPage": {
+    "info": {
+      "lead": "Catat dan kelola semua pengeluaran pernikahan. Anda dapat memasukkan penawaran, mengonfirmasinya sebagai pengeluaran yang disetujui, dan melacak status pembayaran. Filter berdasarkan kategori, jenis pengeluaran (bersama/pengantin wanita/pengantin pria), dan status.",
+      "title": "Manajemen Pengeluaran Lengkap",
+      "description": "Di halaman ini Anda dapat mencatat semua pengeluaran aktual dan penawaran. Setiap pengeluaran dapat dikategorikan, ditetapkan untuk pengantin wanita/pria/bersama, dan dilacak dengan status persetujuan dan pembayaran. Pengeluaran yang dikonfirmasi dari dasbor otomatis muncul di sini.",
+      "tips": {
+        "tip1": "Gunakan status 'Penawaran' untuk tawaran yang diterima, lalu ubah menjadi 'Disetujui' saat Anda mengonfirmasi",
+        "tip2": "Bidang 'Dari penawaran' menunjukkan apakah pengeluaran berasal dari dasbor (sudah dianggarkan)",
+        "tip3": "Selalu tambahkan penyedia untuk melacak siapa yang menyediakan setiap layanan",
+        "tip4": "Filter berdasarkan kategori atau jenis pengeluaran untuk menganalisis di mana Anda menghabiskan lebih banyak"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Untuk pernikahan, Anda dapat membagi pengeluaran antara pengantin wanita, pengantin pria, dan bersama. Ini membantu memahami kontribusi masing-masing dan mengelola keuangan secara transparan.",
+        "baptism": "Untuk pembaptisan, semua pengeluaran secara otomatis ditetapkan sebagai 'bersama' - tidak perlu menentukan siapa yang membayar.",
+        "eighteenth": "Untuk ulang tahun ke-18, semua pengeluaran adalah bersama. Rencanakan lokasi, katering, hiburan, dan kenang-kenangan untuk membuat pesta ini tak terlupakan!",
+        "confirmation": "Untuk krisma, semua pengeluaran adalah bersama. Atur upacara, resepsi, kenang-kenangan, dan hadiah untuk merayakan momen spesial pertumbuhan spiritual ini.",
+        "birthday": "Untuk ulang tahun, bagi pengeluaran antara penyelenggara utama dan yang dibagikan dengan orang lain.",
+        "graduation": "Untuk wisuda, lacak semua pengeluaran yang terkait dengan acara: lokasi, katering, undangan, dekorasi, dan kenang-kenangan.",
+        "anniversary": "Untuk ulang tahun pernikahan, kelola bersama pengeluaran untuk perayaan. Baik itu ulang tahun ke-25 (perak), ke-50 (emas), atau ulang tahun yang lebih intim, setiap detail penting untuk membuat momen pembaruan cinta ini spesial."
+      }
+    },
+    "title": "Pengeluaran",
+    "loading": "Memuat...",
+    "summary": {
+      "pending": "Menunggu persetujuan",
+      "approved": "Pengeluaran yang disetujui"
+    },
+    "buttons": {
+      "add": "+ Tambah pengeluaran",
+      "cancel": "Batal",
+      "save": "Simpan pengeluaran",
+      "approve": "Setujui",
+      "reject": "Tolak"
+    },
+    "form": {
+      "new": "Pengeluaran baru",
+      "category": "Kategori",
+      "subcategory": "Subkategori",
+      "supplier": "Penyedia",
+      "amount": "Jumlah",
+      "spendType": "Jenis pengeluaran",
+      "date": "Tanggal",
+      "description": "Deskripsi",
+      "notes": "Catatan",
+      "placeholders": {
+        "supplier": "Nama penyedia",
+        "amount": "0",
+        "description": "Deskripsi detail",
+        "notes": "Catatan tambahan..."
+      },
+      "spendTypeOptions": {
+        "common": "Bersama",
+        "bride": "Pengantin wanita",
+        "groom": "Pengantin pria"
+      }
+    },
+    "table": {
+      "supplier": "Penyedia",
+      "description": "Deskripsi",
+      "amount": "Jumlah",
+      "type": "Jenis",
+      "date": "Tanggal",
+      "status": "Status",
+      "fromQuote": "Dari penawaran",
+      "actions": "Tindakan"
+    },
+    "status": {
+      "approved": "✓ Disetujui",
+      "rejected": "✗ Ditolak",
+      "pending": "Menunggu"
+    },
+    "spendType": {
+      "common": "Bersama",
+      "bride": "Pengantin wanita",
+      "groom": "Pengantin pria"
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Anda harus terautentikasi untuk menambahkan pengeluaran. Klik 'Daftar' di bagian atas.",
+      "networkError": "❌ Kesalahan jaringan",
+      "successAdded": "✅ Pengeluaran berhasil ditambahkan!",
+      "none": "Tidak ada pengeluaran yang tercatat",
+      "confirmed": "Dikonfirmasi",
+      "discarded": "Dibuang"
+    }
+  },
+  "incomesPage": {
+    "info": {
+      "lead": "Lacak semua pendapatan yang berkontribusi pada anggaran pernikahan: hadiah dari orang tua, kontribusi keluarga, tabungan pribadi, atau sumber lainnya. Tentukan apakah pendapatan berasal dari pengantin wanita, pengantin pria, atau bersama.",
+      "title": "Lacak Semua Pendapatan",
+      "description": "Di sini Anda dapat mencatat semua sumber uang yang berkontribusi pada anggaran acara Anda: kontribusi keluarga, hadiah dalam amplop, transfer, tabungan pribadi. Setiap pendapatan dapat dikategorikan untuk mengetahui siapa yang membawanya (pengantin wanita/pria/bersama) dan dari siapa asalnya.",
+      "tips": {
+        "tip1": "Gunakan 'Amplop' untuk hadiah tunai yang diterima selama acara",
+        "tip2": "Gunakan 'Transfer' untuk kontribusi yang diterima sebelum acara",
+        "tip3": "Gunakan 'Hadiah' untuk mencatat hadiah fisik (tanpa jumlah tertentu)",
+        "tip4": "Total pendapatan membantu Anda memahami berapa banyak anggaran efektif yang Anda miliki"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Selama pernikahan, tradisinya adalah menerima amplop dengan kontribusi keuangan dari tamu. Catat setiap amplop yang diterima untuk pelacakan lengkap.",
+        "baptism": "Untuk pembaptisan, catat kontribusi dari wali baptis dan anggota keluarga yang ingin berpartisipasi dalam pengeluaran.",
+        "birthday": "Untuk ulang tahun, lacak kontribusi dari teman dan kerabat yang ingin membantu dalam penyelenggaraan.",
+        "graduation": "Untuk wisuda, catat kontribusi keluarga dan hadiah yang diterima untuk merayakan pencapaian.",
+        "anniversary": "Untuk ulang tahun pernikahan, catat kontribusi dari anak-anak, cucu, dan kerabat yang ingin berpartisipasi dalam perayaan. Seringkali keluarga bersatu untuk mengatur pesta kejutan atau berkontribusi pada pengeluaran."
+      }
+    },
+    "title": "Pendapatan",
+    "loading": "Memuat...",
+    "toolbar": {
+      "giftList": "Daftar Hadiah",
+      "backDashboard": "Kembali ke Dasbor"
+    },
+    "summary": {
+      "bride": "Pendapatan Pengantin Wanita",
+      "groom": "Pendapatan Pengantin Pria",
+      "common": "Pendapatan Bersama",
+      "totalMoney": "Total uang",
+      "physicalGifts": "Hadiah fisik"
+    },
+    "buttons": {
+      "add": "+ Tambah pendapatan",
+      "cancel": "Batal",
+      "save": "Simpan pendapatan",
+      "delete": "Hapus"
+    },
+    "form": {
+      "new": "Pendapatan baru",
+      "name": "Nama orang/keluarga *",
+      "type": "Jenis *",
+      "incomeSource": "Sumber pendapatan *",
+      "amount": "Jumlah (€) *",
+      "date": "Tanggal",
+      "notes": "Catatan",
+      "giftDescription": "Deskripsi hadiah *",
+      "placeholders": {
+        "name": "Mis. Keluarga Wijaya",
+        "amount": "0",
+        "notes": "Catatan tambahan...",
+        "gift": "Mis. Set piring lengkap"
+      },
+      "typeOptions": {
+        "busta": "Amplop",
+        "bonifico": "Transfer",
+        "regalo": "Hadiah fisik"
+      },
+      "sourceOptions": {
+        "common": "Bersama",
+        "bride": "Pengantin wanita",
+        "groom": "Pengantin pria"
+      }
+    },
+    "table": {
+      "date": "Tanggal",
+      "name": "Nama",
+      "type": "Jenis",
+      "source": "Sumber",
+      "amount": "Jumlah",
+      "notes": "Catatan / Deskripsi",
+      "actions": "Tindakan"
+    },
+    "empty": "Tidak ada pendapatan yang tercatat",
+    "badges": {
+      "type": {
+        "busta": "💵 Amplop",
+        "bonifico": "🏦 Transfer",
+        "regalo": "🎁 Hadiah"
+      },
+      "source": {
+        "bride": "👰 Pengantin wanita",
+        "groom": "🤵 Pengantin pria",
+        "common": "💑 Bersama"
+      }
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Anda harus terautentikasi untuk menambahkan pendapatan. Klik 'Daftar' di bagian atas.",
+      "networkError": "❌ Kesalahan jaringan",
+      "successAdded": "✅ Pendapatan berhasil dicatat!",
+      "deleted": "✅ Pendapatan dihapus",
+      "confirmDelete": "Apakah Anda yakin ingin menghapus pendapatan ini?"
+    }
+  },
   "events": {
     "wedding": "Pernikahan",
     "baptism": "Pembaptisan",

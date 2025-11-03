@@ -1,0 +1,12 @@
+{
+    "appointments": {
+        "title": "Compromissos e Prazos",
+        "formTitle": "Título do compromisso",
+        "formLocation": "Local",
+        "formNotes": "Observações",
+        "addBtn": "Adicionar compromisso",
+        "empty": "Nenhum compromisso inserido.",
+        "dateLabel": "Data",
+        "locationLabel": "Local"
+    }
+}
