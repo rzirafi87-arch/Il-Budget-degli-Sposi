@@ -93,6 +93,68 @@ export default function PensionePage() {
 
   const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
 
+  // Expense form state
+  const [cat, setCat] = React.useState("");
+  const [subcat, setSubcat] = React.useState("");
+  const [supplier, setSupplier] = React.useState("");
+  const [amount, setAmount] = React.useState<string>("");
+  const [notes, setNotes] = React.useState("");
+  const [spendType, setSpendType] = React.useState<string>("common");
+
+  async function submitExpense(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      const supabase = getBrowserClient();
+      const { data } = await supabase.auth.getSession();
+      const sessionData = data as { session?: { access_token?: string } } | null;
+      const jwt = sessionData?.session?.access_token;
+      if (!jwt) {
+        window.location.href = "/auth";
+        return;
+      }
+
+      const expense = {
+        category: cat || "Altro",
+        subcategory: subcat || "Generico",
+        supplier: supplier || null,
+        amount: Number(amount) || 0,
+        spend_type: spendType,
+        notes: notes || null,
+      };
+
+      setCreating(true);
+      const res = await fetch("/api/retirement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+        body: JSON.stringify({ expenses: [expense], total_budget: 0 }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        console.error("Errore inserimento spesa:", json);
+        alert("Errore inserimento spesa");
+        return;
+      }
+
+      // refetch
+      const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
+      const fetchJson = await fetchRes.json();
+      setRows(fetchJson.rows || []);
+
+      // clear form
+      setCat("");
+      setSubcat("");
+      setSupplier("");
+      setAmount("");
+      setNotes("");
+      setSpendType("common");
+    } catch (err) {
+      console.error(err);
+      alert("Errore imprevisto");
+    } finally {
+      setCreating(false);
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold mb-4">Festa di Pensionamento</h1>
@@ -139,6 +201,28 @@ export default function PensionePage() {
             <div className="mt-4 flex justify-end">
               <div className="font-semibold">Totale: € {total.toFixed(2)}</div>
             </div>
+
+              <form onSubmit={submitExpense} className="mt-6 border-t pt-4">
+                <h3 className="font-medium mb-2">Aggiungi spesa</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <input value={cat} onChange={(e) => setCat(e.target.value)} placeholder="Categoria" className="p-2 border rounded" />
+                  <input value={subcat} onChange={(e) => setSubcat(e.target.value)} placeholder="Sottocategoria" className="p-2 border rounded" />
+                  <input value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Fornitore" className="p-2 border rounded" />
+                  <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Importo" type="number" className="p-2 border rounded" />
+                  <select value={spendType} onChange={(e) => setSpendType(e.target.value)} className="p-2 border rounded">
+                    <option value="common">Comune</option>
+                    <option value="bride">Sposa</option>
+                    <option value="groom">Sposo</option>
+                    <option value="retirement">Pensione</option>
+                  </select>
+                  <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Note" className="p-2 border rounded" />
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <button type="submit" disabled={creating} className="px-4 py-2 rounded bg-(--color-sage) text-white font-semibold">
+                    {creating ? "Salvo..." : "Aggiungi spesa"}
+                  </button>
+                </div>
+              </form>
           </div>
         </>
       )}
