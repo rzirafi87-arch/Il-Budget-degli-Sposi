@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getPageImages } from "@/lib/pageImages";
 
 type MusicaCerimonia = {
   id: string;
@@ -35,6 +36,7 @@ export default function MusicaCerimoniaPage() {
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const country = getUserCountrySafe();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -141,7 +143,7 @@ export default function MusicaCerimoniaPage() {
       </div>
 
       {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES["musica-cerimonia"]} height="280px" />
+      <ImageCarousel images={getPageImages("musica-cerimonia", country)} height="280px" />
 
       {/* Filtri */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">

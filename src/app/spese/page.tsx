@@ -3,8 +3,9 @@
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
 import { useToast } from "@/components/ToastProvider";
+import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, formatDate } from "@/lib/locale";
-import { PAGE_IMAGES } from "@/lib/pageImages";
+import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -228,6 +229,7 @@ export default function SpesePage() {
   const t = useTranslations();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isBaptism = userEventType === "baptism";
+  const country = getUserCountrySafe();
   const { showToast } = useToast();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -424,7 +426,7 @@ export default function SpesePage() {
       />
 
       {/* Carosello immagini */}
-      <ImageCarousel images={PAGE_IMAGES.spese} height="280px" />
+      <ImageCarousel images={getPageImages("spese", country)} height="280px" />
 
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">
