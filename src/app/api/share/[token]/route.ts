@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 // Share token resolver: returns event info when token is valid (not expired).
 // Depends on table `event_share_tokens` from the new core schema.

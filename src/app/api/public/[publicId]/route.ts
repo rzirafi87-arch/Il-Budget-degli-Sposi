@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 // Public event lookup by public_id.
 // Compatible with both existing schema (name/public_id) and the new core schema (title/is_public/public_id).

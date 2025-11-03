@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function POST(
   _req: NextRequest,

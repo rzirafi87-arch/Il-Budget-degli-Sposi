@@ -1,4 +1,4 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
 type PublicEvent = {
   id: string;
