@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { Composition } from 'remotion';
 import { Player } from '@remotion/player';

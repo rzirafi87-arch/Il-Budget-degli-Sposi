@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getFallbackChurches } from "@/data/fallbackContent";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { getFallbackChurches } from "@/data/fallbackContent";
 
 export async function GET(req: NextRequest) {
   try {

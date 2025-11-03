@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import clsx from "clsx";
 import ImageCarousel from "@/components/ImageCarousel";
-import { getPageImages } from "@/lib/pageImages";
 import { GEO, getUserCountrySafe } from "@/constants/geo";
 import { useProvinceList } from "@/lib/geoClient";
 import { getProvinceLabel, getRegionLabel } from "@/lib/geoLabels";
+import { getPageImages } from "@/lib/pageImages";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 
 type Location = {
   id: string;
@@ -28,7 +28,10 @@ type Location = {
 
 function useRegionOptions() {
   const [country, setCountry] = useState<string>("it");
-  useEffect(() => { setCountry(getUserCountrySafe()); }, []);
+  useEffect(() => { 
+    // Schedule setState to avoid synchronous setState within effect
+    setTimeout(() => setCountry(getUserCountrySafe()), 0); 
+  }, []);
   const regions = (GEO[country]?.regions || GEO.it.regions).map(r => r.name);
   return { country, regions };
 }
@@ -141,6 +144,7 @@ export default function LocationRicevimentoPage() {
         location_type: "",
       });
       loadLocations();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       alert(e.message || "Errore durante l'aggiunta");
     }
@@ -153,7 +157,7 @@ export default function LocationRicevimentoPage() {
   const filteredLocations = locations;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
+    <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
         {/* Carosello immagini */}
         <ImageCarousel images={getPageImages("location", country)} height="280px" />

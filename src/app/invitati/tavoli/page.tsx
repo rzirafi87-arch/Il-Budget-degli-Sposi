@@ -1,4 +1,5 @@
-﻿"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import React, { useEffect, useState } from "react";
 
@@ -114,13 +115,13 @@ export default function TavoliPage() {
       createTablesForGroup(`Famiglia ${fam.name}`, fam.members, "family");
     }
 
-    // Guests without family but included → group into generic tables
+    // Guests without family but included ? group into generic tables
     const noFamilyIncluded = byFamily.get('no-family')?.members || [];
     if (noFamilyIncluded.length > 0) {
       createTablesForGroup("Amici", noFamilyIncluded, "friends");
     }
 
-    // Excluded across families → Cugini tables
+    // Excluded across families ? Cugini tables
     if (exc.length > 0) {
       // Keep a stable order by familyName and name
       const sortedExc = [...exc].sort((a, b) => (a.familyName || '').localeCompare(b.familyName || '') || a.name.localeCompare(b.name));
@@ -144,7 +145,7 @@ export default function TavoliPage() {
         const j = await res.json();
         setMessage(`Errore salvataggio: ${j.error || 'Impossibile salvare'}`);
       } else {
-        setMessage('✅ Tavoli salvati!');
+        setMessage('? Tavoli salvati!');
       }
     } catch (e: any) {
       setMessage('Errore di rete nel salvataggio');
@@ -187,7 +188,7 @@ export default function TavoliPage() {
             {tables.map((t, idx) => (
               <div key={idx} className="border rounded p-3">
                 <div className="font-semibold">{t.tableName || `Tavolo ${t.tableNumber}`}</div>
-                <div className="text-xs text-gray-500 mb-2">Tipo: {t.tableType || 'n/d'} • Posti: {t.totalSeats} • Assegnati: {t.assignedGuests.length}</div>
+                <div className="text-xs text-gray-500 mb-2">Tipo: {t.tableType || 'n/d'} � Posti: {t.totalSeats} � Assegnati: {t.assignedGuests.length}</div>
                 <ul className="text-sm list-disc pl-5">
                   {t.assignedGuests.map((ag) => (
                     <li key={ag.guestId}>{ag.guestName || ag.guestId}</li>

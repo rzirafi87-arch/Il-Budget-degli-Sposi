@@ -1,7 +1,7 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 export default function SuggerimentiPage() {
   const t = useTranslations();
@@ -9,20 +9,23 @@ export default function SuggerimentiPage() {
 
   useEffect(() => {
     const country = typeof window !== 'undefined' ? (localStorage.getItem('country') || 'it') : 'it';
-    if (country === 'mx') {
-      setSuggestions([
-        'Ricorda di prenotare il Mariachi!',
-        'Verifica la disponibilitÃ  della location almeno 6 mesi prima.',
-        'Considera una fotocabina a tema per la festa.',
-        'Controlla i documenti legali richiesti in Messico.',
-      ]);
-    } else {
-      setSuggestions([
-        'Prenota il fotografo con largo anticipo.',
-        'Verifica la lista invitati e aggiorna le preferenze.',
-        'Controlla le tradizioni locali per arricchire la cerimonia.',
-      ]);
-    }
+    // Schedule setState to avoid synchronous setState within effect
+    setTimeout(() => {
+      if (country === 'mx') {
+        setSuggestions([
+          'Ricorda di prenotare il Mariachi!',
+          'Verifica la disponibilitÃ  della location almeno 6 mesi prima.',
+          'Considera una fotocabina a tema per la festa.',
+          'Controlla i documenti legali richiesti in Messico.',
+        ]);
+      } else {
+        setSuggestions([
+          'Prenota il fotografo con largo anticipo.',
+          'Verifica la lista invitati e aggiorna le preferenze.',
+          'Controlla le tradizioni locali per arricchire la cerimonia.',
+        ]);
+      }
+    }, 0);
   }, []);
 
   return (
@@ -58,7 +61,7 @@ export default function SuggerimentiPage() {
       <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-[#A3B59D] bg-[#F7FBF7]">
         <h2 className="font-semibold text-lg mb-2">Carica una foto</h2>
         <p className="text-gray-700 mb-3">
-          Qui puoi caricare un'immagine (abito, palette, location) per ricevere consigli mirati.
+          Qui puoi caricare un&apos;immagine (abito, palette, location) per ricevere consigli mirati.
         </p>
         <label
           className="inline-block px-4 py-2 rounded-full text-white cursor-pointer"

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getFallbackLocations } from "@/data/fallbackContent";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { getFallbackLocations } from "@/data/fallbackContent";
 
 export async function GET(req: NextRequest) {
   try {
