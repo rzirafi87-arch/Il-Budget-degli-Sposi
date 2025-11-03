@@ -130,33 +130,127 @@ INSERT INTO subcategories (category_id, name, estimated_cost, display_order, des
 SELECT id, 'Regali ricevuti', 0.00, 5, 'Controvalore regali ospiti' FROM categories WHERE event_id = 'UUID_50TH_EVENT' AND name = 'Gestione Budget';
 INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
 SELECT id, 'Totale finale', 0.00, 6, 'Somma spese effettive' FROM categories WHERE event_id = 'UUID_50TH_EVENT' AND name = 'Gestione Budget';
-SELECT id, 'Bevande e vini selezionati', 400.00, 4, 'Vini, cocktail, open bar' FROM categories WHERE event_id = 'UUID_50TH_EVENT' AND name = 'Catering / Ristorazione';
-SELECT id, 'Brindisi apertura/finale', 100.00, 5, 'Spumante, champagne, brindisi dedicati' FROM categories WHERE event_id = 'UUID_50TH_EVENT' AND name = 'Catering / Ristorazione';
+
+-- Sottocategorie per tutte le categorie
+-- Concept e Location
 INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
-SELECT id, 'Servizio catering/ristorante', 350.00, 6, 'Costo servizio o camerieri' FROM categories WHERE event_id = 'UUID_50TH_EVENT' AND name = 'Catering / Ristorazione';
-INSERT INTO categories (event_id, name, display_order, icon)
-RETURNING id INTO v_cat_id;
+SELECT id, 'Definizione tema', 0.00, 1, 'Elegante, naturale, retrò, vintage, moderno, Golden Party' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Scelta location', 0.00, 2, 'Villa, ristorante, terrazza, giardino, sala privata' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Affitto sala/spazio esterno', 800.00, 3, 'Costo location se non casa privata' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Allestimento tavoli e mise en place', 350.00, 4, 'Tovaglie, centrotavola, stoviglie coordinate' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Decorazioni floreali e naturali', 400.00, 5, 'Fiori, composizioni naturali, dettagli oro/sabbia' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Luci calde, lanterne, candele', 200.00, 6, 'Illuminazione scenografica, lanterne, candele' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Balloon oro/neutri', 150.00, 7, 'Palloncini oro, avorio, salvia, neutri' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Photobooth/backdrop personalizzato', 200.00, 8, 'Angolo foto "50 & Fabulous", "Cinquant’anni di te"' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Concept e Location';
 
-INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
-(v_cat_id, 'Parcheggi ospiti', 60.00, 1, 'Parcheggio riservato o valet'),
-(v_cat_id, 'Navetta', 180.00, 2, 'Servizio navetta se location fuori città'),
-(v_cat_id, 'Trasporto materiali/allestimenti', 120.00, 3, 'Noleggio furgone o corriere'),
-(v_cat_id, 'Pernottamento ospiti', 250.00, 4, 'Hotel/B&B per ospiti fuori città');
+-- Catering / Ristorazione
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Cena servita/buffet elegante', 1200.00, 1, 'Servizio ristorazione principale' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Catering / Ristorazione';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Sweet table / dessert corner', 350.00, 2, 'Angolo dolci e dessert raffinati' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Catering / Ristorazione';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Torta personalizzata "50 anni"', 250.00, 3, 'Torta decorata a tema' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Catering / Ristorazione';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Bevande e vini selezionati', 400.00, 4, 'Vini, cocktail, open bar' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Catering / Ristorazione';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Brindisi apertura/finale', 100.00, 5, 'Spumante, champagne, brindisi dedicati' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Catering / Ristorazione';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Servizio catering/ristorante', 350.00, 6, 'Costo servizio o camerieri' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Catering / Ristorazione';
 
--- =====================================================
--- 11. CATEGORIA: GESTIONE BUDGET
--- =====================================================
-INSERT INTO categories (event_id, name, display_order, icon)
-VALUES (v_event_id, 'Gestione Budget', 10, '💶')
-RETURNING id INTO v_cat_id;
+-- Inviti e Grafica
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Inviti cartacei/digitali', 120.00, 1, 'Tema oro, sabbia, avorio, elegante' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Inviti e Grafica';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Coordinato grafico', 150.00, 2, 'Menu, segnaposti, cartellonistica' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Inviti e Grafica';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Tableau/disposizione tavoli', 80.00, 3, 'Organizzazione tavoli e ospiti' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Inviti e Grafica';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'QR code foto/video', 40.00, 4, 'Raccolta foto/video ospiti' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Inviti e Grafica';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Biglietti di ringraziamento', 60.00, 5, 'Thank you cards post-evento' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Inviti e Grafica';
 
-INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
-(v_cat_id, 'Budget stimato', 0.00, 1, 'Pianificazione budget totale'),
-(v_cat_id, 'Acconti fornitori', 0.00, 2, 'Tracking acconti fornitori'),
-(v_cat_id, 'Saldi', 0.00, 3, 'Pagamenti finali'),
-(v_cat_id, 'Spese extra', 0.00, 4, 'Costi imprevisti'),
-(v_cat_id, 'Regali ricevuti', 0.00, 5, 'Controvalore regali ospiti'),
-(v_cat_id, 'Totale finale', 0.00, 6, 'Somma spese effettive');
+-- Foto e Video
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Fotografo/videomaker', 700.00, 1, 'Servizio professionale foto+video' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Foto e Video';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Shooting pre-festa/durante cena', 250.00, 2, 'Servizio fotografico dedicato' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Foto e Video';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Reel/mini video ricordo', 180.00, 3, 'Video per social e ricordi' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Foto e Video';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Polaroid corner', 120.00, 4, 'Angolo polaroid per ospiti' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Foto e Video';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Album digitale post-evento', 150.00, 5, 'Album ricordi digitale o stampato' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Foto e Video';
+
+-- Musica e Intrattenimento
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'DJ/band dal vivo', 800.00, 1, 'Musica lounge, dance, revival' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Musica e Intrattenimento';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Presentatore/amico momenti speciali', 150.00, 2, 'Gestione momenti chiave' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Musica e Intrattenimento';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Giochi/sorprese invitati', 200.00, 3, 'Animazione, giochi, sorprese' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Musica e Intrattenimento';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Proiezione video "50 anni di ricordi"', 120.00, 4, 'Slideshow, video emozionale' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Musica e Intrattenimento';
+
+-- Abbigliamento e Beauty
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Outfit festeggiato/a', 250.00, 1, 'Abito elegante ma sobrio' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Abbigliamento e Beauty';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Trucco e parrucco', 100.00, 2, 'Make-up e hairstyle per shooting' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Abbigliamento e Beauty';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Accessori coordinati', 120.00, 3, 'Oro, nero, bianco, salvia' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Abbigliamento e Beauty';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Cambio abito per party', 150.00, 4, 'Secondo outfit per la festa' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Abbigliamento e Beauty';
+
+-- Regali e Ringraziamenti
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Tavolo regali/angolo dediche', 60.00, 1, 'Area dedicata regali e dediche' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Regali e Ringraziamenti';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Lista regali/donazioni simboliche', 0.00, 2, 'Wishlist o raccolta fondi' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Regali e Ringraziamenti';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Bomboniere/gift box personalizzate', 220.00, 3, 'Regalini per ospiti' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Regali e Ringraziamenti';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Biglietti di ringraziamento/dediche', 60.00, 4, 'Thank you notes o dediche scritte' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Regali e Ringraziamenti';
+
+-- Intrattenimento Extra
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Angolo foto accessori vintage/eleganti', 180.00, 1, 'Accessori per foto a tema' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Intrattenimento Extra';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Proiezione foto/video vita festeggiato', 120.00, 2, 'Slideshow, video ricordo' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Intrattenimento Extra';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Spettacolo musicale/comico/sorpresa', 350.00, 3, 'Performance amici, musica, comicità' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Intrattenimento Extra';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Fuochi freddi/taglio torta con musica', 200.00, 4, 'Effetti speciali per il party' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Intrattenimento Extra';
+
+-- Trasporti e Logistica
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Parcheggi ospiti', 60.00, 1, 'Parcheggio riservato o valet' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Trasporti e Logistica';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Navetta', 180.00, 2, 'Servizio navetta se location fuori città' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Trasporti e Logistica';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Trasporto materiali/allestimenti', 120.00, 3, 'Noleggio furgone o corriere' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Trasporti e Logistica';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Pernottamento ospiti', 250.00, 4, 'Hotel/B&B per ospiti fuori città' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Trasporti e Logistica';
+
+-- Gestione Budget
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Budget stimato', 0.00, 1, 'Pianificazione budget totale' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Gestione Budget';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Acconti fornitori', 0.00, 2, 'Tracking acconti fornitori' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Gestione Budget';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Saldi', 0.00, 3, 'Pagamenti finali' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Gestione Budget';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Spese extra', 0.00, 4, 'Costi imprevisti' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Gestione Budget';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Regali ricevuti', 0.00, 5, 'Controvalore regali ospiti' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Gestione Budget';
+INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description)
+SELECT id, 'Totale finale', 0.00, 6, 'Somma spese effettive' FROM categories WHERE event_id = 'EVENT_ID_50TH' AND name = 'Gestione Budget';
 
 END $$;
 
