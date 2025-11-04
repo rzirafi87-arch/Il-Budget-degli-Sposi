@@ -1041,55 +1041,55 @@
         },
         "note": "{strong} By using the service, you declare that you have read, understood and fully accepted these Terms of Service and the {link}."
       }
-    },
-    "budgetIdea": {
-      "title": "Budget Idea",
-      "loading": "Loading budget ideas...",
-      "buttons": {
-        "save": "Save budget idea",
-        "saving": "Saving...",
-        "apply": "Apply to budget"
-      },
-      "form": {
-        "eventDate": "Event date",
-        "currency": "Currency",
-        "contingency": "Contingency (%)",
-        "compact": "Compact view (tighter rows)",
-        "syncedNote": "Synced with the main dashboard."
-      },
-      "summary": {
-        "plannedTotal": "Total planned:",
-        "contingency": "Contingency:",
-        "totalWithContingency": "Total with contingency:"
-      },
-      "panel": {
-        "available": "Available:",
-        "planned": "Planned:",
-        "residual": "Residual:",
-        "budget": "Budget"
-      },
-      "totalCard": {
-        "available": "Available:",
-        "planned": "Planned:",
-        "residual": "Residual:",
-        "extraContributions": "Other contributions"
-      },
-      "table": {
-        "category": "Category",
-        "subcategory": "Subcategory",
-        "amountCurrency": "Amount ({currency})",
-        "spendType": "Spend type",
-        "supplier": "Supplier",
-        "notes": "Notes"
-      },
-      "messages": {
-        "loadError": "Error loading budget idea.",
-        "saveError": "Error saving the budget idea.",
-        "applyDone": "Apply completed: {count} items created or updated.",
-        "applyError": "Error applying to the budget."
-      }
     }
-  ,
+  },
+  "budgetIdea": {
+    "title": "Budget Idea",
+    "loading": "Loading budget ideas...",
+    "buttons": {
+      "save": "Save budget idea",
+      "saving": "Saving...",
+      "apply": "Apply to budget"
+    },
+    "form": {
+      "eventDate": "Event date",
+      "currency": "Currency",
+      "contingency": "Contingency (%)",
+      "compact": "Compact view (tighter rows)",
+      "syncedNote": "Synced with the main dashboard."
+    },
+    "summary": {
+      "plannedTotal": "Total planned:",
+      "contingency": "Contingency:",
+      "totalWithContingency": "Total with contingency:"
+    },
+    "panel": {
+      "available": "Available:",
+      "planned": "Planned:",
+      "residual": "Residual:",
+      "budget": "Budget"
+    },
+    "totalCard": {
+      "available": "Available:",
+      "planned": "Planned:",
+      "residual": "Residual:",
+      "extraContributions": "Other contributions"
+    },
+    "table": {
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "amountCurrency": "Amount ({currency})",
+      "spendType": "Spend type",
+      "supplier": "Supplier",
+      "notes": "Notes"
+    },
+    "messages": {
+      "loadError": "Error loading budget idea.",
+      "saveError": "Error saving the budget idea.",
+      "applyDone": "Apply completed: {count} items created or updated.",
+      "applyError": "Error applying to the budget."
+    }
+  },
   "suppliersLocations": {
     "title": "Reception · Venues",
     "buttons": {
