@@ -5,8 +5,8 @@ import { GEO, getUserCountrySafe } from "@/constants/geo";
 import { useProvinceList } from "@/lib/geoClient";
 import { getProvinceLabel, getRegionLabel } from "@/lib/geoLabels";
 import { getPageImages } from "@/lib/pageImages";
-import { useTranslations } from "next-intl";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
 type Location = {

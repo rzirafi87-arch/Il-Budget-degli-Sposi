@@ -1089,4 +1089,75 @@
         "applyError": "Error applying to the budget."
       }
     }
+  ,
+  "suppliersLocations": {
+    "title": "Reception · Venues",
+    "buttons": {
+      "add": "+ Add Venue",
+      "cancel": "Cancel"
+    },
+    "form": {
+      "title": "Add New Venue",
+      "select": "Select...",
+      "fields": {
+        "name": "Name",
+        "type": "Venue Type",
+        "city": "City",
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "website": "Website",
+        "priceRange": "Price Range",
+        "capacityMin": "Minimum Capacity (people)",
+        "capacityMax": "Maximum Capacity (people)",
+        "description": "Description"
+      },
+      "placeholders": {
+        "province": "e.g., Rome, Milan, Naples",
+        "priceRange": "e.g., €€€, €50–100 per person",
+        "description": "Describe the venue, services offered, unique features..."
+      },
+      "submit": "Add Venue"
+    },
+    "filters": {
+      "title": "Filters",
+      "typeLabel": "Venue Type",
+      "allRegion": "All",
+      "allProvince": "All",
+      "allTypes": "All"
+    },
+    "loading": "Loading...",
+    "empty": "No venues found. Try changing filters or add the first one!",
+    "badges": {
+      "verified": "Verified"
+    },
+    "labels": {
+      "type": "Type:",
+      "capacity": "👥 Capacity:",
+      "website": "Website"
+    },
+    "capacity": {
+      "range": "{min}-{max} people",
+      "from": "from {min} people",
+      "upTo": "up to {max} people"
+    },
+    "types": {
+      "villa": "Villa",
+      "castello": "Castle",
+      "agriturismo": "Farmhouse",
+      "masseria": "Masseria",
+      "ristorante": "Restaurant",
+      "hotel": "Hotel",
+      "resort": "Resort",
+      "tenuta": "Estate",
+      "giardino": "Garden",
+      "spiaggia": "Beach",
+      "altro": "Other"
+    },
+    "messages": {
+      "authRequired": "You must be authenticated to add a venue",
+      "addError": "Error while adding",
+      "addSuccess": "Venue added successfully! It will be visible after staff verification."
+    }
   }
+}
