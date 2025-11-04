@@ -5,37 +5,45 @@
 DO $$
 DECLARE
   v_event_id UUID;
+  v_event_id_text TEXT := 'UUID_50TH_EVENT';
   v_cat_id UUID;
 BEGIN
+  -- 1. Gestione ID evento: se il placeholder non è stato sostituito,
+  --    creiamo l'evento e chiediamo di rilanciare lo script con l'ID reale.
+  BEGIN
+    v_event_id := v_event_id_text::uuid;
+    RAISE NOTICE 'Utilizzo ID evento fornito: %', v_event_id;
+  EXCEPTION WHEN invalid_text_representation THEN
+    INSERT INTO events (
+      name,
+      event_type,
+      event_date,
+      event_location,
+      total_budget,
+      description,
+      color_theme
+    )
+    VALUES (
+      '50° Compleanno',
+      'birthday-50',
+      CURRENT_DATE + INTERVAL '90 days',
+      'Da definire',
+      5000.00,
+      'Celebrazione elegante e conviviale per i 50 anni, tra festa e solennità',
+      '#D4AF37,#E7D8C9,#A3B59D,#F8F6F0,#FFD700'
+    )
+    RETURNING id INTO v_event_id;
 
-  -- 1. Creazione evento 50° compleanno
-  INSERT INTO events (
-    name,
-    event_type,
-    event_date,
-    event_location,
-    total_budget,
-    description,
-    color_theme
-  )
-  VALUES (
-    '50° Compleanno',
-    'birthday-50',
-    CURRENT_DATE + INTERVAL '90 days',
-    'Da definire',
-    5000.00,
-    'Celebrazione elegante e conviviale per i 50 anni, tra festa e solennità',
-    '#D4AF37,#E7D8C9,#A3B59D,#F8F6F0,#FFD700'
-  )
-  RETURNING id INTO v_event_id;
-
-  RAISE NOTICE 'Created 50th Birthday event with ID: %', v_event_id;
+    RAISE NOTICE 'Creato evento 50° compleanno con ID: %', v_event_id;
+    RAISE NOTICE 'Sostituisci tutte le occorrenze di UUID_50TH_EVENT con questo ID e rilancia lo script per popolare categorie e sottocategorie.';
+    RETURN;
+  END;
 
   -- 2. Categorie e sottocategorie
 
   -- Concept e Location
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Concept e Location', 1, '🏛️')
+  VALUES (v_event_id, 'Concept e Location', 1, '🏛️')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -48,7 +56,7 @@ BEGIN
 
   -- Catering / Ristorazione
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Catering / Ristorazione', 2, '🍽️')
+  VALUES (v_event_id, 'Catering / Ristorazione', 2, '🍽️')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -61,7 +69,7 @@ BEGIN
 
   -- Inviti e Grafica
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Inviti e Grafica', 3, '💌')
+  VALUES (v_event_id, 'Inviti e Grafica', 3, '💌')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -74,7 +82,7 @@ BEGIN
 
   -- Foto e Video
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Foto e Video', 4, '📸')
+  VALUES (v_event_id, 'Foto e Video', 4, '📸')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -86,7 +94,7 @@ BEGIN
 
   -- Musica e Intrattenimento
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Musica e Intrattenimento', 5, '🎶')
+  VALUES (v_event_id, 'Musica e Intrattenimento', 5, '🎶')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -98,7 +106,7 @@ BEGIN
 
   -- Abbigliamento e Beauty
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Abbigliamento e Beauty', 6, '👔')
+  VALUES (v_event_id, 'Abbigliamento e Beauty', 6, '👔')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -110,7 +118,7 @@ BEGIN
 
   -- Regali e Ringraziamenti
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Regali e Ringraziamenti', 7, '🎁')
+  VALUES (v_event_id, 'Regali e Ringraziamenti', 7, '🎁')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -122,7 +130,7 @@ BEGIN
 
   -- Intrattenimento Extra
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Intrattenimento Extra', 8, '🎭')
+  VALUES (v_event_id, 'Intrattenimento Extra', 8, '🎭')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -134,7 +142,7 @@ BEGIN
 
   -- Trasporti e Logistica
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Trasporti e Logistica', 9, '🚗')
+  VALUES (v_event_id, 'Trasporti e Logistica', 9, '🚗')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -146,7 +154,7 @@ BEGIN
 
   -- Gestione Budget
   INSERT INTO categories (event_id, name, display_order, icon)
-  VALUES ('UUID_50TH_EVENT', 'Gestione Budget', 10, '💶')
+  VALUES (v_event_id, 'Gestione Budget', 10, '💶')
   RETURNING id INTO v_cat_id;
 
   INSERT INTO subcategories (category_id, name, estimated_cost, display_order, description) VALUES
@@ -156,7 +164,4 @@ BEGIN
     (v_cat_id, 'Spese extra / imprevisti', 0.00, 4, 'Margine per esigenze last minute'),
     (v_cat_id, 'Regali ricevuti', 0.00, 5, 'Controvalore doni ospiti'),
     (v_cat_id, 'Totale finale', 0.00, 6, 'Riepilogo spese consuntive');
-
 END $$;
-
--- Fine seed completo 50° Compleanno

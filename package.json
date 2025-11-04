@@ -6,7 +6,7 @@
         "dev": "npm run autocommit && next dev",
         "build": "next build",
         "start": "next start",
-        "clean": "node -e \"require(\u0027fs\u0027).rmSync(\u0027.next\u0027,{recursive:true,force:true});console.log(\u0027Cleaned .next\u0027)\"",
+        "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true});console.log('Cleaned .next')\"",
         "lint": "eslint",
         "check:integrations": "node scripts/check-integrations.mjs",
         "env:verify": "node scripts/verify-env.mjs",
@@ -28,10 +28,11 @@
         "check:utf8": "node scripts/check-utf8.mjs",
         "check:utf8:strict": "node scripts/check-utf8.mjs --strict",
         "dev:ac": "npm run autocommit && next dev",
-        "autocommit:watch": "node scripts/autocommit-watch.mjs"
+        "autocommit:watch": "node scripts/autocommit-watch.mjs",
+        "sql:seed:birthday-50": "node scripts/seed-50th-birthday.mjs"
     },
     "engines": {
-        "node": "\u003e=18.17.0"
+        "node": ">=18.17.0"
     },
     "dependencies": {
         "@remotion/player": "^4.0.366",
