@@ -8,6 +8,7 @@ export default function Footer() {
   const t = useTranslations("footer");
   const safe = (key: string, fallback: string) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return t(key as any);
     } catch {
       return fallback;
@@ -38,7 +39,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-[#A3B59D] to-[#8a9d84] text-white mt-16" role="contentinfo">
+    <footer className="bg-linear-to-br from-[#A3B59D] to-[#8a9d84] text-white mt-16" role="contentinfo">
       {/* Newsletter */}
       <div className="border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
