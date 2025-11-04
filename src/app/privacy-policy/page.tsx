@@ -14,133 +14,114 @@ export default function PrivacyPolicyPage() {
           <strong>{t("lastUpdated")}</strong> {formatDate(new Date())}
         </p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">1. Introduzione</h2>
-        <p>
-          Benvenuto su <strong>MYBUDGETEVENTO</strong>. La presente Privacy Policy descrive come raccogliamo, 
-          utilizziamo e proteggiamo i tuoi dati personali in conformità con il Regolamento Generale sulla Protezione 
-          dei Dati (GDPR - Regolamento UE 2016/679).
-        </p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s1.title")}</h2>
+        <p>{t("privacy.s1.p1")}</p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">2. Titolare del Trattamento</h2>
-        <p>
-          Il Titolare del trattamento dei dati è:<br />
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s2.title")}</h2>
+        <p className="leading-relaxed">
+          {t("privacy.s2.lead")}<br />
           <strong>MYBUDGETEVENTO</strong><br />
-          Email: privacy@ilbudgetdeglisposi.it<br />
-          PEC: ilbudgetdeglisposi@pec.it
+          <strong>{t("privacy.s2.emailLabel")}</strong> privacy@ilbudgetdeglisposi.it<br />
+          <strong>{t("privacy.s2.pecLabel")}</strong> ilbudgetdeglisposi@pec.it
         </p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">3. Dati Raccolti</h2>
-        <p>Raccogliamo le seguenti categorie di dati personali:</p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s3.title")}</h2>
+        <p>{t("privacy.s3.p1")}</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li><strong>Dati di registrazione:</strong> nome, cognome, email, password (criptata)</li>
-          <li><strong>Dati dell&apos;evento:</strong> data del matrimonio, budget, preferenze</li>
-          <li><strong>Dati di navigazione:</strong> indirizzo IP, tipo di browser, pagine visitate</li>
-          <li><strong>Dati degli invitati:</strong> nomi, email, preferenze alimentari (se inseriti dall&apos;utente)</li>
-          <li><strong>Dati di pagamento:</strong> informazioni fornitori selezionati (non conserviamo dati di carte di credito)</li>
+          <li><strong>{t("privacy.s3.items.reg.title")}</strong> {t("privacy.s3.items.reg.desc")}</li>
+          <li><strong>{t("privacy.s3.items.event.title")}</strong> {t("privacy.s3.items.event.desc")}</li>
+          <li><strong>{t("privacy.s3.items.nav.title")}</strong> {t("privacy.s3.items.nav.desc")}</li>
+          <li><strong>{t("privacy.s3.items.guests.title")}</strong> {t("privacy.s3.items.guests.desc")}</li>
+          <li><strong>{t("privacy.s3.items.pay.title")}</strong> {t("privacy.s3.items.pay.desc")}</li>
         </ul>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">4. Finalità del Trattamento</h2>
-        <p>I tuoi dati personali vengono trattati per le seguenti finalità:</p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s4.title")}</h2>
+        <p>{t("privacy.s4.p1")}</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Fornire i servizi di pianificazione budget matrimonio</li>
-          <li>Gestire il tuo account utente</li>
-          <li>Inviare comunicazioni relative al servizio (notifiche, aggiornamenti)</li>
-          <li>Migliorare la piattaforma attraverso analisi aggregate</li>
-          <li>Adempiere obblighi legali e normativi</li>
-          <li>Invio newsletter (solo con consenso esplicito)</li>
+          <li>{t("privacy.s4.items.i1")}</li>
+          <li>{t("privacy.s4.items.i2")}</li>
+          <li>{t("privacy.s4.items.i3")}</li>
+          <li>{t("privacy.s4.items.i4")}</li>
+          <li>{t("privacy.s4.items.i5")}</li>
+          <li>{t("privacy.s4.items.i6")}</li>
         </ul>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">5. Base Giuridica del Trattamento</h2>
-        <p>Il trattamento dei dati si basa su:</p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s5.title")}</h2>
+        <p>{t("privacy.s5.p1")}</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li><strong>Esecuzione del contratto:</strong> per fornire i servizi richiesti</li>
-          <li><strong>Consenso:</strong> per newsletter e comunicazioni marketing</li>
-          <li><strong>Interesse legittimo:</strong> per migliorare il servizio e prevenire frodi</li>
-          <li><strong>Obbligo legale:</strong> per adempiere a obblighi fiscali e contabili</li>
+          <li><strong>{t("privacy.s5.items.contract.title")}</strong> {t("privacy.s5.items.contract.desc")}</li>
+          <li><strong>{t("privacy.s5.items.consent.title")}</strong> {t("privacy.s5.items.consent.desc")}</li>
+          <li><strong>{t("privacy.s5.items.interest.title")}</strong> {t("privacy.s5.items.interest.desc")}</li>
+          <li><strong>{t("privacy.s5.items.legal.title")}</strong> {t("privacy.s5.items.legal.desc")}</li>
         </ul>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">6. Conservazione dei Dati</h2>
-        <p>
-          I dati personali vengono conservati per il tempo necessario a fornire i servizi richiesti e, 
-          successivamente, per il periodo richiesto dalla normativa fiscale (10 anni). I dati di marketing 
-          vengono cancellati entro 24 mesi dall&apos;ultimo consenso.
-        </p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s6.title")}</h2>
+        <p>{t("privacy.s6.p1")}</p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">7. Condivisione dei Dati</h2>
-        <p>I tuoi dati possono essere condivisi con:</p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s7.title")}</h2>
+        <p>{t("privacy.s7.p1")}</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li><strong>Fornitori di servizi:</strong> Supabase (hosting database), Vercel (hosting web)</li>
-          <li><strong>Partner commerciali:</strong> Solo con tuo consenso esplicito</li>
-          <li><strong>Autorità competenti:</strong> Su richiesta legale</li>
+          <li><strong>{t("privacy.s7.items.providers.title")}</strong> {t("privacy.s7.items.providers.desc")}</li>
+          <li><strong>{t("privacy.s7.items.partners.title")}</strong> {t("privacy.s7.items.partners.desc")}</li>
+          <li><strong>{t("privacy.s7.items.authorities.title")}</strong> {t("privacy.s7.items.authorities.desc")}</li>
         </ul>
-        <p className="mt-2">
-          <strong>Non vendiamo mai i tuoi dati a terzi.</strong>
-        </p>
+        <p className="mt-2">{t.rich("privacy.s7.note", { strong: (c) => <strong>{c}</strong> })}</p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">8. Diritti dell&apos;Interessato</h2>
-        <p>Hai diritto di:</p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s8.title")}</h2>
+        <p>{t("privacy.s8.p1")}</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li><strong>Accesso:</strong> ottenere copia dei tuoi dati</li>
-          <li><strong>Rettifica:</strong> correggere dati inesatti</li>
-          <li><strong>Cancellazione:</strong> richiedere l&apos;eliminazione dei dati (&quot;diritto all&apos;oblio&quot;)</li>
-          <li><strong>Limitazione:</strong> limitare il trattamento in determinate circostanze</li>
-          <li><strong>Portabilità:</strong> ricevere i dati in formato strutturato</li>
-          <li><strong>Opposizione:</strong> opporti al trattamento per finalità di marketing</li>
-          <li><strong>Revoca del consenso:</strong> revocare il consenso in qualsiasi momento</li>
+          <li><strong>{t("privacy.s8.items.access.title")}</strong> {t("privacy.s8.items.access.desc")}</li>
+          <li><strong>{t("privacy.s8.items.rect.title")}</strong> {t("privacy.s8.items.rect.desc")}</li>
+          <li><strong>{t("privacy.s8.items.erase.title")}</strong> {t("privacy.s8.items.erase.desc")}</li>
+          <li><strong>{t("privacy.s8.items.limit.title")}</strong> {t("privacy.s8.items.limit.desc")}</li>
+          <li><strong>{t("privacy.s8.items.port.title")}</strong> {t("privacy.s8.items.port.desc")}</li>
+          <li><strong>{t("privacy.s8.items.object.title")}</strong> {t("privacy.s8.items.object.desc")}</li>
+          <li><strong>{t("privacy.s8.items.withdraw.title")}</strong> {t("privacy.s8.items.withdraw.desc")}</li>
         </ul>
-        <p className="mt-4">
-          Per esercitare i tuoi diritti, contattaci a: <strong>privacy@ilbudgetdeglisposi.it</strong>
-        </p>
+        <p className="mt-4">{t.rich("privacy.s8.contact", { strong: (c) => <strong>{c}</strong> })}</p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">9. Sicurezza dei Dati</h2>
-        <p>
-          Adottiamo misure tecniche e organizzative appropriate per proteggere i tuoi dati personali, tra cui:
-        </p>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s9.title")}</h2>
+        <p>{t("privacy.s9.p1")}</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Crittografia SSL/TLS per tutte le comunicazioni</li>
-          <li>Password crittografate con algoritmo bcrypt</li>
-          <li>Accesso ai dati limitato al personale autorizzato</li>
-          <li>Backup regolari e disaster recovery</li>
-          <li>Monitoraggio continuo per rilevare accessi non autorizzati</li>
+          <li>{t("privacy.s9.items.i1")}</li>
+          <li>{t("privacy.s9.items.i2")}</li>
+          <li>{t("privacy.s9.items.i3")}</li>
+          <li>{t("privacy.s9.items.i4")}</li>
+          <li>{t("privacy.s9.items.i5")}</li>
         </ul>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">10. Cookie e Tecnologie di Tracciamento</h2>
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s10.title")}</h2>
         <p>
-          Utilizziamo cookie tecnici necessari al funzionamento del sito. Per maggiori informazioni, 
-          consulta la nostra <a href="/cookie-policy" className="text-[#A3B59D] underline">Cookie Policy</a>.
+          {t.rich("privacy.s10.p1", {
+            link: (chunks) => (
+              <a href="/cookie-policy" className="text-[#A3B59D] underline">{chunks}</a>
+            ),
+          })}
         </p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">11. Trasferimento Dati Extra-UE</h2>
-        <p>
-          I dati possono essere trasferiti verso paesi extra-UE solo se dotati di adeguate garanzie 
-          (clausole contrattuali standard, Privacy Shield, ecc.).
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s11.title")}</h2>
+        <p>{t("privacy.s11.p1")}</p>
+
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s12.title")}</h2>
+        <p>{t("privacy.s12.p1")}</p>
+
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s13.title")}</h2>
+        <p>{t("privacy.s13.p1")}</p>
+
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s14.title")}</h2>
+        <p className="leading-relaxed">
+          {t("privacy.s14.p1")}<br />
+          <strong>{t("privacy.s14.authName")}</strong><br />
+          {t("privacy.s14.addr")}<br />
+          {t("privacy.s14.email")}<br />
+          {t("privacy.s14.phone")}
         </p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">12. Minori</h2>
-        <p>
-          Il servizio è destinato a maggiorenni. Non raccogliamo consapevolmente dati di minori di 18 anni.
-        </p>
-
-        <h2 className="text-2xl font-semibold mt-8 mb-4">13. Modifiche alla Privacy Policy</h2>
-        <p>
-          Ci riserviamo il diritto di modificare questa Privacy Policy. Le modifiche saranno pubblicate 
-          su questa pagina con indicazione della data di ultimo aggiornamento.
-        </p>
-
-        <h2 className="text-2xl font-semibold mt-8 mb-4">14. Reclami</h2>
-        <p>
-          Hai il diritto di presentare reclamo all&apos;autorità di controllo competente:<br />
-          <strong>Garante per la Protezione dei Dati Personali</strong><br />
-          Piazza di Monte Citorio n. 121, 00186 Roma<br />
-          Email: garante@gpdp.it<br />
-          Tel: +39 06 696771
-        </p>
-
-        <h2 className="text-2xl font-semibold mt-8 mb-4">15. Contatti</h2>
-        <p>
-          Per qualsiasi domanda o richiesta relativa alla presente Privacy Policy, contattaci:<br />
-          Email: <strong>privacy@ilbudgetdeglisposi.it</strong><br />
-          Risponderemo entro 30 giorni dalla richiesta.
+        <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s15.title")}</h2>
+        <p className="leading-relaxed">
+          {t("privacy.s15.p1")}<br />
+          {t.rich("privacy.s15.email", { strong: (c) => <strong>{c}</strong> })}<br />
+          {t("privacy.s15.sla")}
         </p>
       </div>
     </section>
