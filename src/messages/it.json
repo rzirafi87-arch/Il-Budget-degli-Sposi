@@ -19,6 +19,7 @@
   "settings": "Impostazioni",
   "loading": "Caricamento…",
   "comingSoon": "In arrivo",
+  "retirement": "Pensione",
   "budgetPage": {
     "approvedExpenses": "Spese approvate",
     "ctaIdeaBudget": "💡 Vai a Idea di Budget",
@@ -1146,16 +1147,27 @@
     },
     "types": {
       "villa": "Villa",
+      "Villa": "Villa",
       "castello": "Castello",
+      "Castello": "Castello",
       "agriturismo": "Agriturismo",
+      "Agriturismo": "Agriturismo",
       "masseria": "Masseria",
+      "Masseria": "Masseria",
       "ristorante": "Ristorante",
+      "Ristorante": "Ristorante",
       "hotel": "Hotel",
+      "Hotel": "Hotel",
       "resort": "Resort",
+      "Resort": "Resort",
       "tenuta": "Tenuta",
+      "Tenuta": "Tenuta",
       "giardino": "Giardino",
+      "Giardino": "Giardino",
       "spiaggia": "Spiaggia",
-      "altro": "Altro"
+      "Spiaggia": "Spiaggia",
+      "altro": "Altro",
+      "Altro": "Altro"
     },
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una location",
