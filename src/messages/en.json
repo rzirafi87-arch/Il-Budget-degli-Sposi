@@ -1505,5 +1505,108 @@
       "submitError": "Error submitting",
       "networkError": "Network error"
     }
+  },
+  "suppliersMusicReception": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "musicReception": "Reception Music"
+    },
+    "title": "Reception Music",
+    "description": "Find verified DJs, bands, and musical entertainment for your reception. You can propose new artists that will be verified before publication.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers",
+      "propose": "+ Propose DJ/band",
+      "cancel": "Cancel",
+      "submit": "Submit for approval"
+    },
+    "filters": {
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Naples"
+    },
+    "form": {
+      "title": "Propose DJ/band for reception",
+      "name": "Artist/group name *",
+      "region": "Region *",
+      "province": "Province *",
+      "city": "City *",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "description": "Description",
+      "priceRange": "Price range",
+      "musicType": "Music type",
+      "select": "Select...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "E.g. €€€",
+      "musicTypePlaceholder": "E.g. DJ, Live band, Orchestra, Acoustic duo"
+    },
+    "loading": "Loading...",
+    "empty": "No DJ/band found for the selected filters",
+    "verified": "✓ Verified",
+    "messages": {
+      "submitSuccess": "Reception music submitted! It will be verified before publication.",
+      "submitError": "Error submitting",
+      "networkError": "Network error"
+    }
+  },
+  "suppliersChurches": {
+    "title": "⛪ Churches and Ceremony Venues",
+    "description": "Find the perfect church for your religious ceremony: Catholic, Orthodox, Protestant, and other places of worship. Discover requirements, capacity, and contact information. Filter by region, province, and type.",
+    "buttons": {
+      "add": "+ Add Church",
+      "cancel": "Cancel",
+      "submit": "Add Church"
+    },
+    "filters": {
+      "title": "Filters",
+      "type": "Type",
+      "all": "All",
+      "allTypes": "All types"
+    },
+    "form": {
+      "title": "Add New Church",
+      "name": "Name *",
+      "type": "Type *",
+      "city": "City *",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "capacity": "Capacity (people)",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the church, architectural features, services...",
+      "requiresBaptism": "Requires Baptism",
+      "requiresMarriageCourse": "Requires Pre-Marriage Course",
+      "select": "Select..."
+    },
+    "types": {
+      "cattolica": "Catholic",
+      "ortodossa": "Orthodox",
+      "protestante": "Protestant",
+      "evangelica": "Evangelical",
+      "anglicana": "Anglican",
+      "sinagoga": "Synagogue",
+      "moschea": "Mosque",
+      "altro": "Other"
+    },
+    "card": {
+      "verified": "Verified",
+      "type": "Type:",
+      "capacity": "👥 Capacity:",
+      "people": "people",
+      "requiresBaptism": "⚠️ Requires Baptism",
+      "requiresMarriageCourse": "⚠️ Requires Pre-Marriage Course",
+      "website": "Website"
+    },
+    "loading": "Loading...",
+    "empty": "No churches found. Try changing filters or add the first one!",
+    "messages": {
+      "authRequired": "You must be authenticated to add a church",
+      "submitSuccess": "Church added successfully! It will be visible after staff verification.",
+      "submitError": "Error adding church"
+    }
   }
 }

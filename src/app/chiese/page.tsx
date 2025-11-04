@@ -5,7 +5,8 @@ import { GEO, getUserCountrySafe } from "@/constants/geo";
 import { getGeographyLevels } from "@/lib/geographyFilters";
 import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 type Church = {
   id: string;

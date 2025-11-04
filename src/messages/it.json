@@ -1508,5 +1508,108 @@
       "submitError": "Errore nell'invio",
       "networkError": "Errore di rete"
     }
+  },
+  "suppliersMusicReception": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "musicReception": "Musica Ricevimento"
+    },
+    "title": "Musica Ricevimento",
+    "description": "Trova DJ, band e intrattenimento musicale verificato per il ricevimento. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori",
+      "propose": "+ Proponi DJ/band",
+      "cancel": "Annulla",
+      "submit": "Invia per approvazione"
+    },
+    "filters": {
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es: Napoli"
+    },
+    "form": {
+      "title": "Proponi DJ/band per ricevimento",
+      "name": "Nome artista/gruppo *",
+      "region": "Regione *",
+      "province": "Provincia *",
+      "city": "Città *",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito web",
+      "description": "Descrizione",
+      "priceRange": "Fascia di prezzo",
+      "musicType": "Tipo di musica",
+      "select": "Seleziona...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "Es: €€€",
+      "musicTypePlaceholder": "Es: DJ, Band live, Orchestra, Duo acustico"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessun DJ/band trovato per i filtri selezionati",
+    "verified": "✓ Verificato",
+    "messages": {
+      "submitSuccess": "Musica ricevimento inviata! Sarà verificata prima della pubblicazione.",
+      "submitError": "Errore nell'invio",
+      "networkError": "Errore di rete"
+    }
+  },
+  "suppliersChurches": {
+    "title": "⛪ Chiese e Luoghi di Cerimonia",
+    "description": "Trova la chiesa perfetta per la tua cerimonia religiosa: cattoliche, ortodosse, protestanti e altri luoghi di culto. Scopri requisiti, capienza e informazioni di contatto. Filtra per regione, provincia e tipologia.",
+    "buttons": {
+      "add": "+ Aggiungi Chiesa",
+      "cancel": "Annulla",
+      "submit": "Aggiungi Chiesa"
+    },
+    "filters": {
+      "title": "Filtri",
+      "type": "Tipo",
+      "all": "Tutte",
+      "allTypes": "Tutti"
+    },
+    "form": {
+      "title": "Aggiungi Nuova Chiesa",
+      "name": "Nome *",
+      "type": "Tipo *",
+      "city": "Città *",
+      "address": "Indirizzo",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito Web",
+      "capacity": "Capacità (persone)",
+      "description": "Descrizione",
+      "descriptionPlaceholder": "Descrivi la chiesa, le caratteristiche architettoniche, servizi...",
+      "requiresBaptism": "Richiede Battesimo",
+      "requiresMarriageCourse": "Richiede Corso Prematrimoniale",
+      "select": "Seleziona..."
+    },
+    "types": {
+      "cattolica": "Cattolica",
+      "ortodossa": "Ortodossa",
+      "protestante": "Protestante",
+      "evangelica": "Evangelica",
+      "anglicana": "Anglicana",
+      "sinagoga": "Sinagoga",
+      "moschea": "Moschea",
+      "altro": "Altro"
+    },
+    "card": {
+      "verified": "Verificato",
+      "type": "Tipo:",
+      "capacity": "👥 Capacità:",
+      "people": "persone",
+      "requiresBaptism": "⚠️ Richiede Battesimo",
+      "requiresMarriageCourse": "⚠️ Richiede Corso Prematrimoniale",
+      "website": "Sito Web"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessuna chiesa trovata. Prova a cambiare i filtri o aggiungi la prima!",
+    "messages": {
+      "authRequired": "Devi essere autenticato per aggiungere una chiesa",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
+      "submitError": "Errore durante l'aggiunta"
+    }
   }
 }
