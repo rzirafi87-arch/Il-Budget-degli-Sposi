@@ -506,5 +506,77 @@
           "description": "DJ, band e intrattenimento"
         }
       }
+    },
+    "howItWorks": {
+      "title": "📖 Come Funziona",
+      "steps": {
+        "1": {
+          "title": "📝 Registrati Gratuitamente",
+          "desc": "Crea il tuo account in pochi secondi. Nessun costo nascosto, nessuna carta di credito richiesta. Inizia subito a pianificare il tuo matrimonio!"
+        },
+        "2": {
+          "title": "💰 Imposta il Tuo Budget",
+          "desc": "Definisci il budget iniziale per sposa e sposo. Il sistema calcola automaticamente il totale e ti aiuta a monitorare le spese in tempo reale."
+        },
+        "3": {
+          "title": "📊 Gestisci le Categorie",
+          "desc": "Organizza le spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro. Tutto è già pronto all'uso!"
+        },
+        "4": {
+          "title": "🔍 Trova Fornitori",
+          "desc": "Accedi al nostro database di fornitori verificati in tutta Italia: location, chiese, fotografi, wedding planner, musicisti e molto altro."
+        },
+        "5": {
+          "title": "👥 Gestisci gli Invitati",
+          "desc": "Crea e gestisci la lista invitati, organizza per famiglie, monitora le conferme e calcola i costi per persona."
+        },
+        "6": {
+          "title": "💾 Salva e Monitora",
+          "desc": "Salva i progressi in qualsiasi momento. Visualizza grafici e statistiche, controlla il budget residuo e mantieni tutto sotto controllo fino al grande giorno."
+        }
+      },
+      "cta": {
+        "title": "🎉 Pronto per Iniziare?",
+        "subtitle": "Inizia oggi stesso a pianificare il tuo matrimonio da sogno!",
+        "button": "Registrati Gratis Ora"
+      }
+    },
+    "about": {
+      "title": "👰🤵 Chi Siamo",
+      "intro": "Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale. Nata dall'esperienza diretta di coppie che hanno vissuto le sfide dell'organizzazione di un matrimonio, la nostra missione è rendere questo processo più semplice, trasparente e piacevole.",
+      "mission": {
+        "title": "La Nostra Missione",
+        "body": "Aiutare le coppie italiane a pianificare il loro matrimonio da sogno senza stress finanziari. Offriamo strumenti gratuiti, intuitivi e completi per gestire ogni aspetto del budget matrimoniale."
+      },
+      "why": {
+        "title": "Perché Sceglierci",
+        "points": {
+          "free": {
+            "title": "100% Gratuito:",
+            "desc": "Tutti gli strumenti sono completamente gratuiti"
+          },
+          "madeInItaly": {
+            "title": "Made in Italy:",
+            "desc": "Pensato specificamente per matrimoni italiani"
+          },
+          "privacy": {
+            "title": "Privacy Garantita:",
+            "desc": "I tuoi dati sono protetti e GDPR compliant"
+          },
+          "database": {
+            "title": "Database Fornitori:",
+            "desc": "Accesso a migliaia di fornitori in tutta Italia"
+          },
+          "support": {
+            "title": "Supporto Dedicato:",
+            "desc": "Il nostro team è sempre disponibile ad aiutarti"
+          }
+        }
+      },
+      "contact": {
+        "title": "Contattaci",
+        "body": "Hai domande o suggerimenti? Siamo qui per te!",
+        "cta": "Chatta con noi su WhatsApp"
+      }
     }
   }

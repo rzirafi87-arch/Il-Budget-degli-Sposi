@@ -503,5 +503,77 @@
           "description": "DJs, bands and entertainment"
         }
       }
+    },
+    "howItWorks": {
+      "title": "📖 How It Works",
+      "steps": {
+        "1": {
+          "title": "📝 Register for Free",
+          "desc": "Create your account in seconds. No hidden fees, no credit card required. Start planning your wedding right away!"
+        },
+        "2": {
+          "title": "💰 Set Your Budget",
+          "desc": "Define the initial budget for bride and groom. The system automatically calculates the total and helps you monitor expenses in real time."
+        },
+        "3": {
+          "title": "📊 Manage Categories",
+          "desc": "Organize expenses into 20+ categories: attire, venue, catering, photographers, florists and more. Everything is ready to use!"
+        },
+        "4": {
+          "title": "🔍 Find Suppliers",
+          "desc": "Access our database of verified suppliers across Italy: venues, churches, photographers, wedding planners, musicians and more."
+        },
+        "5": {
+          "title": "👥 Manage Guests",
+          "desc": "Create and manage the guest list, group by families, track RSVPs and calculate cost per person."
+        },
+        "6": {
+          "title": "💾 Save and Track",
+          "desc": "Save your progress at any time. View charts and stats, track remaining budget and keep everything under control until the big day."
+        }
+      },
+      "cta": {
+        "title": "🎉 Ready to Start?",
+        "subtitle": "Start planning your dream wedding today!",
+        "button": "Register Free Now"
+      }
+    },
+    "about": {
+      "title": "👰🤵 About Us",
+      "intro": "We are Italy's number one platform for wedding budget management. Born from the direct experience of couples who faced the challenges of wedding planning, our mission is to make the process simpler, more transparent and enjoyable.",
+      "mission": {
+        "title": "Our Mission",
+        "body": "Help Italian couples plan their dream wedding without financial stress. We offer free, intuitive and complete tools to manage every aspect of the wedding budget."
+      },
+      "why": {
+        "title": "Why Choose Us",
+        "points": {
+          "free": {
+            "title": "100% Free:",
+            "desc": "All tools are completely free"
+          },
+          "madeInItaly": {
+            "title": "Made in Italy:",
+            "desc": "Designed specifically for Italian weddings"
+          },
+          "privacy": {
+            "title": "Privacy Guaranteed:",
+            "desc": "Your data is protected and GDPR compliant"
+          },
+          "database": {
+            "title": "Supplier Database:",
+            "desc": "Access to thousands of suppliers across Italy"
+          },
+          "support": {
+            "title": "Dedicated Support:",
+            "desc": "Our team is always available to help you"
+          }
+        }
+      },
+      "contact": {
+        "title": "Contact Us",
+        "body": "Got questions or suggestions? We’re here for you!",
+        "cta": "Chat with us on WhatsApp"
+      }
     }
   }
