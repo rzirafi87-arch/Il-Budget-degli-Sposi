@@ -590,5 +590,51 @@
       "terms": {
         "title": "Termini di Servizio"
       }
+    },
+    "budgetIdea": {
+      "title": "Idea di budget",
+      "loading": "Caricamento idee di budget...",
+      "buttons": {
+        "save": "Salva idea di budget",
+        "saving": "Salvataggio...",
+        "apply": "Applica al budget"
+      },
+      "form": {
+        "eventDate": "Data evento",
+        "currency": "Valuta",
+        "contingency": "Imprevisti (%)",
+        "compact": "Vista compatta (righe più strette)",
+        "syncedNote": "Sincronizzato con la dashboard principale."
+      },
+      "summary": {
+        "plannedTotal": "Totale pianificato:",
+        "contingency": "Imprevisti:",
+        "totalWithContingency": "Totale con imprevisti:"
+      },
+      "panel": {
+        "available": "Disponibile:",
+        "planned": "Pianificato:",
+        "residual": "Residuo:",
+        "budget": "Budget"
+      },
+      "totalCard": {
+        "available": "Disponibile:",
+        "planned": "Pianificato:",
+        "residual": "Residuo:",
+        "extraContributions": "Altri contributi"
+      },
+      "table": {
+        "category": "Categoria",
+        "subcategory": "Sottocategoria",
+        "amountCurrency": "Importo ({currency})",
+        "spendType": "Tipo spesa",
+        "supplier": "Fornitore",
+        "notes": "Note"
+      },
+      "messages": {
+        "saveError": "Errore nel salvataggio dell'idea di budget.",
+        "applyDone": "Applicazione completata: {count} voci create o aggiornate.",
+        "applyError": "Errore nell'applicazione al budget."
+      }
     }
   }

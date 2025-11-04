@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { EventConfiguration } from "@/constants/eventConfigs";
 import {
   DEFAULT_EVENT_TYPE,
@@ -55,6 +56,7 @@ function buildDefaultRows(config: EventConfiguration): BudgetIdeaRow[] {
 }
 
 export default function IdeaDiBudgetPage() {
+  const t = useTranslations("budgetIdea");
   const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
   const eventConfig = getEventConfig(eventType);
 
@@ -383,7 +385,7 @@ export default function IdeaDiBudgetPage() {
   if (loading) {
     return (
       <div className="py-12 text-center text-gray-500">
-        Caricamento idee di budget...
+        {t("loading")}
       </div>
     );
   }
@@ -391,21 +393,21 @@ export default function IdeaDiBudgetPage() {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <h1 className="font-serif text-3xl font-bold">Idea di budget</h1>
+        <h1 className="font-serif text-3xl font-bold">{t("title")}</h1>
         <div className="flex flex-wrap gap-3">
           <button
             className="rounded-full bg-[#2563eb] px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-[#1d4ed8]"
             onClick={handleSave}
             disabled={saving}
           >
-            {saving ? "Salvataggio..." : "Salva idea di budget"}
+            {saving ? t("buttons.saving") : t("buttons.save")}
           </button>
           <button
             className="rounded-full border border-[#2563eb] px-5 py-2 text-sm font-semibold text-[#2563eb] transition hover:bg-[#2563eb] hover:text-white"
             onClick={handleApplyToBudget}
             disabled={saving}
           >
-            Applica al budget
+            {t("buttons.apply")}
           </button>
         </div>
       </div>
@@ -413,23 +415,17 @@ export default function IdeaDiBudgetPage() {
       <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-5">
         <div className="grid gap-4 sm:grid-cols-4">
           <div className="sm:col-span-2">
-            <label className="block text-sm font-semibold text-gray-700">
-              Data evento
-            </label>
+            <label className="block text-sm font-semibold text-gray-700">{t("form.eventDate")}</label>
             <input
               type="date"
               value={eventDate}
               onChange={(event) => setEventDate(event.target.value)}
               className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
             />
-            <p className="mt-1 text-xs text-gray-500">
-              Sincronizzato con la dashboard principale.
-            </p>
+            <p className="mt-1 text-xs text-gray-500">{t("form.syncedNote")}</p>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700">
-              Valuta
-            </label>
+            <label className="block text-sm font-semibold text-gray-700">{t("form.currency")}</label>
             <input
               type="text"
               value={currency}
@@ -441,9 +437,7 @@ export default function IdeaDiBudgetPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700">
-              Imprevisti (%)
-            </label>
+            <label className="block text-sm font-semibold text-gray-700">{t("form.contingency")}</label>
             <input
               type="number"
               min={0}
@@ -462,21 +456,21 @@ export default function IdeaDiBudgetPage() {
               onChange={(event) => setCompactView(event.target.checked)}
               className="h-4 w-4"
             />
-            Vista compatta (righe piu strette)
+            {t("form.compact")}
           </label>
         </div>
         <div className="mt-4 grid gap-3 text-sm text-gray-700 sm:grid-cols-3">
           <div>
-            <strong>Totale pianificato:</strong>{" "}
+            <strong>{t("summary.plannedTotal")}</strong>{" "}
             {formatAmount(plannedTotal, currency)}
           </div>
           <div>
-            <strong>Imprevisti:</strong>{" "}
+            <strong>{t("summary.contingency")}</strong>{" "}
             {formatAmount(contingencyAmount, currency)} ({contingencyPct}
             %)
           </div>
           <div>
-            <strong>Totale con imprevisti:</strong>{" "}
+            <strong>{t("summary.totalWithContingency")}</strong>{" "}
             {formatAmount(totalWithContingency, currency)}
           </div>
         </div>
@@ -495,19 +489,11 @@ export default function IdeaDiBudgetPage() {
               <h4 className="font-semibold text-gray-800">
                 {contributor.label}
               </h4>
-              <div className="mt-2 text-sm text-gray-600">
-                Disponibile: {formatAmount(available, currency)}
-              </div>
-              <div className="text-sm text-gray-600">
-                Pianificato: {formatAmount(planned, currency)}
-              </div>
-              <div className="text-sm font-semibold text-emerald-600">
-                Residuo: {formatAmount(residue, currency)}
-              </div>
+              <div className="mt-2 text-sm text-gray-600">{t("panel.available")} {formatAmount(available, currency)}</div>
+              <div className="text-sm text-gray-600">{t("panel.planned")} {formatAmount(planned, currency)}</div>
+              <div className="text-sm font-semibold text-emerald-600">{t("panel.residual")} {formatAmount(residue, currency)}</div>
               <div className="mt-3">
-                <label className="block text-xs font-semibold text-gray-600">
-                  Budget
-                </label>
+                <label className="block text-xs font-semibold text-gray-600">{t("panel.budget")}</label>
                 <input
                   type="number"
                   value={available}
@@ -529,17 +515,17 @@ export default function IdeaDiBudgetPage() {
             {eventConfig.totalBudgetLabel}
           </h4>
           <div className="mt-2 text-sm text-gray-600">
-            Disponibile: {formatAmount(totalBudget, currency)}
+            {t("totalCard.available")} {formatAmount(totalBudget, currency)}
           </div>
           <div className="text-sm text-gray-600">
-            Pianificato: {formatAmount(plannedTotal, currency)}
+            {t("totalCard.planned")} {formatAmount(plannedTotal, currency)}
           </div>
           <div className="text-sm font-semibold text-emerald-600">
-            Residuo: {formatAmount(Math.max(totalBudget - plannedTotal, 0), currency)}
+            {t("totalCard.residual")} {formatAmount(Math.max(totalBudget - plannedTotal, 0), currency)}
           </div>
           {extraSpendItems.length > 0 && (
             <div className="mt-3 text-xs text-gray-500">
-              <p className="font-semibold">Altri contributi</p>
+              <p className="font-semibold">{t("totalCard.extraContributions")}</p>
               <ul className="mt-1 space-y-1">
                 {extraSpendItems.map(([value, amount]) => (
                   <li key={value}>
@@ -557,12 +543,12 @@ export default function IdeaDiBudgetPage() {
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">
-              <th className="p-3">Categoria</th>
-              <th className="p-3">Sottocategoria</th>
-              <th className="p-3">Importo ({currency})</th>
+              <th className="p-3">{t("table.category")}</th>
+              <th className="p-3">{t("table.subcategory")}</th>
+              <th className="p-3">{t("table.amountCurrency", { currency })}</th>
               <th className="p-3">{eventConfig.spendTypeLabel}</th>
-              <th className="p-3">Fornitore</th>
-              <th className="p-3">Note</th>
+              <th className="p-3">{t("table.supplier")}</th>
+              <th className="p-3">{t("table.notes")}</th>
             </tr>
           </thead>
           <tbody className={compactView ? "text-sm" : "text-base"}>
