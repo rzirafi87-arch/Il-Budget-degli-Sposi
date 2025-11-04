@@ -11,29 +11,40 @@ import { IntlProvider } from "next-intl";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
-function expandDotted(input: Record<string, any>): Record<string, any> {
-  const out: Record<string, any> = {};
+type Messages = Record<string, unknown>;
+
+function expandDotted(input: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(input || {})) {
     const parts = key.split(".");
-    let cur = out;
+    let cur: Record<string, unknown> = out;
     for (let i = 0; i < parts.length; i++) {
       const p = parts[i]!;
       if (i === parts.length - 1) {
         cur[p] = value;
       } else {
-        cur[p] = cur[p] || {};
-        cur = cur[p];
+        if (!cur[p] || typeof cur[p] !== "object") {
+          cur[p] = {};
+        }
+        cur = cur[p] as Record<string, unknown>;
       }
     }
   }
   return out;
 }
 
-function mergeDeep(a: any, b: any): any {
-  const out: any = { ...(a || {}) };
-  for (const [k, v] of Object.entries(b || {})) {
+function mergeDeep(a: unknown, b: unknown): Messages {
+  if (!a || typeof a !== "object" || Array.isArray(a)) {
+    return (b && typeof b === "object" && !Array.isArray(b)) ? b as Messages : {};
+  }
+  if (!b || typeof b !== "object" || Array.isArray(b)) {
+    return a as Messages;
+  }
+  
+  const out: Messages = { ...(a as Messages) };
+  for (const [k, v] of Object.entries(b)) {
     if (v && typeof v === "object" && !Array.isArray(v)) {
-      out[k] = mergeDeep(out[k] || {}, v);
+      out[k] = mergeDeep(out[k], v);
     } else {
       out[k] = v;
     }
@@ -74,7 +85,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
 
   type Locale = "it" | "es" | "en" | "ru" | "fr" | "de" | "zh" | "ja" | "ar" | "pt" | "id";
   const [locale, setLocale] = useState<Locale>("it");
-  const [messages, setMessages] = useState<any | null>(null);
+  const [messages, setMessages] = useState<Messages | null>(null);
   const [chatEnabled, setChatEnabled] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -88,11 +99,13 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     (async () => {
       try {
         const base = (await import(`../messages/${nextLocale}.json`)).default;
-        let merged: any = base;
+        let merged: Messages = base;
         try {
           const onboarding = (await import(`../messages/onboarding.${nextLocale}.json`)).default;
           merged = mergeDeep(merged, expandDotted(onboarding));
-        } catch {}
+        } catch {
+          // Onboarding messages not available
+        }
         try {
           const footer = (await import(`../messages/footer.${nextLocale}.json`)).default;
           setMessages({ ...merged, footer });
@@ -101,11 +114,13 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
         }
       } catch {
         const fallback = (await import("../messages/en.json")).default;
-        let merged: any = fallback;
+        let merged: Messages = fallback;
         try {
           const onboarding = (await import(`../messages/onboarding.en.json`)).default;
           merged = mergeDeep(merged, expandDotted(onboarding));
-        } catch {}
+        } catch {
+          // Onboarding messages not available
+        }
         try {
           const footer = (await import(`../messages/footer.en.json`)).default;
           setMessages({ ...merged, footer });
@@ -145,7 +160,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
         const data = await res.json();
         if (!active) return;
         setChatEnabled(Boolean(data?.enabled));
-      } catch (_) {
+      } catch {
         if (!active) return;
         setChatEnabled(false);
       }
