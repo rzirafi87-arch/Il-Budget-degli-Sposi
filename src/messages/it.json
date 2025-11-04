@@ -1290,5 +1290,49 @@
       "tip4": "Chiedi informazioni su tempi di consegna e modifiche incluse nel prezzo",
       "tip5": "Per lo sposo, valuta sia acquisto che noleggio in base al budget"
     }
+  },
+  "suppliersFlorists": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "florists": "Fiorai"
+    },
+    "title": "💐 Fiorai",
+    "description": "Allestimenti floreali, bouquet, centrotavola e decorazioni per la cerimonia e il ricevimento.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra fiorai",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome negozio o fiorista...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "🔲 Griglia",
+      "list": "📋 Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun fiorista trovato} one {# fiorista trovato} other {# fioristi trovati}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun fiorista trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "🌐 Sito",
+      "call": "📞 Chiama",
+      "email": "✉️ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
   }
 }
