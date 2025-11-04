@@ -356,17 +356,17 @@ export default function InvitatiPage() {
       <PageInfoNote
         icon="??"
         title="Gestione Completa degli Invitati"
-        description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menù, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
+        description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menÃ¹, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
         tips={[
           "Crea gruppi familiari per organizzare gli invitati e assegnarli automaticamente allo stesso tavolo",
           "Usa il flag 'Escludi da tavolo famiglia' per separare alcuni membri (es. cugini vs genitori)",
           "Traccia le conferme RSVP per sapere quanti parteciperanno realmente",
-          "Registra le preferenze del menù (carne, pesce, vegetariano, baby) per comunicarle al catering",
+          "Registra le preferenze del menÃ¹ (carne, pesce, vegetariano, baby) per comunicarle al catering",
           "La sezione 'Non Invitati' serve per chi riceve solo bomboniera/confetti senza partecipare"
         ]}
         eventTypeSpecific={{
           wedding: "Per il matrimonio, gestisci invitati della sposa, dello sposo e comuni. Organizza per famiglie e assegna i tavoli in modo strategico per creare un'atmosfera piacevole.",
-          baptism: "Per il battesimo, traccia padrino, madrina, familiari e amici. La lista è generalmente più piccola e familiare.",
+          baptism: "Per il battesimo, traccia padrino, madrina, familiari e amici. La lista Ã¨ generalmente piÃ¹ piccola e familiare.",
           birthday: "Per il compleanno, organizza gli invitati per gruppi (famiglia, amici, colleghi) per una migliore gestione.",
           graduation: "Per la laurea, invita familiari, amici e compagni di studi. Traccia le conferme per organizzare il buffet o il pranzo."
         }}
@@ -858,7 +858,7 @@ export default function InvitatiPage() {
 
         <div className="p-6 rounded-lg border border-gray-300 bg-white/70">
           <p className="text-sm text-gray-600">
-            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
+            La gestione dettagliata della disposizione dei tavoli Ã¨ disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
             Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.
           </p>
           <p className="text-sm text-gray-600 mt-2">
