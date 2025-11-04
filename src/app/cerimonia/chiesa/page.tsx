@@ -43,6 +43,7 @@ const CHURCH_TYPES = [
 ];
 
 export default function CerimoniaChiesaPage() {
+  const t = useTranslations("ceremonyCeremonyChurch");
   const country = getUserCountrySafe();
   const [churches, setChurches] = useState<Church[]>([]);
   const [loading, setLoading] = useState(true);

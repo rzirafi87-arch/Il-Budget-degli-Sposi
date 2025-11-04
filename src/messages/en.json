@@ -1608,5 +1608,66 @@
       "submitSuccess": "Church added successfully! It will be visible after staff verification.",
       "submitError": "Error adding church"
     }
+  },
+  "ceremonyCeremonyChurch": {
+    "title": "Ceremony · Church",
+    "buttons": {
+      "add": "+ Add Church",
+      "cancel": "Cancel",
+      "submit": "Add Church"
+    },
+    "filters": {
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Rome",
+      "type": "Type",
+      "allTypes": "All types"
+    },
+    "form": {
+      "title": "Add New Church",
+      "name": "Name *",
+      "type": "Type *",
+      "region": "Region *",
+      "province": "Province *",
+      "provincePlaceholder": "e.g. Rome, Milan, Naples",
+      "city": "City *",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "capacity": "Capacity (people)",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the church, features, services...",
+      "requiresBaptism": "Requires Baptism",
+      "requiresMarriageCourse": "Requires Pre-Marriage Course",
+      "select": "Select..."
+    },
+    "types": {
+      "cattolica": "Catholic",
+      "ortodossa": "Orthodox",
+      "protestante": "Protestant",
+      "evangelica": "Evangelical",
+      "anglicana": "Anglican",
+      "sinagoga": "Synagogue",
+      "moschea": "Mosque",
+      "altro": "Other"
+    },
+    "card": {
+      "verified": "Verified",
+      "type": "Type:",
+      "capacity": "👥 Capacity:",
+      "people": "people",
+      "requiresBaptism": "⚠️ Requires Baptism",
+      "requiresMarriageCourse": "⚠️ Requires Pre-Marriage Course",
+      "website": "Website"
+    },
+    "loading": "Loading...",
+    "empty": "No churches found with these filters.",
+    "messages": {
+      "authRequired": "You must be authenticated to add a church",
+      "submitSuccess": "Church added successfully! It will be visible after staff verification.",
+      "submitError": "Error adding church"
+    }
   }
 }
