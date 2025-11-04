@@ -259,7 +259,8 @@ export default function SpesePage() {
   const isGraduation = userEventType === "graduation";
   const isFifty = userEventType === "fifty";
   const isRetirement = userEventType === "retirement";
-  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement;
+  const isBabyShower = userEventType === "babyshower";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement || isBabyShower;
 
   // For single-budget events: force spend type to common
   useEffect(() => {
