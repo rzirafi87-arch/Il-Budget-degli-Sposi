@@ -250,7 +250,7 @@ export default function SpesePage() {
     fromDashboard: false,
   });
 
-  // Detect single-budget events (baptism, communion, confirmation, birthday, eighteenth, graduation)
+  // Detect single-budget events (baptism, communion, confirmation, birthday, eighteenth, graduation, fifty, retirement)
   const isBaptism = userEventType === "baptism";
   const isCommunion = userEventType === "communion";
   const isConfirmation = userEventType === "confirmation";
@@ -258,7 +258,9 @@ export default function SpesePage() {
   const isEighteenth = userEventType === "eighteenth";
   const isGraduation = userEventType === "graduation";
   const isFifty = userEventType === "fifty";
-  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty;
+  const isRetirement = userEventType === "retirement";
+  const isBabyShower = userEventType === "babyshower";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement || isBabyShower;
 
   // For single-budget events: force spend type to common
   useEffect(() => {

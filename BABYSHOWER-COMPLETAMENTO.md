@@ -1,7 +1,7 @@
 # ✅ Baby Shower – Implementazione Completata
 
 ## 📅 Data Completamento
-**3 Novembre 2025**
+**4 Novembre 2025** *(aggiornato)*
 
 ---
 
@@ -9,7 +9,9 @@
 Implementare la struttura completa per l'evento **Baby Shower** nell'app "Il Budget degli Sposi", includendo:
 - Categorie e sottocategorie dettagliate
 - Timeline completa dalla pianificazione al post-evento
-- Stile Natural Chic / La Trama con toni neutri e materiali naturali
+- Template TypeScript per struttura dati
+- API seed e dashboard routes
+- Integrazione frontend con flag single-budget
 - Documentazione setup e guida operativa
 
 ---
@@ -17,43 +19,83 @@ Implementare la struttura completa per l'evento **Baby Shower** nell'app "Il Bud
 ## ✅ Elementi Implementati
 
 ### 1. **Database Seed** ✅
-**File**: `supabase-babyshower-event-seed.sql`
+**File**: `supabase-babyshower-seed.sql`
 
 - ✅ Evento `babyshower` con ID dedicato
-- ✅ **10 categorie principali**:
-  1. Location e Allestimento
-  2. Catering e Dolci
-  3. Inviti e Grafica
-  4. Regali e Lista Nascita
-  5. Intrattenimento
-  6. Abbigliamento e Beauty
-  7. Foto e Video
-  8. Ricordi e Ringraziamenti
-  9. Trasporti e Logistica
-  10. Gestione Budget
+- ✅ **11 categorie principali**:
+  1. Organizzazione Generale
+  2. Ospiti & Inviti
+  3. Location & Allestimento
+  4. Catering & Torta
+  5. Intrattenimento & Giochi
+  6. Regali & Lista Nascita
+  7. Foto, Video & Social
+  8. Mamma & Outfit
+  9. Bomboniere & Gadget
+  10. Logistica & Servizi
+  11. Post-Evento
 
-- ✅ **~60 sottocategorie totali** con costi stimati
-- ✅ **36 timeline items** distribuiti in 6 fasi:
-  - 2 mesi prima (7 task)
-  - 1 mese prima (6 task)
-  - 2 settimane prima (6 task)
-  - 1 settimana prima (5 task)
-  - Giorno evento (7 task)
-  - Dopo evento (5 task)
+- ✅ **~45 sottocategorie totali** con costi stimati
+- ✅ **33 timeline items** distribuiti in 8 fasi:
+  - T-6/T-5 settimane (3 task)
+  - T-4 settimane (3 task)
+  - T-3 settimane (5 task)
+  - T-2 settimane (5 task)
+  - T-1 settimana (5 task)
+  - T-2/1 giorni (3 task)
+  - Giorno evento (5 task)
+  - +1/+7 giorni (4 task)
 
-### 2. **Localizzazione** ✅
+### 2. **Template TypeScript** ✅
+**File**: `src/data/templates/babyshower.ts`
+
+- ✅ Struttura completa categorie e sottocategorie
+- ✅ Budget percentuale per categoria
+- ✅ Timeline completa per fase
+- ✅ Campi extra: fornitore, costoPrevisto, costoReale, scadenza, stato, note, allegati
+- ✅ Tag: Allestimento, Cibo&Bevande, Giochi, Lista Nascita, Media, Gadget, Logistica, Mamma
+- ✅ Varianti: Sip & See (presentazione bebé post-nascita)
+- ✅ Palette colori: `#F8E8D8`, `#A3B59D`, `#E7B7D3`
+- ✅ Budget totale: €1800
+
+### 3. **API Routes** ✅
+
+**File**: `src/app/api/babyshower/seed/[eventId]/route.ts`
+- ✅ POST route per upsert categorie/sottocategorie/timeline
+- ✅ Logica basata su template TypeScript
+- ✅ Conflict handling su unique constraints
+
+**File**: `src/app/api/my/babyshower-dashboard/route.ts`
+- ✅ GET route per dashboard (categorie, spese, entrate, timeline)
+- ✅ POST route per salvataggio dati
+- ✅ Single-budget event logic
+- ✅ Demo fallback per utenti non autenticati
+- ✅ JWT authentication pattern
+
+### 4. **Frontend Integration** ✅
+
+**File**: `src/app/spese/page.tsx`
+- ✅ Flag `isBabyShower` aggiunto a `isSingleBudgetEvent`
+- ✅ Auto-set `spendType` a "common" per eventi single-budget
+
+**File**: `src/app/entrate/page.tsx`
+- ✅ Flag `isBabyShower` aggiunto a `isSingleBudgetEvent`
+- ✅ Auto-set `incomeSource` a "common" per eventi single-budget
+- ✅ Mapping dati coerente con single-budget pattern
+
+### 5. **Localizzazione** ✅
 **File**: `src/messages/it.json`
 
 - ✅ Chiave evento: `"baby-shower": "Baby Shower"`
 - ✅ Già presente nel file di localizzazione esistente
 - ✅ Coerente con altri eventi dell'app
 
-### 3. **Documentazione** ✅
+### 6. **Documentazione** ✅
 **File**: `BABYSHOWER-SETUP-GUIDE.md`
 
 Contenuti:
 - ✅ Panoramica evento e filosofia stilistica
-- ✅ Struttura completa delle 10 categorie
+- ✅ Struttura completa delle categorie
 - ✅ Timeline dettagliata con checklist
 - ✅ Istruzioni setup database
 - ✅ Query SQL di verifica
@@ -70,14 +112,17 @@ Contenuti:
 
 | **Elemento** | **Quantità** | **Stato** |
 |-------------|--------------|-----------|
-| Categorie principali | 10 | ✅ Completate |
-| Sottocategorie | ~60 | ✅ Completate |
-| Timeline items | 36 | ✅ Completati |
-| Fasi timeline | 6 | ✅ Completate |
+| Categorie principali | 11 | ✅ Completate |
+| Sottocategorie | ~45 | ✅ Completate |
+| Timeline items | 33 | ✅ Completati |
+| Fasi timeline | 8 | ✅ Completate |
 | File SQL seed | 1 | ✅ Creato |
-| Guide documentazione | 2 | ✅ Create |
+| Template TypeScript | 1 | ✅ Creato |
+| API routes | 2 | ✅ Create |
+| Frontend integration | 2 file | ✅ Completata |
+| Guide documentazione | 2 | ✅ Aggiornate |
 | Localizzazioni | 1 | ✅ Verificata |
-| Query verifica | 4 | ✅ Fornite |
+| Query verifica | 1 | ✅ Fornita |
 
 ---
 

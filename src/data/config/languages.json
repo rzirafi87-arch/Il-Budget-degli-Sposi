@@ -1,13 +1,466 @@
 [
-  { "slug": "it", "label": "Italiano",  "locale": "it-IT", "dir": "ltr", "emoji": "🇮🇹" },
-  { "slug": "es", "label": "Español",   "locale": "es-ES", "dir": "ltr", "emoji": "🇪🇸" },
-  { "slug": "en", "label": "English",   "locale": "en-GB", "dir": "ltr", "emoji": "🇬🇧" },
-  { "slug": "fr", "label": "Français",  "locale": "fr-FR", "dir": "ltr", "emoji": "🇫🇷" },
-  { "slug": "de", "label": "Deutsch",   "locale": "de-DE", "dir": "ltr", "emoji": "🇩🇪" },
-  { "slug": "ru", "label": "Русский",   "locale": "ru-RU", "dir": "ltr", "emoji": "🇷🇺" },
-  { "slug": "zh", "label": "中文",       "locale": "zh-CN", "dir": "ltr", "emoji": "🇨🇳" },
-  { "slug": "ja", "label": "日本語",     "locale": "ja-JP", "dir": "ltr", "emoji": "🇯🇵" },
-  { "slug": "ar", "label": "العربية",   "locale": "ar-AE", "dir": "rtl", "emoji": "🇦🇪" },
-  { "slug": "pt", "label": "Português", "locale": "pt-BR", "dir": "ltr", "emoji": "🇧🇷" },
-  { "slug": "id", "label": "Bahasa Indonesia", "locale": "id-ID", "dir": "ltr", "emoji": "🇮🇩" }
+  {
+    "slug": "it",
+    "label": "Italiano",
+    "locale": "it-IT",
+    "dir": "ltr",
+    "emoji": "🇮🇹",
+    "available": true
+  },
+  {
+    "slug": "es",
+    "label": "Español",
+    "locale": "es-ES",
+    "dir": "ltr",
+    "emoji": "🇪🇸",
+    "available": false
+  },
+  {
+    "slug": "en",
+    "label": "English",
+    "locale": "en-GB",
+    "dir": "ltr",
+    "emoji": "🇬🇧",
+    "available": false
+  },
+  {
+    "slug": "fr",
+    "label": "Français",
+    "locale": "fr-FR",
+    "dir": "ltr",
+    "emoji": "🇫🇷",
+    "available": false
+  },
+  {
+    "slug": "de",
+    "label": "Deutsch",
+    "locale": "de-DE",
+    "dir": "ltr",
+    "emoji": "🇩🇪",
+    "available": false
+  },
+  {
+    "slug": "ru",
+    "label": "Русский",
+    "locale": "ru-RU",
+    "dir": "ltr",
+    "emoji": "🇷🇺",
+    "available": false
+  },
+  {
+    "slug": "zh",
+    "label": "中文",
+    "locale": "zh-CN",
+    "dir": "ltr",
+    "emoji": "🇨🇳",
+    "available": false
+  },
+  {
+    "slug": "ja",
+    "label": "日本語",
+    "locale": "ja-JP",
+    "dir": "ltr",
+    "emoji": "🇯🇵",
+    "available": false
+  },
+  {
+    "slug": "ar",
+    "label": "العربية",
+    "locale": "ar-AE",
+    "dir": "rtl",
+    "emoji": "🇦🇪",
+    "available": false
+  },
+  {
+    "slug": "pt",
+    "label": "Português",
+    "locale": "pt-BR",
+    "dir": "ltr",
+    "emoji": "🇧🇷",
+    "available": false
+  },
+  {
+    "slug": "id",
+    "label": "Bahasa Indonesia",
+    "locale": "id-ID",
+    "dir": "ltr",
+    "emoji": "🇮🇩",
+    "available": false
+  },
+  {
+    "slug": "hi",
+    "label": "हिन्दी",
+    "locale": "hi-IN",
+    "dir": "ltr",
+    "emoji": "🇮🇳",
+    "available": false
+  },
+  {
+    "slug": "bn",
+    "label": "বাংলা",
+    "locale": "bn-BD",
+    "dir": "ltr",
+    "emoji": "🇧🇩",
+    "available": false
+  },
+  {
+    "slug": "ur",
+    "label": "اردو",
+    "locale": "ur-PK",
+    "dir": "rtl",
+    "emoji": "🇵🇰",
+    "available": false
+  },
+  {
+    "slug": "tr",
+    "label": "Türkçe",
+    "locale": "tr-TR",
+    "dir": "ltr",
+    "emoji": "🇹🇷",
+    "available": false
+  },
+  {
+    "slug": "ko",
+    "label": "한국어",
+    "locale": "ko-KR",
+    "dir": "ltr",
+    "emoji": "🇰🇷",
+    "available": false
+  },
+  {
+    "slug": "vi",
+    "label": "Tiếng Việt",
+    "locale": "vi-VN",
+    "dir": "ltr",
+    "emoji": "🇻🇳",
+    "available": false
+  },
+  {
+    "slug": "th",
+    "label": "ไทย",
+    "locale": "th-TH",
+    "dir": "ltr",
+    "emoji": "🇹🇭",
+    "available": false
+  },
+  {
+    "slug": "pl",
+    "label": "Polski",
+    "locale": "pl-PL",
+    "dir": "ltr",
+    "emoji": "🇵🇱",
+    "available": false
+  },
+  {
+    "slug": "nl",
+    "label": "Nederlands",
+    "locale": "nl-NL",
+    "dir": "ltr",
+    "emoji": "🇳🇱",
+    "available": false
+  },
+  {
+    "slug": "el",
+    "label": "Ελληνικά",
+    "locale": "el-GR",
+    "dir": "ltr",
+    "emoji": "🇬🇷",
+    "available": false
+  },
+  {
+    "slug": "cs",
+    "label": "Čeština",
+    "locale": "cs-CZ",
+    "dir": "ltr",
+    "emoji": "🇨🇿",
+    "available": false
+  },
+  {
+    "slug": "sv",
+    "label": "Svenska",
+    "locale": "sv-SE",
+    "dir": "ltr",
+    "emoji": "🇸🇪",
+    "available": false
+  },
+  {
+    "slug": "ro",
+    "label": "Română",
+    "locale": "ro-RO",
+    "dir": "ltr",
+    "emoji": "🇷🇴",
+    "available": false
+  },
+  {
+    "slug": "hu",
+    "label": "Magyar",
+    "locale": "hu-HU",
+    "dir": "ltr",
+    "emoji": "🇭🇺",
+    "available": false
+  },
+  {
+    "slug": "da",
+    "label": "Dansk",
+    "locale": "da-DK",
+    "dir": "ltr",
+    "emoji": "🇩🇰",
+    "available": false
+  },
+  {
+    "slug": "fi",
+    "label": "Suomi",
+    "locale": "fi-FI",
+    "dir": "ltr",
+    "emoji": "🇫🇮",
+    "available": false
+  },
+  {
+    "slug": "no",
+    "label": "Norsk",
+    "locale": "no-NO",
+    "dir": "ltr",
+    "emoji": "🇳🇴",
+    "available": false
+  },
+  {
+    "slug": "uk",
+    "label": "Українська",
+    "locale": "uk-UA",
+    "dir": "ltr",
+    "emoji": "🇺🇦",
+    "available": false
+  },
+  {
+    "slug": "he",
+    "label": "עברית",
+    "locale": "he-IL",
+    "dir": "rtl",
+    "emoji": "🇮🇱",
+    "available": false
+  },
+  {
+    "slug": "fa",
+    "label": "فارسی",
+    "locale": "fa-IR",
+    "dir": "rtl",
+    "emoji": "🇮🇷",
+    "available": false
+  },
+  {
+    "slug": "ms",
+    "label": "Bahasa Melayu",
+    "locale": "ms-MY",
+    "dir": "ltr",
+    "emoji": "🇲🇾",
+    "available": false
+  },
+  {
+    "slug": "fil",
+    "label": "Filipino",
+    "locale": "fil-PH",
+    "dir": "ltr",
+    "emoji": "🇵🇭",
+    "available": false
+  },
+  {
+    "slug": "sw",
+    "label": "Kiswahili",
+    "locale": "sw-KE",
+    "dir": "ltr",
+    "emoji": "🇰🇪",
+    "available": false
+  },
+  {
+    "slug": "af",
+    "label": "Afrikaans",
+    "locale": "af-ZA",
+    "dir": "ltr",
+    "emoji": "🇿🇦",
+    "available": false
+  },
+  {
+    "slug": "sq",
+    "label": "Shqip",
+    "locale": "sq-AL",
+    "dir": "ltr",
+    "emoji": "🇦🇱",
+    "available": false
+  },
+  {
+    "slug": "sr",
+    "label": "Српски",
+    "locale": "sr-RS",
+    "dir": "ltr",
+    "emoji": "🇷🇸",
+    "available": false
+  },
+  {
+    "slug": "hr",
+    "label": "Hrvatski",
+    "locale": "hr-HR",
+    "dir": "ltr",
+    "emoji": "🇭🇷",
+    "available": false
+  },
+  {
+    "slug": "bg",
+    "label": "Български",
+    "locale": "bg-BG",
+    "dir": "ltr",
+    "emoji": "🇧🇬",
+    "available": false
+  },
+  {
+    "slug": "sk",
+    "label": "Slovenčina",
+    "locale": "sk-SK",
+    "dir": "ltr",
+    "emoji": "🇸🇰",
+    "available": false
+  },
+  {
+    "slug": "lt",
+    "label": "Lietuvių",
+    "locale": "lt-LT",
+    "dir": "ltr",
+    "emoji": "🇱🇹",
+    "available": false
+  },
+  {
+    "slug": "lv",
+    "label": "Latviešu",
+    "locale": "lv-LV",
+    "dir": "ltr",
+    "emoji": "🇱🇻",
+    "available": false
+  },
+  {
+    "slug": "et",
+    "label": "Eesti",
+    "locale": "et-EE",
+    "dir": "ltr",
+    "emoji": "🇪🇪",
+    "available": false
+  },
+  {
+    "slug": "sl",
+    "label": "Slovenščina",
+    "locale": "sl-SI",
+    "dir": "ltr",
+    "emoji": "🇸🇮",
+    "available": false
+  },
+  {
+    "slug": "ka",
+    "label": "ქართული",
+    "locale": "ka-GE",
+    "dir": "ltr",
+    "emoji": "🇬🇪",
+    "available": false
+  },
+  {
+    "slug": "hy",
+    "label": "Հայերեն",
+    "locale": "hy-AM",
+    "dir": "ltr",
+    "emoji": "🇦🇲",
+    "available": false
+  },
+  {
+    "slug": "az",
+    "label": "Azərbaycan",
+    "locale": "az-AZ",
+    "dir": "ltr",
+    "emoji": "🇦🇿",
+    "available": false
+  },
+  {
+    "slug": "kk",
+    "label": "Қазақ",
+    "locale": "kk-KZ",
+    "dir": "ltr",
+    "emoji": "🇰🇿",
+    "available": false
+  },
+  {
+    "slug": "uz",
+    "label": "O'zbek",
+    "locale": "uz-UZ",
+    "dir": "ltr",
+    "emoji": "🇺🇿",
+    "available": false
+  },
+  {
+    "slug": "mn",
+    "label": "Монгол",
+    "locale": "mn-MN",
+    "dir": "ltr",
+    "emoji": "🇲🇳",
+    "available": false
+  },
+  {
+    "slug": "ne",
+    "label": "नेपाली",
+    "locale": "ne-NP",
+    "dir": "ltr",
+    "emoji": "🇳🇵",
+    "available": false
+  },
+  {
+    "slug": "si",
+    "label": "සිංහල",
+    "locale": "si-LK",
+    "dir": "ltr",
+    "emoji": "🇱🇰",
+    "available": false
+  },
+  {
+    "slug": "km",
+    "label": "ខ្មែរ",
+    "locale": "km-KH",
+    "dir": "ltr",
+    "emoji": "🇰🇭",
+    "available": false
+  },
+  {
+    "slug": "lo",
+    "label": "ລາວ",
+    "locale": "lo-LA",
+    "dir": "ltr",
+    "emoji": "🇱🇦",
+    "available": false
+  },
+  {
+    "slug": "my",
+    "label": "မြန်မာ",
+    "locale": "my-MM",
+    "dir": "ltr",
+    "emoji": "🇲🇲",
+    "available": false
+  },
+  {
+    "slug": "am",
+    "label": "አማርኛ",
+    "locale": "am-ET",
+    "dir": "ltr",
+    "emoji": "🇪🇹",
+    "available": false
+  },
+  {
+    "slug": "zu",
+    "label": "isiZulu",
+    "locale": "zu-ZA",
+    "dir": "ltr",
+    "emoji": "🇿🇦",
+    "available": false
+  },
+  {
+    "slug": "xh",
+    "label": "isiXhosa",
+    "locale": "xh-ZA",
+    "dir": "ltr",
+    "emoji": "🇿🇦",
+    "available": false
+  }
 ]
