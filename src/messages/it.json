@@ -578,5 +578,17 @@
         "body": "Hai domande o suggerimenti? Siamo qui per te!",
         "cta": "Chatta con noi su WhatsApp"
       }
+    },
+    "policies": {
+      "lastUpdated": "Ultimo aggiornamento:",
+      "cookie": {
+        "title": "Cookie Policy"
+      },
+      "privacy": {
+        "title": "Privacy Policy"
+      },
+      "terms": {
+        "title": "Termini di Servizio"
+      }
     }
   }

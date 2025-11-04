@@ -1,15 +1,17 @@
 "use client";
 
 import { formatDate } from "@/lib/locale";
+import { useTranslations } from "next-intl";
 
 export default function PrivacyPolicyPage() {
+  const t = useTranslations("policies");
   return (
     <section className="pt-6 max-w-4xl mx-auto">
-      <h1 className="font-serif text-4xl mb-8 text-center">Privacy Policy</h1>
-      
+      <h1 className="font-serif text-4xl mb-8 text-center">{t("privacy.title")}</h1>
+
       <div className="prose prose-lg max-w-none bg-white/70 rounded-2xl p-8 shadow-sm">
         <p className="text-sm text-gray-500 mb-6">
-          <strong>Ultimo aggiornamento:</strong> {formatDate(new Date())}
+          <strong>{t("lastUpdated")}</strong> {formatDate(new Date())}
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">1. Introduzione</h2>
