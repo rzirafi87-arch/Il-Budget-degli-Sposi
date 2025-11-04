@@ -1287,5 +1287,137 @@
       "tip4": "Ask about delivery times and alterations included in the price",
       "tip5": "For the groom, consider both purchase and rental based on your budget"
     }
+  },
+  "suppliersFlorists": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "florists": "Florists"
+    },
+    "title": "💐 Florists",
+    "description": "Floral arrangements, bouquets, centerpieces and decorations for ceremony and reception.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers"
+    },
+    "filters": {
+      "title": "Filter florists",
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Milan",
+      "search": "Search",
+      "searchPlaceholder": "Shop or florist name...",
+      "searchButton": "Search",
+      "resetButton": "Reset"
+    },
+    "viewMode": {
+      "grid": "🔲 Grid",
+      "list": "📋 List"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No florists found} one {# florist found} other {# florists found}}"
+    },
+    "loading": "Loading...",
+    "empty": {
+      "title": "No florists found",
+      "description": "Try adjusting the filters"
+    },
+    "actions": {
+      "website": "🌐 Website",
+      "call": "📞 Call",
+      "email": "✉️ Email",
+      "addFavorite": "Add to favorites",
+      "removeFavorite": "Remove from favorites",
+      "add": "Add",
+      "remove": "Remove"
+    }
+  },
+  "suppliersCatering": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "catering": "Catering"
+    },
+    "title": "🍽️ Catering & Banqueting",
+    "description": "Find the best catering services for your wedding. Customized menus, gourmet buffets and impeccable service.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers"
+    },
+    "filters": {
+      "title": "Filter catering services",
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Milan",
+      "search": "Search",
+      "searchPlaceholder": "Venue or catering name...",
+      "searchButton": "Search",
+      "resetButton": "Reset"
+    },
+    "viewMode": {
+      "grid": "🔲 Grid",
+      "list": "📋 List"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No catering services found} one {# catering service found} other {# catering services found}}"
+    },
+    "loading": "Loading...",
+    "empty": {
+      "title": "No catering services found",
+      "description": "Try adjusting the filters"
+    },
+    "actions": {
+      "website": "🌐 Website",
+      "call": "📞 Call",
+      "email": "✉️ Email",
+      "addFavorite": "Add to favorites",
+      "removeFavorite": "Remove from favorites",
+      "add": "Add",
+      "remove": "Remove"
+    }
+  },
+  "suppliersBeauty": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "beauty": "Make-up & Beauty"
+    },
+    "title": "💄 Make-up & Beauty",
+    "description": "Make-up artists, hair stylists and beauty services for your special day.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers"
+    },
+    "filters": {
+      "title": "Filter beauty professionals",
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Milan",
+      "search": "Search",
+      "searchPlaceholder": "Professional or studio name...",
+      "searchButton": "Search",
+      "resetButton": "Reset"
+    },
+    "viewMode": {
+      "grid": "🔲 Grid",
+      "list": "📋 List"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No professionals found} one {# professional found} other {# professionals found}}"
+    },
+    "loading": "Loading...",
+    "empty": {
+      "title": "No professionals found",
+      "description": "Try adjusting the filters"
+    },
+    "actions": {
+      "website": "🌐 Website",
+      "call": "📞 Call",
+      "email": "✉️ Email",
+      "addFavorite": "Add to favorites",
+      "removeFavorite": "Remove from favorites",
+      "add": "Add",
+      "remove": "Remove"
+    }
   }
 }

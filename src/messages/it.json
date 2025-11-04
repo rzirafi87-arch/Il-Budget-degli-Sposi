@@ -1334,5 +1334,93 @@
       "add": "Aggiungi",
       "remove": "Rimuovi"
     }
+  },
+  "suppliersCatering": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "catering": "Catering"
+    },
+    "title": "🍽️ Catering & Banqueting",
+    "description": "Trova i migliori servizi di catering per il tuo matrimonio. Menù personalizzati, buffet gourmet e servizio impeccabile.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra servizi catering",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome location o catering...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "🔲 Griglia",
+      "list": "📋 Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun servizio catering trovato} one {# servizio catering trovato} other {# servizi catering trovati}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun servizio catering trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "🌐 Sito",
+      "call": "📞 Chiama",
+      "email": "✉️ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
+  },
+  "suppliersBeauty": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "beauty": "Make-up & Beauty"
+    },
+    "title": "💄 Make-up & Beauty",
+    "description": "Make-up artist, hair stylist ed estetica per il tuo giorno speciale.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra professionisti beauty",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome professionista o studio...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "🔲 Griglia",
+      "list": "📋 Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun professionista trovato} one {# professionista trovato} other {# professionisti trovati}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun professionista trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "🌐 Sito",
+      "call": "📞 Chiama",
+      "email": "✉️ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
   }
 }
