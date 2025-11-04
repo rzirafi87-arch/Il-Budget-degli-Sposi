@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
 import type { EventConfiguration } from "@/constants/eventConfigs";
 import {
-  DEFAULT_EVENT_TYPE,
-  getEventConfig,
-  resolveEventType,
+    DEFAULT_EVENT_TYPE,
+    getEventConfig,
+    resolveEventType,
 } from "@/constants/eventConfigs";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 
 export type BudgetIdeaRow = {
   id?: string;

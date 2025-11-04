@@ -608,7 +608,7 @@
         "contingency": "Contingency:",
         "totalWithContingency": "Total with contingency:"
       },
-        "panel": {
+      "panel": {
         "available": "Available:",
         "planned": "Planned:",
         "residual": "Residual:",
