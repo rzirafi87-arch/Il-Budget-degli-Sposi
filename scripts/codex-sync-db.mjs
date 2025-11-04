@@ -67,12 +67,27 @@ async function main() {
   );
 
   if (!result.ok) {
-    log('Esecuzione SQL fallita. Interrompo.', 'error');
-    process.exit(1);
+    log('', 'info');
+    log('⚠️ ERRORE: Impossibile eseguire SQL su Supabase Cloud', 'error');
+    log('', 'info');
+    log('Possibili cause:', 'warning');
+    log('  1. Database Supabase in pausa (vai su app.supabase.com per riattivarlo)', 'warning');
+    log('  2. Problema di rete/firewall', 'warning');
+    log('  3. Credenziali SUPABASE_DB_URL errate in .env.local', 'warning');
+    log('', 'info');
+    log('💡 ALTERNATIVE:', 'info');
+    log('  ✅ Esegui lo script manualmente nel SQL Editor di Supabase:', 'info');
+    log(`     1. Vai su https://app.supabase.com`, 'info');
+    log(`     2. SQL Editor → New Query`, 'info');
+    log(`     3. Copia/incolla il contenuto di: ${path.basename(sqlFile)}`, 'info');
+    log(`     4. Run`, 'info');
+    log('', 'info');
+    log('Procedo comunque con commit e push del file...', 'info');
+    log('', 'info');
+  } else {
+    log('SQL eseguito con successo!', 'success');
+    log('', 'info');
   }
-
-  log('SQL eseguito con successo!', 'success');
-  log('', 'info');
 
   // Step 2: Git add + commit
   const gitResult = await run(
