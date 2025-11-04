@@ -629,6 +629,7 @@
         "notes": "Notes"
       },
       "messages": {
+        "loadError": "Error loading budget idea.",
         "saveError": "Error saving the budget idea.",
         "applyDone": "Apply completed: {count} items created or updated.",
         "applyError": "Error applying to the budget."

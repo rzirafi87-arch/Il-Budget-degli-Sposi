@@ -632,6 +632,7 @@
         "notes": "Note"
       },
       "messages": {
+        "loadError": "Errore caricamento idea di budget.",
         "saveError": "Errore nel salvataggio dell'idea di budget.",
         "applyDone": "Applicazione completata: {count} voci create o aggiornate.",
         "applyError": "Errore nell'applicazione al budget."

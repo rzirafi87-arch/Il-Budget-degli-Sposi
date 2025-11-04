@@ -220,7 +220,7 @@ export default function IdeaDiBudgetPage() {
           setRows(buildDefaultRows(eventConfig));
         }
       } catch (error) {
-        console.error("Errore caricamento idea di budget", error);
+        console.error(t("messages.loadError"), error);
         if (!disposed) {
           setRows(buildDefaultRows(eventConfig));
         }
@@ -232,7 +232,7 @@ export default function IdeaDiBudgetPage() {
     return () => {
       disposed = true;
     };
-  }, [eventConfig, eventType]);
+  }, [eventConfig, eventType, t]);
 
   const spendTypeOptions = useMemo<SpendTypeOption[]>(() => {
     const base = eventConfig.spendTypes;
@@ -340,8 +340,8 @@ export default function IdeaDiBudgetPage() {
         }),
       });
     } catch (error) {
-      console.error("Errore salvataggio idea di budget", error);
-      alert("Errore nel salvataggio dell'idea di budget.");
+      console.error(t("messages.saveError"), error);
+      alert(t("messages.saveError"));
     } finally {
       setSaving(false);
     }
@@ -368,12 +368,10 @@ export default function IdeaDiBudgetPage() {
       );
       if (!res.ok) throw new Error(`Apply failed (${res.status})`);
       const json = await res.json();
-      alert(
-        `Applicazione completata: ${json?.inserted ?? 0} voci create o aggiornate.`,
-      );
+      alert(t("messages.applyDone", { count: json?.inserted ?? 0 }));
     } catch (error) {
-      console.error("Errore applicazione budget", error);
-      alert("Errore nell'applicazione al budget.");
+      console.error(t("messages.applyError"), error);
+      alert(t("messages.applyError"));
     } finally {
       setSaving(false);
     }
