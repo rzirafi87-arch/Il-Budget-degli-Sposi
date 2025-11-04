@@ -163,6 +163,8 @@ Accedi tramite `Ctrl+Shift+P` → `Tasks: Run Task`:
   - Sincronizzazione automatica Supabase → GitHub → Vercel
   - Task predefiniti per modifiche SQL
   - Pipeline completa con un click
+- 🚀 **[Quick Start Codex](CODEX-QUICK-START.md)** - Inizia in 3 minuti
+- 🎬 **[Demo Workflow](CODEX-DEMO.md)** - Esempio pratico passo-passo
 
 ### 🗄️ Database & SQL
 - 🏥 **[Verifica Database (Supabase SQL Editor)](SUPABASE-SQL-VERIFICATION-GUIDE.md)** - Script per Supabase SQL Editor
