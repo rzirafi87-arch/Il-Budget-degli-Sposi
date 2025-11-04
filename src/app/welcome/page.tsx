@@ -1,9 +1,9 @@
 "use client";
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 
 const supabase = getBrowserClient();
 
