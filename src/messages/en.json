@@ -720,10 +720,326 @@
         }
       },
       "privacy": {
-        "title": "Privacy Policy"
+        "title": "Privacy Policy",
+        "s1": {
+          "title": "1. Introduction",
+          "p1": "This notice explains how we collect, use and protect your personal data when you use our platform."
+        },
+        "s2": {
+          "title": "2. Data Controller",
+          "lead": "The Data Controller is:",
+          "emailLabel": "Email:",
+          "pecLabel": "PEC:"
+        },
+        "s3": {
+          "title": "3. Data we collect",
+          "p1": "We only collect the data necessary to provide and improve the service:",
+          "items": {
+            "reg": {
+              "title": "Registration data",
+              "desc": "Name, email and password to create the account."
+            },
+            "event": {
+              "title": "Event data",
+              "desc": "Information about your event (date, budget, categories and expense/income items)."
+            },
+            "nav": {
+              "title": "Navigation data",
+              "desc": "Technical logs, IP, user agent, language settings for security and operation."
+            },
+            "guests": {
+              "title": "Guests",
+              "desc": "Names and details you enter for guest list and table management."
+            },
+            "pay": {
+              "title": "Payments (if any)",
+              "desc": "Any information related to payment methods or future subscriptions."
+            }
+          }
+        },
+        "s4": {
+          "title": "4. How we use your data",
+          "p1": "We use your data to:",
+          "items": {
+            "i1": "Provide and improve platform features",
+            "i2": "Manage authentication and security",
+            "i3": "Save your preferences (language, views, layout)",
+            "i4": "Respond to support requests",
+            "i5": "Analyze service usage in aggregate and anonymous form",
+            "i6": "Comply with legal obligations"
+          }
+        },
+        "s5": {
+          "title": "5. Legal bases",
+          "p1": "We process data in compliance with the GDPR, based on:",
+          "items": {
+            "contract": {
+              "title": "Contract",
+              "desc": "To provide the requested service."
+            },
+            "consent": {
+              "title": "Consent",
+              "desc": "For optional features (e.g., newsletter)."
+            },
+            "interest": {
+              "title": "Legitimate interest",
+              "desc": "For security, abuse prevention and service improvement."
+            },
+            "legal": {
+              "title": "Legal obligations",
+              "desc": "When required by law."
+            }
+          }
+        },
+        "s6": {
+          "title": "6. Data retention",
+          "p1": "We retain data for the time strictly necessary to provide the service and meet legal obligations. Account data is deleted within 30 days of a deletion request, unless otherwise required by law."
+        },
+        "s7": {
+          "title": "7. Data sharing",
+          "p1": "We share data only with parties necessary to provide the service:",
+          "items": {
+            "providers": {
+              "title": "Technical providers",
+              "desc": "Hosting, database, email systems and security monitoring."
+            },
+            "partners": {
+              "title": "Partners (if any)",
+              "desc": "Only when strictly necessary and under confidentiality agreements."
+            },
+            "authorities": {
+              "title": "Authorities",
+              "desc": "When required by law or by authorities' orders."
+            }
+          },
+          "note": "We do not sell your personal data to third parties."
+        },
+        "s8": {
+          "title": "8. Your rights",
+          "p1": "You have the right to:",
+          "items": {
+            "access": {
+              "title": "Access",
+              "desc": "Obtain a copy of your personal data."
+            },
+            "rect": {
+              "title": "Rectification",
+              "desc": "Correct inaccurate or incomplete data."
+            },
+            "erase": {
+              "title": "Erasure",
+              "desc": "Request deletion of data (right to be forgotten)."
+            },
+            "limit": {
+              "title": "Restriction",
+              "desc": "Temporarily restrict processing."
+            },
+            "port": {
+              "title": "Portability",
+              "desc": "Receive data in a structured, machine-readable format."
+            },
+            "object": {
+              "title": "Objection",
+              "desc": "Object to processing based on legitimate interest."
+            },
+            "withdraw": {
+              "title": "Withdraw consent",
+              "desc": "Withdraw consent at any time."
+            }
+          },
+          "contact": "To exercise your rights, contact us: {strong}"
+        },
+        "s9": {
+          "title": "9. Data security",
+          "p1": "We adopt appropriate technical and organizational measures to protect your data, including:",
+          "items": {
+            "i1": "Encryption in transit (HTTPS/TLS)",
+            "i2": "Regular backups",
+            "i3": "Access controls and authentication",
+            "i4": "Security monitoring and logging",
+            "i5": "Incident response procedures"
+          }
+        },
+        "s10": {
+          "title": "10. Cookies",
+          "p1": "For more details about cookies, see our {link}."
+        },
+        "s11": {
+          "title": "11. Extra-EU transfers",
+          "p1": "If some services are provided by vendors outside the European Economic Area, we ensure appropriate safeguards (e.g., Standard Contractual Clauses)."
+        },
+        "s12": {
+          "title": "12. Children",
+          "p1": "The service is not intended for children under 16. We do not knowingly collect children’s data. If you believe a minor has provided us data, contact us to remove it."
+        },
+        "s13": {
+          "title": "13. Changes to this notice",
+          "p1": "We may update this notice periodically. Significant changes will be indicated on this page. Please check it regularly."
+        },
+        "s14": {
+          "title": "14. Privacy Officer Contacts",
+          "p1": "For any privacy question or request:",
+          "authName": "Privacy Officer — MYBUDGETEVENTO",
+          "addr": "Address: Via Esempio 123, 00100 Rome (RM)",
+          "email": "Email: privacy@ilbudgetdeglisposi.it",
+          "phone": "Phone: +39 XXX XXX XXXX"
+        },
+        "s15": {
+          "title": "15. How to exercise your rights",
+          "p1": "You can exercise your rights by writing to:",
+          "email": "Email: {strong}",
+          "sla": "We will respond within 30 days, unless longer periods apply as per GDPR."
+        }
       },
       "terms": {
-        "title": "Terms of Service"
+        "title": "Terms of Service",
+        "s1": {
+          "title": "1. Acceptance of Terms",
+          "p1": "Welcome to {strong}. By using this platform, you fully accept these Terms of Service. If you do not accept these terms, please do not use the service."
+        },
+        "s2": {
+          "title": "2. Service Description",
+          "p1": "MYBUDGETEVENTO is a free online platform that allows you to:",
+          "items": {
+            "i1": "Plan and manage your wedding budget",
+            "i2": "Track expenses and incomes",
+            "i3": "Manage the guest list",
+            "i4": "Search and compare wedding service providers",
+            "i5": "Create save-the-date and custom invitations"
+          }
+        },
+        "s3": {
+          "title": "3. Registration and Account",
+          "req": {
+            "title": "3.1 Requirements",
+            "p1": "To use the full service, you must:",
+            "i1": "Be at least 18 years old",
+            "i2": "Provide truthful and accurate information",
+            "i3": "Keep your login credentials confidential",
+            "i4": "Accept the Privacy Policy"
+          },
+          "resp": {
+            "title": "3.2 Account Responsibility",
+            "p1": "You are responsible for all activities carried out through your account. In case of unauthorized access, you must inform us immediately."
+          }
+        },
+        "s4": {
+          "title": "4. Use of the Service",
+          "allowed": {
+            "title": "4.1 Allowed Uses",
+            "p1": "You may use the service to:",
+            "i1": "Plan your personal wedding",
+            "i2": "Share data with your partner",
+            "i3": "Consult supplier information"
+          },
+          "forbidden": {
+            "title": "4.2 Prohibited Uses",
+            "p1": "The following is prohibited:",
+            "i1": "Use the service for commercial purposes without authorization",
+            "i2": "Copy, modify or distribute copyrighted content",
+            "i3": "Attempt to access other users' accounts",
+            "i4": "Upload viruses, malware or malicious code",
+            "i5": "Use bots, scrapers or automated tools",
+            "i6": "Violate applicable laws or third-party rights",
+            "i7": "Publish offensive, defamatory or illegal content"
+          }
+        },
+        "s5": {
+          "title": "5. User Content",
+          "ownership": {
+            "title": "5.1 Ownership",
+            "p1": "You retain ownership of all content you upload (photos, data, etc.). You grant us a limited license to store and process such content in order to provide the service."
+          },
+          "responsibility": {
+            "title": "5.2 Responsibility",
+            "p1": "You are responsible for the content you upload. You warrant that you have the right to upload such content and that it does not infringe third-party rights."
+          }
+        },
+        "s6": {
+          "title": "6. Service Providers",
+          "p1": "The platform includes a supplier database (venues, photographers, etc.). {strong} for:",
+          "items": {
+            "i1": "The quality of services offered by suppliers",
+            "i2": "Contracts made directly with suppliers",
+            "i3": "Disputes or controversies with suppliers",
+            "i4": "Incorrect information provided by suppliers themselves"
+          },
+          "note": "We recommend always checking reviews, portfolios and contracts before hiring any supplier."
+        },
+        "s7": {
+          "title": "7. Free Service",
+          "p1": "The basic service is completely free. We reserve the right to:",
+          "items": {
+            "i1": "Introduce paid premium features in the future",
+            "i2": "Display relevant advertising",
+            "i3": "Receive commissions from partner suppliers (at no extra cost to you)"
+          }
+        },
+        "s8": {
+          "title": "8. Intellectual Property",
+          "p1": "All platform content (design, logo, texts, code) is protected by copyright and trademarks. You may not copy, reproduce or distribute such content without written authorization."
+        },
+        "s9": {
+          "title": "9. Limitation of Liability",
+          "p1": "The service is provided {quote} without any warranties of any kind. We are not liable for:",
+          "items": {
+            "i1": "Loss of data due to technical errors or force majeure",
+            "i2": "Service interruptions",
+            "i3": "Decisions made based on our tools",
+            "i4": "Indirect, incidental or consequential damages"
+          },
+          "note": "{strong}"
+        },
+        "s10": {
+          "title": "10. Changes to the Service",
+          "p1": "We reserve the right to:",
+          "items": {
+            "i1": "Modify, suspend or discontinue the service",
+            "i2": "Add or remove features",
+            "i3": "Change these Terms of Service"
+          },
+          "note": "Significant changes will be communicated via email 30 days in advance."
+        },
+        "s11": {
+          "title": "11. Termination and Account Deletion",
+          "you": {
+            "title": "11.1 Your initiative",
+            "p1": "You can delete your account at any time from settings. Data will be deleted within 30 days, unless legal retention obligations apply."
+          },
+          "us": {
+            "title": "11.2 Our initiative",
+            "p1": "We may suspend or delete your account if:",
+            "i1": "You violate these Terms of Service",
+            "i2": "You use the service for illegal activities",
+            "i3": "The account remains inactive for over 24 months"
+          }
+        },
+        "s12": {
+          "title": "12. Governing Law and Jurisdiction",
+          "p1": "These Terms are governed by Italian law. For any dispute, the Court of Rome, Italy, shall have exclusive jurisdiction."
+        },
+        "s13": {
+          "title": "13. Miscellaneous",
+          "severability": {
+            "title": "13.1 Severability",
+            "p1": "If any clause is declared invalid, the remaining clauses remain valid and effective."
+          },
+          "assignment": {
+            "title": "13.2 Assignment",
+            "p1": "You may not assign your rights under these Terms without our written consent."
+          },
+          "comms": {
+            "title": "13.3 Communications",
+            "p1": "Official communications will be sent to the email registered in your account."
+          }
+        },
+        "s14": {
+          "title": "14. Contacts",
+          "p1": "For questions about the Terms of Service:",
+          "email": "Email: {strong}",
+          "pec": "PEC: {strong}"
+        },
+        "note": "{strong} By using the service, you declare that you have read, understood and fully accepted these Terms of Service and the {link}."
       }
     },
     "budgetIdea": {

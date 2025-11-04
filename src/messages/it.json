@@ -723,10 +723,326 @@
         }
       },
       "privacy": {
-        "title": "Privacy Policy"
+        "title": "Privacy Policy",
+        "s1": {
+          "title": "1. Introduzione",
+          "p1": "Questa informativa spiega come raccogliamo, utilizziamo e proteggiamo i tuoi dati personali quando utilizzi la nostra piattaforma."
+        },
+        "s2": {
+          "title": "2. Titolare del Trattamento",
+          "lead": "Il Titolare del trattamento è:",
+          "emailLabel": "Email:",
+          "pecLabel": "PEC:"
+        },
+        "s3": {
+          "title": "3. Dati che raccogliamo",
+          "p1": "Raccogliamo solo i dati necessari per erogare il servizio e migliorarlo:",
+          "items": {
+            "reg": {
+              "title": "Dati di registrazione",
+              "desc": "Nome, email e password per creare l'account."
+            },
+            "event": {
+              "title": "Dati evento",
+              "desc": "Informazioni sul tuo evento (data, budget, categorie e voci di spesa/entrata)."
+            },
+            "nav": {
+              "title": "Dati di navigazione",
+              "desc": "Log tecnici, IP, user agent, impostazioni di lingua per sicurezza e funzionamento."
+            },
+            "guests": {
+              "title": "Invitati",
+              "desc": "Nomi e dettagli che inserisci per la gestione della lista e dei tavoli."
+            },
+            "pay": {
+              "title": "Pagamenti (se presenti)",
+              "desc": "Eventuali informazioni legate a metodi di pagamento o abbonamenti futuri."
+            }
+          }
+        },
+        "s4": {
+          "title": "4. Come utilizziamo i tuoi dati",
+          "p1": "Usiamo i tuoi dati per:",
+          "items": {
+            "i1": "Erogare e migliorare le funzionalità della piattaforma",
+            "i2": "Gestire autenticazione e sicurezza",
+            "i3": "Salvare le tue preferenze (lingua, viste, layout)",
+            "i4": "Rispondere a richieste di supporto",
+            "i5": "Analizzare in forma aggregata e anonima l'uso del servizio",
+            "i6": "Adempiere ad obblighi legali"
+          }
+        },
+        "s5": {
+          "title": "5. Basi giuridiche",
+          "p1": "Trattiamo i dati nel rispetto del GDPR, in base a:",
+          "items": {
+            "contract": {
+              "title": "Contratto",
+              "desc": "Per fornirti il servizio richiesto."
+            },
+            "consent": {
+              "title": "Consenso",
+              "desc": "Per funzionalità opzionali (es. newsletter)."
+            },
+            "interest": {
+              "title": "Legittimo interesse",
+              "desc": "Per sicurezza, prevenzione abusi e miglioramento del servizio."
+            },
+            "legal": {
+              "title": "Obblighi legali",
+              "desc": "Quando richiesto dalla normativa."
+            }
+          }
+        },
+        "s6": {
+          "title": "6. Conservazione dei dati",
+          "p1": "Conserviamo i dati per il tempo strettamente necessario a fornire il servizio e adempiere a obblighi legali. I dati dell'account vengono eliminati entro 30 giorni dalla richiesta di cancellazione, salvo diversa prescrizione di legge."
+        },
+        "s7": {
+          "title": "7. Condivisione dei dati",
+          "p1": "Condividiamo i dati solo con soggetti necessari all'erogazione del servizio:",
+          "items": {
+            "providers": {
+              "title": "Fornitori tecnici",
+              "desc": "Hosting, database, sistemi di email e monitoraggio sicurezza."
+            },
+            "partners": {
+              "title": "Partner (eventuali)",
+              "desc": "Solo se strettamente necessario e previo accordo di riservatezza."
+            },
+            "authorities": {
+              "title": "Autorità",
+              "desc": "Quando richiesto per legge o per ordini dell'autorità."
+            }
+          },
+          "note": "Non vendiamo i tuoi dati personali a terzi."
+        },
+        "s8": {
+          "title": "8. I tuoi diritti",
+          "p1": "Hai diritto di:",
+          "items": {
+            "access": {
+              "title": "Accesso",
+              "desc": "Ottenere una copia dei dati personali."
+            },
+            "rect": {
+              "title": "Rettifica",
+              "desc": "Correggere dati inesatti o incompleti."
+            },
+            "erase": {
+              "title": "Cancellazione",
+              "desc": "Richiedere la cancellazione dei dati (diritto all'oblio)."
+            },
+            "limit": {
+              "title": "Limitazione",
+              "desc": "Limitare temporaneamente il trattamento."
+            },
+            "port": {
+              "title": "Portabilità",
+              "desc": "Ricevere i dati in formato strutturato e leggibile da dispositivo."
+            },
+            "object": {
+              "title": "Opposizione",
+              "desc": "Opporti al trattamento basato su legittimo interesse."
+            },
+            "withdraw": {
+              "title": "Revoca del consenso",
+              "desc": "Revocare in qualsiasi momento il consenso prestato."
+            }
+          },
+          "contact": "Per esercitare i diritti, contattaci: {strong}"
+        },
+        "s9": {
+          "title": "9. Sicurezza dei dati",
+          "p1": "Adottiamo misure tecniche e organizzative adeguate per proteggere i tuoi dati, tra cui:",
+          "items": {
+            "i1": "Crittografia in transito (HTTPS/TLS)",
+            "i2": "Backup regolari",
+            "i3": "Controlli di accesso e autenticazione",
+            "i4": "Monitoraggio e logging di sicurezza",
+            "i5": "Procedure di risposta agli incidenti"
+          }
+        },
+        "s10": {
+          "title": "10. Cookie",
+          "p1": "Per maggiori dettagli sull'uso dei cookie, consulta la nostra {link}."
+        },
+        "s11": {
+          "title": "11. Trasferimenti extra-UE",
+          "p1": "Qualora alcuni servizi siano erogati da fornitori con sede fuori dallo Spazio Economico Europeo, garantiamo adeguate misure di protezione (es. Clausole Contrattuali Standard)."
+        },
+        "s12": {
+          "title": "12. Minori",
+          "p1": "Il servizio non è destinato a minori di 16 anni. Non raccogliamo consapevolmente dati di minori. Se ritieni che un minore ci abbia fornito dati, contattaci per la rimozione."
+        },
+        "s13": {
+          "title": "13. Modifiche a questa informativa",
+          "p1": "Potremmo aggiornare periodicamente questa informativa. Le modifiche significative saranno indicate in questa pagina. Ti invitiamo a consultarla regolarmente."
+        },
+        "s14": {
+          "title": "14. Contatti del Responsabile Privacy",
+          "p1": "Per qualsiasi domanda o richiesta sulla privacy:",
+          "authName": "Responsabile Privacy — MYBUDGETEVENTO",
+          "addr": "Indirizzo: Via Esempio 123, 00100 Roma (RM)",
+          "email": "Email: privacy@ilbudgetdeglisposi.it",
+          "phone": "Tel: +39 XXX XXX XXXX"
+        },
+        "s15": {
+          "title": "15. Come esercitare i diritti",
+          "p1": "Puoi esercitare i tuoi diritti scrivendo a:",
+          "email": "Email: {strong}",
+          "sla": "Risponderemo entro 30 giorni, salvo casi complessi previsti dal GDPR."
+        }
       },
       "terms": {
-        "title": "Termini di Servizio"
+        "title": "Termini di Servizio",
+        "s1": {
+          "title": "1. Accettazione dei Termini",
+          "p1": "Benvenuto su {strong}. Utilizzando questa piattaforma, accetti integralmente i presenti Termini di Servizio. Se non accetti questi termini, ti invitiamo a non utilizzare il servizio."
+        },
+        "s2": {
+          "title": "2. Descrizione del Servizio",
+          "p1": "MYBUDGETEVENTO è una piattaforma online gratuita che permette di:",
+          "items": {
+            "i1": "Pianificare e gestire il budget del proprio matrimonio",
+            "i2": "Tenere traccia di spese ed entrate",
+            "i3": "Gestire la lista invitati",
+            "i4": "Cercare e confrontare fornitori di servizi wedding",
+            "i5": "Creare save-the-date e partecipazioni personalizzate"
+          }
+        },
+        "s3": {
+          "title": "3. Registrazione e Account",
+          "req": {
+            "title": "3.1 Requisiti",
+            "p1": "Per utilizzare il servizio completo, devi:",
+            "i1": "Avere almeno 18 anni",
+            "i2": "Fornire informazioni veritiere e accurate",
+            "i3": "Mantenere riservate le tue credenziali di accesso",
+            "i4": "Accettare la Privacy Policy"
+          },
+          "resp": {
+            "title": "3.2 Responsabilità Account",
+            "p1": "Sei responsabile di tutte le attività svolte tramite il tuo account. In caso di accesso non autorizzato, devi informarci immediatamente."
+          }
+        },
+        "s4": {
+          "title": "4. Utilizzo del Servizio",
+          "allowed": {
+            "title": "4.1 Usi Consentiti",
+            "p1": "Puoi utilizzare il servizio per:",
+            "i1": "Pianificare il tuo matrimonio personale",
+            "i2": "Condividere dati con il/la tuo/a partner",
+            "i3": "Consultare informazioni sui fornitori"
+          },
+          "forbidden": {
+            "title": "4.2 Usi Vietati",
+            "p1": "È vietato:",
+            "i1": "Utilizzare il servizio per scopi commerciali senza autorizzazione",
+            "i2": "Copiare, modificare o distribuire contenuti protetti da copyright",
+            "i3": "Tentare di accedere ad account altrui",
+            "i4": "Caricare virus, malware o codice dannoso",
+            "i5": "Utilizzare bot, scraper o strumenti automatizzati",
+            "i6": "Violare leggi applicabili o diritti di terzi",
+            "i7": "Pubblicare contenuti offensivi, diffamatori o illegali"
+          }
+        },
+        "s5": {
+          "title": "5. Contenuti Utente",
+          "ownership": {
+            "title": "5.1 Proprietà",
+            "p1": "Mantieni la proprietà di tutti i contenuti che carichi (foto, dati, ecc.). Ci concedi una licenza limitata per memorizzare ed elaborare tali contenuti al fine di fornire il servizio."
+          },
+          "responsibility": {
+            "title": "5.2 Responsabilità",
+            "p1": "Sei responsabile dei contenuti che carichi. Garantisci di avere il diritto di caricare tali contenuti e che non violano diritti di terzi."
+          }
+        },
+        "s6": {
+          "title": "6. Fornitori di Servizi",
+          "p1": "La piattaforma include un database di fornitori (location, fotografi, ecc.). {strong} per:",
+          "items": {
+            "i1": "La qualità dei servizi offerti dai fornitori",
+            "i2": "Contratti stipulati direttamente con i fornitori",
+            "i3": "Dispute o controversie con i fornitori",
+            "i4": "Informazioni errate fornite dai fornitori stessi"
+          },
+          "note": "Ti invitiamo a verificare sempre recensioni, portfolio e contratti prima di assumere un fornitore."
+        },
+        "s7": {
+          "title": "7. Gratuità del Servizio",
+          "p1": "Il servizio base è completamente gratuito. Ci riserviamo il diritto di:",
+          "items": {
+            "i1": "Introdurre funzionalità premium a pagamento in futuro",
+            "i2": "Mostrare pubblicità pertinente",
+            "i3": "Ricevere commissioni da fornitori partner (senza costi aggiuntivi per te)"
+          }
+        },
+        "s8": {
+          "title": "8. Proprietà Intellettuale",
+          "p1": "Tutti i contenuti della piattaforma (design, logo, testi, codice) sono protetti da copyright e marchi registrati. Non puoi copiare, riprodurre o distribuire tali contenuti senza autorizzazione scritta."
+        },
+        "s9": {
+          "title": "9. Limitazioni di Responsabilità",
+          "p1": "Il servizio è fornito {quote} senza garanzie di alcun tipo. Non siamo responsabili per:",
+          "items": {
+            "i1": "Perdita di dati dovuta a errori tecnici o forza maggiore",
+            "i2": "Interruzioni del servizio",
+            "i3": "Decisioni prese basandosi sui nostri strumenti",
+            "i4": "Danni indiretti, incidentali o consequenziali"
+          },
+          "note": "{strong}"
+        },
+        "s10": {
+          "title": "10. Modifiche al Servizio",
+          "p1": "Ci riserviamo il diritto di:",
+          "items": {
+            "i1": "Modificare, sospendere o interrompere il servizio",
+            "i2": "Aggiungere o rimuovere funzionalità",
+            "i3": "Modificare i presenti Termini di Servizio"
+          },
+          "note": "Le modifiche significative saranno comunicate via email con 30 giorni di anticipo."
+        },
+        "s11": {
+          "title": "11. Risoluzione e Cancellazione Account",
+          "you": {
+            "title": "11.1 Tua Iniziativa",
+            "p1": "Puoi cancellare il tuo account in qualsiasi momento dalle impostazioni. I dati saranno eliminati entro 30 giorni, salvo obblighi legali di conservazione."
+          },
+          "us": {
+            "title": "11.2 Nostra Iniziativa",
+            "p1": "Possiamo sospendere o cancellare il tuo account se:",
+            "i1": "Violi i presenti Termini di Servizio",
+            "i2": "Usi il servizio per attività illegali",
+            "i3": "L'account rimane inattivo per oltre 24 mesi"
+          }
+        },
+        "s12": {
+          "title": "12. Legge Applicabile e Foro Competente",
+          "p1": "I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia, è competente esclusivamente il Foro di Roma, Italia."
+        },
+        "s13": {
+          "title": "13. Disposizioni Varie",
+          "severability": {
+            "title": "13.1 Divisibilità",
+            "p1": "Se una clausola è dichiarata invalida, le restanti clausole rimangono valide ed efficaci."
+          },
+          "assignment": {
+            "title": "13.2 Cessione",
+            "p1": "Non puoi cedere i tuoi diritti derivanti da questi Termini senza nostro consenso scritto."
+          },
+          "comms": {
+            "title": "13.3 Comunicazioni",
+            "p1": "Le comunicazioni ufficiali saranno inviate all'email registrata nel tuo account."
+          }
+        },
+        "s14": {
+          "title": "14. Contatti",
+          "p1": "Per domande sui Termini di Servizio:",
+          "email": "Email: {strong}",
+          "pec": "PEC: {strong}"
+        },
+        "note": "{strong} Utilizzando il servizio, dichiari di aver letto, compreso e accettato integralmente i presenti Termini di Servizio e la {link}."
       }
     },
     "budgetIdea": {
