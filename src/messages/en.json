@@ -1419,5 +1419,91 @@
       "add": "Add",
       "remove": "Remove"
     }
+  },
+  "suppliersJewelry": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "jewelry": "Jewelry"
+    },
+    "title": "💍 Jewelry",
+    "description": "Wedding bands, engagement rings and jewelry for bride and guests.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers"
+    },
+    "filters": {
+      "title": "Filter jewelry shops",
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Milan",
+      "search": "Search",
+      "searchPlaceholder": "Jewelry shop name...",
+      "searchButton": "Search",
+      "resetButton": "Reset"
+    },
+    "viewMode": {
+      "grid": "🔲 Grid",
+      "list": "📋 List"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No jewelry shops found} one {# jewelry shop found} other {# jewelry shops found}}"
+    },
+    "loading": "Loading...",
+    "empty": {
+      "title": "No jewelry shops found",
+      "description": "Try adjusting the filters"
+    },
+    "actions": {
+      "website": "🌐 Website",
+      "call": "📞 Call",
+      "email": "✉️ Email",
+      "addFavorite": "Add to favorites",
+      "removeFavorite": "Remove from favorites",
+      "add": "Add",
+      "remove": "Remove"
+    }
+  },
+  "suppliersMusicCeremony": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "musicCeremony": "Ceremony Music"
+    },
+    "title": "Ceremony Music",
+    "description": "Find verified musicians and groups for your wedding ceremony. You can propose new artists that will be verified before publication.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers",
+      "propose": "+ Propose musician/group",
+      "cancel": "Cancel",
+      "submit": "Submit proposal"
+    },
+    "filters": {
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Rome"
+    },
+    "form": {
+      "title": "Propose musician/group",
+      "name": "Artist/group name *",
+      "region": "Region *",
+      "province": "Province *",
+      "city": "City *",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "description": "Description",
+      "priceRange": "Price range",
+      "musicType": "Music type",
+      "select": "Select..."
+    },
+    "loading": "Loading musicians...",
+    "empty": "No musicians found for the selected filters.",
+    "messages": {
+      "submitSuccess": "Ceremony music submitted! It will be verified before publication.",
+      "submitError": "Error submitting",
+      "networkError": "Network error"
+    }
   }
 }

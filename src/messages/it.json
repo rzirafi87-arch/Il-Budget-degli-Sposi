@@ -1422,5 +1422,91 @@
       "add": "Aggiungi",
       "remove": "Rimuovi"
     }
+  },
+  "suppliersJewelry": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "jewelry": "Gioiellerie"
+    },
+    "title": "💍 Gioiellerie",
+    "description": "Fedi nuziali, anelli di fidanzamento e gioielli per sposa e invitati.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra gioiellerie",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome gioielleria...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "🔲 Griglia",
+      "list": "📋 Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessuna gioielleria trovata} one {# gioielleria trovata} other {# gioiellerie trovate}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessuna gioielleria trovata",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "🌐 Sito",
+      "call": "📞 Chiama",
+      "email": "✉️ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
+  },
+  "suppliersMusicCeremony": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "musicCeremony": "Musica Cerimonia"
+    },
+    "title": "Musica Cerimonia",
+    "description": "Trova musicisti e gruppi verificati per la cerimonia nuziale. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori",
+      "propose": "+ Proponi musicista/gruppo",
+      "cancel": "Annulla",
+      "submit": "Invia proposta"
+    },
+    "filters": {
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es: Roma"
+    },
+    "form": {
+      "title": "Proponi musicista/gruppo",
+      "name": "Nome artista/gruppo *",
+      "region": "Regione *",
+      "province": "Provincia *",
+      "city": "Città *",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito web",
+      "description": "Descrizione",
+      "priceRange": "Fascia prezzo",
+      "musicType": "Tipo musica",
+      "select": "Seleziona..."
+    },
+    "loading": "Caricamento musicisti...",
+    "empty": "Nessun musicista trovato per i filtri selezionati.",
+    "messages": {
+      "submitSuccess": "Musica cerimonia inviata! Sarà verificata prima della pubblicazione.",
+      "submitError": "Errore nell'invio",
+      "networkError": "Errore di rete"
+    }
   }
 }

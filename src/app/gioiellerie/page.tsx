@@ -7,7 +7,8 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 const supabase = getBrowserClient();
 
@@ -35,6 +36,7 @@ const REGIONS = [
 ];
 
 export default function GioielleriePage() {
+  const t = useTranslations("suppliersJewelry");
   const country = getUserCountrySafe();
   const { isFavorite, toggleFavorite, pending } = useFavorites("supplier");
   const [items, setItems] = useState<Jeweler[]>([]);
@@ -44,12 +46,7 @@ export default function GioielleriePage() {
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [region, province]);
-
-  async function load() {
+  const load = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await supabase.auth.getSession();
@@ -79,7 +76,11 @@ export default function GioielleriePage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [region, province, search]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const filtered = items.filter((it) =>
     search ? it.name.toLowerCase().includes(search.toLowerCase()) : true
@@ -90,25 +91,25 @@ export default function GioielleriePage() {
       {/* Breadcrumb */}
       <Breadcrumb
         items={[
-          { label: "🏠 Home", href: "/" },
-          { label: "Fornitori", href: "/fornitori" },
-          { label: "Gioiellerie" },
+          { label: t("breadcrumb.home"), href: "/" },
+          { label: t("breadcrumb.suppliers"), href: "/fornitori" },
+          { label: t("breadcrumb.jewelry") },
         ]}
       />
 
       {/* Header con bottone Torna a Fornitori */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h2 className="font-serif text-3xl mb-2">💍 Gioiellerie</h2>
+          <h2 className="font-serif text-3xl mb-2">{t("title")}</h2>
           <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-            Fedi nuziali, anelli di fidanzamento e gioielli per sposa e invitati.
+            {t("description")}
           </p>
         </div>
         <Link
           href="/fornitori"
           className="ml-4 px-4 py-2 bg-white border-2 border-[#A3B59D] text-[#A3B59D] rounded-lg hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold text-sm whitespace-nowrap"
         >
-          ← Tutti i Fornitori
+          {t("buttons.backToSuppliers")}
         </Link>
       </div>
 
@@ -116,10 +117,10 @@ export default function GioielleriePage() {
 
       {/* Filtri */}
       <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <h3 className="font-semibold mb-4">Filtra gioiellerie</h3>
+        <h3 className="font-semibold mb-4">{t("filters.title")}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Regione</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t("filters.region")}</label>
             <select
               className="border border-gray-300 rounded px-3 py-2 w-full"
               value={region}
@@ -128,40 +129,40 @@ export default function GioielleriePage() {
                 setProvince("");
               }}
             >
-              <option value="">Tutte le regioni</option>
+              <option value="">{t("filters.allRegions")}</option>
               {REGIONS.map((r) => (
                 <option key={r} value={r}>{r}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Provincia</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t("filters.province")}</label>
             <input
               type="text"
               className="border border-gray-300 rounded px-3 py-2 w-full"
               value={province}
               onChange={(e) => setProvince(e.target.value)}
-              placeholder="Es. Milano"
+              placeholder={t("filters.provincePlaceholder")}
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Cerca</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t("filters.search")}</label>
             <div className="flex gap-2">
               <input
                 type="text"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Nome gioielleria..."
+                placeholder={t("filters.searchPlaceholder")}
               />
               <button onClick={load} className="bg-[#A3B59D] text-white rounded-lg px-4 py-2 hover:bg-[#8a9d84]">
-                Cerca
+                {t("filters.searchButton")}
               </button>
               <button
                 onClick={() => { setRegion(""); setProvince(""); setSearch(""); }}
                 className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50"
               >
-                Resetta
+                {t("filters.resetButton")}
               </button>
             </div>
           </div>
@@ -171,7 +172,7 @@ export default function GioielleriePage() {
       {/* Lista */}
       <div className="mb-6 flex justify-between items-center">
         <p className="text-sm text-gray-600">
-          {filtered.length} {filtered.length === 1 ? "gioielleria trovata" : "gioiellerie trovate"}
+          {t("results.count", { count: filtered.length })}
         </p>
         <div className="flex gap-2">
           <button
@@ -180,7 +181,7 @@ export default function GioielleriePage() {
               viewMode === "grid" ? "bg-[#A3B59D] text-white" : "border border-gray-300 text-gray-700 hover:bg-gray-50"
             }`}
           >
-            🔲 Griglia
+            {t("viewMode.grid")}
           </button>
           <button
             onClick={() => setViewMode("list")}
@@ -188,18 +189,18 @@ export default function GioielleriePage() {
               viewMode === "list" ? "bg-[#A3B59D] text-white" : "border border-gray-300 text-gray-700 hover:bg-gray-50"
             }`}
           >
-            📋 Lista
+            {t("viewMode.list")}
           </button>
         </div>
       </div>
 
       {loading ? (
-        <p className="text-gray-500">Caricamento...</p>
+        <p className="text-gray-500">{t("loading")}</p>
       ) : filtered.length === 0 ? (
         <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
           <div className="text-5xl mb-4">🔍</div>
-          <p className="text-lg font-medium">Nessuna gioielleria trovata</p>
-          <p className="text-sm mt-2">Prova a modificare i filtri</p>
+          <p className="text-lg font-medium">{t("empty.title")}</p>
+          <p className="text-sm mt-2">{t("empty.description")}</p>
         </div>
       ) : viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -218,13 +219,13 @@ export default function GioielleriePage() {
               {p.description && <p className="text-sm text-gray-700 mb-3 line-clamp-3">{p.description}</p>}
               <div className="flex gap-2 flex-wrap">
                 {p.website && (
-                  <a href={p.website} target="_blank" rel="noopener noreferrer" className="text-center bg-white border-2 border-[#A6B5A0] text-[#A6B5A0] px-3 py-1.5 rounded-lg text-sm hover:bg-[#A6B5A0] hover:text-white">🌐 Sito</a>
+                  <a href={p.website} target="_blank" rel="noopener noreferrer" className="text-center bg-white border-2 border-[#A6B5A0] text-[#A6B5A0] px-3 py-1.5 rounded-lg text-sm hover:bg-[#A6B5A0] hover:text-white">{t("actions.website")}</a>
                 )}
                 {p.phone && (
-                  <a href={`tel:${p.phone}`} className="text-center bg-white border-2 border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50">📞 Chiama</a>
+                  <a href={`tel:${p.phone}`} className="text-center bg-white border-2 border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50">{t("actions.call")}</a>
                 )}
                 {p.email && (
-                  <a href={`mailto:${p.email}`} className="text-center bg-white border-2 border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50">✉️ Email</a>
+                  <a href={`mailto:${p.email}`} className="text-center bg-white border-2 border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50">{t("actions.email")}</a>
                 )}
                 <button
                   onClick={() => toggleFavorite(p.id, { name: p.name })}
@@ -235,7 +236,7 @@ export default function GioielleriePage() {
                       : "bg-[#A6B5A0] hover:bg-[#8a9d84]"
                   }`}
                 >
-                  {isFavorite(p.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
+                  {isFavorite(p.id) ? t("actions.removeFavorite") : t("actions.addFavorite")}
                 </button>
               </div>
             </div>
@@ -254,7 +255,7 @@ export default function GioielleriePage() {
                     {p.phone && <span>📞 {p.phone}</span>}
                     {p.email && <span>✉️ {p.email}</span>}
                     {p.website && (
-                      <a href={p.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">🌐 Sito web</a>
+                      <a href={p.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{t("actions.website")}</a>
                     )}
                   </div>
                 </div>
@@ -270,7 +271,7 @@ export default function GioielleriePage() {
                         : "bg-[#A6B5A0] hover:bg-[#8a9d84]"
                     }`}
                   >
-                    {isFavorite(p.id) ? "Rimuovi" : "Aggiungi"}
+                    {isFavorite(p.id) ? t("actions.remove") : t("actions.add")}
                   </button>
                 </div>
               </div>

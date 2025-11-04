@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
@@ -31,6 +32,7 @@ const ITALIAN_REGIONS = [
 ];
 
 export default function MusicaCerimoniaPage() {
+  const t = useTranslations("suppliersMusicCeremony");
   const [musicians, setMusicians] = useState<MusicaCerimonia[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState("");
@@ -51,11 +53,7 @@ export default function MusicaCerimoniaPage() {
     music_type: "",
   });
 
-  useEffect(() => {
-    loadMusicians();
-  }, [selectedRegion, selectedProvince]);
-
-  async function loadMusicians() {
+  const loadMusicians = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -76,7 +74,11 @@ export default function MusicaCerimoniaPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedRegion, selectedProvince]);
+
+  useEffect(() => {
+    loadMusicians();
+  }, [loadMusicians]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -120,25 +122,25 @@ export default function MusicaCerimoniaPage() {
       {/* Breadcrumb */}
       <Breadcrumb
         items={[
-          { label: "🏠 Home", href: "/" },
-          { label: "Fornitori", href: "/fornitori" },
-          { label: "Musica Cerimonia" },
+          { label: t("breadcrumb.home"), href: "/" },
+          { label: t("breadcrumb.suppliers"), href: "/fornitori" },
+          { label: t("breadcrumb.musicCeremony") },
         ]}
       />
 
       {/* Header con bottone Torna a Fornitori */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h2 className="font-serif text-3xl mb-2">Musica Cerimonia</h2>
+          <h2 className="font-serif text-3xl mb-2">{t("title")}</h2>
           <p className="text-sm text-gray-600">
-            Trova musicisti e gruppi verificati per la cerimonia nuziale. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.
+            {t("description")}
           </p>
         </div>
         <Link
           href="/fornitori"
           className="ml-4 px-4 py-2 bg-white border-2 border-[#A3B59D] text-[#A3B59D] rounded-lg hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold text-sm whitespace-nowrap"
         >
-          ← Tutti i Fornitori
+          {t("buttons.backToSuppliers")}
         </Link>
       </div>
 
@@ -148,7 +150,7 @@ export default function MusicaCerimoniaPage() {
       {/* Filtri */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Regione</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t("filters.region")}</label>
           <select
             className="w-full border border-gray-300 rounded-lg px-3 py-2"
             value={selectedRegion}
@@ -157,18 +159,18 @@ export default function MusicaCerimoniaPage() {
               setSelectedProvince("");
             }}
           >
-            <option value="">Tutte le regioni</option>
+            <option value="">{t("filters.allRegions")}</option>
             {ITALIAN_REGIONS.map(r => (
               <option key={r} value={r}>{r}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Provincia</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t("filters.province")}</label>
           <input
             type="text"
             className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            placeholder="Es: Roma"
+            placeholder={t("filters.provincePlaceholder")}
             value={selectedProvince}
             onChange={(e) => setSelectedProvince(e.target.value)}
           />
@@ -178,7 +180,7 @@ export default function MusicaCerimoniaPage() {
             onClick={() => setShowAddForm(!showAddForm)}
             className="w-full bg-[#A3B59D] text-white rounded-lg px-4 py-2 hover:bg-[#8a9d84]"
           >
-            {showAddForm ? "Annulla" : "+ Proponi musicista/gruppo"}
+            {showAddForm ? t("buttons.cancel") : t("buttons.propose")}
           </button>
         </div>
       </div>
