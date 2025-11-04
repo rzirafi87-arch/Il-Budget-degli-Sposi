@@ -408,6 +408,103 @@
         "guestList": "Inizia la lista invitati",
         "hint": "💡 Segui questi passi per una pianificazione serena e senza stress"
       }
+    },
+    "budgetUi": {
+      "items": {
+        "title": "Voci Budget"
+      },
+      "focus": {
+        "title": "Budget consigliato (percentuali)",
+        "subtitle": "Distribuzione suggerita per le principali voci.",
+        "labels": {
+          "catering": "Catering",
+          "location": "Location",
+          "attire": "Abiti",
+          "photo_video": "Foto/Video",
+          "decor": "Decor",
+          "entertainment": "Intrattenimento",
+          "stationery_gifts": "Stationery/Regali"
+        }
+      },
+      "summary": {
+        "bride": "Budget Sposa {currency}",
+        "groom": "Budget Sposo {currency}",
+        "total": "Budget Totale {currency}",
+        "contingency": "Imprevisti (%)",
+        "date": {
+          "wedding": "Data Matrimonio",
+          "baptism": "Data Cerimonia",
+          "eighteenth": "Data Festa",
+          "graduation": "Data Laurea",
+          "confirmation": "Data Cresima"
+        },
+        "ctaIdea": "Compila l&apos;Idea di Budget"
+      }
+    },
+    "pageInfoNote": {
+      "forYourEvent": "Per il tuo evento:",
+      "tips": "Suggerimenti:"
+    },
+    "suppliersUi": {
+      "title": "🏢 Fornitori",
+      "lead": "Esplora e gestisci i fornitori per ogni aspetto del tuo matrimonio. Trova professionisti nella tua zona, confronta preventivi e salva i tuoi preferiti.",
+      "suggestions": {
+        "inCountry": "Consigliati in {country}:",
+        "colors": "Colori popolari:"
+      },
+      "filter": {
+        "all": "Tutte",
+        "filterBy": "Filtra per {value}"
+      },
+      "search": {
+        "placeholder": "Cerca categoria fornitore..."
+      },
+      "explore": "Esplora →",
+      "empty": {
+        "title": "Nessuna categoria trovata per \"{query}\"",
+        "reset": "Mostra tutte le categorie"
+      },
+      "tip": {
+        "title": "💡 Suggerimento",
+        "body": "Per ogni categoria potrai cercare fornitori nella tua zona, filtrare per prezzo e servizi, confrontare preventivi e salvare i tuoi preferiti. Ogni fornitore può essere aggiunto direttamente alle spese del tuo budget."
+      },
+      "categories": {
+        "atelier": {
+          "label": "Atelier",
+          "description": "Abiti sposa e cerimonia"
+        },
+        "fotografi": {
+          "label": "Fotografi",
+          "description": "Servizi foto e video"
+        },
+        "fiorai": {
+          "label": "Fiorai",
+          "description": "Bouquet e allestimenti floreali"
+        },
+        "catering": {
+          "label": "Catering",
+          "description": "Banqueting e ristorazione"
+        },
+        "beauty": {
+          "label": "Make-up & Beauty",
+          "description": "Trucco, acconciatura e benessere"
+        },
+        "gioiellerie": {
+          "label": "Gioiellerie",
+          "description": "Fedi, anelli e gioielli"
+        },
+        "wedding-planner": {
+          "label": "Wedding Planner",
+          "description": "Organizzazione completa matrimonio"
+        },
+        "musica-cerimonia": {
+          "label": "Musica Cerimonia",
+          "description": "Musicisti per la cerimonia"
+        },
+        "musica-ricevimento": {
+          "label": "Musica Ricevimento",
+          "description": "DJ, band e intrattenimento"
+        }
+      }
     }
   }
-}
