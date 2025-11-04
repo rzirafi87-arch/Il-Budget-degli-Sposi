@@ -582,7 +582,145 @@
     "policies": {
       "lastUpdated": "Ultimo aggiornamento:",
       "cookie": {
-        "title": "Cookie Policy"
+        "title": "Cookie Policy",
+        "common": {
+          "purposeLabel": "Scopo:",
+          "privacyLabel": "Privacy Policy:"
+        },
+        "table": {
+          "headers": {
+            "name": "Nome",
+            "purpose": "Scopo",
+            "duration": "Durata"
+          },
+          "rows": {
+            "session": "Sessione",
+            "30d": "30 giorni",
+            "1y": "1 anno",
+            "session_token": {
+              "purpose": "Mantiene la sessione utente attiva"
+            },
+            "auth_token": {
+              "purpose": "Autenticazione sicura"
+            },
+            "csrf_token": {
+              "purpose": "Protezione contro attacchi CSRF"
+            },
+            "user_preferences": {
+              "purpose": "Salva preferenze UI/UX"
+            },
+            "cookie_consent": {
+              "purpose": "Ricorda scelta cookie banner"
+            }
+          }
+        },
+        "s1": {
+          "title": "1. Cosa sono i Cookie?",
+          "p1": "I cookie sono piccoli file di testo che i siti web salvano sul tuo dispositivo (computer, tablet, smartphone) quando li visiti. Servono a migliorare la tua esperienza di navigazione, ricordare le tue preferenze e fornire funzionalità essenziali."
+        },
+        "s2": {
+          "title": "2. Tipi di Cookie Utilizzati",
+          "tech": {
+            "title": "2.1 Cookie Tecnici (Necessari) 🔒",
+            "p1": "Questi cookie sono essenziali per il funzionamento del sito e non possono essere disattivati. Non richiedono il tuo consenso ai sensi della normativa vigente."
+          },
+          "prefs": {
+            "title": "2.2 Cookie di Preferenze 🎨",
+            "p1": "Ricordano le tue scelte (lingua, tema, visualizzazione) per migliorare l'esperienza."
+          },
+          "analytics": {
+            "title": "2.3 Cookie Analitici 📊",
+            "p1": "Raccolgono dati anonimi su come usi il sito per migliorarlo. Richiedono il tuo consenso.",
+            "note": "Nota: Attualmente non utilizziamo cookie analitici di terze parti (come Google Analytics). Monitoriamo solo metriche server-side anonime."
+          },
+          "marketing": {
+            "title": "2.4 Cookie di Marketing 📢",
+            "p1": "Utilizzati per mostrare pubblicità pertinenti. Richiedono il tuo consenso esplicito.",
+            "status": "Stato attuale: Non utilizziamo cookie di marketing o remarketing. Se in futuro implementeremo pubblicità, richiederemo il tuo consenso preventivo."
+          }
+        },
+        "s3": {
+          "title": "3. Cookie di Terze Parti",
+          "p1": "Alcuni cookie possono essere installati da servizi esterni che utilizziamo:",
+          "supabase": {
+            "title": "Supabase (Hosting Database)",
+            "purpose": "Autenticazione e gestione dati"
+          },
+          "vercel": {
+            "title": "Vercel (Hosting Web)",
+            "purpose": "Delivery contenuti e performance"
+          }
+        },
+        "s4": {
+          "title": "4. Come Gestire i Cookie",
+          "banner": {
+            "title": "4.1 Tramite Banner Cookie",
+            "p1": "Al primo accesso, puoi scegliere quali cookie accettare tramite il banner di consenso. Puoi modificare le tue preferenze in qualsiasi momento dalle impostazioni del tuo account."
+          },
+          "browser": {
+            "title": "4.2 Tramite Browser",
+            "p1": "Puoi gestire i cookie attraverso le impostazioni del tuo browser:",
+            "chrome": "Impostazioni → Privacy e sicurezza → Cookie",
+            "firefox": "Opzioni → Privacy e sicurezza → Cookie e dati dei siti web",
+            "safari": "Preferenze → Privacy → Gestisci dati siti web",
+            "edge": "Impostazioni → Cookie e autorizzazioni sito"
+          },
+          "warning": "⚠️ Attenzione: Disabilitando i cookie tecnici, alcune funzionalità del sito potrebbero non funzionare correttamente (es. impossibilità di accedere al tuo account)."
+        },
+        "s5": {
+          "title": "5. Do Not Track (DNT)",
+          "p1": "Rispettiamo il segnale \"Do Not Track\" del browser. Se abilitato, non tracciamo la tua navigazione a fini analitici o pubblicitari."
+        },
+        "s6": {
+          "title": "6. Durata dei Cookie",
+          "items": {
+            "session": {
+              "title": "Cookie di sessione:",
+              "desc": "Eliminati alla chiusura del browser"
+            },
+            "persistent": {
+              "title": "Cookie persistenti:",
+              "desc": "Rimangono per il periodo specificato (max 1 anno)"
+            },
+            "analytics": {
+              "title": "Cookie analitici:",
+              "desc": "Massimo 24 mesi (se accettati)"
+            }
+          }
+        },
+        "s7": {
+          "title": "7. Aggiornamenti della Cookie Policy",
+          "p1": "Ci riserviamo il diritto di modificare questa Cookie Policy per adeguarla a normative o cambiamenti nei servizi. La data dell'ultimo aggiornamento è indicata in alto. Ti invitiamo a consultare periodicamente questa pagina."
+        },
+        "s8": {
+          "title": "8. Cookie e GDPR",
+          "p1": "In conformità al GDPR (Regolamento UE 2016/679) e alla Direttiva ePrivacy:",
+          "items": {
+            "i1": "I cookie tecnici non richiedono consenso",
+            "i2": "I cookie di profilazione richiedono consenso preventivo e informato",
+            "i3": "Il consenso può essere revocato in qualsiasi momento",
+            "i4": "Forniamo informazioni chiare e complete sull'uso dei cookie"
+          }
+        },
+        "s9": {
+          "title": "9. Contatti",
+          "p1": "Per domande sulla Cookie Policy o sulla gestione dei tuoi dati: Email: privacy@ilbudgetdeglisposi.it — Telefono: +39 XXX XXX XXXX"
+        },
+        "summary": {
+          "title": "📋 Riepilogo Rapido",
+          "tech": {
+            "title": "Cookie Tecnici",
+            "value": "✅ Sempre attivi"
+          },
+          "prefs": {
+            "title": "Cookie Preferenze",
+            "value": "🔘 Richiedono consenso"
+          },
+          "marketing": {
+            "title": "Cookie Marketing",
+            "value": "❌ Non utilizzati"
+          }
+        }
       },
       "privacy": {
         "title": "Privacy Policy"

@@ -579,7 +579,145 @@
     "policies": {
       "lastUpdated": "Last updated:",
       "cookie": {
-        "title": "Cookie Policy"
+        "title": "Cookie Policy",
+        "common": {
+          "purposeLabel": "Purpose:",
+          "privacyLabel": "Privacy Policy:"
+        },
+        "table": {
+          "headers": {
+            "name": "Name",
+            "purpose": "Purpose",
+            "duration": "Duration"
+          },
+          "rows": {
+            "session": "Session",
+            "30d": "30 days",
+            "1y": "1 year",
+            "session_token": {
+              "purpose": "Keeps the user session active"
+            },
+            "auth_token": {
+              "purpose": "Secure authentication"
+            },
+            "csrf_token": {
+              "purpose": "Protection against CSRF attacks"
+            },
+            "user_preferences": {
+              "purpose": "Saves UI/UX preferences"
+            },
+            "cookie_consent": {
+              "purpose": "Remembers cookie banner choice"
+            }
+          }
+        },
+        "s1": {
+          "title": "1. What are Cookies?",
+          "p1": "Cookies are small text files that websites store on your device (computer, tablet, smartphone) when you visit them. They help improve your browsing experience, remember your preferences and provide essential features."
+        },
+        "s2": {
+          "title": "2. Types of Cookies Used",
+          "tech": {
+            "title": "2.1 Technical (Necessary) Cookies 🔒",
+            "p1": "These cookies are essential for the website to function and cannot be disabled. They do not require your consent under current regulations."
+          },
+          "prefs": {
+            "title": "2.2 Preference Cookies 🎨",
+            "p1": "They remember your choices (language, theme, view) to enhance your experience."
+          },
+          "analytics": {
+            "title": "2.3 Analytics Cookies 📊",
+            "p1": "They collect anonymous data about how you use the site to help us improve it. They require your consent.",
+            "note": "Note: We currently do not use third-party analytics cookies (such as Google Analytics). We only monitor anonymous server-side metrics."
+          },
+          "marketing": {
+            "title": "2.4 Marketing Cookies 📢",
+            "p1": "Used to show relevant advertising. They require your explicit consent.",
+            "status": "Current status: We do not use marketing or remarketing cookies. If we implement advertising in the future, we will request your prior consent."
+          }
+        },
+        "s3": {
+          "title": "3. Third-party Cookies",
+          "p1": "Some cookies may be installed by external services we use:",
+          "supabase": {
+            "title": "Supabase (Database Hosting)",
+            "purpose": "Authentication and data management"
+          },
+          "vercel": {
+            "title": "Vercel (Web Hosting)",
+            "purpose": "Content delivery and performance"
+          }
+        },
+        "s4": {
+          "title": "4. How to Manage Cookies",
+          "banner": {
+            "title": "4.1 Via Cookie Banner",
+            "p1": "On your first visit, you can choose which cookies to accept through the consent banner. You can change your preferences at any time from your account settings."
+          },
+          "browser": {
+            "title": "4.2 Via Browser",
+            "p1": "You can manage cookies through your browser settings:",
+            "chrome": "Settings → Privacy and security → Cookies",
+            "firefox": "Options → Privacy & Security → Cookies and Site Data",
+            "safari": "Preferences → Privacy → Manage Website Data",
+            "edge": "Settings → Cookies and site permissions"
+          },
+          "warning": "⚠️ Warning: Disabling technical cookies may cause some site features to stop working properly (e.g., you may not be able to access your account)."
+        },
+        "s5": {
+          "title": "5. Do Not Track (DNT)",
+          "p1": "We respect the browser's \"Do Not Track\" signal. If enabled, we do not track your browsing for analytics or advertising purposes."
+        },
+        "s6": {
+          "title": "6. Cookie Duration",
+          "items": {
+            "session": {
+              "title": "Session cookies:",
+              "desc": "Deleted when the browser is closed"
+            },
+            "persistent": {
+              "title": "Persistent cookies:",
+              "desc": "Remain for the specified period (max 1 year)"
+            },
+            "analytics": {
+              "title": "Analytics cookies:",
+              "desc": "Up to 24 months (if accepted)"
+            }
+          }
+        },
+        "s7": {
+          "title": "7. Cookie Policy Updates",
+          "p1": "We reserve the right to modify this Cookie Policy to comply with regulations or service changes. The date of the last update is shown at the top. Please check this page periodically."
+        },
+        "s8": {
+          "title": "8. Cookies and GDPR",
+          "p1": "In accordance with the GDPR (EU Regulation 2016/679) and the ePrivacy Directive:",
+          "items": {
+            "i1": "Technical cookies do not require consent",
+            "i2": "Profiling cookies require prior and informed consent",
+            "i3": "Consent can be withdrawn at any time",
+            "i4": "We provide clear and complete information on the use of cookies"
+          }
+        },
+        "s9": {
+          "title": "9. Contacts",
+          "p1": "For questions about the Cookie Policy or how we handle your data: Email: privacy@ilbudgetdeglisposi.it — Phone: +39 XXX XXX XXXX"
+        },
+        "summary": {
+          "title": "📋 Quick Summary",
+          "tech": {
+            "title": "Technical Cookies",
+            "value": "✅ Always active"
+          },
+          "prefs": {
+            "title": "Preference Cookies",
+            "value": "🔘 Require consent"
+          },
+          "marketing": {
+            "title": "Marketing Cookies",
+            "value": "❌ Not used"
+          }
+        }
       },
       "privacy": {
         "title": "Privacy Policy"
