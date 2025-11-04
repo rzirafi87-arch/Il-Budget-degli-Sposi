@@ -49,6 +49,15 @@ Un'applicazione web completa per la gestione del budget matrimoniale, costruita 
    ```bash
    cp .env.local.example .env.local
    ```
+
+4. **Verifica Database** (Opzionale ma raccomandato)
+   
+   Esegui script di verifica nel [SQL Editor di Supabase](https://app.supabase.com):
+   
+   - **Quick Check** (< 3 sec): Copia/incolla `supabase-quick-check.sql`
+   - **Diagnostica Completa**: Usa `supabase-diagnostics-complete.sql`
+   
+   📚 [Guida completa alla verifica DB →](./SUPABASE-SQL-VERIFICATION-GUIDE.md)
    
    Modifica `.env.local` con le tue credenziali Supabase:
    ```env
@@ -143,10 +152,22 @@ Accedi tramite `Ctrl+Shift+P` → `Tasks: Run Task`:
 
 ## 📚 Documentazione Completa
 
+### 📖 Setup & Configurazione
 - 📘 [**Guida Setup Estensioni**](.vscode/SETUP-EXTENSIONS.md) - Configurazione VS Code dettagliata
 - 🔗 [**Guida Integrazione**](.github/INTEGRATION-GUIDE.md) - GitHub + Supabase + Vercel
 - 🚀 [**Deployment Guide**](DEPLOYMENT-GUIDE.md) - Deploy su Vercel
 - 🔐 [**Security & SEO**](SECURITY-AND-SEO.md) - Best practices
+
+### 🗄️ Database & SQL
+- 🏥 **[Verifica Database (Supabase SQL Editor)](SUPABASE-SQL-VERIFICATION-GUIDE.md)** - Script per Supabase SQL Editor
+  - `supabase-quick-check.sql` - Health check rapido (< 3 sec)
+  - `supabase-diagnostics-complete.sql` - Diagnostica completa
+  - `supabase-verify-config.sql` - Verifica configurazione
+  - `supabase-verify-data-integrity.sql` - Controllo integrità dati
+  - `supabase-verify-performance.sql` - Analisi performance
+  - `supabase-monitor-activity.sql` - Monitoraggio attività
+
+### 📝 Changelog & Features
 - 📝 [**Changelog**](CHANGELOG_CURRENT.md) - Ultime modifiche
 - 🆕 [**Nuove Funzionalità**](NUOVE_FUNZIONALITA.md) - Roadmap features
 
