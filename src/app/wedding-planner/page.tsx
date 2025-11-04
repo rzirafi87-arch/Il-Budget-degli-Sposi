@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
@@ -31,6 +32,7 @@ const ITALIAN_REGIONS = [
 ];
 
 export default function WeddingPlannerPage() {
+  const t = useTranslations("suppliersWeddingPlanner");
   const country = getUserCountrySafe();
   const [planners, setPlanners] = useState<WeddingPlanner[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,11 +53,7 @@ export default function WeddingPlannerPage() {
     services: "",
   });
 
-  useEffect(() => {
-    loadPlanners();
-  }, [selectedRegion, selectedProvince]);
-
-  async function loadPlanners() {
+  const loadPlanners = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -70,7 +68,11 @@ export default function WeddingPlannerPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedRegion, selectedProvince]);
+
+  useEffect(() => {
+    loadPlanners();
+  }, [loadPlanners]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,7 +85,7 @@ export default function WeddingPlannerPage() {
       });
 
       if (res.ok) {
-        alert("Wedding planner inviato! Sarà verificato prima della pubblicazione.");
+        alert(t("messages.submitSuccess"));
         setFormData({
           name: "",
           region: "",
@@ -99,11 +101,11 @@ export default function WeddingPlannerPage() {
         setShowAddForm(false);
         loadPlanners();
       } else {
-        alert("Errore nell'invio");
+        alert(t("messages.submitError"));
       }
     } catch (e) {
       console.error(e);
-      alert("Errore di rete");
+      alert(t("messages.networkError"));
     }
   }
 
@@ -114,26 +116,25 @@ export default function WeddingPlannerPage() {
       {/* Breadcrumb */}
       <Breadcrumb
         items={[
-          { label: "🏠 Home", href: "/" },
-          { label: "Fornitori", href: "/fornitori" },
-          { label: "Wedding Planner" },
+          { label: t("breadcrumb.home"), href: "/" },
+          { label: t("breadcrumb.suppliers"), href: "/fornitori" },
+          { label: t("breadcrumb.weddingPlanner") },
         ]}
       />
 
       {/* Header con bottone Torna a Fornitori */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h2 className="font-serif text-3xl mb-2">Wedding Planner</h2>
+          <h2 className="font-serif text-3xl mb-2">{t("title")}</h2>
           <p className="text-sm text-gray-600">
-            Trova wedding planner verificati per organizzare il tuo matrimonio perfetto.
-            Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.
+            {t("description")}
           </p>
         </div>
         <Link
           href="/fornitori"
           className="ml-4 px-4 py-2 bg-white border-2 border-[#A3B59D] text-[#A3B59D] rounded-lg hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold text-sm whitespace-nowrap"
         >
-          ← Tutti i Fornitori
+          {t("buttons.backToSuppliers")}
         </Link>
       </div>
 
@@ -143,7 +144,7 @@ export default function WeddingPlannerPage() {
       {/* Filtri */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Regione</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t("filters.region")}</label>
           <select
             className="w-full border border-gray-300 rounded-lg px-3 py-2"
             value={selectedRegion}

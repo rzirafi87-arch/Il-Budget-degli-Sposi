@@ -1552,6 +1552,52 @@
       "networkError": "Network error"
     }
   },
+  "suppliersWeddingPlanner": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "weddingPlanner": "Wedding Planner"
+    },
+    "title": "Wedding Planner",
+    "description": "Find verified wedding planners to organize your perfect wedding. You can propose new professionals that will be verified before publication.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers",
+      "propose": "+ Propose a wedding planner",
+      "cancel": "Cancel",
+      "submit": "Submit for approval"
+    },
+    "filters": {
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "E.g. Milan"
+    },
+    "form": {
+      "title": "Propose a new wedding planner",
+      "name": "Name / Studio *",
+      "region": "Region *",
+      "province": "Province *",
+      "city": "City *",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "description": "Description",
+      "priceRange": "Price range",
+      "services": "Services offered",
+      "select": "Select...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "E.g. €€-€€€",
+      "servicesPlaceholder": "E.g. Full planning, Partial planning, Day-of coordination"
+    },
+    "loading": "Loading...",
+    "empty": "No wedding planner found for the selected filters",
+    "verified": "✓ Verified",
+    "messages": {
+      "submitSuccess": "Wedding planner submitted! It will be verified before publication.",
+      "submitError": "Error submitting",
+      "networkError": "Network error"
+    }
+  },
   "suppliersChurches": {
     "title": "⛪ Churches and Ceremony Venues",
     "description": "Find the perfect church for your religious ceremony: Catholic, Orthodox, Protestant, and other places of worship. Discover requirements, capacity, and contact information. Filter by region, province, and type.",

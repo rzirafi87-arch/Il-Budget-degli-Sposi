@@ -1555,6 +1555,52 @@
       "networkError": "Errore di rete"
     }
   },
+  "suppliersWeddingPlanner": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "weddingPlanner": "Wedding Planner"
+    },
+    "title": "Wedding Planner",
+    "description": "Trova wedding planner verificati per organizzare il tuo matrimonio perfetto. Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori",
+      "propose": "+ Proponi un wedding planner",
+      "cancel": "Annulla",
+      "submit": "Invia per approvazione"
+    },
+    "filters": {
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es: Milano"
+    },
+    "form": {
+      "title": "Proponi un nuovo wedding planner",
+      "name": "Nome / Studio *",
+      "region": "Regione *",
+      "province": "Provincia *",
+      "city": "Città *",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito web",
+      "description": "Descrizione",
+      "priceRange": "Fascia di prezzo",
+      "services": "Servizi offerti",
+      "select": "Seleziona...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "Es: €€-€€€",
+      "servicesPlaceholder": "Es: Full planning, Partial planning, Consulenza giorno"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessun wedding planner trovato per i filtri selezionati",
+    "verified": "✓ Verificato",
+    "messages": {
+      "submitSuccess": "Wedding planner inviato! Sarà verificato prima della pubblicazione.",
+      "submitError": "Errore nell'invio",
+      "networkError": "Errore di rete"
+    }
+  },
   "suppliersChurches": {
     "title": "⛪ Chiese e Luoghi di Cerimonia",
     "description": "Trova la chiesa perfetta per la tua cerimonia religiosa: cattoliche, ortodosse, protestanti e altri luoghi di culto. Scopri requisiti, capienza e informazioni di contatto. Filtra per regione, provincia e tipologia.",
