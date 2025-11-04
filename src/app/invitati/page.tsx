@@ -6,6 +6,7 @@ import PageInfoNote from "@/components/PageInfoNote";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
@@ -50,6 +51,7 @@ type Table = {
 };
 
 export default function InvitatiPage() {
+  const t = useTranslations("guestsPage");
   const [activeTab, setActiveTab] = useState<"guests" | "tables">("guests");
   const [guests, setGuests] = useState<Guest[]>([]);
   const [familyGroups, setFamilyGroups] = useState<FamilyGroup[]>([]);
@@ -322,7 +324,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "guests" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          ?? Invitati
+          {t("tabs.guests")}
         </button>
         <button
           onClick={() => setActiveTab("tables")}
@@ -333,7 +335,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "tables" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          ?? Tavoli
+          {t("tabs.tables")}
         </button>
       </div>
 
@@ -354,8 +356,8 @@ export default function InvitatiPage() {
       )}
 
       <PageInfoNote
-        icon="??"
-        title="Gestione Completa degli Invitati"
+        icon="👥"
+        title={t("sections.guestsManagement")}
         description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menù, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
         tips={[
           "Crea gruppi familiari per organizzare gli invitati e assegnarli automaticamente allo stesso tavolo",
@@ -445,7 +447,7 @@ export default function InvitatiPage() {
       {/* Gestione Famiglie */}
       <div className="mb-6 p-6 rounded-2xl border-3 border-purple-600 bg-purple-50/70 shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg text-gray-900">??????????? Gruppi Famiglia</h3>
+          <h3 className="font-bold text-lg text-gray-900">{t("sections.familyGroups")}</h3>
           <button
             onClick={() => setShowFamilyModal(true)}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-bold shadow-md"
