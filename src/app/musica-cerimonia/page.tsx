@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
-import { useTranslations } from "next-intl";
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 type MusicaCerimonia = {
   id: string;
@@ -91,7 +91,7 @@ export default function MusicaCerimoniaPage() {
       });
 
       if (res.ok) {
-        alert("Musica cerimonia inviata! Sarà verificata prima della pubblicazione.");
+        alert(t("messages.submitSuccess"));
         setFormData({
           name: "",
           region: "",
@@ -107,11 +107,11 @@ export default function MusicaCerimoniaPage() {
         setShowAddForm(false);
         loadMusicians();
       } else {
-        alert("Errore nell'invio");
+        alert(t("messages.submitError"));
       }
     } catch (e) {
       console.error(e);
-      alert("Errore di rete");
+      alert(t("messages.networkError"));
     }
   }
 
@@ -188,11 +188,11 @@ export default function MusicaCerimoniaPage() {
       {/* Form aggiunta */}
       {showAddForm && (
         <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold mb-4">Proponi musicista/gruppo</h3>
+          <h3 className="font-semibold mb-4">{t("form.title")}</h3>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nome artista/gruppo *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.name")}</label>
                 <input
                   type="text"
                   required
@@ -202,21 +202,21 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Regione *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.region")}</label>
                 <select
                   required
                   className="w-full border border-gray-300 rounded px-3 py-2"
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
                 >
-                  <option value="">Seleziona...</option>
+                  <option value="">{t("form.select")}</option>
                   {ITALIAN_REGIONS.map(r => (
                     <option key={r} value={r}>{r}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Provincia *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.province")}</label>
                 <input
                   type="text"
                   required
@@ -226,7 +226,7 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Città *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.city")}</label>
                 <input
                   type="text"
                   required
@@ -236,7 +236,7 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Telefono</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.phone")}</label>
                 <input
                   type="tel"
                   className="w-full border border-gray-300 rounded px-3 py-2"
@@ -245,7 +245,7 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.email")}</label>
                 <input
                   type="email"
                   className="w-full border border-gray-300 rounded px-3 py-2"
@@ -254,7 +254,7 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Sito web</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.website")}</label>
                 <input
                   type="url"
                   className="w-full border border-gray-300 rounded px-3 py-2"
@@ -264,7 +264,7 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fascia di prezzo</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.priceRange")}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded px-3 py-2"
@@ -274,7 +274,7 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo di musica</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.musicType")}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded px-3 py-2"
@@ -284,7 +284,7 @@ export default function MusicaCerimoniaPage() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descrizione</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.description")}</label>
                 <textarea
                   className="w-full border border-gray-300 rounded px-3 py-2"
                   rows={3}
@@ -297,7 +297,7 @@ export default function MusicaCerimoniaPage() {
               type="submit"
               className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84]"
             >
-              Invia per approvazione
+              {t("buttons.submit")}
             </button>
           </form>
         </div>
@@ -305,10 +305,10 @@ export default function MusicaCerimoniaPage() {
 
       {/* Risultati */}
       {loading ? (
-        <div className="text-gray-500">Caricamento...</div>
+        <div className="text-gray-500">{t("loading")}</div>
       ) : approvedMusicians.length === 0 ? (
         <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
-          Nessun musicista trovato per i filtri selezionati
+          {t("empty")}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -6,9 +6,9 @@ import { getUserCountrySafe } from "@/constants/geo";
 import { useFavorites } from "@/hooks/useFavorites";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
