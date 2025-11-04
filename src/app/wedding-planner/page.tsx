@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
-import { useTranslations } from "next-intl";
+import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
-import Breadcrumb from "@/components/Breadcrumb";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 type WeddingPlanner = {
   id: string;
@@ -153,18 +153,18 @@ export default function WeddingPlannerPage() {
               setSelectedProvince("");
             }}
           >
-            <option value="">Tutte le regioni</option>
+            <option value="">{t("filters.allRegions")}</option>
             {ITALIAN_REGIONS.map(r => (
               <option key={r} value={r}>{r}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Provincia</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t("filters.province")}</label>
           <input
             type="text"
             className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            placeholder="Es: Milano"
+            placeholder={t("filters.provincePlaceholder")}
             value={selectedProvince}
             onChange={(e) => setSelectedProvince(e.target.value)}
           />
@@ -174,7 +174,7 @@ export default function WeddingPlannerPage() {
             onClick={() => setShowAddForm(!showAddForm)}
             className="w-full bg-[#A3B59D] text-white rounded-lg px-4 py-2 hover:bg-[#8a9d84]"
           >
-            {showAddForm ? "Annulla" : "+ Proponi un wedding planner"}
+            {showAddForm ? t("buttons.cancel") : t("buttons.propose")}
           </button>
         </div>
       </div>
@@ -182,11 +182,11 @@ export default function WeddingPlannerPage() {
       {/* Form aggiunta */}
       {showAddForm && (
         <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold mb-4">Proponi un nuovo wedding planner</h3>
+          <h3 className="font-semibold mb-4">{t("form.title")}</h3>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nome / Studio *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.name")}</label>
                 <input
                   type="text"
                   required
@@ -196,21 +196,21 @@ export default function WeddingPlannerPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Regione *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.region")}</label>
                 <select
                   required
                   className="w-full border border-gray-300 rounded px-3 py-2"
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
                 >
-                  <option value="">Seleziona...</option>
+                  <option value="">{t("form.select")}</option>
                   {ITALIAN_REGIONS.map(r => (
                     <option key={r} value={r}>{r}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Provincia *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.province")}</label>
                 <input
                   type="text"
                   required
@@ -220,7 +220,7 @@ export default function WeddingPlannerPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Città *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.city")}</label>
                 <input
                   type="text"
                   required
@@ -230,7 +230,7 @@ export default function WeddingPlannerPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Telefono</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.phone")}</label>
                 <input
                   type="tel"
                   className="w-full border border-gray-300 rounded px-3 py-2"
@@ -239,7 +239,7 @@ export default function WeddingPlannerPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.email")}</label>
                 <input
                   type="email"
                   className="w-full border border-gray-300 rounded px-3 py-2"
@@ -248,37 +248,37 @@ export default function WeddingPlannerPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Sito web</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.website")}</label>
                 <input
                   type="url"
                   className="w-full border border-gray-300 rounded px-3 py-2"
-                  placeholder="https://..."
+                  placeholder={t("form.websitePlaceholder")}
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fascia di prezzo</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.priceRange")}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded px-3 py-2"
-                  placeholder="Es: €€-€€€"
+                  placeholder={t("form.pricePlaceholder")}
                   value={formData.price_range}
                   onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Servizi offerti</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.services")}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded px-3 py-2"
-                  placeholder="Es: Full planning, Partial planning, Consulenza giorno"
+                  placeholder={t("form.servicesPlaceholder")}
                   value={formData.services}
                   onChange={(e) => setFormData({ ...formData, services: e.target.value })}
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descrizione</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("form.description")}</label>
                 <textarea
                   className="w-full border border-gray-300 rounded px-3 py-2"
                   rows={3}
@@ -291,7 +291,7 @@ export default function WeddingPlannerPage() {
               type="submit"
               className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84]"
             >
-              Invia per approvazione
+              {t("buttons.submit")}
             </button>
           </form>
         </div>
@@ -299,10 +299,10 @@ export default function WeddingPlannerPage() {
 
       {/* Risultati */}
       {loading ? (
-        <div className="text-gray-500">Caricamento...</div>
+        <div className="text-gray-500">{t("loading")}</div>
       ) : approvedPlanners.length === 0 ? (
         <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
-          Nessun wedding planner trovato per i filtri selezionati
+          {t("empty")}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -314,7 +314,7 @@ export default function WeddingPlannerPage() {
               <div className="flex items-start justify-between mb-3">
                 <h3 className="font-semibold text-lg">{planner.name}</h3>
                 {planner.verified && (
-                  <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">✓ Verificato</span>
+                  <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">{t("verified")}</span>
                 )}
               </div>
               <div className="text-sm text-gray-600 space-y-1 mb-3">
