@@ -1162,5 +1162,50 @@
       "addError": "Errore durante l'aggiunta",
       "addSuccess": "Location aggiunta con successo! Sarà visibile dopo la verifica dello staff."
     }
+  },
+  "suppliersPhotographers": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "photographers": "Fotografi"
+    },
+    "title": "📸 Fotografi",
+    "description": "Trova i migliori fotografi e videomaker per il tuo matrimonio. Filtra per regione e provincia, confronta prezzi e visita i loro portfolio.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra fotografi",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome studio o fotografo...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun fotografo trovato} one {# fotografo trovato} other {# fotografi trovati}}"
+    },
+    "viewMode": {
+      "grid": "🔲 Griglia",
+      "list": "📋 Lista"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun fotografo trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "🌐 Sito",
+      "websiteLink": "🌐 Sito web",
+      "call": "📞 Chiama",
+      "email": "✉️ Email",
+      "addToFavorites": "Aggiungi ai preferiti",
+      "removeFromFavorites": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
   }
 }

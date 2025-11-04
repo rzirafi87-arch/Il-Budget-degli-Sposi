@@ -5,6 +5,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -36,6 +37,7 @@ const ITALIAN_REGIONS = [
 ];
 
 export default function AtelierPage() {
+  const t = useTranslations("suppliersAtelier");
   const country = getUserCountrySafe();
   const [activeTab, setActiveTab] = useState<"sposa" | "sposo">("sposa");
   const [atelier, setAtelier] = useState<AtelierItem[]>([]);

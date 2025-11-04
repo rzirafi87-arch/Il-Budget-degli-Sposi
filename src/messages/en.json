@@ -1159,5 +1159,50 @@
       "addError": "Error while adding",
       "addSuccess": "Venue added successfully! It will be visible after staff verification."
     }
+  },
+  "suppliersPhotographers": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "photographers": "Photographers"
+    },
+    "title": "📸 Photographers",
+    "description": "Find the best photographers and videographers for your wedding. Filter by region and province, compare prices and visit their portfolios.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers"
+    },
+    "filters": {
+      "title": "Filter photographers",
+      "region": "Region",
+      "allRegions": "All regions",
+      "province": "Province",
+      "provincePlaceholder": "e.g. Milan",
+      "search": "Search",
+      "searchPlaceholder": "Studio or photographer name...",
+      "searchButton": "Search",
+      "resetButton": "Reset"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No photographers found} one {# photographer found} other {# photographers found}}"
+    },
+    "viewMode": {
+      "grid": "🔲 Grid",
+      "list": "📋 List"
+    },
+    "loading": "Loading...",
+    "empty": {
+      "title": "No photographers found",
+      "description": "Try changing the filters"
+    },
+    "actions": {
+      "website": "🌐 Website",
+      "websiteLink": "🌐 Website",
+      "call": "📞 Call",
+      "email": "✉️ Email",
+      "addToFavorites": "Add to favorites",
+      "removeFromFavorites": "Remove from favorites",
+      "add": "Add",
+      "remove": "Remove"
+    }
   }
 }
