@@ -158,14 +158,25 @@ Accedi tramite `Ctrl+Shift+P` → `Tasks: Run Task`:
 - 🚀 [**Deployment Guide**](DEPLOYMENT-GUIDE.md) - Deploy su Vercel
 - 🔐 [**Security & SEO**](SECURITY-AND-SEO.md) - Best practices
 
+### 🤖 GitHub Copilot / Codex
+- 🎯 **[Workflow con Codex](CODEX-WORKFLOW-GUIDE.md)** - Lavora autonomamente da Copilot ⭐
+  - Sincronizzazione automatica Supabase → GitHub → Vercel
+  - Task predefiniti per modifiche SQL
+  - Pipeline completa con un click
+
 ### 🗄️ Database & SQL
 - 🏥 **[Verifica Database (Supabase SQL Editor)](SUPABASE-SQL-VERIFICATION-GUIDE.md)** - Script per Supabase SQL Editor
+- 📋 **[Indice Script SQL](SQL-SCRIPTS-INDEX.md)** - Elenco completo script disponibili
+- 🚀 **[Quick Reference SQL](SQL-SCRIPTS-QUICK-REFERENCE.md)** - Esempi pratici e casi d'uso
+
+**Script Principali:**
   - `supabase-quick-check.sql` - Health check rapido (< 3 sec)
   - `supabase-diagnostics-complete.sql` - Diagnostica completa
   - `supabase-verify-config.sql` - Verifica configurazione
   - `supabase-verify-data-integrity.sql` - Controllo integrità dati
   - `supabase-verify-performance.sql` - Analisi performance
   - `supabase-monitor-activity.sql` - Monitoraggio attività
+  - `supabase-generate-reports.sql` - Generazione report CSV
 
 ### 📝 Changelog & Features
 - 📝 [**Changelog**](CHANGELOG_CURRENT.md) - Ultime modifiche

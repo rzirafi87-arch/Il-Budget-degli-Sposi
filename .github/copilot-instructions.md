@@ -42,6 +42,29 @@ Unauthenticated users see full demo UI with empty data. API routes return placeh
 
 3. **Run dev server**: `npm run dev` (Node.js >=18.17.0 required)
 
+### Codex/Copilot Workflow (Automatic Sync)
+When working from Codex/Copilot Chat:
+1. **Modify SQL files** directly (e.g., `supabase-*.sql`)
+2. **Run VS Code Task**: `Ctrl+Shift+P` → `Tasks: Run Task` → `🤖 Codex: Sync Current SQL to Cloud`
+3. **Automatic pipeline**:
+   - Executes SQL on Supabase Cloud
+   - Git commit + push to GitHub
+   - Triggers Vercel deploy
+4. **Available tasks**:
+   - `🤖 Codex: Sync Current SQL to Cloud` - Sync active file
+   - `🤖 Codex: Quick Health Check + Sync` - Run health check + sync
+   - `🤖 Codex: Full Diagnostics + Sync` - Full diagnostics + sync
+   - `🚀 Codex: Full Pipeline` - Complete deployment pipeline
+
+**CLI shortcuts**:
+```bash
+npm run codex:sync <file.sql>    # Sync specific file
+npm run codex:check              # Quick health check + sync
+npm run codex:diagnostics        # Full diagnostics + sync
+```
+
+See [CODEX-WORKFLOW-GUIDE.md](../CODEX-WORKFLOW-GUIDE.md) for complete guide.
+
 ### Key Commands
 - Build: `npm run build`
 - Lint: `npm run lint` (ESLint v9, config in `eslint.config.mjs`)

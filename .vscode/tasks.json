@@ -201,6 +201,64 @@
 			],
 			"dependsOrder": "sequence",
 			"problemMatcher": []
+		},
+		{
+			"label": "🤖 Codex: Sync Current SQL to Cloud",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/codex-sync-db.mjs",
+				"${file}"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "🤖 Codex: Quick Health Check + Sync",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/codex-sync-db.mjs",
+				"supabase-quick-check.sql"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "🤖 Codex: Full Diagnostics + Sync",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/codex-sync-db.mjs",
+				"supabase-diagnostics-complete.sql"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "🚀 Codex: Full Pipeline (SQL + Commit + Push + Deploy)",
+			"dependsOn": [
+				"🤖 Codex: Sync Current SQL to Cloud"
+			],
+			"dependsOrder": "sequence",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			}
 		}
 	]
 }
