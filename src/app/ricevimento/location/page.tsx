@@ -448,7 +448,9 @@ export default function LocationRicevimentoPage() {
                       ? t("capacity.range", { min: location.capacity_min, max: location.capacity_max })
                       : location.capacity_min
                       ? t("capacity.from", { min: location.capacity_min })
-                      : t("capacity.upTo", { max: location.capacity_max })}
+                      : location.capacity_max
+                      ? t("capacity.upTo", { max: location.capacity_max })
+                      : ""}
                   </p>
                 )}
 
