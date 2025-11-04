@@ -31,16 +31,37 @@ async function executeSqlFile(client, filePath) {
   }
   const sql = fs.readFileSync(abs, 'utf8');
   const start = Date.now();
-  await client.query('BEGIN');
+  
+  // Check if it's a verification/read-only script (no need for transaction)
+  const isVerificationScript = /verify|check|diagnostics|monitor|report/i.test(path.basename(filePath));
+  
   try {
-    await client.query(sql);
-    await client.query('COMMIT');
-    const ms = Date.now() - start;
-    console.log(`✔ Executed ${path.basename(filePath)} in ${ms}ms`);
+    if (isVerificationScript) {
+      // Execute without transaction for verification scripts
+      const result = await client.query(sql);
+      const ms = Date.now() - start;
+      console.log(`✔ Executed ${path.basename(filePath)} in ${ms}ms`);
+      // Show NOTICE messages if any
+      if (result && result.rows && result.rows.length > 0) {
+        console.log('Results:', result.rows.length, 'rows');
+      }
+    } else {
+      // Use transaction for modification scripts
+      await client.query('BEGIN');
+      await client.query(sql);
+      await client.query('COMMIT');
+      const ms = Date.now() - start;
+      console.log(`✔ Executed ${path.basename(filePath)} in ${ms}ms`);
+    }
   } catch (err) {
-    await client.query('ROLLBACK');
+    if (!isVerificationScript) {
+      await client.query('ROLLBACK').catch(() => {});
+    }
     console.error(`✖ Failed executing ${path.basename(filePath)}:`);
     console.error(err.message);
+    if (err.stack) {
+      console.error('Stack:', err.stack.split('\n').slice(0, 3).join('\n'));
+    }
     throw err;
   }
 }
@@ -52,8 +73,13 @@ async function main() {
     process.exit(1);
   }
   let url = DB_URL;
+  
+  console.log('🔍 Starting SQL execution...');
+  console.log('📁 Files to execute:', args);
+  console.log('🔗 DB URL configured:', url ? 'Yes' : 'No');
+  
   if (!url) {
-    console.error('Missing SUPABASE_DB_URL (or DATABASE_URL) in .env.local');
+    console.error('❌ Missing SUPABASE_DB_URL (or DATABASE_URL) in .env.local');
     console.error('Get it from Supabase Dashboard → Project Settings → Database → Connection string');
     process.exit(1);
   }
@@ -112,16 +138,25 @@ async function main() {
     application_name: 'il-budget-degli-sposi-sql-runner',
   });
   try {
+    console.log('🔌 Connecting to database...');
     await client.connect();
+    console.log('✅ Connected!');
     for (const f of args) {
       await executeSqlFile(client, f);
     }
-    console.log('All done.');
+    console.log('✅ All done.');
+  } catch (err) {
+    console.error('❌ Fatal error:', err.message);
+    if (err.stack) {
+      console.error('Stack trace:', err.stack);
+    }
+    throw err;
   } finally {
     await client.end().catch(() => {});
   }
 }
 
-main().catch(() => {
+main().catch((err) => {
+  console.error('❌ Unhandled error in main():', err?.message || err);
   process.exitCode = 1;
 });
