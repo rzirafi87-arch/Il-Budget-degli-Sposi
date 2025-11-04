@@ -268,5 +268,146 @@
     "bar-mitzvah": "Bar Mitzvah",
     "quinceanera": "Quinceañera",
     "charity-gala": "Evento culturale/Charity/Gala"
+  },
+  "header": {
+    "today": "Oggi!",
+    "dayLeft": "Manca 1 giorno",
+    "daysLeft": "Mancano {count} giorni"
+  },
+  "home": {
+    "hero": {
+      "title1": "Organizza il tuo",
+      "title2Highlighted": "matrimonio",
+      "title3": "in modo semplice",
+      "title4": "e senza stress 💍",
+      "subtitleHtml": "L&apos;unica app che unisce <strong>budget, fornitori e serenità</strong><br />— senza pubblicità né caos.",
+      "ctaPrimary": "🎉 Inizia ora — È gratis",
+      "ctaSecondary": "👀 Guarda la demo",
+      "footnote": "✨ Non serve carta di credito • Crea il tuo evento in 2 minuti"
+    },
+    "usp": {
+      "title": "Tutto quello di cui hai bisogno",
+      "cards": {
+        "clarity": {
+          "title": "Chiarezza",
+          "description": "Ogni spesa è visibile. Ogni passo è guidato. Zero confusione, solo organizzazione."
+        },
+        "control": {
+          "title": "Controllo",
+          "description": "Budget, fornitori, invitati, timeline — tutto sotto controllo in un unico posto."
+        },
+        "inspiration": {
+          "title": "Ispirazione",
+          "description": "Design curato, interfaccia serena e suggerimenti utili per rendere tutto più bello."
+        }
+      }
+    },
+    "demo": {
+      "title": "Esplora le funzionalità 💕",
+      "subtitle": "Navigazione libera senza registrazione — aggiungi dati e sperimenta!",
+      "features": {
+        "budget": {
+          "title": "Budget intelligente",
+          "description": "Traccia spese previste e effettive, dividi tra sposa/sposo/comune",
+          "href": "/dashboard"
+        },
+        "timeline": {
+          "title": "Timeline automatica",
+          "description": "To-do cronologiche da 12 mesi prima fino al grande giorno",
+          "href": "/timeline"
+        },
+        "guests": {
+          "title": "Gestione invitati",
+          "description": "Lista completa, RSVP, assegnazione tavoli e conteggi",
+          "href": "/invitati"
+        },
+        "suppliers": {
+          "title": "Directory fornitori",
+          "description": "Trova location, fotografi, fioristi nella tua zona",
+          "href": "/fornitori"
+        },
+        "favorites": {
+          "title": "Preferiti e documenti",
+          "description": "Salva fornitori e organizza preventivi",
+          "href": "/preferiti"
+        },
+        "gifts": {
+          "title": "Lista nozze",
+          "description": "Gestisci i regali che desiderate ricevere",
+          "href": "/entrate"
+        }
+      }
+    },
+    "privacy": {
+      "title": "Privacy e serenità garantite",
+      "textHtml": "<strong>Zero pubblicità.</strong> Zero email spam.<br />I tuoi dati restano tuoi. Nessuna vendita a terzi.<br />Solo tu e il tuo matrimonio, senza distrazioni."
+    },
+    "finalCta": {
+      "title": "Pronto a iniziare? 🎊",
+      "subtitle": "Unisciti alle coppie che hanno organizzato il loro matrimonio con serenità.",
+      "button": "Crea il tuo evento ora"
+    },
+    "floatingMenu": "🏠 Menù Principale",
+    "dashboard": {
+      "title": "Il vostro grande giorno\ninizia qui",
+      "loading": "Caricamento...",
+      "countdown": {
+        "today": "È oggi! 🎉",
+        "day": "giorno al matrimonio",
+        "days": "giorni al matrimonio"
+      },
+      "fallback": {
+        "lead": "Organizza il tuo matrimonio in modo semplice e sereno.",
+        "sub": "Gestisci budget, fornitori, invitati e molto altro.",
+        "cta": "Inizia ora — È gratis",
+        "note": "Non serve carta di credito. Crea il tuo evento in 2 minuti."
+      },
+      "budget": {
+        "title": "💰 Budget",
+        "seeDetails": "Vedi dettagli",
+        "planned": "Previsto",
+        "spent": "Speso",
+        "progress": {
+          "low": "Ottimo inizio! Continua così 🌟",
+          "mid": "Stai andando alla grande! 💪",
+          "high": "Quasi tutto definito, bravissimi! 🎉",
+          "full": "Budget raggiunto! 🎊"
+        }
+      },
+      "quick": {
+        "timeline": {
+          "title": "Timeline",
+          "desc": "To-do cronologiche"
+        },
+        "budget": {
+          "title": "Budget",
+          "desc": "Gestisci tutte le spese"
+        },
+        "guests": {
+          "title": "Invitati",
+          "desc": "Lista e RSVP"
+        },
+        "suppliers": {
+          "title": "Fornitori",
+          "desc": "Trova i migliori servizi"
+        },
+        "favorites": {
+          "title": "Preferiti",
+          "desc": "I tuoi salvati"
+        },
+        "docs": {
+          "title": "Documenti",
+          "desc": "Preventivi e contratti"
+        }
+      },
+      "nextSteps": {
+        "title": "📝 Prossimi Passi Consigliati",
+        "defBudget": "Definisci il budget totale",
+        "chooseVenue": "Scegli la location del ricevimento",
+        "bookPhoto": "Prenota il fotografo",
+        "guestList": "Inizia la lista invitati",
+        "hint": "💡 Segui questi passi per una pianificazione serena e senza stress"
+      }
+    }
   }
 }
