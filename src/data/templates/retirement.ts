@@ -1,8 +1,9 @@
 export type RetirementCategory = { name: string; subs: string[] };
 
 // RETIREMENT PARTY (Festa di Pensionamento) – struttura completa con 10 categorie
-export function getRetirementTemplate(_country: string): RetirementCategory[] {
-  // Use parameter to satisfy no-unused-vars lint in strict mode
+export function getRetirementTemplate(country: string): RetirementCategory[] {
+  // Country parameter for future localization support
+  void country;
   return [
     {
       name: "Cerimonia o Momento Simbolico",

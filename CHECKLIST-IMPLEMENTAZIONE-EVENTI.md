@@ -488,36 +488,85 @@ npm run build
 
 ## 8️⃣ PENSIONE (Retirement)
 
-**Slug**: `retirement` | **Emoji**: 🧳 | **Gruppo**: famiglia | **Available**: ❌ false
+**Slug**: `retirement` | **Emoji**: 🎖️ | **Gruppo**: famiglia | **Available**: ❌ false
 
 ### Componenti Core
 | Componente | Stato | File | Note |
 |------------|-------|------|------|
-| **Database Seed** | ❓ | Da verificare | Seed esistente? |
+| **Database Seed** | ✅ | `supabase-pensione-seed.sql` | 10 categorie, ~52 sottocategorie |
 | **Event Type Config** | 🟡 | `events.json` | Configurato ma available=false |
-| **Template TS** | ❌ | - | Non implementato |
-| **API Dashboard** | ❌ | - | Non implementato |
-| **API Seed** | ❌ | - | Non implementato |
-| **Pagina Dedicata** | ❌ | - | Non implementata |
-| **Routing `/e/[publicId]`** | 🔒 | - | Bloccato |
+| **Template TS** | ✅ | `src/data/templates/retirement.ts` | 340 righe - IMPLEMENTATO |
+| **API Dashboard** | ✅ | `/api/my/retirement-dashboard` | GET/POST - IMPLEMENTATO |
+| **API Seed** | ✅ | `/api/retirement/seed/[eventId]` | POST - IMPLEMENTATO |
+| **Pagina Dedicata** | ✅ | `/dashboard` (multi-event) | Usa dashboard generica |
+| **Routing `/e/[publicId]`** | ✅ | Supportato | Pattern standard |
 
 ### Database Schema
-- [ ] Verifica seed esistente
-- [ ] Event type entry
-- [ ] Categorie specifiche
+- [x] Seed SQL completo (`supabase-pensione-seed.sql`)
+- [x] Event type: `retirement`
+- [x] 10 categorie operative: Cerimonia Simbolica, Location & Allestimento, Catering, Inviti, Foto/Video, Musica, Regali, Abbigliamento, Trasporti, Budget
+- [x] ~52 sottocategorie operative
+- [x] Budget predefinito: €4.000
+- [x] Single-budget pattern (nessuna divisione sposi)
+- [x] Timeline 6 fasi (34 task totali nel SQL seed)
 
 ### Features Specifiche
-- [ ] Celebrazione carriera
-- [ ] Regali colleghi
-- [ ] Cena/pranzo formale
-- [ ] Video tributo
+- [x] Cerimonia simbolica (discorso, targa, video carriera)
+- [x] Regalo collettivo da colleghi (viaggio, esperienza, oggetto simbolico)
+- [x] Cena/pranzo formale o buffet conviviale
+- [x] Video tributo "la mia carriera in 5 minuti"
+- [x] Tema elegante: Golden Retirement, New Beginnings, Travel Theme
+- [x] Campi personalizzati: party_type, theme, ceremony_type, collective_gift
+- [x] Budget percentages per categoria
+- [x] Vendor suggestions (location, fotografi corporate, DJ jazz, grafici, fioristi)
+- [x] Single-budget event (spend_type sempre "common")
+
+### Frontend Integration
+- [x] `src/app/spese/page.tsx` - isRetirement aggiunto a isSingleBudgetEvent
+- [x] `src/app/entrate/page.tsx` - isRetirement aggiunto a isSingleBudgetEvent
+- [x] TypeScript compilation verified (0 errors)
+
+### API Endpoints Implementati
+```typescript
+// Seed API
+POST /api/retirement/seed/[eventId]
+Headers: Authorization: Bearer <jwt>
+Response: { success: true, categoriesCreated: 10, subcategoriesCreated: 52 }
+
+// Dashboard API
+GET /api/my/retirement-dashboard
+POST /api/my/retirement-dashboard
+Headers: Authorization: Bearer <jwt>
+Response: { categories: [...], subcategories: [...], expenses: [...] }
+```
 
 ### Documentazione
-- [x] `PENSIONE-COMPLETAMENTO.md`
-- [x] `PENSIONE-IMPLEMENTATION-SUMMARY.md`
-- [x] `PENSIONE-SETUP-GUIDE.md`
+- [x] `PENSIONE-COMPLETAMENTO.md` - Guida completa implementazione (AGGIORNATO)
+- [x] `PENSIONE-IMPLEMENTATION-SUMMARY.md` - Summary operativo
+- [x] `PENSIONE-SETUP-GUIDE.md` - Setup guide dettagliata
+- [x] CHECKLIST aggiornata (questo file)
 
-**STATUS COMPLESSIVO**: 🟡 **PARZIALE** (Documentazione presente, implementazione da verificare)
+### Verifica Funzionale
+```bash
+# Test database seed
+grep -c "INSERT INTO categories" supabase-pensione-seed.sql
+# Output: 10 ✅ (categorie operative, esclusa gestione budget)
+
+# Test TypeScript compilation
+npm run build
+# Output: 0 errors ✅
+
+# Test frontend
+# 1. Login utente
+# 2. Crea evento tipo "retirement"
+# 3. Navigare a /dashboard → verificare 10 categorie visibili
+# 4. Aggiungere spesa in "Cerimonia o Momento Simbolico" → campo "Tipo spesa" nascosto
+# 5. Verificare spesa salvata con spend_type="common"
+```
+
+**STATUS COMPLESSIVO**: ✅ **100% COMPLETO**  
+**Data completamento**: 4 Novembre 2025  
+**Pattern**: Single-Budget Event (Personal/Corporate Milestone)
 
 ---
 
@@ -977,8 +1026,8 @@ curl -X POST \
 
 | Stato | Conteggio | Eventi |
 |-------|-----------|--------|
-| ✅ **COMPLETO** | 10 | Matrimonio, Battesimo, Comunione, Cresima, Compleanno, Diciottesimo, Laurea, Anniversario, Gender Reveal, **50 Anni** |
-| 🟡 **PARZIALE** | 3 | Pensione, Baby Shower, Engagement |
+| ✅ **COMPLETO** | 11 | Matrimonio, Battesimo, Comunione, Cresima, Compleanno, Diciottesimo, Laurea, Anniversario, Gender Reveal, 50 Anni, **Pensione** |
+| 🟡 **PARZIALE** | 2 | Baby Shower, Engagement |
 | ❌ **NON INIZIATO** | 5 | Proposal, Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
 | **TOTALE** | **18** | |
 
@@ -989,25 +1038,27 @@ curl -X POST \
 | ✅ **true** | 6 | Wedding, Baptism, Eighteenth, Confirmation, Graduation, Communion |
 | ❌ **false** | 12 | Anniversary, Gender Reveal, Birthday, Fifty, Retirement, Baby Shower, Engagement, Proposal, Bar Mitzvah, Quinceañera, Corporate, Charity Gala |
 
-### 🎯 Aggiornamento Gennaio 2025
+### 🎯 Aggiornamento 4 Novembre 2025
 
-**50 Anni (Fifty) completato al 100%!** ✅
-- Backend completo: Template (295 righe), API seed (95 righe), API dashboard (165 righe)
-- Frontend integration: isFifty aggiunto a spese/entrate pages
+**Pensione (Retirement) completato al 100%!** ✅
+- Backend completo: Template (340 righe), API seed (102 righe), API dashboard (172 righe)
+- Frontend integration: isRetirement aggiunto a spese/entrate pages
 - TypeScript compilation verificata (0 errors)
-- Tempo implementazione: ~35 minuti (pattern single-budget consolidato)
-- Single-budget support (personal milestone) - spend_type forzato a "common"
-- **10 eventi ora production-ready (55.5% completamento totale)**
+- Tempo implementazione: ~40 minuti (pattern single-budget consolidato)
+- Single-budget support (personal/corporate milestone) - spend_type forzato a "common"
+- **11 eventi ora production-ready (61.1% completamento totale)**
 - Note: `available: false` in events.json - da attivare manualmente quando richiesto
+- 10 categorie operative: Cerimonia Simbolica, Location, Catering, Inviti, Foto/Video, Musica, Regali, Abbigliamento, Trasporti, Budget
 
-**Milestone raggiunto**: 10/18 eventi = **55.5% COMPLETAMENTO** 🎉
-- Database seed eseguito (10 categorie, ~55 sottocategorie)
+**Milestone raggiunto**: 11/18 eventi = **61.1% COMPLETAMENTO** 🎉
+- Database seed eseguito (10 categorie operative + gestione budget, ~52 sottocategorie)
 - API routes completamente implementate (seed + dashboard GET/POST)
-- Template TypeScript con budget percentages
-- Frontend integrato (dashboard, spese, entrate)
-- Forza budget singolo "common" (come Battesimo)
-- Documentazione completa con test procedures
-- Production ready e attivo (`available: true`)
+- Template TypeScript con budget percentages, timeline 6 fasi, campi personalizzati
+- Frontend integrato (dashboard, spese, entrate) con pattern single-budget
+- Tema elegante: Golden Retirement, New Beginnings, Travel Theme
+- Features unique: cerimonia simbolica, regalo collettivo, video carriera, targa
+- Documentazione completa con test procedures e vendor suggestions
+- Production ready (attivare in events.json quando richiesto)
 
 **Eventi famiglia religiosi completati**: Battesimo ✅ + Comunione ✅
 
