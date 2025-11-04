@@ -3,9 +3,9 @@ import { Resend } from "resend";
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 // Mittente configurabile da env per evitare modifiche al codice tra ambienti
 // Esempi validi:
-//   Il Budget degli Sposi <onboarding@resend.dev>
-//   Il Budget degli Sposi <noreply@ilbudgetdeglisposi.it>
-const FROM = process.env.RESEND_FROM || "Il Budget degli Sposi <onboarding@resend.dev>";
+//   MYBUDGETEVENTO <onboarding@resend.dev>
+//   MYBUDGETEVENTO <noreply@mybudgetevento.it>
+const FROM = process.env.RESEND_FROM || "MYBUDGETEVENTO <onboarding@resend.dev>";
 
 function normLang(locale?: string) {
   const l = (locale || "it").toLowerCase();
@@ -52,7 +52,7 @@ function getEmailCopy(locale: string) {
           "Manage your profile and photos",
         ],
         dashboardCta: "Go to Dashboard",
-        thanksText: (baseUrl: string) => `Thanks for choosing Il Budget degli Sposi! <a href="${baseUrl}/contatti">Contact us</a> if you need any help.`,
+  thanksText: (baseUrl: string) => `Thanks for choosing MYBUDGETEVENTO! <a href="${baseUrl}/contatti">Contact us</a> if you need any help.`,
       },
     } as const;
   }
@@ -92,7 +92,7 @@ function getEmailCopy(locale: string) {
           "Gestiona tu perfil y fotos",
         ],
         dashboardCta: "Ir al Panel",
-        thanksText: (baseUrl: string) => `¡Gracias por elegir Il Budget degli Sposi! <a href="${baseUrl}/contatti">Contáctanos</a> si necesitas ayuda.`,
+  thanksText: (baseUrl: string) => `¡Gracias por elegir MYBUDGETEVENTO! <a href="${baseUrl}/contatti">Contáctanos</a> si necesitas ayuda.`,
       },
     } as const;
   }
@@ -132,7 +132,7 @@ function getEmailCopy(locale: string) {
           "Gérez votre profil et vos photos",
         ],
         dashboardCta: "Aller au tableau de bord",
-        thanksText: (baseUrl: string) => `Merci d'avoir choisi Il Budget degli Sposi ! <a href="${baseUrl}/contatti">Contactez-nous</a> si vous avez besoin d'aide.`,
+  thanksText: (baseUrl: string) => `Merci d'avoir choisi MYBUDGETEVENTO ! <a href="${baseUrl}/contatti">Contactez-nous</a> si vous avez besoin d'aide.`,
       },
     } as const;
   }
@@ -172,7 +172,7 @@ function getEmailCopy(locale: string) {
           "Verwalte dein Profil und deine Fotos",
         ],
         dashboardCta: "Zum Dashboard",
-        thanksText: (baseUrl: string) => `Danke, dass du Il Budget degli Sposi gewählt hast! <a href="${baseUrl}/contatti">Kontaktiere uns</a>, wenn du Hilfe benötigst.`,
+  thanksText: (baseUrl: string) => `Danke, dass du MYBUDGETEVENTO gewählt hast! <a href="${baseUrl}/contatti">Kontaktiere uns</a>, wenn du Hilfe benötigst.`,
       },
     } as const;
   }
@@ -212,7 +212,7 @@ function getEmailCopy(locale: string) {
         "Gestisci il tuo profilo e le foto",
       ],
       dashboardCta: "Vai alla Dashboard",
-      thanksText: (baseUrl: string) => `Grazie per aver scelto Il Budget degli Sposi! <a href="${baseUrl}/contatti">Contattaci</a> se hai bisogno di assistenza.`,
+  thanksText: (baseUrl: string) => `Grazie per aver scelto MYBUDGETEVENTO! <a href="${baseUrl}/contatti">Contattaci</a> se hai bisogno di assistenza.`,
     },
   } as const;
 }
@@ -281,7 +281,7 @@ export async function sendSubscriptionExpiryWarning(
             </div>
             <div class="footer">
               <p>
-                Il Budget degli Sposi<br>
+                MYBUDGETEVENTO<br>
                 <a href="${baseUrl}">ilbudgetdeglisposi.it</a>
               </p>
             </div>
@@ -368,7 +368,7 @@ export async function sendSubscriptionActivated(
             </div>
             <div class="footer">
               <p>
-                Il Budget degli Sposi<br>
+                MYBUDGETEVENTO<br>
                 <a href="${baseUrl}">ilbudgetdeglisposi.it</a>
               </p>
             </div>
@@ -460,7 +460,7 @@ export async function sendAppointmentReminder(
             </div>
             <div class="footer">
               <p>
-                Il Budget degli Sposi<br>
+                MYBUDGETEVENTO<br>
                 <a href="${baseUrl}">ilbudgetdeglisposi.it</a>
               </p>
             </div>

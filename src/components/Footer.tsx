@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import React, { useState } from "react";
 
 export default function Footer() {
   const t = useTranslations("footer");
@@ -80,7 +80,7 @@ export default function Footer() {
           {/* Column 1: About */}
           <div>
             <h4 className="font-serif text-lg sm:text-xl font-bold mb-3 sm:mb-4">
-              {t("aboutTitle", { default: "Il Budget degli Sposi" })}
+              {t("aboutTitle", { default: "MYBUDGETEVENTO" })}
             </h4>
             <p className="text-white/80 text-xs sm:text-sm mb-4">
               {t("aboutDesc", { default: "La piattaforma italiana per pianificare il budget del tuo matrimonio. Semplice, completa e gratuita." })}
@@ -141,7 +141,7 @@ export default function Footer() {
             <span>{t("free100", { default: "100% Gratuito" })}</span>
           </div>
           <div className="text-center text-xs sm:text-sm text-white/70">
-            <p>© {new Date().getFullYear()} Il Budget degli Sposi. {t("copyright", { default: "Tutti i diritti riservati." })}</p>
+            <p>© {new Date().getFullYear()} MYBUDGETEVENTO. {t("copyright", { default: "Tutti i diritti riservati." })}</p>
             <p className="mt-1 text-xs">{madeWithLove}</p>
           </div>
         </div>

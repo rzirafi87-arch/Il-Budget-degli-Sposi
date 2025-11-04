@@ -14,14 +14,14 @@ export default function TerminiServizioPage() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">1. Accettazione dei Termini</h2>
         <p>
-          Benvenuto su <strong>Il Budget degli Sposi</strong>. Utilizzando questa piattaforma, accetti 
+          Benvenuto su <strong>MYBUDGETEVENTO</strong>. Utilizzando questa piattaforma, accetti 
           integralmente i presenti Termini di Servizio. Se non accetti questi termini, ti invitiamo a 
           non utilizzare il servizio.
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">2. Descrizione del Servizio</h2>
         <p>
-          Il Budget degli Sposi è una piattaforma online gratuita che permette di:
+          MYBUDGETEVENTO è una piattaforma online gratuita che permette di:
         </p>
         <ul className="list-disc pl-6 space-y-2">
           <li>Pianificare e gestire il budget del proprio matrimonio</li>

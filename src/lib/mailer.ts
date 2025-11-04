@@ -33,7 +33,7 @@ export function siteUrl() {
 }
 
 export function magicLinkTemplate(link: string) {
-  const brand = process.env.NEXT_PUBLIC_APP_NAME || "Il Budget degli Sposi";
+  const brand = process.env.NEXT_PUBLIC_APP_NAME || "MYBUDGETEVENTO";
   return `
   <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; line-height:1.5; color:#111">
     <h2 style="margin:0 0 12px">Benvenuto/a su ${brand}</h2>

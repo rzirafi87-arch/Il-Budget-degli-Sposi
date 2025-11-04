@@ -7,7 +7,7 @@ export default function ChiSiamoPage() {
       
       <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border-2 border-gray-200">
         <div className="prose prose-lg max-w-none">
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">💍 Il Budget degli Sposi</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">🎉 MYBUDGETEVENTO</h3>
           <p className="text-gray-700 mb-4">
             Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale.
             Nata dall&apos;esperienza diretta di coppie che hanno vissuto le sfide dell&apos;organizzazione 

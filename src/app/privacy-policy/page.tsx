@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">1. Introduzione</h2>
         <p>
-          Benvenuto su <strong>Il Budget degli Sposi</strong>. La presente Privacy Policy descrive come raccogliamo, 
+          Benvenuto su <strong>MYBUDGETEVENTO</strong>. La presente Privacy Policy descrive come raccogliamo, 
           utilizziamo e proteggiamo i tuoi dati personali in conformità con il Regolamento Generale sulla Protezione 
           dei Dati (GDPR - Regolamento UE 2016/679).
         </p>
@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
         <h2 className="text-2xl font-semibold mt-8 mb-4">2. Titolare del Trattamento</h2>
         <p>
           Il Titolare del trattamento dei dati è:<br />
-          <strong>Il Budget degli Sposi</strong><br />
+          <strong>MYBUDGETEVENTO</strong><br />
           Email: privacy@ilbudgetdeglisposi.it<br />
           PEC: ilbudgetdeglisposi@pec.it
         </p>

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+export const runtime = "nodejs";
 
 // Initialize Stripe using the account's default API version to avoid mismatches
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
             currency: "eur",
             product_data: {
               name: `${packageData.name_it} - ${billing_period === "monthly" ? "Mensile" : "Annuale"}`,
-              description: `Abbonamento ${tier} per Il Budget degli Sposi`,
+              description: `Abbonamento ${tier} per MYBUDGETEVENTO`,
             },
             unit_amount: amountInCents,
           },

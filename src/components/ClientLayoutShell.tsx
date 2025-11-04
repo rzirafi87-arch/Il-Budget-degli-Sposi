@@ -177,7 +177,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                       ? "El Presupuesto de los Novios"
                       : locale === "en"
                       ? "Wedding Budget"
-                      : "Il Budget degli Sposi"}
+                      : "MYBUDGETEVENTO"}
                   </h1>
                   <div className="flex items-center gap-2 text-xs sm:text-sm">
                     <TopBarSelector />

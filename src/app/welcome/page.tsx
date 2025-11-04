@@ -180,7 +180,7 @@ export default function WelcomePage() {
       {/* Footer */}
       <footer className="bg-white/80 backdrop-blur-sm border-t border-gray-200 py-8">
         <div className="container mx-auto px-6 text-center text-sm text-gray-600">
-          <p>Il Budget degli Sposi © 2025 • Made with 💚 in Italia</p>
+          <p>MYBUDGETEVENTO © 2025 • Made with 💚 in Italia</p>
           <div className="mt-3 space-x-4">
             <Link href="/contatti" className="hover:text-[#A6B5A0] transition-colors">
               Contatti

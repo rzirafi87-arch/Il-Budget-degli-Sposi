@@ -5,7 +5,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  const siteName = "Il Budget degli Sposi";
+  const siteName = "MYBUDGETEVENTO";
   const title = "Organizza il tuo matrimonio con serenità";
 
   return new ImageResponse(

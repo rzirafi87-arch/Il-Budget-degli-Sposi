@@ -1,5 +1,5 @@
 {
-    "name": "il-budget-degli-sposi",
+    "name": "mybudgetevento",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -61,7 +61,7 @@
         "@testing-library/react": "^16.3.0",
         "@types/jest": "^30.0.0",
         "@types/node": "^20",
-        "@types/react": "^19",
+        "description": "Gestione budget eventi. MYBUDGETEVENTO: Next.js, Supabase, Tailwind, React.",
         "@types/react-dom": "^19",
         "eslint": "^9",
         "eslint-config-next": "16.0.0",

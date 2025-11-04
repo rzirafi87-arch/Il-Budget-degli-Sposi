@@ -30,7 +30,7 @@ export default async function Image() {
           }}
         >
           <div style={{ fontSize: 56, fontWeight: 800, color: "#2D2A26" }}>
-            Il Budget degli Sposi
+            MYBUDGETEVENTO
           </div>
           <div style={{ fontSize: 28, marginTop: 12, color: "#4A4A4A" }}>
             Organizza il tuo matrimonio senza stress

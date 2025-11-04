@@ -3,9 +3,11 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["iad1"],
+  "regions": [
+    "iad1"
+  ],
   "env": {
-    "NEXT_PUBLIC_APP_NAME": "Il Budget degli Sposi",
+    "NEXT_PUBLIC_APP_NAME": "MYBUDGETEVENTO",
     "NEXT_PUBLIC_ENVIRONMENT": "production"
   },
   "crons": [

@@ -10,7 +10,7 @@ export function JsonLd() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Il Budget degli Sposi",
+  "name": "MYBUDGETEVENTO",
     "description": "Strumenti gratuiti per organizzare il matrimonio: gestione budget, fornitori, location e chiese in tutta Italia",
     "url": SITE_URL,
     "applicationCategory": "LifestyleApplication",
@@ -27,7 +27,7 @@ export function JsonLd() {
     },
     "creator": {
       "@type": "Organization",
-      "name": "Il Budget degli Sposi",
+  "name": "MYBUDGETEVENTO",
       "url": SITE_URL
     },
     "featureList": [
@@ -67,7 +67,7 @@ export function LocalBusinessSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    "name": "Il Budget degli Sposi",
+  "name": "MYBUDGETEVENTO",
     "description": "Servizio gratuito di pianificazione matrimoni online",
     "url": SITE_URL,
     "areaServed": {
@@ -128,7 +128,7 @@ export function WebsiteSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Il Budget degli Sposi",
+  "name": "MYBUDGETEVENTO",
     "url": SITE_URL,
     "inLanguage": "it-IT",
     "potentialAction": {
@@ -157,7 +157,7 @@ export function OrganizationSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Il Budget degli Sposi",
+  "name": "MYBUDGETEVENTO",
     "url": SITE_URL,
     "logo": `${SITE_URL}/backgrounds/icon-512.png`,
     "sameAs": [
