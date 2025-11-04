@@ -5,6 +5,19 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+const DASHBOARD_EVENTS = new Set([
+  "wedding",
+  "baptism",
+  "eighteenth",
+  "graduation",
+  "confirmation",
+  "communion",
+  "anniversary",
+  "birthday",
+  "fifty",
+  "gender-reveal",
+]);
+
 export default function SelectEventTypePage() {
   const t = useTranslations();
   const router = useRouter();
@@ -41,22 +54,8 @@ export default function SelectEventTypePage() {
       if (lsCountry && !cookieCountry) document.cookie = `country=${lsCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
       if (cookieEventType || lsEventType) {
         if (!cookieEventType && lsEventType) document.cookie = `eventType=${lsEventType}; Path=/; Max-Age=15552000; SameSite=Lax`;
-        const ev = cookieEventType || lsEventType;
-        router.replace(
-          ev === "wedding"
-            ? "/dashboard"
-            : ev === "baptism"
-            ? "/dashboard"
-            : ev === "eighteenth"
-            ? "/dashboard"
-            : ev === "graduation"
-            ? "/dashboard"
-            : ev === "confirmation"
-            ? "/dashboard"
-            : ev === "communion"
-            ? "/dashboard"
-            : "/coming-soon"
-        );
+        const ev = cookieEventType || lsEventType || "";
+        router.replace(DASHBOARD_EVENTS.has(ev) ? "/dashboard" : "/coming-soon");
       }
     } catch {
       // Ignore errors in SSR
@@ -87,15 +86,7 @@ export default function SelectEventTypePage() {
     setSelected(code);
 
     // Navigate
-    const destination =
-      code === "wedding" ||
-      code === "baptism" ||
-      code === "eighteenth" ||
-      code === "graduation" ||
-      code === "confirmation" ||
-      code === "communion"
-        ? "/dashboard"
-        : "/coming-soon";
+    const destination = DASHBOARD_EVENTS.has(code) ? "/dashboard" : "/coming-soon";
     router.push(destination);
   }
 

@@ -258,7 +258,7 @@ export default function FioraiPage() {
                     )}
                   </div>
                 </div>
-                <div className="text-right flex flex-col items-end gap-2 min-w-[80px]">
+                <div className="text-right flex flex-col items-end gap-2 min-w-20">
                   {p.priceRange && <div className="text-sm font-medium text-gray-700">{p.priceRange}</div>}
                   {p.rating && p.rating > 0 && <div className="text-xs text-yellow-600">⭐ {p.rating.toFixed(1)}</div>}
                   <button

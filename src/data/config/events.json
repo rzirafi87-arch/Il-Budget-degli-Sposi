@@ -25,28 +25,28 @@
     "label": "Anniversario di matrimonio",
     "emoji": "💞",
     "group": "famiglia",
-    "available": false
+    "available": true
   },
   {
     "slug": "gender-reveal",
     "label": "Gender Reveal",
     "emoji": "🍼",
     "group": "famiglia",
-    "available": false
+    "available": true
   },
   {
     "slug": "birthday",
     "label": "Compleanno",
     "emoji": "🎂",
     "group": "personale",
-    "available": false
+    "available": true
   },
   {
     "slug": "fifty",
     "label": "50 anni",
     "emoji": "🎉",
     "group": "personale",
-    "available": false
+    "available": true
   },
   {
     "slug": "retirement",
