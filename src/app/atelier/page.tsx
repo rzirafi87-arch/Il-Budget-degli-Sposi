@@ -95,7 +95,7 @@ export default function AtelierPage() {
     const jwt = sessionData.session?.access_token;
     
     if (!jwt) {
-      alert("Devi essere autenticato per aggiungere un atelier");
+      alert(t("messages.authRequired"));
       return;
     }
 
@@ -114,7 +114,7 @@ export default function AtelierPage() {
       });
 
       if (res.ok) {
-        alert("Atelier aggiunto con successo!");
+        alert(t("messages.addSuccess"));
         setShowAddForm(false);
         setFormData({
           name: "",
@@ -134,11 +134,11 @@ export default function AtelierPage() {
         loadAtelier();
       } else {
         const error = await res.json();
-        alert(`Errore: ${error.error}`);
+        alert(t("messages.addError", { error: error.error || "" }));
       }
     } catch (e) {
       console.error(e);
-      alert("Errore durante il salvataggio");
+      alert(t("messages.addError", { error: "" }));
     }
   }
 
@@ -149,26 +149,25 @@ export default function AtelierPage() {
       {/* Breadcrumb */}
       <Breadcrumb
         items={[
-          { label: "🏠 Home", href: "/" },
-          { label: "Fornitori", href: "/fornitori" },
-          { label: "Atelier" },
+          { label: t("breadcrumb.home"), href: "/" },
+          { label: t("breadcrumb.suppliers"), href: "/fornitori" },
+          { label: t("breadcrumb.atelier") },
         ]}
       />
 
       {/* Header con bottone Torna a Fornitori */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h2 className="font-serif text-3xl mb-2">👗🤵 Atelier</h2>
+          <h2 className="font-serif text-3xl mb-2">{t("title")}</h2>
           <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-            Scopri gli atelier più prestigiosi per l&apos;abito da sposa e da sposo. 
-            Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.
+            {t("description")}
           </p>
         </div>
         <Link
           href="/fornitori"
           className="ml-4 px-4 py-2 bg-white border-2 border-[#A3B59D] text-[#A3B59D] rounded-lg hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold text-sm whitespace-nowrap"
         >
-          ← Tutti i Fornitori
+          {t("buttons.backToSuppliers")}
         </Link>
       </div>
 
@@ -188,7 +187,7 @@ export default function AtelierPage() {
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
-          👰 Atelier Sposa
+          {t("tabs.bride")}
         </button>
         <button
           onClick={() => {
@@ -201,7 +200,7 @@ export default function AtelierPage() {
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
-          🤵 Atelier Sposo
+          {t("tabs.groom")}
         </button>
       </div>
 
@@ -209,13 +208,13 @@ export default function AtelierPage() {
       <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex-1 w-full sm:w-auto">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Filtra per Regione</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t("filters.region")}</label>
             <select
               className="border border-gray-300 rounded px-4 py-2 w-full sm:w-64"
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
             >
-              <option value="">Tutte le regioni</option>
+              <option value="">{t("filters.allRegions")}</option>
               {ITALIAN_REGIONS.map((r) => (
                 <option key={r} value={r}>{r}</option>
               ))}
@@ -225,7 +224,7 @@ export default function AtelierPage() {
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] transition-colors font-semibold whitespace-nowrap"
           >
-            {showAddForm ? "Annulla" : "+ Aggiungi Atelier"}
+            {showAddForm ? t("buttons.cancel") : t("buttons.add")}
           </button>
         </div>
       </div>
@@ -233,10 +232,10 @@ export default function AtelierPage() {
       {/* Form Aggiunta Atelier */}
       {showAddForm && (
         <div className="mb-6 bg-white rounded-lg shadow-lg p-6 border border-gray-200">
-          <h3 className="text-2xl font-bold mb-4">Aggiungi Nuovo Atelier</h3>
+          <h3 className="text-2xl font-bold mb-4">{t("form.title")}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Nome *</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.name")} *</label>
               <input
                 type="text"
                 required
@@ -247,27 +246,27 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Categoria *</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.category")} *</label>
               <select
                 required
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="sposa">Sposa</option>
-                <option value="sposo">Sposo</option>
+                <option value="sposa">{t("form.categories.bride")}</option>
+                <option value="sposo">{t("form.categories.groom")}</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Regione *</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.region")} *</label>
               <select
                 required
                 value={formData.region}
                 onChange={(e) => setFormData({ ...formData, region: e.target.value })}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="">Seleziona...</option>
+                <option value="">{t("form.select")}</option>
                 {ITALIAN_REGIONS.map((r) => (
                   <option key={r} value={r}>{r}</option>
                 ))}
@@ -275,7 +274,7 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Provincia</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.province")}</label>
               <input
                 type="text"
                 value={formData.province}
@@ -285,7 +284,7 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Città *</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.city")} *</label>
               <input
                 type="text"
                 required
@@ -296,7 +295,7 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Indirizzo</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.address")}</label>
               <input
                 type="text"
                 value={formData.address}
@@ -306,7 +305,7 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Telefono</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.phone")}</label>
               <input
                 type="tel"
                 value={formData.phone}
@@ -316,7 +315,7 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Email</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.email")}</label>
               <input
                 type="email"
                 value={formData.email}
@@ -326,7 +325,7 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Sito Web</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.website")}</label>
               <input
                 type="url"
                 value={formData.website}
@@ -337,48 +336,48 @@ export default function AtelierPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Fascia Prezzo</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.priceRange")}</label>
               <select
                 value={formData.price_range}
                 onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="€">€ (Economico)</option>
-                <option value="€€">€€ (Moderato)</option>
-                <option value="€€€">€€€ (Alto)</option>
-                <option value="€€€€">€€€€ (Lusso)</option>
+                <option value="€">{t("form.priceRanges.budget")}</option>
+                <option value="€€">{t("form.priceRanges.moderate")}</option>
+                <option value="€€€">{t("form.priceRanges.high")}</option>
+                <option value="€€€€">{t("form.priceRanges.luxury")}</option>
               </select>
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold mb-1">Descrizione</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.description")}</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full border rounded px-3 py-2 h-24"
-                placeholder="Breve descrizione dell'atelier..."
+                placeholder={t("form.placeholders.description")}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Stili (separati da virgola)</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.styles")}</label>
               <input
                 type="text"
                 value={formData.styles}
                 onChange={(e) => setFormData({ ...formData, styles: e.target.value })}
                 className="w-full border rounded px-3 py-2"
-                placeholder="Classico, Moderno, Romantico"
+                placeholder={t("form.placeholders.styles")}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Servizi (separati da virgola)</label>
+              <label className="block text-sm font-semibold mb-1">{t("form.fields.services")}</label>
               <input
                 type="text"
                 value={formData.services}
                 onChange={(e) => setFormData({ ...formData, services: e.target.value })}
                 className="w-full border rounded px-3 py-2"
-                placeholder="Sartoria, Noleggio, Accessori"
+                placeholder={t("form.placeholders.services")}
               />
             </div>
 
@@ -387,7 +386,7 @@ export default function AtelierPage() {
                 type="submit"
                 className="w-full bg-[#A3B59D] text-white py-3 px-6 rounded-lg hover:bg-[#8fa085] transition-colors font-semibold"
               >
-                Salva Atelier
+                {t("form.submit")}
               </button>
             </div>
           </form>
@@ -397,7 +396,7 @@ export default function AtelierPage() {
       {/* Loading State */}
       {loading && (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">Caricamento atelier...</p>
+          <p className="text-gray-500 text-lg">{t("loading")}</p>
         </div>
       )}
 
@@ -405,7 +404,10 @@ export default function AtelierPage() {
       {!loading && (
         <>
           <div className="mb-4 text-sm text-gray-600">
-            Trovati {currentAteliers.length} atelier{selectedRegion && ` in ${selectedRegion}`}
+            {t("results.count", { 
+              count: currentAteliers.length,
+              region: selectedRegion || ""
+            })}
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -419,7 +421,7 @@ export default function AtelierPage() {
                     <h3 className="text-xl font-bold text-gray-800">{atelierItem.name}</h3>
                     {atelierItem.verified && (
                       <span className="inline-block mt-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                        ✓ Verificato
+                        {t("labels.verified")}
                       </span>
                     )}
                   </div>
@@ -462,7 +464,7 @@ export default function AtelierPage() {
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline text-xs"
                       >
-                        Visita sito
+                        {t("labels.visitWebsite")}
                       </a>
                     </div>
                   )}
@@ -476,7 +478,7 @@ export default function AtelierPage() {
 
                 {atelierItem.price_range && (
                   <div className="mb-3">
-                    <span className="text-xs font-semibold text-gray-500">FASCIA PREZZO: </span>
+                    <span className="text-xs font-semibold text-gray-500">{t("labels.priceRange")}: </span>
                     <span className="text-sm font-bold text-gray-700">{atelierItem.price_range}</span>
                   </div>
                 )}
@@ -500,7 +502,7 @@ export default function AtelierPage() {
 
                 {atelierItem.services && atelierItem.services.length > 0 && (
                   <div className="mt-2 pt-2 border-t border-gray-100">
-                    <p className="text-xs text-gray-500 mb-1">Servizi:</p>
+                    <p className="text-xs text-gray-500 mb-1">{t("labels.services")}:</p>
                     <div className="flex flex-wrap gap-1">
                       {atelierItem.services.slice(0, 3).map((service, idx) => (
                         <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
@@ -519,21 +521,20 @@ export default function AtelierPage() {
       {!loading && currentAteliers.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">
-            Nessun atelier trovato{selectedRegion && ` in ${selectedRegion}`}. 
-            Prova a cambiare i filtri o torna presto per nuove aggiunte! ✨
+            {t("empty.message", { region: selectedRegion || "" })}
           </p>
         </div>
       )}
 
       {/* Info Footer */}
       <div className="mt-12 p-6 bg-linear-to-br from-pink-50 to-blue-50 rounded-xl border border-gray-200">
-        <h4 className="font-bold text-lg mb-2 text-gray-800">💡 Suggerimenti per la scelta</h4>
+        <h4 className="font-bold text-lg mb-2 text-gray-800">{t("tips.title")}</h4>
         <ul className="text-sm text-gray-700 space-y-1 leading-relaxed">
-          <li>• Prenota l&apos;appuntamento con almeno 8-12 mesi di anticipo</li>
-          <li>• Porta con te scarpe con il tacco che indosserai il giorno del matrimonio</li>
-          <li>• Considera almeno 2-3 prove per aggiustamenti e ritocchi</li>
-          <li>• Chiedi informazioni su tempi di consegna e modifiche incluse nel prezzo</li>
-          <li>• Per lo sposo, valuta sia acquisto che noleggio in base al budget</li>
+          <li>• {t("tips.tip1")}</li>
+          <li>• {t("tips.tip2")}</li>
+          <li>• {t("tips.tip3")}</li>
+          <li>• {t("tips.tip4")}</li>
+          <li>• {t("tips.tip5")}</li>
         </ul>
       </div>
     </section>

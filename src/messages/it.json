@@ -1207,5 +1207,88 @@
       "add": "Aggiungi",
       "remove": "Rimuovi"
     }
+  },
+  "suppliersAtelier": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Fornitori",
+      "atelier": "Atelier"
+    },
+    "title": "👗🤵 Atelier",
+    "description": "Scopri gli atelier più prestigiosi per l'abito da sposa e da sposo. Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.",
+    "buttons": {
+      "backToSuppliers": "← Tutti i Fornitori",
+      "add": "+ Aggiungi Atelier",
+      "cancel": "Annulla"
+    },
+    "tabs": {
+      "bride": "👰 Atelier Sposa",
+      "groom": "🤵 Atelier Sposo"
+    },
+    "filters": {
+      "region": "Filtra per Regione",
+      "allRegions": "Tutte le regioni"
+    },
+    "form": {
+      "title": "Aggiungi Nuovo Atelier",
+      "select": "Seleziona...",
+      "fields": {
+        "name": "Nome",
+        "category": "Categoria",
+        "region": "Regione",
+        "province": "Provincia",
+        "city": "Città",
+        "address": "Indirizzo",
+        "phone": "Telefono",
+        "email": "Email",
+        "website": "Sito Web",
+        "priceRange": "Fascia Prezzo",
+        "description": "Descrizione",
+        "styles": "Stili (separati da virgola)",
+        "services": "Servizi (separati da virgola)"
+      },
+      "categories": {
+        "bride": "Sposa",
+        "groom": "Sposo"
+      },
+      "priceRanges": {
+        "budget": "€ (Economico)",
+        "moderate": "€€ (Moderato)",
+        "high": "€€€ (Alto)",
+        "luxury": "€€€€ (Lusso)"
+      },
+      "placeholders": {
+        "description": "Breve descrizione dell'atelier...",
+        "styles": "Classico, Moderno, Romantico",
+        "services": "Sartoria, Noleggio, Accessori"
+      },
+      "submit": "Salva Atelier"
+    },
+    "loading": "Caricamento atelier...",
+    "results": {
+      "count": "Trovati {count} atelier{region, select, other { in {region}} }"
+    },
+    "labels": {
+      "verified": "✓ Verificato",
+      "visitWebsite": "Visita sito",
+      "priceRange": "FASCIA PREZZO",
+      "services": "Servizi"
+    },
+    "empty": {
+      "message": "Nessun atelier trovato{region, select, other { in {region}} }. Prova a cambiare i filtri o torna presto per nuove aggiunte! ✨"
+    },
+    "messages": {
+      "authRequired": "Devi essere autenticato per aggiungere un atelier",
+      "addSuccess": "Atelier aggiunto con successo!",
+      "addError": "Errore{error, select, other {: {error}} }"
+    },
+    "tips": {
+      "title": "💡 Suggerimenti per la scelta",
+      "tip1": "Prenota l'appuntamento con almeno 8-12 mesi di anticipo",
+      "tip2": "Porta con te scarpe con il tacco che indosserai il giorno del matrimonio",
+      "tip3": "Considera almeno 2-3 prove per aggiustamenti e ritocchi",
+      "tip4": "Chiedi informazioni su tempi di consegna e modifiche incluse nel prezzo",
+      "tip5": "Per lo sposo, valuta sia acquisto che noleggio in base al budget"
+    }
   }
 }

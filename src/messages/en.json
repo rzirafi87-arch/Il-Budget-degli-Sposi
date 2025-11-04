@@ -1204,5 +1204,88 @@
       "add": "Add",
       "remove": "Remove"
     }
+  },
+  "suppliersAtelier": {
+    "breadcrumb": {
+      "home": "🏠 Home",
+      "suppliers": "Suppliers",
+      "atelier": "Atelier"
+    },
+    "title": "👗🤵 Atelier",
+    "description": "Discover the most prestigious ateliers for wedding dresses and suits. Find exclusive boutiques, international brands and artisan tailors for your perfect look.",
+    "buttons": {
+      "backToSuppliers": "← All Suppliers",
+      "add": "+ Add Atelier",
+      "cancel": "Cancel"
+    },
+    "tabs": {
+      "bride": "👰 Bridal Atelier",
+      "groom": "🤵 Groom Atelier"
+    },
+    "filters": {
+      "region": "Filter by Region",
+      "allRegions": "All regions"
+    },
+    "form": {
+      "title": "Add New Atelier",
+      "select": "Select...",
+      "fields": {
+        "name": "Name",
+        "category": "Category",
+        "region": "Region",
+        "province": "Province",
+        "city": "City",
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "website": "Website",
+        "priceRange": "Price Range",
+        "description": "Description",
+        "styles": "Styles (comma-separated)",
+        "services": "Services (comma-separated)"
+      },
+      "categories": {
+        "bride": "Bride",
+        "groom": "Groom"
+      },
+      "priceRanges": {
+        "budget": "€ (Budget)",
+        "moderate": "€€ (Moderate)",
+        "high": "€€€ (High)",
+        "luxury": "€€€€ (Luxury)"
+      },
+      "placeholders": {
+        "description": "Brief atelier description...",
+        "styles": "Classic, Modern, Romantic",
+        "services": "Tailoring, Rental, Accessories"
+      },
+      "submit": "Save Atelier"
+    },
+    "loading": "Loading ateliers...",
+    "results": {
+      "count": "Found {count} atelier{count, plural, one {} other {s}}{region, select, other { in {region}} }"
+    },
+    "labels": {
+      "verified": "✓ Verified",
+      "visitWebsite": "Visit website",
+      "priceRange": "PRICE RANGE",
+      "services": "Services"
+    },
+    "empty": {
+      "message": "No ateliers found{region, select, other { in {region}} }. Try changing filters or check back soon for new additions! ✨"
+    },
+    "messages": {
+      "authRequired": "You must be authenticated to add an atelier",
+      "addSuccess": "Atelier added successfully!",
+      "addError": "Error{error, select, other {: {error}} }"
+    },
+    "tips": {
+      "title": "💡 Tips for choosing",
+      "tip1": "Book your appointment at least 8-12 months in advance",
+      "tip2": "Bring the heels you'll wear on your wedding day",
+      "tip3": "Allow for at least 2-3 fittings for adjustments and alterations",
+      "tip4": "Ask about delivery times and alterations included in the price",
+      "tip5": "For the groom, consider both purchase and rental based on your budget"
+    }
   }
 }
