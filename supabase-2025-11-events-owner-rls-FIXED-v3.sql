@@ -63,6 +63,7 @@ BEGIN
   -- Incomes (se esiste)
   IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'incomes') THEN
     DROP POLICY IF EXISTS "inc_owner_all" ON public.incomes;
+    DROP POLICY IF EXISTS "incomes_owner_all" ON public.incomes;
     DROP POLICY IF EXISTS "incomes_select_own" ON public.incomes;
     DROP POLICY IF EXISTS "incomes_insert_self" ON public.incomes;
     DROP POLICY IF EXISTS "incomes_update_own" ON public.incomes;
