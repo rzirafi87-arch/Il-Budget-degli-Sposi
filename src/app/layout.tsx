@@ -87,7 +87,11 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | MYBUDGETEVENTO",
     },
     description: L.description,
-  keywords: [...L.keywords],
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: "#3f7055" },
+      { media: "(prefers-color-scheme: dark)", color: "#1b1a19" },
+    ],
+    keywords: [...L.keywords],
     authors: [{ name: "MYBUDGETEVENTO" }],
     creator: "MYBUDGETEVENTO",
     publisher: "MYBUDGETEVENTO",
@@ -140,7 +144,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#A6B5A0",
+  themeColor: "#3f7055",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -170,14 +174,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <OrganizationSchema />
         {/* PWA manifest */}
         <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="theme-color" content="#A3B59D" />
+        <meta name="theme-color" content="#3f7055" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         {/* Preconnects */}
         {supabaseOrigin ? (
           <link rel="preconnect" href={supabaseOrigin} crossOrigin="" />
         ) : null}
-        {/* PWA icons for iOS/Android */}
+        {/* PWA icons per iOS/Android */}
         <link rel="icon" type="image/png" sizes="192x192" href="/backgrounds/icon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/backgrounds/icon-512.png" />
         <link rel="apple-touch-icon" href="/backgrounds/icon-192.png" />
@@ -185,13 +189,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         ) : null}
         {/* Service Worker registration */}
-        <script dangerouslySetInnerHTML={{
-          __html: `if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-              navigator.serviceWorker.register('/service-worker.js');
-            });
-          }`
-        }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js');
+              });
+            }`,
+          }}
+        />
       </head>
       <body className="min-h-screen antialiased" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
         <ClientLayoutShell>{children}</ClientLayoutShell>

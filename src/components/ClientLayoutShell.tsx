@@ -85,7 +85,11 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
 
   type Locale = "it" | "es" | "en" | "ru" | "fr" | "de" | "zh" | "ja" | "ar" | "pt" | "id";
   const [locale, setLocale] = useState<Locale>("it");
+<<<<<<< ours
   const [messages, setMessages] = useState<Messages | null>(null);
+=======
+  const [messages, setMessages] = useState<any | null>(null);
+>>>>>>> theirs
 
   useEffect(() => {
     const lang = (typeof window !== "undefined" ? localStorage.getItem("language") : null) as Locale | null;

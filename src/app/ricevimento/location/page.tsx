@@ -165,18 +165,30 @@ export default function LocationRicevimentoPage() {
         <ImageCarousel images={getPageImages("location", country)} height="280px" />
         
         <div className="flex justify-between items-center mb-8">
+<<<<<<< ours
           <h1 className="text-4xl font-bold text-gray-800">{t("title")}</h1>
+=======
+          <h1 className="text-4xl font-bold text-gray-800">Location Ricevimento</h1>
+>>>>>>> theirs
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] transition-colors font-semibold"
           >
+<<<<<<< ours
             {showAddForm ? t("buttons.cancel") : t("buttons.add")}
+=======
+            {showAddForm ? "Annulla" : "+ Aggiungi Location Ricevimento"}
+>>>>>>> theirs
           </button>
         </div>
 
         {showAddForm && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+<<<<<<< ours
             <h2 className="text-2xl font-bold mb-4">{t("form.title")}</h2>
+=======
+            <h2 className="text-2xl font-bold mb-4">Aggiungi Nuova Location Ricevimento</h2>
+>>>>>>> theirs
             <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-1">{t("form.fields.name")} *</label>
@@ -344,7 +356,11 @@ export default function LocationRicevimentoPage() {
                   type="submit"
                   className="w-full bg-[#A3B59D] text-white py-3 rounded-lg hover:bg-[#8fa085] font-semibold"
                 >
+<<<<<<< ours
                   {t("form.submit")}
+=======
+                  Aggiungi Location Ricevimento
+>>>>>>> theirs
                 </button>
               </div>
             </form>

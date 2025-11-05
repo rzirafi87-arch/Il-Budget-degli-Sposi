@@ -1,59 +1,105 @@
 @import "tailwindcss";
 
 :root {
-  /* Sfondo crema come richiesto (#FAF8F5) */
-  --background: #FAF8F5;
-  --foreground: #1f1a17; /* Grigio caldo molto scuro per contrasto mobile */
-  
-  /* Palette neutra e naturale */
-  --color-cream: #FAF8F5; /* Aggiornato */
-  --color-beige: #E8E0D6;
-  --color-sage: #8da182; /* Scurito per migliore contrasto mobile (era #A6B5A0) */
-  --color-sage-light: #A6B5A0; /* Versione originale per sfondi */
-  --color-rose: #EAD9D4;
-  --color-warm-gray: #4A4A4A;
+  color-scheme: light;
+  /* Palette principale aggiornata per massimizzare leggibilità su mobile e desktop */
+  --background: #f5f1eb;
+  --foreground: #1d160f;
 
-  /* Contrasto tipografico */
-  --text-primary: #1f1a17;
-  --text-secondary: #352f2a;
-  --text-muted: #4d443c;
-  --text-soft: #6a5f55;
-  
-  /* Ombre soft */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.16);
-  
+  --surface-primary: #ffffff;
+  --surface-elevated: #fdf7f0;
+  --surface-muted: #f2e8de;
+  --surface-highlight: #f9efe4;
+
+  --border-soft: #d9cbbc;
+  --border-strong: #bfa891;
+
+  --accent-sage-700: #315d47;
+  --accent-sage-600: #3f7055;
+  --accent-sage-500: #4e8666;
+  --accent-sage-200: #cde2d5;
+  --accent-rose-500: #c87373;
+  --accent-amber-500: #d18a3c;
+
+  --status-positive: var(--accent-sage-600);
+  --status-warning: #d48c3c;
+  --status-critical: #b04a43;
+
+  --color-cream: #f8efe4;
+  --color-beige: #e4d2c1;
+  --color-sage: var(--accent-sage-600);
+  --color-sage-light: #8fb49b;
+  --color-rose: #dcb7b1;
+  --color-warm-gray: #463a32;
+
+  --text-primary: #22170f;
+  --text-secondary: #3a2a20;
+  --text-muted: #5a4638;
+  --text-soft: #766153;
+
+  --chart-neutral: #d9c8ba;
+
+  /* Ombre soft coerenti su tutte le piattaforme */
+  --shadow-sm: 0 2px 10px rgba(34, 23, 15, 0.06);
+  --shadow-md: 0 6px 18px rgba(34, 23, 15, 0.1);
+  --shadow-lg: 0 10px 28px rgba(34, 23, 15, 0.12);
+  --shadow-xl: 0 16px 36px rgba(34, 23, 15, 0.16);
+
   /* Border radius standard */
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 20px;
   --radius-xl: 24px;
   --radius-full: 9999px;
-  
+
   /* Tailwind token fallbacks */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  
+
   /* Safe area insets per iOS (notch, home indicator, status bar) */
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-top: max(env(safe-area-inset-top, 0px), 0px);
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
+  --safe-left: max(env(safe-area-inset-left, 0px), 0px);
+  --safe-right: max(env(safe-area-inset-right, 0px), 0px);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --text-primary: #f5f5f5;
-    --text-secondary: #e0ddd9;
-    --text-muted: #c8c3bb;
+    --background: #121110;
+    --foreground: #f1f0ed;
+    --surface-primary: #1b1a19;
+    --surface-elevated: #262421;
+    --surface-muted: #2d2a27;
+    --surface-highlight: #34312d;
+    --border-soft: #3f3b37;
+    --border-strong: #55514c;
+    --text-primary: #f0efec;
+    --text-secondary: #dfdcd6;
+    --text-muted: #bbb5ac;
+    --text-soft: #9b9386;
+    --color-sage: #5ba082;
+    --color-sage-light: #4b8f72;
+    --chart-neutral: #3d3a35;
+    --status-positive: #64b091;
+    --status-warning: #c17a2d;
+    --status-critical: #c26763;
   }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color: var(--text-primary);
+  height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -62,6 +108,19 @@ body {
   font-family: var(--font-sans);
   font-size: 16px; /* Minimo 16px per leggibilità mobile */
   line-height: 1.6;
+  margin: 0;
+  min-height: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main,
+section,
+article {
+  background: transparent;
 }
 
 p,
@@ -73,27 +132,93 @@ small,
 label,
 .text-muted,
 .text-gray-500,
-.text-gray-600 {
+.text-slate-500,
+.text-gray-600,
+.text-slate-600 {
   color: var(--text-muted) !important;
 }
 
-.text-gray-700 {
+.text-gray-700,
+.text-slate-700 {
   color: var(--text-secondary) !important;
+}
+
+.text-gray-800,
+.text-gray-900,
+.text-slate-900,
+.text-slate-800 {
+  color: var(--text-primary) !important;
 }
 
 a {
   color: inherit;
+  text-decoration-color: rgba(79, 134, 102, 0.4);
+  text-underline-offset: 4px;
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--color-sage);
+  text-decoration-color: currentColor;
+}
+
+/* Rimappatura utilità Tailwind sui nuovi toni per mantenere compatibilità */
+.bg-white {
+  background-color: var(--surface-primary) !important;
+}
+
+.bg-white\/70 {
+  background-color: rgba(255, 250, 244, 0.7) !important;
+}
+
+.bg-white\/80 {
+  background-color: rgba(255, 250, 244, 0.8) !important;
+}
+
+.bg-gray-50,
+.bg-slate-50 {
+  background-color: var(--surface-muted) !important;
+}
+
+.bg-gray-100,
+.bg-slate-100 {
+  background-color: var(--surface-highlight) !important;
+}
+
+.border-gray-200,
+.border-slate-200 {
+  border-color: var(--border-soft) !important;
+}
+
+.border-gray-300,
+.border-slate-300 {
+  border-color: var(--border-strong) !important;
+}
+
+.text-emerald-600,
+.text-emerald-500 {
+  color: var(--color-sage) !important;
+}
+
+.bg-emerald-100 {
+  background-color: var(--accent-sage-200) !important;
+}
+
+.focus-ring-sage:focus-visible {
+  outline: 3px solid rgba(78, 134, 102, 0.35);
+  outline-offset: 3px;
 }
 
 @media (max-width: 768px) {
   :root {
-    --text-primary: #191411;
-    --text-secondary: #2c2621;
-    --text-muted: #3f3732;
+    --text-primary: #1a120b;
+    --text-secondary: #342317;
+    --text-muted: #4b392c;
   }
 
+  html,
   body {
-    color: var(--text-primary);
+    overflow-x: hidden;
   }
 
   p,
@@ -101,6 +226,17 @@ a {
   small,
   label {
     color: var(--text-secondary);
+  }
+}
+
+@media (pointer: coarse) {
+  html,
+  body {
+    overscroll-behavior-x: none;
+  }
+
+  body {
+    touch-action: pan-y;
   }
 }
 
@@ -163,17 +299,17 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-lg);
 }
 
-/* Pulsante primario unificato - stile verde salvia */
+/* Pulsanti con palette aggiornata */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-sage) 0%, #8a9d84 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%);
+  color: #ffffff;
   padding: 14px 32px;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: 16px;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.2s ease;
   box-shadow: var(--shadow-md);
   display: inline-flex;
   align-items: center;
@@ -181,8 +317,9 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #8a9d84 0%, #7a8d74 100%);
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  filter: brightness(1.03);
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
@@ -194,15 +331,15 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Pulsante secondario */
 .btn-secondary {
-  background: white;
+  background: var(--surface-primary);
   color: var(--color-sage);
   padding: 14px 32px;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: 16px;
-  border: 2px solid var(--color-sage);
+  border: 2px solid var(--accent-sage-500);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
   box-shadow: var(--shadow-sm);
   display: inline-flex;
   align-items: center;
@@ -210,9 +347,10 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
 }
 
-.btn-secondary:hover {
-  background: var(--color-sage);
-  color: white;
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  background: var(--accent-sage-600);
+  color: #ffffff;
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
@@ -224,17 +362,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Card standard con ombre soft */
 .card {
-  background: white;
+  background: var(--surface-primary);
   border-radius: var(--radius-lg);
   padding: 20px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  border: 1px solid var(--border-soft);
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
+  background: var(--surface-elevated);
 }
 
 /* Animazioni fade-in */
@@ -460,43 +599,43 @@ h1, h2, h3, h4, h5, h6 {
   padding-right: var(--safe-right);
 }
 
-/* Ultra-minimal wedding-themed backgrounds - leggermente più visibili */
+/* Ultra-minimal wedding-themed backgrounds aggiornati alla nuova palette */
 .bg-wedding-rose {
-  background: linear-gradient(180deg, #fff5f7 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #fdebee 0%, #fff7f5 45%, #ffffff 100%);
 }
 
 .bg-wedding-rose-floral {
-  background: linear-gradient(180deg, #fff0f5 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #f8dfe5 0%, #fff3f5 50%, #ffffff 100%);
 }
 
 .bg-wedding-sage {
-  background: linear-gradient(180deg, #f5f9f5 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #eef4ef 0%, #f7fbf6 45%, #ffffff 100%);
 }
 
 .bg-wedding-sage-dots {
-  background: linear-gradient(180deg, #f0f7f0 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #e6f1ea 0%, #f3f9f2 50%, #ffffff 100%);
 }
 
 .bg-wedding-champagne {
-  background: linear-gradient(180deg, #faf8f5 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #f7ede1 0%, #fcf4ea 45%, #ffffff 100%);
 }
 
 .bg-wedding-champagne-ornament {
-  background: linear-gradient(180deg, #f7f5f0 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #f3e3d2 0%, #fbeee2 55%, #ffffff 100%);
 }
 
 .bg-wedding-paper {
-  background: linear-gradient(180deg, #f5f5f0 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #f2e6da 0%, #fbf4ec 55%, #ffffff 100%);
 }
 
 .bg-wedding-lavender {
-  background: linear-gradient(180deg, #f7f5fa 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #f0e8f6 0%, #f8f1fb 55%, #ffffff 100%);
 }
 
 .bg-wedding-peach {
-  background: linear-gradient(180deg, #fff5f0 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #fee8dc 0%, #fff1e8 55%, #ffffff 100%);
 }
 
 .bg-wedding-mint {
-  background: linear-gradient(180deg, #f0f9f5 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #e9f5ef 0%, #f2fbf5 55%, #ffffff 100%);
 }

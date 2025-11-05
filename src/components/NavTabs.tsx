@@ -118,12 +118,21 @@ export default function NavTabs() {
               aria-label={tab.label}
               aria-current={active ? "page" : undefined}
               className={clsx(
-                "px-4 py-2 rounded-full border text-sm transition-colors font-medium flex items-center gap-2 relative",
-                active
-                  ? "text-white shadow-sm"
-                  : "bg-white/70 border-gray-200 hover:bg-gray-50 text-gray-700"
+                "px-4 py-2 rounded-full border text-sm transition-all font-semibold flex items-center gap-2 relative focus-ring-sage",
+                active ? "text-white shadow-soft" : "shadow-soft-sm"
               )}
-              style={active ? { background: "var(--color-sage)", borderColor: "transparent" } : {}}
+              style={
+                active
+                  ? {
+                      background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
+                      borderColor: "var(--accent-sage-600)",
+                    }
+                  : {
+                      background: "var(--surface-elevated)",
+                      borderColor: "var(--border-soft)",
+                      color: "var(--text-secondary)",
+                    }
+              }
               title={tab.label}
             >
               {tab.icon ? <span aria-hidden>{tab.icon}</span> : null}
@@ -142,8 +151,11 @@ export default function NavTabs() {
       <div className="md:hidden">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="w-full flex items-center justify-between px-4 py-4 text-white rounded-xl shadow-lg active:scale-95 transition-transform border border-gray-300"
-          style={{ background: "linear-gradient(135deg, var(--color-sage) 0%, #8a9d84 100%)" }}
+          className="w-full flex items-center justify-between px-4 py-4 text-white rounded-xl shadow-lg active:scale-95 transition-transform border focus-ring-sage"
+          style={{
+            background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
+            borderColor: "var(--accent-sage-600)",
+          }}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-nav"
         >
@@ -166,7 +178,11 @@ export default function NavTabs() {
         {mobileMenuOpen && (
           <>
             <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setMobileMenuOpen(false)} />
-            <div id="mobile-nav" className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-700 rounded-xl shadow-2xl z-50 max-h-[60vh] overflow-y-auto">
+            <div
+              id="mobile-nav"
+              className="absolute top-full left-0 right-0 mt-2 bg-white border-2 rounded-xl shadow-2xl z-50 max-h-[60vh] overflow-y-auto"
+              style={{ borderColor: "var(--border-strong)" }}
+            >
               {tabs.map((tab) => {
                 const active = pathname.startsWith(tab.href);
                 const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
@@ -178,10 +194,21 @@ export default function NavTabs() {
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMobileMenuOpen(false)}
                     className={clsx(
-                      "block px-5 py-4 text-base font-semibold border-b border-gray-200 last:border-b-0 transition-all active:scale-95",
-                      active ? "text-white" : "hover:bg-gray-50 active:bg-gray-100 text-gray-700"
+                      "block px-5 py-4 text-base font-semibold border-b last:border-b-0 transition-all active:scale-95 focus-ring-sage",
+                      active ? "text-white" : ""
                     )}
-                    style={active ? { background: "var(--color-sage)" } : {}}
+                    style={
+                      active
+                        ? {
+                            background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
+                            borderColor: "transparent",
+                          }
+                        : {
+                            background: "var(--surface-primary)",
+                            borderColor: "var(--border-soft)",
+                            color: "var(--text-secondary)",
+                          }
+                    }
                   >
                     <span className="flex items-center gap-3">
                       {tab.icon ? <span className="text-xl" aria-hidden>{tab.icon}</span> : null}

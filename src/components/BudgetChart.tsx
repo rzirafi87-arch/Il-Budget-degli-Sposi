@@ -18,9 +18,9 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
   
   // Colore in base allo stato
   const color = useMemo(() => {
-    if (percentage < 70) return "#A6B5A0"; // Verde salvia - tutto ok
-    if (percentage < 90) return "#f59e0b"; // Giallo - attenzione
-    return "#dc2626"; // Rosso - fuori budget
+    if (percentage < 70) return "var(--status-positive)"; // Verde salvia - tutto ok
+    if (percentage < 90) return "var(--status-warning)"; // Giallo - attenzione
+    return "var(--status-critical)"; // Rosso - fuori budget
   }, [percentage]);
 
   return (
@@ -29,14 +29,7 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
       <div className="relative w-48 h-48 mb-4">
         <svg viewBox="0 0 100 100" className="transform -rotate-90">
           {/* Cerchio sfondo */}
-          <circle
-            cx="50"
-            cy="50"
-            r="40"
-            fill="none"
-            stroke="#E8E0D6"
-            strokeWidth="20"
-          />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="var(--chart-neutral)" strokeWidth="20" />
           
           {/* Cerchio progresso */}
           <circle
@@ -63,25 +56,39 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
 
       {/* Legenda */}
       <div className="w-full space-y-2">
-        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+        <div
+          className="flex items-center justify-between p-3 bg-white rounded-lg border"
+          style={{ borderColor: "var(--border-soft)" }}
+        >
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
             <span className="text-sm font-medium text-gray-700">Speso</span>
           </div>
           <span className="text-sm font-bold text-gray-800">{formatCurrency(spentAmount)}</span>
         </div>
-        
-        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+
+        <div
+          className="flex items-center justify-between p-3 bg-white rounded-lg border"
+          style={{ borderColor: "var(--border-soft)" }}
+        >
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#E8E0D6]"></div>
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "var(--chart-neutral)" }}></div>
             <span className="text-sm font-medium text-gray-700">Restante</span>
           </div>
           <span className="text-sm font-bold text-gray-800">{formatCurrency(remaining)}</span>
         </div>
-        
-        <div className="flex items-center justify-between p-3 bg-gradient-to-r from-[#EAD9D4]/20 to-[#A6B5A0]/20 rounded-lg border-2 border-[#A6B5A0]">
+
+        <div
+          className="flex items-center justify-between p-3 rounded-lg border-2"
+          style={{
+            background: "linear-gradient(135deg, rgba(200, 115, 115, 0.12) 0%, rgba(78, 134, 102, 0.16) 100%)",
+            borderColor: "var(--accent-sage-500)",
+          }}
+        >
           <span className="text-sm font-bold text-gray-800">Budget Totale</span>
-          <span className="text-lg font-bold text-[#A6B5A0]">{formatCurrency(totalBudget)}</span>
+          <span className="text-lg font-bold" style={{ color: "var(--color-sage)" }}>
+            {formatCurrency(totalBudget)}
+          </span>
         </div>
       </div>
 

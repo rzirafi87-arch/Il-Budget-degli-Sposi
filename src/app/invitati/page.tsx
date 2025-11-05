@@ -300,7 +300,7 @@ export default function InvitatiPage() {
   if (loading) {
     return (
       <section className="pt-6">
-        <h2 className="font-serif text-3xl mb-6">Invitati</h2>
+        <h2 className="font-serif text-3xl mb-6 text-gray-800">Invitati</h2>
         <p className="text-gray-500">Caricamento...</p>
       </section>
     );
@@ -308,32 +308,50 @@ export default function InvitatiPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2">Gestione Invitati</h2>
-      <p className="text-gray-900 mb-6 text-sm sm:text-base leading-relaxed font-semibold">
+      <h2 className="font-serif text-3xl mb-2 text-gray-800">Gestione Invitati</h2>
+      <p className="text-gray-700 mb-6 text-sm sm:text-base leading-relaxed font-semibold">
         Organizza la lista degli invitati, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli.
       </p>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-2 border-b border-gray-200">
+      <div className="mb-6 flex flex-wrap gap-2 border-b pb-1" style={{ borderColor: "var(--border-soft)" }}>
         <button
           onClick={() => setActiveTab("guests")}
-          className={`px-6 py-3 font-semibold transition-all ${
-            activeTab === "guests"
-              ? "text-white border-b-4 rounded-t-lg"
-              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-t-lg"
+          className={`px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
+            activeTab === "guests" ? "text-white shadow-soft" : "shadow-soft-sm"
           }`}
-          style={activeTab === "guests" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
+          style={
+            activeTab === "guests"
+              ? {
+                  background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
+                  borderColor: "var(--accent-sage-600)",
+                }
+              : {
+                  background: "var(--surface-elevated)",
+                  borderColor: "var(--border-soft)",
+                  color: "var(--text-secondary)",
+                }
+          }
         >
           {t("tabs.guests")}
         </button>
         <button
           onClick={() => setActiveTab("tables")}
-          className={`px-6 py-3 font-semibold transition-all ${
-            activeTab === "tables"
-              ? "text-white border-b-4 rounded-t-lg"
-              : "text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-t-lg"
+          className={`px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
+            activeTab === "tables" ? "text-white shadow-soft" : "shadow-soft-sm"
           }`}
-          style={activeTab === "tables" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
+          style={
+            activeTab === "tables"
+              ? {
+                  background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
+                  borderColor: "var(--accent-sage-600)",
+                }
+              : {
+                  background: "var(--surface-elevated)",
+                  borderColor: "var(--border-soft)",
+                  color: "var(--text-secondary)",
+                }
+          }
         >
           {t("tabs.tables")}
         </button>

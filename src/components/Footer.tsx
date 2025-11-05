@@ -118,8 +118,8 @@ export default function Footer() {
           <div>
             <h4 className="font-serif text-lg sm:text-xl font-bold mb-3 sm:mb-4">{t("suppliersTitle", { default: "Trova Fornitori" })}</h4>
             <ul className="space-y-2 text-sm text-white/90">
-              <li><Link href="/location" className="hover:text-white transition-colors">{t("locations", { default: "Location & Ville" })}</Link></li>
-              <li><Link href="/chiese" className="hover:text-white transition-colors">{t("churches", { default: "Chiese" })}</Link></li>
+              <li><Link href="/location" className="hover:text-white transition-colors">{t("locations", { default: "Location Ricevimento" })}</Link></li>
+              <li><Link href="/chiese" className="hover:text-white transition-colors">{t("churches", { default: "Location Cerimonia" })}</Link></li>
               <li><Link href="/fornitori" className="hover:text-white transition-colors">{t("allSuppliers", { default: "Tutti i Fornitori" })}</Link></li>
             </ul>
           </div>
