@@ -73,12 +73,12 @@
     "info": {
       "lead": "Registra e gestisci tutte le spese del matrimonio. Puoi inserire preventivi, confermarli come spese approvate, e tenere traccia degli stati di pagamento. Filtra per categoria, tipo di spesa (comune/sposa/sposo) e stato.",
       "title": "Gestione Completa delle Spese",
-      "description": "In questa pagina puoi registrare tutte le spese effettive e i preventivi. Ogni spesa puÃ² essere categorizzata, assegnata a sposa/sposo/comune, e tracciata con stato di approvazione e pagamento. Le spese confermate dalla dashboard appaiono qui automaticamente.",
+      "description": "In questa pagina puoi registrare tutte le spese effettive e i preventivi. Ogni spesa può essere categorizzata, assegnata a sposa/sposo/comune, e tracciata con stato di approvazione e pagamento. Le spese confermate dalla dashboard appaiono qui automaticamente.",
       "tips": {
         "tip1": "Usa lo stato 'Preventivo' per le offerte ricevute, poi cambiale in 'Approvato' quando confermi",
         "tip2": "Il campo 'Da preventivo' indica se la spesa proviene dalla dashboard (giÃ  budgetata)",
         "tip3": "Aggiungi sempre il fornitore per tenere traccia di chi ti ha fornito ogni servizio",
-        "tip4": "Filtra per categoria o tipo di spesa per analizzare dove stai spendendo di piÃ¹"
+        "tip4": "Filtra per categoria o tipo di spesa per analizzare dove stai spendendo di più"
       },
       "eventTypeSpecific": {
         "wedding": "Per il matrimonio, puoi dividere le spese tra sposa, sposo e comuni. Questo aiuta a capire il contributo di ciascuno e a gestire le finanze in modo trasparente.",
@@ -157,9 +157,9 @@
   },
   "incomesPage": {
     "info": {
-      "lead": "Traccia tutte le entrate che contribuiscono al budget del matrimonio: regali dei genitori, contributi familiari, risparmi personali o altre fonti. Specifica se l'entrata Ã¨ della sposa, dello sposo o comune.",
+      "lead": "Traccia tutte le entrate che contribuiscono al budget del matrimonio: regali dei genitori, contributi familiari, risparmi personali o altre fonti. Specifica se l'entrata è della sposa, dello sposo o comune.",
       "title": "Traccia Tutte le Entrate",
-      "description": "Qui puoi registrare tutte le fonti di denaro che contribuiscono al budget del tuo evento: contributi familiari, regali in busta, bonifici, risparmi personali. Ogni entrata puÃ² essere categorizzata per sapere chi la porta (sposa/sposo/comune) e da chi proviene.",
+      "description": "Qui puoi registrare tutte le fonti di denaro che contribuiscono al budget del tuo evento: contributi familiari, regali in busta, bonifici, risparmi personali. Ogni entrata può essere categorizzata per sapere chi la porta (sposa/sposo/comune) e da chi proviene.",
       "tips": {
         "tip1": "Usa 'Busta' per regali in contanti ricevuti durante l'evento",
         "tip2": "Usa 'Bonifico' per contributi ricevuti prima dell'evento",
@@ -167,7 +167,7 @@
         "tip4": "Il totale delle entrate ti aiuta a capire quanto budget effettivo hai a disposizione"
       },
       "eventTypeSpecific": {
-        "wedding": "Durante il matrimonio Ã¨ tradizione ricevere buste con contributi economici dagli invitati. Registra ogni busta ricevuta per tenere traccia completa.",
+        "wedding": "Durante il matrimonio è tradizione ricevere buste con contributi economici dagli invitati. Registra ogni busta ricevuta per tenere traccia completa.",
         "baptism": "Per il battesimo, registra i contributi di padrino, madrina e familiari che vogliono partecipare alle spese.",
         "birthday": "Per il compleanno, traccia i contributi di amici e parenti che vogliono aiutare nell'organizzazione.",
         "graduation": "Per la laurea, registra contributi familiari e regali ricevuti per celebrare il traguardo.",
@@ -282,17 +282,17 @@
       "title2Highlighted": "matrimonio",
       "title3": "in modo semplice",
       "title4": "e senza stress ðŸ’",
-      "subtitleHtml": "L&apos;unica app che unisce <strong>budget, fornitori e serenitÃ </strong><br />â€” senza pubblicitÃ  nÃ© caos.",
-      "ctaPrimary": "ðŸŽ‰ Inizia ora â€” Ãˆ gratis",
+      "subtitle": "L'unica app che unisce budget, fornitori e serenitÃ  â€” senza pubblicitÃ  né caos.",
+      "ctaPrimary": "🎉 Inizia ora â€” È gratis",
       "ctaSecondary": "ðŸ‘€ Guarda la demo",
-      "footnote": "âœ¨ Non serve carta di credito â€¢ Crea il tuo evento in 2 minuti"
+      "footnote": "✨ Non serve carta di credito • Crea il tuo evento in 2 minuti"
     },
     "usp": {
       "title": "Tutto quello di cui hai bisogno",
       "cards": {
         "clarity": {
           "title": "Chiarezza",
-          "description": "Ogni spesa Ã¨ visibile. Ogni passo Ã¨ guidato. Zero confusione, solo organizzazione."
+          "description": "Ogni spesa è visibile. Ogni passo è guidato. Zero confusione, solo organizzazione."
         },
         "control": {
           "title": "Controllo",
@@ -300,7 +300,7 @@
         },
         "inspiration": {
           "title": "Ispirazione",
-          "description": "Design curato, interfaccia serena e suggerimenti utili per rendere tutto piÃ¹ bello."
+          "description": "Design curato, interfaccia serena e suggerimenti utili per rendere tutto più bello."
         }
       }
     },
@@ -342,26 +342,26 @@
     },
     "privacy": {
       "title": "Privacy e serenitÃ  garantite",
-      "textHtml": "<strong>Zero pubblicitÃ .</strong> Zero email spam.<br />I tuoi dati restano tuoi. Nessuna vendita a terzi.<br />Solo tu e il tuo matrimonio, senza distrazioni."
+      "text": "Zero pubblicitÃ . Zero email spam. I tuoi dati restano tuoi. Nessuna vendita a terzi. Solo tu e il tuo matrimonio, senza distrazioni."
     },
     "finalCta": {
-      "title": "Pronto a iniziare? ðŸŽŠ",
+      "title": "Pronto a iniziare? 🎊",
       "subtitle": "Unisciti alle coppie che hanno organizzato il loro matrimonio con serenitÃ .",
       "button": "Crea il tuo evento ora"
     },
-    "floatingMenu": "ðŸ  MenÃ¹ Principale",
+    "floatingMenu": "ðŸ  Menù Principale",
     "dashboard": {
       "title": "Il vostro grande giorno\ninizia qui",
       "loading": "Caricamento...",
       "countdown": {
-        "today": "Ãˆ oggi! ðŸŽ‰",
+        "today": "È oggi! 🎉",
         "day": "giorno al matrimonio",
         "days": "giorni al matrimonio"
       },
       "fallback": {
         "lead": "Organizza il tuo matrimonio in modo semplice e sereno.",
         "sub": "Gestisci budget, fornitori, invitati e molto altro.",
-        "cta": "Inizia ora â€” Ãˆ gratis",
+        "cta": "Inizia ora â€” È gratis",
         "note": "Non serve carta di credito. Crea il tuo evento in 2 minuti."
       },
       "budget": {
@@ -370,10 +370,10 @@
         "planned": "Previsto",
         "spent": "Speso",
         "progress": {
-          "low": "Ottimo inizio! Continua cosÃ¬ ðŸŒŸ",
+          "low": "Ottimo inizio! Continua così ðŸŒŸ",
           "mid": "Stai andando alla grande! ðŸ’ª",
-          "high": "Quasi tutto definito, bravissimi! ðŸŽ‰",
-          "full": "Budget raggiunto! ðŸŽŠ"
+          "high": "Quasi tutto definito, bravissimi! 🎉",
+          "full": "Budget raggiunto! 🎊"
         }
       },
       "quick": {
@@ -441,7 +441,7 @@
         "graduation": "Data Laurea",
         "confirmation": "Data Cresima"
       },
-      "ctaIdea": "Compila l&apos;Idea di Budget"
+      "ctaIdea": "Compila l'Idea di Budget"
     }
   },
   "pageInfoNote": {
@@ -481,7 +481,7 @@
     },
     "tip": {
       "title": "ðŸ’¡ Suggerimento",
-      "body": "Per ogni categoria potrai cercare fornitori nella tua zona, filtrare per prezzo e servizi, confrontare preventivi e salvare i tuoi preferiti. Ogni fornitore puÃ² essere aggiunto direttamente alle spese del tuo budget."
+      "body": "Per ogni categoria potrai cercare fornitori nella tua zona, filtrare per prezzo e servizi, confrontare preventivi e salvare i tuoi preferiti. Ogni fornitore può essere aggiunto direttamente alle spese del tuo budget."
     },
     "categories": {
       "atelier": {
@@ -535,7 +535,7 @@
       },
       "3": {
         "title": "ðŸ“Š Gestisci le Categorie",
-        "desc": "Organizza le spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro. Tutto Ã¨ giÃ  pronto all'uso!"
+        "desc": "Organizza le spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro. Tutto è giÃ  pronto all'uso!"
       },
       "4": {
         "title": "ðŸ” Trova Fornitori",
@@ -551,20 +551,20 @@
       }
     },
     "cta": {
-      "title": "ðŸŽ‰ Pronto per Iniziare?",
+      "title": "🎉 Pronto per Iniziare?",
       "subtitle": "Inizia oggi stesso a pianificare il tuo matrimonio da sogno!",
       "button": "Registrati Gratis Ora"
     }
   },
   "about": {
     "title": "ðŸ‘°ðŸ¤µ Chi Siamo",
-    "intro": "Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale. Nata dall'esperienza diretta di coppie che hanno vissuto le sfide dell'organizzazione di un matrimonio, la nostra missione Ã¨ rendere questo processo piÃ¹ semplice, trasparente e piacevole.",
+    "intro": "Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale. Nata dall'esperienza diretta di coppie che hanno vissuto le sfide dell'organizzazione di un matrimonio, la nostra missione è rendere questo processo più semplice, trasparente e piacevole.",
     "mission": {
       "title": "La Nostra Missione",
       "body": "Aiutare le coppie italiane a pianificare il loro matrimonio da sogno senza stress finanziari. Offriamo strumenti gratuiti, intuitivi e completi per gestire ogni aspetto del budget matrimoniale."
     },
     "why": {
-      "title": "PerchÃ© Sceglierci",
+      "title": "Perché Sceglierci",
       "points": {
         "free": {
           "title": "100% Gratuito:",
@@ -584,7 +584,7 @@
         },
         "support": {
           "title": "Supporto Dedicato:",
-          "desc": "Il nostro team Ã¨ sempre disponibile ad aiutarti"
+          "desc": "Il nostro team è sempre disponibile ad aiutarti"
         }
       }
     },
@@ -705,7 +705,7 @@
       },
       "s7": {
         "title": "7. Aggiornamenti della Cookie Policy",
-        "p1": "Ci riserviamo il diritto di modificare questa Cookie Policy per adeguarla a normative o cambiamenti nei servizi. La data dell'ultimo aggiornamento Ã¨ indicata in alto. Ti invitiamo a consultare periodicamente questa pagina."
+        "p1": "Ci riserviamo il diritto di modificare questa Cookie Policy per adeguarla a normative o cambiamenti nei servizi. La data dell'ultimo aggiornamento è indicata in alto. Ti invitiamo a consultare periodicamente questa pagina."
       },
       "s8": {
         "title": "8. Cookie e GDPR",
@@ -713,7 +713,7 @@
         "items": {
           "i1": "I cookie tecnici non richiedono consenso",
           "i2": "I cookie di profilazione richiedono consenso preventivo e informato",
-          "i3": "Il consenso puÃ² essere revocato in qualsiasi momento",
+          "i3": "Il consenso può essere revocato in qualsiasi momento",
           "i4": "Forniamo informazioni chiare e complete sull'uso dei cookie"
         }
       },
@@ -745,7 +745,7 @@
       },
       "s2": {
         "title": "2. Titolare del Trattamento",
-        "lead": "Il Titolare del trattamento Ã¨:",
+        "lead": "Il Titolare del trattamento è:",
         "emailLabel": "Email:",
         "pecLabel": "PEC:"
       },
@@ -888,7 +888,7 @@
       },
       "s12": {
         "title": "12. Minori",
-        "p1": "Il servizio non Ã¨ destinato a minori di 16 anni. Non raccogliamo consapevolmente dati di minori. Se ritieni che un minore ci abbia fornito dati, contattaci per la rimozione."
+        "p1": "Il servizio non è destinato a minori di 16 anni. Non raccogliamo consapevolmente dati di minori. Se ritieni che un minore ci abbia fornito dati, contattaci per la rimozione."
       },
       "s13": {
         "title": "13. Modifiche a questa informativa",
@@ -917,7 +917,7 @@
       },
       "s2": {
         "title": "2. Descrizione del Servizio",
-        "p1": "MYBUDGETEVENTO Ã¨ una piattaforma online gratuita che permette di:",
+        "p1": "MYBUDGETEVENTO è una piattaforma online gratuita che permette di:",
         "items": {
           "i1": "Pianificare e gestire il budget del proprio matrimonio",
           "i2": "Tenere traccia di spese ed entrate",
@@ -952,7 +952,7 @@
         },
         "forbidden": {
           "title": "4.2 Usi Vietati",
-          "p1": "Ãˆ vietato:",
+          "p1": "È vietato:",
           "i1": "Utilizzare il servizio per scopi commerciali senza autorizzazione",
           "i2": "Copiare, modificare o distribuire contenuti protetti da copyright",
           "i3": "Tentare di accedere ad account altrui",
@@ -986,7 +986,7 @@
       },
       "s7": {
         "title": "7. GratuitÃ  del Servizio",
-        "p1": "Il servizio base Ã¨ completamente gratuito. Ci riserviamo il diritto di:",
+        "p1": "Il servizio base è completamente gratuito. Ci riserviamo il diritto di:",
         "items": {
           "i1": "Introdurre funzionalitÃ  premium a pagamento in futuro",
           "i2": "Mostrare pubblicitÃ  pertinente",
@@ -999,7 +999,7 @@
       },
       "s9": {
         "title": "9. Limitazioni di ResponsabilitÃ ",
-        "p1": "Il servizio Ã¨ fornito {quote} senza garanzie di alcun tipo. Non siamo responsabili per:",
+        "p1": "Il servizio è fornito {quote} senza garanzie di alcun tipo. Non siamo responsabili per:",
         "items": {
           "i1": "Perdita di dati dovuta a errori tecnici o forza maggiore",
           "i2": "Interruzioni del servizio",
@@ -1034,13 +1034,13 @@
       },
       "s12": {
         "title": "12. Legge Applicabile e Foro Competente",
-        "p1": "I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia, Ã¨ competente esclusivamente il Foro di Roma, Italia."
+        "p1": "I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia, è competente esclusivamente il Foro di Roma, Italia."
       },
       "s13": {
         "title": "13. Disposizioni Varie",
         "severability": {
           "title": "13.1 DivisibilitÃ ",
-          "p1": "Se una clausola Ã¨ dichiarata invalida, le restanti clausole rimangono valide ed efficaci."
+          "p1": "Se una clausola è dichiarata invalida, le restanti clausole rimangono valide ed efficaci."
         },
         "assignment": {
           "title": "13.2 Cessione",
@@ -1072,7 +1072,7 @@
       "eventDate": "Data evento",
       "currency": "Valuta",
       "contingency": "Imprevisti (%)",
-      "compact": "Vista compatta (righe piÃ¹ strette)",
+      "compact": "Vista compatta (righe più strette)",
       "syncedNote": "Sincronizzato con la dashboard principale."
     },
     "summary": {
@@ -1250,7 +1250,7 @@
       "atelier": "Atelier"
     },
     "title": "ðŸ‘—ðŸ¤µ Atelier",
-    "description": "Scopri gli atelier piÃ¹ prestigiosi per l'abito da sposa e da sposo. Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.",
+    "description": "Scopri gli atelier più prestigiosi per l'abito da sposa e da sposo. Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori",
       "add": "+ Aggiungi Atelier",
@@ -1310,7 +1310,7 @@
       "services": "Servizi"
     },
     "empty": {
-      "message": "Nessun atelier trovato{region, select, other { in {region}} }. Prova a cambiare i filtri o torna presto per nuove aggiunte! âœ¨"
+      "message": "Nessun atelier trovato{region, select, other { in {region}} }. Prova a cambiare i filtri o torna presto per nuove aggiunte! ✨"
     },
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere un atelier",
@@ -1377,7 +1377,7 @@
       "catering": "Catering"
     },
     "title": "ðŸ½ï¸ Catering & Banqueting",
-    "description": "Trova i migliori servizi di catering per il tuo matrimonio. MenÃ¹ personalizzati, buffet gourmet e servizio impeccabile.",
+    "description": "Trova i migliori servizi di catering per il tuo matrimonio. Menù personalizzati, buffet gourmet e servizio impeccabile.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
     },

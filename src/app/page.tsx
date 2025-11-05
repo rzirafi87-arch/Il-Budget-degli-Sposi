@@ -85,7 +85,9 @@ export default function Home() {
                 {t("hero.title3")}<br />
                 {t("hero.title4")}
               </h1>
-              <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto" dangerouslySetInnerHTML={{ __html: t("hero.subtitleHtml") }} />
+              <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto">
+                {t("hero.subtitle")}
+              </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
@@ -189,7 +191,9 @@ export default function Home() {
           <div className="max-w-3xl mx-auto bg-linear-to-br from-[#EAD9D4]/40 to-[#E8E0D6]/40 rounded-3xl p-12 text-center border-2 border-[#E8E0D6] shadow-xl">
             <div className="text-5xl mb-6">🔒</div>
             <h3 className="text-2xl font-bold text-gray-800 mb-4">{t("privacy.title")}</h3>
-            <p className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: t("privacy.textHtml") }} />
+            <p className="text-gray-700 text-lg leading-relaxed">
+              {t("privacy.text")}
+            </p>
           </div>
         </section>
 
