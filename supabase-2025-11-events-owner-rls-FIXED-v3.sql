@@ -88,6 +88,27 @@ BEGIN
     DROP POLICY IF EXISTS "timeline_delete_own" ON public.user_event_timeline;
     RAISE NOTICE 'Dropped policies on user_event_timeline';
   END IF;
+
+  -- Wedding Cards (se esiste)
+  IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'wedding_cards') THEN
+    DROP POLICY IF EXISTS "wedding_cards_owner_all" ON public.wedding_cards;
+    DROP POLICY IF EXISTS "wedding_cards_select_own" ON public.wedding_cards;
+    DROP POLICY IF EXISTS "wedding_cards_insert_self" ON public.wedding_cards;
+    DROP POLICY IF EXISTS "wedding_cards_update_own" ON public.wedding_cards;
+    DROP POLICY IF EXISTS "wedding_cards_delete_own" ON public.wedding_cards;
+    RAISE NOTICE 'Dropped policies on wedding_cards';
+  END IF;
+
+  -- Guests (se esiste)
+  IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'guests') THEN
+    DROP POLICY IF EXISTS "Users can view their own guests" ON public.guests;
+    DROP POLICY IF EXISTS "Users can manage their own guests" ON public.guests;
+    DROP POLICY IF EXISTS "guests_select_own" ON public.guests;
+    DROP POLICY IF EXISTS "guests_insert_self" ON public.guests;
+    DROP POLICY IF EXISTS "guests_update_own" ON public.guests;
+    DROP POLICY IF EXISTS "guests_delete_own" ON public.guests;
+    RAISE NOTICE 'Dropped policies on guests';
+  END IF;
 END$$;
 
 -- =====================================================================
@@ -405,6 +426,89 @@ BEGIN
     );
     
     RAISE NOTICE 'Recreated policies on user_event_timeline';
+  END IF;
+END$$;
+
+-- Wedding Cards (se esiste)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'wedding_cards') THEN
+    CREATE POLICY "wedding_cards_select_own"
+    ON public.wedding_cards FOR SELECT
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.events
+        WHERE events.id = wedding_cards.event_id
+          AND events.owner_id = auth.uid()
+      )
+    );
+
+    CREATE POLICY "wedding_cards_insert_self"
+    ON public.wedding_cards FOR INSERT
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM public.events
+        WHERE events.id = wedding_cards.event_id
+          AND events.owner_id = auth.uid()
+      )
+    );
+
+    CREATE POLICY "wedding_cards_update_own"
+    ON public.wedding_cards FOR UPDATE
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.events
+        WHERE events.id = wedding_cards.event_id
+          AND events.owner_id = auth.uid()
+      )
+    );
+
+    CREATE POLICY "wedding_cards_delete_own"
+    ON public.wedding_cards FOR DELETE
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.events
+        WHERE events.id = wedding_cards.event_id
+          AND events.owner_id = auth.uid()
+      )
+    );
+    
+    RAISE NOTICE 'Recreated policies on wedding_cards';
+  END IF;
+END$$;
+
+-- Guests (se esiste)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'guests') THEN
+    CREATE POLICY "Users can view their own guests"
+    ON public.guests FOR SELECT
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.events
+        WHERE events.id = guests.event_id
+          AND events.owner_id = auth.uid()
+      )
+    );
+
+    CREATE POLICY "Users can manage their own guests"
+    ON public.guests FOR ALL
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.events
+        WHERE events.id = guests.event_id
+          AND events.owner_id = auth.uid()
+      )
+    )
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM public.events
+        WHERE events.id = guests.event_id
+          AND events.owner_id = auth.uid()
+      )
+    );
+    
+    RAISE NOTICE 'Recreated policies on guests';
   END IF;
 END$$;
 
