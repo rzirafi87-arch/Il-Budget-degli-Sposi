@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 const provincesCache = new Map<string, string[]>();
 
 export function useRegionList() {
-  const [country, setCountry] = useState<string>(() => getUserCountrySafe());
+  const [country] = useState<string>(() => getUserCountrySafe());
   const regions = useMemo(() => (GEO[country]?.regions || GEO.it.regions).map(r => r.name), [country]);
   return { country, regions };
 }
