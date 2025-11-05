@@ -16,6 +16,8 @@ const DASHBOARD_EVENTS = new Set([
   "birthday",
   "fifty",
   "gender-reveal",
+  "retirement", // Added for testing - evento Pensione
+  "babyshower", // Added for testing - evento Baby Shower
 ]);
 
 export default function SelectEventTypePage() {
