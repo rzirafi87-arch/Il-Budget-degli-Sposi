@@ -1108,649 +1108,649 @@
     }
   },
   "suppliersLocations": {
-  "title": "Ricevimento Â· Location",
-  "buttons": {
-    "add": "+ Aggiungi Location",
-    "cancel": "Annulla"
-  },
-  "form": {
-    "title": "Aggiungi Nuova Location",
-    "select": "Seleziona...",
-    "fields": {
-      "name": "Nome",
-      "type": "Tipo Location",
-      "city": "CittÃ ",
-      "address": "Indirizzo",
-      "phone": "Telefono",
-      "email": "Email",
-      "website": "Sito Web",
-      "priceRange": "Fascia di Prezzo",
-      "capacityMin": "CapacitÃ  Minima (persone)",
-      "capacityMax": "CapacitÃ  Massima (persone)",
-      "description": "Descrizione"
+    "title": "Ricevimento Â· Location",
+    "buttons": {
+      "add": "+ Aggiungi Location",
+      "cancel": "Annulla"
     },
-    "placeholders": {
-      "province": "es. Roma, Milano, Napoli",
-      "priceRange": "es. â‚¬â‚¬â‚¬, 50-100â‚¬ a persona",
-      "description": "Descrivi la location, i servizi offerti, particolaritÃ ..."
+    "form": {
+      "title": "Aggiungi Nuova Location",
+      "select": "Seleziona...",
+      "fields": {
+        "name": "Nome",
+        "type": "Tipo Location",
+        "city": "CittÃ ",
+        "address": "Indirizzo",
+        "phone": "Telefono",
+        "email": "Email",
+        "website": "Sito Web",
+        "priceRange": "Fascia di Prezzo",
+        "capacityMin": "CapacitÃ  Minima (persone)",
+        "capacityMax": "CapacitÃ  Massima (persone)",
+        "description": "Descrizione"
+      },
+      "placeholders": {
+        "province": "es. Roma, Milano, Napoli",
+        "priceRange": "es. â‚¬â‚¬â‚¬, 50-100â‚¬ a persona",
+        "description": "Descrivi la location, i servizi offerti, particolaritÃ ..."
+      },
+      "submit": "Aggiungi Location"
     },
-    "submit": "Aggiungi Location"
+    "filters": {
+      "title": "Filtri",
+      "typeLabel": "Tipo Location",
+      "allRegion": "Tutte",
+      "allProvince": "Tutte",
+      "allTypes": "Tutti"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessuna location trovata. Prova a cambiare i filtri o aggiungi la prima!",
+    "badges": {
+      "verified": "Verificato"
+    },
+    "labels": {
+      "type": "Tipo:",
+      "capacity": "ðŸ‘¥ CapacitÃ :",
+      "website": "Sito Web"
+    },
+    "capacity": {
+      "range": "{min}-{max} persone",
+      "from": "da {min} persone",
+      "upTo": "fino a {max} persone"
+    },
+    "types": {
+      "villa": "Villa",
+      "Villa": "Villa",
+      "castello": "Castello",
+      "Castello": "Castello",
+      "palazzo": "Palazzo",
+      "Palazzo": "Palazzo",
+      "agriturismo": "Agriturismo",
+      "Agriturismo": "Agriturismo",
+      "cascina": "Cascina",
+      "Cascina": "Cascina",
+      "masseria": "Masseria",
+      "Masseria": "Masseria",
+      "baglio": "Baglio",
+      "Baglio": "Baglio",
+      "borgo": "Borgo",
+      "Borgo": "Borgo",
+      "ristorante": "Ristorante",
+      "Ristorante": "Ristorante",
+      "hotel": "Hotel",
+      "Hotel": "Hotel",
+      "hotel di lusso": "Hotel di lusso",
+      "Hotel di lusso": "Hotel di lusso",
+      "resort": "Resort",
+      "Resort": "Resort",
+      "tenuta": "Tenuta",
+      "Tenuta": "Tenuta",
+      "giardino": "Giardino",
+      "Giardino": "Giardino",
+      "spiaggia": "Spiaggia",
+      "Spiaggia": "Spiaggia",
+      "altro": "Altro",
+      "Altro": "Altro"
+    },
+    "messages": {
+      "authRequired": "Devi essere autenticato per aggiungere una location",
+      "addError": "Errore durante l'aggiunta",
+      "addSuccess": "Location aggiunta con successo! SarÃ  visibile dopo la verifica dello staff."
+    }
   },
-  "filters": {
-    "title": "Filtri",
-    "typeLabel": "Tipo Location",
-    "allRegion": "Tutte",
-    "allProvince": "Tutte",
-    "allTypes": "Tutti"
-  },
-  "loading": "Caricamento...",
-  "empty": "Nessuna location trovata. Prova a cambiare i filtri o aggiungi la prima!",
-  "badges": {
-    "verified": "Verificato"
-  },
-  "labels": {
-    "type": "Tipo:",
-    "capacity": "ðŸ‘¥ CapacitÃ :",
-    "website": "Sito Web"
-  },
-  "capacity": {
-    "range": "{min}-{max} persone",
-    "from": "da {min} persone",
-    "upTo": "fino a {max} persone"
-  },
-  "types": {
-    "villa": "Villa",
-    "Villa": "Villa",
-    "castello": "Castello",
-    "Castello": "Castello",
-    "palazzo": "Palazzo",
-    "Palazzo": "Palazzo",
-    "agriturismo": "Agriturismo",
-    "Agriturismo": "Agriturismo",
-    "cascina": "Cascina",
-    "Cascina": "Cascina",
-    "masseria": "Masseria",
-    "Masseria": "Masseria",
-    "baglio": "Baglio",
-    "Baglio": "Baglio",
-    "borgo": "Borgo",
-    "Borgo": "Borgo",
-    "ristorante": "Ristorante",
-    "Ristorante": "Ristorante",
-    "hotel": "Hotel",
-    "Hotel": "Hotel",
-    "hotel di lusso": "Hotel di lusso",
-    "Hotel di lusso": "Hotel di lusso",
-    "resort": "Resort",
-    "Resort": "Resort",
-    "tenuta": "Tenuta",
-    "Tenuta": "Tenuta",
-    "giardino": "Giardino",
-    "Giardino": "Giardino",
-    "spiaggia": "Spiaggia",
-    "Spiaggia": "Spiaggia",
-    "altro": "Altro",
-    "Altro": "Altro"
-  },
-  "messages": {
-    "authRequired": "Devi essere autenticato per aggiungere una location",
-    "addError": "Errore durante l'aggiunta",
-    "addSuccess": "Location aggiunta con successo! SarÃ  visibile dopo la verifica dello staff."
-  }
-},
-"suppliersPhotographers": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "photographers": "Fotografi"
-  },
-  "title": "ðŸ“¸ Fotografi",
-  "description": "Trova i migliori fotografi e videomaker per il tuo matrimonio. Filtra per regione e provincia, confronta prezzi e visita i loro portfolio.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori"
-  },
-  "filters": {
-    "title": "Filtra fotografi",
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es. Milano",
-    "search": "Cerca",
-    "searchPlaceholder": "Nome studio o fotografo...",
-    "searchButton": "Cerca",
-    "resetButton": "Resetta"
-  },
-  "results": {
-    "count": "{count, plural, =0 {Nessun fotografo trovato} one {# fotografo trovato} other {# fotografi trovati}}"
-  },
-  "viewMode": {
-    "grid": "ðŸ”² Griglia",
-    "list": "ðŸ“‹ Lista"
-  },
-  "loading": "Caricamento...",
-  "empty": {
-    "title": "Nessun fotografo trovato",
-    "description": "Prova a modificare i filtri"
-  },
-  "actions": {
-    "website": "ðŸŒ Sito",
-    "websiteLink": "ðŸŒ Sito web",
-    "call": "ðŸ“ž Chiama",
-    "email": "âœ‰ï¸ Email",
-    "addToFavorites": "Aggiungi ai preferiti",
-    "removeFromFavorites": "Rimuovi dai preferiti",
-    "add": "Aggiungi",
-    "remove": "Rimuovi"
-  }
-},
-"suppliersAtelier": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "atelier": "Atelier"
-  },
-  "title": "ðŸ‘—ðŸ¤µ Atelier",
-  "description": "Scopri gli atelier piÃ¹ prestigiosi per l'abito da sposa e da sposo. Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori",
-    "add": "+ Aggiungi Atelier",
-    "cancel": "Annulla"
-  },
-  "tabs": {
-    "bride": "ðŸ‘° Atelier Sposa",
-    "groom": "ðŸ¤µ Atelier Sposo"
-  },
-  "filters": {
-    "region": "Filtra per Regione",
-    "allRegions": "Tutte le regioni"
-  },
-  "form": {
-    "title": "Aggiungi Nuovo Atelier",
-    "select": "Seleziona...",
-    "fields": {
-      "name": "Nome",
-      "category": "Categoria",
+  "suppliersPhotographers": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "photographers": "Fotografi"
+    },
+    "title": "ðŸ“¸ Fotografi",
+    "description": "Trova i migliori fotografi e videomaker per il tuo matrimonio. Filtra per regione e provincia, confronta prezzi e visita i loro portfolio.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra fotografi",
       "region": "Regione",
+      "allRegions": "Tutte le regioni",
       "province": "Provincia",
-      "city": "CittÃ ",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome studio o fotografo...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun fotografo trovato} one {# fotografo trovato} other {# fotografi trovati}}"
+    },
+    "viewMode": {
+      "grid": "ðŸ”² Griglia",
+      "list": "ðŸ“‹ Lista"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun fotografo trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "ðŸŒ Sito",
+      "websiteLink": "ðŸŒ Sito web",
+      "call": "ðŸ“ž Chiama",
+      "email": "âœ‰ï¸ Email",
+      "addToFavorites": "Aggiungi ai preferiti",
+      "removeFromFavorites": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
+  },
+  "suppliersAtelier": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "atelier": "Atelier"
+    },
+    "title": "ðŸ‘—ðŸ¤µ Atelier",
+    "description": "Scopri gli atelier piÃ¹ prestigiosi per l'abito da sposa e da sposo. Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori",
+      "add": "+ Aggiungi Atelier",
+      "cancel": "Annulla"
+    },
+    "tabs": {
+      "bride": "ðŸ‘° Atelier Sposa",
+      "groom": "ðŸ¤µ Atelier Sposo"
+    },
+    "filters": {
+      "region": "Filtra per Regione",
+      "allRegions": "Tutte le regioni"
+    },
+    "form": {
+      "title": "Aggiungi Nuovo Atelier",
+      "select": "Seleziona...",
+      "fields": {
+        "name": "Nome",
+        "category": "Categoria",
+        "region": "Regione",
+        "province": "Provincia",
+        "city": "CittÃ ",
+        "address": "Indirizzo",
+        "phone": "Telefono",
+        "email": "Email",
+        "website": "Sito Web",
+        "priceRange": "Fascia Prezzo",
+        "description": "Descrizione",
+        "styles": "Stili (separati da virgola)",
+        "services": "Servizi (separati da virgola)"
+      },
+      "categories": {
+        "bride": "Sposa",
+        "groom": "Sposo"
+      },
+      "priceRanges": {
+        "budget": "â‚¬ (Economico)",
+        "moderate": "â‚¬â‚¬ (Moderato)",
+        "high": "â‚¬â‚¬â‚¬ (Alto)",
+        "luxury": "â‚¬â‚¬â‚¬â‚¬ (Lusso)"
+      },
+      "placeholders": {
+        "description": "Breve descrizione dell'atelier...",
+        "styles": "Classico, Moderno, Romantico",
+        "services": "Sartoria, Noleggio, Accessori"
+      },
+      "submit": "Salva Atelier"
+    },
+    "loading": "Caricamento atelier...",
+    "results": {
+      "count": "Trovati {count} atelier{region, select, other { in {region}} }"
+    },
+    "labels": {
+      "verified": "âœ“ Verificato",
+      "visitWebsite": "Visita sito",
+      "priceRange": "FASCIA PREZZO",
+      "services": "Servizi"
+    },
+    "empty": {
+      "message": "Nessun atelier trovato{region, select, other { in {region}} }. Prova a cambiare i filtri o torna presto per nuove aggiunte! âœ¨"
+    },
+    "messages": {
+      "authRequired": "Devi essere autenticato per aggiungere un atelier",
+      "addSuccess": "Atelier aggiunto con successo!",
+      "addError": "Errore{error, select, other {: {error}} }"
+    },
+    "tips": {
+      "title": "ðŸ’¡ Suggerimenti per la scelta",
+      "tip1": "Prenota l'appuntamento con almeno 8-12 mesi di anticipo",
+      "tip2": "Porta con te scarpe con il tacco che indosserai il giorno del matrimonio",
+      "tip3": "Considera almeno 2-3 prove per aggiustamenti e ritocchi",
+      "tip4": "Chiedi informazioni su tempi di consegna e modifiche incluse nel prezzo",
+      "tip5": "Per lo sposo, valuta sia acquisto che noleggio in base al budget"
+    }
+  },
+  "suppliersFlorists": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "florists": "Fiorai"
+    },
+    "title": "ðŸ’ Fiorai",
+    "description": "Allestimenti floreali, bouquet, centrotavola e decorazioni per la cerimonia e il ricevimento.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra fiorai",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome negozio o fiorista...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "ðŸ”² Griglia",
+      "list": "ðŸ“‹ Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun fiorista trovato} one {# fiorista trovato} other {# fioristi trovati}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun fiorista trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "ðŸŒ Sito",
+      "call": "ðŸ“ž Chiama",
+      "email": "âœ‰ï¸ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
+  },
+  "suppliersCatering": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "catering": "Catering"
+    },
+    "title": "ðŸ½ï¸ Catering & Banqueting",
+    "description": "Trova i migliori servizi di catering per il tuo matrimonio. MenÃ¹ personalizzati, buffet gourmet e servizio impeccabile.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra servizi catering",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome location o catering...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "ðŸ”² Griglia",
+      "list": "ðŸ“‹ Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun servizio catering trovato} one {# servizio catering trovato} other {# servizi catering trovati}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun servizio catering trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "ðŸŒ Sito",
+      "call": "ðŸ“ž Chiama",
+      "email": "âœ‰ï¸ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
+  },
+  "suppliersBeauty": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "beauty": "Make-up & Beauty"
+    },
+    "title": "ðŸ’„ Make-up & Beauty",
+    "description": "Make-up artist, hair stylist ed estetica per il tuo giorno speciale.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra professionisti beauty",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome professionista o studio...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "ðŸ”² Griglia",
+      "list": "ðŸ“‹ Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessun professionista trovato} one {# professionista trovato} other {# professionisti trovati}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessun professionista trovato",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "ðŸŒ Sito",
+      "call": "ðŸ“ž Chiama",
+      "email": "âœ‰ï¸ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
+  },
+  "suppliersJewelry": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "jewelry": "Gioiellerie"
+    },
+    "title": "ðŸ’ Gioiellerie",
+    "description": "Fedi nuziali, anelli di fidanzamento e gioielli per sposa e invitati.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori"
+    },
+    "filters": {
+      "title": "Filtra gioiellerie",
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es. Milano",
+      "search": "Cerca",
+      "searchPlaceholder": "Nome gioielleria...",
+      "searchButton": "Cerca",
+      "resetButton": "Resetta"
+    },
+    "viewMode": {
+      "grid": "ðŸ”² Griglia",
+      "list": "ðŸ“‹ Lista"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Nessuna gioielleria trovata} one {# gioielleria trovata} other {# gioiellerie trovate}}"
+    },
+    "loading": "Caricamento...",
+    "empty": {
+      "title": "Nessuna gioielleria trovata",
+      "description": "Prova a modificare i filtri"
+    },
+    "actions": {
+      "website": "ðŸŒ Sito",
+      "call": "ðŸ“ž Chiama",
+      "email": "âœ‰ï¸ Email",
+      "addFavorite": "Aggiungi ai preferiti",
+      "removeFavorite": "Rimuovi dai preferiti",
+      "add": "Aggiungi",
+      "remove": "Rimuovi"
+    }
+  },
+  "suppliersMusicCeremony": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "musicCeremony": "Musica Cerimonia"
+    },
+    "title": "Musica Cerimonia",
+    "description": "Trova musicisti e gruppi verificati per la cerimonia nuziale. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori",
+      "propose": "+ Proponi musicista/gruppo",
+      "cancel": "Annulla",
+      "submit": "Invia proposta"
+    },
+    "filters": {
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es: Roma"
+    },
+    "form": {
+      "title": "Proponi musicista/gruppo",
+      "name": "Nome artista/gruppo *",
+      "region": "Regione *",
+      "province": "Provincia *",
+      "city": "CittÃ  *",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito web",
+      "description": "Descrizione",
+      "priceRange": "Fascia prezzo",
+      "musicType": "Tipo musica",
+      "select": "Seleziona..."
+    },
+    "loading": "Caricamento musicisti...",
+    "empty": "Nessun musicista trovato per i filtri selezionati.",
+    "messages": {
+      "submitSuccess": "Musica cerimonia inviata! SarÃ  verificata prima della pubblicazione.",
+      "submitError": "Errore nell'invio",
+      "networkError": "Errore di rete"
+    }
+  },
+  "suppliersMusicReception": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "musicReception": "Musica Ricevimento"
+    },
+    "title": "Musica Ricevimento",
+    "description": "Trova DJ, band e intrattenimento musicale verificato per il ricevimento. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori",
+      "propose": "+ Proponi DJ/band",
+      "cancel": "Annulla",
+      "submit": "Invia per approvazione"
+    },
+    "filters": {
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es: Napoli"
+    },
+    "form": {
+      "title": "Proponi DJ/band per ricevimento",
+      "name": "Nome artista/gruppo *",
+      "region": "Regione *",
+      "province": "Provincia *",
+      "city": "CittÃ  *",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito web",
+      "description": "Descrizione",
+      "priceRange": "Fascia di prezzo",
+      "musicType": "Tipo di musica",
+      "select": "Seleziona...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "Es: â‚¬â‚¬â‚¬",
+      "musicTypePlaceholder": "Es: DJ, Band live, Orchestra, Duo acustico"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessun DJ/band trovato per i filtri selezionati",
+    "verified": "âœ“ Verificato",
+    "messages": {
+      "submitSuccess": "Musica ricevimento inviata! SarÃ  verificata prima della pubblicazione.",
+      "submitError": "Errore nell'invio",
+      "networkError": "Errore di rete"
+    }
+  },
+  "suppliersWeddingPlanner": {
+    "breadcrumb": {
+      "home": "ðŸ  Home",
+      "suppliers": "Fornitori",
+      "weddingPlanner": "Wedding Planner"
+    },
+    "title": "Wedding Planner",
+    "description": "Trova wedding planner verificati per organizzare il tuo matrimonio perfetto. Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.",
+    "buttons": {
+      "backToSuppliers": "â† Tutti i Fornitori",
+      "propose": "+ Proponi un wedding planner",
+      "cancel": "Annulla",
+      "submit": "Invia per approvazione"
+    },
+    "filters": {
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es: Milano"
+    },
+    "form": {
+      "title": "Proponi un nuovo wedding planner",
+      "name": "Nome / Studio *",
+      "region": "Regione *",
+      "province": "Provincia *",
+      "city": "CittÃ  *",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito web",
+      "description": "Descrizione",
+      "priceRange": "Fascia di prezzo",
+      "services": "Servizi offerti",
+      "select": "Seleziona...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "Es: â‚¬â‚¬-â‚¬â‚¬â‚¬",
+      "servicesPlaceholder": "Es: Full planning, Partial planning, Consulenza giorno"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessun wedding planner trovato per i filtri selezionati",
+    "verified": "âœ“ Verificato",
+    "messages": {
+      "submitSuccess": "Wedding planner inviato! SarÃ  verificato prima della pubblicazione.",
+      "submitError": "Errore nell'invio",
+      "networkError": "Errore di rete"
+    }
+  },
+  "suppliersChurches": {
+    "title": "â›ª Chiese e Luoghi di Cerimonia",
+    "description": "Trova la chiesa perfetta per la tua cerimonia religiosa: cattoliche, ortodosse, protestanti e altri luoghi di culto. Scopri requisiti, capienza e informazioni di contatto. Filtra per regione, provincia e tipologia.",
+    "buttons": {
+      "add": "+ Aggiungi Chiesa",
+      "cancel": "Annulla",
+      "submit": "Aggiungi Chiesa"
+    },
+    "filters": {
+      "title": "Filtri",
+      "type": "Tipo",
+      "all": "Tutte",
+      "allTypes": "Tutti"
+    },
+    "form": {
+      "title": "Aggiungi Nuova Chiesa",
+      "name": "Nome *",
+      "type": "Tipo *",
+      "city": "CittÃ  *",
       "address": "Indirizzo",
       "phone": "Telefono",
       "email": "Email",
       "website": "Sito Web",
-      "priceRange": "Fascia Prezzo",
+      "capacity": "CapacitÃ  (persone)",
       "description": "Descrizione",
-      "styles": "Stili (separati da virgola)",
-      "services": "Servizi (separati da virgola)"
+      "descriptionPlaceholder": "Descrivi la chiesa, le caratteristiche architettoniche, servizi...",
+      "requiresBaptism": "Richiede Battesimo",
+      "requiresMarriageCourse": "Richiede Corso Prematrimoniale",
+      "select": "Seleziona..."
     },
-    "categories": {
-      "bride": "Sposa",
-      "groom": "Sposo"
+    "types": {
+      "cattolica": "Cattolica",
+      "ortodossa": "Ortodossa",
+      "protestante": "Protestante",
+      "evangelica": "Evangelica",
+      "anglicana": "Anglicana",
+      "sinagoga": "Sinagoga",
+      "moschea": "Moschea",
+      "altro": "Altro"
     },
-    "priceRanges": {
-      "budget": "â‚¬ (Economico)",
-      "moderate": "â‚¬â‚¬ (Moderato)",
-      "high": "â‚¬â‚¬â‚¬ (Alto)",
-      "luxury": "â‚¬â‚¬â‚¬â‚¬ (Lusso)"
+    "card": {
+      "verified": "Verificato",
+      "type": "Tipo:",
+      "capacity": "ðŸ‘¥ CapacitÃ :",
+      "people": "persone",
+      "requiresBaptism": "âš ï¸ Richiede Battesimo",
+      "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
+      "website": "Sito Web"
     },
-    "placeholders": {
-      "description": "Breve descrizione dell'atelier...",
-      "styles": "Classico, Moderno, Romantico",
-      "services": "Sartoria, Noleggio, Accessori"
+    "loading": "Caricamento...",
+    "empty": "Nessuna chiesa trovata. Prova a cambiare i filtri o aggiungi la prima!",
+    "messages": {
+      "authRequired": "Devi essere autenticato per aggiungere una chiesa",
+      "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
+      "submitError": "Errore durante l'aggiunta"
+    }
+  },
+  "ceremonyCeremonyChurch": {
+    "title": "Cerimonia Â· Chiesa",
+    "buttons": {
+      "add": "+ Aggiungi Chiesa",
+      "cancel": "Annulla",
+      "submit": "Aggiungi Chiesa"
     },
-    "submit": "Salva Atelier"
-  },
-  "loading": "Caricamento atelier...",
-  "results": {
-    "count": "Trovati {count} atelier{region, select, other { in {region}} }"
-  },
-  "labels": {
-    "verified": "âœ“ Verificato",
-    "visitWebsite": "Visita sito",
-    "priceRange": "FASCIA PREZZO",
-    "services": "Servizi"
-  },
-  "empty": {
-    "message": "Nessun atelier trovato{region, select, other { in {region}} }. Prova a cambiare i filtri o torna presto per nuove aggiunte! âœ¨"
-  },
-  "messages": {
-    "authRequired": "Devi essere autenticato per aggiungere un atelier",
-    "addSuccess": "Atelier aggiunto con successo!",
-    "addError": "Errore{error, select, other {: {error}} }"
-  },
-  "tips": {
-    "title": "ðŸ’¡ Suggerimenti per la scelta",
-    "tip1": "Prenota l'appuntamento con almeno 8-12 mesi di anticipo",
-    "tip2": "Porta con te scarpe con il tacco che indosserai il giorno del matrimonio",
-    "tip3": "Considera almeno 2-3 prove per aggiustamenti e ritocchi",
-    "tip4": "Chiedi informazioni su tempi di consegna e modifiche incluse nel prezzo",
-    "tip5": "Per lo sposo, valuta sia acquisto che noleggio in base al budget"
+    "filters": {
+      "region": "Regione",
+      "allRegions": "Tutte le regioni",
+      "province": "Provincia",
+      "provincePlaceholder": "Es: Roma",
+      "type": "Tipo",
+      "allTypes": "Tutti i tipi"
+    },
+    "form": {
+      "title": "Aggiungi Nuova Chiesa",
+      "name": "Nome *",
+      "type": "Tipo *",
+      "region": "Regione *",
+      "province": "Provincia *",
+      "provincePlaceholder": "es. Roma, Milano, Napoli",
+      "city": "CittÃ  *",
+      "address": "Indirizzo",
+      "phone": "Telefono",
+      "email": "Email",
+      "website": "Sito Web",
+      "capacity": "CapacitÃ  (persone)",
+      "description": "Descrizione",
+      "descriptionPlaceholder": "Descrivi la chiesa, caratteristiche, servizi...",
+      "requiresBaptism": "Richiede Battesimo",
+      "requiresMarriageCourse": "Richiede Corso Prematrimoniale",
+      "select": "Seleziona..."
+    },
+    "types": {
+      "cattolica": "Cattolica",
+      "ortodossa": "Ortodossa",
+      "protestante": "Protestante",
+      "evangelica": "Evangelica",
+      "anglicana": "Anglicana",
+      "sinagoga": "Sinagoga",
+      "moschea": "Moschea",
+      "altro": "Altro"
+    },
+    "card": {
+      "verified": "Verificato",
+      "type": "Tipo:",
+      "capacity": "ðŸ‘¥ CapacitÃ :",
+      "people": "persone",
+      "requiresBaptism": "âš ï¸ Richiede Battesimo",
+      "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
+      "website": "Sito Web"
+    },
+    "loading": "Caricamento...",
+    "empty": "Nessuna chiesa trovata con questi filtri.",
+    "messages": {
+      "authRequired": "Devi essere autenticato per aggiungere una chiesa",
+      "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
+      "submitError": "Errore durante l'aggiunta"
+    }
   }
-},
-"suppliersFlorists": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "florists": "Fiorai"
-  },
-  "title": "ðŸ’ Fiorai",
-  "description": "Allestimenti floreali, bouquet, centrotavola e decorazioni per la cerimonia e il ricevimento.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori"
-  },
-  "filters": {
-    "title": "Filtra fiorai",
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es. Milano",
-    "search": "Cerca",
-    "searchPlaceholder": "Nome negozio o fiorista...",
-    "searchButton": "Cerca",
-    "resetButton": "Resetta"
-  },
-  "viewMode": {
-    "grid": "ðŸ”² Griglia",
-    "list": "ðŸ“‹ Lista"
-  },
-  "results": {
-    "count": "{count, plural, =0 {Nessun fiorista trovato} one {# fiorista trovato} other {# fioristi trovati}}"
-  },
-  "loading": "Caricamento...",
-  "empty": {
-    "title": "Nessun fiorista trovato",
-    "description": "Prova a modificare i filtri"
-  },
-  "actions": {
-    "website": "ðŸŒ Sito",
-    "call": "ðŸ“ž Chiama",
-    "email": "âœ‰ï¸ Email",
-    "addFavorite": "Aggiungi ai preferiti",
-    "removeFavorite": "Rimuovi dai preferiti",
-    "add": "Aggiungi",
-    "remove": "Rimuovi"
-  }
-},
-"suppliersCatering": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "catering": "Catering"
-  },
-  "title": "ðŸ½ï¸ Catering & Banqueting",
-  "description": "Trova i migliori servizi di catering per il tuo matrimonio. MenÃ¹ personalizzati, buffet gourmet e servizio impeccabile.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori"
-  },
-  "filters": {
-    "title": "Filtra servizi catering",
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es. Milano",
-    "search": "Cerca",
-    "searchPlaceholder": "Nome location o catering...",
-    "searchButton": "Cerca",
-    "resetButton": "Resetta"
-  },
-  "viewMode": {
-    "grid": "ðŸ”² Griglia",
-    "list": "ðŸ“‹ Lista"
-  },
-  "results": {
-    "count": "{count, plural, =0 {Nessun servizio catering trovato} one {# servizio catering trovato} other {# servizi catering trovati}}"
-  },
-  "loading": "Caricamento...",
-  "empty": {
-    "title": "Nessun servizio catering trovato",
-    "description": "Prova a modificare i filtri"
-  },
-  "actions": {
-    "website": "ðŸŒ Sito",
-    "call": "ðŸ“ž Chiama",
-    "email": "âœ‰ï¸ Email",
-    "addFavorite": "Aggiungi ai preferiti",
-    "removeFavorite": "Rimuovi dai preferiti",
-    "add": "Aggiungi",
-    "remove": "Rimuovi"
-  }
-},
-"suppliersBeauty": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "beauty": "Make-up & Beauty"
-  },
-  "title": "ðŸ’„ Make-up & Beauty",
-  "description": "Make-up artist, hair stylist ed estetica per il tuo giorno speciale.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori"
-  },
-  "filters": {
-    "title": "Filtra professionisti beauty",
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es. Milano",
-    "search": "Cerca",
-    "searchPlaceholder": "Nome professionista o studio...",
-    "searchButton": "Cerca",
-    "resetButton": "Resetta"
-  },
-  "viewMode": {
-    "grid": "ðŸ”² Griglia",
-    "list": "ðŸ“‹ Lista"
-  },
-  "results": {
-    "count": "{count, plural, =0 {Nessun professionista trovato} one {# professionista trovato} other {# professionisti trovati}}"
-  },
-  "loading": "Caricamento...",
-  "empty": {
-    "title": "Nessun professionista trovato",
-    "description": "Prova a modificare i filtri"
-  },
-  "actions": {
-    "website": "ðŸŒ Sito",
-    "call": "ðŸ“ž Chiama",
-    "email": "âœ‰ï¸ Email",
-    "addFavorite": "Aggiungi ai preferiti",
-    "removeFavorite": "Rimuovi dai preferiti",
-    "add": "Aggiungi",
-    "remove": "Rimuovi"
-  }
-},
-"suppliersJewelry": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "jewelry": "Gioiellerie"
-  },
-  "title": "ðŸ’ Gioiellerie",
-  "description": "Fedi nuziali, anelli di fidanzamento e gioielli per sposa e invitati.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori"
-  },
-  "filters": {
-    "title": "Filtra gioiellerie",
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es. Milano",
-    "search": "Cerca",
-    "searchPlaceholder": "Nome gioielleria...",
-    "searchButton": "Cerca",
-    "resetButton": "Resetta"
-  },
-  "viewMode": {
-    "grid": "ðŸ”² Griglia",
-    "list": "ðŸ“‹ Lista"
-  },
-  "results": {
-    "count": "{count, plural, =0 {Nessuna gioielleria trovata} one {# gioielleria trovata} other {# gioiellerie trovate}}"
-  },
-  "loading": "Caricamento...",
-  "empty": {
-    "title": "Nessuna gioielleria trovata",
-    "description": "Prova a modificare i filtri"
-  },
-  "actions": {
-    "website": "ðŸŒ Sito",
-    "call": "ðŸ“ž Chiama",
-    "email": "âœ‰ï¸ Email",
-    "addFavorite": "Aggiungi ai preferiti",
-    "removeFavorite": "Rimuovi dai preferiti",
-    "add": "Aggiungi",
-    "remove": "Rimuovi"
-  }
-},
-"suppliersMusicCeremony": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "musicCeremony": "Musica Cerimonia"
-  },
-  "title": "Musica Cerimonia",
-  "description": "Trova musicisti e gruppi verificati per la cerimonia nuziale. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori",
-    "propose": "+ Proponi musicista/gruppo",
-    "cancel": "Annulla",
-    "submit": "Invia proposta"
-  },
-  "filters": {
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es: Roma"
-  },
-  "form": {
-    "title": "Proponi musicista/gruppo",
-    "name": "Nome artista/gruppo *",
-    "region": "Regione *",
-    "province": "Provincia *",
-    "city": "CittÃ  *",
-    "phone": "Telefono",
-    "email": "Email",
-    "website": "Sito web",
-    "description": "Descrizione",
-    "priceRange": "Fascia prezzo",
-    "musicType": "Tipo musica",
-    "select": "Seleziona..."
-  },
-  "loading": "Caricamento musicisti...",
-  "empty": "Nessun musicista trovato per i filtri selezionati.",
-  "messages": {
-    "submitSuccess": "Musica cerimonia inviata! SarÃ  verificata prima della pubblicazione.",
-    "submitError": "Errore nell'invio",
-    "networkError": "Errore di rete"
-  }
-},
-"suppliersMusicReception": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "musicReception": "Musica Ricevimento"
-  },
-  "title": "Musica Ricevimento",
-  "description": "Trova DJ, band e intrattenimento musicale verificato per il ricevimento. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori",
-    "propose": "+ Proponi DJ/band",
-    "cancel": "Annulla",
-    "submit": "Invia per approvazione"
-  },
-  "filters": {
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es: Napoli"
-  },
-  "form": {
-    "title": "Proponi DJ/band per ricevimento",
-    "name": "Nome artista/gruppo *",
-    "region": "Regione *",
-    "province": "Provincia *",
-    "city": "CittÃ  *",
-    "phone": "Telefono",
-    "email": "Email",
-    "website": "Sito web",
-    "description": "Descrizione",
-    "priceRange": "Fascia di prezzo",
-    "musicType": "Tipo di musica",
-    "select": "Seleziona...",
-    "websitePlaceholder": "https://...",
-    "pricePlaceholder": "Es: â‚¬â‚¬â‚¬",
-    "musicTypePlaceholder": "Es: DJ, Band live, Orchestra, Duo acustico"
-  },
-  "loading": "Caricamento...",
-  "empty": "Nessun DJ/band trovato per i filtri selezionati",
-  "verified": "âœ“ Verificato",
-  "messages": {
-    "submitSuccess": "Musica ricevimento inviata! SarÃ  verificata prima della pubblicazione.",
-    "submitError": "Errore nell'invio",
-    "networkError": "Errore di rete"
-  }
-},
-"suppliersWeddingPlanner": {
-  "breadcrumb": {
-    "home": "ðŸ  Home",
-    "suppliers": "Fornitori",
-    "weddingPlanner": "Wedding Planner"
-  },
-  "title": "Wedding Planner",
-  "description": "Trova wedding planner verificati per organizzare il tuo matrimonio perfetto. Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.",
-  "buttons": {
-    "backToSuppliers": "â† Tutti i Fornitori",
-    "propose": "+ Proponi un wedding planner",
-    "cancel": "Annulla",
-    "submit": "Invia per approvazione"
-  },
-  "filters": {
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es: Milano"
-  },
-  "form": {
-    "title": "Proponi un nuovo wedding planner",
-    "name": "Nome / Studio *",
-    "region": "Regione *",
-    "province": "Provincia *",
-    "city": "CittÃ  *",
-    "phone": "Telefono",
-    "email": "Email",
-    "website": "Sito web",
-    "description": "Descrizione",
-    "priceRange": "Fascia di prezzo",
-    "services": "Servizi offerti",
-    "select": "Seleziona...",
-    "websitePlaceholder": "https://...",
-    "pricePlaceholder": "Es: â‚¬â‚¬-â‚¬â‚¬â‚¬",
-    "servicesPlaceholder": "Es: Full planning, Partial planning, Consulenza giorno"
-  },
-  "loading": "Caricamento...",
-  "empty": "Nessun wedding planner trovato per i filtri selezionati",
-  "verified": "âœ“ Verificato",
-  "messages": {
-    "submitSuccess": "Wedding planner inviato! SarÃ  verificato prima della pubblicazione.",
-    "submitError": "Errore nell'invio",
-    "networkError": "Errore di rete"
-  }
-},
-"suppliersChurches": {
-  "title": "â›ª Chiese e Luoghi di Cerimonia",
-  "description": "Trova la chiesa perfetta per la tua cerimonia religiosa: cattoliche, ortodosse, protestanti e altri luoghi di culto. Scopri requisiti, capienza e informazioni di contatto. Filtra per regione, provincia e tipologia.",
-  "buttons": {
-    "add": "+ Aggiungi Chiesa",
-    "cancel": "Annulla",
-    "submit": "Aggiungi Chiesa"
-  },
-  "filters": {
-    "title": "Filtri",
-    "type": "Tipo",
-    "all": "Tutte",
-    "allTypes": "Tutti"
-  },
-  "form": {
-    "title": "Aggiungi Nuova Chiesa",
-    "name": "Nome *",
-    "type": "Tipo *",
-    "city": "CittÃ  *",
-    "address": "Indirizzo",
-    "phone": "Telefono",
-    "email": "Email",
-    "website": "Sito Web",
-    "capacity": "CapacitÃ  (persone)",
-    "description": "Descrizione",
-    "descriptionPlaceholder": "Descrivi la chiesa, le caratteristiche architettoniche, servizi...",
-    "requiresBaptism": "Richiede Battesimo",
-    "requiresMarriageCourse": "Richiede Corso Prematrimoniale",
-    "select": "Seleziona..."
-  },
-  "types": {
-    "cattolica": "Cattolica",
-    "ortodossa": "Ortodossa",
-    "protestante": "Protestante",
-    "evangelica": "Evangelica",
-    "anglicana": "Anglicana",
-    "sinagoga": "Sinagoga",
-    "moschea": "Moschea",
-    "altro": "Altro"
-  },
-  "card": {
-    "verified": "Verificato",
-    "type": "Tipo:",
-    "capacity": "ðŸ‘¥ CapacitÃ :",
-    "people": "persone",
-    "requiresBaptism": "âš ï¸ Richiede Battesimo",
-    "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
-    "website": "Sito Web"
-  },
-  "loading": "Caricamento...",
-  "empty": "Nessuna chiesa trovata. Prova a cambiare i filtri o aggiungi la prima!",
-  "messages": {
-    "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-    "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
-    "submitError": "Errore durante l'aggiunta"
-  }
-},
-"ceremonyCeremonyChurch": {
-  "title": "Cerimonia Â· Chiesa",
-  "buttons": {
-    "add": "+ Aggiungi Chiesa",
-    "cancel": "Annulla",
-    "submit": "Aggiungi Chiesa"
-  },
-  "filters": {
-    "region": "Regione",
-    "allRegions": "Tutte le regioni",
-    "province": "Provincia",
-    "provincePlaceholder": "Es: Roma",
-    "type": "Tipo",
-    "allTypes": "Tutti i tipi"
-  },
-  "form": {
-    "title": "Aggiungi Nuova Chiesa",
-    "name": "Nome *",
-    "type": "Tipo *",
-    "region": "Regione *",
-    "province": "Provincia *",
-    "provincePlaceholder": "es. Roma, Milano, Napoli",
-    "city": "CittÃ  *",
-    "address": "Indirizzo",
-    "phone": "Telefono",
-    "email": "Email",
-    "website": "Sito Web",
-    "capacity": "CapacitÃ  (persone)",
-    "description": "Descrizione",
-    "descriptionPlaceholder": "Descrivi la chiesa, caratteristiche, servizi...",
-    "requiresBaptism": "Richiede Battesimo",
-    "requiresMarriageCourse": "Richiede Corso Prematrimoniale",
-    "select": "Seleziona..."
-  },
-  "types": {
-    "cattolica": "Cattolica",
-    "ortodossa": "Ortodossa",
-    "protestante": "Protestante",
-    "evangelica": "Evangelica",
-    "anglicana": "Anglicana",
-    "sinagoga": "Sinagoga",
-    "moschea": "Moschea",
-    "altro": "Altro"
-  },
-  "card": {
-    "verified": "Verificato",
-    "type": "Tipo:",
-    "capacity": "ðŸ‘¥ CapacitÃ :",
-    "people": "persone",
-    "requiresBaptism": "âš ï¸ Richiede Battesimo",
-    "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
-    "website": "Sito Web"
-  },
-  "loading": "Caricamento...",
-  "empty": "Nessuna chiesa trovata con questi filtri.",
-  "messages": {
-    "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-    "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
-    "submitError": "Errore durante l'aggiunta"
-  }
-}
