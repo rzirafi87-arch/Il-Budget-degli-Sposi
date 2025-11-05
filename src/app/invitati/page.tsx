@@ -715,7 +715,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        ?
+                        🗑️
                       </button>
                     </td>
                   </tr>
@@ -799,7 +799,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        ?
+                        🗑️
                       </button>
                     </td>
                   </tr>
