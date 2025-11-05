@@ -21,6 +21,7 @@ const TABS_ICONS = {
   giftList: "",
   favorites: "",
   suggestions: "",
+  agenda: "📅",
 } as const;
 
 export default function NavTabs() {
@@ -38,6 +39,7 @@ export default function NavTabs() {
   const weddingTabs = [
     { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
     { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
+    { href: "/agenda", label: t("agenda", { default: "Agenda" }), icon: TABS_ICONS.agenda, badge: 0 },
     { href: "/save-the-date", label: t("saveTheDate", { default: "Save the Date" }), icon: TABS_ICONS.saveTheDate },
     { href: "/invitati", label: t("guests"), icon: TABS_ICONS.guests },
     { href: "/contabilita", label: t("accounting"), icon: TABS_ICONS.accounting },
@@ -108,6 +110,7 @@ export default function NavTabs() {
       <div className="hidden md:flex flex-wrap gap-2 items-center">
         {tabs.map((tab) => {
           const active = pathname.startsWith(tab.href);
+          const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
           return (
             <Link
               key={tab.href}
@@ -115,7 +118,7 @@ export default function NavTabs() {
               aria-label={tab.label}
               aria-current={active ? "page" : undefined}
               className={clsx(
-                "px-4 py-2 rounded-full border text-sm transition-colors font-medium flex items-center gap-2",
+                "px-4 py-2 rounded-full border text-sm transition-colors font-medium flex items-center gap-2 relative",
                 active
                   ? "text-white shadow-sm"
                   : "bg-white/70 border-gray-200 hover:bg-gray-50 text-gray-700"
@@ -125,6 +128,11 @@ export default function NavTabs() {
             >
               {tab.icon ? <span aria-hidden>{tab.icon}</span> : null}
               <span>{tab.label}</span>
+              {hasBadge && (
+                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                  {((tab as { badge?: number }).badge || 0) > 99 ? "99+" : (tab as { badge?: number }).badge}
+                </span>
+              )}
             </Link>
           );
         })}
@@ -161,6 +169,7 @@ export default function NavTabs() {
             <div id="mobile-nav" className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-700 rounded-xl shadow-2xl z-50 max-h-[60vh] overflow-y-auto">
               {tabs.map((tab) => {
                 const active = pathname.startsWith(tab.href);
+                const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
                 return (
                   <Link
                     key={tab.href}
@@ -177,6 +186,11 @@ export default function NavTabs() {
                     <span className="flex items-center gap-3">
                       {tab.icon ? <span className="text-xl" aria-hidden>{tab.icon}</span> : null}
                       <span>{tab.label}</span>
+                      {hasBadge && (
+                        <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold ml-2">
+                          {((tab as { badge?: number }).badge || 0) > 99 ? "99+" : (tab as { badge?: number }).badge}
+                        </span>
+                      )}
                       {active && <span className="ml-auto" aria-hidden>✓</span>}
                     </span>
                   </Link>

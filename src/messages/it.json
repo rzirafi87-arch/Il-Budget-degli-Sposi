@@ -7,8 +7,8 @@
   "guests": "Invitati",
   "accounting": "Contabilità ",
   "suppliers": "Fornitori",
-  "location": "Location",
-  "churches": "Chiese",
+  "location": "Location Ricevimento",
+  "churches": "Location Cerimonia",
   "documents": "Documenti",
   "giftList": "Lista regali",
   "favorites": "Preferiti",
@@ -20,12 +20,13 @@
   "loading": "Caricamento…",
   "comingSoon": "In arrivo",
   "retirement": "Pensione",
+  "agenda": "Agenda",
   "budgetPage": {
     "approvedExpenses": "Spese approvate",
-    "ctaIdeaBudget": "💍¡ Vai a Idea di Budget",
-    "description": "Visualizzazione del→spese approvate dalla sezione 'Spese', ordinate alfabeticamente per categoria e sottocategoria.",
+    "ctaIdeaBudget": "💍 Vai a Idea di Budget",
+    "description": "Visualizzazione delle spese approvate dalla sezione 'Spese', ordinate alfabeticamente per categoria e sottocategoria.",
     "totals": {
-      "title": "Tota→spese approvate",
+      "title": "Totale spese approvate",
       "common": "Comune",
       "bride": "Sposa",
       "groom": "Sposo"
@@ -432,7 +433,7 @@
     "summary": {
       "bride": "Budget Sposa {currency}",
       "groom": "Budget Sposo {currency}",
-      "total": "Budget Tota→{currency}",
+      "total": "Budget Totale {currency}",
       "contingency": "Imprevisti (%)",
       "date": {
         "wedding": "Data Matrimonio",
