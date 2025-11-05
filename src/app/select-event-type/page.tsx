@@ -18,6 +18,8 @@ const DASHBOARD_EVENTS = new Set([
   "gender-reveal",
   "retirement", // Added for testing - evento Pensione
   "babyshower", // Added for testing - evento Baby Shower
+  "engagement", // Added - Festa di Fidanzamento
+  "proposal", // Added - Proposta di Matrimonio
 ]);
 
 export default function SelectEventTypePage() {
