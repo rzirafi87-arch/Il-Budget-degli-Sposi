@@ -455,10 +455,10 @@ export default function InvitatiPage() {
             + Aggiungi Famiglia
           </button>
         </div>
-        <p className="text-xs text-gray-600 mb-3">
-         Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia. 
-         <strong className="text-purple-700">?? Suggerimento:</strong> Usa la colonna &quot;?? Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
-        </p>
+  <p className="text-xs text-gray-600 mb-3">
+   Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia. 
+   <strong className="text-purple-700">💡 Suggerimento:</strong> Usa la colonna &quot;Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
+  </p>
         {familyGroups.length === 0 ? (
           <div className="text-center text-gray-500 py-4">Nessuna famiglia creata. Clicca &quot;Aggiungi Famiglia&quot; per iniziare.</div>
         ) : (
@@ -487,14 +487,14 @@ export default function InvitatiPage() {
                     </button>
                   </div>
                   <div className="text-xs text-gray-600">
-                    <div className="mb-1">?? Contatto: {mainContact?.name || "Non assegnato"}</div>
+                    <div className="mb-1">👤 Contatto: {mainContact?.name || "Non assegnato"}</div>
                       <div className="flex justify-between items-center">
-                        <span>?? Totale: {familyMembers.length}</span>
-                        <span className="text-green-700">? Tavolo famiglia: {familyMembersIncluded.length}</span>
+                        <span>👥 Totale: {familyMembers.length}</span>
+                        <span className="text-green-700">🪑 Tavolo famiglia: {familyMembersIncluded.length}</span>
                       </div>
                       {familyMembersExcluded.length > 0 && (
                         <div className="mt-1 text-orange-600">
-                          ?? Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
+                          🚫 Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
                         </div>
                       )}
                   </div>
