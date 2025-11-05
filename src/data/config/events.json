@@ -109,7 +109,7 @@
     "label": "Quinceañera",
     "emoji": "👗",
     "group": "famiglia",
-    "available": false
+    "available": true
   },
   {
     "slug": "corporate",

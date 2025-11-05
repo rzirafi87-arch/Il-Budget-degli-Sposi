@@ -22,6 +22,7 @@ const DASHBOARD_EVENTS = new Set([
   "proposal", // Added - Proposta di Matrimonio
   "corporate", // Added - Evento Aziendale
   "bar-mitzvah", // Added - Bar/Bat Mitzvah
+  "quinceanera", // Added - Quinceañera
 ]);
 
 export default function SelectEventTypePage() {
