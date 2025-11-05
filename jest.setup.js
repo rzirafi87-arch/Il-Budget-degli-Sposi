@@ -1,6 +1,5 @@
-// Global Jest setup for shared mocks
-// Mock next-intl to avoid needing a Provider in tests
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// Global Jest setup for shared mocks (JS only to avoid Babel parser issues)
+
 jest.mock('next-intl', () => ({
   useTranslations: () => (key, options) => {
     if (options && (options.default ?? options.fallback)) {
@@ -10,5 +9,3 @@ jest.mock('next-intl', () => ({
   },
   IntlProvider: ({ children }) => children,
 }));
-/* eslint-enable @typescript-eslint/no-explicit-any */
-

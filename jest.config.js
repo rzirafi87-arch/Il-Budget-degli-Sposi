@@ -6,7 +6,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   setupFilesAfterEnv: [
     '<rootDir>/node_modules/@testing-library/jest-dom',
-    '<rootDir>/jest.setup.ts',
+    '<rootDir>/jest.setup.js',
   ],
   moduleNameMapper: {
     '^\.\./dashboard/page$': '<rootDir>/__mocks__/dashboardPage.tsx',
