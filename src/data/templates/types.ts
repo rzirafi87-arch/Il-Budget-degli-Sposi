@@ -34,5 +34,6 @@ export interface EventTemplate {
   timeline: TimelinePhase[];
   fields?: string[];
   tags?: string[];
-  extraFields?: Record<string, unknown>;
+  variants?: unknown;
+  extraFields?: unknown;
 }
