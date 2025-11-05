@@ -84,19 +84,28 @@ export default function OnboardingSelector() {
     localStorage.setItem("preferredEventType", eventId);
   };
 
+  const handleContinue = () => {
+    // Naviga alla dashboard o pagina principale
+    router.push(`/${selectedLanguage}/dashboard`);
+  };
+
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          Personalizza la tua esperienza
-        </h2>
-        <p className="text-gray-600">
-          Seleziona la lingua, il paese e il tipo di evento per iniziare
-        </p>
+    <div className="w-full min-h-screen flex flex-col">
+      {/* Header - Spostato in alto */}
+      <div className="bg-linear-to-r from-[#A3B59D]/10 to-[#A3B59D]/5 border-b border-[#A3B59D]/20 py-8">
+        <div className="w-full max-w-4xl mx-auto px-4 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Personalizza la tua esperienza
+          </h1>
+          <p className="text-lg text-gray-600">
+            Seleziona la lingua, il paese e il tipo di evento per iniziare
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Content Container */}
+      <div className="w-full max-w-4xl mx-auto px-4 py-8 flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Language Selector */}
         <div className="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 hover:border-[#A3B59D] transition-colors">
           <label className="block text-sm font-semibold text-gray-700 mb-3">
@@ -150,21 +159,35 @@ export default function OnboardingSelector() {
             ))}
           </select>
         </div>
-      </div>
+        </div>
 
-      {/* Info Card */}
-      <div className="bg-linear-to-r from-[#A3B59D]/10 to-[#A3B59D]/5 rounded-lg p-6 border border-[#A3B59D]/20">
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">💡</span>
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-1">
-              Le tue preferenze vengono salvate automaticamente
-            </h3>
-            <p className="text-sm text-gray-600">
-              Puoi modificare queste impostazioni in qualsiasi momento. I contenuti,
-              i fornitori e le funzionalità verranno personalizzati in base alle tue scelte.
-            </p>
+        {/* Info Card */}
+        <div className="bg-linear-to-r from-[#A3B59D]/10 to-[#A3B59D]/5 rounded-lg p-6 border border-[#A3B59D]/20 mb-6">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">💡</span>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-1">
+                Le tue preferenze vengono salvate automaticamente
+              </h3>
+              <p className="text-sm text-gray-600">
+                Puoi modificare queste impostazioni in qualsiasi momento. I contenuti,
+                i fornitori e le funzionalità verranno personalizzati in base alle tue scelte.
+              </p>
+            </div>
           </div>
+        </div>
+
+        {/* Pulsante Continua */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleContinue}
+            className="bg-[#A3B59D] hover:bg-[#8fa188] text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2 text-lg"
+          >
+            Continua
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
