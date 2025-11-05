@@ -1,4 +1,4 @@
-import type { CategoryTemplate } from "./types";
+export type QuinceaneraCategory = { name: string; subs: string[] };
 
 /**
  * QUINCEAÑERA - 15th Birthday Celebration (Latin American Tradition)
@@ -7,7 +7,9 @@ import type { CategoryTemplate } from "./types";
  * Country: MX, AR, BR, CO, other Latin American countries
  */
 
-export function getQuinceaneraTemplate(country = "mx"): CategoryTemplate[] {
+export function getQuinceaneraTemplate(_country = "mx"): QuinceaneraCategory[] {
+  // Use parameter to satisfy no-unused-vars lint
+  void _country;
   return [
     {
       name: "Cerimonia Religiosa",
