@@ -448,6 +448,18 @@
     "forYourEvent": "Per il tuo evento:",
     "tips": "Suggerimenti:"
   },
+  "guestsPage": {
+    "title": "Gestione Invitati",
+    "tabs": {
+      "guests": "Invitati",
+      "tables": "Tavoli"
+    },
+    "sections": {
+      "guestsManagement": "Gestione Completa degli Invitati",
+      "familyGroups": "Gruppi Familiari",
+      "nonInvited": "Non Invitati (solo bomboniere)"
+    }
+  },
   "suppliersUi": {
     "title": "ðŸ¢ Fornitori",
     "lead": "Esplora e gestisci i fornitori per ogni aspetto del tuo matrimonio. Trova professionisti nella tua zona, confronta preventivi e salva i tuoi preferiti.",
@@ -1094,9 +1106,8 @@
       "applyDone": "Applicazione completata: {count} voci create o aggiornate.",
       "applyError": "Errore nell'applicazione al budget."
     }
-  }
-},
-"suppliersLocations": {
+  },
+  "suppliersLocations": {
   "title": "Ricevimento Â· Location",
   "buttons": {
     "add": "+ Aggiungi Location",
@@ -1741,17 +1752,5 @@
     "authRequired": "Devi essere autenticato per aggiungere una chiesa",
     "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
     "submitError": "Errore durante l'aggiunta"
-  },
-  "guestsPage": {
-    "title": "Gestione Invitati",
-    "tabs": {
-      "guests": "Invitati",
-      "tables": "Tavoli"
-    },
-    "sections": {
-      "guestsManagement": "Gestione Completa degli Invitati",
-      "familyGroups": "Gruppi Familiari",
-      "nonInvited": "Non Invitati (solo bomboniere)"
-    }
   }
 }

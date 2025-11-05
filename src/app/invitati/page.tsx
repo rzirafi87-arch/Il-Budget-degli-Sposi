@@ -547,7 +547,7 @@ export default function InvitatiPage() {
               type="csv"
               className="text-sm"
             >
-              ?? Esporta CSV
+              ⬇️ Esporta CSV
             </ExportButton>
             <button
               onClick={addGuest}
@@ -566,7 +566,7 @@ export default function InvitatiPage() {
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">Tipo</th>
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">Famiglia</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Contatto principale</th>
-                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">?? Tavolo separato</th>
+                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">🚫 Tavolo separato</th>
                   <th className="px-2 py-2 text-left font-semibold text-gray-900">Data invito</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Risposta ricevuta</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Partecipa</th>
@@ -682,12 +682,12 @@ export default function InvitatiPage() {
                                 : "bg-gray-100 text-gray-600"
                             }`}
                           >
-                            {pref === "carne" && "??"}
-                            {pref === "pesce" && "??"}
-                            {pref === "baby" && "??"}
-                            {pref === "animazione" && "??"}
-                            {pref === "vegetariano" && "??"}
-                            {pref === "posto_tavolo" && "??"}
+                            {pref === "carne" && "🥩"}
+                            {pref === "pesce" && "🐟"}
+                            {pref === "baby" && "👶"}
+                            {pref === "animazione" && "🎪"}
+                            {pref === "vegetariano" && "🥗"}
+                            {pref === "posto_tavolo" && "💺"}
                           </button>
                         ))}
                       </div>
@@ -817,7 +817,7 @@ export default function InvitatiPage() {
           disabled={saving}
           className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] disabled:opacity-50 font-semibold"
         >
-          {saving ? "Salvataggio..." : "?? Salva tutto"}
+          {saving ? "Salvataggio..." : "💾 Salva tutto"}
         </button>
       </div>
     </>
@@ -837,7 +837,7 @@ export default function InvitatiPage() {
     return (
       <>
         <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-linear-to-br from-gray-200 to-gray-300 shadow-xl">
-          <h3 className="font-bold text-lg mb-4 text-gray-900">?? Riepilogo Tavoli</h3>
+          <h3 className="font-bold text-lg mb-4 text-gray-900">🪑 Riepilogo Tavoli</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
             <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
               <div className="text-gray-800 font-bold">Tavoli Totali</div>
