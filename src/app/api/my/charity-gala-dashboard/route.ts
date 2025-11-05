@@ -10,6 +10,14 @@ import { NextRequest, NextResponse } from "next/server";
  * POST: salva spese
  */
 
+type ExpenseRow = {
+  category: string;
+  subcategory: string;
+  supplier: string;
+  amount: number;
+  notes: string;
+};
+
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
@@ -121,8 +129,8 @@ export async function POST(req: NextRequest) {
 
   // Inserisci nuove spese
   const expensesToInsert = rows
-    .filter((r: any) => r.amount > 0 || r.supplier || r.notes)
-    .map((r: any) => ({
+    .filter((r: ExpenseRow) => r.amount > 0 || r.supplier || r.notes)
+    .map((r: ExpenseRow) => ({
       event_id: event.id,
       category: r.category,
       subcategory: r.subcategory,
