@@ -85,10 +85,10 @@
   },
   {
     "slug": "proposal",
-    "label": "Festa proposta (Proposal)",
+    "label": "Proposta di Matrimonio",
     "emoji": "💍",
     "group": "personale",
-    "available": false
+    "available": true
   },
   {
     "slug": "communion",
