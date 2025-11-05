@@ -26,9 +26,9 @@ export function middleware(req: NextRequest) {
   ];
   if (publicPaths.some((p) => pathname.startsWith(p))) {
     // Ensure NEXT_LOCALE is aligned for SSR even on public pages
-    const res = NextResponse.next();
+    const res = NextResponse.next() as unknown as { cookies?: { set?: (name: string, value: string) => void } };
     const lang = req.cookies.get("language")?.value;
-    if (lang) {
+    if (lang && res.cookies?.set) {
       res.cookies.set("NEXT_LOCALE", lang);
     }
     return res;
@@ -55,9 +55,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  const res = NextResponse.next();
+  const res = NextResponse.next() as unknown as { cookies?: { set?: (name: string, value: string) => void } };
   // Align next-intl locale cookie to reduce initial flash of wrong language
-  if (lang) {
+  if (lang && res.cookies?.set) {
     res.cookies.set("NEXT_LOCALE", lang);
   }
   return res;
