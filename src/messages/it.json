@@ -17,15 +17,15 @@
   "auth": "Accedi",
   "chat": "Chatta con noi su WhatsApp",
   "settings": "Impostazioni",
-  "loading": "Caricamentoâ€¦",
+  "loading": "Caricamento…",
   "comingSoon": "In arrivo",
   "retirement": "Pensione",
   "budgetPage": {
     "approvedExpenses": "Spese approvate",
     "ctaIdeaBudget": "💍¡ Vai a Idea di Budget",
-    "description": "Visualizzazione delle spese approvate dalla sezione 'Spese', ordinate alfabeticamente per categoria e sottocategoria.",
+    "description": "Visualizzazione del→spese approvate dalla sezione 'Spese', ordinate alfabeticamente per categoria e sottocategoria.",
     "totals": {
-      "title": "Totale spese approvate",
+      "title": "Tota→spese approvate",
       "common": "Comune",
       "bride": "Sposa",
       "groom": "Sposo"
@@ -50,16 +50,16 @@
     },
     "paymentMethod": {
       "common": "💍° Comune",
-      "bride": "ðŸ‘° Sposa",
+      "bride": "💍° Sposa",
       "groom": "🤵 Sposo",
       "gift": "🎁 Regalo"
     },
     "loading": "Caricamento...",
-    "empty": "Nessuna spesa approvata. Vai alla sezione 'Spese' per approvare le tue spese.",
+    "empty": "Nessuna spesa approvata. Vai alla sezione 'Spese' per approvare →tue spese.",
     "plannedVsActual": {
       "title": "Pianificato vs Effettivo",
-      "totalPlanned": "Totale pianificato",
-      "totalActualApproved": "Totale effettivo (approvato)",
+      "totalPlanned": "Tota→pianificato",
+      "totalActualApproved": "Tota→effettivo (approvato)",
       "difference": "Differenza",
       "over": "+ oltre il previsto",
       "under": "sotto il previsto",
@@ -71,24 +71,24 @@
   },
   "expensesPage": {
     "info": {
-      "lead": "Registra e gestisci tutte le spese del matrimonio. Puoi inserire preventivi, confermarli come spese approvate, e tenere traccia degli stati di pagamento. Filtra per categoria, tipo di spesa (comune/sposa/sposo) e stato.",
-      "title": "Gestione Completa delle Spese",
-      "description": "In questa pagina puoi registrare tutte le spese effettive e i preventivi. Ogni spesa può essere categorizzata, assegnata a sposa/sposo/comune, e tracciata con stato di approvazione e pagamento. Le spese confermate dalla dashboard appaiono qui automaticamente.",
+      "lead": "Registra e gestisci tutte →spese del matrimonio. Puoi inserire preventivi, confermarli come spese approvate, e tenere traccia degli stati di pagamento. Filtra per categoria, tipo di spesa (comune/sposa/sposo) e stato.",
+      "title": "Gestione Completa del→Spese",
+      "description": "In questa pagina puoi registrare tutte →spese effettive e i preventivi. Ogni spesa può essere categorizzata, assegnata a sposa/sposo/comune, e tracciata con stato di approvazione e pagamento. Le spese confermate dalla dashboard appaiono qui automaticamente.",
       "tips": {
-        "tip1": "Usa lo stato 'Preventivo' per le offerte ricevute, poi cambiale in 'Approvato' quando confermi",
+        "tip1": "Usa lo stato 'Preventivo' per →offerte ricevute, poi cambia→in 'Approvato' quando confermi",
         "tip2": "Il campo 'Da preventivo' indica se la spesa proviene dalla dashboard (già budgetata)",
         "tip3": "Aggiungi sempre il fornitore per tenere traccia di chi ti ha fornito ogni servizio",
         "tip4": "Filtra per categoria o tipo di spesa per analizzare dove stai spendendo di più"
       },
       "eventTypeSpecific": {
-        "wedding": "Per il matrimonio, puoi dividere le spese tra sposa, sposo e comuni. Questo aiuta a capire il contributo di ciascuno e a gestire le finanze in modo trasparente.",
-        "baptism": "Per il battesimo, tutte le spese sono automaticamente impostate come 'comuni' - non è necessario specificare chi paga.",
-        "eighteenth": "Per il diciottesimo, tutte le spese sono comuni. Pianifica location, catering, intrattenimento e ricordi per rendere indimenticabile questa festa!",
-        "confirmation": "Per la cresima, tutte le spese sono comuni. Organizza cerimonia, ricevimento, bomboniere e ricordi per celebrare questo momento speciale di crescita spirituale.",
-        "communion": "Per la comunione, tutte le spese sono considerate comuni, senza divisione tra genitori.",
-        "birthday": "Per il compleanno, dividi le spese tra l'organizzatore principale e quelle condivise con altri.",
-        "graduation": "Per la laurea, traccia tutte le spese legate all'evento: location, catering, inviti, decorazioni e ricordi.",
-        "anniversary": "Per l'anniversario di matrimonio, gestisci insieme le spese per la celebrazione. Che sia 25° (argento), 50° (oro) o un anniversario più intimo, ogni dettaglio conta per rendere speciale questo momento di rinnovo dell'amore."
+        "wedding": "Per il matrimonio, puoi dividere →spese tra sposa, sposo e comuni. Questo aiuta a capire il contributo di ciascuno e a gestire →finanze in modo trasparente.",
+        "baptism": "Per il battesimo, tutte →spese sono automaticamente impostate come 'comuni' - non è necessario specificare chi paga.",
+        "eighteenth": "Per il diciottesimo, tutte →spese sono comuni. Pianifica location, catering, intrattenimento e ricordi per rendere indimenticabi→questa festa!",
+        "confirmation": "Per la cresima, tutte →spese sono comuni. Organizza cerimonia, ricevimento, bomboniere e ricordi per celebrare questo momento specia→di crescita spirituale.",
+        "communion": "Per la comunione, tutte →spese sono considerate comuni, senza divisione tra genitori.",
+        "birthday": "Per il compleanno, dividi →spese tra l'organizzatore principa→e quel→condivise con altri.",
+        "graduation": "Per la laurea, traccia tutte →spese legate all'evento: location, catering, inviti, decorazioni e ricordi.",
+        "anniversary": "Per l'anniversario di matrimonio, gestisci insieme →spese per la celebrazione. Che sia 25° (argento), 50° (oro) o un anniversario più intimo, ogni dettaglio conta per rendere specia→questo momento di rinnovo dell'amore."
       }
     },
     "title": "Spese",
@@ -157,21 +157,21 @@
   },
   "incomesPage": {
     "info": {
-      "lead": "Traccia tutte le entrate che contribuiscono al budget del matrimonio: regali dei genitori, contributi familiari, risparmi personali o altre fonti. Specifica se l'entrata è della sposa, dello sposo o comune.",
-      "title": "Traccia Tutte le Entrate",
-      "description": "Qui puoi registrare tutte le fonti di denaro che contribuiscono al budget del tuo evento: contributi familiari, regali in busta, bonifici, risparmi personali. Ogni entrata può essere categorizzata per sapere chi la porta (sposa/sposo/comune) e da chi proviene.",
+      "lead": "Traccia tutte →entrate che contribuiscono al budget del matrimonio: regali dei genitori, contributi familiari, risparmi personali o altre fonti. Specifica se l'entrata è della sposa, dello sposo o comune.",
+      "title": "Traccia Tutte →Entrate",
+      "description": "Qui puoi registrare tutte →fonti di denaro che contribuiscono al budget del tuo evento: contributi familiari, regali in busta, bonifici, risparmi personali. Ogni entrata può essere categorizzata per sapere chi la porta (sposa/sposo/comune) e da chi proviene.",
       "tips": {
         "tip1": "Usa 'Busta' per regali in contanti ricevuti durante l'evento",
         "tip2": "Usa 'Bonifico' per contributi ricevuti prima dell'evento",
         "tip3": "Usa 'Regalo' per registrare doni materiali (senza importo specifico)",
-        "tip4": "Il totale delle entrate ti aiuta a capire quanto budget effettivo hai a disposizione"
+        "tip4": "Il tota→del→entrate ti aiuta a capire quanto budget effettivo hai a disposizione"
       },
       "eventTypeSpecific": {
         "wedding": "Durante il matrimonio è tradizione ricevere buste con contributi economici dagli invitati. Registra ogni busta ricevuta per tenere traccia completa.",
-        "baptism": "Per il battesimo, registra i contributi di padrino, madrina e familiari che vogliono partecipare alle spese.",
+        "baptism": "Per il battesimo, registra i contributi di padrino, madrina e familiari che vogliono partecipare al→spese.",
         "birthday": "Per il compleanno, traccia i contributi di amici e parenti che vogliono aiutare nell'organizzazione.",
         "graduation": "Per la laurea, registra contributi familiari e regali ricevuti per celebrare il traguardo.",
-        "anniversary": "Per l'anniversario di matrimonio, registra contributi di figli, nipoti e parenti che vogliono partecipare alla celebrazione. Spesso le famiglie si uniscono per organizzare la festa a sorpresa o contribuire alle spese."
+        "anniversary": "Per l'anniversario di matrimonio, registra contributi di figli, nipoti e parenti che vogliono partecipare alla celebrazione. Spesso →famiglie si uniscono per organizzare la festa a sorpresa o contribuire al→spese."
       }
     },
     "title": "Entrate",
@@ -184,7 +184,7 @@
       "bride": "Entrate Sposa",
       "groom": "Entrate Sposo",
       "common": "Entrate Comuni",
-      "totalMoney": "Totale denaro",
+      "totalMoney": "Tota→denaro",
       "physicalGifts": "Regali fisici"
     },
     "buttons": {
@@ -198,7 +198,7 @@
       "name": "Nome persona/famiglia *",
       "type": "Tipologia *",
       "incomeSource": "Fonte entrata *",
-      "amount": "Importo (â‚¬) *",
+      "amount": "Importo (€) *",
       "date": "Data",
       "notes": "Note",
       "giftDescription": "Descrizione regalo *",
@@ -236,7 +236,7 @@
         "regalo": "🎁 Regalo"
       },
       "source": {
-        "bride": "ðŸ‘° Sposa",
+        "bride": "💍° Sposa",
         "groom": "🤵 Sposo",
         "common": "💍‘ Comune"
       }
@@ -305,7 +305,7 @@
       }
     },
     "demo": {
-      "title": "Esplora le funzionalità 💍•",
+      "title": "Esplora →funzionalità 💍•",
       "subtitle": "Navigazione libera senza registrazione â€” aggiungi dati e sperimenta!",
       "features": {
         "budget": {
@@ -346,7 +346,7 @@
     },
     "finalCta": {
       "title": "Pronto a iniziare? 🎊",
-      "subtitle": "Unisciti alle coppie che hanno organizzato il loro matrimonio con serenità .",
+      "subtitle": "Unisciti al→coppie che hanno organizzato il loro matrimonio con serenità .",
       "button": "Crea il tuo evento ora"
     },
     "floatingMenu": "🏠  Menù Principale",
@@ -383,7 +383,7 @@
         },
         "budget": {
           "title": "Budget",
-          "desc": "Gestisci tutte le spese"
+          "desc": "Gestisci tutte →spese"
         },
         "guests": {
           "title": "Invitati",
@@ -403,7 +403,7 @@
         }
       },
       "nextSteps": {
-        "title": "ðŸ“ Prossimi Passi Consigliati",
+        "title": "👀 Prossimi Passi Consigliati",
         "defBudget": "Definisci il budget totale",
         "chooseVenue": "Scegli la location del ricevimento",
         "bookPhoto": "Prenota il fotografo",
@@ -418,7 +418,7 @@
     },
     "focus": {
       "title": "Budget consigliato (percentuali)",
-      "subtitle": "Distribuzione suggerita per le principali voci.",
+      "subtitle": "Distribuzione suggerita per →principali voci.",
       "labels": {
         "catering": "Catering",
         "location": "Location",
@@ -432,7 +432,7 @@
     "summary": {
       "bride": "Budget Sposa {currency}",
       "groom": "Budget Sposo {currency}",
-      "total": "Budget Totale {currency}",
+      "total": "Budget Tota→{currency}",
       "contingency": "Imprevisti (%)",
       "date": {
         "wedding": "Data Matrimonio",
@@ -477,11 +477,11 @@
     "explore": "Esplora â†’",
     "empty": {
       "title": "Nessuna categoria trovata per \"{query}\"",
-      "reset": "Mostra tutte le categorie"
+      "reset": "Mostra tutte →categorie"
     },
     "tip": {
       "title": "💍¡ Suggerimento",
-      "body": "Per ogni categoria potrai cercare fornitori nella tua zona, filtrare per prezzo e servizi, confrontare preventivi e salvare i tuoi preferiti. Ogni fornitore può essere aggiunto direttamente alle spese del tuo budget."
+      "body": "Per ogni categoria potrai cercare fornitori nella tua zona, filtrare per prezzo e servizi, confrontare preventivi e salvare i tuoi preferiti. Ogni fornitore può essere aggiunto direttamente al→spese del tuo budget."
     },
     "categories": {
       "atelier": {
@@ -523,27 +523,27 @@
     }
   },
   "howItWorks": {
-    "title": "ðŸ“– Come Funziona",
+    "title": "👀– Come Funziona",
     "steps": {
       "1": {
-        "title": "ðŸ“ Registrati Gratuitamente",
+        "title": "👀 Registrati Gratuitamente",
         "desc": "Crea il tuo account in pochi secondi. Nessun costo nascosto, nessuna carta di credito richiesta. Inizia subito a pianificare il tuo matrimonio!"
       },
       "2": {
         "title": "💍° Imposta il Tuo Budget",
-        "desc": "Definisci il budget iniziale per sposa e sposo. Il sistema calcola automaticamente il totale e ti aiuta a monitorare le spese in tempo reale."
+        "desc": "Definisci il budget inizia→per sposa e sposo. Il sistema calcola automaticamente il tota→e ti aiuta a monitorare →spese in tempo reale."
       },
       "3": {
-        "title": "ðŸ“Š Gestisci le Categorie",
-        "desc": "Organizza le spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro. Tutto è già pronto all'uso!"
+        "title": "👀Š Gestisci →Categorie",
+        "desc": "Organizza →spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro. Tutto è già pronto all'uso!"
       },
       "4": {
-        "title": "ðŸ” Trova Fornitori",
+        "title": "💡 Trova Fornitori",
         "desc": "Accedi al nostro database di fornitori verificati in tutta Italia: location, chiese, fotografi, wedding planner, musicisti e molto altro."
       },
       "5": {
-        "title": "ðŸ‘¥ Gestisci gli Invitati",
-        "desc": "Crea e gestisci la lista invitati, organizza per famiglie, monitora le conferme e calcola i costi per persona."
+        "title": "💍¥ Gestisci gli Invitati",
+        "desc": "Crea e gestisci la lista invitati, organizza per famiglie, monitora →conferme e calcola i costi per persona."
       },
       "6": {
         "title": "💍¾ Salva e Monitora",
@@ -557,11 +557,11 @@
     }
   },
   "about": {
-    "title": "ðŸ‘°🤵 Chi Siamo",
-    "intro": "Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale. Nata dall'esperienza diretta di coppie che hanno vissuto le sfide dell'organizzazione di un matrimonio, la nostra missione è rendere questo processo più semplice, trasparente e piacevole.",
+    "title": "💍°🤵 Chi Siamo",
+    "intro": "Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale. Nata dall'esperienza diretta di coppie che hanno vissuto →sfide dell'organizzazione di un matrimonio, la nostra missione è rendere questo processo più semplice, trasparente e piacevole.",
     "mission": {
       "title": "La Nostra Missione",
-      "body": "Aiutare le coppie italiane a pianificare il loro matrimonio da sogno senza stress finanziari. Offriamo strumenti gratuiti, intuitivi e completi per gestire ogni aspetto del budget matrimoniale."
+      "body": "Aiutare →coppie italiane a pianificare il loro matrimonio da sogno senza stress finanziari. Offriamo strumenti gratuiti, intuitivi e completi per gestire ogni aspetto del budget matrimoniale."
     },
     "why": {
       "title": "Perché Sceglierci",
@@ -584,7 +584,7 @@
         },
         "support": {
           "title": "Supporto Dedicato:",
-          "desc": "Il nostro team è sempre disponibile ad aiutarti"
+          "desc": "Il nostro team è sempre disponibi→ad aiutarti"
         }
       }
     },
@@ -631,25 +631,25 @@
       },
       "s1": {
         "title": "1. Cosa sono i Cookie?",
-        "p1": "I cookie sono piccoli file di testo che i siti web salvano sul tuo dispositivo (computer, tablet, smartphone) quando li visiti. Servono a migliorare la tua esperienza di navigazione, ricordare le tue preferenze e fornire funzionalità essenziali."
+        "p1": "I cookie sono piccoli fi→di testo che i siti web salvano sul tuo dispositivo (computer, tablet, smartphone) quando li visiti. Servono a migliorare la tua esperienza di navigazione, ricordare →tue preferenze e fornire funzionalità essenziali."
       },
       "s2": {
         "title": "2. Tipi di Cookie Utilizzati",
         "tech": {
-          "title": "2.1 Cookie Tecnici (Necessari) ðŸ”’",
+          "title": "2.1 Cookie Tecnici (Necessari) 💡’",
           "p1": "Questi cookie sono essenziali per il funzionamento del sito e non possono essere disattivati. Non richiedono il tuo consenso ai sensi della normativa vigente."
         },
         "prefs": {
           "title": "2.2 Cookie di Preferenze 🎁¨",
-          "p1": "Ricordano le tue scelte (lingua, tema, visualizzazione) per migliorare l'esperienza."
+          "p1": "Ricordano →tue scelte (lingua, tema, visualizzazione) per migliorare l'esperienza."
         },
         "analytics": {
-          "title": "2.3 Cookie Analitici ðŸ“Š",
+          "title": "2.3 Cookie Analitici 👀Š",
           "p1": "Raccolgono dati anonimi su come usi il sito per migliorarlo. Richiedono il tuo consenso.",
-          "note": "Nota: Attualmente non utilizziamo cookie analitici di terze parti (come Google Analytics). Monitoriamo solo metriche server-side anonime."
+          "note": "Nota: Attualmente non utilizziamo cookie analitici di terze parti (come Goog→Analytics). Monitoriamo solo metriche server-side anonime."
         },
         "marketing": {
-          "title": "2.4 Cookie di Marketing ðŸ“¢",
+          "title": "2.4 Cookie di Marketing 👀¢",
           "p1": "Utilizzati per mostrare pubblicità pertinenti. Richiedono il tuo consenso esplicito.",
           "status": "Stato attuale: Non utilizziamo cookie di marketing o remarketing. Se in futuro implementeremo pubblicità , richiederemo il tuo consenso preventivo."
         }
@@ -670,11 +670,11 @@
         "title": "4. Come Gestire i Cookie",
         "banner": {
           "title": "4.1 Tramite Banner Cookie",
-          "p1": "Al primo accesso, puoi scegliere quali cookie accettare tramite il banner di consenso. Puoi modificare le tue preferenze in qualsiasi momento dalle impostazioni del tuo account."
+          "p1": "Al primo accesso, puoi scegliere quali cookie accettare tramite il banner di consenso. Puoi modificare →tue preferenze in qualsiasi momento dal→impostazioni del tuo account."
         },
         "browser": {
           "title": "4.2 Tramite Browser",
-          "p1": "Puoi gestire i cookie attraverso le impostazioni del tuo browser:",
+          "p1": "Puoi gestire i cookie attraverso →impostazioni del tuo browser:",
           "chrome": "Impostazioni â†’ Privacy e sicurezza â†’ Cookie",
           "firefox": "Opzioni â†’ Privacy e sicurezza â†’ Cookie e dati dei siti web",
           "safari": "Preferenze â†’ Privacy â†’ Gestisci dati siti web",
@@ -684,7 +684,7 @@
       },
       "s5": {
         "title": "5. Do Not Track (DNT)",
-        "p1": "Rispettiamo il segnale \"Do Not Track\" del browser. Se abilitato, non tracciamo la tua navigazione a fini analitici o pubblicitari."
+        "p1": "Rispettiamo il segna→\"Do Not Track\" del browser. Se abilitato, non tracciamo la tua navigazione a fini analitici o pubblicitari."
       },
       "s6": {
         "title": "6. Durata dei Cookie",
@@ -722,14 +722,14 @@
         "p1": "Per domande sulla Cookie Policy o sulla gestione dei tuoi dati: Email: privacy@ilbudgetdeglisposi.it â€” Telefono: +39 XXX XXX XXXX"
       },
       "summary": {
-        "title": "ðŸ“‹ Riepilogo Rapido",
+        "title": "👀‹ Riepilogo Rapido",
         "tech": {
           "title": "Cookie Tecnici",
           "value": "âœ… Sempre attivi"
         },
         "prefs": {
           "title": "Cookie Preferenze",
-          "value": "ðŸ”˜ Richiedono consenso"
+          "value": "💡˜ Richiedono consenso"
         },
         "marketing": {
           "title": "Cookie Marketing",
@@ -779,9 +779,9 @@
         "title": "4. Come utilizziamo i tuoi dati",
         "p1": "Usiamo i tuoi dati per:",
         "items": {
-          "i1": "Erogare e migliorare le funzionalità della piattaforma",
+          "i1": "Erogare e migliorare →funzionalità della piattaforma",
           "i2": "Gestire autenticazione e sicurezza",
-          "i3": "Salvare le tue preferenze (lingua, viste, layout)",
+          "i3": "Salvare →tue preferenze (lingua, viste, layout)",
           "i4": "Rispondere a richieste di supporto",
           "i5": "Analizzare in forma aggregata e anonima l'uso del servizio",
           "i6": "Adempiere ad obblighi legali"
@@ -854,7 +854,7 @@
           },
           "port": {
             "title": "Portabilità ",
-            "desc": "Ricevere i dati in formato strutturato e leggibile da dispositivo."
+            "desc": "Ricevere i dati in formato strutturato e leggibi→da dispositivo."
           },
           "object": {
             "title": "Opposizione",
@@ -884,7 +884,7 @@
       },
       "s11": {
         "title": "11. Trasferimenti extra-UE",
-        "p1": "Qualora alcuni servizi siano erogati da fornitori con sede fuori dallo Spazio Economico Europeo, garantiamo adeguate misure di protezione (es. Clausole Contrattuali Standard)."
+        "p1": "Qualora alcuni servizi siano erogati da fornitori con sede fuori dallo Spazio Economico Europeo, garantiamo adeguate misure di protezione (es. Clauso→Contrattuali Standard)."
       },
       "s12": {
         "title": "12. Minori",
@@ -895,9 +895,9 @@
         "p1": "Potremmo aggiornare periodicamente questa informativa. Le modifiche significative saranno indicate in questa pagina. Ti invitiamo a consultarla regolarmente."
       },
       "s14": {
-        "title": "14. Contatti del Responsabile Privacy",
+        "title": "14. Contatti del Responsabi→Privacy",
         "p1": "Per qualsiasi domanda o richiesta sulla privacy:",
-        "authName": "Responsabile Privacy â€” MYBUDGETEVENTO",
+        "authName": "Responsabi→Privacy â€” MYBUDGETEVENTO",
         "addr": "Indirizzo: Via Esempio 123, 00100 Roma (RM)",
         "email": "Email: privacy@ilbudgetdeglisposi.it",
         "phone": "Tel: +39 XXX XXX XXXX"
@@ -933,12 +933,12 @@
           "p1": "Per utilizzare il servizio completo, devi:",
           "i1": "Avere almeno 18 anni",
           "i2": "Fornire informazioni veritiere e accurate",
-          "i3": "Mantenere riservate le tue credenziali di accesso",
+          "i3": "Mantenere riservate →tue credenziali di accesso",
           "i4": "Accettare la Privacy Policy"
         },
         "resp": {
           "title": "3.2 Responsabilità Account",
-          "p1": "Sei responsabile di tutte le attività svolte tramite il tuo account. In caso di accesso non autorizzato, devi informarci immediatamente."
+          "p1": "Sei responsabi→di tutte →attività svolte tramite il tuo account. In caso di accesso non autorizzato, devi informarci immediatamente."
         }
       },
       "s4": {
@@ -970,7 +970,7 @@
         },
         "responsibility": {
           "title": "5.2 Responsabilità ",
-          "p1": "Sei responsabile dei contenuti che carichi. Garantisci di avere il diritto di caricare tali contenuti e che non violano diritti di terzi."
+          "p1": "Sei responsabi→dei contenuti che carichi. Garantisci di avere il diritto di caricare tali contenuti e che non violano diritti di terzi."
         }
       },
       "s6": {
@@ -1022,7 +1022,7 @@
         "title": "11. Risoluzione e Cancellazione Account",
         "you": {
           "title": "11.1 Tua Iniziativa",
-          "p1": "Puoi cancellare il tuo account in qualsiasi momento dalle impostazioni. I dati saranno eliminati entro 30 giorni, salvo obblighi legali di conservazione."
+          "p1": "Puoi cancellare il tuo account in qualsiasi momento dal→impostazioni. I dati saranno eliminati entro 30 giorni, salvo obblighi legali di conservazione."
         },
         "us": {
           "title": "11.2 Nostra Iniziativa",
@@ -1033,14 +1033,14 @@
         }
       },
       "s12": {
-        "title": "12. Legge Applicabile e Foro Competente",
+        "title": "12. Legge Applicabi→e Foro Competente",
         "p1": "I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia, è competente esclusivamente il Foro di Roma, Italia."
       },
       "s13": {
         "title": "13. Disposizioni Varie",
         "severability": {
           "title": "13.1 Divisibilità ",
-          "p1": "Se una clausola è dichiarata invalida, le restanti clausole rimangono valide ed efficaci."
+          "p1": "Se una clausola è dichiarata invalida, →restanti clauso→rimangono valide ed efficaci."
         },
         "assignment": {
           "title": "13.2 Cessione",
@@ -1076,9 +1076,9 @@
       "syncedNote": "Sincronizzato con la dashboard principale."
     },
     "summary": {
-      "plannedTotal": "Totale pianificato:",
+      "plannedTotal": "Tota→pianificato:",
       "contingency": "Imprevisti:",
-      "totalWithContingency": "Totale con imprevisti:"
+      "totalWithContingency": "Tota→con imprevisti:"
     },
     "panel": {
       "available": "Disponibile:",
@@ -1131,7 +1131,7 @@
       },
       "placeholders": {
         "province": "es. Roma, Milano, Napoli",
-        "priceRange": "es. â‚¬â‚¬â‚¬, 50-100â‚¬ a persona",
+        "priceRange": "es. €€€, 50-100€ a persona",
         "description": "Descrivi la location, i servizi offerti, particolarità ..."
       },
       "submit": "Aggiungi Location"
@@ -1150,7 +1150,7 @@
     },
     "labels": {
       "type": "Tipo:",
-      "capacity": "ðŸ‘¥ Capacità :",
+      "capacity": "💍¥ Capacità :",
       "website": "Sito Web"
     },
     "capacity": {
@@ -1195,7 +1195,7 @@
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una location",
       "addError": "Errore durante l'aggiunta",
-      "addSuccess": "Location aggiunta con successo! Sarà visibile dopo la verifica dello staff."
+      "addSuccess": "Location aggiunta con successo! Sarà visibi→dopo la verifica dello staff."
     }
   },
   "suppliersPhotographers": {
@@ -1204,7 +1204,7 @@
       "suppliers": "Fornitori",
       "photographers": "Fotografi"
     },
-    "title": "ðŸ“¸ Fotografi",
+    "title": "👀¸ Fotografi",
     "description": "Trova i migliori fotografi e videomaker per il tuo matrimonio. Filtra per regione e provincia, confronta prezzi e visita i loro portfolio.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
@@ -1212,7 +1212,7 @@
     "filters": {
       "title": "Filtra fotografi",
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es. Milano",
       "search": "Cerca",
@@ -1224,8 +1224,8 @@
       "count": "{count, plural, =0 {Nessun fotografo trovato} one {# fotografo trovato} other {# fotografi trovati}}"
     },
     "viewMode": {
-      "grid": "ðŸ”² Griglia",
-      "list": "ðŸ“‹ Lista"
+      "grid": "💡² Griglia",
+      "list": "👀‹ Lista"
     },
     "loading": "Caricamento...",
     "empty": {
@@ -1233,9 +1233,9 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "ðŸŒ Sito",
-      "websiteLink": "ðŸŒ Sito web",
-      "call": "ðŸ“ž Chiama",
+      "website": "💰 Sito",
+      "websiteLink": "💰 Sito web",
+      "call": "👀ž Chiama",
       "email": "âœ‰ï¸ Email",
       "addToFavorites": "Aggiungi ai preferiti",
       "removeFromFavorites": "Rimuovi dai preferiti",
@@ -1249,7 +1249,7 @@
       "suppliers": "Fornitori",
       "atelier": "Atelier"
     },
-    "title": "ðŸ‘—🤵 Atelier",
+    "title": "💍—🤵 Atelier",
     "description": "Scopri gli atelier più prestigiosi per l'abito da sposa e da sposo. Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori",
@@ -1257,12 +1257,12 @@
       "cancel": "Annulla"
     },
     "tabs": {
-      "bride": "ðŸ‘° Atelier Sposa",
+      "bride": "💍° Atelier Sposa",
       "groom": "🤵 Atelier Sposo"
     },
     "filters": {
       "region": "Filtra per Regione",
-      "allRegions": "Tutte le regioni"
+      "allRegions": "Tutte →regioni"
     },
     "form": {
       "title": "Aggiungi Nuovo Atelier",
@@ -1287,10 +1287,10 @@
         "groom": "Sposo"
       },
       "priceRanges": {
-        "budget": "â‚¬ (Economico)",
-        "moderate": "â‚¬â‚¬ (Moderato)",
-        "high": "â‚¬â‚¬â‚¬ (Alto)",
-        "luxury": "â‚¬â‚¬â‚¬â‚¬ (Lusso)"
+        "budget": "€ (Economico)",
+        "moderate": "€€ (Moderato)",
+        "high": "€€€ (Alto)",
+        "luxury": "€€€€ (Lusso)"
       },
       "placeholders": {
         "description": "Breve descrizione dell'atelier...",
@@ -1340,7 +1340,7 @@
     "filters": {
       "title": "Filtra fiorai",
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es. Milano",
       "search": "Cerca",
@@ -1349,8 +1349,8 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "ðŸ”² Griglia",
-      "list": "ðŸ“‹ Lista"
+      "grid": "💡² Griglia",
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessun fiorista trovato} one {# fiorista trovato} other {# fioristi trovati}}"
@@ -1361,8 +1361,8 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "ðŸŒ Sito",
-      "call": "ðŸ“ž Chiama",
+      "website": "💰 Sito",
+      "call": "👀ž Chiama",
       "email": "âœ‰ï¸ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
@@ -1376,7 +1376,7 @@
       "suppliers": "Fornitori",
       "catering": "Catering"
     },
-    "title": "ðŸ½ï¸ Catering & Banqueting",
+    "title": "💵½ï¸ Catering & Banqueting",
     "description": "Trova i migliori servizi di catering per il tuo matrimonio. Menù personalizzati, buffet gourmet e servizio impeccabile.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
@@ -1384,7 +1384,7 @@
     "filters": {
       "title": "Filtra servizi catering",
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es. Milano",
       "search": "Cerca",
@@ -1393,8 +1393,8 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "ðŸ”² Griglia",
-      "list": "ðŸ“‹ Lista"
+      "grid": "💡² Griglia",
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessun servizio catering trovato} one {# servizio catering trovato} other {# servizi catering trovati}}"
@@ -1405,8 +1405,8 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "ðŸŒ Sito",
-      "call": "ðŸ“ž Chiama",
+      "website": "💰 Sito",
+      "call": "👀ž Chiama",
       "email": "âœ‰ï¸ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
@@ -1428,7 +1428,7 @@
     "filters": {
       "title": "Filtra professionisti beauty",
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es. Milano",
       "search": "Cerca",
@@ -1437,8 +1437,8 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "ðŸ”² Griglia",
-      "list": "ðŸ“‹ Lista"
+      "grid": "💡² Griglia",
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessun professionista trovato} one {# professionista trovato} other {# professionisti trovati}}"
@@ -1449,8 +1449,8 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "ðŸŒ Sito",
-      "call": "ðŸ“ž Chiama",
+      "website": "💰 Sito",
+      "call": "👀ž Chiama",
       "email": "âœ‰ï¸ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
@@ -1472,7 +1472,7 @@
     "filters": {
       "title": "Filtra gioiellerie",
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es. Milano",
       "search": "Cerca",
@@ -1481,8 +1481,8 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "ðŸ”² Griglia",
-      "list": "ðŸ“‹ Lista"
+      "grid": "💡² Griglia",
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessuna gioielleria trovata} one {# gioielleria trovata} other {# gioiellerie trovate}}"
@@ -1493,8 +1493,8 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "ðŸŒ Sito",
-      "call": "ðŸ“ž Chiama",
+      "website": "💰 Sito",
+      "call": "👀ž Chiama",
       "email": "âœ‰ï¸ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
@@ -1518,7 +1518,7 @@
     },
     "filters": {
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es: Roma"
     },
@@ -1551,7 +1551,7 @@
       "musicReception": "Musica Ricevimento"
     },
     "title": "Musica Ricevimento",
-    "description": "Trova DJ, band e intrattenimento musicale verificato per il ricevimento. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
+    "description": "Trova DJ, band e intrattenimento musica→verificato per il ricevimento. Puoi proporre nuovi artisti che verranno verificati prima della pubblicazione.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori",
       "propose": "+ Proponi DJ/band",
@@ -1560,7 +1560,7 @@
     },
     "filters": {
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es: Napoli"
     },
@@ -1578,7 +1578,7 @@
       "musicType": "Tipo di musica",
       "select": "Seleziona...",
       "websitePlaceholder": "https://...",
-      "pricePlaceholder": "Es: â‚¬â‚¬â‚¬",
+      "pricePlaceholder": "Es: €€€",
       "musicTypePlaceholder": "Es: DJ, Band live, Orchestra, Duo acustico"
     },
     "loading": "Caricamento...",
@@ -1606,7 +1606,7 @@
     },
     "filters": {
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es: Milano"
     },
@@ -1624,7 +1624,7 @@
       "services": "Servizi offerti",
       "select": "Seleziona...",
       "websitePlaceholder": "https://...",
-      "pricePlaceholder": "Es: â‚¬â‚¬-â‚¬â‚¬â‚¬",
+      "pricePlaceholder": "Es: €€-€€€",
       "servicesPlaceholder": "Es: Full planning, Partial planning, Consulenza giorno"
     },
     "loading": "Caricamento...",
@@ -1661,7 +1661,7 @@
       "website": "Sito Web",
       "capacity": "Capacità (persone)",
       "description": "Descrizione",
-      "descriptionPlaceholder": "Descrivi la chiesa, le caratteristiche architettoniche, servizi...",
+      "descriptionPlaceholder": "Descrivi la chiesa, →caratteristiche architettoniche, servizi...",
       "requiresBaptism": "Richiede Battesimo",
       "requiresMarriageCourse": "Richiede Corso Prematrimoniale",
       "select": "Seleziona..."
@@ -1679,7 +1679,7 @@
     "card": {
       "verified": "Verificato",
       "type": "Tipo:",
-      "capacity": "ðŸ‘¥ Capacità :",
+      "capacity": "💍¥ Capacità :",
       "people": "persone",
       "requiresBaptism": "âš ï¸ Richiede Battesimo",
       "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
@@ -1689,7 +1689,7 @@
     "empty": "Nessuna chiesa trovata. Prova a cambiare i filtri o aggiungi la prima!",
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibi→dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     }
   },
@@ -1702,7 +1702,7 @@
     },
     "filters": {
       "region": "Regione",
-      "allRegions": "Tutte le regioni",
+      "allRegions": "Tutte →regioni",
       "province": "Provincia",
       "provincePlaceholder": "Es: Roma",
       "type": "Tipo",
@@ -1740,7 +1740,7 @@
     "card": {
       "verified": "Verificato",
       "type": "Tipo:",
-      "capacity": "ðŸ‘¥ Capacità :",
+      "capacity": "💍¥ Capacità :",
       "people": "persone",
       "requiresBaptism": "âš ï¸ Richiede Battesimo",
       "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
@@ -1750,7 +1750,7 @@
     "empty": "Nessuna chiesa trovata con questi filtri.",
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibi→dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     }
   }
