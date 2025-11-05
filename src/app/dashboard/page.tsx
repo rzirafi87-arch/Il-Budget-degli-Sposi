@@ -24,6 +24,7 @@ export default function DashboardPage() {
   const [traditions, setTraditions] = useState<Tradition[]>([]);
   const [localized, setLocalized] = useState<LocalizedWeddingData | null>(null);
   const [budgetFocus, setBudgetFocus] = useState<BudgetFocus | null>(null);
+  const [savingBudget, setSavingBudget] = useState(false);
 
   // Read from localStorage with cookie fallback to make onboarding more robust
   const userLang = typeof window !== "undefined"
@@ -165,6 +166,57 @@ export default function DashboardPage() {
     };
   }, [userCountry, userEventType, isReady, isWedding]);
 
+  // Funzione per salvare il budget in Idea di Budget
+  async function handleSaveBudget() {
+    setSavingBudget(true);
+    try {
+      const { data: sessionData } = await getBrowserClient().auth.getSession();
+      const jwt = sessionData.session?.access_token;
+      if (!jwt) {
+        alert("Devi effettuare il login per salvare il budget");
+        return;
+      }
+
+      const headers: HeadersInit = { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwt}`
+      };
+
+      // Salva il budget usando l'endpoint esistente
+      const budgetPayload = {
+        totalBudget: totalBudget,
+        brideBudget: brideBudget,
+        groomBudget: groomBudget,
+        weddingDate: weddingDate,
+        rows: budgetItems.map(item => ({
+          category: item.name.split(" - ")[0] || "Varie",
+          subcategory: item.name.split(" - ")[1] || item.name,
+          supplier: "",
+          amount: item.amount || 0,
+          spendType: "common",
+          notes: ""
+        }))
+      };
+
+      const response = await fetch("/api/my/dashboard", {
+        method: "POST",
+        headers,
+        body: JSON.stringify(budgetPayload)
+      });
+
+      if (!response.ok) {
+        throw new Error("Errore nel salvataggio del budget");
+      }
+
+      alert("✅ Budget salvato con successo! I dati sono ora disponibili in 'Idea di Budget'.");
+    } catch (error) {
+      console.error("Errore nel salvataggio:", error);
+      alert("❌ Errore nel salvataggio del budget. Riprova.");
+    } finally {
+      setSavingBudget(false);
+    }
+  }
+
   if (!isReady) {
     return (
       <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4 text-center p-6">
@@ -217,6 +269,17 @@ export default function DashboardPage() {
         setGroomBudget={setGroomBudget}
         setWeddingDate={setWeddingDate}
       />
+
+      {/* Bottone Salva Budget */}
+      <div className="mb-6 flex justify-end">
+        <button
+          onClick={handleSaveBudget}
+          disabled={savingBudget}
+          className="bg-[#A3B59D] hover:bg-[#8fa188] text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {savingBudget ? "Salvataggio..." : "💾 Salva Budget"}
+        </button>
+      </div>
 
   <BudgetItemsSection budgetItems={budgetItems} />
 

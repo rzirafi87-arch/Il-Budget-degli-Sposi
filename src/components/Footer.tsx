@@ -8,7 +8,6 @@ export default function Footer() {
   const t = useTranslations("footer");
   const safe = (key: string, fallback: string) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return t(key as any);
     } catch {
       return fallback;

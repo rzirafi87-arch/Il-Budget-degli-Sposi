@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import React from "react";
 
 // Lista completa di paesi supportati
@@ -345,6 +346,7 @@ export default function PageInfoNote({
   showCountries = false,
   showLanguages = false,
 }: PageInfoNoteProps) {
+  const t = useTranslations("pageInfoNote");
   // Leggi il tipo di evento dal localStorage (client-side)
   const [eventType, setEventType] = React.useState<string>("");
 
@@ -374,7 +376,7 @@ export default function PageInfoNote({
           {eventSpecificMessage && (
             <div className="mb-3 p-3 rounded-lg bg-white/60 border border-[#A3B59D]/20">
               <p className="text-sm text-gray-700">
-                <strong className="text-[#A3B59D]">Per il tuo evento:</strong> {eventSpecificMessage}
+                <strong className="text-[#A3B59D]">{t("forYourEvent")}</strong> {eventSpecificMessage}
               </p>
             </div>
           )}
@@ -382,7 +384,7 @@ export default function PageInfoNote({
           {/* Suggerimenti */}
           {tips.length > 0 && (
             <div className="mt-3">
-              <p className="text-xs font-semibold text-gray-600 mb-2">Suggerimenti:</p>
+              <p className="text-xs font-semibold text-gray-600 mb-2">{t("tips")}</p>
               <ul className="text-sm text-gray-700 space-y-1">
                 {tips.map((tip, index) => (
                   <li key={index} className="flex items-start gap-2">

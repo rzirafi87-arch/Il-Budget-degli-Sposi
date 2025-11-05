@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 export type BudgetFocus = {
   catering?: number;
@@ -11,6 +12,7 @@ export type BudgetFocus = {
 };
 
 export default function BudgetFocusHint({ budget }: { budget: BudgetFocus | null }) {
+  const t = useTranslations("budgetUi");
   if (!budget) return null;
   const entries = Object.entries(budget);
   if (entries.length === 0) return null;
@@ -19,14 +21,14 @@ export default function BudgetFocusHint({ budget }: { budget: BudgetFocus | null
     <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h3 className="font-semibold text-lg">Budget consigliato (percentuali)</h3>
-          <p className="text-sm text-gray-700">Distribuzione suggerita per le principali voci.</p>
+          <h3 className="font-semibold text-lg">{t("focus.title")}</h3>
+          <p className="text-sm text-gray-700">{t("focus.subtitle")}</p>
         </div>
       </div>
       <ul className="space-y-2 text-gray-900">
         {entries.map(([k, v]) => (
           <li key={k} className="flex items-center gap-3">
-            <span className="w-48 capitalize">{labelForBudgetKey(k)}</span>
+            <span className="w-48 capitalize">{labelForBudgetKey(t, k)}</span>
             <div className="flex-1 h-3 bg-gray-100 rounded">
               <div className="h-3 rounded" style={{ width: `${Number(v || 0)}%`, background: "var(--color-sage)" }} />
             </div>
@@ -38,22 +40,22 @@ export default function BudgetFocusHint({ budget }: { budget: BudgetFocus | null
   );
 }
 
-function labelForBudgetKey(key: string): string {
+function labelForBudgetKey(t: ReturnType<typeof useTranslations>, key: string): string {
   switch (key) {
     case "catering":
-      return "Catering";
+      return t("focus.labels.catering");
     case "location":
-      return "Location";
+      return t("focus.labels.location");
     case "attire":
-      return "Abiti";
+      return t("focus.labels.attire");
     case "photo_video":
-      return "Foto/Video";
+      return t("focus.labels.photo_video");
     case "decor":
-      return "Decor";
+      return t("focus.labels.decor");
     case "entertainment":
-      return "Intrattenimento";
+      return t("focus.labels.entertainment");
     case "stationery_gifts":
-      return "Stationery/Regali";
+      return t("focus.labels.stationery_gifts");
     default:
       return key;
   }

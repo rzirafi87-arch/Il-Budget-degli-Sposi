@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 const provincesCache = new Map<string, string[]>();
 
 export function useRegionList() {
-  const [country, setCountry] = useState<string>(() => getUserCountrySafe());
+  const [country] = useState<string>(() => getUserCountrySafe());
   const regions = useMemo(() => (GEO[country]?.regions || GEO.it.regions).map(r => r.name), [country]);
   return { country, regions };
 }
@@ -13,13 +13,13 @@ export function useRegionList() {
 export function useProvinceList(country: string, selectedRegion: string, deriveFromItems?: () => string[]) {
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState<string[]>([]);
-  const key = `${country}|${selectedRegion}`;
   const mounted = useRef(true);
 
   useEffect(() => { return () => { mounted.current = false; }; }, []);
 
   useEffect(() => {
     if (!selectedRegion) { setProvinces([]); return; }
+    const key = `${country}|${selectedRegion}`;
     const geoProv = (GEO[country]?.regions || GEO.it.regions).find(r => r.name === selectedRegion)?.provinces;
     if (geoProv && geoProv.length) { setProvinces(geoProv); return; }
     if (provincesCache.has(key)) { setProvinces(provincesCache.get(key)!); return; }
@@ -54,7 +54,8 @@ export function useProvinceList(country: string, selectedRegion: string, deriveF
       }
     })();
     return () => { aborted = true; };
-  }, [country, selectedRegion, key, deriveFromItems]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [country, selectedRegion]);
 
   return { provinces, loading };
 }

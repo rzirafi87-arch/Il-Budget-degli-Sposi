@@ -6,6 +6,7 @@ import PageInfoNote from "@/components/PageInfoNote";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
@@ -50,6 +51,7 @@ type Table = {
 };
 
 export default function InvitatiPage() {
+  const t = useTranslations("guestsPage");
   const [activeTab, setActiveTab] = useState<"guests" | "tables">("guests");
   const [guests, setGuests] = useState<Guest[]>([]);
   const [familyGroups, setFamilyGroups] = useState<FamilyGroup[]>([]);
@@ -322,7 +324,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "guests" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          ?? Invitati
+          {t("tabs.guests")}
         </button>
         <button
           onClick={() => setActiveTab("tables")}
@@ -333,7 +335,7 @@ export default function InvitatiPage() {
           }`}
           style={activeTab === "tables" ? { background: "var(--color-sage)", borderColor: "#8a9d84" } : {}}
         >
-          ?? Tavoli
+          {t("tabs.tables")}
         </button>
       </div>
 
@@ -354,8 +356,8 @@ export default function InvitatiPage() {
       )}
 
       <PageInfoNote
-        icon="??"
-        title="Gestione Completa degli Invitati"
+        icon="👥"
+        title={t("sections.guestsManagement")}
         description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menù, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
         tips={[
           "Crea gruppi familiari per organizzare gli invitati e assegnarli automaticamente allo stesso tavolo",
@@ -409,34 +411,34 @@ export default function InvitatiPage() {
 
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Carne:</span>
+            <span>🥩 Carne:</span>
             <span className="font-semibold">{menuCounts.carne}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Pesce:</span>
+            <span>🐟 Pesce:</span>
             <span className="font-semibold">{menuCounts.pesce}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Baby:</span>
+            <span>👶 Baby:</span>
             <span className="font-semibold">{menuCounts.baby}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Animazione:</span>
+            <span>🎪 Animazione:</span>
             <span className="font-semibold">{menuCounts.animazione}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Vegetariano:</span>
+            <span>🥗 Vegetariano:</span>
             <span className="font-semibold">{menuCounts.vegetariano}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Posto tavolo:</span>
+            <span>💺 Posto tavolo:</span>
             <span className="font-semibold">{menuCounts.posto_tavolo}</span>
           </div>
         </div>
 
         <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-800 font-semibold">?? Bomboniere necessarie:</span>
+            <span className="text-gray-800 font-semibold">🎁 Bomboniere necessarie:</span>
             <span className="font-bold text-purple-600">{totalBomboniere}</span>
           </div>
         </div>
@@ -445,7 +447,7 @@ export default function InvitatiPage() {
       {/* Gestione Famiglie */}
       <div className="mb-6 p-6 rounded-2xl border-3 border-purple-600 bg-purple-50/70 shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg text-gray-900">??????????? Gruppi Famiglia</h3>
+          <h3 className="font-bold text-lg text-gray-900">{t("sections.familyGroups")}</h3>
           <button
             onClick={() => setShowFamilyModal(true)}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-bold shadow-md"
@@ -453,10 +455,10 @@ export default function InvitatiPage() {
             + Aggiungi Famiglia
           </button>
         </div>
-        <p className="text-xs text-gray-600 mb-3">
-         Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia. 
-         <strong className="text-purple-700">?? Suggerimento:</strong> Usa la colonna &quot;?? Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
-        </p>
+  <p className="text-xs text-gray-600 mb-3">
+   Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia. 
+   <strong className="text-purple-700">💡 Suggerimento:</strong> Usa la colonna &quot;Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
+  </p>
         {familyGroups.length === 0 ? (
           <div className="text-center text-gray-500 py-4">Nessuna famiglia creata. Clicca &quot;Aggiungi Famiglia&quot; per iniziare.</div>
         ) : (
@@ -485,14 +487,14 @@ export default function InvitatiPage() {
                     </button>
                   </div>
                   <div className="text-xs text-gray-600">
-                    <div className="mb-1">?? Contatto: {mainContact?.name || "Non assegnato"}</div>
+                    <div className="mb-1">👤 Contatto: {mainContact?.name || "Non assegnato"}</div>
                       <div className="flex justify-between items-center">
-                        <span>?? Totale: {familyMembers.length}</span>
-                        <span className="text-green-700">? Tavolo famiglia: {familyMembersIncluded.length}</span>
+                        <span>👥 Totale: {familyMembers.length}</span>
+                        <span className="text-green-700">🪑 Tavolo famiglia: {familyMembersIncluded.length}</span>
                       </div>
                       {familyMembersExcluded.length > 0 && (
                         <div className="mt-1 text-orange-600">
-                          ?? Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
+                          🚫 Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
                         </div>
                       )}
                   </div>
@@ -545,7 +547,7 @@ export default function InvitatiPage() {
               type="csv"
               className="text-sm"
             >
-              ?? Esporta CSV
+              ⬇️ Esporta CSV
             </ExportButton>
             <button
               onClick={addGuest}
@@ -564,7 +566,7 @@ export default function InvitatiPage() {
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">Tipo</th>
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">Famiglia</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Contatto principale</th>
-                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">?? Tavolo separato</th>
+                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">🚫 Tavolo separato</th>
                   <th className="px-2 py-2 text-left font-semibold text-gray-900">Data invito</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Risposta ricevuta</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Partecipa</th>
@@ -680,12 +682,12 @@ export default function InvitatiPage() {
                                 : "bg-gray-100 text-gray-600"
                             }`}
                           >
-                            {pref === "carne" && "??"}
-                            {pref === "pesce" && "??"}
-                            {pref === "baby" && "??"}
-                            {pref === "animazione" && "??"}
-                            {pref === "vegetariano" && "??"}
-                            {pref === "posto_tavolo" && "??"}
+                            {pref === "carne" && "🥩"}
+                            {pref === "pesce" && "🐟"}
+                            {pref === "baby" && "👶"}
+                            {pref === "animazione" && "🎪"}
+                            {pref === "vegetariano" && "🥗"}
+                            {pref === "posto_tavolo" && "💺"}
                           </button>
                         ))}
                       </div>
@@ -713,7 +715,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        ?
+                        🗑️
                       </button>
                     </td>
                   </tr>
@@ -797,7 +799,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        ?
+                        🗑️
                       </button>
                     </td>
                   </tr>
@@ -815,7 +817,7 @@ export default function InvitatiPage() {
           disabled={saving}
           className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] disabled:opacity-50 font-semibold"
         >
-          {saving ? "Salvataggio..." : "?? Salva tutto"}
+          {saving ? "Salvataggio..." : "💾 Salva tutto"}
         </button>
       </div>
     </>
@@ -835,7 +837,7 @@ export default function InvitatiPage() {
     return (
       <>
         <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-linear-to-br from-gray-200 to-gray-300 shadow-xl">
-          <h3 className="font-bold text-lg mb-4 text-gray-900">?? Riepilogo Tavoli</h3>
+          <h3 className="font-bold text-lg mb-4 text-gray-900">🪑 Riepilogo Tavoli</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
             <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
               <div className="text-gray-800 font-bold">Tavoli Totali</div>

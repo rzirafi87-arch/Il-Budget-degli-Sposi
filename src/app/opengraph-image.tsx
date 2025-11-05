@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -5,8 +6,19 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
+  // Read language cookie (edge-compatible)
+  let lang = "it";
+  try {
+    const c = await cookies();
+    const v = c.get("language")?.value;
+    if (v) lang = v.toLowerCase();
+  } catch {}
+
   const siteName = "MYBUDGETEVENTO";
-  const title = "Organizza il tuo matrimonio con serenità";
+  const title = lang === "en" ? "Plan your wedding with peace of mind" : "Organizza il tuo matrimonio con serenità";
+  const subtitle = lang === "en"
+    ? "Budget, suppliers and calm — all in one place"
+    : "Budget, fornitori e serenità — tutto in un unico posto";
 
   return new ImageResponse(
     (
@@ -41,7 +53,7 @@ export default async function Image() {
           {title}
         </div>
         <div style={{ marginTop: 24, fontSize: 28, color: "#5B5B5B" }}>
-          Budget, fornitori e serenità — tutto in un unico posto
+          {subtitle}
         </div>
       </div>
     ),

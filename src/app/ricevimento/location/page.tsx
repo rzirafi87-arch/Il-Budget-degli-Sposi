@@ -6,7 +6,8 @@ import { useProvinceList } from "@/lib/geoClient";
 import { getProvinceLabel, getRegionLabel } from "@/lib/geoLabels";
 import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
 
 type Location = {
   id: string;
@@ -36,21 +37,22 @@ function useRegionOptions() {
   return { country, regions };
 }
 
-const LOCATION_TYPES = [
-  "Villa",
-  "Castello",
-  "Agriturismo",
-  "Masseria",
-  "Ristorante",
-  "Hotel",
-  "Resort",
-  "Tenuta",
-  "Giardino",
-  "Spiaggia",
-  "Altro"
-];
+const LOCATION_TYPE_KEYS = [
+  "villa",
+  "castello",
+  "agriturismo",
+  "masseria",
+  "ristorante",
+  "hotel",
+  "resort",
+  "tenuta",
+  "giardino",
+  "spiaggia",
+  "altro",
+] as const;
 
 export default function LocationRicevimentoPage() {
+  const t = useTranslations("suppliersLocations");
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState("");
@@ -75,11 +77,7 @@ export default function LocationRicevimentoPage() {
     location_type: "",
   });
 
-  useEffect(() => {
-    loadLocations();
-  }, [selectedRegion, selectedProvince, selectedType]);
-
-  async function loadLocations() {
+  const loadLocations = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -96,14 +94,18 @@ export default function LocationRicevimentoPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedRegion, selectedProvince, selectedType, country]);
+
+  useEffect(() => {
+    loadLocations();
+  }, [loadLocations]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
     const jwt = localStorage.getItem("sb_jwt");
     if (!jwt) {
-      alert("Devi essere autenticato per aggiungere una location");
+      alert(t("messages.authRequired"));
       return;
     }
 
@@ -123,10 +125,10 @@ export default function LocationRicevimentoPage() {
       });
 
       if (!res.ok) {
-        throw new Error("Errore durante l'aggiunta");
+        throw new Error(t("messages.addError"));
       }
 
-      alert("Location aggiunta con successo! Sarà visibile dopo la verifica dello staff.");
+      alert(t("messages.addSuccess"));
       setShowAddForm(false);
       setFormData({
         name: "",
@@ -146,7 +148,7 @@ export default function LocationRicevimentoPage() {
       loadLocations();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      alert(e.message || "Errore durante l'aggiunta");
+      alert(e.message || t("messages.addError"));
     }
   }
 
@@ -163,21 +165,21 @@ export default function LocationRicevimentoPage() {
         <ImageCarousel images={getPageImages("location", country)} height="280px" />
         
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Ricevimento · Location</h1>
+          <h1 className="text-4xl font-bold text-gray-800">{t("title")}</h1>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] transition-colors font-semibold"
           >
-            {showAddForm ? "Annulla" : "+ Aggiungi Location"}
+            {showAddForm ? t("buttons.cancel") : t("buttons.add")}
           </button>
         </div>
 
         {showAddForm && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold mb-4">Aggiungi Nuova Location</h2>
+            <h2 className="text-2xl font-bold mb-4">{t("form.title")}</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-1">Nome *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.name")} *</label>
                 <input
                   type="text"
                   required
@@ -188,16 +190,16 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Tipo Location *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.type")} *</label>
                 <select
                   required
                   value={formData.location_type}
                   onChange={(e) => setFormData({ ...formData, location_type: e.target.value })}
                   className="w-full border rounded px-3 py-2"
                 >
-                  <option value="">Seleziona...</option>
-                  {LOCATION_TYPES.map(t => (
-                    <option key={t} value={t.toLowerCase()}>{t}</option>
+                  <option value="">{t("form.select")}</option>
+                  {LOCATION_TYPE_KEYS.map(key => (
+                    <option key={key} value={key}>{t(`types.${key}`)}</option>
                   ))}
                 </select>
               </div>
@@ -210,7 +212,7 @@ export default function LocationRicevimentoPage() {
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
                   className="w-full border rounded px-3 py-2"
                 >
-                  <option value="">Seleziona...</option>
+                  <option value="">{t("form.select")}</option>
                   {regions.map(r => (
                     <option key={r} value={r}>{r}</option>
                   ))}
@@ -226,7 +228,7 @@ export default function LocationRicevimentoPage() {
                     onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                     className="w-full border rounded px-3 py-2"
                   >
-                    <option value="">Seleziona...</option>
+                    <option value="">{t("form.select")}</option>
                     {provinces.map((p) => (
                       <option key={p} value={p}>{p}</option>
                     ))}
@@ -235,7 +237,7 @@ export default function LocationRicevimentoPage() {
                   <input
                     type="text"
                     required
-                    placeholder="es. Roma, Milano, Napoli"
+                    placeholder={t("form.placeholders.province")}
                     value={formData.province}
                     onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                     className="w-full border rounded px-3 py-2"
@@ -244,7 +246,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Città *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.city")} *</label>
                 <input
                   type="text"
                   required
@@ -255,7 +257,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Indirizzo</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.address")}</label>
                 <input
                   type="text"
                   value={formData.address}
@@ -265,7 +267,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Telefono</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.phone")}</label>
                 <input
                   type="tel"
                   value={formData.phone}
@@ -275,7 +277,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Email</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.email")}</label>
                 <input
                   type="email"
                   value={formData.email}
@@ -285,7 +287,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Sito Web</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.website")}</label>
                 <input
                   type="url"
                   value={formData.website}
@@ -295,10 +297,10 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Fascia di Prezzo</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.priceRange")}</label>
                 <input
                   type="text"
-                  placeholder="es. €€€, 50-100€ a persona"
+                  placeholder={t("form.placeholders.priceRange")}
                   value={formData.price_range}
                   onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
                   className="w-full border rounded px-3 py-2"
@@ -306,7 +308,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Capacità Minima (persone)</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.capacityMin")}</label>
                 <input
                   type="number"
                   min="0"
@@ -317,7 +319,7 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Capacità Massima (persone)</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.capacityMax")}</label>
                 <input
                   type="number"
                   min="0"
@@ -328,12 +330,12 @@ export default function LocationRicevimentoPage() {
               </div>
 
               <div className="col-span-2">
-                <label className="block text-sm font-semibold mb-1">Descrizione</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.fields.description")}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full border rounded px-3 py-2 h-24"
-                  placeholder="Descrivi la location, i servizi offerti, particolarità..."
+                  placeholder={t("form.placeholders.description")}
                 />
               </div>
 
@@ -342,7 +344,7 @@ export default function LocationRicevimentoPage() {
                   type="submit"
                   className="w-full bg-[#A3B59D] text-white py-3 rounded-lg hover:bg-[#8fa085] font-semibold"
                 >
-                  Aggiungi Location
+                  {t("form.submit")}
                 </button>
               </div>
             </form>
@@ -351,7 +353,7 @@ export default function LocationRicevimentoPage() {
 
         {/* Filtri */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">Filtri</h2>
+          <h2 className="text-xl font-bold mb-4">{t("filters.title")}</h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-semibold mb-2">{getRegionLabel(country)}</label>
@@ -363,7 +365,7 @@ export default function LocationRicevimentoPage() {
                 }}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="">Tutte</option>
+                <option value="">{t("filters.allRegion")}</option>
                 {regions.map(r => (
                   <option key={r} value={r}>{r}</option>
                 ))}
@@ -378,7 +380,7 @@ export default function LocationRicevimentoPage() {
                 disabled={!selectedRegion}
                 className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
               >
-                <option value="">Tutte</option>
+                <option value="">{t("filters.allProvince")}</option>
                 {provinces.map(p => (
                   <option key={p} value={p}>{p}</option>
                 ))}
@@ -386,15 +388,15 @@ export default function LocationRicevimentoPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Tipo Location</label>
+              <label className="block text-sm font-semibold mb-2">{t("filters.typeLabel")}</label>
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="">Tutti</option>
-                {LOCATION_TYPES.map(t => (
-                  <option key={t} value={t.toLowerCase()}>{t}</option>
+                <option value="">{t("filters.allTypes")}</option>
+                {LOCATION_TYPE_KEYS.map(key => (
+                  <option key={key} value={key}>{t(`types.${key}`)}</option>
                 ))}
               </select>
             </div>
@@ -403,11 +405,9 @@ export default function LocationRicevimentoPage() {
 
         {/* Lista Location */}
         {loading ? (
-          <div className="text-center py-12">Caricamento...</div>
+          <div className="text-center py-12">{t("loading")}</div>
         ) : filteredLocations.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            Nessuna location trovata. Prova a cambiare i filtri o aggiungi la prima!
-          </div>
+          <div className="text-center py-12 text-gray-500">{t("empty")}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredLocations.map((location) => (
@@ -422,14 +422,14 @@ export default function LocationRicevimentoPage() {
                   <h3 className="text-xl font-bold text-gray-800">{location.name}</h3>
                   {location.verified && (
                     <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
-                      Verificato
+                      {t("badges.verified")}
                     </span>
                   )}
                 </div>
 
                 {location.location_type && (
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">Tipo:</span> {location.location_type.charAt(0).toUpperCase() + location.location_type.slice(1)}
+                    <span className="font-semibold">{t("labels.type")}</span> {t(`types.${location.location_type}`)}
                   </p>
                 )}
 
@@ -443,12 +443,14 @@ export default function LocationRicevimentoPage() {
 
                 {(location.capacity_min || location.capacity_max) && (
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">👥 Capacità:</span>{" "}
+                    <span className="font-semibold">{t("labels.capacity")}</span>{" "}
                     {location.capacity_min && location.capacity_max
-                      ? `${location.capacity_min}-${location.capacity_max} persone`
+                      ? t("capacity.range", { min: location.capacity_min, max: location.capacity_max })
                       : location.capacity_min
-                      ? `da ${location.capacity_min} persone`
-                      : `fino a ${location.capacity_max} persone`}
+                      ? t("capacity.from", { min: location.capacity_min })
+                      : location.capacity_max
+                      ? t("capacity.upTo", { max: location.capacity_max })
+                      : ""}
                   </p>
                 )}
 
@@ -488,7 +490,7 @@ export default function LocationRicevimentoPage() {
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
                       >
-                        Sito Web
+                        {t("labels.website")}
                       </a>
                     </p>
                   )}

@@ -1,0 +1,98 @@
+import fs from 'fs';
+
+// Leggi il file
+let content = fs.readFileSync('src/messages/it.json', 'utf8');
+
+// Fix manuale di tutti i caratteri corrotti visibili
+let fixed = content
+  // Fix Ã  (à con spazio) - più comune
+  .replace(/Ã\s+/g, 'à ')
+  .replace(/Ã\s*â€"/g, 'à —')
+  .replace(/Ã\s*\./g, 'à.')
+  .replace(/Ã\s*,/g, 'à,')
+  // Fix specifici trovati nel file
+  .replace(/ContabilitÃ\s+/g, 'Contabilità ')
+  .replace(/giÃ\s+/g, 'già ')
+  .replace(/serenitÃ\s+/g, 'serenità ')
+  .replace(/pubblicitÃ\s+/g, 'pubblicità ')
+  .replace(/funzionalitÃ\s+/g, 'funzionalità ')
+  .replace(/serenitÃ\./g, 'serenità.')
+  .replace(/pubblicitÃ\./g, 'pubblicità.')
+  .replace(/CapacitÃ /g, 'Capacità')
+  .replace(/cittÃ /g, 'città')
+  .replace(/Ã¨/g, 'è')
+  .replace(/Ã /g, 'à')
+  .replace(/Ã²/g, 'ò')
+  .replace(/Ã¹/g, 'ù')
+  .replace(/Ã©/g, 'é')
+  .replace(/Ã¬/g, 'ì')
+  .replace(/Ã§/g, 'ç')
+  .replace(/Ã±/g, 'ñ')
+  .replace(/Ãˆ/g, 'È')
+  // Fix trattino lungo corrotto
+  .replace(/â€"/g, '—')
+  // Fix emoji corrotte (pattern più specifici)
+  .replace(/ðŸ'/g, '💍')
+  .replace(/ðŸ'¡/g, '💡')
+  .replace(/ðŸ'°/g, '�')
+  .replace(/ðŸ¤µ/g, '🤵')
+  .replace(/ðŸ'µ/g, '💵')
+  .replace(/ðŸ¦/g, '🦀')  // Se è 🏦 banco, altrimenti 🦀 granchio
+  .replace(/ðŸ'€/g, '�')
+  .replace(/ðŸ /g, '🏠')
+  .replace(/ðŸ"/g, '📝')
+  .replace(/ðŸ"…/g, '📅')
+  .replace(/ðŸ"Š/g, '📊')
+  .replace(/ðŸ'Œ/g, '💌')
+  .replace(/ðŸŽ¯/g, '🎯')
+  .replace(/ðŸ'•/g, '💕')
+  .replace(/ðŸŽŠ/g, '🎊')
+  .replace(/ðŸŽ‰/g, '🎉')
+  .replace(/ðŸŽ/g, '🎁')
+  .replace(/ðŸ•/g, '🕊')
+  .replace(/ðŸ'¼/g, '💼')
+  .replace(/ðŸŽ¤/g, '🎤')
+  .replace(/ðŸŽ¸/g, '🎸')
+  .replace(/ðŸŽ¼/g, '🎼')
+  .replace(/ðŸŒ¸/g, '🌸')
+  .replace(/ðŸŽ¨/g, '🎨')
+  .replace(/ðŸ'Ž/g, '💎')
+  .replace(/ðŸ"¸/g, '📸')
+  .replace(/ðŸŽ¥/g, '🎥')
+  .replace(/ðŸ"¹/g, '📹')
+  .replace(/ðŸš/g, '🚗')
+  .replace(/ðŸš•/g, '🚕')
+  .replace(/ðŸš™/g, '🚙')
+  .replace(/ðŸ›/g, '🛍')
+  .replace(/ðŸŽ‚/g, '🎂')
+  .replace(/ðŸ°/g, '🍰')
+  .replace(/ðŸ¾/g, '🍾')
+  .replace(/ðŸ¥‚/g, '🥂')
+  .replace(/ðŸ"®/g, '📮')
+  .replace(/ðŸ"¦/g, '📦')
+  .replace(/ðŸ"§/g, '📧')
+  .replace(/ðŸ"©/g, '📩')
+  .replace(/ðŸ"‹/g, '📋')
+  .replace(/ðŸ"Œ/g, '📌')
+  .replace(/ðŸ"†/g, '📆')
+  // Fix altri simboli e caratteri speciali
+  .replace(/â€¢/g, '•')
+  .replace(/âœ¨/g, '✨')
+  .replace(/â„¢/g, '™')
+  .replace(/Â©/g, '©')
+  .replace(/Â®/g, '®')
+  .replace(/MenÃ¹/g, 'Menù')
+  .replace(/piÃ¹/g, 'più')
+  .replace(/cÃ²/g, 'cò')
+  .replace(/perchÃ©/g, 'perché')
+  .replace(/SarÃ /g, 'Sarà ')
+  .replace(/visibilitÃ /g, 'visibilità ')
+  .replace(/qualitÃ /g, 'qualità ')
+  .replace(/comunitÃ /g, 'comunità ')
+  .replace(/CapacitÃ\s*:/g, 'Capacità:')
+  .replace(/CapacitÃ\s*â/g, 'Capacità ');
+
+// Scrivi il file corretto in UTF-8 senza BOM
+fs.writeFileSync('src/messages/it.json', fixed, 'utf8');
+
+console.log('✅ File completamente corretto! Tutti i caratteri UTF-8 ripristinati.');

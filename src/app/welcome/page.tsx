@@ -1,12 +1,14 @@
 "use client";
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
 export default function WelcomePage() {
+  const t = useTranslations("home");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -33,15 +35,12 @@ export default function WelcomePage() {
           {/* Payoff principale */}
           <div className="space-y-4">
             <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-gray-800 leading-tight">
-              Organizza il tuo<br />
-              <span className="text-[#A6B5A0]">matrimonio</span><br />
-              in modo semplice<br />
-              e senza stress 💍
+              {t("hero.title1")}<br />
+              <span className="text-[#A6B5A0]">{t("hero.title2Highlighted")}</span><br />
+              {t("hero.title3")}<br />
+              {t("hero.title4")}
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto">
-              L&apos;unica app che unisce <strong>budget, fornitori e serenità</strong><br />
-              — senza pubblicità né caos.
-            </p>
+            <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto" dangerouslySetInnerHTML={{ __html: t("hero.subtitleHtml") }} />
           </div>
 
           {/* CTA Buttons */}
@@ -50,49 +49,45 @@ export default function WelcomePage() {
               href="/auth"
               className="w-full sm:w-auto bg-[#A6B5A0] text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-[#8a9d84] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
-              🎉 Inizia ora — È gratis
+              {t("hero.ctaPrimary")}
             </Link>
             <Link
               href="/"
               className="w-full sm:w-auto bg-white text-[#A6B5A0] border-2 border-[#A6B5A0] px-10 py-5 rounded-full font-bold text-lg hover:bg-[#A6B5A0] hover:text-white transition-all shadow-lg hover:shadow-xl"
             >
-              👀 Guarda la demo
+              {t("hero.ctaSecondary")}
             </Link>
           </div>
 
-          <p className="text-sm text-gray-500 pt-4">
-            ✨ Non serve carta di credito • Crea il tuo evento in 2 minuti
-          </p>
+          <p className="text-sm text-gray-500 pt-4">{t("hero.footnote")}</p>
         </div>
       </section>
 
       {/* USP - Unique Selling Points */}
       <section className="container mx-auto px-6 py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-12">
-            Tutto quello di cui hai bisogno 🌿
-          </h2>
+          <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-12">{t("usp.title")} 🌿</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Chiarezza */}
             <FeatureCard
               icon="🧭"
-              title="Chiarezza"
-              description="Ogni spesa è visibile. Ogni passo è guidato. Zero confusione, solo organizzazione."
+              title={t("usp.cards.clarity.title")}
+              description={t("usp.cards.clarity.description")}
             />
             
             {/* Controllo */}
             <FeatureCard
               icon="📊"
-              title="Controllo"
-              description="Budget, fornitori, invitati, timeline — tutto sotto controllo in un unico posto."
+              title={t("usp.cards.control.title")}
+              description={t("usp.cards.control.description")}
             />
             
             {/* Ispirazione */}
             <FeatureCard
               icon="✨"
-              title="Ispirazione"
-              description="Design curato, interfaccia serena e suggerimenti utili per rendere tutto più bello."
+              title={t("usp.cards.inspiration.title")}
+              description={t("usp.cards.inspiration.description")}
             />
           </div>
         </div>
@@ -102,40 +97,38 @@ export default function WelcomePage() {
       <section className="bg-white/60 backdrop-blur-sm py-16">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-12">
-              Funzionalità pensate per voi 💕
-            </h2>
+            <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-12">{t("demo.title")}</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FeatureListItem
                 icon="💰"
-                title="Budget intelligente"
-                description="Traccia spese previste e effettive, dividi tra sposa/sposo/comune"
+                title={t("demo.features.budget.title")}
+                description={t("demo.features.budget.description")}
               />
               <FeatureListItem
                 icon="🏢"
-                title="Directory fornitori"
-                description="Trova location, fotografi, fioristi e altro nella tua zona"
+                title={t("demo.features.suppliers.title")}
+                description={t("demo.features.suppliers.description")}
               />
               <FeatureListItem
                 icon="👥"
-                title="Gestione invitati"
-                description="Lista completa, RSVP, assegnazione tavoli e conteggi"
+                title={t("demo.features.guests.title")}
+                description={t("demo.features.guests.description")}
               />
               <FeatureListItem
                 icon="📅"
-                title="Timeline automatica"
-                description="To-do cronologiche da 12 mesi prima fino al grande giorno"
+                title={t("demo.features.timeline.title")}
+                description={t("demo.features.timeline.description")}
               />
               <FeatureListItem
                 icon="❤️"
-                title="Preferiti e documenti"
-                description="Salva i tuoi fornitori preferiti e organizza preventivi"
+                title={t("demo.features.favorites.title")}
+                description={t("demo.features.favorites.description")}
               />
               <FeatureListItem
                 icon="🎁"
-                title="Lista nozze"
-                description="Gestisci i regali che desiderate ricevere"
+                title={t("demo.features.gifts.title")}
+                description={t("demo.features.gifts.description")}
               />
             </div>
           </div>
@@ -146,32 +139,22 @@ export default function WelcomePage() {
       <section className="container mx-auto px-6 py-16">
         <div className="max-w-3xl mx-auto bg-linear-to-br from-[#EAD9D4]/40 to-[#E8E0D6]/40 rounded-3xl p-12 text-center border-2 border-[#E8E0D6] shadow-xl">
           <div className="text-5xl mb-6">🔒</div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">
-            Privacy e serenità garantite
-          </h3>
-          <p className="text-gray-700 text-lg leading-relaxed">
-            <strong>Zero pubblicità.</strong> Zero email spam.<br />
-            I tuoi dati restano tuoi. Nessuna vendita a terzi.<br />
-            Solo tu e il tuo matrimonio, senza distrazioni.
-          </p>
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">{t("privacy.title")}</h3>
+          <p className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: t("privacy.textHtml") }} />
         </div>
       </section>
 
       {/* Final CTA */}
       <section className="container mx-auto px-6 py-20 text-center">
         <div className="max-w-2xl mx-auto space-y-6">
-          <h2 className="text-4xl font-serif font-bold text-gray-800">
-            Pronto a iniziare? 🎊
-          </h2>
-          <p className="text-xl text-gray-600">
-            Unisciti alle coppie che hanno organizzato il loro matrimonio con serenità.
-          </p>
+          <h2 className="text-4xl font-serif font-bold text-gray-800">{t("finalCta.title")}</h2>
+          <p className="text-xl text-gray-600">{t("finalCta.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Link
               href="/auth"
               className="w-full sm:w-auto bg-[#A6B5A0] text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-[#8a9d84] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
-              Crea il tuo evento ora 💍
+              {t("finalCta.button")} 💍
             </Link>
           </div>
         </div>

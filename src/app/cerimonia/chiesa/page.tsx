@@ -4,6 +4,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
 type Church = {
@@ -43,6 +44,7 @@ const CHURCH_TYPES = [
 ];
 
 export default function CerimoniaChiesaPage() {
+  const t = useTranslations("ceremonyCeremonyChurch");
   const country = getUserCountrySafe();
   const [churches, setChurches] = useState<Church[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,7 +96,7 @@ export default function CerimoniaChiesaPage() {
     
     const jwt = localStorage.getItem("sb_jwt");
     if (!jwt) {
-      alert("Devi essere autenticato per aggiungere una chiesa");
+      alert(t("messages.authRequired"));
       return;
     }
 
@@ -112,10 +114,10 @@ export default function CerimoniaChiesaPage() {
       });
 
       if (!res.ok) {
-        throw new Error("Errore durante l'aggiunta");
+        throw new Error(t("messages.submitError"));
       }
 
-      alert("Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.");
+      alert(t("messages.submitSuccess"));
       setShowAddForm(false);
       setFormData({
         name: "",
@@ -135,7 +137,7 @@ export default function CerimoniaChiesaPage() {
       loadChurches();
     } catch (e) {
       const error = e as Error;
-      alert(error.message || "Errore durante l'aggiunta");
+      alert(error.message || t("messages.submitError"));
     }
   }
 
@@ -152,21 +154,21 @@ export default function CerimoniaChiesaPage() {
         <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
         
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Cerimonia · Chiesa</h1>
+          <h1 className="text-4xl font-bold text-gray-800">{t("title")}</h1>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] transition-colors font-semibold"
           >
-            {showAddForm ? "Annulla" : "+ Aggiungi Chiesa"}
+            {showAddForm ? t("buttons.cancel") : t("buttons.add")}
           </button>
         </div>
 
         {showAddForm && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold mb-4">Aggiungi Nuova Chiesa</h2>
+            <h2 className="text-2xl font-bold mb-4">{t("form.title")}</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-1">Nome *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.name")}</label>
                 <input
                   type="text"
                   required
@@ -177,29 +179,29 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Tipo *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.type")}</label>
                 <select
                   required
                   value={formData.church_type}
                   onChange={(e) => setFormData({ ...formData, church_type: e.target.value })}
                   className="w-full border rounded px-3 py-2"
                 >
-                  <option value="">Seleziona...</option>
-                  {CHURCH_TYPES.map(t => (
-                    <option key={t} value={t.toLowerCase()}>{t}</option>
+                  <option value="">{t("form.select")}</option>
+                  {CHURCH_TYPES.map(ct => (
+                    <option key={ct} value={ct.toLowerCase()}>{t(`types.${ct.toLowerCase()}`)}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Regione *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.region")}</label>
                 <select
                   required
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
                   className="w-full border rounded px-3 py-2"
                 >
-                  <option value="">Seleziona...</option>
+                  <option value="">{t("form.select")}</option>
                   {ITALIAN_REGIONS.map(r => (
                     <option key={r} value={r}>{r}</option>
                   ))}
@@ -207,11 +209,11 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Provincia *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.province")}</label>
                 <input
                   type="text"
                   required
-                  placeholder="es. Roma, Milano, Napoli"
+                  placeholder={t("form.provincePlaceholder")}
                   value={formData.province}
                   onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                   className="w-full border rounded px-3 py-2"
@@ -219,7 +221,7 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Città *</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.city")}</label>
                 <input
                   type="text"
                   required
@@ -230,7 +232,7 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Indirizzo</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.address")}</label>
                 <input
                   type="text"
                   value={formData.address}
@@ -240,7 +242,7 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Telefono</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.phone")}</label>
                 <input
                   type="tel"
                   value={formData.phone}
@@ -250,7 +252,7 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Email</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.email")}</label>
                 <input
                   type="email"
                   value={formData.email}
@@ -260,7 +262,7 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Sito Web</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.website")}</label>
                 <input
                   type="url"
                   value={formData.website}
@@ -270,7 +272,7 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Capacità (persone)</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.capacity")}</label>
                 <input
                   type="number"
                   min="0"
@@ -281,12 +283,12 @@ export default function CerimoniaChiesaPage() {
               </div>
 
               <div className="col-span-2">
-                <label className="block text-sm font-semibold mb-1">Descrizione</label>
+                <label className="block text-sm font-semibold mb-1">{t("form.description")}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full border rounded px-3 py-2 h-24"
-                  placeholder="Descrivi la chiesa, caratteristiche, servizi..."
+                  placeholder={t("form.descriptionPlaceholder")}
                 />
               </div>
 
@@ -298,7 +300,7 @@ export default function CerimoniaChiesaPage() {
                     onChange={(e) => setFormData({ ...formData, requires_baptism: e.target.checked })}
                     className="w-4 h-4"
                   />
-                  <span className="text-sm font-semibold">Richiede Battesimo</span>
+                  <span className="text-sm font-semibold">{t("form.requiresBaptism")}</span>
                 </label>
 
                 <label className="flex items-center space-x-2">
@@ -308,7 +310,7 @@ export default function CerimoniaChiesaPage() {
                     onChange={(e) => setFormData({ ...formData, requires_marriage_course: e.target.checked })}
                     className="w-4 h-4"
                   />
-                  <span className="text-sm font-semibold">Richiede Corso Prematrimoniale</span>
+                  <span className="text-sm font-semibold">{t("form.requiresMarriageCourse")}</span>
                 </label>
               </div>
 
@@ -317,7 +319,7 @@ export default function CerimoniaChiesaPage() {
                   type="submit"
                   className="w-full bg-[#A3B59D] text-white py-3 rounded-lg hover:bg-[#8fa085] font-semibold"
                 >
-                  Aggiungi Chiesa
+                  {t("buttons.submit")}
                 </button>
               </div>
             </form>
@@ -326,10 +328,10 @@ export default function CerimoniaChiesaPage() {
 
         {/* Filtri */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">Filtri</h2>
+          <h2 className="text-xl font-bold mb-4">{t("filters.region")}</h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-2">Regione</label>
+              <label className="block text-sm font-semibold mb-2">{t("filters.region")}</label>
               <select
                 value={selectedRegion}
                 onChange={(e) => {
@@ -338,7 +340,7 @@ export default function CerimoniaChiesaPage() {
                 }}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="">Tutte</option>
+                <option value="">{t("filters.allRegions")}</option>
                 {ITALIAN_REGIONS.map(r => (
                   <option key={r} value={r}>{r}</option>
                 ))}
@@ -346,14 +348,14 @@ export default function CerimoniaChiesaPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Provincia</label>
+              <label className="block text-sm font-semibold mb-2">{t("filters.province")}</label>
               <select
                 value={selectedProvince}
                 onChange={(e) => setSelectedProvince(e.target.value)}
                 disabled={!selectedRegion}
                 className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
               >
-                <option value="">Tutte</option>
+                <option value="">{t("filters.allRegions")}</option>
                 {provinces.map(p => (
                   <option key={p} value={p}>{p}</option>
                 ))}
@@ -361,15 +363,15 @@ export default function CerimoniaChiesaPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Tipo</label>
+              <label className="block text-sm font-semibold mb-2">{t("filters.type")}</label>
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="">Tutti</option>
-                {CHURCH_TYPES.map(t => (
-                  <option key={t} value={t.toLowerCase()}>{t}</option>
+                <option value="">{t("filters.allTypes")}</option>
+                {CHURCH_TYPES.map(ct => (
+                  <option key={ct} value={ct.toLowerCase()}>{t(`types.${ct.toLowerCase()}`)}</option>
                 ))}
               </select>
             </div>
@@ -378,10 +380,10 @@ export default function CerimoniaChiesaPage() {
 
         {/* Lista Chiese */}
         {loading ? (
-          <div className="text-center py-12">Caricamento...</div>
+          <div className="text-center py-12">{t("loading")}</div>
         ) : filteredChurches.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            Nessuna chiesa trovata. Prova a cambiare i filtri o aggiungi la prima!
+            {t("empty")}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -397,14 +399,14 @@ export default function CerimoniaChiesaPage() {
                   <h3 className="text-xl font-bold text-gray-800">{church.name}</h3>
                   {church.verified && (
                     <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
-                      Verificato
+                      {t("card.verified")}
                     </span>
                   )}
                 </div>
 
                 {church.church_type && (
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">Tipo:</span> {church.church_type.charAt(0).toUpperCase() + church.church_type.slice(1)}
+                    <span className="font-semibold">{t("card.type")}</span> {t(`types.${church.church_type}`)}
                   </p>
                 )}
 
@@ -418,17 +420,17 @@ export default function CerimoniaChiesaPage() {
 
                 {church.capacity && (
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">👥 Capacità:</span> {church.capacity} persone
+                    <span className="font-semibold">{t("card.capacity")}</span> {church.capacity} {t("card.people")}
                   </p>
                 )}
 
                 {(church.requires_baptism || church.requires_marriage_course) && (
                   <div className="mb-3 space-y-1">
                     {church.requires_baptism && (
-                      <p className="text-xs text-orange-600">⚠️ Richiede Battesimo</p>
+                      <p className="text-xs text-orange-600">{t("card.requiresBaptism")}</p>
                     )}
                     {church.requires_marriage_course && (
-                      <p className="text-xs text-orange-600">⚠️ Richiede Corso Prematrimoniale</p>
+                      <p className="text-xs text-orange-600">{t("card.requiresMarriageCourse")}</p>
                     )}
                   </div>
                 )}
@@ -463,7 +465,7 @@ export default function CerimoniaChiesaPage() {
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
                       >
-                        Sito Web
+                        {t("card.website")}
                       </a>
                     </p>
                   )}

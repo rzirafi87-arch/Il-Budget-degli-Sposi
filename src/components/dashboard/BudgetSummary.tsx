@@ -1,4 +1,5 @@
 import { currencyForCountry } from "@/lib/currency";
+import { useTranslations } from "next-intl";
 import React from "react";
 
 type Props = {
@@ -14,15 +15,16 @@ type Props = {
 };
 
 export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, weddingDate, countryState, eventType, setBrideBudget, setGroomBudget, setWeddingDate }: Props) {
+  const t = useTranslations("budgetUi");
   const dateLabel = eventType === 'baptism'
-    ? 'Data Cerimonia'
+    ? t('summary.date.baptism')
     : eventType === 'eighteenth'
-    ? 'Data Festa'
+    ? t('summary.date.eighteenth')
     : eventType === 'graduation'
-    ? 'Data Laurea'
+    ? t('summary.date.graduation')
     : eventType === 'confirmation'
-    ? 'Data Cresima'
-    : 'Data Matrimonio';
+    ? t('summary.date.confirmation')
+    : t('summary.date.wedding');
   const currencyCode = currencyForCountry(countryState);
   const currencyLabel = `(${currencyCode})`;
   const isSingle = eventType === 'baptism' || eventType === 'graduation' || eventType === 'eighteenth' || eventType === 'confirmation';
@@ -38,51 +40,13 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
       localStorage.setItem('budgetIdea.contingencyPct', String(contingencyPct));
     }
   }, [contingencyPct]);
-
-  // Stato per salvataggio
-  const [saving, setSaving] = React.useState(false);
-  const [saveMsg, setSaveMsg] = React.useState<string | null>(null);
-
-  async function handleSave() {
-    setSaving(true);
-    setSaveMsg(null);
-    try {
-      // Recupera JWT se presente
-      let jwt = null;
-      if (typeof window !== 'undefined') {
-        const supabase = (await import("@/lib/supabaseBrowser")).getBrowserClient();
-        const { data } = await supabase.auth.getSession();
-        jwt = data.session?.access_token;
-      }
-      const res = await fetch("/api/event/update-budget", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}) },
-        body: JSON.stringify({
-          bride_initial_budget: brideBudget,
-          groom_initial_budget: groomBudget,
-          total_budget: totalBudget,
-          event_date: weddingDate || null
-        })
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || `Errore salvataggio (${res.status})`);
-      }
-      setSaveMsg("Salvato!");
-    } catch (e) {
-      setSaveMsg((e instanceof Error && e.message) ? e.message : "Errore imprevisto");
-    } finally {
-      setSaving(false);
-      setTimeout(() => setSaveMsg(null), 2500);
-    }
-  }
   return (
     <div className="mb-6 sm:mb-8 p-5 sm:p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 sm:gap-4">
         {isSingle ? (
           <>
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Budget Totale {currencyLabel}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('summary.total', { currency: currencyLabel })}</label>
               <input
                 type="number"
                 className="border-2 border-gray-300 rounded-lg px-4 py-3 w-full text-base focus:ring-2 focus:ring-[#A3B59D] focus:border-[#A3B59D]"
@@ -97,7 +61,7 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Imprevisti (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('summary.contingency')}</label>
               <input
                 type="number"
                 min={0}
@@ -121,7 +85,7 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
         ) : (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Budget Sposa {currencyLabel}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('summary.bride', { currency: currencyLabel })}</label>
               <input
                 type="number"
                 className="border-2 border-pink-300 rounded-lg px-4 py-3 w-full text-base focus:ring-2 focus:ring-pink-400 focus:border-pink-400"
@@ -131,7 +95,7 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Budget Sposo {currencyLabel}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('summary.groom', { currency: currencyLabel })}</label>
               <input
                 type="number"
                 className="border-2 border-blue-300 rounded-lg px-4 py-3 w-full text-base focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
@@ -141,7 +105,7 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Budget Totale {currencyLabel}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('summary.total', { currency: currencyLabel })}</label>
               <input
                 type="number"
                 className="border-2 border-gray-300 bg-gray-100 rounded-lg px-4 py-3 w-full font-bold text-base"
@@ -162,16 +126,8 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
           </>
         )}
       </div>
-      <div className="mt-4 flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-        <button
-          className="rounded-full bg-[#A3B59D] px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-[#8a9d84] disabled:opacity-60"
-          onClick={handleSave}
-          disabled={saving}
-        >
-          {saving ? "Salvataggio..." : "Salva budget e data"}
-        </button>
-        <a href="/idea-di-budget" className="text-sm font-semibold underline text-[#A3B59D] hover:text-[#8a9d84] ml-2">Compila l&apos;Idea di Budget</a>
-        {saveMsg && <span className="ml-2 text-sm font-medium text-[#2563eb]">{saveMsg}</span>}
+      <div className="mt-2">
+        <a href="/idea-di-budget" className="text-sm font-semibold underline text-[#A3B59D] hover:text-[#8a9d84]" aria-label={t('summary.ctaIdea')}>{t('summary.ctaIdea')}</a>
       </div>
     </div>
   );

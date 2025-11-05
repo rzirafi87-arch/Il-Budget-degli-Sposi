@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { formatDate } from "@/lib/locale";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -13,6 +14,7 @@ type WeddingInfo = {
 };
 
 export default function DynamicHeader() {
+  const t = useTranslations("header");
   const [weddingInfo, setWeddingInfo] = useState<WeddingInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +58,7 @@ export default function DynamicHeader() {
   });
 
   return (
-    <div className="bg-gradient-to-r from-[#EAD9D4]/30 to-[#A6B5A0]/30 border-b border-[#E8E0D6]">
+    <div className="bg-linear-to-r from-[#EAD9D4]/30 to-[#A6B5A0]/30 border-b border-[#E8E0D6]">
       <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2 sm:py-3 text-center">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm sm:text-base">
           <span className="font-serif font-bold text-gray-800">
@@ -73,10 +75,10 @@ export default function DynamicHeader() {
               </span>
               <span className="font-semibold text-[#A6B5A0]">
                 {weddingInfo.daysLeft === 0
-                  ? "Oggi!"
+                  ? t("today")
                   : weddingInfo.daysLeft === 1
-                  ? "Manca 1 giorno"
-                  : `Mancano ${weddingInfo.daysLeft} giorni`}
+                  ? t("dayLeft")
+                  : t("daysLeft", { count: weddingInfo.daysLeft })}
               </span>
             </>
           )}
