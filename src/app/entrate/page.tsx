@@ -312,7 +312,7 @@ export default function EntratePage() {
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newIncome.incomeSource}
-                onChange={(e) => setNewIncome({ ...newIncome, incomeSource: e.target.value as any })}
+                onChange={(e) => setNewIncome({ ...newIncome, incomeSource: e.target.value as "common" | "bride" | "groom" })}
               >
                 <option value="common">{t("incomesPage.form.sourceOptions.common")}</option>
                 {!isSingleBudgetEvent && <option value="bride">{t("incomesPage.form.sourceOptions.bride")}</option>}
