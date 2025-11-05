@@ -52,20 +52,20 @@ export default function OnboardingSelector() {
 
   return (
     <div className="w-full min-h-screen flex flex-col">
-      {/* Header - Spostato in alto */}
-      <div className="bg-linear-to-r from-[#A3B59D]/10 to-[#A3B59D]/5 border-b border-[#A3B59D]/20 py-8">
-        <div className="w-full max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Personalizza la tua esperienza
-          </h1>
-          <p className="text-lg text-gray-600">
-            Seleziona la lingua, il paese e il tipo di evento per iniziare
-          </p>
-        </div>
-      </div>
-
       {/* Content Container */}
       <div className="w-full max-w-4xl mx-auto px-4 py-8 flex-1">
+        {/* Header - In alto dentro il container */}
+        <div className="bg-linear-to-r from-[#A3B59D]/10 to-[#A3B59D]/5 border border-[#A3B59D]/20 rounded-lg p-8 mb-6">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Personalizza la tua esperienza
+            </h1>
+            <p className="text-lg text-gray-600">
+              Seleziona la lingua, il paese e il tipo di evento per iniziare
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Language Selector */}
         <div className="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 hover:border-[#A3B59D] transition-colors">
@@ -83,7 +83,7 @@ export default function OnboardingSelector() {
                 value={lang.slug}
                 disabled={!lang.available}
               >
-                {lang.emoji} {lang.label} {!lang.available ? "(Coming Soon)" : ""}
+                {lang.emoji} {lang.label}{!lang.available ? " (Coming Soon)" : ""}
               </option>
             ))}
           </select>
@@ -105,7 +105,7 @@ export default function OnboardingSelector() {
                 value={country.code}
                 disabled={!country.available}
               >
-                {country.emoji} {country.label} {!country.available ? "(Coming Soon)" : ""}
+                {country.emoji} {country.label}{!country.available ? " (Coming Soon)" : ""}
               </option>
             ))}
           </select>
@@ -127,7 +127,7 @@ export default function OnboardingSelector() {
                 value={event.slug}
                 disabled={!event.available}
               >
-                {event.emoji} {event.label} {!event.available ? "(Coming Soon)" : ""}
+                {event.emoji} {event.label}{!event.available ? " (Coming Soon)" : ""}
               </option>
             ))}
           </select>

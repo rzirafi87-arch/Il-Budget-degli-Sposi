@@ -19,24 +19,24 @@ export default function CategoryBars({ categories, totalBudget, className = "" }
 
   const getColor = (index: number) => {
     const colors = [
-      "#A6B5A0", // Sage
-      "#EAD9D4", // Rose
-      "#E8E0D6", // Beige
-      "#8a9d84", // Dark sage
-      "#d4c5bf", // Dark rose
-      "#cfc5ba", // Dark beige
-      "#A6B5A0", // Sage (ripete)
-      "#EAD9D4", // Rose (ripete)
+      "#3f7055", // Sage deep
+      "#c87373", // Rose clay
+      "#d18a3c", // Amber
+      "#4e8666", // Sage accent
+      "#7a6a5c", // Warm taupe
+      "#8fb49b", // Sage light
+      "#b98f6f", // Terracotta
+      "#a96c7a", // Dusty rose
     ];
     return colors[index % colors.length];
   };
 
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className={`space-y-4 ${className}`}>
       <h3 className="text-lg font-bold text-gray-800 mb-4">
         📊 Spese per Categoria (Top 8)
       </h3>
-      
+
       {sortedCategories.length === 0 ? (
         <div className="text-center py-8 text-gray-500 italic">
           Nessuna spesa registrata ancora

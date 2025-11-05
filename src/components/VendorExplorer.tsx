@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Vendor {
   id: string;
@@ -164,7 +164,7 @@ export default function VendorExplorer({
             Esplora Fornitori Matrimonio
           </h1>
           <p className="text-gray-600">
-            Trova i migliori fornitori per il tuo matrimonio da fonti verificate
+            Trova i migliori fornitori per il tuo evento da fonti verificate
             (Google Places, OpenStreetMap)
           </p>
         </div>

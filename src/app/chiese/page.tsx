@@ -108,7 +108,11 @@ export default function ChiesePage() {
 
     const jwt = localStorage.getItem("sb_jwt");
     if (!jwt) {
+<<<<<<< ours
       alert(t("messages.authRequired"));
+=======
+      alert("Devi essere autenticato per aggiungere una location cerimonia");
+>>>>>>> theirs
       return;
     }
 
@@ -130,7 +134,11 @@ export default function ChiesePage() {
         throw new Error(t("messages.submitError"));
       }
 
+<<<<<<< ours
       alert(t("messages.submitSuccess"));
+=======
+      alert("Location cerimonia aggiunta con successo! Sarà visibile dopo la verifica dello staff.");
+>>>>>>> theirs
       setShowAddForm(false);
       setFormData({
         name: "",
@@ -161,7 +169,11 @@ export default function ChiesePage() {
         <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
         
         <div className="mb-4">
+<<<<<<< ours
           <h1 className="text-4xl font-bold text-gray-800 mb-2">{t("title")}</h1>
+=======
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">⛪ Location Cerimonia</h1>
+>>>>>>> theirs
           <p className="text-gray-700 text-sm sm:text-base leading-relaxed max-w-3xl">
             {t("description")}
           </p>
@@ -173,13 +185,21 @@ export default function ChiesePage() {
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] transition-colors font-semibold"
           >
+<<<<<<< ours
             {showAddForm ? t("buttons.cancel") : t("buttons.add")}
+=======
+            {showAddForm ? "Annulla" : "+ Aggiungi Location Cerimonia"}
+>>>>>>> theirs
           </button>
         </div>
 
         {showAddForm && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+<<<<<<< ours
             <h2 className="text-2xl font-bold mb-4">{t("form.title")}</h2>
+=======
+            <h2 className="text-2xl font-bold mb-4">Aggiungi Nuova Location Cerimonia</h2>
+>>>>>>> theirs
             <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-1">{t("form.name")}</label>
@@ -338,7 +358,11 @@ export default function ChiesePage() {
                   type="submit"
                   className="w-full bg-[#A3B59D] text-white py-3 rounded-lg hover:bg-[#8fa085] font-semibold"
                 >
+<<<<<<< ours
                   {t("buttons.submit")}
+=======
+                  Aggiungi Location Cerimonia
+>>>>>>> theirs
                 </button>
               </div>
             </form>
@@ -398,7 +422,11 @@ export default function ChiesePage() {
           <div className="text-center py-12">{t("loading")}</div>
         ) : filteredChurches.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
+<<<<<<< ours
             {t("empty")}
+=======
+            Nessuna location cerimonia trovata. Prova a cambiare i filtri o aggiungi la prima!
+>>>>>>> theirs
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

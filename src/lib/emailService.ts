@@ -245,10 +245,10 @@ export async function sendSubscriptionExpiryWarning(
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #A3B59D 0%, #8a9d84 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .header { background: linear-gradient(135deg, #4e8666 0%, #315d47 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
             .alert-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px; }
-            .cta-button { display: inline-block; background: #A3B59D; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+            .cta-button { display: inline-block; background: #4e8666; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
             .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
@@ -326,11 +326,11 @@ export async function sendSubscriptionActivated(
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #A3B59D 0%, #8a9d84 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .header { background: linear-gradient(135deg, #4e8666 0%, #315d47 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
             .success-box { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0; border-radius: 4px; }
             .info-box { background: white; border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 6px; }
-            .cta-button { display: inline-block; background: #A3B59D; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+            .cta-button { display: inline-block; background: #4e8666; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
             .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
@@ -426,7 +426,7 @@ export async function sendAppointmentReminder(
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #A3B59D 0%, #8a9d84 100%); color: white; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
+            .header { background: linear-gradient(135deg, #4e8666 0%, #315d47 100%); color: white; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 24px; border-radius: 0 0 10px 10px; }
             .alert-box { background: #e6f4ea; border-left: 4px solid #34a853; padding: 12px; margin: 16px 0; border-radius: 4px; }
             .footer { text-align: center; padding: 16px; color: #666; font-size: 12px; }
@@ -453,7 +453,7 @@ export async function sendAppointmentReminder(
               </p>
 
               <center>
-                <a href="${baseUrl}/documenti/appuntamenti" style="display:inline-block;background:#A3B59D;color:white;padding:10px 20px;text-decoration:none;border-radius:6px;">
+                <a href="${baseUrl}/documenti/appuntamenti" style="display:inline-block;background:#4e8666;color:white;padding:10px 20px;text-decoration:none;border-radius:6px;">
                   ${lang === "en" ? "Open Agenda" : "Apri Agenda"}
                 </a>
               </center>

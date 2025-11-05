@@ -85,8 +85,11 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
 
   type Locale = "it" | "es" | "en" | "ru" | "fr" | "de" | "zh" | "ja" | "ar" | "pt" | "id";
   const [locale, setLocale] = useState<Locale>("it");
+<<<<<<< ours
   const [messages, setMessages] = useState<Messages | null>(null);
-  const [chatEnabled, setChatEnabled] = useState<boolean | null>(null);
+=======
+  const [messages, setMessages] = useState<any | null>(null);
+>>>>>>> theirs
 
   useEffect(() => {
     const lang = (typeof window !== "undefined" ? localStorage.getItem("language") : null) as Locale | null;
@@ -152,24 +155,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     } catch {}
   }, [locale]);
 
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const res = await fetch("/api/chat", { method: "GET" });
-        const data = await res.json();
-        if (!active) return;
-        setChatEnabled(Boolean(data?.enabled));
-      } catch {
-        if (!active) return;
-        setChatEnabled(false);
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, []);
-
   if (!messages) {
     return (
       <div className="p-6 text-center text-gray-600" role="status" aria-busy="true" suppressHydrationWarning>
@@ -198,23 +183,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                     <TopBarSelector />
                     {!isSaveTheDate && (
                       <>
-                        {chatEnabled ? (
-                          <a
-                            className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 transition-colors whitespace-nowrap"
-                            href="/chat-ia"
-                            aria-label="Chat IA disponibile"
-                          >
-                            Chat IA
-                          </a>
-                        ) : (
-                          <span
-                            className="px-3 py-2 rounded-full border border-gray-200 bg-gray-100 text-gray-400 whitespace-nowrap cursor-not-allowed"
-                            title="Assistente AI non disponibile"
-                            aria-disabled
-                          >
-                            Chat IA
-                          </span>
-                        )}
                         <a
                           className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 transition-colors whitespace-nowrap"
                           href="/idea-di-budget"
