@@ -116,7 +116,7 @@
     "label": "Evento aziendale",
     "emoji": "🏢",
     "group": "professionale",
-    "available": false
+    "available": true
   },
   {
     "slug": "charity-gala",
