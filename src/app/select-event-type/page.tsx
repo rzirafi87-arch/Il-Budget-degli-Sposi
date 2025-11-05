@@ -116,21 +116,29 @@ export default function SelectEventTypePage() {
           </div>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {EVENTS.map((ev) => (
-            <button
-              key={ev.slug}
-              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === ev.slug ? "bg-[#A3B59D] text-white" : ""}`}
-              onClick={() => handleSelect(ev.slug)}
-            >
-              <span aria-hidden="true" className="mr-2">{ev.emoji || "✨"}</span>
-              {t(`events.${ev.slug}`, { fallback: ev.label })}
-              {ev.available === false && (
-                <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
-                  {t("comingSoon", { fallback: "In arrivo" })}
-                </span>
-              )}
-            </button>
-          ))}
+          {EVENTS.map((ev) => {
+            const isAvailable = ev.available !== false;
+            return (
+              <button
+                key={ev.slug}
+                disabled={!isAvailable}
+                className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 transition-all ${
+                  isAvailable
+                    ? `border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white ${selected === ev.slug ? "bg-[#A3B59D] text-white" : ""}`
+                    : "border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed opacity-60"
+                }`}
+                onClick={() => isAvailable && handleSelect(ev.slug)}
+              >
+                <span aria-hidden="true" className="mr-2">{ev.emoji || "✨"}</span>
+                {t(`events.${ev.slug}`, { fallback: ev.label })}
+                {!isAvailable && (
+                  <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-200 text-gray-500 border border-gray-300">
+                    {t("comingSoon", { fallback: "In arrivo" })}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </main>
