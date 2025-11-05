@@ -365,6 +365,67 @@ COMMENT ON COLUMN expenses.from_dashboard IS 'Indica se la spesa era presente ne
 -- Ora puoi procedere con la registrazione dell'utente
 -- =====================================================
 -- =====================================================
+-- PATCH 16: Events.owner_id – NOT NULL + Default + RLS hardening
+-- Obiettivo: prevenire errori 23502 su owner_id NULL e semplificare le policy
+-- Idempotente e sicuro su Supabase
+-- =====================================================
+
+-- 1) Colonna owner_id: tipo, NOT NULL e default
+ALTER TABLE public.events
+  ALTER COLUMN owner_id TYPE uuid USING owner_id::uuid,
+  ALTER COLUMN owner_id SET NOT NULL,
+  ALTER COLUMN owner_id SET DEFAULT auth.uid();
+
+-- 2) Backfill eventuali righe NULL (assegna all'utente chiamante)
+--    Nota: in Supabase, auth.uid() è disponibile anche in SQL editor con sessione JWT
+UPDATE public.events
+SET owner_id = auth.uid()
+WHERE owner_id IS NULL;
+
+-- 3) RLS: abilita (se non già abilitata)
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+
+-- 4) RLS Policies: rimpiazza la policy cumulativa con 4 policy chiare
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE schemaname = 'public' AND tablename = 'events' AND policyname = 'events_owner_all'
+  ) THEN
+    DROP POLICY "events_owner_all" ON public.events;
+  END IF;
+END$$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'events' AND policyname = 'events_select_own'
+  ) THEN
+    CREATE POLICY events_select_own ON public.events FOR SELECT USING (owner_id = auth.uid());
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'events' AND policyname = 'events_insert_self'
+  ) THEN
+    CREATE POLICY events_insert_self ON public.events FOR INSERT WITH CHECK (owner_id = auth.uid());
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'events' AND policyname = 'events_update_own'
+  ) THEN
+    CREATE POLICY events_update_own ON public.events FOR UPDATE USING (owner_id = auth.uid());
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'events' AND policyname = 'events_delete_own'
+  ) THEN
+    CREATE POLICY events_delete_own ON public.events FOR DELETE USING (owner_id = auth.uid());
+  END IF;
+END$$;
+
+-- 5) Propaga la restrizione NOT NULL nei vincoli a cascata (nessuna azione necessaria sui FK, solo su policies già allineate)
+
+-- =====================================================
 -- PATCH 5: Suppliers media & promo fields
 -- =====================================================
 ALTER TABLE public.suppliers

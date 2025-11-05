@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await requireUser(req);
@@ -16,8 +16,8 @@ export async function PATCH(
 
     const db = getServiceClient();
 
-    const { id } = await params;
-    const expenseId = id;
+  const { id } = await context.params;
+  const expenseId = id;
 
     // Aggiorna lo stato della spesa
     // Se approvata, copia committed_amount in paid_amount

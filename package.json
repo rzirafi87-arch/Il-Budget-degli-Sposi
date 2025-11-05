@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "npm run autocommit && next dev",
         "build": "next build",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
         "start": "next start",
         "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true});console.log('Cleaned .next')\"",
         "lint": "eslint",
@@ -33,7 +34,8 @@
         "sql:seed:birthday-50": "node scripts/seed-50th-birthday.mjs",
         "codex:sync": "node scripts/codex-sync-db.mjs",
         "codex:check": "node scripts/codex-sync-db.mjs supabase-quick-check.sql",
-        "codex:diagnostics": "node scripts/codex-sync-db.mjs supabase-diagnostics-complete.sql"
+        "codex:diagnostics": "node scripts/codex-sync-db.mjs supabase-diagnostics-complete.sql",
+        "test": "jest"
     },
     "engines": {
         "node": ">=18.17.0"
