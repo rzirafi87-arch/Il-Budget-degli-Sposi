@@ -1,9 +1,9 @@
 ﻿"use client";
+import OnboardingSelector from "@/components/OnboardingSelector";
 import { formatCurrency, formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
@@ -15,7 +15,6 @@ type EventData = {
 };
 
 export default function Home() {
-  const router = useRouter();
   const t = useTranslations("home");
   const [event, setEvent] = useState<EventData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,10 +62,6 @@ export default function Home() {
     })();
   }, []);
 
-  useEffect(() => {
-    try { const lang = localStorage.getItem("language"); const country = localStorage.getItem("country"); const eventType = localStorage.getItem("eventType"); if (!lang) router.replace("/select-language"); else if (!country) router.replace("/select-country"); else if (!eventType) router.replace("/select-event-type"); } catch { router.replace("/select-language"); }
-  }, [router]);
-
   const progress = event?.totalBudget 
     ? Math.min(100, ((event.spentAmount || 0) / event.totalBudget) * 100)
     : 0;
@@ -110,6 +105,11 @@ export default function Home() {
 
             <p className="text-sm text-gray-500 pt-4">{t("hero.footnote")}</p>
           </div>
+        </section>
+
+        {/* Onboarding Selector */}
+        <section className="container mx-auto px-6 py-12">
+          <OnboardingSelector />
         </section>
 
         {/* USP Cards */}
@@ -208,6 +208,78 @@ export default function Home() {
             >
               {t("finalCta.button")}
             </Link>
+          </div>
+        </section>
+
+        {/* Coming Soon Section */}
+        <section className="container mx-auto px-6 py-20">
+          <div className="max-w-3xl mx-auto text-center bg-white rounded-2xl shadow-2xl border-2 border-[#A3B59D]/20 p-12">
+            <div className="mb-6">
+              <span className="inline-block text-6xl mb-4">🚀</span>
+              <h2 className="text-4xl font-bold text-gray-900 mb-3">
+                Prossimamente
+              </h2>
+              <div className="w-24 h-1 bg-[#A3B59D] mx-auto mb-6 rounded-full"></div>
+            </div>
+            
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Stiamo lavorando a nuove funzionalità incredibili per rendere
+              l&apos;organizzazione del tuo evento ancora più semplice e completa!
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+              <div className="flex items-start gap-3 p-4 bg-[#A3B59D]/5 rounded-lg">
+                <span className="text-2xl">📱</span>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">App Mobile</h3>
+                  <p className="text-sm text-gray-600">
+                    Gestisci il tuo evento ovunque ti trovi
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-4 bg-[#A3B59D]/5 rounded-lg">
+                <span className="text-2xl">🤖</span>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">AI Assistant</h3>
+                  <p className="text-sm text-gray-600">
+                    Suggerimenti intelligenti personalizzati
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-4 bg-[#A3B59D]/5 rounded-lg">
+                <span className="text-2xl">🎨</span>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Design Tools</h3>
+                  <p className="text-sm text-gray-600">
+                    Crea partecipazioni e decorazioni uniche
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-4 bg-[#A3B59D]/5 rounded-lg">
+                <span className="text-2xl">🌍</span>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Multi-lingua</h3>
+                  <p className="text-sm text-gray-600">
+                    Supporto per oltre 20 lingue
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 pt-8 border-t border-gray-200">
+              <p className="text-gray-600 mb-4">
+                Vuoi essere il primo a provare le nuove funzionalità?
+              </p>
+              <Link
+                href="/auth"
+                className="inline-block bg-[#A3B59D] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#8a9d84] transition-all shadow-lg hover:shadow-xl hover:scale-105 transform"
+              >
+                Iscriviti alla Beta
+              </Link>
+            </div>
           </div>
         </section>
 
