@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
 import DashboardPage from '../dashboard/page';
+jest.mock('@/lib/supabaseServer');
 
 describe('DashboardPage - con dati', () => {
   beforeAll(() => {

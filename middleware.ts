@@ -25,7 +25,13 @@ export function middleware(req: NextRequest) {
     "/welcome",
   ];
   if (publicPaths.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
+    // Ensure NEXT_LOCALE is aligned for SSR even on public pages
+    const res = NextResponse.next();
+    const lang = req.cookies.get("language")?.value;
+    if (lang) {
+      res.cookies.set("NEXT_LOCALE", lang);
+    }
+    return res;
   }
 
   // Next.js 16: req.cookies è un oggetto Record<string, string> lato middleware
@@ -49,57 +55,12 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Supporto Battesimo: consenti sezioni pertinenti ed escludi quelle wedding-only
-  if (eventType === "baptism") {
-    const excludeForBaptism = [
-      "/timeline",
-      "/save-the-date",
-      "/cose-matrimonio",
-      "/lista-nozze",
-      "/contabilita",
-      "/fornitori",
-      "/documenti",
-      "/musica-cerimonia",
-      "/musica-ricevimento",
-      "/atelier",
-      "/beauty",
-      "/fotografi",
-      "/gioiellerie",
-    ];
-    if (excludeForBaptism.some((p) => pathname.startsWith(p))) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/dashboard";
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
+  const res = NextResponse.next();
+  // Align next-intl locale cookie to reduce initial flash of wrong language
+  if (lang) {
+    res.cookies.set("NEXT_LOCALE", lang);
   }
-
-  // Consenti solo le sezioni matrimonio se l'evento selezionato è 'wedding'
-  if (eventType && eventType !== "wedding") {
-    const weddingOnlyPaths = [
-      "/dashboard",
-      "/timeline",
-      "/budget",
-      "/cose-matrimonio",
-      "/save-the-date",
-      "/invitati",
-      "/contabilita",
-      "/fornitori",
-      "/location",
-      "/chiese",
-      "/documenti",
-      "/lista-nozze",
-      "/preferiti",
-      "/suggerimenti",
-    ];
-    if (weddingOnlyPaths.some((p) => pathname.startsWith(p))) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/coming-soon";
-      return NextResponse.redirect(url);
-    }
-  }
-
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {

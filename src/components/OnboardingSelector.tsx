@@ -1,60 +1,8 @@
 "use client";
 
+import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-
-type Language = {
-  code: string;
-  name: string;
-  flag: string;
-};
-
-type Country = {
-  code: string;
-  name: string;
-  flag: string;
-};
-
-type EventType = {
-  id: string;
-  name: string;
-  icon: string;
-};
-
-const languages: Language[] = [
-  { code: "it", name: "Italiano", flag: "🇮🇹" },
-  { code: "en", name: "English", flag: "🇬🇧" },
-  { code: "es", name: "Español", flag: "🇪🇸" },
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "de", name: "Deutsch", flag: "🇩🇪" },
-];
-
-const countries: Country[] = [
-  { code: "IT", name: "Italia", flag: "🇮🇹" },
-  { code: "US", name: "United States", flag: "🇺🇸" },
-  { code: "ES", name: "España", flag: "🇪🇸" },
-  { code: "FR", name: "France", flag: "🇫🇷" },
-  { code: "DE", name: "Deutschland", flag: "🇩🇪" },
-  { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
-  { code: "MX", name: "México", flag: "🇲🇽" },
-  { code: "IN", name: "India", flag: "🇮🇳" },
-];
-
-const eventTypes: EventType[] = [
-  { id: "matrimonio", name: "Matrimonio", icon: "💍" },
-  { id: "compleanno", name: "Compleanno", icon: "🎂" },
-  { id: "battesimo", name: "Battesimo", icon: "👶" },
-  { id: "comunione", name: "Prima Comunione", icon: "🕊️" },
-  { id: "cresima", name: "Cresima", icon: "✝️" },
-  { id: "laurea", name: "Laurea", icon: "🎓" },
-  { id: "pensione", name: "Pensione", icon: "🎉" },
-  { id: "anniversario", name: "Anniversario", icon: "💑" },
-  { id: "diciottesimo", name: "18° Compleanno", icon: "🎊" },
-  { id: "cinquantesimo", name: "50° Compleanno", icon: "🎈" },
-  { id: "engagement-party", name: "Festa di Fidanzamento", icon: "💕" },
-  { id: "baby-shower", name: "Baby Shower", icon: "🍼" },
-  { id: "gender-reveal", name: "Gender Reveal", icon: "👶" },
-];
 
 export default function OnboardingSelector() {
   const router = useRouter();
@@ -62,31 +10,44 @@ export default function OnboardingSelector() {
   const currentLocale = pathname.split("/")[1] || "it";
 
   const [selectedLanguage, setSelectedLanguage] = useState(currentLocale);
-  const [selectedCountry, setSelectedCountry] = useState("IT");
-  const [selectedEvent, setSelectedEvent] = useState("matrimonio");
+  const [selectedCountry, setSelectedCountry] = useState("it");
+  const [selectedEvent, setSelectedEvent] = useState("wedding");
 
   const handleLanguageChange = (langCode: string) => {
     setSelectedLanguage(langCode);
-    // Aggiorna URL con nuova lingua
-    const newPath = pathname.replace(`/${currentLocale}`, `/${langCode}`);
-    router.push(newPath);
+    // Salva in localStorage e cookie
+    localStorage.setItem("language", langCode);
+    document.cookie = `language=${langCode}; Path=/; Max-Age=15552000; SameSite=Lax`;
   };
 
   const handleCountryChange = (countryCode: string) => {
     setSelectedCountry(countryCode);
-    // Salva preferenza in localStorage
-    localStorage.setItem("preferredCountry", countryCode);
+    // Salva preferenza in localStorage e cookie
+    localStorage.setItem("country", countryCode);
+    document.cookie = `country=${countryCode}; Path=/; Max-Age=15552000; SameSite=Lax`;
   };
 
   const handleEventChange = (eventId: string) => {
     setSelectedEvent(eventId);
-    // Salva preferenza in localStorage
-    localStorage.setItem("preferredEventType", eventId);
+    // Salva preferenza in localStorage e cookie
+    localStorage.setItem("eventType", eventId);
+    document.cookie = `eventType=${eventId}; Path=/; Max-Age=15552000; SameSite=Lax`;
   };
 
   const handleContinue = () => {
-    // Naviga alla dashboard o pagina principale
-    router.push(`/${selectedLanguage}/dashboard`);
+    // Salva tutte le preferenze selezionate
+    localStorage.setItem("onboardingComplete", "true");
+    localStorage.setItem("language", selectedLanguage);
+    localStorage.setItem("country", selectedCountry);
+    localStorage.setItem("eventType", selectedEvent);
+    
+    // Salva anche nei cookie per persistenza
+    document.cookie = `language=${selectedLanguage}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    document.cookie = `country=${selectedCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    document.cookie = `eventType=${selectedEvent}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    
+    // Naviga DIRETTAMENTE alla dashboard senza passare da altre pagine
+    router.push("/dashboard");
   };
 
   return (
@@ -116,9 +77,13 @@ export default function OnboardingSelector() {
             onChange={(e) => handleLanguageChange(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent bg-white text-gray-900 cursor-pointer"
           >
-            {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.flag} {lang.name}
+            {LANGS.map((lang) => (
+              <option 
+                key={lang.slug} 
+                value={lang.slug}
+                disabled={!lang.available}
+              >
+                {lang.emoji} {lang.label} {!lang.available ? "(Coming Soon)" : ""}
               </option>
             ))}
           </select>
@@ -134,9 +99,13 @@ export default function OnboardingSelector() {
             onChange={(e) => handleCountryChange(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent bg-white text-gray-900 cursor-pointer"
           >
-            {countries.map((country) => (
-              <option key={country.code} value={country.code}>
-                {country.flag} {country.name}
+            {COUNTRIES.map((country) => (
+              <option 
+                key={country.code} 
+                value={country.code}
+                disabled={!country.available}
+              >
+                {country.emoji} {country.label} {!country.available ? "(Coming Soon)" : ""}
               </option>
             ))}
           </select>
@@ -152,9 +121,13 @@ export default function OnboardingSelector() {
             onChange={(e) => handleEventChange(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent bg-white text-gray-900 cursor-pointer"
           >
-            {eventTypes.map((event) => (
-              <option key={event.id} value={event.id}>
-                {event.icon} {event.name}
+            {EVENTS.map((event) => (
+              <option 
+                key={event.slug} 
+                value={event.slug}
+                disabled={!event.available}
+              >
+                {event.emoji} {event.label} {!event.available ? "(Coming Soon)" : ""}
               </option>
             ))}
           </select>
