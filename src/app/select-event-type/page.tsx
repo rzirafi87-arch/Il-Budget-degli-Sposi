@@ -20,6 +20,7 @@ const DASHBOARD_EVENTS = new Set([
   "babyshower", // Added for testing - evento Baby Shower
   "engagement", // Added - Festa di Fidanzamento
   "proposal", // Added - Proposta di Matrimonio
+  "corporate", // Added - Evento Aziendale
 ]);
 
 export default function SelectEventTypePage() {
