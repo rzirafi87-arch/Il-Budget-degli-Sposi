@@ -42,18 +42,6 @@ export default function DashboardPage() {
   const totalBudget = (brideBudget || 0) + (groomBudget || 0);
   const countryState = userCountry;
 
-  const daysLeft = useMemo(() => {
-    if (!weddingDate) return null;
-    try {
-      const d = new Date(weddingDate);
-      const today = new Date();
-      const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      return diff;
-    } catch {
-      return null;
-    }
-  }, [weddingDate]);
-
   // Fetch dashboard data from API endpoints
   useEffect(() => {
     if (!isReady) return;
@@ -134,7 +122,7 @@ export default function DashboardPage() {
         // Localized presets (wedding only)
         if (isWedding) {
           try {
-            const res = await fetch(`/api/my/wedding/localized?country=${encodeURIComponent(country)}&event=matrimonio`, { headers });
+            const res = await fetch(`/api/my/wedding/localized?country=${encodeURIComponent(country)}&event=wedding`, { headers });
             const json = await res.json();
             if (active && json?.ok && json?.data) {
               setLocalized(json.data as LocalizedWeddingData);
@@ -145,7 +133,7 @@ export default function DashboardPage() {
 
           // Budget focus (slim endpoint)
           try {
-            const res = await fetch(`/api/my/wedding/budget-focus?country=${encodeURIComponent(country)}&event=matrimonio`, { headers });
+            const res = await fetch(`/api/my/wedding/budget-focus?country=${encodeURIComponent(country)}&event=wedding`, { headers });
             const json = await res.json();
             if (active && json?.ok && json?.budget) {
               setBudgetFocus(json.budget as BudgetFocus);
@@ -221,7 +209,7 @@ export default function DashboardPage() {
     return (
       <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4 text-center p-6">
         <h2 className="text-2xl font-serif font-bold">Seleziona lingua, nazione ed evento</h2>
-          <p className="text-gray-800">Completa i passaggi iniziali per personalizzare l&apos;esperienza.</p>
+        <p className="text-gray-800">Completa i passaggi iniziali per personalizzare l&apos;esperienza.</p>
         <div className="flex gap-3 flex-wrap justify-center">
           <a href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</a>
           <a href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</a>
@@ -235,13 +223,28 @@ export default function DashboardPage() {
     <main className="container mx-auto p-6">
       <h1 className="text-3xl font-serif font-bold mb-6">Dashboard</h1>
 
+      {/* Preferenze in alto */}
+      <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-semibold text-lg">⚙️ Preferenze</h3>
+            <p className="text-sm text-gray-900">Personalizza lingua, nazione ed evento per un&apos;esperienza su misura.</p>
+          </div>
+          <div className="flex gap-2">
+            <a href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</a>
+            <a href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</a>
+            <a href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</a>
+          </div>
+        </div>
+      </div>
+
       <PageInfoNote
         icon="📊"
         title="Centro di Controllo del Tuo Evento"
-        description="La Dashboard è il cuore dell'applicazione. Qui puoi gestire il budget complessivo, impostare i budget separati per sposa e sposo, e visualizzare tutte le categorie di spesa previste. Ogni modifica viene salvata automaticamente al tuo account."
+        description="La Dashboard è il cuore dell'applicazione. Qui puoi gestire il budget complessivo, impostare i budget separati per i partecipanti, e visualizzare tutte le categorie di spesa previste. Ogni modifica viene salvata automaticamente al tuo account."
         tips={[
           "Imposta prima il budget totale e la data dell'evento per attivare tutte le funzionalità",
-          "Il budget si divide automaticamente in budget della sposa e dello sposo, con spese comuni condivise",
+          "Il budget si divide automaticamente tra i partecipanti, con spese comuni condivise",
           "Tutte le categorie sono personalizzabili: aggiungi preventivi, conferma spese e traccia pagamenti",
           "Usa le 'Idee di Budget' per applicare template pre-compilati alle tue categorie"
         ]}
@@ -281,37 +284,21 @@ export default function DashboardPage() {
         </button>
       </div>
 
-  <BudgetItemsSection budgetItems={budgetItems} />
+      <BudgetItemsSection budgetItems={budgetItems} />
 
       {/* Idea di Budget quick access card */}
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-lg">Idea di Budget</h3>
-              <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
+            <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
           </div>
           <a href="/idea-di-budget" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Idea di Budget</a>
         </div>
       </div>
 
-  {/* Budget focus hint (wedding only) */}
-  {isWedding && <BudgetFocusHint budget={budgetFocus} />}
-
-  {/* Timeline quick access card */}
-      <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-lg">Timeline</h3>
-              <p className="text-sm text-gray-900">Pianifica le attività mese per mese.</p>
-            {typeof daysLeft === "number" && (
-              <p className="text-sm text-gray-700 mt-1">
-                {daysLeft > 0 ? `${daysLeft} giorni al grande giorno` : `Giorno del matrimonio`}
-              </p>
-            )}
-          </div>
-          <a href="/timeline" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Timeline</a>
-        </div>
-      </div>
+      {/* Budget focus hint (wedding only) */}
+      {isWedding && <BudgetFocusHint budget={budgetFocus} />}
 
       {/* Viaggio di Nozze quick access card - solo per Matrimonio */}
       {isWedding && (
@@ -319,19 +306,19 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-lg">Viaggio di Nozze</h3>
-                <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
+              <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
             </div>
             <a href="/suggerimenti/viaggio-di-nozze" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Viaggio di Nozze</a>
           </div>
         </div>
       )}
 
-      {/* Suggerimenti &amp; Consigli quick access card */}
+      {/* Suggerimenti & Consigli quick access card */}
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-lg">Suggerimenti <span className="font-extrabold text-2xl align-middle">&amp;</span> Consigli</h3>
-              <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
+            <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
           </div>
           <a href="/suggerimenti" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Suggerimenti</a>
         </div>
@@ -342,10 +329,9 @@ export default function DashboardPage() {
         checkedChecklist={checkedChecklist}
         setCheckedChecklist={setCheckedChecklist}
       />
-      {false && <div />}
       <TraditionsSection traditions={traditions} />
       {isWedding && <LocalizedWeddingSection data={localized} />}
-      {/* SuggestionsList rimosso dalla dashboard, visibile solo nella pagina suggerimenti */}
+      {/* Timeline e Agenda sono visibili solo nella pagina /timeline e nei preferiti */}
     </main>
   );
 }
