@@ -5,7 +5,7 @@
   "weddingThings": "Cose matrimonio",
   "saveTheDate": "Save the Date",
   "guests": "Invitati",
-  "accounting": "ContabilitÃ ",
+  "accounting": "Contabilità ",
   "suppliers": "Fornitori",
   "location": "Location",
   "churches": "Chiese",
@@ -51,7 +51,7 @@
     "paymentMethod": {
       "common": "ðŸ’° Comune",
       "bride": "ðŸ‘° Sposa",
-      "groom": "ðŸ¤µ Sposo",
+      "groom": "🤵 Sposo",
       "gift": "🎁 Regalo"
     },
     "loading": "Caricamento...",
@@ -76,7 +76,7 @@
       "description": "In questa pagina puoi registrare tutte le spese effettive e i preventivi. Ogni spesa può essere categorizzata, assegnata a sposa/sposo/comune, e tracciata con stato di approvazione e pagamento. Le spese confermate dalla dashboard appaiono qui automaticamente.",
       "tips": {
         "tip1": "Usa lo stato 'Preventivo' per le offerte ricevute, poi cambiale in 'Approvato' quando confermi",
-        "tip2": "Il campo 'Da preventivo' indica se la spesa proviene dalla dashboard (giÃ  budgetata)",
+        "tip2": "Il campo 'Da preventivo' indica se la spesa proviene dalla dashboard (già budgetata)",
         "tip3": "Aggiungi sempre il fornitore per tenere traccia di chi ti ha fornito ogni servizio",
         "tip4": "Filtra per categoria o tipo di spesa per analizzare dove stai spendendo di più"
       },
@@ -237,7 +237,7 @@
       },
       "source": {
         "bride": "ðŸ‘° Sposa",
-        "groom": "ðŸ¤µ Sposo",
+        "groom": "🤵 Sposo",
         "common": "ðŸ’‘ Comune"
       }
     },
@@ -282,7 +282,7 @@
       "title2Highlighted": "matrimonio",
       "title3": "in modo semplice",
       "title4": "e senza stress ðŸ’",
-      "subtitle": "L'unica app che unisce budget, fornitori e serenitÃ  â€” senza pubblicità né caos.",
+      "subtitle": "L'unica app che unisce budget, fornitori e serenità â€” senza pubblicità né caos.",
       "ctaPrimary": "🎉 Inizia ora â€” È gratis",
       "ctaSecondary": "ðŸ‘€ Guarda la demo",
       "footnote": "✨ Non serve carta di credito • Crea il tuo evento in 2 minuti"
@@ -305,7 +305,7 @@
       }
     },
     "demo": {
-      "title": "Esplora le funzionalitÃ  ðŸ’•",
+      "title": "Esplora le funzionalità ðŸ’•",
       "subtitle": "Navigazione libera senza registrazione â€” aggiungi dati e sperimenta!",
       "features": {
         "budget": {
@@ -341,12 +341,12 @@
       }
     },
     "privacy": {
-      "title": "Privacy e serenitÃ  garantite",
-      "text": "Zero pubblicitÃ . Zero email spam. I tuoi dati restano tuoi. Nessuna vendita a terzi. Solo tu e il tuo matrimonio, senza distrazioni."
+      "title": "Privacy e serenità garantite",
+      "text": "Zero pubblicità . Zero email spam. I tuoi dati restano tuoi. Nessuna vendita a terzi. Solo tu e il tuo matrimonio, senza distrazioni."
     },
     "finalCta": {
       "title": "Pronto a iniziare? 🎊",
-      "subtitle": "Unisciti alle coppie che hanno organizzato il loro matrimonio con serenitÃ .",
+      "subtitle": "Unisciti alle coppie che hanno organizzato il loro matrimonio con serenità .",
       "button": "Crea il tuo evento ora"
     },
     "floatingMenu": "ðŸ  Menù Principale",
@@ -535,7 +535,7 @@
       },
       "3": {
         "title": "ðŸ“Š Gestisci le Categorie",
-        "desc": "Organizza le spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro. Tutto è giÃ  pronto all'uso!"
+        "desc": "Organizza le spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro. Tutto è già pronto all'uso!"
       },
       "4": {
         "title": "ðŸ” Trova Fornitori",
@@ -557,7 +557,7 @@
     }
   },
   "about": {
-    "title": "ðŸ‘°ðŸ¤µ Chi Siamo",
+    "title": "ðŸ‘°🤵 Chi Siamo",
     "intro": "Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale. Nata dall'esperienza diretta di coppie che hanno vissuto le sfide dell'organizzazione di un matrimonio, la nostra missione è rendere questo processo più semplice, trasparente e piacevole.",
     "mission": {
       "title": "La Nostra Missione",
@@ -631,7 +631,7 @@
       },
       "s1": {
         "title": "1. Cosa sono i Cookie?",
-        "p1": "I cookie sono piccoli file di testo che i siti web salvano sul tuo dispositivo (computer, tablet, smartphone) quando li visiti. Servono a migliorare la tua esperienza di navigazione, ricordare le tue preferenze e fornire funzionalitÃ  essenziali."
+        "p1": "I cookie sono piccoli file di testo che i siti web salvano sul tuo dispositivo (computer, tablet, smartphone) quando li visiti. Servono a migliorare la tua esperienza di navigazione, ricordare le tue preferenze e fornire funzionalità essenziali."
       },
       "s2": {
         "title": "2. Tipi di Cookie Utilizzati",
@@ -650,8 +650,8 @@
         },
         "marketing": {
           "title": "2.4 Cookie di Marketing ðŸ“¢",
-          "p1": "Utilizzati per mostrare pubblicitÃ  pertinenti. Richiedono il tuo consenso esplicito.",
-          "status": "Stato attuale: Non utilizziamo cookie di marketing o remarketing. Se in futuro implementeremo pubblicitÃ , richiederemo il tuo consenso preventivo."
+          "p1": "Utilizzati per mostrare pubblicità pertinenti. Richiedono il tuo consenso esplicito.",
+          "status": "Stato attuale: Non utilizziamo cookie di marketing o remarketing. Se in futuro implementeremo pubblicità , richiederemo il tuo consenso preventivo."
         }
       },
       "s3": {
@@ -680,7 +680,7 @@
           "safari": "Preferenze â†’ Privacy â†’ Gestisci dati siti web",
           "edge": "Impostazioni â†’ Cookie e autorizzazioni sito"
         },
-        "warning": "âš ï¸ Attenzione: Disabilitando i cookie tecnici, alcune funzionalitÃ  del sito potrebbero non funzionare correttamente (es. impossibilitÃ  di accedere al tuo account)."
+        "warning": "âš ï¸ Attenzione: Disabilitando i cookie tecnici, alcune funzionalità del sito potrebbero non funzionare correttamente (es. impossibilità di accedere al tuo account)."
       },
       "s5": {
         "title": "5. Do Not Track (DNT)",
@@ -709,7 +709,7 @@
       },
       "s8": {
         "title": "8. Cookie e GDPR",
-        "p1": "In conformitÃ  al GDPR (Regolamento UE 2016/679) e alla Direttiva ePrivacy:",
+        "p1": "In conformità al GDPR (Regolamento UE 2016/679) e alla Direttiva ePrivacy:",
         "items": {
           "i1": "I cookie tecnici non richiedono consenso",
           "i2": "I cookie di profilazione richiedono consenso preventivo e informato",
@@ -779,7 +779,7 @@
         "title": "4. Come utilizziamo i tuoi dati",
         "p1": "Usiamo i tuoi dati per:",
         "items": {
-          "i1": "Erogare e migliorare le funzionalitÃ  della piattaforma",
+          "i1": "Erogare e migliorare le funzionalità della piattaforma",
           "i2": "Gestire autenticazione e sicurezza",
           "i3": "Salvare le tue preferenze (lingua, viste, layout)",
           "i4": "Rispondere a richieste di supporto",
@@ -797,7 +797,7 @@
           },
           "consent": {
             "title": "Consenso",
-            "desc": "Per funzionalitÃ  opzionali (es. newsletter)."
+            "desc": "Per funzionalità opzionali (es. newsletter)."
           },
           "interest": {
             "title": "Legittimo interesse",
@@ -826,8 +826,8 @@
             "desc": "Solo se strettamente necessario e previo accordo di riservatezza."
           },
           "authorities": {
-            "title": "AutoritÃ ",
-            "desc": "Quando richiesto per legge o per ordini dell'autoritÃ ."
+            "title": "Autorità ",
+            "desc": "Quando richiesto per legge o per ordini dell'autorità ."
           }
         },
         "note": "Non vendiamo i tuoi dati personali a terzi."
@@ -853,7 +853,7 @@
             "desc": "Limitare temporaneamente il trattamento."
           },
           "port": {
-            "title": "PortabilitÃ ",
+            "title": "Portabilità ",
             "desc": "Ricevere i dati in formato strutturato e leggibile da dispositivo."
           },
           "object": {
@@ -937,8 +937,8 @@
           "i4": "Accettare la Privacy Policy"
         },
         "resp": {
-          "title": "3.2 ResponsabilitÃ  Account",
-          "p1": "Sei responsabile di tutte le attivitÃ  svolte tramite il tuo account. In caso di accesso non autorizzato, devi informarci immediatamente."
+          "title": "3.2 Responsabilità Account",
+          "p1": "Sei responsabile di tutte le attività svolte tramite il tuo account. In caso di accesso non autorizzato, devi informarci immediatamente."
         }
       },
       "s4": {
@@ -965,11 +965,11 @@
       "s5": {
         "title": "5. Contenuti Utente",
         "ownership": {
-          "title": "5.1 ProprietÃ ",
-          "p1": "Mantieni la proprietÃ  di tutti i contenuti che carichi (foto, dati, ecc.). Ci concedi una licenza limitata per memorizzare ed elaborare tali contenuti al fine di fornire il servizio."
+          "title": "5.1 Proprietà ",
+          "p1": "Mantieni la proprietà di tutti i contenuti che carichi (foto, dati, ecc.). Ci concedi una licenza limitata per memorizzare ed elaborare tali contenuti al fine di fornire il servizio."
         },
         "responsibility": {
-          "title": "5.2 ResponsabilitÃ ",
+          "title": "5.2 Responsabilità ",
           "p1": "Sei responsabile dei contenuti che carichi. Garantisci di avere il diritto di caricare tali contenuti e che non violano diritti di terzi."
         }
       },
@@ -977,7 +977,7 @@
         "title": "6. Fornitori di Servizi",
         "p1": "La piattaforma include un database di fornitori (location, fotografi, ecc.). {strong} per:",
         "items": {
-          "i1": "La qualitÃ  dei servizi offerti dai fornitori",
+          "i1": "La qualità dei servizi offerti dai fornitori",
           "i2": "Contratti stipulati direttamente con i fornitori",
           "i3": "Dispute o controversie con i fornitori",
           "i4": "Informazioni errate fornite dai fornitori stessi"
@@ -985,20 +985,20 @@
         "note": "Ti invitiamo a verificare sempre recensioni, portfolio e contratti prima di assumere un fornitore."
       },
       "s7": {
-        "title": "7. GratuitÃ  del Servizio",
+        "title": "7. Gratuità del Servizio",
         "p1": "Il servizio base è completamente gratuito. Ci riserviamo il diritto di:",
         "items": {
-          "i1": "Introdurre funzionalitÃ  premium a pagamento in futuro",
-          "i2": "Mostrare pubblicitÃ  pertinente",
+          "i1": "Introdurre funzionalità premium a pagamento in futuro",
+          "i2": "Mostrare pubblicità pertinente",
           "i3": "Ricevere commissioni da fornitori partner (senza costi aggiuntivi per te)"
         }
       },
       "s8": {
-        "title": "8. ProprietÃ  Intellettuale",
+        "title": "8. Proprietà Intellettuale",
         "p1": "Tutti i contenuti della piattaforma (design, logo, testi, codice) sono protetti da copyright e marchi registrati. Non puoi copiare, riprodurre o distribuire tali contenuti senza autorizzazione scritta."
       },
       "s9": {
-        "title": "9. Limitazioni di ResponsabilitÃ ",
+        "title": "9. Limitazioni di Responsabilità ",
         "p1": "Il servizio è fornito {quote} senza garanzie di alcun tipo. Non siamo responsabili per:",
         "items": {
           "i1": "Perdita di dati dovuta a errori tecnici o forza maggiore",
@@ -1013,7 +1013,7 @@
         "p1": "Ci riserviamo il diritto di:",
         "items": {
           "i1": "Modificare, sospendere o interrompere il servizio",
-          "i2": "Aggiungere o rimuovere funzionalitÃ ",
+          "i2": "Aggiungere o rimuovere funzionalità ",
           "i3": "Modificare i presenti Termini di Servizio"
         },
         "note": "Le modifiche significative saranno comunicate via email con 30 giorni di anticipo."
@@ -1028,7 +1028,7 @@
           "title": "11.2 Nostra Iniziativa",
           "p1": "Possiamo sospendere o cancellare il tuo account se:",
           "i1": "Violi i presenti Termini di Servizio",
-          "i2": "Usi il servizio per attivitÃ  illegali",
+          "i2": "Usi il servizio per attività illegali",
           "i3": "L'account rimane inattivo per oltre 24 mesi"
         }
       },
@@ -1039,7 +1039,7 @@
       "s13": {
         "title": "13. Disposizioni Varie",
         "severability": {
-          "title": "13.1 DivisibilitÃ ",
+          "title": "13.1 Divisibilità ",
           "p1": "Se una clausola è dichiarata invalida, le restanti clausole rimangono valide ed efficaci."
         },
         "assignment": {
@@ -1119,20 +1119,20 @@
       "fields": {
         "name": "Nome",
         "type": "Tipo Location",
-        "city": "CittÃ ",
+        "city": "Città ",
         "address": "Indirizzo",
         "phone": "Telefono",
         "email": "Email",
         "website": "Sito Web",
         "priceRange": "Fascia di Prezzo",
-        "capacityMin": "CapacitÃ  Minima (persone)",
-        "capacityMax": "CapacitÃ  Massima (persone)",
+        "capacityMin": "Capacità Minima (persone)",
+        "capacityMax": "Capacità Massima (persone)",
         "description": "Descrizione"
       },
       "placeholders": {
         "province": "es. Roma, Milano, Napoli",
         "priceRange": "es. â‚¬â‚¬â‚¬, 50-100â‚¬ a persona",
-        "description": "Descrivi la location, i servizi offerti, particolaritÃ ..."
+        "description": "Descrivi la location, i servizi offerti, particolarità ..."
       },
       "submit": "Aggiungi Location"
     },
@@ -1150,7 +1150,7 @@
     },
     "labels": {
       "type": "Tipo:",
-      "capacity": "ðŸ‘¥ CapacitÃ :",
+      "capacity": "ðŸ‘¥ Capacità :",
       "website": "Sito Web"
     },
     "capacity": {
@@ -1195,7 +1195,7 @@
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una location",
       "addError": "Errore durante l'aggiunta",
-      "addSuccess": "Location aggiunta con successo! SarÃ  visibile dopo la verifica dello staff."
+      "addSuccess": "Location aggiunta con successo! Sarà visibile dopo la verifica dello staff."
     }
   },
   "suppliersPhotographers": {
@@ -1249,7 +1249,7 @@
       "suppliers": "Fornitori",
       "atelier": "Atelier"
     },
-    "title": "ðŸ‘—ðŸ¤µ Atelier",
+    "title": "ðŸ‘—🤵 Atelier",
     "description": "Scopri gli atelier più prestigiosi per l'abito da sposa e da sposo. Trova boutique esclusive, brand internazionali e sartorie artigianali per il tuo look perfetto.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori",
@@ -1258,7 +1258,7 @@
     },
     "tabs": {
       "bride": "ðŸ‘° Atelier Sposa",
-      "groom": "ðŸ¤µ Atelier Sposo"
+      "groom": "🤵 Atelier Sposo"
     },
     "filters": {
       "region": "Filtra per Regione",
@@ -1272,7 +1272,7 @@
         "category": "Categoria",
         "region": "Regione",
         "province": "Provincia",
-        "city": "CittÃ ",
+        "city": "Città ",
         "address": "Indirizzo",
         "phone": "Telefono",
         "email": "Email",
@@ -1527,7 +1527,7 @@
       "name": "Nome artista/gruppo *",
       "region": "Regione *",
       "province": "Provincia *",
-      "city": "CittÃ  *",
+      "city": "Città *",
       "phone": "Telefono",
       "email": "Email",
       "website": "Sito web",
@@ -1539,7 +1539,7 @@
     "loading": "Caricamento musicisti...",
     "empty": "Nessun musicista trovato per i filtri selezionati.",
     "messages": {
-      "submitSuccess": "Musica cerimonia inviata! SarÃ  verificata prima della pubblicazione.",
+      "submitSuccess": "Musica cerimonia inviata! Sarà verificata prima della pubblicazione.",
       "submitError": "Errore nell'invio",
       "networkError": "Errore di rete"
     }
@@ -1569,7 +1569,7 @@
       "name": "Nome artista/gruppo *",
       "region": "Regione *",
       "province": "Provincia *",
-      "city": "CittÃ  *",
+      "city": "Città *",
       "phone": "Telefono",
       "email": "Email",
       "website": "Sito web",
@@ -1585,7 +1585,7 @@
     "empty": "Nessun DJ/band trovato per i filtri selezionati",
     "verified": "âœ“ Verificato",
     "messages": {
-      "submitSuccess": "Musica ricevimento inviata! SarÃ  verificata prima della pubblicazione.",
+      "submitSuccess": "Musica ricevimento inviata! Sarà verificata prima della pubblicazione.",
       "submitError": "Errore nell'invio",
       "networkError": "Errore di rete"
     }
@@ -1615,7 +1615,7 @@
       "name": "Nome / Studio *",
       "region": "Regione *",
       "province": "Provincia *",
-      "city": "CittÃ  *",
+      "city": "Città *",
       "phone": "Telefono",
       "email": "Email",
       "website": "Sito web",
@@ -1631,7 +1631,7 @@
     "empty": "Nessun wedding planner trovato per i filtri selezionati",
     "verified": "âœ“ Verificato",
     "messages": {
-      "submitSuccess": "Wedding planner inviato! SarÃ  verificato prima della pubblicazione.",
+      "submitSuccess": "Wedding planner inviato! Sarà verificato prima della pubblicazione.",
       "submitError": "Errore nell'invio",
       "networkError": "Errore di rete"
     }
@@ -1654,12 +1654,12 @@
       "title": "Aggiungi Nuova Chiesa",
       "name": "Nome *",
       "type": "Tipo *",
-      "city": "CittÃ  *",
+      "city": "Città *",
       "address": "Indirizzo",
       "phone": "Telefono",
       "email": "Email",
       "website": "Sito Web",
-      "capacity": "CapacitÃ  (persone)",
+      "capacity": "Capacità (persone)",
       "description": "Descrizione",
       "descriptionPlaceholder": "Descrivi la chiesa, le caratteristiche architettoniche, servizi...",
       "requiresBaptism": "Richiede Battesimo",
@@ -1679,7 +1679,7 @@
     "card": {
       "verified": "Verificato",
       "type": "Tipo:",
-      "capacity": "ðŸ‘¥ CapacitÃ :",
+      "capacity": "ðŸ‘¥ Capacità :",
       "people": "persone",
       "requiresBaptism": "âš ï¸ Richiede Battesimo",
       "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
@@ -1689,7 +1689,7 @@
     "empty": "Nessuna chiesa trovata. Prova a cambiare i filtri o aggiungi la prima!",
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-      "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     }
   },
@@ -1715,12 +1715,12 @@
       "region": "Regione *",
       "province": "Provincia *",
       "provincePlaceholder": "es. Roma, Milano, Napoli",
-      "city": "CittÃ  *",
+      "city": "Città *",
       "address": "Indirizzo",
       "phone": "Telefono",
       "email": "Email",
       "website": "Sito Web",
-      "capacity": "CapacitÃ  (persone)",
+      "capacity": "Capacità (persone)",
       "description": "Descrizione",
       "descriptionPlaceholder": "Descrivi la chiesa, caratteristiche, servizi...",
       "requiresBaptism": "Richiede Battesimo",
@@ -1740,7 +1740,7 @@
     "card": {
       "verified": "Verificato",
       "type": "Tipo:",
-      "capacity": "ðŸ‘¥ CapacitÃ :",
+      "capacity": "ðŸ‘¥ Capacità :",
       "people": "persone",
       "requiresBaptism": "âš ï¸ Richiede Battesimo",
       "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
@@ -1750,7 +1750,7 @@
     "empty": "Nessuna chiesa trovata con questi filtri.",
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-      "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     }
   }
