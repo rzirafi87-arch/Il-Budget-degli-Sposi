@@ -55,7 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
         "calcolo budget matrimonio",
       ],
       ogDescription:
-        "Strumenti gratuiti per organizzare il tuo matrimonio: gestione budget, fornitori, location e molto altro.",
+        "Strumenti gratuiti per organizzare il tuo evento: gestione budget, fornitori, location e molto altro.",
     },
     en: {
       title: "MYBUDGETEVENTO - Plan Your Event",

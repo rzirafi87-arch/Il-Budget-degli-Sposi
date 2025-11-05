@@ -13,7 +13,7 @@ export default async function Image() {
     if (v) lang = v.toLowerCase();
   } catch {}
 
-  const subtitle = lang === "en" ? "Plan your wedding without stress" : "Organizza il tuo matrimonio senza stress";
+  const subtitle = lang === "en" ? "Plan your event without stress" : "Organizza il tuo evento senza stress";
   return new ImageResponse(
     (
       <div

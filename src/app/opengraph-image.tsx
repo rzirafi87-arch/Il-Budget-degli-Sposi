@@ -15,7 +15,7 @@ export default async function Image() {
   } catch {}
 
   const siteName = "MYBUDGETEVENTO";
-  const title = lang === "en" ? "Plan your wedding with peace of mind" : "Organizza il tuo matrimonio con serenità";
+  const title = lang === "en" ? "Plan your event with peace of mind" : "Organizza il tuo evento con serenità";
   const subtitle = lang === "en"
     ? "Budget, suppliers and calm — all in one place"
     : "Budget, fornitori e serenità — tutto in un unico posto";

@@ -343,11 +343,11 @@
     },
     "privacy": {
       "title": "Privacy e serenità garantite",
-      "text": "Zero pubblicità . Zero email spam. I tuoi dati restano tuoi. Nessuna vendita a terzi. Solo tu e il tuo matrimonio, senza distrazioni."
+      "text": "Zero pubblicità . Zero email spam. I tuoi dati restano tuoi. Nessuna vendita a terzi. Solo tu e il tuo evento, senza distrazioni."
     },
     "finalCta": {
       "title": "Pronto a iniziare? 🎊",
-      "subtitle": "Unisciti al→coppie che hanno organizzato il loro matrimonio con serenità .",
+      "subtitle": "Unisciti al→coppie che hanno organizzato il loro evento con serenità .",
       "button": "Crea il tuo evento ora"
     },
     "floatingMenu": "🏠  Menù Principale",
@@ -360,7 +360,7 @@
         "days": "giorni al matrimonio"
       },
       "fallback": {
-        "lead": "Organizza il tuo matrimonio in modo semplice e sereno.",
+        "lead": "Organizza il tuo evento in modo semplice e sereno.",
         "sub": "Gestisci budget, fornitori, invitati e molto altro.",
         "cta": "Inizia ora â€” È gratis",
         "note": "Non serve carta di credito. Crea il tuo evento in 2 minuti."
@@ -463,7 +463,7 @@
   },
   "suppliersUi": {
     "title": "🏠¢ Fornitori",
-    "lead": "Esplora e gestisci i fornitori per ogni aspetto del tuo matrimonio. Trova professionisti nella tua zona, confronta preventivi e salva i tuoi preferiti.",
+    "lead": "Esplora e gestisci i fornitori per ogni aspetto del tuo evento. Trova professionisti nella tua zona, confronta preventivi e salva i tuoi preferiti.",
     "suggestions": {
       "inCountry": "Consigliati in {country}:",
       "colors": "Colori popolari:"
@@ -528,7 +528,7 @@
     "steps": {
       "1": {
         "title": "👀 Registrati Gratuitamente",
-        "desc": "Crea il tuo account in pochi secondi. Nessun costo nascosto, nessuna carta di credito richiesta. Inizia subito a pianificare il tuo matrimonio!"
+        "desc": "Crea il tuo account in pochi secondi. Nessun costo nascosto, nessuna carta di credito richiesta. Inizia subito a pianificare il tuo evento!"
       },
       "2": {
         "title": "💍° Imposta il Tuo Budget",
@@ -553,7 +553,7 @@
     },
     "cta": {
       "title": "🎉 Pronto per Iniziare?",
-      "subtitle": "Inizia oggi stesso a pianificare il tuo matrimonio da sogno!",
+      "subtitle": "Inizia oggi stesso a pianificare il tuo evento da sogno!",
       "button": "Registrati Gratis Ora"
     }
   },
@@ -947,7 +947,7 @@
         "allowed": {
           "title": "4.1 Usi Consentiti",
           "p1": "Puoi utilizzare il servizio per:",
-          "i1": "Pianificare il tuo matrimonio personale",
+          "i1": "Pianificare il tuo evento personale",
           "i2": "Condividere dati con il/la tuo/a partner",
           "i3": "Consultare informazioni sui fornitori"
         },
@@ -1206,7 +1206,7 @@
       "photographers": "Fotografi"
     },
     "title": "👀¸ Fotografi",
-    "description": "Trova i migliori fotografi e videomaker per il tuo matrimonio. Filtra per regione e provincia, confronta prezzi e visita i loro portfolio.",
+    "description": "Trova i migliori fotografi e videomaker per il tuo evento. Filtra per regione e provincia, confronta prezzi e visita i loro portfolio.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
     },
@@ -1378,7 +1378,7 @@
       "catering": "Catering"
     },
     "title": "💵½ï¸ Catering & Banqueting",
-    "description": "Trova i migliori servizi di catering per il tuo matrimonio. Menù personalizzati, buffet gourmet e servizio impeccabile.",
+    "description": "Trova i migliori servizi di catering per il tuo evento. Menù personalizzati, buffet gourmet e servizio impeccabile.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
     },
@@ -1598,7 +1598,7 @@
       "weddingPlanner": "Wedding Planner"
     },
     "title": "Wedding Planner",
-    "description": "Trova wedding planner verificati per organizzare il tuo matrimonio perfetto. Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.",
+    "description": "Trova wedding planner verificati per organizzare il tuo evento perfetto. Puoi proporre nuovi professionisti che verranno verificati prima della pubblicazione.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori",
       "propose": "+ Proponi un wedding planner",
