@@ -52,7 +52,7 @@
       "common": "ðŸ’° Comune",
       "bride": "ðŸ‘° Sposa",
       "groom": "ðŸ¤µ Sposo",
-      "gift": "ðŸŽ Regalo"
+      "gift": "🎁 Regalo"
     },
     "loading": "Caricamento...",
     "empty": "Nessuna spesa approvata. Vai alla sezione 'Spese' per approvare le tue spese.",
@@ -233,7 +233,7 @@
       "type": {
         "busta": "ðŸ’µ Busta",
         "bonifico": "ðŸ¦ Bonifico",
-        "regalo": "ðŸŽ Regalo"
+        "regalo": "🎁 Regalo"
       },
       "source": {
         "bride": "ðŸ‘° Sposa",
@@ -268,7 +268,7 @@
     "proposal": "Festa proposta (Proposal)",
     "communion": "Comunione",
     "bar-mitzvah": "Bar Mitzvah",
-    "quinceanera": "QuinceaÃ±era",
+    "quinceanera": "Quinceañera",
     "charity-gala": "Evento culturale/Charity/Gala"
   },
   "header": {
@@ -282,7 +282,7 @@
       "title2Highlighted": "matrimonio",
       "title3": "in modo semplice",
       "title4": "e senza stress ðŸ’",
-      "subtitle": "L'unica app che unisce budget, fornitori e serenitÃ  â€” senza pubblicitÃ  né caos.",
+      "subtitle": "L'unica app che unisce budget, fornitori e serenitÃ  â€” senza pubblicità né caos.",
       "ctaPrimary": "🎉 Inizia ora â€” È gratis",
       "ctaSecondary": "ðŸ‘€ Guarda la demo",
       "footnote": "✨ Non serve carta di credito • Crea il tuo evento in 2 minuti"
@@ -640,7 +640,7 @@
           "p1": "Questi cookie sono essenziali per il funzionamento del sito e non possono essere disattivati. Non richiedono il tuo consenso ai sensi della normativa vigente."
         },
         "prefs": {
-          "title": "2.2 Cookie di Preferenze ðŸŽ¨",
+          "title": "2.2 Cookie di Preferenze 🎁¨",
           "p1": "Ricordano le tue scelte (lingua, tema, visualizzazione) per migliorare l'esperienza."
         },
         "analytics": {
