@@ -48,13 +48,13 @@ export async function GET(req: NextRequest) {
   const { data: subcategories } = await db
     .from("subcategories")
     .select("id, category_id, name, estimated_cost, display_order, description")
-    .in("category_id", categories.map((c: any) => c.id));
+    .in("category_id", (categories || []).map((c: any) => c.id));
 
   // Spese
   const { data: expenses } = await db
     .from("expenses")
     .select("id, subcategory_id, amount, supplier, notes, spend_type")
-    .in("subcategory_id", subcategories.map((s: any) => s.id));
+    .in("subcategory_id", (subcategories || []).map((s: any) => s.id));
 
   // Entrate
   const { data: incomes } = await db

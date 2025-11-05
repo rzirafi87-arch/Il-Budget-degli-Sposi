@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
         eventType === "confirmation" ? "confirmation" :
         eventType === "graduation" ? "graduation" :
         eventType === "communion" ? "communion" :
+        eventType === "engagement" ? "engagement" :
         "wedding";
       
       const { data: eventTypeData, error: typeError } = await db
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
         eventType === "confirmation" ? "La mia Cresima" :
         eventType === "graduation" ? "La mia Laurea" :
         eventType === "communion" ? "La mia Prima Comunione" :
+        eventType === "engagement" ? "La nostra Festa di Fidanzamento" :
         "Il nostro matrimonio";
       
       const { data: ev, error: e2 } = await db
@@ -169,6 +171,19 @@ export async function POST(req: NextRequest) {
         if (!seedRes.ok) {
           const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
           console.error("ENSURE-DEFAULT – Communion seed error:", seedError);
+          return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
+        }
+      } else if (eventType === "engagement") {
+        // Call engagement seed endpoint internally
+        const country = body.country || "it";
+        const seedUrl = new URL(`/api/engagement/seed/${eventId}?country=${country}`, req.url);
+        const seedRes = await fetch(seedUrl.toString(), {
+          method: "POST",
+          headers: { Authorization: `Bearer ${jwt}` },
+        });
+        if (!seedRes.ok) {
+          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
+          console.error("ENSURE-DEFAULT – Engagement seed error:", seedError);
           return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
         }
       } else {

@@ -3,8 +3,8 @@ import babyShowerTemplate from "@/data/templates/babyshower";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, { params }: { params: { eventId: string } }) {
-  const eventId = params.eventId;
+export async function POST(req: NextRequest, { params }: { params: Promise<{ eventId: string }> }) {
+  const { eventId } = await params;
   if (!eventId) return NextResponse.json({ error: "Missing eventId" }, { status: 400 });
 
   const db = getServiceClient();
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest, { params }: { params: { eventId: st
         name: cat.name,
         display_order: catIdx + 1,
         icon: cat.icon,
-      }, { onConflict: ["event_id", "name"] })
+      }, { onConflict: "event_id,name" })
       .select()
       .single();
     if (catError) return NextResponse.json({ error: catError.message }, { status: 500 });
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest, { params }: { params: { eventId: st
           estimated_cost: sub.estimated_cost ?? 0,
           display_order: subIdx + 1,
           description: sub.description,
-        }, { onConflict: ["category_id", "name"] });
+        }, { onConflict: "category_id,name" });
       if (subError) return NextResponse.json({ error: subError.message }, { status: 500 });
     }
   }
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest, { params }: { params: { eventId: st
           category: phase.phase,
           completed: false,
           display_order: timelineOrder,
-        }, { onConflict: ["event_id", "title"] });
+        }, { onConflict: "event_id,title" });
       if (timelineError) return NextResponse.json({ error: timelineError.message }, { status: 500 });
       timelineOrder++;
     }

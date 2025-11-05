@@ -81,7 +81,7 @@
     "label": "Festa di fidanzamento",
     "emoji": "💘",
     "group": "personale",
-    "available": false
+    "available": true
   },
   {
     "slug": "proposal",
