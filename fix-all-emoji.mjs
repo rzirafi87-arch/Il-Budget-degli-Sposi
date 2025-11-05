@@ -38,7 +38,6 @@ const replacements = [
 
 // Contatore
 let totalReplacements = 0;
-const details = [];
 
 // Applica tutte le sostituzioni
 for (const [pattern, replacement] of replacements) {
@@ -47,8 +46,6 @@ for (const [pattern, replacement] of replacements) {
   
   if (count > 0) {
     content = content.replace(pattern, replacement);
-    const emoji = String.fromCodePoint(parseInt(replacement.replace(/[\\u{}]/g, ''), 16));
-    details.push(`${count}x → ${emoji}`);
     totalReplacements += count;
   }
 }
@@ -58,7 +55,3 @@ fs.writeFileSync(filePath, content, 'utf8');
 
 console.log('✅ File completamente corretto!');
 console.log(`📊 Totale sostituzioni emoji: ${totalReplacements}`);
-if (details.length > 0) {
-  console.log('\nDettagli:');
-  details.forEach(d => console.log(`  ${d}`));
-}

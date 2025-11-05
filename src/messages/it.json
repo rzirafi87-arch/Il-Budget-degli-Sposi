@@ -22,7 +22,7 @@
   "retirement": "Pensione",
   "budgetPage": {
     "approvedExpenses": "Spese approvate",
-    "ctaIdeaBudget": "ðŸ’¡ Vai a Idea di Budget",
+    "ctaIdeaBudget": "💍¡ Vai a Idea di Budget",
     "description": "Visualizzazione delle spese approvate dalla sezione 'Spese', ordinate alfabeticamente per categoria e sottocategoria.",
     "totals": {
       "title": "Totale spese approvate",
@@ -49,7 +49,7 @@
       "gift": "Regalo"
     },
     "paymentMethod": {
-      "common": "ðŸ’° Comune",
+      "common": "💍° Comune",
       "bride": "ðŸ‘° Sposa",
       "groom": "🤵 Sposo",
       "gift": "🎁 Regalo"
@@ -231,14 +231,14 @@
     "empty": "Nessuna entrata registrata",
     "badges": {
       "type": {
-        "busta": "ðŸ’µ Busta",
-        "bonifico": "ðŸ¦ Bonifico",
+        "busta": "💍µ Busta",
+        "bonifico": "🏠¦ Bonifico",
         "regalo": "🎁 Regalo"
       },
       "source": {
         "bride": "ðŸ‘° Sposa",
         "groom": "🤵 Sposo",
-        "common": "ðŸ’‘ Comune"
+        "common": "💍‘ Comune"
       }
     },
     "messages": {
@@ -281,10 +281,10 @@
       "title1": "Organizza il tuo",
       "title2Highlighted": "matrimonio",
       "title3": "in modo semplice",
-      "title4": "e senza stress ðŸ’",
+      "title4": "e senza stress 💍",
       "subtitle": "L'unica app che unisce budget, fornitori e serenità â€” senza pubblicità né caos.",
       "ctaPrimary": "🎉 Inizia ora â€” È gratis",
-      "ctaSecondary": "ðŸ‘€ Guarda la demo",
+      "ctaSecondary": "👀 Guarda la demo",
       "footnote": "✨ Non serve carta di credito • Crea il tuo evento in 2 minuti"
     },
     "usp": {
@@ -305,7 +305,7 @@
       }
     },
     "demo": {
-      "title": "Esplora le funzionalità ðŸ’•",
+      "title": "Esplora le funzionalità 💍•",
       "subtitle": "Navigazione libera senza registrazione â€” aggiungi dati e sperimenta!",
       "features": {
         "budget": {
@@ -349,7 +349,7 @@
       "subtitle": "Unisciti alle coppie che hanno organizzato il loro matrimonio con serenità .",
       "button": "Crea il tuo evento ora"
     },
-    "floatingMenu": "ðŸ  Menù Principale",
+    "floatingMenu": "🏠  Menù Principale",
     "dashboard": {
       "title": "Il vostro grande giorno\ninizia qui",
       "loading": "Caricamento...",
@@ -365,13 +365,13 @@
         "note": "Non serve carta di credito. Crea il tuo evento in 2 minuti."
       },
       "budget": {
-        "title": "ðŸ’° Budget",
+        "title": "💍° Budget",
         "seeDetails": "Vedi dettagli",
         "planned": "Previsto",
         "spent": "Speso",
         "progress": {
-          "low": "Ottimo inizio! Continua così ðŸŒŸ",
-          "mid": "Stai andando alla grande! ðŸ’ª",
+          "low": "Ottimo inizio! Continua così 🌟",
+          "mid": "Stai andando alla grande! 💍ª",
           "high": "Quasi tutto definito, bravissimi! 🎉",
           "full": "Budget raggiunto! 🎊"
         }
@@ -408,7 +408,7 @@
         "chooseVenue": "Scegli la location del ricevimento",
         "bookPhoto": "Prenota il fotografo",
         "guestList": "Inizia la lista invitati",
-        "hint": "ðŸ’¡ Segui questi passi per una pianificazione serena e senza stress"
+        "hint": "💍¡ Segui questi passi per una pianificazione serena e senza stress"
       }
     }
   },
@@ -461,7 +461,7 @@
     }
   },
   "suppliersUi": {
-    "title": "ðŸ¢ Fornitori",
+    "title": "🏠¢ Fornitori",
     "lead": "Esplora e gestisci i fornitori per ogni aspetto del tuo matrimonio. Trova professionisti nella tua zona, confronta preventivi e salva i tuoi preferiti.",
     "suggestions": {
       "inCountry": "Consigliati in {country}:",
@@ -480,7 +480,7 @@
       "reset": "Mostra tutte le categorie"
     },
     "tip": {
-      "title": "ðŸ’¡ Suggerimento",
+      "title": "💍¡ Suggerimento",
       "body": "Per ogni categoria potrai cercare fornitori nella tua zona, filtrare per prezzo e servizi, confrontare preventivi e salvare i tuoi preferiti. Ogni fornitore può essere aggiunto direttamente alle spese del tuo budget."
     },
     "categories": {
@@ -530,7 +530,7 @@
         "desc": "Crea il tuo account in pochi secondi. Nessun costo nascosto, nessuna carta di credito richiesta. Inizia subito a pianificare il tuo matrimonio!"
       },
       "2": {
-        "title": "ðŸ’° Imposta il Tuo Budget",
+        "title": "💍° Imposta il Tuo Budget",
         "desc": "Definisci il budget iniziale per sposa e sposo. Il sistema calcola automaticamente il totale e ti aiuta a monitorare le spese in tempo reale."
       },
       "3": {
@@ -546,7 +546,7 @@
         "desc": "Crea e gestisci la lista invitati, organizza per famiglie, monitora le conferme e calcola i costi per persona."
       },
       "6": {
-        "title": "ðŸ’¾ Salva e Monitora",
+        "title": "💍¾ Salva e Monitora",
         "desc": "Salva i progressi in qualsiasi momento. Visualizza grafici e statistiche, controlla il budget residuo e mantieni tutto sotto controllo fino al grande giorno."
       }
     },
@@ -1200,7 +1200,7 @@
   },
   "suppliersPhotographers": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "photographers": "Fotografi"
     },
@@ -1245,7 +1245,7 @@
   },
   "suppliersAtelier": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "atelier": "Atelier"
     },
@@ -1318,7 +1318,7 @@
       "addError": "Errore{error, select, other {: {error}} }"
     },
     "tips": {
-      "title": "ðŸ’¡ Suggerimenti per la scelta",
+      "title": "💍¡ Suggerimenti per la scelta",
       "tip1": "Prenota l'appuntamento con almeno 8-12 mesi di anticipo",
       "tip2": "Porta con te scarpe con il tacco che indosserai il giorno del matrimonio",
       "tip3": "Considera almeno 2-3 prove per aggiustamenti e ritocchi",
@@ -1328,11 +1328,11 @@
   },
   "suppliersFlorists": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "florists": "Fiorai"
     },
-    "title": "ðŸ’ Fiorai",
+    "title": "💍 Fiorai",
     "description": "Allestimenti floreali, bouquet, centrotavola e decorazioni per la cerimonia e il ricevimento.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
@@ -1372,7 +1372,7 @@
   },
   "suppliersCatering": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "catering": "Catering"
     },
@@ -1416,11 +1416,11 @@
   },
   "suppliersBeauty": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "beauty": "Make-up & Beauty"
     },
-    "title": "ðŸ’„ Make-up & Beauty",
+    "title": "💍„ Make-up & Beauty",
     "description": "Make-up artist, hair stylist ed estetica per il tuo giorno speciale.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
@@ -1460,11 +1460,11 @@
   },
   "suppliersJewelry": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "jewelry": "Gioiellerie"
     },
-    "title": "ðŸ’ Gioiellerie",
+    "title": "💍 Gioiellerie",
     "description": "Fedi nuziali, anelli di fidanzamento e gioielli per sposa e invitati.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
@@ -1504,7 +1504,7 @@
   },
   "suppliersMusicCeremony": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "musicCeremony": "Musica Cerimonia"
     },
@@ -1546,7 +1546,7 @@
   },
   "suppliersMusicReception": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "musicReception": "Musica Ricevimento"
     },
@@ -1592,7 +1592,7 @@
   },
   "suppliersWeddingPlanner": {
     "breadcrumb": {
-      "home": "ðŸ  Home",
+      "home": "🏠  Home",
       "suppliers": "Fornitori",
       "weddingPlanner": "Wedding Planner"
     },
