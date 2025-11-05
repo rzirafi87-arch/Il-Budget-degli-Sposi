@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import type { EventConfiguration } from "@/constants/eventConfigs";
 import {
-  DEFAULT_EVENT_TYPE,
-  getEventConfig,
-  resolveEventType,
+    DEFAULT_EVENT_TYPE,
+    getEventConfig,
+    resolveEventType,
 } from "@/constants/eventConfigs";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useEffect, useMemo, useState } from "react";
 
 export type BudgetIdeaRow = {
   id?: string;
@@ -326,17 +326,21 @@ export default function IdeaDiBudgetPage() {
         ? contributorBudgets[secondContributor] || 0
         : 0;
 
-      await fetch("/api/my/dashboard", {
+      const res = await fetch("/api/event/update-budget", {
         method: "POST",
         headers,
         body: JSON.stringify({
-          totalBudget,
-          brideBudget: firstBudget,
-          groomBudget: secondBudget,
-          weddingDate: eventDate || null,
-          rows: [],
+          total_budget: totalBudget,
+          bride_initial_budget: firstBudget,
+          groom_initial_budget: secondBudget,
+          event_date: eventDate || null
         }),
       });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Errore salvataggio (${res.status})`);
+      }
+      alert("Salvato!");
     } catch (error) {
       console.error("Errore salvataggio idea di budget", error);
       alert("Errore nel salvataggio dell'idea di budget.");

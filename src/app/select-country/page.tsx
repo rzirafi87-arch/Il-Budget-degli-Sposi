@@ -117,11 +117,16 @@ export default function SelectCountryPage() {
             <button
               key={c.code}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 hover:bg-[#A3B59D]/10 text-lg font-semibold transition-all w-full justify-center ${selectedCountry === c.code ? 'ring-2 ring-[#A3B59D]' : ''}`}
-              onClick={() => handleSelect(c.code)}
-              disabled={loading}
+              onClick={() => c.available !== false && handleSelect(c.code)}
+              disabled={loading || c.available === false}
             >
               <span className="text-2xl" aria-hidden="true">{c.emoji}</span>
               <span>{new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of(c.code.toUpperCase()) || c.label}</span>
+              {c.available === false && (
+                <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                  In arrivo
+                </span>
+              )}
             </button>
           ))}
         </div>

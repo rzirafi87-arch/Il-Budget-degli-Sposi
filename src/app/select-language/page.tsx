@@ -53,14 +53,20 @@ export default function SelectLanguagePage() {
           {LANGS.map((lang) => (
             <button
               key={lang.slug}
-              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${selected === lang.slug ? "bg-[#A3B59D] text-white" : ""}`}
-              onClick={() => handleSelect(lang.slug)}
+              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all flex items-center justify-center gap-2 ${selected === lang.slug ? "bg-[#A3B59D] text-white" : ""}`}
+              onClick={() => lang.available !== false && handleSelect(lang.slug)}
               aria-label={lang.label || lang.slug.toUpperCase()}
+              disabled={lang.available === false}
             >
               <span aria-hidden="true" className="mr-2 text-lg">
                 {lang.emoji || "🌐"}
               </span>
               {lang.label || lang.slug.toUpperCase()}
+              {lang.available === false && (
+                <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                  In arrivo
+                </span>
+              )}
             </button>
           ))}
         </div>

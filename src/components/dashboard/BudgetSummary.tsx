@@ -38,6 +38,44 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
       localStorage.setItem('budgetIdea.contingencyPct', String(contingencyPct));
     }
   }, [contingencyPct]);
+
+  // Stato per salvataggio
+  const [saving, setSaving] = React.useState(false);
+  const [saveMsg, setSaveMsg] = React.useState<string | null>(null);
+
+  async function handleSave() {
+    setSaving(true);
+    setSaveMsg(null);
+    try {
+      // Recupera JWT se presente
+      let jwt = null;
+      if (typeof window !== 'undefined') {
+        const supabase = (await import("@/lib/supabaseBrowser")).getBrowserClient();
+        const { data } = await supabase.auth.getSession();
+        jwt = data.session?.access_token;
+      }
+      const res = await fetch("/api/event/update-budget", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}) },
+        body: JSON.stringify({
+          bride_initial_budget: brideBudget,
+          groom_initial_budget: groomBudget,
+          total_budget: totalBudget,
+          event_date: weddingDate || null
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Errore salvataggio (${res.status})`);
+      }
+      setSaveMsg("Salvato!");
+    } catch (e) {
+      setSaveMsg((e instanceof Error && e.message) ? e.message : "Errore imprevisto");
+    } finally {
+      setSaving(false);
+      setTimeout(() => setSaveMsg(null), 2500);
+    }
+  }
   return (
     <div className="mb-6 sm:mb-8 p-5 sm:p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-md">
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 sm:gap-4">
@@ -124,8 +162,16 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
           </>
         )}
       </div>
-      <div className="mt-2">
-        <a href="/idea-di-budget" className="text-sm font-semibold underline text-[#A3B59D] hover:text-[#8a9d84]">Compila l&apos;Idea di Budget</a>
+      <div className="mt-4 flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+        <button
+          className="rounded-full bg-[#A3B59D] px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-[#8a9d84] disabled:opacity-60"
+          onClick={handleSave}
+          disabled={saving}
+        >
+          {saving ? "Salvataggio..." : "Salva budget e data"}
+        </button>
+        <a href="/idea-di-budget" className="text-sm font-semibold underline text-[#A3B59D] hover:text-[#8a9d84] ml-2">Compila l&apos;Idea di Budget</a>
+        {saveMsg && <span className="ml-2 text-sm font-medium text-[#2563eb]">{saveMsg}</span>}
       </div>
     </div>
   );

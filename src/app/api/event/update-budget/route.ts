@@ -1,13 +1,19 @@
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
     const total = Number(body?.total_budget);
+    const bride = body?.bride_initial_budget !== undefined ? Number(body?.bride_initial_budget) : null;
+    const groom = body?.groom_initial_budget !== undefined ? Number(body?.groom_initial_budget) : null;
+    const eventDate = typeof body?.event_date === "string" && body.event_date.length > 0 ? body.event_date : null;
     if (!isFinite(total) || total < 0) {
       return NextResponse.json({ error: "total_budget non valido" }, { status: 400 });
+    }
+    if ((bride !== null && (!isFinite(bride) || bride < 0)) || (groom !== null && (!isFinite(groom) || groom < 0))) {
+      return NextResponse.json({ error: "budget sposa/sposo non valido" }, { status: 400 });
     }
 
     const db = getServiceClient();
@@ -34,14 +40,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: e1?.message || "Event not found" }, { status: 404 });
     }
 
+    const updateObj: Record<string, unknown> = { total_budget: total };
+    if (bride !== null) updateObj.bride_initial_budget = bride;
+    if (groom !== null) updateObj.groom_initial_budget = groom;
+    if (eventDate !== null) updateObj.event_date = eventDate;
+
     const { error: e2 } = await db
       .from("events")
-      .update({ total_budget: total })
+      .update(updateObj)
       .eq("id", ev.id);
     if (e2) {
       return NextResponse.json({ error: e2.message }, { status: 500 });
     }
-    return NextResponse.json({ ok: true, total_budget: total });
+    return NextResponse.json({ ok: true, ...updateObj });
   } catch (e: unknown) {
     const error = e as Error;
     console.error("UPDATE-BUDGET Uncaught:", error);
