@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 
 /**
- * Seed script per popolare event_types, categories, subcategories e timelines
+ * Seed script per popolare event_types, event_type_categories, 
+ * event_type_subcategories e event_timelines
  * 
  * Uso:
  *   node scripts/seed-event-types.mjs
  * 
  * Prerequisiti:
  *   - .env.local configurato con NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE
- *   - Schema PATCH 18 applicato su Supabase
+ *   - Schema PATCH 18 v2 applicato su Supabase
+ * 
+ * NOTA: Usa i nuovi nomi tabella (event_type_categories, event_type_subcategories)
+ *       per evitare conflitti con categories/subcategories esistenti (per-evento)
  */
 
 import { createClient } from "@supabase/supabase-js";
@@ -219,7 +223,7 @@ async function seed() {
   console.log("\n📌 Seed Categories e Subcategories per WEDDING...");
   for (const [catIndex, cat] of weddingCategories.entries()) {
     const { data: catData, error: catError } = await supabase
-      .from("categories")
+      .from("event_type_categories") // TABELLA TEMPLATE GLOBALE
       .insert({
         event_type_id: weddingType._id,
         name: cat.name,
@@ -238,7 +242,7 @@ async function seed() {
 
     // Seed Subcategories
     for (const [subIndex, sub] of cat.subcategories.entries()) {
-      const { error: subError } = await supabase.from("subcategories").insert({
+      const { error: subError } = await supabase.from("event_type_subcategories").insert({
         category_id: catData.id,
         name: sub.name,
         default_budget: sub.default_budget,
