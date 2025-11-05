@@ -23,6 +23,7 @@ const DASHBOARD_EVENTS = new Set([
   "corporate", // Added - Evento Aziendale
   "bar-mitzvah", // Added - Bar/Bat Mitzvah
   "quinceanera", // Added - Quinceañera
+  "charity-gala", // Added - Evento Culturale/Charity/Gala
 ]);
 
 export default function SelectEventTypePage() {

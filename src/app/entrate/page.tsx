@@ -38,7 +38,8 @@ export default function EntratePage() {
   const isCorporate = userEventType === "corporate";
   const isBarMitzvah = userEventType === "bar-mitzvah";
   const isQuinceanera = userEventType === "quinceanera";
-  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement || isBabyShower || isProposal || isCorporate || isBarMitzvah || isQuinceanera;
+  const isCharityGala = userEventType === "charity-gala";
+  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement || isBabyShower || isProposal || isCorporate || isBarMitzvah || isQuinceanera || isCharityGala;
   const isWedding = userEventType === "wedding";
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);
