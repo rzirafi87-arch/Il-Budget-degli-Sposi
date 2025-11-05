@@ -1741,18 +1741,17 @@
     "authRequired": "Devi essere autenticato per aggiungere una chiesa",
     "submitSuccess": "Chiesa aggiunta con successo! SarÃ  visibile dopo la verifica dello staff.",
     "submitError": "Errore durante l'aggiunta"
-  }
-,
-"guestsPage": {
-  "title": "Gestione Invitati",
-  "tabs": {
-    "guests": "Invitati",
-    "tables": "Tavoli"
   },
-  "sections": {
-    "guestsManagement": "Gestione Completa degli Invitati",
-    "familyGroups": "Gruppi Familiari",
-    "nonInvited": "Non Invitati (solo bomboniere)"
+  "guestsPage": {
+    "title": "Gestione Invitati",
+    "tabs": {
+      "guests": "Invitati",
+      "tables": "Tavoli"
+    },
+    "sections": {
+      "guestsManagement": "Gestione Completa degli Invitati",
+      "familyGroups": "Gruppi Familiari",
+      "nonInvited": "Non Invitati (solo bomboniere)"
+    }
   }
-}
 }

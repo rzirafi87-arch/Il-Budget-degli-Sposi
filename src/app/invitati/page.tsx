@@ -411,34 +411,34 @@ export default function InvitatiPage() {
 
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Carne:</span>
+            <span>🥩 Carne:</span>
             <span className="font-semibold">{menuCounts.carne}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Pesce:</span>
+            <span>🐟 Pesce:</span>
             <span className="font-semibold">{menuCounts.pesce}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Baby:</span>
+            <span>👶 Baby:</span>
             <span className="font-semibold">{menuCounts.baby}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Animazione:</span>
+            <span>🎪 Animazione:</span>
             <span className="font-semibold">{menuCounts.animazione}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Vegetariano:</span>
+            <span>🥗 Vegetariano:</span>
             <span className="font-semibold">{menuCounts.vegetariano}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>?? Posto tavolo:</span>
+            <span>💺 Posto tavolo:</span>
             <span className="font-semibold">{menuCounts.posto_tavolo}</span>
           </div>
         </div>
 
         <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-800 font-semibold">?? Bomboniere necessarie:</span>
+            <span className="text-gray-800 font-semibold">🎁 Bomboniere necessarie:</span>
             <span className="font-bold text-purple-600">{totalBomboniere}</span>
           </div>
         </div>
