@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { LANGS } from "@/lib/loadConfigs";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { LANGS } from "@/lib/loadConfigs";
+import { useEffect, useState } from "react";
 
 export default function SelectLanguagePage() {
   const t = useTranslations();
