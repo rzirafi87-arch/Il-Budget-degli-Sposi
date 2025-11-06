@@ -16,7 +16,8 @@ export default function MapDemoLeaflet({ favoriteMarkers, setFavoriteMarkersActi
     { id: 3, pos: [40.8518, 14.2681], label: "Fornitore Demo 3", cat: "Catering", loc: "Napoli, Campania" },
   ];
   return (
-    <MapContainer center={[45.4654, 9.1859]} zoom={6} style={{ height: "100%", width: "100%" }} scrollWheelZoom={false} as={undefined as any}>
+    // @ts-expect-error - React 19 + react-leaflet 5 type issue (runtime works fine)
+    <MapContainer center={[45.4654, 9.1859]} zoom={6} style={{ height: "100%", width: "100%" }} scrollWheelZoom={false}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"  />
       {markers.map((m) => (
         <Marker key={m.id} position={m.pos as [number, number]}>
