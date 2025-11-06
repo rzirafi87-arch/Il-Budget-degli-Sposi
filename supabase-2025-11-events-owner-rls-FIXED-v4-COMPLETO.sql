@@ -138,6 +138,11 @@ BEGIN
   END IF;
 
   IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'family_groups') THEN
+    EXECUTE 'DROP POLICY IF EXISTS "Users can view their own family groups" ON public.family_groups';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can insert their own family groups" ON public.family_groups';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can update their own family groups" ON public.family_groups';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can delete their own family groups" ON public.family_groups';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can manage their own family groups" ON public.family_groups';
     EXECUTE 'DROP POLICY IF EXISTS "family_groups_select" ON public.family_groups';
     EXECUTE 'DROP POLICY IF EXISTS "family_groups_insert" ON public.family_groups';
     EXECUTE 'DROP POLICY IF EXISTS "family_groups_update" ON public.family_groups';
@@ -195,6 +200,11 @@ BEGIN
   END IF;
 
   IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'table_assignments') THEN
+    EXECUTE 'DROP POLICY IF EXISTS "Users can view their own table assignments" ON public.table_assignments';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can insert their own table assignments" ON public.table_assignments';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can update their own table assignments" ON public.table_assignments';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can delete their own table assignments" ON public.table_assignments';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can manage their own table assignments" ON public.table_assignments';
     EXECUTE 'DROP POLICY IF EXISTS "table_assignments_select" ON public.table_assignments';
     EXECUTE 'DROP POLICY IF EXISTS "table_assignments_insert" ON public.table_assignments';
     EXECUTE 'DROP POLICY IF EXISTS "table_assignments_update" ON public.table_assignments';
@@ -203,6 +213,11 @@ BEGIN
   END IF;
 
   IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'tables') THEN
+    EXECUTE 'DROP POLICY IF EXISTS "Users can view their own tables" ON public.tables';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can insert their own tables" ON public.tables';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can update their own tables" ON public.tables';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can delete their own tables" ON public.tables';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can manage their own tables" ON public.tables';
     EXECUTE 'DROP POLICY IF EXISTS "tables_select" ON public.tables';
     EXECUTE 'DROP POLICY IF EXISTS "tables_insert" ON public.tables';
     EXECUTE 'DROP POLICY IF EXISTS "tables_update" ON public.tables';
