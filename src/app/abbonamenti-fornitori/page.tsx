@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import clsx from "clsx";
 import { useEffect, useState } from "react";
@@ -69,7 +69,7 @@ export default function SubscriptionPricingPage() {
             Piani di Abbonamento per Fornitori
           </h1>
           <p className="text-xl text-gray-600 text-center max-w-3xl mx-auto">
-            Scegli il piano più adatto per far crescere la tua visibilità e raggiungere migliaia di coppie in cerca di servizi per il loro matrimonio
+            Scegli il piano piÃ¹ adatto per far crescere la tua visibilitÃ  e raggiungere migliaia di coppie in cerca di servizi per il loro matrimonio
           </p>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function SubscriptionPricingPage() {
                       "px-4 py-1 rounded-full text-sm font-semibold text-white",
                       isBest ? "bg-[#A3B59D]" : "bg-[#EAD9D4] text-gray-700"
                     )}>
-                      {isBest ? "🌟 PIÙ SCELTO" : "💼 POPOLARE"}
+                      {isBest ? "ðŸŒŸ PIÃ™ SCELTO" : "ðŸ’¼ POPOLARE"}
                     </span>
                   </div>
                 )}
@@ -150,7 +150,7 @@ export default function SubscriptionPricingPage() {
                   <div className="mb-6">
                     <div className="flex items-baseline gap-2">
                       <span className="text-4xl font-bold text-gray-900">
-                        €{price.toFixed(2)}
+                        â‚¬{price.toFixed(2)}
                       </span>
                       <span className="text-gray-600">
                         /{billingPeriod === "monthly" ? "mese" : "anno"}
@@ -158,7 +158,7 @@ export default function SubscriptionPricingPage() {
                     </div>
                     {billingPeriod === "yearly" && pkg.tier !== "free" && (
                       <p className="text-sm text-gray-500 mt-2">
-                        €{getMonthlyEquivalent(pkg.price_yearly)}/mese • Risparmi {savings}%
+                        â‚¬{getMonthlyEquivalent(pkg.price_yearly)}/mese â€¢ Risparmi {savings}%
                       </p>
                     )}
                   </div>
@@ -182,7 +182,7 @@ export default function SubscriptionPricingPage() {
                     {pkg.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-3">
                         <span className="text-[#A3B59D] mt-1 flex-shrink-0">
-                          {feature.startsWith("NON") ? "❌" : "✓"}
+                          {feature.startsWith("NON") ? "âŒ" : "âœ“"}
                         </span>
                         <span className="text-sm text-gray-700">
                           {feature}
@@ -207,8 +207,8 @@ export default function SubscriptionPricingPage() {
                 Posso cambiare piano in qualsiasi momento?
               </h3>
               <p className="text-gray-600">
-                Sì, puoi fare upgrade o downgrade del tuo piano in qualsiasi momento. 
-                Il cambio sarà effettivo immediatamente e il costo sarà ripartito proporzionalmente.
+                SÃ¬, puoi fare upgrade o downgrade del tuo piano in qualsiasi momento. 
+                Il cambio sarÃ  effettivo immediatamente e il costo sarÃ  ripartito proporzionalmente.
               </p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm">
@@ -216,13 +216,13 @@ export default function SubscriptionPricingPage() {
                 Cosa succede se cancello il mio abbonamento?
               </h3>
               <p className="text-gray-600">
-                Il tuo profilo rimarrà attivo fino alla fine del periodo pagato, 
-                dopodiché tornerai automaticamente al piano Gratuito (senza visibilità pubblica).
+                Il tuo profilo rimarrÃ  attivo fino alla fine del periodo pagato, 
+                dopodichÃ© tornerai automaticamente al piano Gratuito (senza visibilitÃ  pubblica).
               </p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Quanto dura la visibilità nella Demo?
+                Quanto dura la visibilitÃ  nella Demo?
               </h3>
               <p className="text-gray-600">
                 Solo i fornitori con piano Premium Plus appaiono nella versione demo del sito, 

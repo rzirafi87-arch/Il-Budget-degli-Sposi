@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+﻿import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 
 // Mock fetch for budget endpoints

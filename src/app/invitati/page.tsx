@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ExportButton from "@/components/ExportButton";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -374,19 +374,19 @@ export default function InvitatiPage() {
       )}
 
       <PageInfoNote
-        icon="👥"
+        icon="ðŸ‘¥"
         title={t("sections.guestsManagement")}
-        description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menù, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
+        description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menÃ¹, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
         tips={[
           "Crea gruppi familiari per organizzare gli invitati e assegnarli automaticamente allo stesso tavolo",
           "Usa il flag 'Escludi da tavolo famiglia' per separare alcuni membri (es. cugini vs genitori)",
           "Traccia le conferme RSVP per sapere quanti parteciperanno realmente",
-          "Registra le preferenze del menù (carne, pesce, vegetariano, baby) per comunicarle al catering",
+          "Registra le preferenze del menÃ¹ (carne, pesce, vegetariano, baby) per comunicarle al catering",
           "La sezione 'Non Invitati' serve per chi riceve solo bomboniera/confetti senza partecipare"
         ]}
         eventTypeSpecific={{
           wedding: "Per il matrimonio, gestisci invitati della sposa, dello sposo e comuni. Organizza per famiglie e assegna i tavoli in modo strategico per creare un'atmosfera piacevole.",
-          baptism: "Per il battesimo, traccia padrino, madrina, familiari e amici. La lista è generalmente più piccola e familiare.",
+          baptism: "Per il battesimo, traccia padrino, madrina, familiari e amici. La lista Ã¨ generalmente piÃ¹ piccola e familiare.",
           birthday: "Per il compleanno, organizza gli invitati per gruppi (famiglia, amici, colleghi) per una migliore gestione.",
           graduation: "Per la laurea, invita familiari, amici e compagni di studi. Traccia le conferme per organizzare il buffet o il pranzo."
         }}
@@ -429,34 +429,34 @@ export default function InvitatiPage() {
 
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🥩 Carne:</span>
+            <span>ðŸ¥© Carne:</span>
             <span className="font-semibold">{menuCounts.carne}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🐟 Pesce:</span>
+            <span>ðŸŸ Pesce:</span>
             <span className="font-semibold">{menuCounts.pesce}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>👶 Baby:</span>
+            <span>ðŸ‘¶ Baby:</span>
             <span className="font-semibold">{menuCounts.baby}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🎪 Animazione:</span>
+            <span>ðŸŽª Animazione:</span>
             <span className="font-semibold">{menuCounts.animazione}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🥗 Vegetariano:</span>
+            <span>ðŸ¥&mdash; Vegetariano:</span>
             <span className="font-semibold">{menuCounts.vegetariano}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>💺 Posto tavolo:</span>
+            <span>ðŸ’º Posto tavolo:</span>
             <span className="font-semibold">{menuCounts.posto_tavolo}</span>
           </div>
         </div>
 
         <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-800 font-semibold">🎁 Bomboniere necessarie:</span>
+            <span className="text-gray-800 font-semibold">ðŸŽ Bomboniere necessarie:</span>
             <span className="font-bold text-purple-600">{totalBomboniere}</span>
           </div>
         </div>
@@ -475,7 +475,7 @@ export default function InvitatiPage() {
         </div>
   <p className="text-xs text-gray-600 mb-3">
    Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia. 
-   <strong className="text-purple-700">💡 Suggerimento:</strong> Usa la colonna &quot;Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
+   <strong className="text-purple-700">ðŸ’¡ Suggerimento:</strong> Usa la colonna &quot;Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
   </p>
         {familyGroups.length === 0 ? (
           <div className="text-center text-gray-500 py-4">Nessuna famiglia creata. Clicca &quot;Aggiungi Famiglia&quot; per iniziare.</div>
@@ -505,14 +505,14 @@ export default function InvitatiPage() {
                     </button>
                   </div>
                   <div className="text-xs text-gray-600">
-                    <div className="mb-1">👤 Contatto: {mainContact?.name || "Non assegnato"}</div>
+                    <div className="mb-1">ðŸ‘¤ Contatto: {mainContact?.name || "Non assegnato"}</div>
                       <div className="flex justify-between items-center">
-                        <span>👥 Totale: {familyMembers.length}</span>
-                        <span className="text-green-700">🪑 Tavolo famiglia: {familyMembersIncluded.length}</span>
+                        <span>ðŸ‘¥ Totale: {familyMembers.length}</span>
+                        <span className="text-green-700">ðŸª‘ Tavolo famiglia: {familyMembersIncluded.length}</span>
                       </div>
                       {familyMembersExcluded.length > 0 && (
                         <div className="mt-1 text-orange-600">
-                          🚫 Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
+                          ðŸš« Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
                         </div>
                       )}
                   </div>
@@ -565,7 +565,7 @@ export default function InvitatiPage() {
               type="csv"
               className="text-sm"
             >
-              ⬇️ Esporta CSV
+              â¬‡ï¸ Esporta CSV
             </ExportButton>
             <button
               onClick={addGuest}
@@ -584,7 +584,7 @@ export default function InvitatiPage() {
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">Tipo</th>
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">Famiglia</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Contatto principale</th>
-                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">🚫 Tavolo separato</th>
+                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">ðŸš« Tavolo separato</th>
                   <th className="px-2 py-2 text-left font-semibold text-gray-900">Data invito</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Risposta ricevuta</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Partecipa</th>
@@ -700,12 +700,12 @@ export default function InvitatiPage() {
                                 : "bg-gray-100 text-gray-600"
                             }`}
                           >
-                            {pref === "carne" && "🥩"}
-                            {pref === "pesce" && "🐟"}
-                            {pref === "baby" && "👶"}
-                            {pref === "animazione" && "🎪"}
-                            {pref === "vegetariano" && "🥗"}
-                            {pref === "posto_tavolo" && "💺"}
+                            {pref === "carne" && "ðŸ¥©"}
+                            {pref === "pesce" && "ðŸŸ"}
+                            {pref === "baby" && "ðŸ‘¶"}
+                            {pref === "animazione" && "ðŸŽª"}
+                            {pref === "vegetariano" && "ðŸ¥&mdash;"}
+                            {pref === "posto_tavolo" && "ðŸ’º"}
                           </button>
                         ))}
                       </div>
@@ -733,7 +733,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        🗑️
+                        ðŸ&mdash;‘ï¸
                       </button>
                     </td>
                   </tr>
@@ -817,7 +817,7 @@ export default function InvitatiPage() {
                         className="text-red-600 hover:text-red-800 font-bold"
                         title="Elimina"
                       >
-                        🗑️
+                        ðŸ&mdash;‘ï¸
                       </button>
                     </td>
                   </tr>
@@ -835,7 +835,7 @@ export default function InvitatiPage() {
           disabled={saving}
           className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] disabled:opacity-50 font-semibold"
         >
-          {saving ? "Salvataggio..." : "💾 Salva tutto"}
+          {saving ? "Salvataggio..." : "ðŸ’¾ Salva tutto"}
         </button>
       </div>
     </>
@@ -855,7 +855,7 @@ export default function InvitatiPage() {
     return (
       <>
         <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-linear-to-br from-gray-200 to-gray-300 shadow-xl">
-          <h3 className="font-bold text-lg mb-4 text-gray-900">🪑 Riepilogo Tavoli</h3>
+          <h3 className="font-bold text-lg mb-4 text-gray-900">ðŸª‘ Riepilogo Tavoli</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
             <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
               <div className="text-gray-800 font-bold">Tavoli Totali</div>
@@ -878,7 +878,7 @@ export default function InvitatiPage() {
 
         <div className="p-6 rounded-lg border border-gray-300 bg-white/70">
           <p className="text-sm text-gray-600">
-            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
+            La gestione dettagliata della disposizione dei tavoli Ã¨ disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
             Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.
           </p>
           <p className="text-sm text-gray-600 mt-2">

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import CresimaNav from "@/components/cresima/CresimaNav";
 import CresimaTraditions from "@/components/cresima/CresimaTraditions";
 
@@ -13,7 +13,7 @@ export default function CresimaPage() {
       <header className="mb-6">
         <h2 className="text-xl font-medium">Panoramica</h2>
         <p className="text-neutral-600 mt-1">
-          Inizia a organizzare la tua Cresima: definisci il budget, la lista degli invitati e le attività principali.
+          Inizia a organizzare la tua Cresima: definisci il budget, la lista degli invitati e le attivitÃ  principali.
         </p>
       </header>
       <CresimaTraditions />
@@ -22,7 +22,7 @@ export default function CresimaPage() {
         <div className="rounded-lg border border-neutral-200 p-5">
           <h2 className="text-xl font-medium">Panoramica evento</h2>
           <p className="text-neutral-600 mt-2">
-            Raccogli in un unico posto informazioni chiave: data, luogo, stile dell’evento e note.
+            Raccogli in un unico posto informazioni chiave: data, luogo, stile dellâ€™evento e note.
           </p>
           <ul className="list-disc ml-5 mt-3 text-neutral-700">
             <li>Data e ora della celebrazione</li>
@@ -57,7 +57,7 @@ export default function CresimaPage() {
         </div>
 
         <div className="rounded-lg border border-neutral-200 p-5">
-          <h2 className="text-xl font-medium">Attività da fare</h2>
+          <h2 className="text-xl font-medium">AttivitÃ  da fare</h2>
           <p className="text-neutral-600 mt-2">
             Un promemoria rapido delle prossime azioni per restare in pista.
           </p>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Card responsiva ottimizzata per PC, Android e iOS
  * Gestisce automaticamente padding, ombre, bordi e interazioni touch
  */
@@ -82,7 +82,7 @@ export default function ResponsiveCard({
   // Border
   const borderClass = bordered ? "border border-gray-200" : "";
 
-  // Interattività
+  // InterattivitÃ 
   const interactiveClass = (onClick || href) ? [
     "cursor-pointer",
     "transition-all duration-200",

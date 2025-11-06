@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 
 type ToastType = "success" | "error" | "info" | "warning";
@@ -43,13 +43,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           >
             <div className="flex items-start gap-3 p-4">
               <div className="flex-shrink-0 text-2xl" aria-hidden>
-                {toast.type === "success" ? "✅" : toast.type === "error" ? "⚠️" : toast.type === "warning" ? "⚠️" : "ℹ️"}
+                {toast.type === "success" ? "âœ…" : toast.type === "error" ? "âš ï¸" : toast.type === "warning" ? "âš ï¸" : "â„¹ï¸"}
               </div>
               <div className="flex-1 pt-0.5">
                 <p className="text-sm text-gray-800 font-medium">{toast.message}</p>
               </div>
               <button onClick={() => removeToast(toast.id)} className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors" aria-label="Chiudi">
-                ✖️
+                âœ–ï¸
               </button>
             </div>
           </div>

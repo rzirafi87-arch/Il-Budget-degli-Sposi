@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Esempio di integrazione del sistema responsive nella dashboard
  * Mostra come migrare componenti esistenti al nuovo sistema
  */
@@ -18,7 +18,7 @@ export function BudgetSummaryResponsive() {
       <ResponsiveGrid mobileCols={1} tabletCols={2} desktopCols={3} gap="md">
         <CardSection
           title="Sposa"
-          icon="👰"
+          icon="ðŸ‘°"
           variant="rose"
           footer={
             <div className="text-sm text-gray-600">
@@ -26,13 +26,13 @@ export function BudgetSummaryResponsive() {
             </div>
           }
         >
-          <p className="text-3xl font-bold text-[#8da182]">€ 8.500</p>
-          <p className="text-sm text-gray-600 mt-1">di € 13.000</p>
+          <p className="text-3xl font-bold text-[#8da182]">â‚¬ 8.500</p>
+          <p className="text-sm text-gray-600 mt-1">di â‚¬ 13.000</p>
         </CardSection>
 
         <CardSection
           title="Sposo"
-          icon="🤵"
+          icon="ðŸ¤µ"
           variant="beige"
           footer={
             <div className="text-sm text-gray-600">
@@ -40,13 +40,13 @@ export function BudgetSummaryResponsive() {
             </div>
           }
         >
-          <p className="text-3xl font-bold text-[#8da182]">€ 7.200</p>
-          <p className="text-sm text-gray-600 mt-1">di € 12.500</p>
+          <p className="text-3xl font-bold text-[#8da182]">â‚¬ 7.200</p>
+          <p className="text-sm text-gray-600 mt-1">di â‚¬ 12.500</p>
         </CardSection>
 
         <CardSection
           title="Comune"
-          icon="💑"
+          icon="ðŸ’‘"
           variant="sage"
           footer={
             <div className="text-sm text-gray-600">
@@ -54,8 +54,8 @@ export function BudgetSummaryResponsive() {
             </div>
           }
         >
-          <p className="text-3xl font-bold text-[#8da182]">€ 15.300</p>
-          <p className="text-sm text-gray-600 mt-1">di € 21.200</p>
+          <p className="text-3xl font-bold text-[#8da182]">â‚¬ 15.300</p>
+          <p className="text-sm text-gray-600 mt-1">di â‚¬ 21.200</p>
         </CardSection>
       </ResponsiveGrid>
     </ResponsiveContainer>
@@ -81,7 +81,7 @@ export function QuickActionsResponsive() {
           className="flex-1"
         >
           <div className="text-center py-4">
-            <span className="text-4xl mb-2 block">💰</span>
+            <span className="text-4xl mb-2 block">ðŸ’°</span>
             <h3 className="font-semibold">Aggiungi Spesa</h3>
           </div>
         </ResponsiveCard>
@@ -93,7 +93,7 @@ export function QuickActionsResponsive() {
           className="flex-1"
         >
           <div className="text-center py-4">
-            <span className="text-4xl mb-2 block">👥</span>
+            <span className="text-4xl mb-2 block">ðŸ‘¥</span>
             <h3 className="font-semibold">Aggiungi Invitato</h3>
           </div>
         </ResponsiveCard>
@@ -105,7 +105,7 @@ export function QuickActionsResponsive() {
           className="flex-1"
         >
           <div className="text-center py-4">
-            <span className="text-4xl mb-2 block">🏢</span>
+            <span className="text-4xl mb-2 block">ðŸ¢</span>
             <h3 className="font-semibold">Cerca Fornitore</h3>
           </div>
         </ResponsiveCard>
@@ -117,9 +117,9 @@ export function QuickActionsResponsive() {
 // Esempio: Lista fornitori con card touch-friendly
 export function VendorListResponsive() {
   const vendors = [
-    { id: 1, name: "Villa Rossi", location: "Roma, RM", price: "€ 3.500", rating: 4.8, verified: true },
-    { id: 2, name: "Catering Delizie", location: "Milano, MI", price: "€ 5.200", rating: 4.9, verified: true },
-    { id: 3, name: "Fotografo Marco B.", location: "Firenze, FI", price: "€ 1.800", rating: 5.0, verified: false },
+    { id: 1, name: "Villa Rossi", location: "Roma, RM", price: "â‚¬ 3.500", rating: 4.8, verified: true },
+    { id: 2, name: "Catering Delizie", location: "Milano, MI", price: "â‚¬ 5.200", rating: 4.9, verified: true },
+    { id: 3, name: "Fotografo Marco B.", location: "Firenze, FI", price: "â‚¬ 1.800", rating: 5.0, verified: false },
   ];
 
   return (
@@ -141,12 +141,12 @@ export function VendorListResponsive() {
                   <h3 className="font-bold text-lg">{vendor.name}</h3>
                   {vendor.verified && (
                     <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">
-                      ✓ Verificato
+                      âœ“ Verificato
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">📍 {vendor.location}</p>
-                <p className="text-sm text-gray-700 mt-1">⭐ {vendor.rating}/5.0</p>
+                <p className="text-sm text-gray-600">ðŸ“ {vendor.location}</p>
+                <p className="text-sm text-gray-700 mt-1">â­ {vendor.rating}/5.0</p>
               </div>
               <div className="text-right">
                 <p className="font-bold text-xl text-[#8da182]">{vendor.price}</p>
@@ -196,9 +196,9 @@ export function SearchFormResponsive() {
 
             <select className="w-full px-4 py-3 border border-gray-300 rounded-lg" style={{ minHeight: "48px" }}>
               <option>Budget</option>
-              <option>€ 0 - 1.000</option>
-              <option>€ 1.000 - 5.000</option>
-              <option>€ 5.000+</option>
+              <option>â‚¬ 0 - 1.000</option>
+              <option>â‚¬ 1.000 - 5.000</option>
+              <option>â‚¬ 5.000+</option>
             </select>
           </ResponsiveGrid>
 
@@ -209,10 +209,10 @@ export function SearchFormResponsive() {
             spacing="md"
           >
             <button className="btn-primary flex-1">
-              🔍 Cerca
+              ðŸ” Cerca
             </button>
             <button className="btn-secondary flex-1">
-              ↻ Reset
+              â†» Reset
             </button>
           </ResponsiveStack>
         </div>

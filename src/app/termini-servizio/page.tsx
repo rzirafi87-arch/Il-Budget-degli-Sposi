@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { formatDate } from "@/lib/locale";
 import { useTranslations } from "next-intl";

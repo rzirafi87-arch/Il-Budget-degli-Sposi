@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 
 import React from "react";
@@ -23,29 +23,29 @@ export default function WeddingTraditionInfo({ tradition }: { tradition?: Weddin
   return (
     <section className="bg-white/80 rounded-xl p-6 mb-8 shadow-sm border border-gray-200">
       <h2 className="text-xl font-bold mb-3">
-        🎎 {t("traditions.title", { country: tradition.country || "" })}
+        ðŸŽŽ {t("traditions.title", { country: tradition.country || "" })}
       </h2>
       <div className="space-y-2 text-sm text-gray-800">
         {tradition.rito && (
-          <p><span className="mr-1">🎎</span><strong>{t("traditions.ritoLabel")}</strong> {tradition.rito}</p>
+          <p><span className="mr-1">ðŸŽŽ</span><strong>{t("traditions.ritoLabel")}</strong> {tradition.rito}</p>
         )}
         {tradition.stile && (
-          <p><span className="mr-1">🎨</span><strong>{t("traditions.stileLabel")}</strong> {tradition.stile}</p>
+          <p><span className="mr-1">ðŸŽ¨</span><strong>{t("traditions.stileLabel")}</strong> {tradition.stile}</p>
         )}
         {tradition.colori && (
-          <p><span className="mr-1">🌈</span><strong>{t("traditions.coloriLabel")}</strong> {tradition.colori}</p>
+          <p><span className="mr-1">ðŸŒˆ</span><strong>{t("traditions.coloriLabel")}</strong> {tradition.colori}</p>
         )}
         {tradition.regali && (
-          <p><span className="mr-1">🎁</span><strong>{t("traditions.regaliLabel")}</strong> {tradition.regali}</p>
+          <p><span className="mr-1">ðŸŽ</span><strong>{t("traditions.regaliLabel")}</strong> {tradition.regali}</p>
         )}
         {tradition.durata && (
-          <p><span className="mr-1">⏳</span><strong>{t("traditions.durataLabel")}</strong> {tradition.durata}</p>
+          <p><span className="mr-1">â³</span><strong>{t("traditions.durataLabel")}</strong> {tradition.durata}</p>
         )}
         {tradition.festa && (
-          <p><span className="mr-1">🍽️</span><strong>{t("traditions.festaLabel")}</strong> {tradition.festa}</p>
+          <p><span className="mr-1">ðŸ½ï¸</span><strong>{t("traditions.festaLabel")}</strong> {tradition.festa}</p>
         )}
         {tradition.usanze && (
-          <p><span className="mr-1">✨</span><strong>{t("traditions.usanzeLabel")}</strong> {tradition.usanze}</p>
+          <p><span className="mr-1">âœ¨</span><strong>{t("traditions.usanzeLabel")}</strong> {tradition.usanze}</p>
         )}
       </div>
     </section>

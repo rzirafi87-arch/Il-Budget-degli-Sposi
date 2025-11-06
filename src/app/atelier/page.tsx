@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -56,7 +56,7 @@ export default function AtelierPage() {
     email: "",
     website: "",
     description: "",
-    price_range: "€€",
+    price_range: "â‚¬â‚¬",
     styles: "",
     services: "",
   });
@@ -127,7 +127,7 @@ export default function AtelierPage() {
           email: "",
           website: "",
           description: "",
-          price_range: "€€",
+          price_range: "â‚¬â‚¬",
           styles: "",
           services: "",
         });
@@ -342,10 +342,10 @@ export default function AtelierPage() {
                 onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="€">{t("form.priceRanges.budget")}</option>
-                <option value="€€">{t("form.priceRanges.moderate")}</option>
-                <option value="€€€">{t("form.priceRanges.high")}</option>
-                <option value="€€€€">{t("form.priceRanges.luxury")}</option>
+                <option value="â‚¬">{t("form.priceRanges.budget")}</option>
+                <option value="â‚¬â‚¬">{t("form.priceRanges.moderate")}</option>
+                <option value="â‚¬â‚¬â‚¬">{t("form.priceRanges.high")}</option>
+                <option value="â‚¬â‚¬â‚¬â‚¬">{t("form.priceRanges.luxury")}</option>
               </select>
             </div>
 
@@ -425,23 +425,23 @@ export default function AtelierPage() {
                       </span>
                     )}
                   </div>
-                  <span className="text-2xl">{activeTab === "sposa" ? "👰" : "🤵"}</span>
+                  <span className="text-2xl">{activeTab === "sposa" ? "ðŸ‘°" : "ðŸ¤µ"}</span>
                 </div>
 
                 <div className="space-y-2 text-sm text-gray-600 mb-4">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">📍</span>
+                    <span className="font-semibold">ðŸ“</span>
                     <span>{atelierItem.city}, {atelierItem.region}</span>
                   </div>
                   {atelierItem.address && (
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">🏠</span>
+                      <span className="font-semibold">ðŸ </span>
                       <span className="text-xs">{atelierItem.address}</span>
                     </div>
                   )}
                   {atelierItem.phone && (
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">📞</span>
+                      <span className="font-semibold">ðŸ“ž</span>
                       <a href={`tel:${atelierItem.phone}`} className="text-blue-600 hover:underline">
                         {atelierItem.phone}
                       </a>
@@ -449,7 +449,7 @@ export default function AtelierPage() {
                   )}
                   {atelierItem.email && (
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">✉️</span>
+                      <span className="font-semibold">âœ‰ï¸</span>
                       <a href={`mailto:${atelierItem.email}`} className="text-blue-600 hover:underline text-xs">
                         {atelierItem.email}
                       </a>
@@ -457,7 +457,7 @@ export default function AtelierPage() {
                   )}
                   {atelierItem.website && (
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">🌐</span>
+                      <span className="font-semibold">ðŸŒ</span>
                       <a
                         href={atelierItem.website}
                         target="_blank"
@@ -530,11 +530,11 @@ export default function AtelierPage() {
       <div className="mt-12 p-6 bg-linear-to-br from-pink-50 to-blue-50 rounded-xl border border-gray-200">
         <h4 className="font-bold text-lg mb-2 text-gray-800">{t("tips.title")}</h4>
         <ul className="text-sm text-gray-700 space-y-1 leading-relaxed">
-          <li>• {t("tips.tip1")}</li>
-          <li>• {t("tips.tip2")}</li>
-          <li>• {t("tips.tip3")}</li>
-          <li>• {t("tips.tip4")}</li>
-          <li>• {t("tips.tip5")}</li>
+          <li>â€¢ {t("tips.tip1")}</li>
+          <li>â€¢ {t("tips.tip2")}</li>
+          <li>â€¢ {t("tips.tip3")}</li>
+          <li>â€¢ {t("tips.tip4")}</li>
+          <li>â€¢ {t("tips.tip5")}</li>
         </ul>
       </div>
     </section>

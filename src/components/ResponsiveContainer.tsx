@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Container responsivo ottimizzato per PC, Tablet, Android e iOS
  * Gestisce automaticamente padding, margini e layout in base al dispositivo
  */

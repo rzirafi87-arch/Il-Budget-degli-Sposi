@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { usePathname, useRouter } from "next/navigation";
@@ -70,7 +70,7 @@ export default function OnboardingSelector() {
         {/* Language Selector */}
         <div className="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 hover:border-[#A3B59D] transition-colors">
           <label className="block text-sm font-semibold text-gray-700 mb-3">
-            🌍 Lingua
+            ðŸŒ Lingua
           </label>
           <select
             value={selectedLanguage}
@@ -92,7 +92,7 @@ export default function OnboardingSelector() {
         {/* Country Selector */}
         <div className="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 hover:border-[#A3B59D] transition-colors">
           <label className="block text-sm font-semibold text-gray-700 mb-3">
-            📍 Paese
+            ðŸ“ Paese
           </label>
           <select
             value={selectedCountry}
@@ -114,7 +114,7 @@ export default function OnboardingSelector() {
         {/* Event Type Selector */}
         <div className="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 hover:border-[#A3B59D] transition-colors">
           <label className="block text-sm font-semibold text-gray-700 mb-3">
-            🎉 Tipo di Evento
+            ðŸŽ‰ Tipo di Evento
           </label>
           <select
             value={selectedEvent}
@@ -137,14 +137,14 @@ export default function OnboardingSelector() {
         {/* Info Card */}
         <div className="bg-linear-to-r from-[#A3B59D]/10 to-[#A3B59D]/5 rounded-lg p-6 border border-[#A3B59D]/20 mb-6">
           <div className="flex items-start gap-3">
-            <span className="text-2xl">💡</span>
+            <span className="text-2xl">ðŸ’¡</span>
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">
                 Le tue preferenze vengono salvate automaticamente
               </h3>
               <p className="text-sm text-gray-600">
                 Puoi modificare queste impostazioni in qualsiasi momento. I contenuti,
-                i fornitori e le funzionalità verranno personalizzati in base alle tue scelte.
+                i fornitori e le funzionalitÃ  verranno personalizzati in base alle tue scelte.
               </p>
             </div>
           </div>

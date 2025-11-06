@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -37,7 +37,7 @@ export default function TavoliRiepilogoPage() {
   if (loading) {
     return (
       <section>
-        <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">🪑 Tavoli - Riepilogo</h2>
+        <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">ðŸª‘ Tavoli - Riepilogo</h2>
         <p className="text-gray-600 font-semibold">Caricamento...</p>
       </section>
     );
@@ -46,17 +46,17 @@ export default function TavoliRiepilogoPage() {
   return (
     <section>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-gray-800">🪑 Tavoli - Riepilogo</h2>
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-gray-800">ðŸª‘ Tavoli - Riepilogo</h2>
         <Link 
           href="/invitati"
           className="text-sm font-bold text-blue-600 hover:text-blue-800 underline"
         >
-          ← Torna a Invitati
+          â† Torna a Invitati
         </Link>
       </div>
 
       <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-linear-to-br from-gray-200 to-gray-300 shadow-xl">
-        <h3 className="font-bold text-lg mb-4 text-gray-900">📊 Riepilogo Tavoli</h3>
+        <h3 className="font-bold text-lg mb-4 text-gray-900">ðŸ“Š Riepilogo Tavoli</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
           <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
             <div className="text-gray-800 font-bold">Tavoli Totali</div>
@@ -77,7 +77,7 @@ export default function TavoliRiepilogoPage() {
         </div>
       </div>
 
-      <p className="text-sm text-gray-600">La gestione della disposizione è stata disabilitata: qui trovi solo il riepilogo dei tavoli.</p>
+      <p className="text-sm text-gray-600">La gestione della disposizione Ã¨ stata disabilitata: qui trovi solo il riepilogo dei tavoli.</p>
     </section>
   );
 }

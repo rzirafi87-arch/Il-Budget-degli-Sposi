@@ -1,4 +1,4 @@
-import Script from 'next/script';
+﻿import Script from 'next/script';
 
 export function JsonLd() {
   const SITE_URL =

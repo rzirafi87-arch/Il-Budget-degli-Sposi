@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -318,18 +318,18 @@ export default function WeddingPlannerPage() {
                 )}
               </div>
               <div className="text-sm text-gray-600 space-y-1 mb-3">
-                <div>📍 {planner.city}, {planner.province} ({planner.region})</div>
-                {planner.phone && <div>📞 {planner.phone}</div>}
-                {planner.email && <div>📧 {planner.email}</div>}
+                <div>ðŸ“ {planner.city}, {planner.province} ({planner.region})</div>
+                {planner.phone && <div>ðŸ“ž {planner.phone}</div>}
+                {planner.email && <div>ðŸ“§ {planner.email}</div>}
                 {planner.website && (
                   <div>
-                    🌐 <a href={planner.website} target="_blank" rel="noopener noreferrer" className="text-[#A3B59D] hover:underline">
+                    ðŸŒ <a href={planner.website} target="_blank" rel="noopener noreferrer" className="text-[#A3B59D] hover:underline">
                       {planner.website}
                     </a>
                   </div>
                 )}
-                {planner.price_range && <div>💰 {planner.price_range}</div>}
-                {planner.services && <div>🎯 {planner.services}</div>}
+                {planner.price_range && <div>ðŸ’° {planner.price_range}</div>}
+                {planner.services && <div>ðŸŽ¯ {planner.services}</div>}
               </div>
               {planner.description && (
                 <p className="text-sm text-gray-700 mt-2">{planner.description}</p>

@@ -1,4 +1,4 @@
-import ClientLayoutShell from "@/components/ClientLayoutShell";
+﻿import ClientLayoutShell from "@/components/ClientLayoutShell";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import { JsonLd, LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
 import type { Metadata, Viewport } from "next";

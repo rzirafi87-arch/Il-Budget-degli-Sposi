@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+﻿import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
 // Simple fetch mock for the traditions preview used in CresimaPage

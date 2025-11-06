@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Bottom Navigation Bar per mobile (Android e iOS style)
  * Sostituisce la navigazione top su schermi piccoli
  */
@@ -32,7 +32,7 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
     return null;
   }
 
-  // iOS style: più arrotondato, icone più grandi
+  // iOS style: piÃ¹ arrotondato, icone piÃ¹ grandi
   const isIOSStyle = os === "ios";
 
   return (

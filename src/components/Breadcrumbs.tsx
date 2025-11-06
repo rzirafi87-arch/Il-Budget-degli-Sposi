@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -71,7 +71,7 @@ export default function Breadcrumbs() {
             <span className="text-gray-900 font-bold">{crumb.label}</span>
           )}
 
-          {index < breadcrumbs.length - 1 && <span className="text-gray-400" aria-hidden>›</span>}
+          {index < breadcrumbs.length - 1 && <span className="text-gray-400" aria-hidden>â€º</span>}
         </span>
       ))}
     </nav>

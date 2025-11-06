@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
@@ -64,7 +64,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
   ],
   "Fiori & Decor": [
     "Bouquet",
-    "Boutonnière",
+    "BoutonniÃ¨re",
     "Centrotavola",
     "Allestimenti",
     "Candele",
@@ -87,7 +87,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Menu",
     "Segnaposto",
     "Libretti Messa",
-    "Timbri / Cliché",
+    "Timbri / ClichÃ©",
     "Francobolli / Spedizioni",
     "Calligrafia",
     "Cartoncini / Tag",
@@ -163,7 +163,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Regalo pagetti",
     "Realizzazione bomboniere",
   ],
-  "Ospitalità & Logistica": [
+  "OspitalitÃ  & Logistica": [
     "Alloggi ospiti",
     "Welcome bag / Kit",
     "Cartellonistica / Segnaletica",
@@ -176,7 +176,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
   "Addio al Nubilato": [
     "Location addio al nubilato",
     "Ristorante / Cena",
-    "Attività / Esperienze",
+    "AttivitÃ  / Esperienze",
     "Gadget / T-shirt",
     "Decorazioni / Palloncini",
     "Trasporti",
@@ -186,7 +186,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
   "Addio al Celibato": [
     "Location addio al celibato",
     "Ristorante / Cena",
-    "Attività / Esperienze",
+    "AttivitÃ  / Esperienze",
     "Gadget / T-shirt",
     "Decorazioni / Palloncini",
     "Trasporti",
@@ -421,11 +421,11 @@ export default function SpesePage() {
 
   return (
     <section className="pt-6">
-  <h2 className="font-serif text-3xl mb-2">💸 {t("expensesPage.title")}</h2>
+  <h2 className="font-serif text-3xl mb-2">ðŸ’¸ {t("expensesPage.title")}</h2>
       <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">{t("expensesPage.info.lead")}</p>
 
       <PageInfoNote
-        icon="💰"
+        icon="ðŸ’°"
         title={t("expensesPage.info.title")}
         description={t("expensesPage.info.description")}
         tips={[
@@ -593,7 +593,7 @@ export default function SpesePage() {
               {/* Header gruppo */}
               <div className="bg-[#A3B59D]/10 px-6 py-3 border-b border-gray-200">
                 <h3 className="font-semibold text-gray-800">
-                  {group.category} → {group.subcategory}
+                  {group.category} â†’ {group.subcategory}
                 </h3>
                 <div className="text-xs text-gray-600 mt-1">
                   {group.expenses.length} preventivo{group.expenses.length !== 1 ? "i" : ""}
@@ -624,8 +624,8 @@ export default function SpesePage() {
                         exp.status === "rejected" ? "bg-red-50/30" : ""
                       }`}
                     >
-                      <td className="px-4 py-3 font-medium">{exp.supplier || "—"}</td>
-                      <td className="px-4 py-3">{exp.description || "—"}</td>
+                      <td className="px-4 py-3 font-medium">{exp.supplier || "â€”"}</td>
+                      <td className="px-4 py-3">{exp.description || "â€”"}</td>
                       <td className="px-4 py-3 text-right font-semibold">{formatEuro(exp.amount)}</td>
                       <td className="px-4 py-3 text-center capitalize text-xs">
                         {isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}
@@ -641,7 +641,7 @@ export default function SpesePage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        {exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}
+                        {exp.fromDashboard ? <span className="text-green-600 font-bold">âœ“</span> : "â€”"}
                       </td>
                       <td className="px-4 py-3 text-center">
                         {exp.status === "pending" && (

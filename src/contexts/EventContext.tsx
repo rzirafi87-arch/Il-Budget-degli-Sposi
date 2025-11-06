@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { createContext, useContext } from "react";
 
 export type EventType = "WEDDING" | "BIRTHDAY" | "BAPTISM" | "EIGHTEENTH" | "ANNIVERSARY" |

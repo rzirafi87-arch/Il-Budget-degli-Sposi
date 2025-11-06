@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
 import { GEO, getUserCountrySafe } from "@/constants/geo";
@@ -426,7 +426,7 @@ export default function ChiesePage() {
                 )}
 
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-semibold">📍</span> {church.city}, {church.province} ({church.region})
+                  <span className="font-semibold">ðŸ“</span> {church.city}, {church.province} ({church.region})
                 </p>
 
                 {church.address && (
@@ -457,7 +457,7 @@ export default function ChiesePage() {
                 <div className="border-t pt-3 space-y-1">
                   {church.phone && (
                     <p className="text-sm">
-                      <span className="font-semibold">📞</span>{" "}
+                      <span className="font-semibold">ðŸ“ž</span>{" "}
                       <a href={`tel:${church.phone}`} className="text-blue-600 hover:underline">
                         {church.phone}
                       </a>
@@ -465,7 +465,7 @@ export default function ChiesePage() {
                   )}
                   {church.email && (
                     <p className="text-sm">
-                      <span className="font-semibold">✉️</span>{" "}
+                      <span className="font-semibold">âœ‰ï¸</span>{" "}
                       <a href={`mailto:${church.email}`} className="text-blue-600 hover:underline">
                         {church.email}
                       </a>
@@ -473,7 +473,7 @@ export default function ChiesePage() {
                   )}
                   {church.website && (
                     <p className="text-sm">
-                      <span className="font-semibold">🌐</span>{" "}
+                      <span className="font-semibold">ðŸŒ</span>{" "}
                       <a
                         href={church.website}
                         target="_blank"

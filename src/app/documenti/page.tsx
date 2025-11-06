@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -73,7 +73,7 @@ export default function DocumentiPage() {
     <section className="space-y-6">
       <div className="bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200">
         <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
-          📄 Documenti & Preventivi
+          ðŸ“„ Documenti & Preventivi
         </h1>
         <p className="text-gray-600">
           Carica e organizza tutti i documenti del matrimonio: preventivi, contratti, ricevute e altro.
@@ -81,15 +81,15 @@ export default function DocumentiPage() {
       </div>
 
       <PageInfoNote
-        icon="📁"
+        icon="ðŸ“"
         title="Archivio Digitale dei Tuoi Documenti"
-        description="Centralizza tutti i documenti importanti in un unico posto sicuro. Carica preventivi ricevuti dai fornitori, contratti firmati, fatture, ricevute di pagamento e certificati. Ogni documento può essere categorizzato, associato a un fornitore e dotato di note."
+        description="Centralizza tutti i documenti importanti in un unico posto sicuro. Carica preventivi ricevuti dai fornitori, contratti firmati, fatture, ricevute di pagamento e certificati. Ogni documento puÃ² essere categorizzato, associato a un fornitore e dotato di note."
         tips={[
           "Carica i preventivi appena li ricevi per confrontarli facilmente",
           "Associa ogni documento al fornitore corrispondente per una migliore organizzazione",
-          "Usa la categoria 'Contratto' per i documenti già firmati e confermati",
-          "Le ricevute e le fatture ti servono per la contabilità finale e le dichiarazioni fiscali",
-          "Filtra per categoria per trovare rapidamente ciò che cerchi",
+          "Usa la categoria 'Contratto' per i documenti giÃ  firmati e confermati",
+          "Le ricevute e le fatture ti servono per la contabilitÃ  finale e le dichiarazioni fiscali",
+          "Filtra per categoria per trovare rapidamente ciÃ² che cerchi",
           "Formati supportati: PDF, DOC, DOCX, JPG, PNG (fino a 10MB per file)"
         ]}
         eventTypeSpecific={{
@@ -105,7 +105,7 @@ export default function DocumentiPage() {
           href="/documenti/appuntamenti"
           className="flex items-center gap-4 bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
         >
-          <div className="text-3xl" aria-hidden>📅</div>
+          <div className="text-3xl" aria-hidden>ðŸ“…</div>
           <div>
             <h2 className="text-lg font-semibold text-gray-800">Agenda Documenti</h2>
             <p className="text-sm text-gray-600">
@@ -127,7 +127,7 @@ export default function DocumentiPage() {
             disabled={uploading}
           />
           <div className="text-center">
-            <div className="text-5xl mb-3">📁</div>
+            <div className="text-5xl mb-3">ðŸ“</div>
             <h3 className="font-bold text-lg text-gray-800 mb-2">
               {uploading ? "Caricamento in corso..." : "Carica Documenti"}
             </h3>
@@ -135,7 +135,7 @@ export default function DocumentiPage() {
               Clicca per selezionare o trascina qui i file
             </p>
             <p className="text-xs text-gray-400">
-              PDF, Word, Immagini • Max 10 MB per file
+              PDF, Word, Immagini â€¢ Max 10 MB per file
             </p>
           </div>
         </label>
@@ -162,7 +162,7 @@ export default function DocumentiPage() {
       {/* Lista Documenti */}
       {filteredDocs.length === 0 ? (
         <div className="p-12 text-center bg-white rounded-xl border border-gray-200">
-          <div className="text-6xl mb-4">📭</div>
+          <div className="text-6xl mb-4">ðŸ“­</div>
           <h3 className="text-xl font-bold text-gray-700 mb-2">
             {documents.length === 0 ? "Nessun documento caricato" : "Nessun documento in questa categoria"}
           </h3>
@@ -181,7 +181,7 @@ export default function DocumentiPage() {
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "var(--color-beige)" }}>
-                  📄
+                  ðŸ“„
                 </div>
                 
                 <div className="flex-1 min-w-0">
@@ -205,21 +205,21 @@ export default function DocumentiPage() {
                         className="p-2 hover:bg-gray-100 rounded-lg transition"
                         title="Scarica"
                       >
-                        ⬇️
+                        â¬‡ï¸
                       </a>
                       <button
                         onClick={() => deleteDocument(doc.id)}
                         className="p-2 hover:bg-red-50 rounded-lg transition text-red-500"
                         title="Elimina"
                       >
-                        🗑️
+                        ðŸ&mdash;‘ï¸
                       </button>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-4 text-xs text-gray-500">
                     <span>{formatFileSize(doc.fileSize)}</span>
-                    <span>•</span>
+                    <span>â€¢</span>
                     <span>{formatDate(new Date(doc.uploadedAt))}</span>
                   </div>
                   

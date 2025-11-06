@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import WeddingTraditionInfo, { type WeddingTradition } from "@/components/WeddingTraditionInfo";
 

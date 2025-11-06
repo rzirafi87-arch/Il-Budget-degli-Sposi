@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -51,7 +51,7 @@ export default function QuickSettings() {
         style={{ background: "var(--color-sage)" }}
         onClick={() => setOpen(!open)}
       >
-        <span role="img" aria-label="Impostazioni">⚙️</span> <span className="font-semibold">Impostazioni</span>
+        <span role="img" aria-label="Impostazioni">âš™ï¸</span> <span className="font-semibold">Impostazioni</span>
       </button>
       {open && (
         <div className="fixed inset-0 z-59" onClick={() => setOpen(false)} />

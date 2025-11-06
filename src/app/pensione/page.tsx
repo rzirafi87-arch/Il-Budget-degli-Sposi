@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import React from "react";
 
@@ -60,7 +60,7 @@ export default function PensionePage() {
       const json = await res.json();
       if (!res.ok) {
         console.error("Errore creando evento:", json);
-        alert("Si è verificato un errore durante la creazione dell'evento.");
+        alert("Si Ã¨ verificato un errore durante la creazione dell'evento.");
         return;
       }
 
@@ -284,12 +284,12 @@ export default function PensionePage() {
                   ) : (
                     <>
                       <div>
-                        <div className="font-medium">{r.category} — {r.subcategory}</div>
+                        <div className="font-medium">{r.category} â€” {r.subcategory}</div>
                         {r.supplier && <div className="text-sm text-gray-500">Fornitore: {r.supplier}</div>}
                         {r.notes && <div className="text-sm text-gray-500">Note: {r.notes}</div>}
                       </div>
                       <div className="text-right flex flex-col items-end gap-2">
-                        <div className="font-medium">€ {Number(r.amount || 0).toFixed(2)}</div>
+                        <div className="font-medium">â‚¬ {Number(r.amount || 0).toFixed(2)}</div>
                         {r.spend_type && <div className="text-sm text-gray-500">{r.spend_type}</div>}
                         <div className="flex gap-2 mt-2">
                           <button onClick={() => startEdit(r)} className="px-2 py-1 rounded border">Modifica</button>
@@ -303,7 +303,7 @@ export default function PensionePage() {
             </ul>
 
             <div className="mt-4 flex justify-end">
-              <div className="font-semibold">Totale: € {total.toFixed(2)}</div>
+              <div className="font-semibold">Totale: â‚¬ {total.toFixed(2)}</div>
             </div>
 
               <form onSubmit={submitExpense} className="mt-6 border-t pt-4">

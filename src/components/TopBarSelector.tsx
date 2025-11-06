@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -68,13 +68,13 @@ export default function TopBarSelector() {
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
-        {currentLang?.emoji || "🌐"} {currentLang?.label || lang.toUpperCase()} · {currentCountry?.emoji || "🏳️"} {new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of((currentCountry?.code || country).toUpperCase()) || country.toUpperCase()} · {currentEvent?.emoji || "🎉"} {t(`events.${currentEvent?.slug ?? eventType}`, { fallback: currentEvent?.label || eventType })}
+        {currentLang?.emoji || "ðŸŒ"} {currentLang?.label || lang.toUpperCase()} Â· {currentCountry?.emoji || "ðŸ³ï¸"} {new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of((currentCountry?.code || country).toUpperCase()) || country.toUpperCase()} Â· {currentEvent?.emoji || "ðŸŽ‰"} {t(`events.${currentEvent?.slug ?? eventType}`, { fallback: currentEvent?.label || eventType })}
       </button>
       {open && (
         <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
           <div className="p-3">
             <div className="flex gap-2 items-center px-2 py-2">
-              <span className="text-base" aria-hidden>{currentLang?.emoji || "🌐"}</span>
+              <span className="text-base" aria-hidden>{currentLang?.emoji || "ðŸŒ"}</span>
               <div>
                 <div className="text-xs text-gray-500">Lingua</div>
                 <select
@@ -88,11 +88,11 @@ export default function TopBarSelector() {
                 </select>
               </div>
             </div>
-            <Label title="Nazione" value={currentCountry?.label || country.toUpperCase()} emoji={currentCountry?.emoji || "🏳️"} onClick={() => router.push("/select-country")} />
+            <Label title="Nazione" value={currentCountry?.label || country.toUpperCase()} emoji={currentCountry?.emoji || "ðŸ³ï¸"} onClick={() => router.push("/select-country")} />
             <Label
               title="Evento"
-              value={`${t(`events.${currentEvent?.slug ?? eventType}`, { fallback: currentEvent?.label || eventType })}${currentEvent?.available === false ? ` · ${t("comingSoon", { fallback: "In arrivo" })}` : ""}`}
-              emoji={currentEvent?.emoji || "🎉"}
+              value={`${t(`events.${currentEvent?.slug ?? eventType}`, { fallback: currentEvent?.label || eventType })}${currentEvent?.available === false ? ` Â· ${t("comingSoon", { fallback: "In arrivo" })}` : ""}`}
+              emoji={currentEvent?.emoji || "ðŸŽ‰"}
               onClick={() => router.push("/select-event-type")}
             />
           </div>

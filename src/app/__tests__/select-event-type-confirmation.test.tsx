@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+﻿import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 // Mock next/navigation router to avoid real navigation in jsdom

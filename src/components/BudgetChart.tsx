@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { formatCurrency } from "@/lib/locale";
 import { useMemo } from "react";
@@ -96,14 +96,14 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600 italic">
           {percentage < 30 
-            ? "💚 Ottimo inizio! Siete nei tempi"
+            ? "ðŸ’š Ottimo inizio! Siete nei tempi"
             : percentage < 70
-            ? "💛 Buon progresso, continuate così"
+            ? "ðŸ’› Buon progresso, continuate cosÃ¬"
             : percentage < 90
-            ? "🧡 Attenzione al budget, state per raggiungerlo"
+            ? "ðŸ§¡ Attenzione al budget, state per raggiungerlo"
             : percentage < 100
-            ? "❤️ Quasi al limite, valutate bene le prossime spese"
-            : "🚨 Budget superato! Rivedete le priorità"}
+            ? "â¤ï¸ Quasi al limite, valutate bene le prossime spese"
+            : "ðŸš¨ Budget superato! Rivedete le prioritÃ "}
         </p>
       </div>
     </div>

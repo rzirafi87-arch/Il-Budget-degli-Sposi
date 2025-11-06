@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+﻿import { cookies } from "next/headers";
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";

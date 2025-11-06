@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { COUNTRIES } from "@/lib/loadConfigs";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
@@ -18,7 +18,7 @@ export default function SelectCountryPage() {
   // Update cookies when country is selected
   useEffect(() => {
     if (!selectedCountry) return;
-    // Salvataggio già fatto in handleSelect per reattività immediata
+    // Salvataggio giÃ  fatto in handleSelect per reattivitÃ  immediata
     // Aggiorna evento in background
     (async () => {
       try {
@@ -106,7 +106,7 @@ export default function SelectCountryPage() {
     >
       <div className="max-w-md w-full p-8 rounded-2xl shadow-lg bg-white/90 border border-gray-200">
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
-          <span aria-hidden="true" className="mr-2">🗺️</span>
+          <span aria-hidden="true" className="mr-2">ðŸ&mdash;ºï¸</span>
           {t("onboarding.selectCountryTitle", { fallback: "Scegli il paese" })}
         </h1>
         <p className="text-center text-gray-600 mb-6 text-base">

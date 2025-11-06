@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const LANGUAGES = [
   { value: "it", label: "Italiano" },
   { value: "en", label: "English" },
-  { value: "es", label: "Español" },
+  { value: "es", label: "EspaÃ±ol" },
 ];
 
 const COUNTRIES = [

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+﻿import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SelectLanguagePage from '../select-language/page';
 
@@ -12,7 +12,7 @@ describe('SelectLanguagePage', () => {
     render(<SelectLanguagePage />);
     expect(screen.getByText(/Italiano/i)).toBeInTheDocument();
     expect(screen.getByText(/English/i)).toBeInTheDocument();
-    expect(screen.getByText(/Español/i)).toBeInTheDocument();
+    expect(screen.getByText(/EspaÃ±ol/i)).toBeInTheDocument();
   });
 
   it('seleziona una lingua e salva in localStorage', () => {

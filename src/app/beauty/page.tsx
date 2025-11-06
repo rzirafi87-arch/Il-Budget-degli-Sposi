@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -198,7 +198,7 @@ export default function BeautyPage() {
         <p className="text-gray-500">{t("loading")}</p>
       ) : filtered.length === 0 ? (
         <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
-          <div className="text-5xl mb-4">🔍</div>
+          <div className="text-5xl mb-4">ðŸ”</div>
           <p className="text-lg font-medium">{t("empty.title")}</p>
           <p className="text-sm mt-2">{t("empty.description")}</p>
         </div>
@@ -209,10 +209,10 @@ export default function BeautyPage() {
               <div className="flex items-start justify-between mb-3">
                 <h3 className="font-bold text-lg text-gray-900 line-clamp-2">{p.name}</h3>
                 {p.rating && p.rating > 0 && (
-                  <div className="flex items-center gap-1 text-sm"><span className="text-yellow-500">⭐</span><span className="font-bold text-gray-800">{p.rating.toFixed(1)}</span></div>
+                  <div className="flex items-center gap-1 text-sm"><span className="text-yellow-500">â­</span><span className="font-bold text-gray-800">{p.rating.toFixed(1)}</span></div>
                 )}
               </div>
-              <p className="text-sm text-gray-600 mb-2">📍 {p.city}, {p.province} ({p.region})</p>
+              <p className="text-sm text-gray-600 mb-2">ðŸ“ {p.city}, {p.province} ({p.region})</p>
               {p.priceRange && (
                 <div className="mb-3"><span className="inline-block bg-[#A6B5A0] text-white px-3 py-1 rounded-full text-sm font-bold">{p.priceRange}</span></div>
               )}
@@ -252,8 +252,8 @@ export default function BeautyPage() {
                   <div className="text-sm text-gray-600 mt-1">{p.city}, {p.province} ({p.region})</div>
                   {p.description && <p className="text-sm text-gray-700 mt-2">{p.description}</p>}
                   <div className="flex gap-4 mt-3 text-xs text-gray-500 flex-wrap">
-                    {p.phone && <span>📞 {p.phone}</span>}
-                    {p.email && <span>✉️ {p.email}</span>}
+                    {p.phone && <span>ðŸ“ž {p.phone}</span>}
+                    {p.email && <span>âœ‰ï¸ {p.email}</span>}
                     {p.website && (
                       <a href={p.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{t("actions.website")}</a>
                     )}
@@ -261,7 +261,7 @@ export default function BeautyPage() {
                 </div>
                 <div className="text-right flex flex-col items-end gap-2 min-w-20">
                   {p.priceRange && <div className="text-sm font-medium text-gray-700">{p.priceRange}</div>}
-                  {p.rating && p.rating > 0 && <div className="text-xs text-yellow-600">⭐ {p.rating.toFixed(1)}</div>}
+                  {p.rating && p.rating > 0 && <div className="text-xs text-yellow-600">â­ {p.rating.toFixed(1)}</div>}
                   <button
                     onClick={() => toggleFavorite(p.id, { name: p.name })}
                     disabled={pending[p.id]}

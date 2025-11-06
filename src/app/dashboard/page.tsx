@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import BudgetFocusHint, { BudgetFocus } from "@/components/dashboard/BudgetFocusHint";
 import BudgetItemsSection from "@/components/dashboard/BudgetItemsSection";
 import BudgetSummary from "@/components/dashboard/BudgetSummary";
@@ -94,7 +94,7 @@ export default function DashboardPage() {
           if (active && Array.isArray(json?.modules)) {
             setChecklist(
               json.modules.map((m: Record<string, unknown>) => ({
-                module_name: String(m.module_name || m.name || m.title || "Attività"),
+                module_name: String(m.module_name || m.name || m.title || "AttivitÃ "),
                 is_required: Boolean(m.is_required),
               }))
             );
@@ -196,10 +196,10 @@ export default function DashboardPage() {
         throw new Error("Errore nel salvataggio del budget");
       }
 
-      alert("✅ Budget salvato con successo! I dati sono ora disponibili in 'Idea di Budget'.");
+      alert("âœ… Budget salvato con successo! I dati sono ora disponibili in 'Idea di Budget'.");
     } catch (error) {
       console.error("Errore nel salvataggio:", error);
-      alert("❌ Errore nel salvataggio del budget. Riprova.");
+      alert("âŒ Errore nel salvataggio del budget. Riprova.");
     } finally {
       setSavingBudget(false);
     }
@@ -227,7 +227,7 @@ export default function DashboardPage() {
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-lg">⚙️ Preferenze</h3>
+            <h3 className="font-semibold text-lg">âš™ï¸ Preferenze</h3>
             <p className="text-sm text-gray-900">Personalizza lingua, nazione ed evento per un&apos;esperienza su misura.</p>
           </div>
           <div className="flex gap-2">
@@ -239,23 +239,23 @@ export default function DashboardPage() {
       </div>
 
       <PageInfoNote
-        icon="📊"
+        icon="ðŸ“Š"
         title="Centro di Controllo del Tuo Evento"
-        description="La Dashboard è il cuore dell'applicazione. Qui puoi gestire il budget complessivo, impostare i budget separati per i partecipanti, e visualizzare tutte le categorie di spesa previste. Ogni modifica viene salvata automaticamente al tuo account."
+        description="La Dashboard Ã¨ il cuore dell'applicazione. Qui puoi gestire il budget complessivo, impostare i budget separati per i partecipanti, e visualizzare tutte le categorie di spesa previste. Ogni modifica viene salvata automaticamente al tuo account."
         tips={[
-          "Imposta prima il budget totale e la data dell'evento per attivare tutte le funzionalità",
+          "Imposta prima il budget totale e la data dell'evento per attivare tutte le funzionalitÃ ",
           "Il budget si divide automaticamente tra i partecipanti, con spese comuni condivise",
           "Tutte le categorie sono personalizzabili: aggiungi preventivi, conferma spese e traccia pagamenti",
           "Usa le 'Idee di Budget' per applicare template pre-compilati alle tue categorie"
         ]}
         eventTypeSpecific={{
-          wedding: "Per il matrimonio, il budget è diviso tra sposa, sposo e spese comuni. Questo ti aiuta a tenere traccia di chi contribuisce a cosa.",
-          baptism: "Per il battesimo, tutte le spese sono considerate comuni. Non c'è divisione tra budget individuali.",
+          wedding: "Per il matrimonio, il budget Ã¨ diviso tra sposa, sposo e spese comuni. Questo ti aiuta a tenere traccia di chi contribuisce a cosa.",
+          baptism: "Per il battesimo, tutte le spese sono considerate comuni. Non c'Ã¨ divisione tra budget individuali.",
           communion: "Per la comunione, tutte le spese sono considerate comuni. Budget familiare unificato per la celebrazione.",
-          confirmation: "Per la cresima, il budget è gestito come spese comuni della famiglia.",
+          confirmation: "Per la cresima, il budget Ã¨ gestito come spese comuni della famiglia.",
           birthday: "Per il compleanno, puoi gestire il budget in modo flessibile, dividendo tra organizzatore e spese condivise.",
-          eighteenth: "Per il diciottesimo compleanno, il budget è gestito come evento unico. Perfetto per celebrare la maggiore età!",
-          graduation: "Per la laurea, il budget può essere gestito come spese comuni o diviso tra famiglia e laureato."
+          eighteenth: "Per il diciottesimo compleanno, il budget Ã¨ gestito come evento unico. Perfetto per celebrare la maggiore etÃ !",
+          graduation: "Per la laurea, il budget puÃ² essere gestito come spese comuni o diviso tra famiglia e laureato."
         }}
       />
 
@@ -280,7 +280,7 @@ export default function DashboardPage() {
           disabled={savingBudget}
           className="bg-[#A3B59D] hover:bg-[#8fa188] text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {savingBudget ? "Salvataggio..." : "💾 Salva Budget"}
+          {savingBudget ? "Salvataggio..." : "ðŸ’¾ Salva Budget"}
         </button>
       </div>
 

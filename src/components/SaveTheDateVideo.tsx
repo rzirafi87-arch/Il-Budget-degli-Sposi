@@ -1,7 +1,7 @@
-import React from "react";
+﻿import React from "react";
 
 // Componente base per animazione Save the Date (Remotion)
-// In futuro si potrà personalizzare con props
+// In futuro si potrÃ  personalizzare con props
 export const SaveTheDateVideo: React.FC<{
   bride: string;
   groom: string;
@@ -26,7 +26,7 @@ export const SaveTheDateVideo: React.FC<{
       <p style={{ fontSize: 32, marginBottom: 10 }}>{date}</p>
       <p style={{ fontSize: 28 }}>{location}</p>
       <div style={{ marginTop: 40, fontSize: 24, opacity: 0.7 }}>
-        {message || "Saremo felici di condividere con voi il giorno più importante della nostra vita!"}
+        {message || "Saremo felici di condividere con voi il giorno piÃ¹ importante della nostra vita!"}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
 import { GEO, getUserCountrySafe } from "@/constants/geo";
@@ -439,7 +439,7 @@ export default function LocationRicevimentoPage() {
                 )}
 
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-semibold">📍</span> {location.city}, {location.province} ({location.region})
+                  <span className="font-semibold">ðŸ“</span> {location.city}, {location.province} ({location.region})
                 </p>
 
                 {location.address && (
@@ -461,7 +461,7 @@ export default function LocationRicevimentoPage() {
 
                 {location.price_range && (
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">💰</span> {location.price_range}
+                    <span className="font-semibold">ðŸ’°</span> {location.price_range}
                   </p>
                 )}
 
@@ -472,7 +472,7 @@ export default function LocationRicevimentoPage() {
                 <div className="border-t pt-3 space-y-1">
                   {location.phone && (
                     <p className="text-sm">
-                      <span className="font-semibold">📞</span>{" "}
+                      <span className="font-semibold">ðŸ“ž</span>{" "}
                       <a href={`tel:${location.phone}`} className="text-blue-600 hover:underline">
                         {location.phone}
                       </a>
@@ -480,7 +480,7 @@ export default function LocationRicevimentoPage() {
                   )}
                   {location.email && (
                     <p className="text-sm">
-                      <span className="font-semibold">✉️</span>{" "}
+                      <span className="font-semibold">âœ‰ï¸</span>{" "}
                       <a href={`mailto:${location.email}`} className="text-blue-600 hover:underline">
                         {location.email}
                       </a>
@@ -488,7 +488,7 @@ export default function LocationRicevimentoPage() {
                   )}
                   {location.website && (
                     <p className="text-sm">
-                      <span className="font-semibold">🌐</span>{" "}
+                      <span className="font-semibold">ðŸŒ</span>{" "}
                       <a
                         href={location.website}
                         target="_blank"

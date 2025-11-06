@@ -403,18 +403,18 @@ h1, h2, h3, h4, h5, h6 {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     padding: 16px 24px; /* Touch-friendly */
     min-height: 48px; /* Apple HIG recommendation - minimo 44px */
     font-size: 15px;
   }
-  
+
   .card {
     padding: 16px;
   }
-  
+
   /* Touch target minimi per accessibilità */
   button, a, input, select, textarea {
     min-height: 44px;
@@ -426,19 +426,19 @@ h1, h2, h3, h4, h5, h6 {
   .ios-safe-top {
     padding-top: max(16px, env(safe-area-inset-top));
   }
-  
+
   .ios-safe-bottom {
     padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
-  
+
   .ios-safe-left {
     padding-left: max(16px, env(safe-area-inset-left));
   }
-  
+
   .ios-safe-right {
     padding-right: max(16px, env(safe-area-inset-right));
   }
-  
+
   .ios-safe-all {
     padding-top: max(16px, env(safe-area-inset-top));
     padding-bottom: max(16px, env(safe-area-inset-bottom));
@@ -453,13 +453,13 @@ h1, h2, h3, h4, h5, h6 {
   .btn-primary {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
   }
-  
+
   /* Ripple effect simulation */
   button, .btn-primary, .btn-secondary {
     position: relative;
     overflow: hidden;
   }
-  
+
   button::after, .btn-primary::after, .btn-secondary::after {
     content: '';
     position: absolute;
@@ -472,7 +472,7 @@ h1, h2, h3, h4, h5, h6 {
     transform: translate(-50%, -50%);
     transition: width 0.3s, height 0.3s;
   }
-  
+
   button:active::after, .btn-primary:active::after, .btn-secondary:active::after {
     width: 300px;
     height: 300px;
@@ -484,18 +484,18 @@ h1, h2, h3, h4, h5, h6 {
   body {
     font-size: 16px;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     padding: 14px 28px;
     min-height: 48px;
     font-size: 16px;
   }
-  
+
   .card {
     padding: 20px;
   }
-  
+
   /* Layout a due colonne per tablet */
   .tablet-grid-2 {
     display: grid;
@@ -509,18 +509,18 @@ h1, h2, h3, h4, h5, h6 {
   body {
     font-size: 16px;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     padding: 14px 32px;
     min-height: auto;
     font-size: 16px;
   }
-  
+
   .card {
     padding: 24px;
   }
-  
+
   /* Hover states solo su desktop (no touch) */
   @media (hover: hover) and (pointer: fine) {
     button:hover, a:hover {
@@ -541,7 +541,7 @@ h1, h2, h3, h4, h5, h6 {
   body {
     font-size: 17px;
   }
-  
+
   .card {
     padding: 32px;
   }
@@ -553,7 +553,7 @@ h1, h2, h3, h4, h5, h6 {
   .mobile-stack {
     flex-direction: column;
   }
-  
+
   /* Bottoni full width su portrait */
   .mobile-full-width {
     width: 100%;
@@ -567,7 +567,7 @@ h1, h2, h3, h4, h5, h6 {
     padding-top: 8px;
     padding-bottom: 8px;
   }
-  
+
   /* Header più compatto */
   header {
     padding-top: 8px;
@@ -638,4 +638,17 @@ h1, h2, h3, h4, h5, h6 {
 
 .bg-wedding-mint {
   background: linear-gradient(180deg, #e9f5ef 0%, #f2fbf5 55%, #ffffff 100%);
+}
+
+/* Hero typography fixes */
+.hero h1,
+.hero h2 {
+  font-variant-ligatures: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility class for disabling ligatures */
+.no-liga {
+  font-variant-ligatures: none;
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -324,18 +324,18 @@ export default function MusicaRicevimentoPage() {
                 )}
               </div>
               <div className="text-sm text-gray-600 space-y-1 mb-3">
-                <div>📍 {musician.city}, {musician.province} ({musician.region})</div>
-                {musician.phone && <div>📞 {musician.phone}</div>}
-                {musician.email && <div>📧 {musician.email}</div>}
+                <div>ðŸ“ {musician.city}, {musician.province} ({musician.region})</div>
+                {musician.phone && <div>ðŸ“ž {musician.phone}</div>}
+                {musician.email && <div>ðŸ“§ {musician.email}</div>}
                 {musician.website && (
                   <div>
-                    🌐 <a href={musician.website} target="_blank" rel="noopener noreferrer" className="text-[#A3B59D] hover:underline">
+                    ðŸŒ <a href={musician.website} target="_blank" rel="noopener noreferrer" className="text-[#A3B59D] hover:underline">
                       {musician.website}
                     </a>
                   </div>
                 )}
-                {musician.price_range && <div>💰 {musician.price_range}</div>}
-                {musician.music_type && <div>🎵 {musician.music_type}</div>}
+                {musician.price_range && <div>ðŸ’° {musician.price_range}</div>}
+                {musician.music_type && <div>ðŸŽµ {musician.music_type}</div>}
               </div>
               {musician.description && (
                 <p className="text-sm text-gray-700 mt-2">{musician.description}</p>

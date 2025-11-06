@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { formatCurrency } from "@/lib/locale";
 
 type CategorySpend = {
@@ -34,7 +34,7 @@ export default function CategoryBars({ categories, totalBudget, className = "" }
   return (
     <div className={`space-y-4 ${className}`}>
       <h3 className="text-lg font-bold text-gray-800 mb-4">
-        📊 Spese per Categoria (Top 8)
+        ðŸ“Š Spese per Categoria (Top 8)
       </h3>
 
       {sortedCategories.length === 0 ? (

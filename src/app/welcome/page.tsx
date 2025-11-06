@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
@@ -20,7 +20,7 @@ export default function WelcomePage() {
     })();
   }, []);
 
-  // Reindirizza dopo il render quando l'utente è loggato (evita mutazioni durante il render)
+  // Reindirizza dopo il render quando l'utente Ã¨ loggato (evita mutazioni durante il render)
   useEffect(() => {
     if (!loading && isLoggedIn && typeof window !== "undefined") {
       window.location.assign("/");
@@ -66,26 +66,26 @@ export default function WelcomePage() {
       {/* USP - Unique Selling Points */}
       <section className="container mx-auto px-6 py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-12">{t("usp.title")} 🌿</h2>
+          <h2 className="text-3xl font-serif font-bold text-center text-gray-800 mb-12">{t("usp.title")} ðŸŒ¿</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Chiarezza */}
             <FeatureCard
-              icon="🧭"
+              icon="ðŸ§­"
               title={t("usp.cards.clarity.title")}
               description={t("usp.cards.clarity.description")}
             />
             
             {/* Controllo */}
             <FeatureCard
-              icon="📊"
+              icon="ðŸ“Š"
               title={t("usp.cards.control.title")}
               description={t("usp.cards.control.description")}
             />
             
             {/* Ispirazione */}
             <FeatureCard
-              icon="✨"
+              icon="âœ¨"
               title={t("usp.cards.inspiration.title")}
               description={t("usp.cards.inspiration.description")}
             />
@@ -93,7 +93,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* Funzionalità principali */}
+      {/* FunzionalitÃ  principali */}
       <section className="bg-white/60 backdrop-blur-sm py-16">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto">
@@ -101,32 +101,32 @@ export default function WelcomePage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FeatureListItem
-                icon="💰"
+                icon="ðŸ’°"
                 title={t("demo.features.budget.title")}
                 description={t("demo.features.budget.description")}
               />
               <FeatureListItem
-                icon="🏢"
+                icon="ðŸ¢"
                 title={t("demo.features.suppliers.title")}
                 description={t("demo.features.suppliers.description")}
               />
               <FeatureListItem
-                icon="👥"
+                icon="ðŸ‘¥"
                 title={t("demo.features.guests.title")}
                 description={t("demo.features.guests.description")}
               />
               <FeatureListItem
-                icon="📅"
+                icon="ðŸ“…"
                 title={t("demo.features.timeline.title")}
                 description={t("demo.features.timeline.description")}
               />
               <FeatureListItem
-                icon="❤️"
+                icon="â¤ï¸"
                 title={t("demo.features.favorites.title")}
                 description={t("demo.features.favorites.description")}
               />
               <FeatureListItem
-                icon="🎁"
+                icon="ðŸŽ"
                 title={t("demo.features.gifts.title")}
                 description={t("demo.features.gifts.description")}
               />
@@ -138,7 +138,7 @@ export default function WelcomePage() {
       {/* Privacy & No spam */}
       <section className="container mx-auto px-6 py-16">
         <div className="max-w-3xl mx-auto bg-linear-to-br from-[#EAD9D4]/40 to-[#E8E0D6]/40 rounded-3xl p-12 text-center border-2 border-[#E8E0D6] shadow-xl">
-          <div className="text-5xl mb-6">🔒</div>
+          <div className="text-5xl mb-6">ðŸ”’</div>
           <h3 className="text-2xl font-bold text-gray-800 mb-4">{t("privacy.title")}</h3>
           <p className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: t("privacy.textHtml") }} />
         </div>
@@ -154,7 +154,7 @@ export default function WelcomePage() {
               href="/auth"
               className="w-full sm:w-auto bg-[#A6B5A0] text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-[#8a9d84] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
-              {t("finalCta.button")} 💍
+              {t("finalCta.button")} ðŸ’
             </Link>
           </div>
         </div>
@@ -163,12 +163,12 @@ export default function WelcomePage() {
       {/* Footer */}
       <footer className="bg-white/80 backdrop-blur-sm border-t border-gray-200 py-8">
         <div className="container mx-auto px-6 text-center text-sm text-gray-600">
-          <p>MYBUDGETEVENTO © 2025 • Made with 💚 in Italia</p>
+          <p>MYBUDGETEVENTO Â© 2025 â€¢ Made with ðŸ’š in Italia</p>
           <div className="mt-3 space-x-4">
             <Link href="/contatti" className="hover:text-[#A6B5A0] transition-colors">
               Contatti
             </Link>
-            <span>•</span>
+            <span>â€¢</span>
             <Link href="/" className="hover:text-[#A6B5A0] transition-colors">
               Demo
             </Link>

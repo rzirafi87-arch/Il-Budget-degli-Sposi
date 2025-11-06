@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
 import { GB_HIERARCHY } from "@/constants/gbHierarchy";
@@ -101,7 +101,7 @@ export default function LocationiPage() {
       <div className="max-w-7xl mx-auto">
         <ImageCarousel images={getPageImages("location", country)} height="280px" />
         <div className="mb-6">
-          <h1 className="text-4xl font-bold text-gray-800">🏛️ Location Ricevimento</h1>
+          <h1 className="text-4xl font-bold text-gray-800">ðŸ›ï¸ Location Ricevimento</h1>
           <p className="text-gray-700 text-sm sm:text-base max-w-3xl mt-2">
             Scopri e proponi ville, castelli, agriturismi e altri spazi dedicati al ricevimento. Filtra per area geografica e
             tipologia per trovare la location perfetta.
@@ -172,7 +172,7 @@ export default function LocationiPage() {
               );
             })}
             <div>
-              <label className="block text-sm font-semibold mb-1">Città *</label>
+              <label className="block text-sm font-semibold mb-1">CittÃ  *</label>
               <input
                 type="text"
                 required
@@ -221,14 +221,14 @@ export default function LocationiPage() {
               <label className="block text-sm font-semibold mb-1">Fascia di Prezzo</label>
               <input
                 type="text"
-                placeholder="es. €€€, 50-100€ a persona"
+                placeholder="es. â‚¬â‚¬â‚¬, 50-100â‚¬ a persona"
                 value={formData.price_range}
                 onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
                 className="w-full border rounded px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Capacità Minima (persone)</label>
+              <label className="block text-sm font-semibold mb-1">CapacitÃ  Minima (persone)</label>
               <input
                 type="number"
                 min="0"
@@ -238,7 +238,7 @@ export default function LocationiPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Capacità Massima (persone)</label>
+              <label className="block text-sm font-semibold mb-1">CapacitÃ  Massima (persone)</label>
               <input
                 type="number"
                 min="0"
@@ -253,7 +253,7 @@ export default function LocationiPage() {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full border rounded px-3 py-2 h-24"
-                placeholder="Descrivi la location, i servizi offerti, particolarità..."
+                placeholder="Descrivi la location, i servizi offerti, particolaritÃ ..."
               />
             </div>
             <div className="col-span-2">
@@ -297,14 +297,14 @@ export default function LocationiPage() {
                     </p>
                   )}
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">📍</span> {location.city}, {location.province} ({location.region})
+                    <span className="font-semibold">ðŸ“</span> {location.city}, {location.province} ({location.region})
                   </p>
                   {location.address && (
                     <p className="text-sm text-gray-600 mb-2">{location.address}</p>
                   )}
                   {(location.capacity_min || location.capacity_max) && (
                     <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">👥 Capacità:</span>{" "}
+                      <span className="font-semibold">ðŸ‘¥ CapacitÃ :</span>{" "}
                       {location.capacity_min && location.capacity_max
                         ? `${location.capacity_min}-${location.capacity_max} persone`
                         : location.capacity_min
@@ -314,7 +314,7 @@ export default function LocationiPage() {
                   )}
                   {location.price_range && (
                     <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">� Prezzo:</span> {location.price_range}
+                      <span className="font-semibold">ï¿½ Prezzo:</span> {location.price_range}
                     </p>
                   )}
                   {location.description && (

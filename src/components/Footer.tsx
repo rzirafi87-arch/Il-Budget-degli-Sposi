@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -17,18 +17,18 @@ export default function Footer() {
   const [subscribed, setSubscribed] = useState(false);
 
   const loveByLocale: Record<string, string> = {
-    it: "Fatto con ❤️ per le coppie italiane",
-    en: "Made with ❤️ for Italian couples",
-    es: "Hecho con ❤️ para parejas italianas",
-    fr: "Fait avec ❤️ pour les couples italiens",
-    de: "Mit ❤️ für italienische Paare",
-    ru: "Сделано с ❤️ для итальянских пар",
-    zh: "用 ❤️ 为意大利情侣打造",
-    ja: "イタリアのカップルのために❤️を込めて",
-    ar: "صُنع بحب ❤️ للأزواج الإيطاليين",
+    it: "Fatto con â¤ï¸ per le coppie italiane",
+    en: "Made with â¤ï¸ for Italian couples",
+    es: "Hecho con â¤ï¸ para parejas italianas",
+    fr: "Fait avec â¤ï¸ pour les couples italiens",
+    de: "Mit â¤ï¸ fÃ¼r italienische Paare",
+    ru: "Ð¡Ð´ÐµÐ»Ð°Ð½Ð¾ Ñ â¤ï¸ Ð´Ð»Ñ Ð¸Ñ‚Ð°Ð»ÑŒÑÐ½ÑÐºÐ¸Ñ… Ð¿Ð°Ñ€",
+    zh: "ç”¨ â¤ï¸ ä¸ºæ„å¤§åˆ©æƒ…ä¾£æ‰“é€ ",
+    ja: "ã‚¤ã‚¿ãƒªã‚¢ã®ã‚«ãƒƒãƒ&mdash;ãƒ«ã®ãŸã‚ã«â¤ï¸ã‚’è¾¼ã‚ã¦",
+    ar: "ØµÙÙ†Ø¹ Ø¨Ø­Ø¨ â¤ï¸ Ù„Ù„Ø£Ø²ÙˆØ§Ø¬ Ø§Ù„Ø¥ÙŠØ·Ø§Ù„ÙŠÙŠÙ†",
   };
   const currentLang = typeof document !== "undefined" ? document.documentElement.lang : "it";
-  const madeWithLove = loveByLocale[currentLang] || t("madeWithLove", { default: "Made with ❤️ for Italian couples" });
+  const madeWithLove = loveByLocale[currentLang] || t("madeWithLove", { default: "Made with â¤ï¸ for Italian couples" });
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +150,7 @@ export default function Footer() {
             <span>{t("free100", { default: "100% Gratuito" })}</span>
           </div>
           <div className="text-center text-xs sm:text-sm text-white/70">
-            <p>© {new Date().getFullYear()} MYBUDGETEVENTO. {t("copyright", { default: "Tutti i diritti riservati." })}</p>
+            <p>Â© {new Date().getFullYear()} MYBUDGETEVENTO. {t("copyright", { default: "Tutti i diritti riservati." })}</p>
             <p className="mt-1 text-xs">{madeWithLove}</p>
           </div>
         </div>

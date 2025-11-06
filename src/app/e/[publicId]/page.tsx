@@ -64,7 +64,7 @@ export default async function PublicEventPage({ params }: { params: { publicId: 
       <h1 className="text-3xl font-bold mb-4">{event.title || "Evento"}</h1>
       <div className="space-y-1 text-sm text-gray-700">
         <div>
-          <span className="font-medium">Public ID:</span> {event.public_id || "—"}
+          <span className="font-medium">Public ID:</span> {event.public_id || "&mdash;"}
         </div>
         <div>
           <span className="font-medium">Visibilità:</span> {event.is_public ? "Pubblico" : "Privato"}

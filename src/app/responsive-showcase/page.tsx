@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Pagina di esempio che dimostra tutti i componenti responsive
  * Ottimizzata per PC, Tablet, Android e iOS
  */
@@ -14,10 +14,10 @@ export default function ResponsiveShowcasePage() {
   const deviceInfo = useDeviceDetection();
 
   const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: "🏠" },
-    { href: "/budget", label: "Budget", icon: "💰" },
-    { href: "/invitati", label: "Invitati", icon: "👥", badge: 3 },
-    { href: "/fornitori", label: "Fornitori", icon: "🏢" },
+    { href: "/dashboard", label: "Dashboard", icon: "ðŸ " },
+    { href: "/budget", label: "Budget", icon: "ðŸ’°" },
+    { href: "/invitati", label: "Invitati", icon: "ðŸ‘¥", badge: 3 },
+    { href: "/fornitori", label: "Fornitori", icon: "ðŸ¢" },
   ];
 
   return (
@@ -50,7 +50,7 @@ export default function ResponsiveShowcasePage() {
             <div>
               <p className="text-sm text-gray-600">Viewport</p>
               <p className="text-lg font-semibold">
-                {deviceInfo.screenWidth} × {deviceInfo.screenHeight}
+                {deviceInfo.screenWidth} Ã&mdash; {deviceInfo.screenHeight}
               </p>
             </div>
             <div>
@@ -60,13 +60,13 @@ export default function ResponsiveShowcasePage() {
             <div>
               <p className="text-sm text-gray-600">Touch</p>
               <p className="text-lg font-semibold">
-                {deviceInfo.isTouchDevice ? "✅ Sì" : "❌ No"}
+                {deviceInfo.isTouchDevice ? "âœ… SÃ¬" : "âŒ No"}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Orientamento</p>
               <p className="text-lg font-semibold">
-                {deviceInfo.isPortrait ? "📱 Portrait" : "📱 Landscape"}
+                {deviceInfo.isPortrait ? "ðŸ“± Portrait" : "ðŸ“± Landscape"}
               </p>
             </div>
           </ResponsiveGrid>
@@ -78,7 +78,7 @@ export default function ResponsiveShowcasePage() {
           <CardSection
             title="Budget"
             subtitle="Gestione spese"
-            icon="💰"
+            icon="ðŸ’°"
             hoverable
             onClick={() => alert("Budget clicked!")}
             footer={
@@ -95,7 +95,7 @@ export default function ResponsiveShowcasePage() {
           <CardSection
             title="Invitati"
             subtitle="Lista ospiti"
-            icon="👥"
+            icon="ðŸ‘¥"
             hoverable
             href="/invitati"
             footer={
@@ -113,7 +113,7 @@ export default function ResponsiveShowcasePage() {
           <CardSection
             title="Timeline"
             subtitle="Pianificazione"
-            icon="📅"
+            icon="ðŸ“…"
             hoverable
             onClick={() => alert("Timeline clicked!")}
             footer={
@@ -140,19 +140,19 @@ export default function ResponsiveShowcasePage() {
         >
           <ResponsiveCard variant="rose" padding="md" className="flex-1">
             <h3 className="font-serif font-bold text-lg mb-2">Sposa</h3>
-            <p className="text-3xl font-bold text-[#8da182]">€ 8.500</p>
+            <p className="text-3xl font-bold text-[#8da182]">â‚¬ 8.500</p>
             <p className="text-sm text-gray-600">Budget utilizzato</p>
           </ResponsiveCard>
 
           <ResponsiveCard variant="beige" padding="md" className="flex-1">
             <h3 className="font-serif font-bold text-lg mb-2">Sposo</h3>
-            <p className="text-3xl font-bold text-[#8da182]">€ 7.200</p>
+            <p className="text-3xl font-bold text-[#8da182]">â‚¬ 7.200</p>
             <p className="text-sm text-gray-600">Budget utilizzato</p>
           </ResponsiveCard>
 
           <ResponsiveCard variant="sage" padding="md" className="flex-1">
             <h3 className="font-serif font-bold text-lg mb-2">Comune</h3>
-            <p className="text-3xl font-bold text-[#8da182]">€ 15.300</p>
+            <p className="text-3xl font-bold text-[#8da182]">â‚¬ 15.300</p>
             <p className="text-sm text-gray-600">Budget utilizzato</p>
           </ResponsiveCard>
         </ResponsiveStack>
@@ -172,9 +172,9 @@ export default function ResponsiveShowcasePage() {
         <h2 className="text-2xl font-serif font-bold mt-8 mb-4">Card Interattive</h2>
         <div className="space-y-4">
           {[
-            { title: "Location Villa Rossi", location: "Roma", price: "€ 3.500", rating: "⭐ 4.8" },
-            { title: "Catering Delizie", location: "Milano", price: "€ 5.200", rating: "⭐ 4.9" },
-            { title: "Fotografo Marco B.", location: "Firenze", price: "€ 1.800", rating: "⭐ 5.0" },
+            { title: "Location Villa Rossi", location: "Roma", price: "â‚¬ 3.500", rating: "â­ 4.8" },
+            { title: "Catering Delizie", location: "Milano", price: "â‚¬ 5.200", rating: "â­ 4.9" },
+            { title: "Fotografo Marco B.", location: "Firenze", price: "â‚¬ 1.800", rating: "â­ 5.0" },
           ].map((item, i) => (
             <ResponsiveCard
               key={i}
@@ -185,7 +185,7 @@ export default function ResponsiveShowcasePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-lg">{item.title}</h3>
-                  <p className="text-sm text-gray-600">📍 {item.location}</p>
+                  <p className="text-sm text-gray-600">ðŸ“ {item.location}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-[#8da182]">{item.price}</p>
@@ -199,35 +199,35 @@ export default function ResponsiveShowcasePage() {
         {/* Messaggio ottimizzazioni specifiche */}
         <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
           <h3 className="font-bold text-blue-900 mb-2">
-            ✨ Ottimizzazioni Attive
+            âœ¨ Ottimizzazioni Attive
           </h3>
           <ul className="text-sm text-blue-800 space-y-1">
             {deviceInfo.os === "ios" && (
               <>
-                <li>✓ Safe areas per notch e home indicator</li>
-                <li>✓ Tap highlight disabilitato</li>
-                <li>✓ Smooth scrolling iOS</li>
+                <li>âœ“ Safe areas per notch e home indicator</li>
+                <li>âœ“ Tap highlight disabilitato</li>
+                <li>âœ“ Smooth scrolling iOS</li>
               </>
             )}
             {deviceInfo.os === "android" && (
               <>
-                <li>✓ Ripple effect su pulsanti (Material Design)</li>
-                <li>✓ Elevazioni shadow ottimizzate</li>
-                <li>✓ Font rendering Android</li>
+                <li>âœ“ Ripple effect su pulsanti (Material Design)</li>
+                <li>âœ“ Elevazioni shadow ottimizzate</li>
+                <li>âœ“ Font rendering Android</li>
               </>
             )}
             {deviceInfo.deviceType === "desktop" && (
               <>
-                <li>✓ Hover states per mouse</li>
-                <li>✓ Keyboard navigation</li>
-                <li>✓ Layout multi-colonna</li>
+                <li>âœ“ Hover states per mouse</li>
+                <li>âœ“ Keyboard navigation</li>
+                <li>âœ“ Layout multi-colonna</li>
               </>
             )}
             {deviceInfo.isTouchDevice && (
-              <li>✓ Touch targets minimo 44px (Apple HIG)</li>
+              <li>âœ“ Touch targets minimo 44px (Apple HIG)</li>
             )}
-            <li>✓ Responsive grid e stack layouts</li>
-            <li>✓ Font size adattivo ({deviceInfo.deviceType})</li>
+            <li>âœ“ Responsive grid e stack layouts</li>
+            <li>âœ“ Font size adattivo ({deviceInfo.deviceType})</li>
           </ul>
         </div>
       </ResponsiveContainer>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,7 +10,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-2 text-gray-800">Budget</h2>
-      {/* Tabs in stile Contabilità */}
+      {/* Tabs in stile ContabilitÃ  */}
       <div className="mb-6 flex flex-wrap gap-2 border-b pb-1" style={{ borderColor: "var(--border-soft)" }}>
         <Link
           href="/budget"

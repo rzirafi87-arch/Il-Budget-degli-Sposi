@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Background from "@/components/Background";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DynamicHeader from "@/components/DynamicHeader";

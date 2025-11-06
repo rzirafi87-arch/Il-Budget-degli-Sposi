@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+﻿import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 // Mock next/navigation for useRouter
@@ -45,7 +45,7 @@ describe('SelectCountryPage', () => {
     const avanti = screen.getByRole('button', { name: /avanti/i });
     expect(avanti).toBeInTheDocument();
 
-    // Clic non deve lanciare errori, il push è mockato
+    // Clic non deve lanciare errori, il push Ã¨ mockato
     fireEvent.click(avanti);
   });
 });

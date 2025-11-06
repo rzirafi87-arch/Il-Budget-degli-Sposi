@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/lib/locale";
+﻿import { formatCurrency } from "@/lib/locale";
 import { useTranslations } from "next-intl";
 
 type Item = { name: string; amount?: number };

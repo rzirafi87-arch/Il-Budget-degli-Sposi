@@ -229,7 +229,7 @@ export default function BudgetPage() {
                   {r.fromDashboard ? (
                     <span className="text-green-600 font-bold">✓</span>
                   ) : (
-                    <span className="text-gray-300">—</span>
+                    <span className="text-gray-300">&mdash;</span>
                   )}
                 </div>
                 <div className={`text-right font-medium ${
