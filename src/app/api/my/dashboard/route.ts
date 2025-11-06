@@ -16,6 +16,10 @@ type SpendRow = {
   amount: number;
   spendType: string;
   notes: string;
+  paymentMethod?: string;
+  paymentDate?: string;
+  paymentStatus?: string;
+  paymentNotes?: string;
 };
 
 const DEFAULT_EVENT_TYPE: EventType = "wedding";
@@ -68,6 +72,10 @@ function mergeExpenses(
         committed_amount: number | null;
         spend_type: string | null;
         notes: string | null;
+        payment_method?: string | null;
+        payment_date?: string | null;
+        payment_status?: string | null;
+        payment_notes?: string | null;
         subcategory: {
           name: string;
           category: { name: string; event_id: string };
@@ -89,6 +97,10 @@ function mergeExpenses(
           ? expense.spend_type
           : "common",
         notes: expense.notes || "",
+        paymentMethod: expense.payment_method || undefined,
+        paymentDate: expense.payment_date || undefined,
+        paymentStatus: expense.payment_status || undefined,
+        paymentNotes: expense.payment_notes || undefined,
       };
 
       if (rowsByKey.has(key)) {
@@ -163,6 +175,10 @@ export async function GET(req: NextRequest) {
         committed_amount,
         spend_type,
         notes,
+        payment_method,
+        payment_date,
+        payment_status,
+        payment_notes,
         subcategory:subcategories!inner(
           name,
           category:categories!inner(name, event_id)
@@ -299,6 +315,10 @@ export async function POST(req: NextRequest) {
             committed_amount: row.amount,
             spend_type: row.spendType,
             notes: row.notes,
+            payment_method: row.paymentMethod || null,
+            payment_date: row.paymentDate || null,
+            payment_status: row.paymentStatus || null,
+            payment_notes: row.paymentNotes || null,
             status: "planned",
           })
           .eq("id", row.id);
@@ -309,6 +329,10 @@ export async function POST(req: NextRequest) {
           committed_amount: row.amount,
           spend_type: row.spendType,
           notes: row.notes,
+          payment_method: row.paymentMethod || null,
+          payment_date: row.paymentDate || null,
+          payment_status: row.paymentStatus || null,
+          payment_notes: row.paymentNotes || null,
           status: "planned",
           paid_amount: 0,
         });

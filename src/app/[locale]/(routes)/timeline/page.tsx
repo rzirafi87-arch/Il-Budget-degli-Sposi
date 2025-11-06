@@ -1,16 +1,17 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
 import ExportButton from "@/components/ExportButton";
+import ExportPDFButton from "@/components/ExportPDFButton";
 import {
-  DEFAULT_EVENT_TYPE,
-  TimelineBucket,
-  TimelineTaskTemplate,
-  getEventConfig,
-  resolveEventType,
+    DEFAULT_EVENT_TYPE,
+    TimelineBucket,
+    TimelineTaskTemplate,
+    getEventConfig,
+    resolveEventType,
 } from "@/constants/eventConfigs";
-import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { getUserCountrySafe } from "@/constants/geo";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useEffect, useMemo, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -31,6 +32,8 @@ export default function TimelinePage() {
 
   const [eventDate, setEventDate] = useState<Date | null>(null);
   const [tasks, setTasks] = useState<TimelineTask[]>([]);
+  const [hasSession, setHasSession] = useState(false);
+  const [tasksFromDb, setTasksFromDb] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("Tutti");
   const [localizedTemplates, setLocalizedTemplates] = useState<TimelineTaskTemplate[] | null>(null);
@@ -50,6 +53,7 @@ export default function TimelinePage() {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         const jwt = sessionData.session?.access_token;
+        setHasSession(Boolean(jwt));
         if (jwt) {
           const res = await fetch("/api/event/resolve", {
             headers: { Authorization: `Bearer ${jwt}` },
@@ -58,6 +62,36 @@ export default function TimelinePage() {
             const json = await res.json();
             if (!disposed && json?.event?.wedding_date) {
               setEventDate(new Date(json.event.wedding_date));
+            }
+          }
+
+          // Carica timeline persistita
+          const tl = await fetch("/api/my/timeline", {
+            headers: { Authorization: `Bearer ${jwt}` },
+          });
+          if (tl.ok) {
+            const json = await tl.json();
+            const items = Array.isArray(json?.items) ? json.items : [];
+            if (!disposed) {
+              if (items.length > 0) {
+                setTasksFromDb(true);
+                setTasks(
+                  items.map((it: { id: string; title: string; description?: string | null; days_before?: number | null; category?: string | null; completed?: boolean | null }) => ({
+                    id: String(it.id),
+                    title: it.title,
+                    description: it.description || "",
+                    monthsBefore:
+                      typeof it.days_before === "number"
+                        ? Math.max(0, Math.round(it.days_before / 30))
+                        : 0,
+                    category: it.category || "Organizzazione",
+                    completed: Boolean(it.completed),
+                    priority: "media" as const,
+                  })),
+                );
+              } else {
+                setTasksFromDb(false);
+              }
             }
           }
         }
@@ -112,6 +146,8 @@ export default function TimelinePage() {
   }, [country, eventType]);
 
   useEffect(() => {
+    // Se abbiamo già caricato dalla DB, non sovrascrivere con i template
+    if (tasksFromDb) return;
     const baseTemplates = localizedTemplates ?? eventConfig.timelineTasks;
     const generated = baseTemplates.map((template, index) => ({
       ...template,
@@ -119,7 +155,7 @@ export default function TimelinePage() {
       completed: false,
     }));
     setTasks(generated);
-  }, [localizedTemplates, eventConfig, eventType]);
+  }, [localizedTemplates, eventConfig, eventType, tasksFromDb]);
 
   const categories = useMemo(
     () => ["Tutti", ...Array.from(new Set(tasks.map((task) => task.category)))],
@@ -145,12 +181,53 @@ export default function TimelinePage() {
     );
   };
 
-  const toggleTask = (id: string) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
-      ),
-    );
+  const toggleTask = async (id: string) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+    try {
+      if (!hasSession || !tasksFromDb) return;
+      const { data: sessionData } = await supabase.auth.getSession();
+      const jwt = sessionData.session?.access_token;
+      if (!jwt) return;
+      const t = tasks.find((x) => x.id === id);
+      const newCompleted = !(t?.completed ?? false);
+      await fetch("/api/my/timeline", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({ id, completed: newCompleted }),
+      });
+    } catch (e) {
+      // Non bloccare la UI
+      console.warn("Toggle fallito", e);
+    }
+  };
+
+  const importTemplates = async () => {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const jwt = sessionData.session?.access_token;
+      if (!jwt) return;
+      const payload = tasks.map((t, idx) => ({
+        title: t.title,
+        description: t.description,
+        category: t.category,
+        completed: t.completed,
+        display_order: idx,
+        days_before: Math.max(0, Math.round((t.monthsBefore || 0) * 30)),
+      }));
+      const res = await fetch("/api/my/timeline", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setTasksFromDb(true);
+      }
+    } catch (e) {
+      console.error("Import templates fallito", e);
+    }
   };
 
   const completedCount = useMemo(
@@ -201,20 +278,45 @@ export default function TimelinePage() {
               />
             </div>
           </div>
-          <ExportButton
-            data={tasks.map((task) => ({
-              task: task.title,
-              descrizione: task.description,
-              categoria: task.category,
-              priorita: task.priority,
-              completato: task.completed ? "Si" : "No",
-            }))}
-            filename={`timeline-${eventType}`}
-            type="csv"
-            className="text-sm"
-          >
-            Esporta CSV
-          </ExportButton>
+          <div className="flex items-center gap-2">
+            {!tasksFromDb && hasSession && (
+              <button
+                onClick={importTemplates}
+                className="rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
+              >
+                Salva come checklist personale
+              </button>
+            )}
+            <ExportButton
+              data={tasks.map((task) => ({
+                task: task.title,
+                descrizione: task.description,
+                categoria: task.category,
+                priorita: task.priority,
+                completato: task.completed ? "Si" : "No",
+              }))}
+              filename={`timeline-${eventType}`}
+              type="csv"
+              className="text-sm"
+            >
+              Esporta CSV
+            </ExportButton>
+            <ExportPDFButton
+              data={tasks.map((task) => ({
+                Task: task.title,
+                Descrizione: task.description,
+                Categoria: task.category,
+                Priorita: task.priority,
+                Completato: task.completed ? "Si" : "No",
+              }))}
+              filename={`timeline-${eventType}`}
+              title={eventConfig.timelineTitle}
+              subtitle={eventConfig.timelineDescription}
+              className="text-sm border border-gray-300 rounded-full px-4 py-2 ml-2"
+            >
+              Esporta PDF
+            </ExportPDFButton>
+          </div>
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">

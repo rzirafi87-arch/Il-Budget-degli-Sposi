@@ -12,6 +12,8 @@ type EventData = {
   weddingDate?: string;
   totalBudget?: number;
   spentAmount?: number;
+  hasSuppliers?: boolean;
+  hasGuests?: boolean;
 };
 
 export default function Home() {
@@ -44,7 +46,9 @@ export default function Home() {
           setEvent({
             weddingDate: json.event.wedding_date,
             totalBudget: json.event.total_budget || 0,
-            spentAmount: 0, // TODO: calcolare dal database
+            spentAmount: json.event.spent_amount || 0,
+            hasSuppliers: json.event.has_suppliers || false,
+            hasGuests: json.event.has_guests || false,
           });
 
           if (json.event.wedding_date) {
@@ -432,9 +436,9 @@ export default function Home() {
         <h3 className="text-xl font-bold text-gray-800 mb-4">{t("dashboard.nextSteps.title")}</h3>
         <div className="space-y-3">
           <TodoItem text={t("dashboard.nextSteps.defBudget")} done={!!event?.totalBudget} />
-          <TodoItem text={t("dashboard.nextSteps.chooseVenue")} done={false} />
-          <TodoItem text={t("dashboard.nextSteps.bookPhoto")} done={false} />
-          <TodoItem text={t("dashboard.nextSteps.guestList")} done={false} />
+          <TodoItem text={t("dashboard.nextSteps.chooseVenue")} done={!!event?.hasSuppliers} />
+          <TodoItem text={t("dashboard.nextSteps.bookPhoto")} done={!!(event?.spentAmount && event.spentAmount > 0)} />
+          <TodoItem text={t("dashboard.nextSteps.guestList")} done={!!event?.hasGuests} />
         </div>
         <p className="text-xs text-gray-500 mt-4 italic text-center">{t("dashboard.nextSteps.hint")}</p>
       </section>
