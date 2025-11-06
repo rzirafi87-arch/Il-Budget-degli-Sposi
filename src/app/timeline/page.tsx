@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import ExportButton from "@/components/ExportButton";
+import ExportPDFButton from "@/components/ExportPDFButton";
 import {
     DEFAULT_EVENT_TYPE,
     TimelineBucket,
@@ -287,19 +288,34 @@ export default function TimelinePage() {
               </button>
             )}
             <ExportButton
-            data={tasks.map((task) => ({
-              task: task.title,
-              descrizione: task.description,
-              categoria: task.category,
-              priorita: task.priority,
-              completato: task.completed ? "Si" : "No",
-            }))}
-            filename={`timeline-${eventType}`}
-            type="csv"
-            className="text-sm"
-          >
-            Esporta CSV
+              data={tasks.map((task) => ({
+                task: task.title,
+                descrizione: task.description,
+                categoria: task.category,
+                priorita: task.priority,
+                completato: task.completed ? "Si" : "No",
+              }))}
+              filename={`timeline-${eventType}`}
+              type="csv"
+              className="text-sm"
+            >
+              Esporta CSV
             </ExportButton>
+            <ExportPDFButton
+              data={tasks.map((task) => ({
+                Task: task.title,
+                Descrizione: task.description,
+                Categoria: task.category,
+                Priorita: task.priority,
+                Completato: task.completed ? "Si" : "No",
+              }))}
+              filename={`timeline-${eventType}`}
+              title={eventConfig.timelineTitle}
+              subtitle={eventConfig.timelineDescription}
+              className="text-sm border border-gray-300 rounded-full px-4 py-2 ml-2"
+            >
+              Esporta PDF
+            </ExportPDFButton>
           </div>
         </div>
 
