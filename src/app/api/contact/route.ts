@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
-import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
 
 type ContactPayload = {
   name?: string;
