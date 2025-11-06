@@ -74,15 +74,16 @@ BEGIN
       AND table_name = 'categories'
       AND column_name = 'event_type_id'
   ) THEN
+    -- Rendi event_id nullable se è NOT NULL
+    ALTER TABLE public.categories ALTER COLUMN event_id DROP NOT NULL;
+
     -- Aggiungi event_type_id (nullable temporaneamente)
     ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS event_type_id UUID REFERENCES event_types(id) ON DELETE CASCADE;
 
-    RAISE NOTICE 'Colonna event_type_id aggiunta a categories. IMPORTANTE: event_id è ancora presente.';
-    RAISE NOTICE 'Migrazione manuale necessaria: assegna event_type_id alle categorie esistenti prima di rimuovere event_id.';
-    RAISE NOTICE 'Esempio: UPDATE categories SET event_type_id = (SELECT id FROM event_types WHERE code = ''WEDDING'' LIMIT 1);';
-  END IF;
-
-  -- Aggiungi sort se non esiste
+    RAISE NOTICE 'Colonna event_type_id aggiunta a categories. event_id reso nullable.';
+    RAISE NOTICE 'IMPORTANTE: Puoi ora usare event_type_id per nuove categorie.';
+    RAISE NOTICE 'Migrazione manuale necessaria per dati esistenti: UPDATE categories SET event_type_id = ... WHERE event_id IS NOT NULL;';
+  END IF;  -- Aggiungi sort se non esiste
   IF NOT EXISTS (
     SELECT 1 FROM information_schema.columns
     WHERE table_schema = 'public'

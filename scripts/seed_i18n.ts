@@ -51,13 +51,15 @@ async function main() {
   // 2) Event type: WEDDING
   const { data: etIns, error: etErr } = await db
     .from("event_types")
-    .upsert({ code: "WEDDING" }, { onConflict: "code" })
+    .upsert({
+      code: "WEDDING",
+      name: "Matrimonio", // Required for local schema compatibility
+      locale: "it-IT"
+    }, { onConflict: "code" })
     .select("*")
     .single();
   if (etErr) throw etErr;
-  const eventTypeId = (etIns as { id: string }).id;
-
-  await upsert("event_type_translations", [
+  const eventTypeId = (etIns as { id: string }).id;  await upsert("event_type_translations", [
     { event_type_id: eventTypeId, locale: "it-IT", name: "Matrimonio" },
     { event_type_id: eventTypeId, locale: "en-GB", name: "Wedding" },
   ]);
