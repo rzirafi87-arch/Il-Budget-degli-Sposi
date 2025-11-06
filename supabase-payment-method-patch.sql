@@ -6,35 +6,35 @@
 -- =====================================================
 
 -- Add payment_method column to expenses table
-ALTER TABLE expenses 
-ADD COLUMN IF NOT EXISTS payment_method TEXT 
+ALTER TABLE expenses
+ADD COLUMN IF NOT EXISTS payment_method TEXT
 CHECK (payment_method IN ('cash', 'bank_transfer', 'credit_card', 'debit_card', 'check', 'paypal', 'other'))
 DEFAULT 'cash';
 
 -- Add payment_date column (useful for tracking when payment was made)
-ALTER TABLE expenses 
+ALTER TABLE expenses
 ADD COLUMN IF NOT EXISTS payment_date DATE;
 
 -- Add payment_status column (pending, paid, partial, overdue)
-ALTER TABLE expenses 
-ADD COLUMN IF NOT EXISTS payment_status TEXT 
+ALTER TABLE expenses
+ADD COLUMN IF NOT EXISTS payment_status TEXT
 CHECK (payment_status IN ('pending', 'paid', 'partial', 'overdue', 'canceled'))
 DEFAULT 'pending';
 
 -- Add payment_notes column for additional payment details
-ALTER TABLE expenses 
+ALTER TABLE expenses
 ADD COLUMN IF NOT EXISTS payment_notes TEXT;
 
 -- Create index for faster queries by payment status
-CREATE INDEX IF NOT EXISTS idx_expenses_payment_status 
+CREATE INDEX IF NOT EXISTS idx_expenses_payment_status
 ON expenses(payment_status);
 
 -- Create index for faster queries by payment method
-CREATE INDEX IF NOT EXISTS idx_expenses_payment_method 
+CREATE INDEX IF NOT EXISTS idx_expenses_payment_method
 ON expenses(payment_method);
 
 -- Create index for payment date range queries
-CREATE INDEX IF NOT EXISTS idx_expenses_payment_date 
+CREATE INDEX IF NOT EXISTS idx_expenses_payment_date
 ON expenses(payment_date);
 
 -- Add comment to explain the new columns
