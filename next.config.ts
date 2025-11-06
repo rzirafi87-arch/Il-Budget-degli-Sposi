@@ -1,11 +1,9 @@
 import type { NextConfig } from "next";
 
+// Next.js 16 (App Router):
+// - Remove deprecated i18n config in next.config (use app/[locale] + middleware instead)
+// - Remove boolean experimental.serverActions (no longer supported)
 const nextConfig: NextConfig = {
-  experimental: { serverActions: true },
-  i18n: {
-    locales: ["it", "en", "es", "fr", "de", "ar", "hi", "ja", "zh", "mx"],
-    defaultLocale: "it",
-  },
   // Configurazione per immagini esterne
   images: {
     remotePatterns: [
