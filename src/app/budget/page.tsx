@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import ExportPDFButton from "@/components/ExportPDFButton";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, getUserLanguage } from "@/lib/locale";
@@ -137,25 +138,27 @@ export default function BudgetPage() {
 
       <p className="text-sm text-gray-900 mb-4">{t("budgetPage.description")}</p>
 
-      <div className="flex items-center justify-end mb-4">
-        <div className="text-right text-sm sr-only">
-          <div className="text-gray-900">Totale spese approvate</div>
-          <div className="text-xl">{formatEuro(totals.total)}</div>
-          <div className="text-gray-700">
-            Comune: {formatEuro(totals.common)} · Sposa: {formatEuro(totals.bride)} · Sposo: {formatEuro(totals.groom)}
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center justify-end mb-4">
-        <div className="text-right text-sm">
-          <div className="text-gray-700">{t("budgetPage.totals.title")}</div>
-          <div className="text-xl">{formatEuro(totals.total)}</div>
-          {(typeof window !== 'undefined' && (localStorage.getItem('eventType') === 'baptism')) ? (
-            <div className="text-gray-500">{t("budgetPage.totals.common")}: {formatEuro(totals.common)}</div>
-          ) : (
-            <div className="text-gray-500">{t("budgetPage.totals.common")}: {formatEuro(totals.common)} · {t("budgetPage.totals.bride")}: {formatEuro(totals.bride)} · {t("budgetPage.totals.groom")}: {formatEuro(totals.groom)}</div>
-          )}
-        </div>
+      <div className="flex items-center justify-end mb-4 gap-2">
+        <ExportPDFButton
+          data={rows.map((r) => ({
+            Categoria: r.category,
+            Sottocategoria: r.subcategory,
+            "Tipo spesa": r.spend_type,
+            "Metodo pagamento": r.payment_method,
+            Budget: formatEuro(r.budget),
+            Impegnato: formatEuro(r.committed),
+            Pagato: formatEuro(r.paid),
+            Residuo: formatEuro(r.residual),
+            "Da dashboard": r.fromDashboard ? "✓" : "",
+            Differenza: formatEuro(r.difference),
+          }) )}
+          filename={`budget-${userEventType}`}
+          title={t("budgetPage.totals.title")}
+          subtitle={t("budgetPage.description")}
+          className="text-sm border border-gray-300 rounded-full px-4 py-2"
+        >
+          Esporta PDF
+        </ExportPDFButton>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
@@ -233,8 +236,8 @@ export default function BudgetPage() {
                   )}
                 </div>
                 <div className={`text-right font-medium ${
-                  r.difference > 0 ? "text-red-600" : 
-                  r.difference < 0 ? "text-green-600" : 
+                  r.difference > 0 ? "text-red-600" :
+                  r.difference < 0 ? "text-green-600" :
                   "text-gray-600"
                 }`}>
                   {r.difference > 0 ? "+" : ""}{formatEuro(Math.abs(r.difference))}
