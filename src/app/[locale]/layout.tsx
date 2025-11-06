@@ -20,12 +20,13 @@ export function generateStaticParams() {
 }
 
 type MetadataParams = {
-  params: { locale?: string };
+  params: Promise<{ locale?: string }>;
 };
 
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
-  const locale = locales.includes((params.locale || defaultLocale) as Locale)
-    ? (params.locale as Locale)
+  const resolvedParams = await params;
+  const locale = locales.includes((resolvedParams.locale || defaultLocale) as Locale)
+    ? (resolvedParams.locale as Locale)
     : defaultLocale;
 
   const i18n = {
@@ -147,12 +148,13 @@ export const viewport: Viewport = {
 
 type LocaleLayoutProps = {
   children: React.ReactNode;
-  params: { locale?: string };
+  params: Promise<{ locale?: string }>;
 };
 
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
-  const locale = locales.includes((params.locale || defaultLocale) as Locale)
-    ? (params.locale as Locale)
+  const resolvedParams = await params;
+  const locale = locales.includes((resolvedParams.locale || defaultLocale) as Locale)
+    ? (resolvedParams.locale as Locale)
     : defaultLocale;
 
   try {
