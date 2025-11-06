@@ -1,27 +1,13 @@
 import ClientLayoutShell from "@/components/ClientLayoutShell";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import { JsonLd, LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
-import { getMessages } from "@/i18n/getMessages";
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/getMessages";
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
-import { Inter, Playfair_Display } from "next/font/google";
-import "../globals.css";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-sans",
-  display: "swap",
-});
+// Fonts are now loaded in app/layout.tsx to avoid duplicating <html>/<body> in nested layouts
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -92,6 +78,14 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
       template: "%s | MYBUDGETEVENTO",
     },
     description: L.description,
+    manifest: "/manifest.webmanifest",
+    icons: {
+      icon: [
+        { url: "/backgrounds/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/backgrounds/icon-512.png", sizes: "512x512", type: "image/png" },
+      ],
+      apple: [{ url: "/backgrounds/icon-192.png" }],
+    },
     themeColor: [
       { media: "(prefers-color-scheme: light)", color: "#3f7055" },
       { media: "(prefers-color-scheme: dark)", color: "#1b1a19" },
@@ -167,46 +161,19 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       throw new Error(`Missing translations for locale ${locale}`);
     }
 
-    let supabaseOrigin: string | null = null;
-    try {
-      const u = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL) : null;
-      supabaseOrigin = u ? `${u.protocol}//${u.host}` : null;
-    } catch {
-      supabaseOrigin = null;
-    }
-
     return (
-      <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`${playfair.variable} ${inter.variable}`}>
-        <head>
-          <JsonLd />
-          <LocalBusinessSchema />
-          <WebsiteSchema />
-          <OrganizationSchema />
-          <link rel="manifest" href="/manifest.webmanifest" />
-          <meta name="theme-color" content="#3f7055" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-          {supabaseOrigin ? <link rel="preconnect" href={supabaseOrigin} crossOrigin="" /> : null}
-          <link rel="icon" type="image/png" sizes="192x192" href="/backgrounds/icon-192.png" />
-          <link rel="icon" type="image/png" sizes="512x512" href="/backgrounds/icon-512.png" />
-          <link rel="apple-touch-icon" href="/backgrounds/icon-192.png" />
-          {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js');
-              });
-            }`,
-            }}
-          />
-        </head>
-        <body className="min-h-screen antialiased" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
-          <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
-            <ClientLayoutShell>{children}</ClientLayoutShell>
-          </NextIntlClientProvider>
-        </body>
-      </html>
+      <>
+        {/* JSON-LD structured data can be rendered in the body; search engines accept it there */}
+        <JsonLd />
+        <LocalBusinessSchema />
+        <WebsiteSchema />
+        <OrganizationSchema />
+        {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
+
+        <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
+          <ClientLayoutShell>{children}</ClientLayoutShell>
+        </NextIntlClientProvider>
+      </>
     );
   } catch (error) {
     console.error(error);
