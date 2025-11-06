@@ -1,4 +1,5 @@
 ﻿"use client";
+import { useEvent } from "@/contexts/EventContext";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -28,11 +29,18 @@ export default function NavTabs() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = useTranslations();
-  const [eventType, setEventType] = React.useState<string | null>(null);
+  const { eventType } = useEvent();
+
+  // Fallback to localStorage if context not available
+  const [localEventType, setLocalEventType] = React.useState<string | null>(null);
   React.useEffect(() => {
-    const lsEvt = typeof window !== 'undefined' ? localStorage.getItem('eventType') : null;
-    setEventType(lsEvt);
-  }, []);
+    if (!eventType || eventType === "WEDDING") {
+      const lsEvt = typeof window !== 'undefined' ? localStorage.getItem('eventType') : null;
+      setLocalEventType(lsEvt);
+    }
+  }, [eventType]);
+
+  const effectiveEventType = eventType?.toLowerCase() || localEventType || 'wedding';
 
   // Rimuoviamo Timeline, Idea di Budget e Suggerimenti dalla barra in alto;
   // restano accessibili dalla Dashboard.
@@ -106,7 +114,13 @@ export default function NavTabs() {
     { href: "/location", label: t("location"), icon: TABS_ICONS.location },
     { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
-  const tabs = (eventType === 'baptism') ? baptismTabs : (eventType === 'eighteenth') ? eighteenthTabs : (eventType === 'confirmation') ? confirmationTabs : (eventType === 'graduation') ? graduationTabs : (eventType === 'communion') ? communionTabs : (eventType === 'retirement') ? retirementTabs : weddingTabs;
+  const tabs = (effectiveEventType === 'baptism') ? baptismTabs :
+               (effectiveEventType === 'eighteenth') ? eighteenthTabs :
+               (effectiveEventType === 'confirmation') ? confirmationTabs :
+               (effectiveEventType === 'graduation') ? graduationTabs :
+               (effectiveEventType === 'communion') ? communionTabs :
+               (effectiveEventType === 'retirement') ? retirementTabs :
+               weddingTabs;
 
   const currentTab = tabs.find((tab) => pathname.startsWith(tab.href));
 
