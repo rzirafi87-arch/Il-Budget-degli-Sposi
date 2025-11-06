@@ -87,11 +87,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
       ],
       apple: [{ url: "/backgrounds/icon-192.png" }],
     },
-    themeColor: [
-      { media: "(prefers-color-scheme: light)", color: "#3f7055" },
-      { media: "(prefers-color-scheme: dark)", color: "#1b1a19" },
-    ],
-    keywords: [...L.keywords],
+keywords: [...L.keywords],
     authors: [{ name: "MYBUDGETEVENTO" }],
     creator: "MYBUDGETEVENTO",
     publisher: "MYBUDGETEVENTO",
