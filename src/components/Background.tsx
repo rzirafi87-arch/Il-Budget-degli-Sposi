@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import React from "react";
+import { locales } from "@/i18n/config";
 
 function pickBackground(pathname: string): string {
   const map: Array<{ prefix: string; cls: string }> = [
@@ -30,7 +31,14 @@ function pickBackground(pathname: string): string {
 
 export default function Background() {
   const pathname = usePathname() || "/";
-  const cls = pickBackground(pathname);
+  const normalizedPath = React.useMemo(() => {
+    const segments = pathname.split("/").filter(Boolean);
+    if (segments.length && locales.includes(segments[0] as (typeof locales)[number])) {
+      segments.shift();
+    }
+    return `/${segments.join("/")}` || "/";
+  }, [pathname]);
+  const cls = pickBackground(normalizedPath);
 
   return (
     <div

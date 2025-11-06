@@ -1,7 +1,8 @@
 ﻿"use client";
+import { locales } from "@/i18n/config";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 // Moved outside component to prevent re-creation on each render
@@ -27,6 +28,8 @@ Label.displayName = "Label";
 export default function TopBarSelector() {
   const t = useTranslations();
   const router = useRouter();
+  const locale = useLocale();
+  const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const [lang, setLang] = React.useState("it");
   const [country, setCountry] = React.useState("it");
@@ -54,7 +57,18 @@ export default function TopBarSelector() {
   function handleLangChange(newLang: string) {
     localStorage.setItem("language", newLang);
     document.cookie = `language=${newLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
-    window.location.reload();
+    setLang(newLang);
+    const segments = pathname ? pathname.split("/").filter(Boolean) : [];
+    if (segments.length === 0) {
+      router.push(`/${newLang}`);
+      return;
+    }
+    if (locales.includes(segments[0] as (typeof locales)[number])) {
+      segments[0] = newLang;
+    } else {
+      segments.unshift(newLang);
+    }
+    router.push(`/${segments.join("/")}` || `/${newLang}`);
   }
 
   const currentLang = LANGS.find(l => l.slug === lang);
@@ -88,12 +102,12 @@ export default function TopBarSelector() {
                 </select>
               </div>
             </div>
-            <Label title="Nazione" value={currentCountry?.label || country.toUpperCase()} emoji={currentCountry?.emoji || "ðŸ³ï¸"} onClick={() => router.push("/select-country")} />
+            <Label title="Nazione" value={currentCountry?.label || country.toUpperCase()} emoji={currentCountry?.emoji || "ðŸ³ï¸"} onClick={() => router.push(`/${locale}/select-country`)} />
             <Label
               title="Evento"
               value={`${t(`events.${currentEvent?.slug ?? eventType}`, { fallback: currentEvent?.label || eventType })}${currentEvent?.available === false ? ` Â· ${t("comingSoon", { fallback: "In arrivo" })}` : ""}`}
               emoji={currentEvent?.emoji || "ðŸŽ‰"}
-              onClick={() => router.push("/select-event-type")}
+              onClick={() => router.push(`/${locale}/select-event-type`)}
             />
           </div>
         </div>

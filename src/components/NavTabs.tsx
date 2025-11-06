@@ -1,10 +1,11 @@
 ﻿"use client";
 import { useEvent } from "@/contexts/EventContext";
 import clsx from "clsx";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
+import { locales } from "@/i18n/config";
 
 const TABS_ICONS = {
   dashboard: "",
@@ -27,9 +28,20 @@ const TABS_ICONS = {
 
 export default function NavTabs() {
   const pathname = usePathname();
+  const locale = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = useTranslations();
   const { eventType } = useEvent();
+
+  const normalizedPath = React.useMemo(() => {
+    if (!pathname) return "/";
+    const segments = pathname.split("/").filter(Boolean);
+    if (segments.length === 0) return "/";
+    if (locales.includes(segments[0] as (typeof locales)[number])) {
+      segments.shift();
+    }
+    return `/${segments.join("/")}` || "/";
+  }, [pathname]);
 
   // Fallback to localStorage if context not available
   const [localEventType, setLocalEventType] = React.useState<string | null>(null);
@@ -122,19 +134,20 @@ export default function NavTabs() {
                (effectiveEventType === 'retirement') ? retirementTabs :
                weddingTabs;
 
-  const currentTab = tabs.find((tab) => pathname.startsWith(tab.href));
+  const currentTab = tabs.find((tab) => normalizedPath.startsWith(tab.href));
 
   return (
     <nav className="relative">
       {/* Desktop */}
       <div className="hidden md:flex flex-wrap gap-2 items-center">
         {tabs.map((tab) => {
-          const active = pathname.startsWith(tab.href);
+          const active = normalizedPath.startsWith(tab.href);
           const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
           return (
             <Link
               key={tab.href}
               href={tab.href}
+              locale={locale}
               aria-label={tab.label}
               aria-current={active ? "page" : undefined}
               className={clsx(
@@ -204,12 +217,13 @@ export default function NavTabs() {
               style={{ borderColor: "var(--border-strong)" }}
             >
               {tabs.map((tab) => {
-                const active = pathname.startsWith(tab.href);
+                const active = normalizedPath.startsWith(tab.href);
                 const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
                 return (
                   <Link
                     key={tab.href}
                     href={tab.href}
+                    locale={locale}
                     aria-label={tab.label}
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMobileMenuOpen(false)}

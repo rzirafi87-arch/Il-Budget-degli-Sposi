@@ -9,6 +9,8 @@ import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
+import { locales } from "@/i18n/config";
 
 interface NavItem {
   href: string;
@@ -25,6 +27,16 @@ interface BottomNavProps {
 
 export default function BottomNav({ items, showOnDesktop = false }: BottomNavProps) {
   const pathname = usePathname();
+  const locale = useLocale();
+  const normalizedPath = (() => {
+    if (!pathname) return "/";
+    const segments = pathname.split("/").filter(Boolean);
+    if (segments.length === 0) return "/";
+    if (locales.includes(segments[0] as (typeof locales)[number])) {
+      segments.shift();
+    }
+    return `/${segments.join("/")}` || "/";
+  })();
   const { deviceType, os } = useDeviceDetection();
 
   // Mostra solo su mobile/tablet (a meno che showOnDesktop sia true)
@@ -50,12 +62,13 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
     >
       <div className="flex items-center justify-around px-2 pt-2">
         {items.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = normalizedPath.startsWith(item.href);
           
           return (
             <Link
               key={item.href}
               href={item.href}
+              locale={locale}
               className={clsx(
                 "flex flex-col items-center justify-center",
                 "min-w-[60px] py-2 px-3 rounded-lg",

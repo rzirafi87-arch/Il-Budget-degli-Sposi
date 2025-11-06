@@ -1,12 +1,13 @@
 ﻿"use client";
 import { LANGS } from "@/lib/loadConfigs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SelectLanguagePage() {
   const t = useTranslations();
   const router = useRouter();
+  const locale = useLocale();
   useEffect(() => {
     try {
       const cookieLang = document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1];
@@ -15,7 +16,7 @@ export default function SelectLanguagePage() {
         if (!cookieLang && lsLang) {
           document.cookie = `language=${lsLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
         }
-        router.replace("/select-country");
+        router.replace(`/${locale}/select-country`);
       }
     } catch {}
   }, []);
@@ -25,7 +26,7 @@ export default function SelectLanguagePage() {
     setSelected(code);
     localStorage.setItem("language", code);
     document.cookie = `language=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
-    router.push("/select-country");
+    router.push(`/${locale}/select-country`);
   }
 
   return (

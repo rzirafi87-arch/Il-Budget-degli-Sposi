@@ -1,7 +1,7 @@
 ﻿"use client";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { EVENTS } from "@/lib/loadConfigs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -29,6 +29,7 @@ const DASHBOARD_EVENTS = new Set([
 export default function SelectEventTypePage() {
   const t = useTranslations();
   const router = useRouter();
+  const locale = useLocale();
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
   const country = typeof window !== "undefined"
     ? localStorage.getItem("country") || document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] || "it"
@@ -51,11 +52,11 @@ export default function SelectEventTypePage() {
       const lsCountry = localStorage.getItem("country");
       const lsEventType = localStorage.getItem("eventType");
       if (!(cookieLang || lsLang)) {
-        router.replace("/select-language");
+        router.replace(`/${locale}/select-language`);
         return;
       }
       if (!(cookieCountry || lsCountry)) {
-        router.replace("/select-country");
+        router.replace(`/${locale}/select-country`);
         return;
       }
       if (lsLang && !cookieLang) document.cookie = `language=${lsLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
@@ -63,7 +64,7 @@ export default function SelectEventTypePage() {
       if (cookieEventType || lsEventType) {
         if (!cookieEventType && lsEventType) document.cookie = `eventType=${lsEventType}; Path=/; Max-Age=15552000; SameSite=Lax`;
         const ev = cookieEventType || lsEventType || "";
-        router.replace(DASHBOARD_EVENTS.has(ev) ? "/dashboard" : "/coming-soon");
+        router.replace(`/${locale}${DASHBOARD_EVENTS.has(ev) ? "/dashboard" : "/coming-soon"}`);
       }
     } catch {
       // Ignore errors in SSR
@@ -95,7 +96,7 @@ export default function SelectEventTypePage() {
 
     // Navigate
     const destination = DASHBOARD_EVENTS.has(code) ? "/dashboard" : "/coming-soon";
-    router.push(destination);
+    router.push(`/${locale}${destination}`);
   }
 
   // Mostra tutti gli eventi per tutte le nazioni

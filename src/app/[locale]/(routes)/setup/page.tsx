@@ -1,4 +1,5 @@
 ﻿"use client";
+import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -26,6 +27,7 @@ export default function SetupPage() {
   const [country, setCountry] = useState("");
   const [event, setEvent] = useState("");
   const router = useRouter();
+  const locale = useLocale();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ export default function SetupPage() {
     localStorage.setItem("setup_country", country);
     localStorage.setItem("setup_event", event);
     // Reindirizza alla dashboard
-    router.push("/dashboard");
+    router.push(`/${locale}/dashboard`);
   };
 
   return (

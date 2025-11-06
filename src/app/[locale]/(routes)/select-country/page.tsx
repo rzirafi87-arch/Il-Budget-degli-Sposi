@@ -2,13 +2,14 @@
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { COUNTRIES } from "@/lib/loadConfigs";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SelectCountryPage() {
   const t = useTranslations();
   const router = useRouter();
+  const locale = useLocale();
 
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
@@ -60,7 +61,7 @@ export default function SelectCountryPage() {
       const lsLang = localStorage.getItem("language");
       const lang = cookieLang || lsLang;
       if (!lang) {
-        router.replace("/select-language");
+        router.replace(`/${locale}/select-language`);
         return;
       }
       if (!cookieLang && lsLang) {
@@ -72,7 +73,7 @@ export default function SelectCountryPage() {
         if (!cookieCountry && lsCountry) {
           document.cookie = `country=${lsCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
         }
-        router.replace("/select-event-type");
+        router.replace(`/${locale}/select-event-type`);
       }
     } catch {
       // Ignore errors in SSR
@@ -138,7 +139,7 @@ export default function SelectCountryPage() {
         {selectedCountry && (
           <button
             className="mt-8 w-full bg-[#A3B59D] text-white py-3 px-6 rounded font-semibold hover:bg-[#8da182] transition-colors text-lg"
-            onClick={() => router.push("/select-event-type")}
+            onClick={() => router.push(`/${locale}/select-event-type`)}
           >
             {t("onboarding.nextBtn", { fallback: "Avanti" })}
           </button>

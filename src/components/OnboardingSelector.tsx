@@ -1,13 +1,19 @@
 ﻿"use client";
 
+import { locales, defaultLocale } from "@/i18n/config";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function OnboardingSelector() {
   const router = useRouter();
   const pathname = usePathname();
-  const currentLocale = pathname.split("/")[1] || "it";
+  const currentLocale = useMemo(() => {
+    if (!pathname) return defaultLocale;
+    const segments = pathname.split("/").filter(Boolean);
+    const first = segments[0];
+    return locales.includes(first as (typeof locales)[number]) ? (first as string) : defaultLocale;
+  }, [pathname]);
 
   const [selectedLanguage, setSelectedLanguage] = useState(currentLocale);
   const [selectedCountry, setSelectedCountry] = useState("it");
@@ -47,7 +53,10 @@ export default function OnboardingSelector() {
     document.cookie = `eventType=${selectedEvent}; Path=/; Max-Age=15552000; SameSite=Lax`;
     
     // Naviga DIRETTAMENTE alla dashboard senza passare da altre pagine
-    router.push("/dashboard");
+    const targetLocale = locales.includes(selectedLanguage as (typeof locales)[number])
+      ? selectedLanguage
+      : currentLocale;
+    router.push(`/${targetLocale}/dashboard`);
   };
 
   return (

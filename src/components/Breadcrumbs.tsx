@@ -3,6 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
+import { locales } from "@/i18n/config";
 
 type BreadcrumbItem = {
   label: string;
@@ -11,6 +13,7 @@ type BreadcrumbItem = {
 
 export default function Breadcrumbs() {
   const pathname = usePathname();
+  const locale = useLocale();
 
   const pathLabels: Record<string, string> = {
     "": "Home",
@@ -40,13 +43,16 @@ export default function Breadcrumbs() {
   };
 
   // Costruisci i breadcrumbs dal path
-  const pathSegments = pathname.split("/").filter(Boolean);
+  const pathSegments = pathname
+    .split("/")
+    .filter(Boolean)
+    .filter((segment, index, arr) => !(index === 0 && locales.includes(segment as (typeof locales)[number])));
 
   if (pathSegments.length === 0) {
     return null; // Non mostrare breadcrumbs sulla homepage
   }
 
-  const breadcrumbs: BreadcrumbItem[] = [{ label: "Home", href: "/" }];
+  const breadcrumbs: BreadcrumbItem[] = [{ label: "Home", href: `/${locale}` }];
 
   let currentPath = "";
   pathSegments.forEach((segment, index) => {
@@ -55,7 +61,7 @@ export default function Breadcrumbs() {
 
     breadcrumbs.push({
       label: pathLabels[segment] || segment.charAt(0).toUpperCase() + segment.slice(1),
-      href: isLast ? undefined : currentPath,
+      href: isLast ? undefined : `/${locale}${currentPath}`,
     });
   });
 
@@ -64,7 +70,7 @@ export default function Breadcrumbs() {
       {breadcrumbs.map((crumb, index) => (
         <span key={index} className="flex items-center gap-2 whitespace-nowrap">
           {crumb.href ? (
-            <Link href={crumb.href} className="text-gray-600 hover:text-[#A6B5A0] transition-colors font-medium">
+            <Link href={crumb.href} locale={locale} className="text-gray-600 hover:text-[#A6B5A0] transition-colors font-medium">
               {crumb.label}
             </Link>
           ) : (

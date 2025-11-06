@@ -2,10 +2,21 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
+import { locales } from "@/i18n/config";
 
 export default function BudgetLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isIdea = pathname?.startsWith("/idea-di-budget");
+  const locale = useLocale();
+  const normalizedPath = React.useMemo(() => {
+    if (!pathname) return "/budget";
+    const segments = pathname.split("/").filter(Boolean);
+    if (segments.length && locales.includes(segments[0] as (typeof locales)[number])) {
+      segments.shift();
+    }
+    return `/${segments.join("/")}` || "/budget";
+  }, [pathname]);
+  const isIdea = normalizedPath.startsWith("/idea-di-budget");
 
   return (
     <section className="pt-6">
@@ -14,6 +25,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
       <div className="mb-6 flex flex-wrap gap-2 border-b pb-1" style={{ borderColor: "var(--border-soft)" }}>
         <Link
           href="/budget"
+          locale={locale}
           className={`px-4 sm:px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
             !isIdea ? "text-white shadow-soft" : "shadow-soft-sm"
           }`}
@@ -34,6 +46,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
         </Link>
         <Link
           href="/idea-di-budget"
+          locale={locale}
           className={`px-4 sm:px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
             isIdea ? "text-white shadow-soft" : "shadow-soft-sm"
           }`}

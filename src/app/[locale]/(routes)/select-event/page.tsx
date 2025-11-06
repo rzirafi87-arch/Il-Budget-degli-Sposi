@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 
 // Demo: lista eventi mock
 // Each event may include an optional `type` matching EventType (e.g., 'wedding','retirement')
@@ -12,6 +13,7 @@ const DEMO_EVENTS = [
 
 export default function SelectEventPage() {
   const router = useRouter();
+  const locale = useLocale();
   const [events, setEvents] = useState(DEMO_EVENTS);
   const [selected, setSelected] = useState<string>("");
 
@@ -31,7 +33,7 @@ export default function SelectEventPage() {
     if (ev?.type) {
       localStorage.setItem("eventType", ev.type);
     }
-    router.push("/dashboard");
+    router.push(`/${locale}/dashboard`);
   }
 
   function handleCreate() {
@@ -42,7 +44,7 @@ export default function SelectEventPage() {
     setSelected(newId);
     localStorage.setItem("activeEventId", newId);
     localStorage.setItem("eventType", "wedding");
-    router.push("/dashboard");
+    router.push(`/${locale}/dashboard`);
   }
 
   return (

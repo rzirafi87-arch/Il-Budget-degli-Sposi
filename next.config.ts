@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: { serverActions: true },
+  i18n: {
+    locales: ["it", "en", "es", "fr", "de", "ar", "hi", "ja", "zh", "mx"],
+    defaultLocale: "it",
+  },
   // Configurazione per immagini esterne
   images: {
     remotePatterns: [

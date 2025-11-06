@@ -1,7 +1,16 @@
-import { createClient } from "@supabase/supabase-js";
+﻿import { createClient } from "@supabase/supabase-js";
+import { config } from "dotenv";
+import path from "node:path";
+
+// Load .env.local when executing via ts-node
+config({ path: path.resolve(process.cwd(), ".env.local") });
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const key = process.env.SUPABASE_SERVICE_ROLE!;
+if (!url || !key) {
+  console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE in environment");
+  process.exit(1);
+}
 const db = createClient(url, key);
 
 // helper
@@ -18,11 +27,13 @@ async function main() {
   await upsert("i18n_locales", [
     { code: "it-IT", name: "Italiano", direction: "ltr" },
     { code: "en-GB", name: "English",  direction: "ltr" },
+    { code: "es-ES", name: "Español", direction: "ltr" },
+    { code: "ja-JP", name: "日本語", direction: "ltr" },
   ], "code");
 
   await upsert("geo_countries", [
     { code: "IT", default_locale: "it-IT" },
-    { code: "MX", default_locale: "es-ES" }, // placeholder (anche se es-ES non esiste ancora)
+    { code: "MX", default_locale: "es-ES" },
     { code: "GB", default_locale: "en-GB" },
     { code: "US", default_locale: "en-GB" },
     { code: "JP", default_locale: "ja-JP" },
@@ -31,15 +42,21 @@ async function main() {
   // 2) Event type: WEDDING
   const { data: etIns } = await db
     .from("event_types")
-    .upsert({ code: "WEDDING" }, { onConflict: "code" })
+    .upsert(
+      { code: "WEDDING", name: "Matrimonio", locale: "it-IT" },
+      { onConflict: "code" }
+    )
     .select("*")
     .single();
-  const eventTypeId = etIns!.id;
+  if (!etIns) {
+    throw new Error("Unable to upsert WEDDING event type");
+  }
+  const eventTypeId = etIns.id;
 
   await upsert("event_type_translations", [
     { event_type_id: eventTypeId, locale: "it-IT", name: "Matrimonio" },
     { event_type_id: eventTypeId, locale: "en-GB", name: "Wedding" },
-  ]);
+  ], "event_type_id,locale");
 
   // 3) Categories + Subcategories (IT/EN)
   type Cat = { name_it: string; name_en: string; sub: { it: string; en: string; }[] };
@@ -140,7 +157,7 @@ async function main() {
       ]
     },
     {
-      name_it: "Ospitalità & Logistica", name_en: "Hospitality & Logistics",
+      name_it: "Ospitalit+á & Logistica", name_en: "Hospitality & Logistics",
       sub: [
         { it: "Alloggi ospiti", en: "Guest accommodation" },
         { it: "Welcome kit", en: "Welcome kit" },
@@ -204,7 +221,7 @@ async function main() {
       it: { title: "Annunciate il fidanzamento", desc: "Condividete la notizia con chi amate" },
       en: { title: "Announce engagement", desc: "Share the news with loved ones" } },
     { key: "set-budget-style", offset: -330,
-      it: { title: "Definite budget e stile", desc: "Scegliete priorità e moodboard" },
+      it: { title: "Definite budget e stile", desc: "Scegliete priorit+á e moodboard" },
       en: { title: "Set budget & style", desc: "Define priorities and moodboard" } },
     { key: "book-venue-date", offset: -300,
       it: { title: "Prenotate location e data", desc: "Blocca location e data con caparra" },
@@ -219,7 +236,7 @@ async function main() {
       it: { title: "Chiesa/Comune", desc: "Prenota e verifica documenti" },
       en: { title: "Church/Town hall", desc: "Book and verify documents" } },
     { key: "catering", offset: -240,
-      it: { title: "Conferma catering", desc: "Bozza menù e allergie" },
+      it: { title: "Conferma catering", desc: "Bozza men+¦ e allergie" },
       en: { title: "Confirm catering", desc: "Draft menu and allergies" } },
     { key: "ceremony-music", offset: -210,
       it: { title: "Musica cerimonia", desc: "Trio/Quartetto, prove brani" },
@@ -246,7 +263,7 @@ async function main() {
       it: { title: "Acquista fedi", desc: "Misure e incisioni" },
       en: { title: "Buy rings", desc: "Sizing and engravings" } },
     { key: "final-menu", offset: -30,
-      it: { title: "Conferma menù", desc: "Torta e intolleranze finali" },
+      it: { title: "Conferma men+¦", desc: "TortA e intolleranze finali" },
       en: { title: "Finalize menu", desc: "Cake and final allergies" } },
     { key: "seating-plan", offset: -21,
       it: { title: "Seating plan", desc: "Tavoli e segnaposto" },
@@ -276,10 +293,19 @@ async function main() {
     ]);
   }
 
-  console.log("✅ Seed completato (Matrimonio IT/EN).");
+  console.log("Ô£à Seed completato (Matrimonio IT/EN).");
 }
 
 main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
+
+
+
+
+
+
+
+
+
