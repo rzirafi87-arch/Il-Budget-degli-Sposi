@@ -315,6 +315,10 @@ export async function POST(req: NextRequest) {
             committed_amount: row.amount,
             spend_type: row.spendType,
             notes: row.notes,
+            payment_method: row.paymentMethod || null,
+            payment_date: row.paymentDate || null,
+            payment_status: row.paymentStatus || null,
+            payment_notes: row.paymentNotes || null,
             status: "planned",
           })
           .eq("id", row.id);
@@ -325,6 +329,10 @@ export async function POST(req: NextRequest) {
           committed_amount: row.amount,
           spend_type: row.spendType,
           notes: row.notes,
+          payment_method: row.paymentMethod || null,
+          payment_date: row.paymentDate || null,
+          payment_status: row.paymentStatus || null,
+          payment_notes: row.paymentNotes || null,
           status: "planned",
           paid_amount: 0,
         });
