@@ -4,14 +4,14 @@ import Background from "@/components/Background";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DynamicHeader from "@/components/DynamicHeader";
 import Footer from "@/components/Footer";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import NavTabs from "@/components/NavTabs";
 import QuickSettings from "@/components/QuickSettings";
 import { ToastProvider } from "@/components/ToastProvider";
 import TopBarSelector from "@/components/TopBarSelector";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { locales } from "@/i18n/config";
-import Link from "next/link";
 import { useLocale } from "next-intl";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
@@ -37,16 +37,12 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     normalizedPath === "/auth" ||
     normalizedPath === "/welcome";
 
-  const [eventType, setEventType] = useState<string | null>(() => {
-    if (typeof document !== "undefined") {
-      const cookieEvt = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
-      const lsEvt = localStorage.getItem("eventType");
-      return cookieEvt || lsEvt || null;
-    }
-    return null;
-  });
+  // Evita letture non deterministiche in fase SSR: inizializza neutro.
+  const [eventType, setEventType] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  const showHeader = !isOnboarding && (
+  // Calcolato solo dopo mount per evitare mismatch tra SSR e client.
+  const showHeader = mounted && !isOnboarding && (
     eventType === "wedding" ||
     eventType === "baptism" ||
     eventType === "eighteenth" ||
@@ -57,6 +53,14 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
   );
 
   useEffect(() => {
+    // Recupera valori client-only dopo mount.
+    try {
+      const cookieEvt = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+      const lsEvt = localStorage.getItem("eventType");
+      setEventType(cookieEvt || lsEvt || "wedding");
+    } catch {}
+    setMounted(true);
+
     const onStorage = (e: StorageEvent) => {
       if (e.key === "eventType") setEventType(e.newValue);
     };
@@ -81,7 +85,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
 
   return (
     <ToastProvider>
-      {showHeader && (
+      {showHeader ? (
         <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-soft">
           <DynamicHeader />
           <div className="border-b border-gray-200">
@@ -129,6 +133,9 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
             </div>
           </div>
         </header>
+      ) : (
+        // Placeholder per mantenere coerenza altezza (evita jump layout post-idratazione)
+        <div aria-hidden className="h-0" />
       )}
 
       <main className="min-h-screen" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
