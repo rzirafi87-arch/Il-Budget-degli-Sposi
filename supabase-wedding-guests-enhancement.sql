@@ -3,7 +3,7 @@
 -- =====================================================
 -- Gestione completa degli invitati con:
 -- - Assegnazione tavoli
--- - Preferenze alimentari  
+-- - Preferenze alimentari
 -- - Tracking +1/bambini
 -- - RSVP status
 -- - Gruppi/famiglie
@@ -16,52 +16,52 @@
 CREATE TABLE IF NOT EXISTS wedding_guests (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
-  
+
   -- Basic info
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   email TEXT,
   phone TEXT,
-  
+
   -- Invitation details
   invitation_sent BOOLEAN DEFAULT FALSE,
   invitation_sent_date DATE,
   rsvp_status TEXT CHECK (rsvp_status IN ('pending', 'confirmed', 'declined', 'tentative')) DEFAULT 'pending',
   rsvp_date TIMESTAMP WITH TIME ZONE,
-  
+
   -- Guest details
   side TEXT CHECK (side IN ('bride', 'groom', 'common')) DEFAULT 'common',
   relationship TEXT, -- Friend, Family, Colleague, etc.
   age_group TEXT CHECK (age_group IN ('adult', 'child', 'infant')) DEFAULT 'adult',
-  
+
   -- Plus one tracking
   plus_one_allowed BOOLEAN DEFAULT FALSE,
   plus_one_name TEXT,
   plus_one_confirmed BOOLEAN DEFAULT FALSE,
-  
+
   -- Dietary preferences
   dietary_restrictions TEXT[], -- ['vegetarian', 'vegan', 'gluten_free', 'lactose_free', 'halal', 'kosher', 'other']
   allergies TEXT,
   special_requests TEXT,
-  
+
   -- Table assignment
   table_number INTEGER,
   table_name TEXT, -- Optional: "Famiglia", "Amici Università", etc.
   seating_priority INTEGER DEFAULT 0, -- Higher priority = assign first
-  
+
   -- Group/Family
   family_group_id UUID, -- Links family members together
   is_group_leader BOOLEAN DEFAULT FALSE,
-  
+
   -- Ceremony attendance
   attending_ceremony BOOLEAN DEFAULT TRUE,
   attending_reception BOOLEAN DEFAULT TRUE,
-  
+
   -- Additional info
   notes TEXT,
   gift_received BOOLEAN DEFAULT FALSE,
   thank_you_sent BOOLEAN DEFAULT FALSE,
-  
+
   -- Metadata
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -75,7 +75,7 @@ CREATE INDEX IF NOT EXISTS idx_wedding_guests_family_group ON wedding_guests(fam
 CREATE INDEX IF NOT EXISTS idx_wedding_guests_side ON wedding_guests(side);
 
 -- Full text search index for names
-CREATE INDEX IF NOT EXISTS idx_wedding_guests_name_search 
+CREATE INDEX IF NOT EXISTS idx_wedding_guests_name_search
 ON wedding_guests USING gin(to_tsvector('simple', first_name || ' ' || last_name));
 
 -- RLS Policies
@@ -134,7 +134,7 @@ CREATE TRIGGER wedding_guests_updated_at
 
 -- Helper view for guest statistics
 CREATE OR REPLACE VIEW wedding_guest_stats AS
-SELECT 
+SELECT
   event_id,
   COUNT(*) as total_guests,
   COUNT(*) FILTER (WHERE rsvp_status = 'confirmed') as confirmed_guests,
