@@ -1,4 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
+import { config } from "dotenv";
+import path from "node:path";
+
+// Load .env.local for ts-node execution
+config({ path: path.resolve(process.cwd(), ".env.local") });
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const key = process.env.SUPABASE_SERVICE_ROLE!;
