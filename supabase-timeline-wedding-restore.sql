@@ -17,8 +17,8 @@ DO $$
 DECLARE
   v_event_type_id uuid;
 BEGIN
-  SELECT id INTO v_event_type_id 
-  FROM public.event_types 
+  SELECT id INTO v_event_type_id
+  FROM public.event_types
   WHERE code = 'WEDDING';
 
   IF v_event_type_id IS NULL THEN
@@ -48,8 +48,8 @@ BEGIN
     (v_event_type_id, 'final-payments', -7, 180),
     (v_event_type_id, 'wedding-day', 0, 190),
     (v_event_type_id, 'thank-you', 14, 200)
-  ON CONFLICT (event_type_id, key) 
-  DO UPDATE SET 
+  ON CONFLICT (event_type_id, key)
+  DO UPDATE SET
     offset_days = EXCLUDED.offset_days,
     sort_order = EXCLUDED.sort_order;
 
@@ -65,7 +65,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'announce-engagement';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Annuncio del fidanzamento', 'Comunicate la grande notizia a familiari e amici')
@@ -76,7 +76,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'set-budget-style';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Definite budget e stile', 'Stabilite il budget totale e scegliete lo stile del matrimonio')
@@ -87,7 +87,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'book-venue-date';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Prenotate location e data', 'Bloccate la location e la data con caparra')
@@ -98,7 +98,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'photographer';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Fotografo', 'Prenotate il fotografo per immortalare il vostro giorno speciale')
@@ -109,7 +109,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'videomaker';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Videomaker', 'Prenotate il videomaker per creare il vostro film di nozze')
@@ -120,7 +120,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'church-townhall';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Chiesa/Comune', 'Prenotate chiesa o comune per la cerimonia')
@@ -131,7 +131,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'catering';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Catering', 'Scegliete il menu e prenotate il servizio catering')
@@ -142,7 +142,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'music-ceremony';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Musica cerimonia', 'Prenotate musicisti per la cerimonia')
@@ -153,7 +153,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'music-party';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Musica festa', 'Prenotate DJ o band per il ricevimento')
@@ -164,7 +164,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'save-the-date';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Save the date', 'Inviate i save the date agli invitati')
@@ -175,7 +175,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'flowers';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Fiori e decorazioni', 'Scegliete fiorista e decorazioni per location e chiesa')
@@ -186,7 +186,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'stationery';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Partecipazioni', 'Ordinate e preparate le partecipazioni')
@@ -197,7 +197,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'invitations-send';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Invio partecipazioni', 'Inviate le partecipazioni agli ospiti')
@@ -208,7 +208,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'transport';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Trasporti', 'Organizzate i trasporti per sposi e invitati')
@@ -219,7 +219,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'rings';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Fedi nuziali', 'Scegliete e ordinate le fedi nuziali')
@@ -230,7 +230,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'final-menu';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Menu definitivo', 'Confermate il menu finale con il catering')
@@ -241,7 +241,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'seating-plan';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Tableau e tavoli', 'Organizzate la disposizione dei tavoli e il tableau')
@@ -252,7 +252,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'final-payments';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Saldi finali', 'Completate i pagamenti finali ai fornitori')
@@ -263,7 +263,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'wedding-day';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Giorno del matrimonio', 'Il vostro giorno speciale è arrivato!')
@@ -274,7 +274,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'thank-you';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'it-IT', 'Ringraziamenti', 'Inviate i biglietti di ringraziamento agli ospiti')
@@ -293,7 +293,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'announce-engagement';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Announce engagement', 'Share the big news with family and friends')
@@ -304,7 +304,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'set-budget-style';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Set budget and style', 'Establish total budget and choose wedding style')
@@ -315,7 +315,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'book-venue-date';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Book venue and date', 'Secure venue and date with deposit')
@@ -326,7 +326,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'photographer';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Photographer', 'Book photographer to capture your special day')
@@ -337,7 +337,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'videomaker';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Videographer', 'Book videographer to create your wedding film')
@@ -348,7 +348,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'church-townhall';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Church/Town Hall', 'Book church or town hall for ceremony')
@@ -359,7 +359,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'catering';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Catering', 'Choose menu and book catering service')
@@ -370,7 +370,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'music-ceremony';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Ceremony music', 'Book musicians for ceremony')
@@ -381,7 +381,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'music-party';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Reception music', 'Book DJ or band for reception')
@@ -392,7 +392,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'save-the-date';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Save the date', 'Send save the dates to guests')
@@ -403,7 +403,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'flowers';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Flowers and decorations', 'Choose florist and decorations for venue and church')
@@ -414,7 +414,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'stationery';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Invitations', 'Order and prepare invitations')
@@ -425,7 +425,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'invitations-send';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Send invitations', 'Send invitations to guests')
@@ -436,7 +436,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'transport';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Transport', 'Organize transport for couple and guests')
@@ -447,7 +447,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'rings';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Wedding rings', 'Choose and order wedding rings')
@@ -458,7 +458,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'final-menu';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Final menu', 'Confirm final menu with caterer')
@@ -469,7 +469,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'seating-plan';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Seating plan', 'Organize table arrangements and seating chart')
@@ -480,7 +480,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'final-payments';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Final payments', 'Complete final payments to suppliers')
@@ -491,7 +491,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'wedding-day';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Wedding day', 'Your special day has arrived!')
@@ -502,7 +502,7 @@ BEGIN
   SELECT id INTO v_timeline_id FROM public.event_timelines et
   JOIN public.event_types ety ON ety.id = et.event_type_id
   WHERE ety.code = 'WEDDING' AND et.key = 'thank-you';
-  
+
   IF v_timeline_id IS NOT NULL THEN
     INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
     VALUES (v_timeline_id, 'en-GB', 'Thank you notes', 'Send thank you cards to guests')
