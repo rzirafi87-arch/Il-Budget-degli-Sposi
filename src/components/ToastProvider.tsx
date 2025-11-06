@@ -1,5 +1,13 @@
 ﻿"use client";
 import React, { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+// Diagnostics: log React reference to debug 'React is not defined' runtime error.
+if (typeof React === 'undefined') {
+  // This should never happen under automatic runtime; helps pinpoint bundler issue.
+  console.error('[ToastProvider] React is undefined at module init');
+} else {
+  // Uncomment for verbose tracing if needed.
+  // console.log('[ToastProvider] React OK:', Object.keys(React));
+}
 
 type ToastType = "success" | "error" | "info" | "warning";
 
