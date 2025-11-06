@@ -11,7 +11,7 @@ Questa guida ti aiuta a verificare se i 4 patches critici (PATCH 16-19) sono sta
 ### Prerequisiti
 
 1. **Configura password database in `.env.local`**:
-   
+
    Apri `.env.local` e trova la riga:
    ```bash
    SUPABASE_DB_URL=postgresql://postgres.vsguhivizuneylqhygfk:[PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:6543/postgres
@@ -138,19 +138,19 @@ npm run codex:sync supabase-2025-11-auto-populate-triggers.sql
 ## ⚠️ Troubleshooting
 
 ### Errore: "Tenant or user not found"
-**Causa**: Password database non configurata in `.env.local`  
+**Causa**: Password database non configurata in `.env.local`
 **Soluzione**: Segui "Prerequisiti" sopra per configurare `SUPABASE_DB_URL` con password
 
 ### Errore: "cannot alter type of a column used in a policy"
-**Causa**: PATCH 16 vecchio (non v4-COMPLETO) applicato  
+**Causa**: PATCH 16 vecchio (non v4-COMPLETO) applicato
 **Soluzione**: Usa la versione `FIXED-v4-COMPLETO` che gestisce le dipendenze
 
 ### Script restituisce tutti ❌ FAIL
-**Causa**: Nessun patch applicato  
+**Causa**: Nessun patch applicato
 **Soluzione**: Applica tutti i 4 patches nell'ordine indicato
 
 ### Alcuni checks PASS, altri FAIL
-**Causa**: Patches applicati parzialmente  
+**Causa**: Patches applicati parzialmente
 **Soluzione**: Applica solo i patches mancanti, nell'ordine corretto
 
 ---
@@ -192,5 +192,5 @@ npm run codex:diagnostics
 
 ---
 
-**Ultimo aggiornamento**: 6 Novembre 2025  
+**Ultimo aggiornamento**: 6 Novembre 2025
 **Versione**: 1.0.0
