@@ -61,7 +61,13 @@ create table if not exists event_timelines (
   id uuid primary key default gen_random_uuid(),
   event_type_id uuid references event_types(id) on delete cascade,
   key text not null,
-  offset_days int not null
+  offset_days int not null,
+  sort_order int default 0,
+  category text,
+  is_critical boolean default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (event_type_id, key)
 );
 
 create table if not exists event_timeline_translations (
@@ -76,3 +82,4 @@ create table if not exists event_timeline_translations (
 create index if not exists idx_categories_event_type_sort on categories(event_type_id, sort);
 create index if not exists idx_subcategories_category_sort on subcategories(category_id, sort);
 create index if not exists idx_event_timelines_type_key on event_timelines(event_type_id, key);
+create index if not exists idx_event_timelines_offset on event_timelines(event_type_id, offset_days);
