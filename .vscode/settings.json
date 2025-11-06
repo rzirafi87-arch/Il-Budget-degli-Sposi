@@ -103,6 +103,12 @@
   },
   "github.copilot.editor.enableAutoCompletions": true,
   // ===== Files Settings =====
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.autoGuessEncoding": false,
+  "editor.renderControlCharacters": false,
   "files.exclude": {
     "**/.git": true,
     "**/.next": true,

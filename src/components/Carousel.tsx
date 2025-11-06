@@ -1,6 +1,7 @@
 "use client";
+import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useCallback } from "react";
 
 export type CarouselImage = { src: string; alt: string; title?: string };
 
@@ -12,52 +13,66 @@ type Props = {
 };
 
 export default function Carousel({ images, height = 320, rounded = "rounded-2xl", className = "" }: Props) {
-  const scroller = useRef<HTMLDivElement | null>(null);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
 
-  function scrollBy(delta: number) {
-    const el = scroller.current;
-    if (!el) return;
-    el.scrollBy({ left: delta, behavior: "smooth" });
-  }
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
   if (!images || images.length === 0) return null;
 
   return (
     <div className={`relative ${className}`}>
-      <div
-        ref={scroller}
-        className={`flex gap-4 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory`}
-        style={{ scrollPadding: 24 }}
-        aria-roledescription="carousel"
-      >
-        {images.map((img, i) => (
-          <figure key={i} className={`shrink-0 w-[85%] sm:w-[420px] snap-center`}>
-            <div className={`relative w-full ${rounded} overflow-hidden border border-gray-200`} style={{ height }}>
-              <Image src={img.src} alt={img.alt} fill priority sizes="(max-width: 640px) 85vw, 420px" className="object-cover" />
+      <div className={`overflow-hidden ${rounded}`} ref={emblaRef}>
+        <div className="flex">
+          {images.map((img, i) => (
+            <div className="min-w-0 flex-[0_0_100%] px-2" key={i}>
+              <figure className="w-full">
+                <div className={`relative w-full ${rounded} overflow-hidden border border-gray-200`} style={{ height }}>
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    priority={i === 0}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 85vw, 1024px"
+                    className="object-cover"
+                  />
+                </div>
+                {img.title && (
+                  <figcaption className="mt-2 text-sm text-gray-600 text-center">{img.title}</figcaption>
+                )}
+              </figure>
             </div>
-            {img.title && (
-              <figcaption className="mt-2 text-sm text-gray-600">{img.title}</figcaption>
-            )}
-          </figure>
-        ))}
+          ))}
+        </div>
       </div>
-      <button
-        type="button"
-        aria-label="Precedente"
-        onClick={() => scrollBy(-380)}
-        className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow rounded-full w-9 h-9 items-center justify-center border border-gray-200"
-      >
-        ‹
-      </button>
-      <button
-        type="button"
-        aria-label="Successivo"
-        onClick={() => scrollBy(380)}
-        className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow rounded-full w-9 h-9 items-center justify-center border border-gray-200"
-      >
-        ›
-      </button>
+
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="Precedente"
+            onClick={scrollPrev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center border border-gray-200 transition-colors z-10 text-xl font-bold"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            aria-label="Successivo"
+            onClick={scrollNext}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center border border-gray-200 transition-colors z-10 text-xl font-bold"
+          >
+            ›
+          </button>
+        </>
+      )}
     </div>
   );
 }
+
 
