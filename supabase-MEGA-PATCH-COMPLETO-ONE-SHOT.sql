@@ -104,6 +104,9 @@ BEGIN
 
   IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'guests') THEN
     DROP POLICY IF EXISTS "Users can view their own guests" ON public.guests;
+    DROP POLICY IF EXISTS "Users can insert their own guests" ON public.guests;
+    DROP POLICY IF EXISTS "Users can update their own guests" ON public.guests;
+    DROP POLICY IF EXISTS "Users can delete their own guests" ON public.guests;
     DROP POLICY IF EXISTS "Users can manage their own guests" ON public.guests;
     DROP POLICY IF EXISTS "guests_select_own" ON public.guests;
     DROP POLICY IF EXISTS "guests_insert_self" ON public.guests;
