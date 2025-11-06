@@ -35,6 +35,7 @@
         "codex:sync": "node scripts/codex-sync-db.mjs",
         "codex:check": "node scripts/codex-sync-db.mjs supabase-quick-check.sql",
         "codex:diagnostics": "node scripts/codex-sync-db.mjs supabase-diagnostics-complete.sql",
+        "verify:patches": "node scripts/verify-2025-11-patches.mjs",
         "seed:i18n": "ts-node scripts/seed_i18n.ts",
         "seed:more": "ts-node scripts/seed_more_events.ts",
         "test": "jest"
