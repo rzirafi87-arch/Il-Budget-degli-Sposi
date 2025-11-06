@@ -140,7 +140,7 @@ async function main() {
       ]
     },
     {
-      name_it: "OspitalitÃ  & Logistica", name_en: "Hospitality & Logistics",
+      name_it: "Ospitalit+á & Logistica", name_en: "Hospitality & Logistics",
       sub: [
         { it: "Alloggi ospiti", en: "Guest accommodation" },
         { it: "Welcome kit", en: "Welcome kit" },
@@ -204,7 +204,7 @@ async function main() {
       it: { title: "Annunciate il fidanzamento", desc: "Condividete la notizia con chi amate" },
       en: { title: "Announce engagement", desc: "Share the news with loved ones" } },
     { key: "set-budget-style", offset: -330,
-      it: { title: "Definite budget e stile", desc: "Scegliete prioritÃ  e moodboard" },
+      it: { title: "Definite budget e stile", desc: "Scegliete priorit+á e moodboard" },
       en: { title: "Set budget & style", desc: "Define priorities and moodboard" } },
     { key: "book-venue-date", offset: -300,
       it: { title: "Prenotate location e data", desc: "Blocca location e data con caparra" },
@@ -219,7 +219,7 @@ async function main() {
       it: { title: "Chiesa/Comune", desc: "Prenota e verifica documenti" },
       en: { title: "Church/Town hall", desc: "Book and verify documents" } },
     { key: "catering", offset: -240,
-      it: { title: "Conferma catering", desc: "Bozza menÃ¹ e allergie" },
+      it: { title: "Conferma catering", desc: "Bozza men+¦ e allergie" },
       en: { title: "Confirm catering", desc: "Draft menu and allergies" } },
     { key: "ceremony-music", offset: -210,
       it: { title: "Musica cerimonia", desc: "Trio/Quartetto, prove brani" },
@@ -246,7 +246,7 @@ async function main() {
       it: { title: "Acquista fedi", desc: "Misure e incisioni" },
       en: { title: "Buy rings", desc: "Sizing and engravings" } },
     { key: "final-menu", offset: -30,
-      it: { title: "Conferma menÃ¹", desc: "Torta e intolleranze finali" },
+      it: { title: "Conferma men+¦", desc: "TortA e intolleranze finali" },
       en: { title: "Finalize menu", desc: "Cake and final allergies" } },
     { key: "seating-plan", offset: -21,
       it: { title: "Seating plan", desc: "Tavoli e segnaposto" },
@@ -276,10 +276,11 @@ async function main() {
     ]);
   }
 
-  console.log("âœ… Seed completato (Matrimonio IT/EN).");
+  console.log("Ô£à Seed completato (Matrimonio IT/EN).");
 }
 
 main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
+
