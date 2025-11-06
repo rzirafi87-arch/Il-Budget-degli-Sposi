@@ -5,18 +5,19 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 type Props = {
   favoriteMarkers: number[];
-  setFavoriteMarkers: Dispatch<SetStateAction<number[]>>;
+  setFavoriteMarkersAction: Dispatch<SetStateAction<number[]>>;
 };
 
-export default function MapDemoLeaflet({ favoriteMarkers, setFavoriteMarkers }: Props) {
+export default function MapDemoLeaflet({ favoriteMarkers, setFavoriteMarkersAction }: Props) {
+  // setFavoriteMarkersAction è usato nei marker
   const markers = [
     { id: 1, pos: [45.4654, 9.1859], label: "Fornitore Demo 1", cat: "Atelier", loc: "Milano, Lombardia" },
     { id: 2, pos: [41.9028, 12.4964], label: "Fornitore Demo 2", cat: "Fotografi", loc: "Roma, Lazio" },
     { id: 3, pos: [40.8518, 14.2681], label: "Fornitore Demo 3", cat: "Catering", loc: "Napoli, Campania" },
   ];
   return (
-    <MapContainer center={[45.4654, 9.1859]} zoom={6} style={{ height: "100%", width: "100%" }} scrollWheelZoom={false}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
+    <MapContainer center={[45.4654, 9.1859]} zoom={6} style={{ height: "100%", width: "100%" }} scrollWheelZoom={false} as={undefined as any}>
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"  />
       {markers.map((m) => (
         <Marker key={m.id} position={m.pos as [number, number]}>
           <Popup>
@@ -25,7 +26,7 @@ export default function MapDemoLeaflet({ favoriteMarkers, setFavoriteMarkers }: 
               <button
                 aria-label="Preferito"
                 className={favoriteMarkers.includes(m.id) ? "text-red-500" : "text-gray-400 hover:text-red-500"}
-                onClick={() => setFavoriteMarkers((fav) => fav.includes(m.id) ? fav.filter((i) => i !== m.id) : [...fav, m.id])}
+                onClick={() => setFavoriteMarkersAction((fav: number[]) => fav.includes(m.id) ? fav.filter((i: number) => i !== m.id) : [...fav, m.id])}
                 style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
               >
                 {favoriteMarkers.includes(m.id)
