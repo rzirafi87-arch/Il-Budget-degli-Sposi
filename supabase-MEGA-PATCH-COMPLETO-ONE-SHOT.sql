@@ -176,6 +176,11 @@ BEGIN
   END IF;
 
   IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'non_invited_recipients') THEN
+    EXECUTE 'DROP POLICY IF EXISTS "Users can view their own non-invited recipients" ON public.non_invited_recipients';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can insert their own non-invited recipients" ON public.non_invited_recipients';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can update their own non-invited recipients" ON public.non_invited_recipients';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can delete their own non-invited recipients" ON public.non_invited_recipients';
+    EXECUTE 'DROP POLICY IF EXISTS "Users can manage their own non-invited recipients" ON public.non_invited_recipients';
     EXECUTE 'DROP POLICY IF EXISTS "non_invited_recipients_select" ON public.non_invited_recipients';
     EXECUTE 'DROP POLICY IF EXISTS "non_invited_recipients_insert" ON public.non_invited_recipients';
     EXECUTE 'DROP POLICY IF EXISTS "non_invited_recipients_update" ON public.non_invited_recipients';
