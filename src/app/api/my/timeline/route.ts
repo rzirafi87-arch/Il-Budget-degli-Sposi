@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
-import { NextRequest, NextResponse } from "next/server";
-import { getServiceClient } from "@/lib/supabaseServer";
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
 
 type DbTimelineItem = {
   id: string;
