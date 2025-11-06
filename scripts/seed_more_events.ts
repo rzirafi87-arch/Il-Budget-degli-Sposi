@@ -1,4 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
+import { config } from "dotenv";
+import path from "node:path";
+
+// Load .env.local when executing via ts-node
+config({ path: path.resolve(process.cwd(), ".env.local") });
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const key = process.env.SUPABASE_SERVICE_ROLE!;
@@ -19,16 +24,25 @@ async function ensureLocales() {
   await upsert("i18n_locales", [
     { code: "it-IT", name: "Italiano", direction: "ltr" },
     { code: "en-GB", name: "English",  direction: "ltr" },
+    { code: "es-ES", name: "Español", direction: "ltr" },
+    { code: "ja-JP", name: "日本語", direction: "ltr" },
   ], "code");
 }
 
 async function ensureEventType(code: string, nameIT: string, nameEN: string) {
-  const { data: et } = await db.from("event_types").upsert({ code }, { onConflict: "code" }).select("*").single();
+  const { data: et } = await db
+    .from("event_types")
+    .upsert({ code, name: nameIT, locale: "it-IT" }, { onConflict: "code" })
+    .select("*")
+    .single();
+  if (!et) {
+    throw new Error(`Unable to upsert event type ${code}`);
+  }
   await upsert("event_type_translations", [
-    { event_type_id: et!.id, locale: "it-IT", name: nameIT },
-    { event_type_id: et!.id, locale: "en-GB", name: nameEN },
-  ]);
-  return et!.id;
+    { event_type_id: et.id, locale: "it-IT", name: nameIT },
+    { event_type_id: et.id, locale: "en-GB", name: nameEN },
+  ], "event_type_id,locale");
+  return et.id;
 }
 
 type CatDef = { it: string; en: string; sub: { it: string; en: string }[] };
