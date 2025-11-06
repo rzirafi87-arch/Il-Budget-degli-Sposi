@@ -140,7 +140,8 @@ export async function PUT(req: NextRequest) {
     const { userId } = await requireUser(req);
     const db = getServiceClient();
     const body = await req.json();
-    const { id, ...patch } = body as { id: string; [k: string]: unknown };
+    type PatchBody = { id: string } & TimelinePatch;
+    const { id, ...patch } = body as PatchBody;
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
     // Autorizzazione: verifica che l'item appartenga all'evento dell'utente
@@ -165,9 +166,9 @@ export async function PUT(req: NextRequest) {
     if (typeof patch.category === "string" || patch.category === null) update.category = patch.category;
     if (typeof patch.completed === "boolean") update.completed = patch.completed;
     if (typeof patch.display_order === "number") update.display_order = patch.display_order;
-    if (typeof (patch as any).days_before === "number") update.days_before = (patch as any).days_before;
-    if (typeof (patch as any).monthsBefore === "number") update.days_before = Math.round(((patch as any).monthsBefore as number) * 30);
-    if (typeof (patch as any).phase === "string") update.phase = (patch as any).phase;
+    if (typeof patch.days_before === "number") update.days_before = patch.days_before;
+    if (typeof patch.monthsBefore === "number") update.days_before = Math.round(patch.monthsBefore * 30);
+    if (typeof patch.phase === "string") update.phase = patch.phase;
 
     const { data, error } = await db
       .from("timeline_items")

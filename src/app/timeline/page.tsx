@@ -75,7 +75,7 @@ export default function TimelinePage() {
               if (items.length > 0) {
                 setTasksFromDb(true);
                 setTasks(
-                  items.map((it: any) => ({
+                  items.map((it: { id: string; title: string; description?: string | null; days_before?: number | null; category?: string | null; completed?: boolean | null }) => ({
                     id: String(it.id),
                     title: it.title,
                     description: it.description || "",
@@ -85,7 +85,7 @@ export default function TimelinePage() {
                         : 0,
                     category: it.category || "Organizzazione",
                     completed: Boolean(it.completed),
-                    priority: "media",
+                    priority: "media" as const,
                   })),
                 );
               } else {
