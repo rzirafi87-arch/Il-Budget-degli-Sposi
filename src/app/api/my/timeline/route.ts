@@ -15,6 +15,28 @@ type DbTimelineItem = {
   days_before?: number | null;
 };
 
+type TimelineInsertInput = {
+  title?: string;
+  description?: string | null;
+  category?: string | null;
+  completed?: boolean;
+  display_order?: number;
+  phase?: string | null;
+  days_before?: number | null;
+  monthsBefore?: number | null;
+};
+
+type TimelinePatch = Partial<{
+  title: string;
+  description: string | null;
+  category: string | null;
+  completed: boolean;
+  display_order: number;
+  days_before: number;
+  monthsBefore: number;
+  phase: string;
+}>;
+
 export async function GET(req: NextRequest) {
   try {
     const jwt = getBearer(req);
@@ -82,10 +104,10 @@ export async function POST(req: NextRequest) {
     const eventId = ev.id;
 
     // Supporta singolo item o bulk array
-    const items = Array.isArray(body) ? body : [body];
+    const items = Array.isArray(body) ? (body as TimelineInsertInput[]) : [body as TimelineInsertInput];
 
     // Normalizza campi
-    const toInsert = items.map((it: any, idx: number) => ({
+    const toInsert = items.map((it: TimelineInsertInput, idx: number) => ({
       event_id: eventId,
       title: String(it.title || ""),
       description: it.description ?? null,
