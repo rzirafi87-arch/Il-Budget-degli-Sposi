@@ -1753,8 +1753,41 @@
     "empty": "Nessuna chiesa trovata con questi filtri.",
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibi→dopo la verifica dello staff.",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     }
+  },
+  "footer": {
+    "newsletterTitle": "Rimani aggiornato",
+    "newsletterDesc": "Ricevi consigli, checklist e offerte esclusive per il tuo evento perfetto!",
+    "newsletterFormLabel": "Iscrizione newsletter",
+    "emailPlaceholder": "La tua email...",
+    "emailAriaLabel": "Inserisci la tua email",
+    "subscribeBtn": "Iscriviti",
+    "thankYouMsg": "Grazie per esserti iscritto! Controlla la tua email.",
+    "aboutTitle": "MYBUDGETEVENTO",
+    "aboutDesc": "La piattaforma italiana per pianificare il budget del tuo evento. Semplice, completa e gratuita.",
+    "toolsTitle": "Strumenti",
+    "expenses": "Gestione Spese",
+    "incomes": "Entrate e Regali",
+    "guestsList": "Lista Invitati",
+    "suppliersTitle": "Trova Fornitori",
+    "locations": "Location Ricevimento",
+    "churches": "Location Cerimonia",
+    "allSuppliers": "Tutti i Fornitori",
+    "infoTitle": "Info & Supporto",
+    "aboutUs": "Chi Siamo",
+    "howItWorks": "Come Funziona",
+    "contacts": "Contatti",
+    "legalTitle": "Legale",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Termini di Servizio",
+    "cookiePolicy": "Cookie Policy",
+    "securePayments": "Pagamenti Sicuri",
+    "madeInItaly": "Made in Italy",
+    "gdprCompliant": "GDPR Compliant",
+    "free100": "100% Gratuito",
+    "copyright": "Tutti i diritti riservati.",
+    "madeWithLove": "Fatto con ❤️ per le coppie italiane"
   }
 }
