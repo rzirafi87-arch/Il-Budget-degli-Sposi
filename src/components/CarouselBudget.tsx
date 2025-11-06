@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -56,14 +56,14 @@ export default function CarouselBudget() {
         onClick={handlePrev}
         className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 hover:bg-black/70 px-3 py-2 text-white text-2xl font-bold transition-colors z-10"
       >
-        â€¹
+        {"\u2039"}
       </button>
       <button
         aria-label="Next slide"
         onClick={handleNext}
         className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 hover:bg-black/70 px-3 py-2 text-white text-2xl font-bold transition-colors z-10"
       >
-        â€º
+        {"\u203A"}
       </button>
 
       {/* Dots indicator */}
@@ -82,3 +82,4 @@ export default function CarouselBudget() {
     </div>
   );
 }
+

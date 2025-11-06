@@ -116,7 +116,6 @@ export default function NavTabs() {
     { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
     { href: "/pensione", label: t("retirement", { default: "Pensione" }), icon: TABS_ICONS.timeline },
     { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
-    { href: "/timeline", label: t("agenda", { default: "Agenda" }), icon: TABS_ICONS.agenda },
     { href: "/fornitori", label: t("suppliers"), icon: TABS_ICONS.suppliers },
     { href: "/location", label: t("location"), icon: TABS_ICONS.location },
     { href: "/preferiti", label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },

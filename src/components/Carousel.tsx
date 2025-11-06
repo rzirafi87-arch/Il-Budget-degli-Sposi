@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import { useCallback } from "react";
@@ -59,7 +59,7 @@ export default function Carousel({ images, height = 320, rounded = "rounded-2xl"
             onClick={scrollPrev}
             className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center border border-gray-200 transition-colors z-10 text-xl font-bold"
           >
-            â€¹
+            {"\u2039"}
           </button>
           <button
             type="button"
@@ -67,12 +67,13 @@ export default function Carousel({ images, height = 320, rounded = "rounded-2xl"
             onClick={scrollNext}
             className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center border border-gray-200 transition-colors z-10 text-xl font-bold"
           >
-            â€º
+            {"\u203A"}
           </button>
         </>
       )}
     </div>
   );
 }
+
 
 
