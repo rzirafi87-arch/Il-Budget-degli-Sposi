@@ -13,14 +13,14 @@ export type LocaleInfo = {
 export const LOCALES: LocaleInfo[] = [
   { code: "it-IT", label: "Italiano", active: true },
   { code: "en-GB", label: "English", active: true },
-  { code: "es-ES", label: "Español", active: false },
-  { code: "fr-FR", label: "Français", active: false },
+  { code: "es-ES", label: "Espa\u00F1ol", active: false },
+  { code: "fr-FR", label: "Fran\u00E7ais", active: false },
   { code: "de-DE", label: "Deutsch", active: false },
-  { code: "ru", label: "Русский", active: false },
-  { code: "zh-CN", label: "中文", active: false },
-  { code: "ja-JP", label: "日本語", active: false },
-  { code: "ar", label: "العربية", rtl: true, active: false },
-  { code: "hi-IN", label: "हिन्दी", active: false },
+  { code: "ru", label: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439", active: false },
+  { code: "zh-CN", label: "\u4E2D\u6587", active: false },
+  { code: "ja-JP", label: "\u65E5\u672C\u8A9E", active: false },
+  { code: "ar", label: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", rtl: true, active: false },
+  { code: "hi-IN", label: "\u0939\u093F\u0928\u094D\u0926\u0940", active: false },
 ];
 
 export type CountryInfo = {
