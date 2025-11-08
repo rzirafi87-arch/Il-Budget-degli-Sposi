@@ -5,8 +5,10 @@ import EventPicker from "@/components/EventPicker";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function WizardPage() {
+  const t = useTranslations("wizard");
   const router = useRouter();
   const { locale, countryCode, eventType } = useAppSettings();
   const [step, setStep] = useState(1);
@@ -24,24 +26,30 @@ export default function WizardPage() {
 
   return (
     <div className="max-w-md mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6 text-center">Wizard</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">{t("title")}</h1>
       <div className="mb-8">
         {step === 1 && (
           <div>
-            <p className="mb-2">Scegli la lingua:</p>
+            <p className="mb-2">{t("step1")}</p>
             <LanguageSwitcher />
           </div>
         )}
         {step === 2 && (
           <div>
-            <p className="mb-2">Seleziona il paese:</p>
+            <p className="mb-2">{t("step2")}</p>
             <CountryPicker />
           </div>
         )}
         {step === 3 && (
           <div>
-            <p className="mb-2">Scegli l&apos;evento:</p>
+            <p className="mb-2">{t("step3")}</p>
             <EventPicker locale={locale} />
+            {/* Riepilogo scelte */}
+            <div className="mt-6 p-4 bg-gray-50 rounded border text-sm">
+              <div className="mb-1"><strong>{t("step1")}:</strong> {locale?.toUpperCase() || "-"}</div>
+              <div className="mb-1"><strong>{t("step2")}:</strong> {countryCode || "-"}</div>
+              <div><strong>{t("step3")}:</strong> {eventType || "-"}</div>
+            </div>
           </div>
         )}
       </div>
@@ -50,8 +58,9 @@ export default function WizardPage() {
           className="px-4 py-2 rounded bg-gray-200"
           onClick={prev}
           disabled={step === 1}
+          aria-label={t("back")}
         >
-          Indietro
+          {t("back")}
         </button>
         <button
           className="px-4 py-2 rounded bg-green-600 text-white"
@@ -61,8 +70,9 @@ export default function WizardPage() {
             (step === 2 && !countryCode) ||
             (step === 3 && !eventType)
           }
+          aria-label={step < 3 ? t("continue") : t("goToDashboard")}
         >
-          {step < 3 ? "Continua" : "Vai alla dashboard"}
+          {step < 3 ? t("continue") : t("goToDashboard")}
         </button>
       </div>
     </div>
