@@ -5,12 +5,16 @@ import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useEffect, useState } from "react";
 
+type Category = { code: string; name: string };
+type Subcategory = { code: string; name: string };
+type TimelineStep = { code: string; title: string; description: string; sort: number };
+
 
 export default function DashboardPage() {
   const { locale, country, eventType } = useLocale();
-  const [categories, setCategories] = useState<any[]>([]);
-  const [timeline, setTimeline] = useState<any[]>([]);
-  const [subcategories, setSubcategories] = useState<Record<string, any[]>>({});
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [timeline, setTimeline] = useState<TimelineStep[]>([]);
+  const [subcategories, setSubcategories] = useState<Record<string, Subcategory[]>>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,21 +26,21 @@ export default function DashboardPage() {
     }
     setLoading(true);
     Promise.all([
-      fetch(`/api/i18n/categories?event=${eventType}&locale=${locale}`).then(r => r.json()),
-      fetch(`/api/i18n/timeline?event=${eventType}&locale=${locale}`).then(r => r.json()),
+      fetch(`/api/i18n/categories?event=${eventType}&locale=${locale}`).then(r => r.json() as Promise<{ categories: Category[] }>),
+      fetch(`/api/i18n/timeline?event=${eventType}&locale=${locale}`).then(r => r.json() as Promise<{ timeline: TimelineStep[] }>),
     ]).then(([cat, tl]) => {
       setCategories(cat.categories || []);
       setTimeline(tl.timeline || []);
       // Fetch subcategories for each category
       if (cat.categories) {
         Promise.all(
-          cat.categories.map((c: any) =>
+          cat.categories.map((c: Category) =>
             fetch(`/api/i18n/subcategories?event=${eventType}&category=${c.code}&locale=${locale}`)
-              .then(r => r.json())
-              .then((res) => [c.code, res.subcategories || []])
+              .then(r => r.json() as Promise<{ subcategories: Subcategory[] }>)
+              .then((res) => [c.code, res.subcategories || []] as [string, Subcategory[]])
           )
         ).then((results) => {
-          const map: Record<string, any[]> = {};
+          const map: Record<string, Subcategory[]> = {};
           results.forEach(([code, subs]) => { map[code] = subs; });
           setSubcategories(map);
         });
