@@ -8,6 +8,7 @@ import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type BudgetItem = { name: string; amount?: number };
@@ -15,6 +16,8 @@ type ChecklistModule = { module_name: string; is_required?: boolean };
 type Tradition = { name: string; description: string };
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const pathname = usePathname();
   // All hooks at the top - before any conditional returns
   const [brideBudget, setBrideBudget] = useState<number>(0);
   const [groomBudget, setGroomBudget] = useState<number>(0);
@@ -30,6 +33,15 @@ export default function DashboardPage() {
   const [clientPrefs, setClientPrefs] = useState({ language: "", country: "", eventType: "" });
 
   useEffect(() => {
+    // Deep-link: redirect automatico se mancano preferenze
+    if (typeof window !== "undefined" && clientReady) {
+      if (!userLang || !userCountry || !normalizedEventType) {
+        const parts = pathname.split("/").filter(Boolean);
+        const locale = parts[0] || "it";
+        router.replace(`/${locale}/wizard`);
+        return;
+      }
+    }
     if (typeof window === "undefined") return;
 
     const readPreferences = () => {
@@ -67,7 +79,7 @@ export default function DashboardPage() {
 
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
-  }, []);
+  }, [clientReady, userLang, userCountry, normalizedEventType, pathname, router]);
 
   const userLang = clientPrefs.language;
   const userCountry = clientPrefs.country;
@@ -248,17 +260,8 @@ export default function DashboardPage() {
   }
 
   if (!isReady) {
-    return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4 text-center p-6">
-        <h2 className="text-2xl font-serif font-bold">Seleziona lingua, nazione ed evento</h2>
-        <p className="text-gray-800">Completa i passaggi iniziali per personalizzare l&apos;esperienza.</p>
-        <div className="flex gap-3 flex-wrap justify-center">
-          <Link href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
-          <Link href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
-          <Link href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
-        </div>
-      </div>
-    );
+    // Mostra solo un loader breve, il redirect avviene sopra
+    return <div className="min-h-[50vh] flex items-center justify-center text-xl">Loading...</div>;
   }
 
   return (
