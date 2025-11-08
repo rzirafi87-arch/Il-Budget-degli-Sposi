@@ -1,19 +1,23 @@
 ﻿"use client";
 
+
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useEffect, useState } from "react";
+
 
 export default function DashboardPage() {
   const { locale, country, eventType } = useLocale();
   const [categories, setCategories] = useState<any[]>([]);
   const [timeline, setTimeline] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!eventType) {
       setCategories([]);
       setTimeline([]);
+      setSubcategories({});
       return;
     }
     setLoading(true);
@@ -23,6 +27,22 @@ export default function DashboardPage() {
     ]).then(([cat, tl]) => {
       setCategories(cat.categories || []);
       setTimeline(tl.timeline || []);
+      // Fetch subcategories for each category
+      if (cat.categories) {
+        Promise.all(
+          cat.categories.map((c: any) =>
+            fetch(`/api/i18n/subcategories?event=${eventType}&category=${c.code}&locale=${locale}`)
+              .then(r => r.json())
+              .then((res) => [c.code, res.subcategories || []])
+          )
+        ).then((results) => {
+          const map: Record<string, any[]> = {};
+          results.forEach(([code, subs]) => { map[code] = subs; });
+          setSubcategories(map);
+        });
+      } else {
+        setSubcategories({});
+      }
     }).finally(() => setLoading(false));
   }, [eventType, locale]);
 
@@ -46,7 +66,16 @@ export default function DashboardPage() {
             <h2 className="text-lg font-semibold mb-2">Categorie</h2>
             <ul className="list-disc ml-6">
               {categories.map((c) => (
-                <li key={c.code}>{c.name}</li>
+                <li key={c.code} className="mb-2">
+                  <div className="font-medium">{c.name}</div>
+                  {subcategories[c.code] && subcategories[c.code].length > 0 && (
+                    <ul className="list-circle ml-5 text-sm text-gray-700">
+                      {subcategories[c.code].map((s) => (
+                        <li key={s.code}>{s.name}</li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
               ))}
             </ul>
           </div>
