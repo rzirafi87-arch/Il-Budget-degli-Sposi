@@ -6,7 +6,8 @@ import PageInfoNote from "@/components/PageInfoNote";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
@@ -63,7 +64,8 @@ export default function InvitatiPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const country = getUserCountrySafe();
-  
+  const locale = useLocale() || "it";
+
   // Table arrangement state
   const [tables, setTables] = useState<Table[]>([]);
   const [loadingTables, setLoadingTables] = useState(true);
@@ -474,7 +476,7 @@ export default function InvitatiPage() {
           </button>
         </div>
   <p className="text-xs text-gray-600 mb-3">
-   Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia. 
+   Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia.
    <strong className="text-purple-700">ðŸ’¡ Suggerimento:</strong> Usa la colonna &quot;Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
   </p>
         {familyGroups.length === 0 ? (
@@ -633,7 +635,7 @@ export default function InvitatiPage() {
                           const family = familyGroups.find(f => f.id === familyId);
                           console.log("Famiglia selezionata - ID:", familyId, "Nome:", family?.familyName);
                           console.log("Famiglie disponibili:", familyGroups);
-                          
+
                           updateGuestMultiple(guest.id, {
                             familyGroupId: familyId,
                             familyGroupName: family?.familyName
@@ -885,9 +887,9 @@ export default function InvitatiPage() {
             Per una gestione avanzata della disposizione, considera di implementare un&apos;interfaccia drag-and-drop dedicata.
           </p>
           <div className="mt-4">
-            <a href="/invitati/tavoli" className="inline-block px-4 py-2 rounded-full text-white hover:opacity-90" style={{ background: 'var(--color-sage)' }}>
+            <Link href={`/${locale}/invitati/tavoli`} className="inline-block px-4 py-2 rounded-full text-white hover:opacity-90" style={{ background: 'var(--color-sage)' }}>
               Apri pagina Tavoli
-            </a>
+            </Link>
           </div>
         </div>
       </>

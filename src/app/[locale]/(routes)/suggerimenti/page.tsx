@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function SuggerimentiPage() {
@@ -34,15 +35,15 @@ export default function SuggerimentiPage() {
         {t('suggestions', { fallback: 'Suggerimenti & Consigli' })}
       </h1>
       <div className="mb-4 flex justify-end">
-        <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
+        <Link href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</Link>
       </div>
       <div className="mb-6">
-        <a
+        <Link
           href="/chat-ia"
           className="inline-block px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50"
         >
           Chatta con IA
-        </a>
+        </Link>
       </div>
       <p className="mb-4 text-gray-700 text-base">
         Qui troverai consigli personalizzati in base alle scelte che stai facendo, al budget e ai documenti/foto caricati.

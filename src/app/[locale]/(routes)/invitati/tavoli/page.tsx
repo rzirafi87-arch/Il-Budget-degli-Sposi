@@ -1,7 +1,9 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type AssignedGuest = { guestId: string; seatNumber: number; guestName?: string };
 type Table = {
@@ -24,6 +26,7 @@ type AvailableGuest = {
 };
 
 export default function TavoliPage() {
+  const locale = useLocale() || "it";
   const [tables, setTables] = useState<Table[]>([]);
   const [availableGuests, setAvailableGuests] = useState<AvailableGuest[]>([]);
   const [seatsPerTable, setSeatsPerTable] = useState<number>(8);
@@ -147,7 +150,7 @@ export default function TavoliPage() {
       } else {
         setMessage('? Tavoli salvati!');
       }
-    } catch (e: any) {
+    } catch {
       setMessage('Errore di rete nel salvataggio');
     } finally {
       setSaving(false);
@@ -159,7 +162,7 @@ export default function TavoliPage() {
       <div className="flex items-start justify-between mb-4">
         <h1 className="font-serif text-3xl">Disposizione Tavoli</h1>
         <div className="flex gap-2">
-          <a href="/invitati" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna a Invitati</a>
+          <Link href={`/${locale}/invitati`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna a Invitati</Link>
           <button onClick={autoAssignByFamily} className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm" style={{ background: 'var(--color-sage)' }}>Auto-assegna per Famiglia</button>
         </div>
       </div>
@@ -182,7 +185,7 @@ export default function TavoliPage() {
       {/* Preview simple list */}
       <div className="p-6 rounded-lg border border-gray-200 bg-white/70">
         {tables.length === 0 ? (
-          <p className="text-sm text-gray-600">Clicca su "Auto-assegna per Famiglia" per generare una proposta di disposizione.</p>
+          <p className="text-sm text-gray-600">Clicca su &quot;Auto-assegna per Famiglia&quot; per generare una proposta di disposizione.</p>
         ) : (
           <div className="space-y-3">
             {tables.map((t, idx) => (

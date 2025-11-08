@@ -2,6 +2,7 @@
 
 import PageInfoNote from "@/components/PageInfoNote";
 import { formatCurrency } from "@/lib/locale";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type GiftItem = {
@@ -97,9 +98,9 @@ export default function ListaNozzePage() {
         <h2 className="font-serif text-3xl">Lista Nozze</h2>
         <div className="flex gap-2">
           {isWedding && (
-            <a href="/entrate" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Vai a Entrate</a>
+            <Link href="/entrate" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Vai a Entrate</Link>
           )}
-          <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</a>
+          <Link href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</Link>
         </div>
       </div>
 

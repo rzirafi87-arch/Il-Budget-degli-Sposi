@@ -1,5 +1,6 @@
 ﻿import { currencyForCountry } from "@/lib/currency";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import React from "react";
 
 type Props = {
@@ -127,7 +128,7 @@ export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, w
         )}
       </div>
       <div className="mt-2">
-        <a href="/idea-di-budget" className="text-sm font-semibold underline text-[#A3B59D] hover:text-[#8a9d84]" aria-label={t('summary.ctaIdea')}>{t('summary.ctaIdea')}</a>
+        <Link href="/idea-di-budget" className="text-sm font-semibold underline text-[#A3B59D] hover:text-[#8a9d84]" aria-label={t('summary.ctaIdea')}>{t('summary.ctaIdea')}</Link>
       </div>
     </div>
   );

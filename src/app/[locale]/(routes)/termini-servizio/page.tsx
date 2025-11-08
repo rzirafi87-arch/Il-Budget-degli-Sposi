@@ -2,6 +2,7 @@
 
 import { formatDate } from "@/lib/locale";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 export default function TerminiServizioPage() {
   const t = useTranslations("policies");
@@ -145,7 +146,7 @@ export default function TerminiServizioPage() {
             {t.rich("terms.note", {
               strong: (c) => <strong>{c}</strong>,
               link: (c) => (
-                <a href="/privacy-policy" className="text-[#A3B59D] underline ml-1">{c}</a>
+                  <Link href="/privacy-policy" className="text-[#A3B59D] underline ml-1">{c}</Link>
               ),
             })}
           </p>

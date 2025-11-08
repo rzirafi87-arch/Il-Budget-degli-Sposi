@@ -6,8 +6,9 @@ import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, formatDate } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 
 const supabase = getBrowserClient();
 
@@ -23,6 +24,7 @@ type Income = {
 
 export default function EntratePage() {
   const t = useTranslations();
+  const locale = useLocale() || "it";
   const country = getUserCountrySafe();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isBaptism = userEventType === "baptism";
@@ -214,9 +216,9 @@ export default function EntratePage() {
         <h2 className="font-serif text-3xl">{t("incomesPage.title")}</h2>
         <div className="flex gap-2">
           {isWedding && (
-            <a href="/lista-nozze" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("incomesPage.toolbar.giftList")}</a>
+            <Link href={`/${locale}/lista-nozze`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("incomesPage.toolbar.giftList")}</Link>
           )}
-          <a href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("incomesPage.toolbar.backDashboard")}</a>
+          <Link href={`/${locale}/dashboard`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("incomesPage.toolbar.backDashboard")}</Link>
         </div>
       </div>
       {/* titolo rimosso: giÃ  presente nella toolbar sopra */}

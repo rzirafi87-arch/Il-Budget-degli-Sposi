@@ -2,6 +2,7 @@
 
 import { formatDate } from "@/lib/locale";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 export default function PrivacyPolicyPage() {
   const t = useTranslations("policies");
@@ -94,7 +95,7 @@ export default function PrivacyPolicyPage() {
         <p>
           {t.rich("privacy.s10.p1", {
             link: (chunks) => (
-              <a href="/cookie-policy" className="text-[#A3B59D] underline">{chunks}</a>
+              <Link href="/cookie-policy" className="text-[#A3B59D] underline">{chunks}</Link>
             ),
           })}
         </p>

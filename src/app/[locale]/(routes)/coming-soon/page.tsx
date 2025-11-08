@@ -1,6 +1,7 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
+import Link from "next/link";
 
 function getLang(): "it"|"es"|"en"|"fr"|"de"|"ru"|"zh" {
   if (typeof window === "undefined") return "en";
@@ -59,7 +60,7 @@ export default function ComingSoonPage() {
           Nel frattempo puoi esplorare la nostra demo o creare un evento Matrimonio per usare tutte le funzionalitÃ .
         </p>
         <div className="flex gap-3 justify-center">
-          <a href="/" className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 font-semibold">Vai alla Home</a>
+          <Link href="/" className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 font-semibold">Vai alla Home</Link>
           <button
             onClick={() => {
               localStorage.setItem("eventType", "wedding");
