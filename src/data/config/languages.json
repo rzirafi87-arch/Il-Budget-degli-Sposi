@@ -13,7 +13,7 @@
     "locale": "es-ES",
     "dir": "ltr",
     "emoji": "🇪🇸",
-    "available": false
+    "available": true
   },
   {
     "slug": "en",
@@ -21,7 +21,7 @@
     "locale": "en-GB",
     "dir": "ltr",
     "emoji": "🇬🇧",
-    "available": false
+    "available": true
   },
   {
     "slug": "fr",
@@ -29,7 +29,7 @@
     "locale": "fr-FR",
     "dir": "ltr",
     "emoji": "🇫🇷",
-    "available": false
+    "available": true
   },
   {
     "slug": "de",
@@ -37,7 +37,7 @@
     "locale": "de-DE",
     "dir": "ltr",
     "emoji": "🇩🇪",
-    "available": false
+    "available": true
   },
   {
     "slug": "ru",
@@ -45,7 +45,7 @@
     "locale": "ru-RU",
     "dir": "ltr",
     "emoji": "🇷🇺",
-    "available": false
+    "available": true
   },
   {
     "slug": "zh",
@@ -53,7 +53,7 @@
     "locale": "zh-CN",
     "dir": "ltr",
     "emoji": "🇨🇳",
-    "available": false
+    "available": true
   },
   {
     "slug": "ja",
@@ -61,7 +61,7 @@
     "locale": "ja-JP",
     "dir": "ltr",
     "emoji": "🇯🇵",
-    "available": false
+    "available": true
   },
   {
     "slug": "ar",
@@ -69,7 +69,7 @@
     "locale": "ar-AE",
     "dir": "rtl",
     "emoji": "🇦🇪",
-    "available": false
+    "available": true
   },
   {
     "slug": "pt",
@@ -77,7 +77,7 @@
     "locale": "pt-BR",
     "dir": "ltr",
     "emoji": "🇧🇷",
-    "available": false
+    "available": true
   },
   {
     "slug": "id",
@@ -85,7 +85,7 @@
     "locale": "id-ID",
     "dir": "ltr",
     "emoji": "🇮🇩",
-    "available": false
+    "available": true
   },
   {
     "slug": "hi",

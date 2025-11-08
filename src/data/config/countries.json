@@ -15,55 +15,55 @@
     "code": "es",
     "label": "Spagna",
     "emoji": "🇪🇸",
-    "available": false
+    "available": true
   },
   {
     "code": "fr",
     "label": "Francia",
     "emoji": "🇫🇷",
-    "available": false
+    "available": true
   },
   {
     "code": "in",
     "label": "India",
     "emoji": "🇮🇳",
-    "available": false
+    "available": true
   },
   {
     "code": "jp",
     "label": "Giappone",
     "emoji": "🇯🇵",
-    "available": false
+    "available": true
   },
   {
     "code": "gb",
     "label": "Regno Unito",
     "emoji": "🇬🇧",
-    "available": false
+    "available": true
   },
   {
     "code": "ae",
     "label": "Emirati Arabi Uniti",
     "emoji": "🇦🇪",
-    "available": false
+    "available": true
   },
   {
     "code": "us",
     "label": "Stati Uniti",
     "emoji": "🇺🇸",
-    "available": false
+    "available": true
   },
   {
     "code": "br",
     "label": "Brasile",
     "emoji": "🇧🇷",
-    "available": false
+    "available": true
   },
   {
     "code": "de",
     "label": "Germania",
     "emoji": "🇩🇪",
-    "available": false
+    "available": true
   },
   {
     "code": "ca",

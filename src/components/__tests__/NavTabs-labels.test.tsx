@@ -25,12 +25,16 @@ describe("NavTabs label rendering", () => {
           auth: "Accedi",
           chat: "Chatta con noi su WhatsApp",
           settings: "Impostazioni",
+          contabilità: "Contabilità",
+          invitati: "Invitati",
+          preferiti: "Preferiti",
+          spese: "Spese",
         }}
       >
         <NavTabs />
       </NextIntlProvider>
     );
-    expect(screen.getByText("Location Ricevimento")).toBeInTheDocument();
-    expect(screen.getByText("Location Cerimonia")).toBeInTheDocument();
+    expect(screen.getByText("Location Ricevimento")).not.toBeNull();
+    expect(screen.getByText("Location Cerimonia")).not.toBeNull();
   });
 });
