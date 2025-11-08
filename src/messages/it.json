@@ -1753,5 +1753,12 @@
       "submitSuccess": "Chiesa aggiunta con successo! Sarà visibi→dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     }
+  },
+  "footer": {
+    "copyright": "© 2025 Il Budget degli Sposi. Tutti i diritti riservati.",
+    "madeWith": "Creato con ❤️ in Italia",
+    "privacy": "Privacy",
+    "terms": "Termini",
+    "contact": "Contatti"
   }
 }
