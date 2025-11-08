@@ -1,4 +1,5 @@
-﻿"use client";
+﻿import LocaleSwitcher from "@/components/LocaleSwitcher";
+"use client";
 
 import { formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
@@ -82,6 +83,9 @@ export default function DynamicHeader() {
               </span>
             </>
           )}
+        </div>
+        <div className="mt-2 flex justify-center">
+          <LocaleSwitcher />
         </div>
       </div>
     </div>
