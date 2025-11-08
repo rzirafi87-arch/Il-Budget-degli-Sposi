@@ -1715,5 +1715,19 @@
       "submitSuccess": "Church added successfully! It will be visible after staff verification.",
       "submitError": "Error adding church"
     }
+  },
+  "wizard": {
+    "title": "Welcome!",
+    "step1": "Choose your language",
+    "step2": "Select your country",
+    "step3": "Pick your event",
+    "continue": "Continue",
+    "back": "Back",
+    "goToDashboard": "Go to dashboard"
+  },
+  "header": {
+    "language": "Language",
+    "country": "Country",
+    "event": "Event"
   }
 }
