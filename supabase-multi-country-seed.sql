@@ -1,3 +1,39 @@
+-- Traduzioni Diciottesimo (IT/EN)
+-- event_type_translations
+insert into event_type_translations (code, locale, label) values
+('EIGHTEENTH','it','Diciottesimo'),
+('EIGHTEENTH','en','18th Birthday')
+on conflict do nothing;
+
+-- category_translations
+insert into category_translations (category_code, locale, label) values
+('FESTEGGIATO','it','Festeggiato'),
+('FESTEGGIATO','en','Birthday person'),
+('FESTA','it','Festa'),
+('FESTA','en','Party')
+on conflict do nothing;
+
+-- subcategory_translations
+insert into subcategory_translations (subcategory_code, locale, label) values
+('LOCATION','it','Location festa'),
+('LOCATION','en','Party location'),
+('FOTOGRAFO','it','Fotografo'),
+('FOTOGRAFO','en','Photographer'),
+('CATERING','it','Catering'),
+('CATERING','en','Catering'),
+('TORTA','it','Torta'),
+('TORTA','en','Cake'),
+('DJ','it','DJ/Musica'),
+('DJ','en','DJ/Music')
+on conflict do nothing;
+
+-- timeline_translations
+insert into timeline_translations (timeline_code, locale, label) values
+('ORGANIZZA_FESTA','it','Organizza la festa'),
+('ORGANIZZA_FESTA','en','Plan the party'),
+('GIORNO_COMPLEANNO','it','Giorno del compleanno'),
+('GIORNO_COMPLEANNO','en','Birthday day')
+on conflict do nothing;
 -- Traduzioni Anniversario (IT/EN)
 -- event_type_translations
 insert into event_type_translations (code, locale, label) values
