@@ -1,342 +1,282 @@
-  "footer": {
-    "newsletterTitle": "Mantente informado",
-    "newsletterDesc": "Recibe consejos, listas de verificación y ofertas exclusivas para tu boda perfecta!",
-    "newsletterFormLabel": "Suscripción al boletín",
-    "emailPlaceholder": "Tu correo electrónico...",
-    "emailAriaLabel": "Introduce tu correo electrónico",
-    "subscribeBtn": "Suscribirse",
-    "thankYouMsg": "¡Gracias por suscribirte! Revisa tu correo electrónico.",
-    "aboutTitle": "MYBUDGETEVENTO",
-    "aboutDesc": "La plataforma italiana para planificar el presupuesto de tu boda. Sencilla, completa y gratuita.",
-    "toolsTitle": "Herramientas",
-    "expenses": "Gestión de Gastos",
-    "incomes": "Entradas y Regalos",
-    "guestsList": "Lista de Invitados",
-    "suppliersTitle": "Buscar Proveedores",
-    "locations": "Lugares de Recepción",
-    "churches": "Lugares de Ceremonia",
-    "allSuppliers": "Todos los Proveedores",
-    "infoTitle": "Información y Soporte",
-    "aboutUs": "Quiénes Somos",
-    "howItWorks": "Cómo Funciona",
-    "contacts": "Contactos",
-    "legalTitle": "Legal",
-    "privacyPolicy": "Política de Privacidad",
-    "termsOfService": "Términos de Servicio",
-    "cookiePolicy": "Política de Cookies",
-    "securePayments": "Pagos Seguros",
-    "madeInItaly": "Hecho en Italia",
-    "gdprCompliant": "Cumple con GDPR",
-    "free100": "100% Gratis",
-    "copyright": "Todos los derechos reservados.",
-    "madeWithLove": "Hecho con amor para las parejas",
-    "privacy": "Privacidad",
-    "terms": "Términos",
-    "contact": "Contactos",
-    "dashboard": "Panel principal",
-    "timeline": "Cronología",
-    "budget": "Presupuesto",
-    "weddingThings": "Elementos de la boda",
-    "saveTheDate": "Reserva la fecha",
-    "guests": "Invitados",
-    "accounting": "Contabilidad",
-    "suppliers": "Proveedores",
-    "location": "Lugares de Recepción",
-    "churches": "Lugares de Ceremonia",
-    "documents": "Documentos",
-    "giftList": "Lista de regalos",
-    "favorites": "Favoritos",
-    "suggestions": "Sugerencias y Consejos",
-    "ideaBudget": "Idea de Presupuesto",
-    "auth": "Acceder",
-    "chat": "Chatea con nosotros en WhatsApp",
-    "settings": "Configuración",
-    "loading": "Cargando…",
-    "comingSoon": "Próximamente",
-    "budgetPage": {
-      "approvedExpenses": "Gastos aprobados",
-      "ctaIdeaBudget": "💡 Ir a Idea de Presupuesto",
-      "description": "Vista de los gastos aprobados de la sección 'Gastos', ordenados alfabéticamente por categoría y subcategoría.",
-      "totals": {
-        "title": "Total de gastos aprobados",
-        "common": "Común",
-        "bride": "Novia",
-        "groom": "Novio"
-      },
-      "table": {
-        "category": "Categoría",
-        "subcategory": "Subcategoría",
-        "spendType": "Tipo de gasto",
-        "paymentMethod": "Método de pago",
-        "budget": "Presupuesto",
-        "committed": "Comprometido",
-        "paid": "Pagado",
-        "residual": "Residual",
-        "fromQuote": "Del presupuesto",
-        "difference": "Diferencia"
-      },
-      "spendType": {
-        "common": "Común",
-        "bride": "Novia",
-        "groom": "Novio",
-        "gift": "Regalo"
-      },
-      "paymentMethod": {
-        "common": "💰 Común",
-        "bride": "👰 Novia",
-        "groom": "🤵 Novio",
-        "gift": "🎁 Regalo"
-      },
-      "loading": "Cargando...",
-      "empty": "No hay gastos aprobados. Ve a la sección 'Gastos' para aprobar tus gastos.",
-      "plannedVsActual": {
-        "title": "Planificado vs Real",
-        "totalPlanned": "Total planificado",
-        "totalActualApproved": "Total real (aprobado)",
-        "difference": "Diferencia",
-        "over": "+ por encima de lo previsto",
-        "under": "por debajo de lo previsto",
-        "item": "Elemento",
-        "planned": "Planificado",
-        "actual": "Real",
-        "empty": "No hay datos para comparar. Usa 'Idea de Presupuesto' para planificar y aprobar gastos en la sección 'Gastos'."
-      }
-    },
-    "expensesPage": {
-      "info": {
-        "lead": "Registra y gestiona todos los gastos de la boda. Puedes introducir presupuestos, confirmarlos como gastos aprobados y hacer un seguimiento de los estados de pago. Filtra por categoría, tipo de gasto (común/novia/novio) y estado.",
-        "title": "Gestión Completa de Gastos",
-        "description": "En esta página puedes registrar todos los gastos reales y los presupuestos. Cada gasto puede categorizarse, asignarse a novia/novio/común y rastrearse con estado de aprobación y pago. Los gastos confirmados desde el panel aparecen aquí automáticamente.",
-        "tips": {
-          "tip1": "Usa el estado 'Presupuesto' para las ofertas recibidas, luego cámbialas a 'Aprobado' cuando confirmes",
-          "tip2": "El campo 'Del presupuesto' indica si el gasto proviene del panel (ya presupuestado)",
-          "tip3": "Agrega siempre el proveedor para hacer un seguimiento de quién te proporcionó cada servicio",
-          "tip4": "Filtra por categoría o tipo de gasto para analizar dónde estás gastando más"
-        },
-        "eventTypeSpecific": {
-          "wedding": "Para la boda, puedes dividir los gastos entre novia, novio y comunes. Esto ayuda a entender la contribución de cada uno y a gestionar las finanzas de forma transparente.",
-          "baptism": "Para el bautizo, todos los gastos se configuran automáticamente como 'comunes' - no es necesario especificar quién paga.",
-          "eighteenth": "Para el cumpleaños de 18, todos los gastos son comunes. ¡Planifica la ubicación, catering, entretenimiento y recuerdos para hacer inolvidable esta fiesta!",
-          "confirmation": "Para la confirmación, todos los gastos son comunes. Organiza la ceremonia, recepción, recuerdos y detalles para celebrar este momento especial de crecimiento espiritual.",
-          "birthday": "Para el cumpleaños, divide los gastos entre el organizador principal y los compartidos con otros.",
-          "graduation": "Para la graduación, rastrea todos los gastos relacionados con el evento: ubicación, catering, invitaciones, decoraciones y recuerdos.",
-          "anniversary": "Para el aniversario de bodas, gestiona juntos los gastos para la celebración. Ya sea el 25º (plata), 50º (oro) o un aniversario más íntimo, cada detalle cuenta para hacer especial este momento de renovación del amor."
-        }
-      },
-      "title": "Gastos",
-      "loading": "Cargando...",
-      "summary": {
-        "pending": "Pendiente de aprobación",
-        "approved": "Gastos aprobados"
-      },
-      "buttons": {
-        "add": "+ Agregar gasto",
-        "cancel": "Cancelar",
-        "save": "Guardar gasto",
-        "approve": "Aprobar",
-        "reject": "Rechazar"
-      },
-      "form": {
-        "new": "Nuevo gasto",
-        "category": "Categoría",
-        "subcategory": "Subcategoría",
-        "supplier": "Proveedor",
-        "amount": "Importe",
-        "spendType": "Tipo de gasto",
-        "date": "Fecha",
-        "description": "Descripción",
-        "notes": "Notas",
-        "placeholders": {
-          "supplier": "Nombre del proveedor",
-          "amount": "0",
-          "description": "Descripción detallada",
-          "notes": "Notas adicionales..."
-        },
-        "spendTypeOptions": {
-          "common": "Común",
-          "bride": "Novia",
-          "groom": "Novio"
-        }
-      },
-      "table": {
-        "supplier": "Proveedor",
-        "description": "Descripción",
-        "amount": "Importe",
-        "type": "Tipo",
-        "date": "Fecha",
-        "status": "Estado",
-        "fromQuote": "Del presupuesto",
-        "actions": "Acciones"
-      },
-      "status": {
-        "approved": "✓ Aprobado",
-        "rejected": "✗ Rechazado",
-        "pending": "Pendiente"
-      },
-      "spendType": {
-        "common": "Común",
-        "bride": "Novia",
-        "groom": "Novio"
-      },
-      "messages": {
-        "mustAuthAdd": "❌ Debes estar autenticado para agregar gastos. Haz clic en 'Registrarse' arriba.",
-        "networkError": "❌ Error de red",
-        "successAdded": "✅ ¡Gasto agregado con éxito!",
-        "none": "No hay gastos registrados",
-        "confirmed": "Confirmado",
-        "discarded": "Descartado"
-      }
-    },
-    "incomesPage": {
-      "info": {
-        "lead": "Rastrea todos los ingresos que contribuyen al presupuesto de la boda: regalos de los padres, contribuciones familiares, ahorros personales u otras fuentes. Especifica si el ingreso es de la novia, del novio o común.",
-        "title": "Rastrea Todos los Ingresos",
-        "description": "Aquí puedes registrar todas las fuentes de dinero que contribuyen al presupuesto de tu evento: contribuciones familiares, regalos en sobre, transferencias, ahorros personales. Cada ingreso puede categorizarse para saber quién lo aporta (novia/novio/común) y de quién proviene.",
-        "tips": {
-          "tip1": "Usa 'Sobre' para regalos en efectivo recibidos durante el evento",
-          "tip2": "Usa 'Transferencia' para contribuciones recibidas antes del evento",
-          "tip3": "Usa 'Regalo' para registrar obsequios materiales (sin importe específico)",
-          "tip4": "El total de ingresos te ayuda a entender cuánto presupuesto efectivo tienes disponible"
-        },
-        "eventTypeSpecific": {
-          "wedding": "Durante la boda es tradición recibir sobres con contribuciones económicas de los invitados. Registra cada sobre recibido para un seguimiento completo.",
-          "baptism": "Para el bautizo, registra las contribuciones del padrino, madrina y familiares que quieren participar en los gastos.",
-          "birthday": "Para el cumpleaños, rastrea las contribuciones de amigos y parientes que quieren ayudar en la organización.",
-          "graduation": "Para la graduación, registra contribuciones familiares y regalos recibidos para celebrar el logro.",
-          "anniversary": "Para el aniversario de bodas, registra contribuciones de hijos, nietos y parientes que quieren participar en la celebración. A menudo las familias se unen para organizar la fiesta sorpresa o contribuir a los gastos."
-        }
-      },
-      "title": "Ingresos",
-      "loading": "Cargando...",
-      "toolbar": {
-        "giftList": "Lista de Regalos",
-        "backDashboard": "Volver al Panel"
-      },
-      "summary": {
-        "bride": "Ingresos Novia",
-        "groom": "Ingresos Novio",
-        "common": "Ingresos Comunes",
-        "totalMoney": "Total dinero",
-        "physicalGifts": "Regalos físicos"
-      },
-      "buttons": {
-        "add": "+ Agregar ingreso",
-        "cancel": "Cancelar",
-        "save": "Guardar ingreso",
-        "delete": "Eliminar"
-      },
-      "form": {
-        "new": "Nuevo ingreso",
-        "name": "Nombre persona/familia *",
-        "type": "Tipología *",
-        "incomeSource": "Fuente de ingreso *",
-        "amount": "Importe (€) *",
-        "date": "Fecha",
-        "notes": "Notas",
-        "giftDescription": "Descripción del regalo *",
-        "placeholders": {
-          "name": "Ej. Familia García",
-          "amount": "0",
-          "notes": "Notas adicionales...",
-          "gift": "Ej. Juego de platos completo"
-        },
-        "typeOptions": {
-          "busta": "Sobre",
-          "bonifico": "Transferencia",
-          "regalo": "Regalo físico"
-        },
-        "sourceOptions": {
-          "common": "Común",
-          "bride": "Novia",
-          "groom": "Novio"
-        }
-      },
-      "table": {
-        "date": "Fecha",
-        "name": "Nombre",
-        "type": "Tipología",
-        "source": "Fuente",
-        "amount": "Importe",
-        "notes": "Notas / Descripción",
-        "actions": "Acciones"
-      },
-      "empty": "No hay ingresos registrados",
-      "badges": {
-        "type": {
-          "busta": "💵 Sobre",
-          "bonifico": "🏦 Transferencia",
-          "regalo": "🎁 Regalo"
-        },
-        "source": {
-          "bride": "👰 Novia",
-          "groom": "🤵 Novio",
-          "common": "💑 Común"
-        }
-      },
-      "messages": {
-        "mustAuthAdd": "❌ Debes estar autenticado para agregar ingresos. Haz clic en 'Registrarse' arriba.",
-        "networkError": "❌ Error de red",
-        "successAdded": "✅ ¡Ingreso registrado con éxito!",
-        "deleted": "✅ Ingreso eliminado",
-        "confirmDelete": "¿Estás seguro de que quieres eliminar este ingreso?"
-      }
-    },
-    "footer": {
-      "newsletterTitle": "Mantente informado",
-      "newsletterDesc": "Recibe consejos, listas de verificación y ofertas exclusivas para tu boda perfecta!",
-      "newsletterFormLabel": "Suscripción al boletín",
-      "emailPlaceholder": "Tu correo electrónico...",
-      "emailAriaLabel": "Introduce tu correo electrónico",
-      "subscribeBtn": "Suscribirse",
-      "thankYouMsg": "¡Gracias por suscribirte! Revisa tu correo electrónico.",
-      "aboutTitle": "MYBUDGETEVENTO",
-      "aboutDesc": "La plataforma italiana para planificar el presupuesto de tu boda. Sencilla, completa y gratuita.",
-      "toolsTitle": "Herramientas",
-      "expenses": "Gestión de Gastos",
-      "incomes": "Entradas y Regalos",
-      "guestsList": "Lista de Invitados",
-      "suppliersTitle": "Buscar Proveedores",
-      "locations": "Lugares de Recepción",
-      "churches": "Lugares de Ceremonia",
-      "allSuppliers": "Todos los Proveedores",
-      "infoTitle": "Información y Soporte",
-      "aboutUs": "Quiénes Somos",
-      "howItWorks": "Cómo Funciona",
-      "contacts": "Contactos",
-      "legalTitle": "Legal",
-      "privacyPolicy": "Política de Privacidad",
-      "termsOfService": "Términos de Servicio",
-      "cookiePolicy": "Política de Cookies",
-      "securePayments": "Pagos Seguros",
-      "madeInItaly": "Hecho en Italia",
-      "gdprCompliant": "Cumple con GDPR",
-      "free100": "100% Gratis",
-      "copyright": "Todos los derechos reservados.",
-      "madeWithLove": "Hecho con amor para las parejas",
-      "privacy": "Privacidad",
-      "terms": "Términos",
-      "contact": "Contactos"
-    },
-    "events": {
-      "wedding": "Boda",
-      "baptism": "Bautizo",
-      "eighteenth": "18º cumpleaños",
-      "anniversary": "Aniversario de bodas",
-      "gender-reveal": "Revelación de género",
-      "birthday": "Cumpleaños",
-      "fifty": "50 años",
-      "retirement": "Jubilación",
-      "confirmation": "Confirmación",
-      "graduation": "Graduación",
-      "baby-shower": "Baby Shower",
-      "engagement": "Fiesta de compromiso",
-      "corporate": "Evento corporativo",
-      "milestone-birthday": "Cumpleaños (hito)",
-      "gender-reveal-party": "Fiesta de revelación de género",
-      "proposal": "Fiesta de propuesta",
-      "communion": "Primera comunión",
-      "bar-mitzvah": "Bar Mitzvah",
-      "quinceanera": "Quinceañera",
-      "charity-gala": "Evento benéfico/Gala"
-    }
+{
+  "common": "Común",
+  "bride": "Novia",
+  "groom": "Novio"
+},
+"table": {
+  "category": "Categoría",
+  "subcategory": "Subcategoría",
+  "spendType": "Tipo de gasto",
+  "paymentMethod": "Método de pago",
+  "budget": "Presupuesto",
+  "committed": "Comprometido",
+  "paid": "Pagado",
+  "residual": "Residual",
+  "fromQuote": "Del presupuesto",
+  "difference": "Diferencia"
+},
+"spendType": {
+  "common": "Común",
+  "bride": "Novia",
+  "groom": "Novio",
+  "gift": "Regalo"
+},
+"paymentMethod": {
+  "common": "💰 Común",
+  "bride": "👰 Novia",
+  "groom": "🤵 Novio",
+  "gift": "🎁 Regalo"
+},
+"loading": "Cargando...",
+"empty": "No hay gastos aprobados. Ve a la sección 'Gastos' para aprobar tus gastos.",
+"plannedVsActual": {
+  "title": "Planificado vs Real",
+  "totalPlanned": "Total planificado",
+  "totalActualApproved": "Total real (aprobado)",
+  "difference": "Diferencia",
+  "over": "+ por encima de lo previsto",
+  "under": "por debajo de lo previsto",
+  "item": "Elemento",
+  "planned": "Planificado",
+  "actual": "Real",
+  "empty": "No hay datos para comparar. Usa 'Idea de Presupuesto' para planificar y aprobar gastos en la sección 'Gastos'."
+}
+},
+"expensesPage": {
+"info": {
+  "lead": "Registra y gestiona todos los gastos de la boda. Puedes introducir presupuestos, confirmarlos como gastos aprobados y hacer un seguimiento de los estados de pago. Filtra por categoría, tipo de gasto (común/novia/novio) y estado.",
+  "title": "Gestión Completa de Gastos",
+  "description": "En esta página puedes registrar todos los gastos reales y los presupuestos. Cada gasto puede categorizarse, asignarse a novia/novio/común y rastrearse con estado de aprobación y pago. Los gastos confirmados desde el panel aparecen aquí automáticamente.",
+  "tips": {
+    "tip1": "Usa el estado 'Presupuesto' para las ofertas recibidas, luego cámbialas a 'Aprobado' cuando confirmes",
+    "tip2": "El campo 'Del presupuesto' indica si el gasto proviene del panel (ya presupuestado)",
+    "tip3": "Agrega siempre el proveedor para hacer un seguimiento de quién te proporcionó cada servicio",
+    "tip4": "Filtra por categoría o tipo de gasto para analizar dónde estás gastando más"
+  },
+  "eventTypeSpecific": {
+    "wedding": "Para la boda, puedes dividir los gastos entre novia, novio y comunes. Esto ayuda a entender la contribución de cada uno y a gestionar las finanzas de forma transparente.",
+    "baptism": "Para el bautizo, todos los gastos se configuran automáticamente como 'comunes' - no es necesario especificar quién paga.",
+    "eighteenth": "Para el cumpleaños de 18, todos los gastos son comunes. ¡Planifica la ubicación, catering, entretenimiento y recuerdos para hacer inolvidable esta fiesta!",
+    "confirmation": "Para la confirmación, todos los gastos son comunes. Organiza la ceremonia, recepción, recuerdos y detalles para celebrar este momento especial de crecimiento espiritual.",
+    "birthday": "Para el cumpleaños, divide los gastos entre el organizador principal y los compartidos con otros.",
+    "graduation": "Para la graduación, rastrea todos los gastos relacionados con el evento: ubicación, catering, invitaciones, decoraciones y recuerdos.",
+    "anniversary": "Para el aniversario de bodas, gestiona juntos los gastos para la celebración. Ya sea el 25º (plata), 50º (oro) o un aniversario más íntimo, cada detalle cuenta para hacer especial este momento de renovación del amor."
   }
+},
+"title": "Gastos",
+"loading": "Cargando...",
+"summary": {
+  "pending": "Pendiente de aprobación",
+  "approved": "Gastos aprobados"
+},
+"buttons": {
+  "add": "+ Agregar gasto",
+  "cancel": "Cancelar",
+  "save": "Guardar gasto",
+  "approve": "Aprobar",
+  "reject": "Rechazar"
+},
+"form": {
+  "new": "Nuevo gasto",
+  "category": "Categoría",
+  "subcategory": "Subcategoría",
+  "supplier": "Proveedor",
+  "amount": "Importe",
+  "spendType": "Tipo de gasto",
+  "date": "Fecha",
+  "description": "Descripción",
+  "notes": "Notas",
+  "placeholders": {
+    "supplier": "Nombre del proveedor",
+    "amount": "0",
+    "description": "Descripción detallada",
+    "notes": "Notas adicionales..."
+  },
+  "spendTypeOptions": {
+    "common": "Común",
+    "bride": "Novia",
+    "groom": "Novio"
+  }
+},
+"table": {
+  "supplier": "Proveedor",
+  "description": "Descripción",
+  "amount": "Importe",
+  "type": "Tipo",
+  "date": "Fecha",
+  "status": "Estado",
+  "fromQuote": "Del presupuesto",
+  "actions": "Acciones"
+},
+"status": {
+  "approved": "✓ Aprobado",
+  "rejected": "✗ Rechazado",
+  "pending": "Pendiente"
+},
+"spendType": {
+  "common": "Común",
+  "bride": "Novia",
+  "groom": "Novio"
+},
+"messages": {
+  "mustAuthAdd": "❌ Debes estar autenticado para agregar gastos. Haz clic en 'Registrarse' arriba.",
+  "networkError": "❌ Error de red",
+  "successAdded": "✅ ¡Gasto agregado con éxito!",
+  "none": "No hay gastos registrados",
+  "confirmed": "Confirmado",
+  "discarded": "Descartado"
+}
+},
+"incomesPage": {
+"info": {
+  "lead": "Rastrea todos los ingresos que contribuyen al presupuesto de la boda: regalos de los padres, contribuciones familiares, ahorros personales u otras fuentes. Especifica si el ingreso es de la novia, del novio o común.",
+  "title": "Rastrea Todos los Ingresos",
+  "description": "Aquí puedes registrar todas las fuentes de dinero que contribuyen al presupuesto de tu evento: contribuciones familiares, regalos en sobre, transferencias, ahorros personales. Cada ingreso puede categorizarse para saber quién lo aporta (novia/novio/común) y de quién proviene.",
+  "tips": {
+    "tip1": "Usa 'Sobre' para regalos en efectivo recibidos durante el evento",
+    "tip2": "Usa 'Transferencia' para contribuciones recibidas antes del evento",
+    "tip3": "Usa 'Regalo' para registrar obsequios materiales (sin importe específico)",
+    "tip4": "El total de ingresos te ayuda a entender cuánto presupuesto efectivo tienes disponible"
+  },
+  "eventTypeSpecific": {
+    "wedding": "Durante la boda es tradición recibir sobres con contribuciones económicas de los invitados. Registra cada sobre recibido para un seguimiento completo.",
+    "baptism": "Para el bautizo, registra las contribuciones del padrino, madrina y familiares que quieren participar en los gastos.",
+    "birthday": "Para el cumpleaños, rastrea las contribuciones de amigos y parientes que quieren ayudar en la organización.",
+    "graduation": "Para la graduación, registra contribuciones familiares y regalos recibidos para celebrar el logro.",
+    "anniversary": "Para el aniversario de bodas, registra contribuciones de hijos, nietos y parientes que quieren participar en la celebración. A menudo las familias se unen para organizar la fiesta sorpresa o contribuir a los gastos."
+  }
+},
+"title": "Ingresos",
+"loading": "Cargando...",
+"toolbar": {
+  "giftList": "Lista de Regalos",
+  "backDashboard": "Volver al Panel"
+},
+"summary": {
+  "bride": "Ingresos Novia",
+  "groom": "Ingresos Novio",
+  "common": "Ingresos Comunes",
+  "totalMoney": "Total dinero",
+  "physicalGifts": "Regalos físicos"
+},
+"buttons": {
+  "add": "+ Agregar ingreso",
+  "cancel": "Cancelar",
+  "save": "Guardar ingreso",
+  "delete": "Eliminar"
+},
+"form": {
+  "new": "Nuevo ingreso",
+  "name": "Nombre persona/familia *",
+  "type": "Tipología *",
+  "incomeSource": "Fuente de ingreso *",
+  "amount": "Importe (€) *",
+  "date": "Fecha",
+  "notes": "Notas",
+  "giftDescription": "Descripción del regalo *",
+  "placeholders": {
+    "name": "Ej. Familia García",
+    "amount": "0",
+    "notes": "Notas adicionales...",
+    "gift": "Ej. Juego de platos completo"
+  },
+  "typeOptions": {
+    "busta": "Sobre",
+    "bonifico": "Transferencia",
+    "regalo": "Regalo físico"
+  },
+  "sourceOptions": {
+    "common": "Común",
+    "bride": "Novia",
+    "groom": "Novio"
+  }
+},
+"table": {
+  "date": "Fecha",
+  "name": "Nombre",
+  "type": "Tipología",
+  "source": "Fuente",
+  "amount": "Importe",
+  "notes": "Notas / Descripción",
+  "actions": "Acciones"
+},
+"empty": "No hay ingresos registrados",
+"badges": {
+  "type": {
+    "busta": "💵 Sobre",
+    "bonifico": "🏦 Transferencia",
+    "regalo": "🎁 Regalo"
+  },
+  "source": {
+    "bride": "👰 Novia",
+    "groom": "🤵 Novio",
+    "common": "💑 Común"
+  }
+},
+"messages": {
+  "mustAuthAdd": "❌ Debes estar autenticado para agregar ingresos. Haz clic en 'Registrarse' arriba.",
+  "networkError": "❌ Error de red",
+  "successAdded": "✅ ¡Ingreso registrado con éxito!",
+  "deleted": "✅ Ingreso eliminado",
+  "confirmDelete": "¿Estás seguro de que quieres eliminar este ingreso?"
+}
+},
+"footer": {
+"newsletterTitle": "Mantente informado",
+"newsletterDesc": "Recibe consejos, listas de verificación y ofertas exclusivas para tu boda perfecta!",
+"newsletterFormLabel": "Suscripción al boletín",
+"emailPlaceholder": "Tu correo electrónico...",
+"emailAriaLabel": "Introduce tu correo electrónico",
+"subscribeBtn": "Suscribirse",
+"thankYouMsg": "¡Gracias por suscribirte! Revisa tu correo electrónico.",
+"aboutTitle": "MYBUDGETEVENTO",
+"aboutDesc": "La plataforma italiana para planificar el presupuesto de tu boda. Sencilla, completa y gratuita.",
+"toolsTitle": "Herramientas",
+"expenses": "Gestión de Gastos",
+"incomes": "Entradas y Regalos",
+"guestsList": "Lista de Invitados",
+"suppliersTitle": "Buscar Proveedores",
+"locations": "Lugares de Recepción",
+"churches": "Lugares de Ceremonia",
+"allSuppliers": "Todos los Proveedores",
+"infoTitle": "Información y Soporte",
+"aboutUs": "Quiénes Somos",
+"howItWorks": "Cómo Funciona",
+"contacts": "Contactos",
+"legalTitle": "Legal",
+"privacyPolicy": "Política de Privacidad",
+"termsOfService": "Términos de Servicio",
+"cookiePolicy": "Política de Cookies",
+"securePayments": "Pagos Seguros",
+"madeInItaly": "Hecho en Italia",
+"gdprCompliant": "Cumple con GDPR",
+"free100": "100% Gratis",
+"copyright": "Todos los derechos reservados.",
+"madeWithLove": "Hecho con amor para las parejas",
+"privacy": "Privacidad",
+"terms": "Términos",
+"contact": "Contactos"
+},
+"events": {
+"wedding": "Boda",
+"baptism": "Bautizo",
+"eighteenth": "18º cumpleaños",
+"anniversary": "Aniversario de bodas",
+"gender-reveal": "Revelación de género",
+"birthday": "Cumpleaños",
+"fifty": "50 años",
+"retirement": "Jubilación",
+"confirmation": "Confirmación",
+"graduation": "Graduación",
+"baby-shower": "Baby Shower",
+"engagement": "Fiesta de compromiso",
+"corporate": "Evento corporativo",
+"milestone-birthday": "Cumpleaños (hito)",
+"gender-reveal-party": "Fiesta de revelación de género",
+"proposal": "Fiesta de propuesta",
+"communion": "Primera comunión",
+"bar-mitzvah": "Bar Mitzvah",
+"quinceanera": "Quinceañera",
+"charity-gala": "Evento benéfico/Gala"
+}
+}
