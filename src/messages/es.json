@@ -1,8 +1,7 @@
 {
   "common": "Común",
   "bride": "Novia",
-  "groom": "Novio"
-},
+  "groom": "Novio",
 "table": {
   "category": "Categoría",
   "subcategory": "Subcategoría",
@@ -28,20 +27,19 @@
   "gift": "🎁 Regalo"
 },
 "loading": "Cargando...",
-"empty": "No hay gastos aprobados. Ve a la sección 'Gastos' para aprobar tus gastos.",
-"plannedVsActual": {
-  "title": "Planificado vs Real",
-  "totalPlanned": "Total planificado",
-  "totalActualApproved": "Total real (aprobado)",
-  "difference": "Diferencia",
-  "over": "+ por encima de lo previsto",
-  "under": "por debajo de lo previsto",
-  "item": "Elemento",
-  "planned": "Planificado",
-  "actual": "Real",
-  "empty": "No hay datos para comparar. Usa 'Idea de Presupuesto' para planificar y aprobar gastos en la sección 'Gastos'."
-}
-},
+  "empty": "No hay gastos aprobados. Ve a la sección 'Gastos' para aprobar tus gastos.",
+  "plannedVsActual": {
+    "title": "Planificado vs Real",
+    "totalPlanned": "Total planificado",
+    "totalActualApproved": "Total real (aprobado)",
+    "difference": "Diferencia",
+    "over": "+ por encima de lo previsto",
+    "under": "por debajo de lo previsto",
+    "item": "Elemento",
+    "planned": "Planificado",
+    "actual": "Real",
+    "empty": "No hay datos para comparar. Usa 'Idea de Presupuesto' para planificar y aprobar gastos en la sección 'Gastos'."
+  },
 "expensesPage": {
 "info": {
   "lead": "Registra y gestiona todos los gastos de la boda. Puedes introducir presupuestos, confirmarlos como gastos aprobados y hacer un seguimiento de los estados de pago. Filtra por categoría, tipo de gasto (común/novia/novio) y estado.",
