@@ -49,6 +49,7 @@
     "dependencies": {
         "@remotion/player": "^4.0.366",
         "@stripe/stripe-js": "^8.1.0",
+        "@supabase/ssr": "^0.7.0",
         "@supabase/supabase-js": "^2.76.1",
         "clsx": "^2.1.1",
         "dotenv": "^16.4.5",
@@ -83,9 +84,9 @@
         "eslint-config-next": "16.0.0",
         "jest": "^30.2.0",
         "jest-environment-jsdom": "^30.2.0",
-        "ts-node": "^10.9.2",
         "pg": "^8.13.1",
         "tailwindcss": "^4",
+        "ts-node": "^10.9.2",
         "typescript": "^5"
     }
 }
