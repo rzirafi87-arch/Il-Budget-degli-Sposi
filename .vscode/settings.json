@@ -76,7 +76,9 @@
   // ===== i18n Ally Settings =====
   "i18n-ally.localesPaths": [
     "messages",
-    "src/messages"
+    "src/messages",
+    "src/i18n",
+    "src/lib/i18n"
   ],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.enabledFrameworks": [
