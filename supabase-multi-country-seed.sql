@@ -39,34 +39,3 @@ INSERT INTO suppliers (name, type, country, region, city, address) VALUES
   ('Paris Wedding Flowers', 'fiori', 'Francia', 'Île-de-France', 'Parigi', 'Rue des Fleurs 4'),
   ('Sevilla Catering', 'catering', 'Spagna', 'Andalusia', 'Siviglia', 'Calle Feria 9'),
   ('München Musik', 'musica', 'Germania', 'Baviera', 'Monaco', 'Beethovenstr. 3');
-
--- Traduzioni Baby Shower (IT/EN)
--- event_type_translations
-insert into event_type_translations (code, locale, label) values
-('BABY_SHOWER','it','Baby Shower'),
-('BABY_SHOWER','en','Baby Shower')
-on conflict do nothing;
-
--- category_translations
-insert into category_translations (category_code, locale, label) values
-('MAMMA','it','Mamma'),
-('MAMMA','en','Mom'),
-('FESTA','it','Festa'),
-('FESTA','en','Party')
-on conflict do nothing;
-
--- subcategory_translations
-insert into subcategory_translations (subcategory_code, locale, label) values
-('TORTA','it','Torta'),
-('TORTA','en','Cake'),
-('DECORAZIONI','it','Decorazioni'),
-('DECORAZIONI','en','Decorations')
-on conflict do nothing;
-
--- timeline_translations
-insert into timeline_translations (timeline_code, locale, label) values
-('INVITI','it','Invio inviti'),
-('INVITI','en','Send invitations'),
-('FESTA','it','Giorno della festa'),
-('FESTA','en','Party day')
-on conflict do nothing;
