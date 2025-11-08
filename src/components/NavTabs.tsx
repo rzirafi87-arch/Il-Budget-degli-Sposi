@@ -59,67 +59,67 @@ export default function NavTabs() {
   const withLocale = (path: string) => `/${locale}${path}`;
 
   const weddingTabs = [
-    { href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
-    { href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
-    { href: withLocale("/save-the-date"), label: t("saveTheDate", { default: "Save the Date" }), icon: TABS_ICONS.saveTheDate },
-    { href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
-    { href: withLocale("/contabilita"), label: t("accounting"), icon: TABS_ICONS.accounting },
-    { href: withLocale("/fornitori"), label: t("suppliers"), icon: TABS_ICONS.suppliers },
-    { href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
-    { href: withLocale("/documenti"), label: t("documents"), icon: TABS_ICONS.documents },
-    { href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+    { path: "/dashboard", href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
+    { path: "/save-the-date", href: withLocale("/save-the-date"), label: t("saveTheDate", { default: "Save the Date" }), icon: TABS_ICONS.saveTheDate },
+    { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
+    { path: "/contabilita", href: withLocale("/contabilita"), label: t("accounting"), icon: TABS_ICONS.accounting },
+    { path: "/fornitori", href: withLocale("/fornitori"), label: t("suppliers"), icon: TABS_ICONS.suppliers },
+    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+    { path: "/chiese", href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
+    { path: "/documenti", href: withLocale("/documenti"), label: t("documents"), icon: TABS_ICONS.documents },
+    { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const baptismTabs = [
-    { href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
-    { href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
-    { href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
-    { href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
-    { href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
-    { href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+    { path: "/dashboard", href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { path: "/idea-di-budget", href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
+    { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
+    { path: "/chiese", href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
+    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+    { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const eighteenthTabs = [
-    { href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
-    { href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
-    { href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
-    { href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
-    { href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+    { path: "/dashboard", href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { path: "/idea-di-budget", href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
+    { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
+    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+    { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const confirmationTabs = [
-    { href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
-    { href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
-    { href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
-    { href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
-    { href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
-    { href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+    { path: "/dashboard", href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { path: "/idea-di-budget", href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
+    { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
+    { path: "/chiese", href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
+    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+    { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const graduationTabs = [
-    { href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
-    { href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
-    { href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
-    { href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
-    { href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+    { path: "/dashboard", href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { path: "/idea-di-budget", href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
+    { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
+    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+    { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const communionTabs = [
-    { href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
-    { href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
-    { href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
-    { href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
-    { href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
-    { href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+    { path: "/dashboard", href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { path: "/idea-di-budget", href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
+    { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
+    { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
+    { path: "/chiese", href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
+    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+    { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const retirementTabs = [
-    { href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
-    { href: withLocale("/pensione"), label: t("retirement", { default: "Pensione" }), icon: TABS_ICONS.timeline },
-    { href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
-    { href: withLocale("/fornitori"), label: t("suppliers"), icon: TABS_ICONS.suppliers },
-    { href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
+    { path: "/dashboard", href: withLocale("/dashboard"), label: t("dashboard"), icon: TABS_ICONS.dashboard },
+    { path: "/pensione", href: withLocale("/pensione"), label: t("retirement", { default: "Pensione" }), icon: TABS_ICONS.timeline },
+    { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
+    { path: "/fornitori", href: withLocale("/fornitori"), label: t("suppliers"), icon: TABS_ICONS.suppliers },
+    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+    { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const tabs = (effectiveEventType === 'baptism') ? baptismTabs :
                (effectiveEventType === 'eighteenth') ? eighteenthTabs :
@@ -129,18 +129,18 @@ export default function NavTabs() {
                (effectiveEventType === 'retirement') ? retirementTabs :
                weddingTabs;
 
-  const currentTab = tabs.find((tab) => normalizedPath.startsWith(tab.href));
+  const currentTab = tabs.find((tab) => normalizedPath.startsWith(tab.path));
 
   return (
     <nav className="relative">
       {/* Desktop */}
       <div className="hidden md:flex flex-wrap gap-2 items-center">
         {tabs.map((tab) => {
-          const active = normalizedPath.startsWith(tab.href);
+          const active = normalizedPath.startsWith(tab.path);
           const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
           return (
             <Link
-              key={tab.href}
+              key={tab.path}
               href={tab.href}
               locale={locale}
               aria-label={tab.label}
@@ -212,11 +212,11 @@ export default function NavTabs() {
               style={{ borderColor: "var(--border-strong)" }}
             >
               {tabs.map((tab) => {
-                const active = normalizedPath.startsWith(tab.href);
+                const active = normalizedPath.startsWith(tab.path);
                 const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
                 return (
                   <Link
-                    key={tab.href}
+                    key={tab.path}
                     href={tab.href}
                     locale={locale}
                     aria-label={tab.label}
