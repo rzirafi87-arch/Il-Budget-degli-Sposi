@@ -1,11 +1,11 @@
+import { IntlProvider } from "@/vendor/next-intl";
 import { render, screen } from "@testing-library/react";
-import { NextIntlProvider } from "next-intl";
 import NavTabs from "../NavTabs";
 
 describe("NavTabs label rendering", () => {
   it("shows Location Ricevimento and Location Cerimonia in italian", () => {
     render(
-      <NextIntlProvider
+      <IntlProvider
         locale="it"
         messages={{
           locationReception: "Location Ricevimento",
@@ -32,7 +32,7 @@ describe("NavTabs label rendering", () => {
         }}
       >
         <NavTabs />
-      </NextIntlProvider>
+  </IntlProvider>
     );
     expect(screen.getByText("Location Ricevimento")).not.toBeNull();
     expect(screen.getByText("Location Cerimonia")).not.toBeNull();
