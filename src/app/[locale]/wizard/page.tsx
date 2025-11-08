@@ -3,9 +3,9 @@ import { useAppSettings } from "@/app/(providers)/app-settings";
 import CountryPicker from "@/components/CountryPicker";
 import EventPicker from "@/components/EventPicker";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 
 export default function WizardPage() {
   const t = useTranslations("wizard");
