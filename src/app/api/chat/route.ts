@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/chat -> returns availability status without exposing secrets
@@ -77,7 +76,8 @@ export async function POST(req: NextRequest) {
       { error: last?.error || "Tutti i modelli hanno fallito.", reply: "", tried },
       { status: last?.status || 503 }
     );
-  } catch (err: any) {
+  } catch (error) {
+    console.error("Chat API error:", error);
     return NextResponse.json(
       { error: "Errore interno inatteso.", reply: "" },
       { status: 500 }

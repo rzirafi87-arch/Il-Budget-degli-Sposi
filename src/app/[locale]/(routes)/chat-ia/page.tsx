@@ -1,8 +1,7 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-import React from "react";
+﻿"use client";
 import AISuggestionsChat from "@/components/AISuggestionsChat";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import React from "react";
 
 const supabase = getBrowserClient();
 
@@ -46,8 +45,9 @@ export default function ChatIAPage() {
       }
       setMessage("Budget salvato");
       setShowBudget(false);
-    } catch (e: any) {
-      setMessage(e.message || "Errore imprevisto");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Errore imprevisto";
+      setMessage(errorMessage);
     } finally {
       setSaving(false);
     }

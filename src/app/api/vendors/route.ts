@@ -226,10 +226,11 @@ export async function GET(req: NextRequest) {
       },
       filters: { ...filters, demo: isDemo },
     });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch vendors";
     console.error("Vendor fetch error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to fetch vendors" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -265,10 +266,11 @@ export async function OPTIONS(req: NextRequest) {
       success: true,
       stats: data,
     });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch stats";
     console.error("Stats fetch error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to fetch stats" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
