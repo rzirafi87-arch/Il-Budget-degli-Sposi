@@ -36,6 +36,6 @@ describe('SelectEventTypePage - Comunione', () => {
 
     expect(window.localStorage.getItem('eventType')).toBe('communion');
     expect(document.cookie).toMatch(/eventType=communion/);
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
+  expect(mockPush).toHaveBeenCalledWith('/it/dashboard');
   });
 });

@@ -17,7 +17,7 @@ describe('CresimaPage', () => {
     // Verifica che ci siano i link principali nella navigazione
     const links = screen.getAllByRole('link');
     const linkTexts = links.map(link => link.textContent);
-    
+
     expect(linkTexts).toContain('Panoramica');
     expect(linkTexts).toContain('Timeline');
     expect(linkTexts).toContain('Idea di budget');

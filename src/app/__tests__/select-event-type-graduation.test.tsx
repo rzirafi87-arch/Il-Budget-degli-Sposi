@@ -36,6 +36,6 @@ describe('SelectEventTypePage - Laurea', () => {
 
     expect(window.localStorage.getItem('eventType')).toBe('graduation');
     expect(document.cookie).toMatch(/eventType=graduation/);
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
+  expect(mockPush).toHaveBeenCalledWith('/it/dashboard');
   });
 });

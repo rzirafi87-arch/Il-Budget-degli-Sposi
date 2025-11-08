@@ -1,4 +1,4 @@
-import { locales, defaultLocale } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {

@@ -5,8 +5,9 @@ jest.mock('next-intl', () => ({
     if (options && (options.default ?? options.fallback)) {
       return options.default ?? options.fallback;
     }
-    return '';
+    return key; // restituisce la chiave per assert prevedibili
   },
+  useLocale: () => 'it',
   IntlProvider: ({ children }) => children,
 }));
 

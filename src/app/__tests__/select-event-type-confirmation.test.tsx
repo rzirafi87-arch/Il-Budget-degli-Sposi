@@ -36,7 +36,7 @@ describe('SelectEventTypePage - Cresima', () => {
 
     expect(window.localStorage.getItem('eventType')).toBe('confirmation');
     expect(document.cookie).toMatch(/eventType=confirmation/);
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
+  expect(mockPush).toHaveBeenCalledWith('/it/dashboard');
   });
 });
 
