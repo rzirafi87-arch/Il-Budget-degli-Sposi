@@ -1,11 +1,11 @@
 ﻿"use client";
 import { useEvent } from "@/contexts/EventContext";
+import { locales } from "@/i18n/config";
 import clsx from "clsx";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { locales } from "@/i18n/config";
 
 const TABS_ICONS = {
   dashboard: "",
@@ -65,8 +65,8 @@ export default function NavTabs() {
     { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
     { path: "/contabilita", href: withLocale("/contabilita"), label: t("accounting"), icon: TABS_ICONS.accounting },
     { path: "/fornitori", href: withLocale("/fornitori"), label: t("suppliers"), icon: TABS_ICONS.suppliers },
-    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
-    { path: "/chiese", href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
+  { path: "/location", href: withLocale("/location"), label: t("locationReception", { default: "Location Ricevimento" }), icon: TABS_ICONS.location },
+  { path: "/chiese", href: withLocale("/chiese"), label: t("locationCeremony", { default: "Location Cerimonia" }), icon: TABS_ICONS.churches },
     { path: "/documenti", href: withLocale("/documenti"), label: t("documents"), icon: TABS_ICONS.documents },
     { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
@@ -75,8 +75,8 @@ export default function NavTabs() {
     { path: "/idea-di-budget", href: withLocale("/idea-di-budget"), label: t("ideaBudget", { default: "Idea di Budget" }), icon: TABS_ICONS.ideaBudget },
     { path: "/budget", href: withLocale("/budget"), label: t("budget"), icon: TABS_ICONS.budget },
     { path: "/invitati", href: withLocale("/invitati"), label: t("guests"), icon: TABS_ICONS.guests },
-    { path: "/chiese", href: withLocale("/chiese"), label: t("churches"), icon: TABS_ICONS.churches },
-    { path: "/location", href: withLocale("/location"), label: t("location"), icon: TABS_ICONS.location },
+  { path: "/chiese", href: withLocale("/chiese"), label: t("locationCeremony", { default: "Location Cerimonia" }), icon: TABS_ICONS.churches },
+  { path: "/location", href: withLocale("/location"), label: t("locationReception", { default: "Location Ricevimento" }), icon: TABS_ICONS.location },
     { path: "/preferiti", href: withLocale("/preferiti"), label: t("favorites", { default: "Preferiti" }), icon: TABS_ICONS.favorites },
   ];
   const eighteenthTabs = [

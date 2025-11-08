@@ -1760,5 +1760,7 @@
     "privacy": "Privacy",
     "terms": "Termini",
     "contact": "Contatti"
-  }
+  },
+  "locationReception": "Location Ricevimento",
+  "locationCeremony": "Location Cerimonia"
 }
