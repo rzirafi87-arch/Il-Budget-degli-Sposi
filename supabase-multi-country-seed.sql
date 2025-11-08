@@ -27,7 +27,6 @@ INSERT INTO churches (name, country, region, city, address) VALUES
   ('Iglesia de la Macarena', 'Spagna', 'Andalusia', 'Siviglia', 'Calle Bécquer 1'),
   ('Frauenkirche', 'Germania', 'Baviera', 'Monaco', 'Frauenplatz 12');
 
--- FORNITORI
 INSERT INTO suppliers (name, type, country, region, city, address) VALUES
   ('Flores y Bodas', 'fiori', 'Messico', 'Jalisco', 'Guadalajara', 'Calle Flores 8'),
   ('Catering Roma', 'catering', 'Italia', 'Lazio', 'Roma', 'Via Veneto 20'),
@@ -39,3 +38,38 @@ INSERT INTO suppliers (name, type, country, region, city, address) VALUES
   ('Paris Wedding Flowers', 'fiori', 'Francia', 'Île-de-France', 'Parigi', 'Rue des Fleurs 4'),
   ('Sevilla Catering', 'catering', 'Spagna', 'Andalusia', 'Siviglia', 'Calle Feria 9'),
   ('München Musik', 'musica', 'Germania', 'Baviera', 'Monaco', 'Beethovenstr. 3');
+
+-- Traduzioni Proposal (IT/EN)
+-- event_type_translations
+insert into event_type_translations (code, locale, label) values
+('PROPOSAL','it','Proposta di matrimonio'),
+('PROPOSAL','en','Proposal')
+on conflict do nothing;
+
+-- category_translations
+insert into category_translations (category_code, locale, label) values
+('ORGANIZZAZIONE','it','Organizzazione'),
+('ORGANIZZAZIONE','en','Planning'),
+('FESTA','it','Festa'),
+('FESTA','en','Party')
+on conflict do nothing;
+
+-- subcategory_translations
+insert into subcategory_translations (subcategory_code, locale, label) values
+('ANELLO','it','Anello di fidanzamento'),
+('ANELLO','en','Engagement ring'),
+('LOCATION','it','Location proposta'),
+('LOCATION','en','Proposal location'),
+('FOTOGRAFO','it','Fotografo'),
+('FOTOGRAFO','en','Photographer')
+on conflict do nothing;
+
+-- timeline_translations
+insert into timeline_translations (timeline_code, locale, label) values
+('SCELTA_ANELLO','it','Scelta anello'),
+('SCELTA_ANELLO','en','Choose the ring'),
+('ORGANIZZA_FESTA','it','Organizza la festa'),
+('ORGANIZZA_FESTA','en','Plan the party'),
+('GIORNO_PROPOSTA','it','Giorno della proposta'),
+('GIORNO_PROPOSTA','en','Proposal day')
+on conflict do nothing;
