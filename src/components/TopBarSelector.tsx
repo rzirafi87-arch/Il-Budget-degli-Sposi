@@ -1,11 +1,67 @@
-﻿"use client";
+"use client";
+
 import { locales } from "@/i18n/config";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
-// Moved outside component to prevent re-creation on each render
+const EVENT_EMOJIS: Record<string, string> = {
+  wedding: "💍",
+  baptism: "👶",
+  eighteenth: "🎉",
+  anniversary: "💞",
+  "gender-reveal": "🎈",
+  birthday: "🎂",
+  fifty: "🎊",
+  retirement: "🧓",
+  confirmation: "🕊️",
+  communion: "✝️",
+  graduation: "🎓",
+  babyshower: "🍼",
+  engagement: "💍",
+  proposal: "💍",
+  "bar-mitzvah": "🕎",
+  quinceanera: "👑",
+  corporate: "🏢",
+  "charity-gala": "🎗️",
+};
+
+const LANGUAGE_REGION_FALLBACK: Record<string, string> = {
+  it: "IT",
+  en: "GB",
+  es: "ES",
+  fr: "FR",
+  de: "DE",
+  pt: "PT",
+  ru: "RU",
+  zh: "CN",
+  ja: "JP",
+  ar: "AE",
+  hi: "IN",
+  id: "ID",
+};
+
+const REGIONAL_OFFSET = 0x1f1e6;
+const A_CODE = 65;
+
+const toFlag = (code?: string) => {
+  if (!code) return "🌐";
+  const normalized = code.toUpperCase();
+  if (normalized.length !== 2) return "🌐";
+  return String.fromCodePoint(
+    REGIONAL_OFFSET + normalized.charCodeAt(0) - A_CODE,
+    REGIONAL_OFFSET + normalized.charCodeAt(1) - A_CODE,
+  );
+};
+
+const getLanguageFlag = (langSlug: string, locale?: string) => {
+  const region = locale?.split("-")[1] || LANGUAGE_REGION_FALLBACK[langSlug] || langSlug.slice(0, 2);
+  return toFlag(region);
+};
+
+const getCountryFlag = (code?: string) => toFlag(code);
+
 const Label: React.FC<{ title: string; value: string; onClick: () => void; emoji: string }> = ({
   title,
   value,
@@ -71,42 +127,78 @@ export default function TopBarSelector() {
     router.push(`/${segments.join("/")}` || `/${newLang}`);
   }
 
-  const currentLang = LANGS.find(l => l.slug === lang);
-  const currentCountry = COUNTRIES.find(c => c.code === country);
-  const currentEvent = EVENTS.find(e => e.slug === eventType);
+  const currentLang = LANGS.find((l) => l.slug === lang);
+  const currentCountry = COUNTRIES.find((c) => c.code === country);
+  const currentEvent = EVENTS.find((e) => e.slug === eventType);
+  const languageFlag = getLanguageFlag(lang, currentLang?.locale);
+  const countryFlag = getCountryFlag(currentCountry?.code || country);
+  const eventEmoji = EVENT_EMOJIS[currentEvent?.slug ?? eventType] || "🎉";
+  const countryDisplay = React.useMemo(() => {
+    try {
+      return (
+        new Intl.DisplayNames([locale], { type: "region" }).of((currentCountry?.code || country).toUpperCase()) ||
+        currentCountry?.label ||
+        country.toUpperCase()
+      );
+    } catch {
+      return currentCountry?.label || country.toUpperCase();
+    }
+  }, [locale, currentCountry, country]);
+
+  const eventLabel = t(`events.${currentEvent?.slug ?? eventType}`, {
+    fallback: currentEvent?.label || eventType,
+  });
 
   return (
     <div className="relative">
       <button
-        className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 font-semibold text-xs sm:text-sm whitespace-nowrap"
+        className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 font-semibold text-xs sm:text-sm whitespace-nowrap flex items-center gap-1"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
-        {currentLang?.emoji || "ðŸŒ"} {currentLang?.label || lang.toUpperCase()} Â· {currentCountry?.emoji || "ðŸ³ï¸"} {new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of((currentCountry?.code || country).toUpperCase()) || country.toUpperCase()} Â· {currentEvent?.emoji || "ðŸŽ‰"} {t(`events.${currentEvent?.slug ?? eventType}`, { fallback: currentEvent?.label || eventType })}
+        <span aria-hidden>{languageFlag}</span>
+        {currentLang?.label || lang.toUpperCase()}
+        <span className="text-gray-400">·</span>
+        <span aria-hidden>{countryFlag}</span>
+        {countryDisplay}
+        <span className="text-gray-400">·</span>
+        <span aria-hidden>{eventEmoji}</span>
+        {eventLabel}
       </button>
       {open && (
         <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
           <div className="p-3">
             <div className="flex gap-2 items-center px-2 py-2">
-              <span className="text-base" aria-hidden>{currentLang?.emoji || "ðŸŒ"}</span>
+              <span className="text-base" aria-hidden>
+                {languageFlag}
+              </span>
               <div>
                 <div className="text-xs text-gray-500">Lingua</div>
                 <select
                   className="text-sm font-semibold text-gray-800 rounded border px-2 py-1"
                   value={lang}
-                  onChange={e => handleLangChange(e.target.value)}
+                  onChange={(e) => handleLangChange(e.target.value)}
                 >
-                  {LANGS.map(l => (
-                    <option key={l.slug} value={l.slug}>{l.emoji} {l.label}</option>
+                  {LANGS.map((l) => (
+                    <option key={l.slug} value={l.slug}>
+                      {getLanguageFlag(l.slug, l.locale)} {l.label}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
-            <Label title="Nazione" value={currentCountry?.label || country.toUpperCase()} emoji={currentCountry?.emoji || "ðŸ³ï¸"} onClick={() => router.push(`/${locale}/select-country`)} />
+            <Label
+              title="Nazione"
+              value={currentCountry?.label || country.toUpperCase()}
+              emoji={countryFlag}
+              onClick={() => router.push(`/${locale}/select-country`)}
+            />
             <Label
               title="Evento"
-              value={`${t(`events.${currentEvent?.slug ?? eventType}`, { fallback: currentEvent?.label || eventType })}${currentEvent?.available === false ? ` Â· ${t("comingSoon", { fallback: "In arrivo" })}` : ""}`}
-              emoji={currentEvent?.emoji || "ðŸŽ‰"}
+              value={`${eventLabel}${
+                currentEvent?.available === false ? ` · ${t("comingSoon", { fallback: "In arrivo" })}` : ""
+              }`}
+              emoji={eventEmoji}
               onClick={() => router.push(`/${locale}/select-event-type`)}
             />
           </div>
