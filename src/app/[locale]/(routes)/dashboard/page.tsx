@@ -4,7 +4,6 @@
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useEffect, useState } from "react";
-import { Fragment } from "react";
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
 type Category = { code: string; name: string };

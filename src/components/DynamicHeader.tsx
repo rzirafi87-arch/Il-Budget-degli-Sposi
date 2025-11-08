@@ -1,5 +1,6 @@
-﻿import LocaleSwitcher from "@/components/LocaleSwitcher";
+﻿
 "use client";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 import { formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
