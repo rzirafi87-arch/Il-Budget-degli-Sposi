@@ -8,6 +8,8 @@ import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 
 type BudgetItem = { name: string; amount?: number };
 type ChecklistModule = { module_name: string; is_required?: boolean };
@@ -37,6 +39,9 @@ export default function DashboardPage() {
     ? (localStorage.getItem("eventType") || document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1] || "")
     : "";
   const isWedding = userEventType === "wedding";
+  // Locale corrente (mockato nei test). Fallback a 'it' se vuoto
+  const localeRaw = useLocale();
+  const locale = localeRaw || "it";
 
   const isReady = useMemo(() => !!userLang && !!userCountry && !!userEventType, [userLang, userCountry, userEventType]);
   const totalBudget = (brideBudget || 0) + (groomBudget || 0);
@@ -211,9 +216,9 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-serif font-bold">Seleziona lingua, nazione ed evento</h2>
         <p className="text-gray-800">Completa i passaggi iniziali per personalizzare l&apos;esperienza.</p>
         <div className="flex gap-3 flex-wrap justify-center">
-          <a href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</a>
-          <a href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</a>
-          <a href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</a>
+          <Link href={`/${locale}/select-language`} className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
+          <Link href={`/${locale}/select-country`} className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
+          <Link href={`/${locale}/select-event-type`} className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
         </div>
       </div>
     );
@@ -223,20 +228,7 @@ export default function DashboardPage() {
     <main className="container mx-auto p-6">
       <h1 className="text-3xl font-serif font-bold mb-6">Dashboard</h1>
 
-      {/* Preferenze in alto */}
-      <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-lg">âš™ï¸ Preferenze</h3>
-            <p className="text-sm text-gray-900">Personalizza lingua, nazione ed evento per un&apos;esperienza su misura.</p>
-          </div>
-          <div className="flex gap-2">
-            <a href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</a>
-            <a href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</a>
-            <a href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</a>
-          </div>
-        </div>
-      </div>
+      {/* Sezione Preferenze rimossa post-onboarding come richiesto */}
 
       <PageInfoNote
         icon="ðŸ“Š"
@@ -293,7 +285,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg">Idea di Budget</h3>
             <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
           </div>
-          <a href="/idea-di-budget" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Idea di Budget</a>
+          <Link href={`/${locale}/idea-di-budget`} className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Idea di Budget</Link>
         </div>
       </div>
 
@@ -308,7 +300,7 @@ export default function DashboardPage() {
               <h3 className="font-semibold text-lg">Viaggio di Nozze</h3>
               <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
             </div>
-            <a href="/suggerimenti/viaggio-di-nozze" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Viaggio di Nozze</a>
+            <Link href={`/${locale}/suggerimenti/viaggio-di-nozze`} className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Viaggio di Nozze</Link>
           </div>
         </div>
       )}
@@ -320,7 +312,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg">Suggerimenti <span className="font-extrabold text-2xl align-middle">&amp;</span> Consigli</h3>
             <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
           </div>
-          <a href="/suggerimenti" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Suggerimenti</a>
+          <Link href={`/${locale}/suggerimenti`} className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Suggerimenti</Link>
         </div>
       </div>
 
