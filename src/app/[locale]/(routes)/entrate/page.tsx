@@ -6,9 +6,9 @@ import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, formatDate } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations, useLocale } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
@@ -89,17 +89,17 @@ export default function EntratePage() {
       };
       const raw: IncomeRow[] = j.incomes || [];
       // For Battesimo, Comunione, and Cresima: force incomeSource to 'common' on UI side
-      const mapped: Income[] = isSingleBudgetEvent 
-        ? raw.map((i) => ({ 
+      const mapped: Income[] = isSingleBudgetEvent
+        ? raw.map((i) => ({
             id: i.id,
             name: i.name,
             type: i.type,
             amount: i.amount,
             notes: i.notes,
             date: i.date,
-            incomeSource: "common" as const 
-          })) 
-        : raw.map(i => ({ 
+            incomeSource: "common" as const
+          }))
+        : raw.map(i => ({
             id: i.id,
             name: i.name,
             type: i.type,
@@ -399,8 +399,8 @@ export default function EntratePage() {
                       income.type === "bonifico" ? "bg-blue-100 text-blue-800" :
                       "bg-purple-100 text-purple-800"
                     }`}>
-                      {income.type === "busta" ? t("incomesPage.badges.type.busta") : 
-                       income.type === "bonifico" ? t("incomesPage.badges.type.bonifico") : 
+                      {income.type === "busta" ? t("incomesPage.badges.type.busta") :
+                       income.type === "bonifico" ? t("incomesPage.badges.type.bonifico") :
                        t("incomesPage.badges.type.regalo")}
                     </span>
                   </td>

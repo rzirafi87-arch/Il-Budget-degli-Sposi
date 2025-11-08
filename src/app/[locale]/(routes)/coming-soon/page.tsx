@@ -1,6 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React from "react";
 import Link from "next/link";
 
 function getLang(): "it"|"es"|"en"|"fr"|"de"|"ru"|"zh" {
