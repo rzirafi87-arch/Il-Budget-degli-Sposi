@@ -9,7 +9,7 @@ type RemotionProps = {
 };
 
 const RemotionRoot = dynamic<RemotionProps>(
-  () => import('../app/save-the-date/RemotionRoot'),
+  () => import('@/app/[locale]/(routes)/save-the-date/RemotionRoot'),
   { ssr: false }
 );
 
