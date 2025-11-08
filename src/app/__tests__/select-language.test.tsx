@@ -1,6 +1,6 @@
 ﻿import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import SelectLanguagePage from '../select-language/page';
+import SelectLanguagePage from '../[locale]/(routes)/select-language/page';
 
 // Mock next/navigation for useRouter to avoid jsdom navigation errors
 jest.mock('next/navigation', () => ({

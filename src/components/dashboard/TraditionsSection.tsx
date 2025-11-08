@@ -10,8 +10,7 @@ type Props = {
 };
 
 export default function TraditionsSection({ traditions }: Props) {
-  if (!traditions.length) return null;
-  // Deduplicate by name+description to avoid repeated entries
+  // Deduplicate once; hooks must always run regardless of content length.
   const uniqueTraditions = React.useMemo(() => {
     const map = new Map<string, Tradition>();
     for (const t of traditions) {
@@ -20,6 +19,9 @@ export default function TraditionsSection({ traditions }: Props) {
     }
     return Array.from(map.values());
   }, [traditions]);
+
+  if (uniqueTraditions.length === 0) return null;
+
   return (
     <div className="mt-8 mb-8 p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded">
       <h2 className="text-2xl font-bold mb-4 text-yellow-700">Tradizioni</h2>

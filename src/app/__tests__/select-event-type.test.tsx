@@ -13,7 +13,7 @@ beforeAll(() => {
   ) as unknown as typeof fetch;
 });
 
-import SelectEventTypePage from '../select-event-type/page';
+import SelectEventTypePage from '../[locale]/(routes)/select-event-type/page';
 
 describe('SelectEventTypePage', () => {
   beforeEach(() => {

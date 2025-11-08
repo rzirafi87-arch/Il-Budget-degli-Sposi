@@ -9,7 +9,7 @@ beforeAll(() => {
   );
 });
 
-import CresimaPage from '../cresima/page';
+import CresimaPage from '../[locale]/(routes)/cresima/page';
 
 describe('CresimaPage', () => {
   it('renderizza la Panoramica e la navigazione', () => {

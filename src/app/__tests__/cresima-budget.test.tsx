@@ -15,7 +15,7 @@ beforeEach(() => {
   });
 });
 
-import CresimaBudgetPage from '../cresima/budget/page';
+import CresimaBudgetPage from '../[locale]/(routes)/cresima/budget/page';
 
 describe('CresimaBudgetPage', () => {
   it('renderizza la tabella e i riepiloghi di base', async () => {

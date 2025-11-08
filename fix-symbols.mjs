@@ -1,52 +1,33 @@
-import fs from 'fs';
+import fs from "fs";
 
-const filePath = './src/messages/it.json';
+const filePath = "./src/messages/it.json";
+let content = fs.readFileSync(filePath, "utf8");
 
-// Leggi il file
-let content = fs.readFileSync(filePath, 'utf8');
-
-// Pattern rimanenti da fixare
-const replacements = [
-  // Ellipsis
-  ['â€¦', '…'],
-  
-  // Checkmarks e simboli
-  ['âœ"', '✓'],
-  ['âœ—', '✗'],
-  ['âŒ', '❌'],
-  ['âœ…', '✅'],
-  
-  // Euro
-  ['â‚¬', '€'],
-  
-  // Em dash (se ancora presente)
-  ['â€"', '—'],
-  
-  // Frecce
-  ['â†'', '→'],
+const replacements: [string, string][] = [
+  ["â€¦", "…"],
+  ["âœ“", "✓"],
+  ["âœ—", "✗"],
+  ["âŒ", "❌"],
+  ["âœ…", "✅"],
+  ["â‚¬", "€"],
+  ["â€”", "—"],
+  ["â€“", "–"],
+  ["â†’", "→"],
 ];
 
-let totalCount = 0;
-
-console.log('Sostituzioni simboli:');
-for (const [corrupted, correct] of replacements) {
-  const regex = new RegExp(corrupted.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-  const count = (content.match(regex) || []).length;
-  
-  if (count > 0) {
-    content = content.replace(regex, correct);
-    console.log(`✓ ${JSON.stringify(corrupted)} → ${correct} (${count}x)`);
-    totalCount += count;
+let total = 0;
+console.log("Normalizzazione simboli:");
+for (const [bad, good] of replacements) {
+  const re = new RegExp(bad.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g");
+  const count = (content.match(re) || []).length;
+  if (count) {
+    content = content.replace(re, good);
+    console.log(`✓ ${bad} → ${good} (${count})`);
+    total += count;
   }
 }
 
-// Scrivi file
-fs.writeFileSync(filePath, content, 'utf8');
-
-console.log(`\n✅ Completato! ${totalCount} sostituzioni di simboli.`);
-
-// Check remaining corruption
+fs.writeFileSync(filePath, content, "utf8");
+console.log(`\n✅ Completato: ${total} sostituzioni.`);
 const remaining = (content.match(/â/g) || []).length;
-if (remaining > 0) {
-  console.log(`\n⚠️  ${remaining} caratteri â ancora presenti (potrebbero essere legittimi)`);
-}
+if (remaining) console.log(`⚠️  Residui 'â': ${remaining}`);

@@ -15,7 +15,7 @@ beforeAll(() => {
   );
 });
 
-import SelectEventTypePage from '../select-event-type/page';
+import SelectEventTypePage from '../[locale]/(routes)/select-event-type/page';
 
 describe('SelectEventTypePage - Cresima', () => {
   beforeEach(() => {

@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 
-import CresimaTimelinePage from '../cresima/timeline/page';
+import CresimaTimelinePage from '../[locale]/(routes)/cresima/timeline/page';
 
 describe('CresimaTimelinePage', () => {
   it('mostra la Timeline Cresima e blocchi temporali', () => {

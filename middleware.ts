@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
 
   if (pathname === "/") {
     const url = req.nextUrl.clone();
-    url.pathname = `/${defaultLocale}`;
+    url.pathname = `/${defaultLocale}/select-language`;
     return NextResponse.redirect(url);
   }
 
@@ -26,58 +26,50 @@ export function middleware(req: NextRequest) {
   const segments = pathname.split("/").filter(Boolean);
   const potentialLocale = segments[0];
   const hasLocale = potentialLocale && locales.includes(potentialLocale as (typeof locales)[number]);
-  const normalizedPath = hasLocale ? `/${segments.slice(1).join("/")}` : pathname;
+
+  // Cookie onboarding
+  const langCookie = req.cookies.get("language")?.value;
+  const countryCookie = req.cookies.get("country")?.value;
+  const eventCookie = req.cookies.get("eventType")?.value;
+
+  // Funzione helper per determinare target pagina onboarding
+  const computeOnboardingTarget = (lang?: string, country?: string, eventType?: string) => {
+    if (!lang) return "/select-language";
+    if (!country) return "/select-country";
+    if (!eventType) return "/select-event-type";
+    return null;
+  };
+
+  const onboardingTarget = computeOnboardingTarget(langCookie, countryCookie, eventCookie);
 
   if (!hasLocale) {
+    // Se manca il locale, redireziona direttamente alla giusta pagina di onboarding.
     const url = req.nextUrl.clone();
-    url.pathname = `/${defaultLocale}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
+    url.pathname = `/${defaultLocale}${onboardingTarget || pathname}`;
     return NextResponse.redirect(url);
   }
 
-  // Pagine onboarding e pubbliche
-  const publicPaths = [
-    "/select-language",
-    "/select-country",
-    "/select-event-type",
-    "/auth",
-    "/welcome",
-  ];
+  const normalizedPath = `/${segments.slice(1).join("/")}` || "/";
+  const publicPaths = ["/select-language", "/select-country", "/select-event-type", "/auth", "/welcome"];
+
+  // Se siamo già in una pagina pubblica, prosegui (sincronizza cookie NEXT_LOCALE)
   if (publicPaths.some((p) => normalizedPath.startsWith(p))) {
-    // Ensure NEXT_LOCALE is aligned for SSR even on public pages
     const res = NextResponse.next() as unknown as { cookies?: { set?: (name: string, value: string) => void } };
-    const lang = (hasLocale ? potentialLocale : req.cookies.get("language")?.value) || defaultLocale;
-    if (lang && res.cookies?.set) {
-      res.cookies.set("NEXT_LOCALE", lang);
-    }
+    const lang = potentialLocale || langCookie || defaultLocale;
+    if (lang && res.cookies?.set) res.cookies.set("NEXT_LOCALE", lang);
     return res;
   }
 
-  // Next.js 16: req.cookies è un oggetto Record<string, string> lato middleware
-  const lang = hasLocale ? potentialLocale : req.cookies.get("language")?.value;
-  const country = req.cookies.get("country")?.value;
-  const eventType = req.cookies.get("eventType")?.value;
-
-  if (!lang) {
+  // Se mancano cookie, redireziona alla pagina corretta mantenendo locale
+  if (onboardingTarget) {
     const url = req.nextUrl.clone();
-    url.pathname = `/${potentialLocale || defaultLocale}/select-language`;
-    return NextResponse.redirect(url);
-  }
-  if (!country) {
-    const url = req.nextUrl.clone();
-    url.pathname = `/${potentialLocale || lang}/select-country`;
-    return NextResponse.redirect(url);
-  }
-  if (!eventType) {
-    const url = req.nextUrl.clone();
-    url.pathname = `/${potentialLocale || lang}/select-event-type`;
+    url.pathname = `/${potentialLocale || defaultLocale}${onboardingTarget}`;
     return NextResponse.redirect(url);
   }
 
   const res = NextResponse.next() as unknown as { cookies?: { set?: (name: string, value: string) => void } };
-  // Align next-intl locale cookie to reduce initial flash of wrong language
-  if (lang && res.cookies?.set) {
-    res.cookies.set("NEXT_LOCALE", lang);
-  }
+  const lang = potentialLocale || langCookie || defaultLocale;
+  if (lang && res.cookies?.set) res.cookies.set("NEXT_LOCALE", lang);
   return res;
 }
 

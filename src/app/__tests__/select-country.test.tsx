@@ -13,7 +13,7 @@ beforeAll(() => {
   ) as unknown as typeof fetch;
 });
 
-import SelectCountryPage from '../select-country/page';
+import SelectCountryPage from '../[locale]/(routes)/select-country/page';
 
 describe('SelectCountryPage', () => {
   beforeEach(() => {
