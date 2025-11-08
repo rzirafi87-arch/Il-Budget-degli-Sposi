@@ -3,6 +3,7 @@ import { GoogleAnalytics } from "@/components/GoogleTracking";
 import { JsonLd, LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/getMessages";
+import { LocaleProvider } from "@/providers/LocaleProvider";
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
@@ -168,9 +169,11 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <OrganizationSchema />
         {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
 
-        <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
-          <ClientLayoutShell>{children}</ClientLayoutShell>
-        </NextIntlClientProvider>
+        <LocaleProvider initial={{ locale: (locale === "en" ? "en" : "it") }}>
+          <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
+            <ClientLayoutShell>{children}</ClientLayoutShell>
+          </NextIntlClientProvider>
+        </LocaleProvider>
       </>
     );
   } catch (error) {
