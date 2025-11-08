@@ -45,7 +45,7 @@ describe('SelectCountryPage', () => {
     const avanti = screen.getByRole('button', { name: /avanti/i });
     expect(avanti).toBeInTheDocument();
 
-    // Clic non deve lanciare errori, il push Ã¨ mockato
+    // Clic non deve lanciare errori, il push è mockato
     fireEvent.click(avanti);
   });
 });

@@ -366,7 +366,7 @@ export default function TimelinePage() {
                           : "Segna come completato"
                       }
                     >
-                      âœ“
+                      ✓
                     </button>
                     <div className="flex-1">
                       <div className="flex flex-wrap items-center gap-2">

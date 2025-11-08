@@ -103,7 +103,13 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                     <>
                       <Link
                         className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 transition-colors whitespace-nowrap"
-                        href="/idea-di-budget"
+                        href={`/${locale}/auth`}
+                      >
+                        Accedi
+                      </Link>
+                      <Link
+                        className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 transition-colors whitespace-nowrap"
+                        href={`/${locale}/idea-di-budget`}
                       >
                         Idea di Budget
                       </Link>

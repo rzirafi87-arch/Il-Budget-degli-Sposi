@@ -96,14 +96,14 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600 italic">
           {percentage < 30 
-            ? "ðŸ’š Ottimo inizio! Siete nei tempi"
+            ? "💚 Ottimo inizio! Siete nei tempi"
             : percentage < 70
-            ? "ðŸ’› Buon progresso, continuate cosÃ¬"
+            ? "💛 Buon progresso, continuate così"
             : percentage < 90
-            ? "ðŸ§¡ Attenzione al budget, state per raggiungerlo"
+            ? "🧡 Attenzione al budget, state per raggiungerlo"
             : percentage < 100
-            ? "â¤ï¸ Quasi al limite, valutate bene le prossime spese"
-            : "ðŸš¨ Budget superato! Rivedete le prioritÃ "}
+            ? "❤️ Quasi al limite, valutate bene le prossime spese"
+            : "🚨 Budget superato! Rivedete le priorità"}
         </p>
       </div>
     </div>

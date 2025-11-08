@@ -27,23 +27,63 @@ export default function DashboardPage() {
   const [localized, setLocalized] = useState<LocalizedWeddingData | null>(null);
   const [budgetFocus, setBudgetFocus] = useState<BudgetFocus | null>(null);
   const [savingBudget, setSavingBudget] = useState(false);
+  const [clientReady, setClientReady] = useState(false);
+  const [clientPrefs, setClientPrefs] = useState({ language: "", country: "", eventType: "" });
 
-  // Read from localStorage with cookie fallback to make onboarding more robust
-  const userLang = typeof window !== "undefined"
-    ? (localStorage.getItem("language") || document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1] || "")
-    : "";
-  const userCountry = typeof window !== "undefined"
-    ? (localStorage.getItem("country") || document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] || "")
-    : "";
-  const userEventType = typeof window !== "undefined"
-    ? (localStorage.getItem("eventType") || document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1] || "")
-    : "";
-  const isWedding = userEventType === "wedding";
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readPreferences = () => {
+      try {
+        const language =
+          localStorage.getItem("language") ||
+          document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1] ||
+          "";
+        const country =
+          localStorage.getItem("country") ||
+          document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] ||
+          "";
+        const eventType =
+          localStorage.getItem("eventType") ||
+          document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1] ||
+          "";
+        setClientPrefs({
+          language,
+          country,
+          eventType,
+        });
+      } catch {
+        setClientPrefs({ language: "", country: "", eventType: "" });
+      }
+    };
+
+    readPreferences();
+    setClientReady(true);
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key && ["language", "country", "eventType"].includes(event.key)) {
+        readPreferences();
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const userLang = clientPrefs.language;
+  const userCountry = clientPrefs.country;
+  const userEventType = clientPrefs.eventType;
+  const normalizedEventType = userEventType || "";
+  const effectiveEventType = normalizedEventType || "wedding";
+  const isWedding = effectiveEventType === "wedding";
   // Locale corrente (mockato nei test). Fallback a 'it' se vuoto
   const localeRaw = useLocale();
   const locale = localeRaw || "it";
 
-  const isReady = useMemo(() => !!userLang && !!userCountry && !!userEventType, [userLang, userCountry, userEventType]);
+  const isReady = useMemo(
+    () => clientReady && !!userLang && !!userCountry && !!normalizedEventType,
+    [clientReady, userLang, userCountry, normalizedEventType]
+  );
   const totalBudget = (brideBudget || 0) + (groomBudget || 0);
   const countryState = userCountry;
 
@@ -69,7 +109,7 @@ export default function DashboardPage() {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${jwt}`,
               },
-              body: JSON.stringify({ eventType: userEventType, country }),
+              body: JSON.stringify({ eventType: effectiveEventType, country }),
             });
           } catch {
             // Ignore error
@@ -157,7 +197,7 @@ export default function DashboardPage() {
     return () => {
       active = false;
     };
-  }, [userCountry, userEventType, isReady, isWedding]);
+  }, [userCountry, effectiveEventType, isReady, isWedding]);
 
   // Funzione per salvare il budget in Idea di Budget
   async function handleSaveBudget() {
@@ -259,7 +299,7 @@ export default function DashboardPage() {
         totalBudget={totalBudget}
         weddingDate={weddingDate}
         countryState={countryState}
-        eventType={userEventType}
+        eventType={effectiveEventType}
         setBrideBudget={setBrideBudget}
         setGroomBudget={setGroomBudget}
         setWeddingDate={setWeddingDate}

@@ -75,7 +75,7 @@ export default function ImageCarousel({
               alt={`Slide ${index + 1}`}
               className="w-full h-full object-cover"
             />
-            {/* Overlay scuro per migliorare leggibilitÃ  */}
+            {/* Overlay scuro per migliorare leggibilità */}
             <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-black/20" />
           </div>
         ))}
@@ -101,7 +101,7 @@ export default function ImageCarousel({
         </svg>
       </button>
 
-      {/* Indicatori (dots) - PIÃ™ GRANDI su mobile */}
+      {/* Indicatori (dots) - PIÙ GRANDI su mobile */}
       <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-2 sm:gap-2">
         {images.map((_, index) => (
           <button
@@ -117,7 +117,7 @@ export default function ImageCarousel({
         ))}
       </div>
 
-      {/* Contatore - PIÃ™ GRANDE e leggibile */}
+      {/* Contatore - PIÙ GRANDE e leggibile */}
       <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-black/70 text-white text-sm sm:text-sm px-3 sm:px-3 py-1.5 rounded-lg font-semibold shadow-lg">
         {currentIndex + 1} / {images.length}
       </div>

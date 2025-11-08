@@ -15,7 +15,7 @@ export default function SuggerimentiPage() {
       if (country === 'mx') {
         setSuggestions([
           'Ricorda di prenotare il Mariachi!',
-          'Verifica la disponibilitÃ  della location almeno 6 mesi prima.',
+          'Verifica la disponibilità della location almeno 6 mesi prima.',
           'Considera una fotocabina a tema per la festa.',
           'Controlla i documenti legali richiesti in Messico.',
         ]);

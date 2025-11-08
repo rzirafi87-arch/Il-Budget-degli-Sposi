@@ -82,7 +82,7 @@ export default function ResponsiveCard({
   // Border
   const borderClass = bordered ? "border border-gray-200" : "";
 
-  // InterattivitÃ 
+  // Interattività
   const interactiveClass = (onClick || href) ? [
     "cursor-pointer",
     "transition-all duration-200",

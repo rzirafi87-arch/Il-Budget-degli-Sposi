@@ -50,7 +50,7 @@ export default function ResponsiveLayout({
         // Sempre visibile in cima
         setHeaderVisible(true);
       } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scroll giÃ¹ - nascondi
+        // Scroll giù - nascondi
         setHeaderVisible(false);
       } else if (currentScrollY < lastScrollY) {
         // Scroll su - mostra
@@ -82,7 +82,7 @@ export default function ResponsiveLayout({
   const mainClasses = clsx(
     "flex-1",
     {
-      // Mobile portrait: piÃ¹ padding verticale
+      // Mobile portrait: più padding verticale
       "py-4": deviceType === "mobile" && isPortrait,
       // Mobile landscape: padding ridotto
       "py-2": deviceType === "mobile" && !isPortrait,

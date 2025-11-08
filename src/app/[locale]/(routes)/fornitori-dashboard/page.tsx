@@ -123,7 +123,7 @@ export default function FornitoriDashboardPage() {
         <div className="max-w-2xl mx-auto text-center p-8 rounded-2xl border border-gray-200 bg-white/70">
           <h2 className="font-serif text-2xl mb-4">Profilo Fornitore Non Trovato</h2>
           <p className="text-gray-600 mb-6">
-            Non hai ancora creato un profilo fornitore. Inizia proponendo la tua attivitÃ !
+            Non hai ancora creato un profilo fornitore. Inizia proponendo la tua attività!
           </p>
           <Link
             href="/fornitori"
@@ -156,10 +156,10 @@ export default function FornitoriDashboardPage() {
                 {getTierName(profile.subscription_tier)}
               </span>
               {profile.verified && (
-                <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded">âœ“ Verificato</span>
+                <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded">✓ Verificato</span>
               )}
               {profile.is_featured && (
-                <span className="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded">â­ In Evidenza</span>
+                <span className="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded">⭐ In Evidenza</span>
               )}
             </div>
           </div>
@@ -169,7 +169,7 @@ export default function FornitoriDashboardPage() {
             <div>
               <p className="text-sm text-gray-600 mb-1">Stato Abbonamento</p>
               <p className={`font-semibold ${isActive ? "text-green-600" : "text-red-600"}`}>
-                {isActive ? "âœ“ Attivo" : "âœ&mdash; Scaduto"}
+                {isActive ? "✓ Attivo" : "âœ&mdash; Scaduto"}
               </p>
             </div>
             {profile.subscription_expires_at && (
@@ -202,13 +202,13 @@ export default function FornitoriDashboardPage() {
             </h3>
             <p className="text-sm text-gray-600">
               {profile.subscription_tier === "free" 
-                ? "Scegli un piano per aumentare la tua visibilitÃ "
+                ? "Scegli un piano per aumentare la tua visibilità"
                 : "Effettua upgrade o rinnova il tuo abbonamento"}
             </p>
           </Link>
 
           <button
-            onClick={() => alert("FunzionalitÃ  in arrivo: modifica profilo, carica foto, etc.")}
+            onClick={() => alert("Funzionalità in arrivo: modifica profilo, carica foto, etc.")}
             className="p-6 rounded-2xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all text-center"
           >
             <h3 className="font-semibold text-lg mb-2">Gestisci Profilo</h3>
@@ -229,7 +229,7 @@ export default function FornitoriDashboardPage() {
         {/* Analytics - Solo per Premium e Premium Plus */}
         {(profile.subscription_tier === "premium" || profile.subscription_tier === "premium_plus") && (
           <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-linear-to-br from-white to-[#A3B59D]/5">
-            <h3 className="font-semibold text-lg mb-4">ðŸ“Š Analytics</h3>
+            <h3 className="font-semibold text-lg mb-4">📊 Analytics</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-lg bg-white border border-gray-200">
                 <div className="text-3xl font-bold text-[#A3B59D]">{profile.profile_views || 0}</div>
@@ -252,34 +252,34 @@ export default function FornitoriDashboardPage() {
           </div>
         )}
 
-        {/* VisibilitÃ  Info */}
+        {/* Visibilità Info */}
         <div className="mb-6 p-6 rounded-2xl border border-blue-200 bg-blue-50">
-          <h3 className="font-semibold mb-3">ðŸ“Š La Tua VisibilitÃ </h3>
+          <h3 className="font-semibold mb-3">📊 La Tua Visibilità</h3>
           <ul className="space-y-2 text-sm">
             {profile.subscription_tier === "free" && (
               <li className="text-gray-600">
-                â€¢ Profilo creato ma <strong>non visibile</strong> nelle ricerche pubbliche
+                • Profilo creato ma <strong>non visibile</strong> nelle ricerche pubbliche
               </li>
             )}
             {profile.subscription_tier === "base" && isActive && (
               <>
-                <li className="text-green-600">âœ“ Visibile nella pagina <strong>{profile.category}</strong></li>
+                <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
                 <li className="text-gray-600">âœ&mdash; Non appare nella pagina hub Fornitori</li>
                 <li className="text-gray-600">âœ&mdash; Non appare nella Demo (utenti non registrati)</li>
               </>
             )}
             {profile.subscription_tier === "premium" && isActive && (
               <>
-                <li className="text-green-600">âœ“ Visibile nella pagina <strong>{profile.category}</strong></li>
-                <li className="text-green-600">âœ“ Appare nella pagina hub <strong>Fornitori</strong></li>
+                <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
+                <li className="text-green-600">✓ Appare nella pagina hub <strong>Fornitori</strong></li>
                 <li className="text-gray-600">âœ&mdash; Non appare nella Demo (utenti non registrati)</li>
               </>
             )}
             {profile.subscription_tier === "premium_plus" && isActive && (
               <>
-                <li className="text-green-600">âœ“ Visibile nella pagina <strong>{profile.category}</strong></li>
-                <li className="text-green-600">âœ“ Appare nella pagina hub <strong>Fornitori</strong></li>
-                <li className="text-amber-600 font-semibold">â­ Appare nella <strong>Demo</strong> (massima visibilitÃ !)</li>
+                <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
+                <li className="text-green-600">✓ Appare nella pagina hub <strong>Fornitori</strong></li>
+                <li className="text-amber-600 font-semibold">⭐ Appare nella <strong>Demo</strong> (massima visibilità!)</li>
               </>
             )}
           </ul>
@@ -318,7 +318,7 @@ export default function FornitoriDashboardPage() {
                   </div>
                   <div className="text-xs text-gray-500">
                     Dal {formatDate(new Date(tx.starts_at))} al {formatDate(new Date(tx.expires_at))}
-                    {" â€¢ "}Acquistato il {formatDate(new Date(tx.created_at))}
+                    {" • "}Acquistato il {formatDate(new Date(tx.created_at))}
                   </div>
                 </div>
               ))}

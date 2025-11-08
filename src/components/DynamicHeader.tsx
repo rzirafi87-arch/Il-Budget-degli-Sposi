@@ -62,16 +62,16 @@ export default function DynamicHeader() {
       <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2 sm:py-3 text-center">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm sm:text-base">
           <span className="font-serif font-bold text-gray-800">
-            {weddingInfo.coupleName} â¤ï¸
+            {weddingInfo.coupleName} ❤️
           </span>
           <span className="hidden sm:inline text-gray-400" aria-hidden>
-            Â·
+            ·
           </span>
           <span className="text-gray-700">{dateFormatted}</span>
           {weddingInfo.daysLeft !== undefined && (
             <>
               <span className="hidden sm:inline text-gray-400" aria-hidden>
-                Â·
+                ·
               </span>
               <span className="font-semibold text-[#A6B5A0]">
                 {weddingInfo.daysLeft === 0

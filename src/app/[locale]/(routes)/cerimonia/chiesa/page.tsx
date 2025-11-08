@@ -411,7 +411,7 @@ export default function CerimoniaChiesaPage() {
                 )}
 
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-semibold">ðŸ“</span> {church.city}, {church.province} ({church.region})
+                  <span className="font-semibold">📍</span> {church.city}, {church.province} ({church.region})
                 </p>
 
                 {church.address && (
@@ -442,7 +442,7 @@ export default function CerimoniaChiesaPage() {
                 <div className="border-t pt-3 space-y-1">
                   {church.phone && (
                     <p className="text-sm">
-                      <span className="font-semibold">ðŸ“ž</span>{" "}
+                      <span className="font-semibold">📞</span>{" "}
                       <a href={`tel:${church.phone}`} className="text-blue-600 hover:underline">
                         {church.phone}
                       </a>
@@ -450,7 +450,7 @@ export default function CerimoniaChiesaPage() {
                   )}
                   {church.email && (
                     <p className="text-sm">
-                      <span className="font-semibold">âœ‰ï¸</span>{" "}
+                      <span className="font-semibold">✉️</span>{" "}
                       <a href={`mailto:${church.email}`} className="text-blue-600 hover:underline">
                         {church.email}
                       </a>
@@ -458,7 +458,7 @@ export default function CerimoniaChiesaPage() {
                   )}
                   {church.website && (
                     <p className="text-sm">
-                      <span className="font-semibold">ðŸŒ</span>{" "}
+                      <span className="font-semibold">🌐</span>{" "}
                       <a
                         href={church.website}
                         target="_blank"

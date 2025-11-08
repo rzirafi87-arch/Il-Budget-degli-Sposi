@@ -13,7 +13,7 @@ export default function LaureaPage() {
   const checklist: { id: string; label: string; required?: boolean }[] = [
     { id: "budget-date", label: "Definisci budget e data", required: true },
     { id: "location", label: "Scegli e prenota la location", required: true },
-    { id: "catering", label: "Conferma catering e menÃ¹", required: true },
+    { id: "catering", label: "Conferma catering e menù", required: true },
     { id: "inviti", label: "Inviti e raccolta RSVP" },
     { id: "musica", label: "DJ o playlist musicale" },
     { id: "foto", label: "Fotografo o amici foto/video" },
@@ -62,7 +62,7 @@ export default function LaureaPage() {
           </p>
           <ul className="list-disc list-inside text-gray-800 space-y-1">
             <li>Sale eventi, terrazze, giardini</li>
-            <li>MenÃ¹ e intolleranze</li>
+            <li>Menù e intolleranze</li>
             <li>Brindisi e torta di laurea</li>
           </ul>
         </div>
@@ -82,7 +82,7 @@ export default function LaureaPage() {
         <div className="p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
           <h2 className="text-xl font-semibold mb-2">Foto, Musica & Decorazioni</h2>
           <p className="text-gray-700 mb-3">
-            Ricordi e atmosfera perfetta: fotografo, DJ/playlist e allestimenti a tema (tocco, corona dâ€™alloro, colori del corso).
+            Ricordi e atmosfera perfetta: fotografo, DJ/playlist e allestimenti a tema (tocco, corona d’alloro, colori del corso).
           </p>
           <ul className="list-disc list-inside text-gray-800 space-y-1">
             <li>Servizi foto/video</li>
@@ -128,7 +128,7 @@ export default function LaureaPage() {
           <li>Prediligi location facili da raggiungere per amici e parenti.</li>
           <li>Conferma il catering almeno 2 settimane prima e verifica intolleranze.</li>
           <li>Prepara una scaletta semplice: discorso, brindisi, taglio torta, foto di gruppo.</li>
-          <li>Se il budget Ã¨ limitato, opta per buffet + playlist curata.</li>
+          <li>Se il budget è limitato, opta per buffet + playlist curata.</li>
           <li>Personalizza con dettagli a tema (tocco, alloro, colore del corso).</li>
         </ul>
       </div>
@@ -158,7 +158,7 @@ export default function LaureaPage() {
 
       <div className="mt-8 p-5 rounded-2xl border border-amber-200 bg-amber-50 text-amber-900">
         <p className="text-sm">
-          Stiamo ampliando le funzionalitÃ  per la Laurea. Alcune pagine avanzate (budget dettagliato, fornitori, timeline) saranno presto disponibili anche qui.
+          Stiamo ampliando le funzionalità per la Laurea. Alcune pagine avanzate (budget dettagliato, fornitori, timeline) saranno presto disponibili anche qui.
         </p>
       </div>
     </section>
@@ -251,7 +251,7 @@ function QuickRSVP() {
       `Totale invitati: ${invitedCount}`,
       `Confermati: ${confirmedCount}`,
       '',
-      ...entries.map(e => `${e.confirmed ? 'âœ…' : 'â³'} ${e.name}${e.contact ? ' ('+e.contact+')' : ''}`)
+      ...entries.map(e => `${e.confirmed ? '✅' : '⏳'} ${e.name}${e.contact ? ' ('+e.contact+')' : ''}`)
     ].join('\n');
     try { await navigator.clipboard.writeText(lines); } catch {}
   }
@@ -264,7 +264,7 @@ function QuickRSVP() {
           <p className="text-sm text-gray-700">Gestisci rapidamente inviti e conferme per la tua festa di laurea.</p>
         </div>
         <div className="text-sm text-gray-700">
-          Invitati: <span className="font-semibold">{invitedCount}</span> Â· Confermati: <span className="font-semibold">{confirmedCount}</span>
+          Invitati: <span className="font-semibold">{invitedCount}</span> · Confermati: <span className="font-semibold">{confirmedCount}</span>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">

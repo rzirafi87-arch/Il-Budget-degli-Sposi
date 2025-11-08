@@ -118,7 +118,7 @@ export default function CoseMatrimonioPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Cose da Matrimonio Â· Intrattenimento</h2>
+      <h2 className="font-serif text-3xl mb-6">Cose da Matrimonio · Intrattenimento</h2>
 
       <ImageCarousel images={getPageImages("cose-matrimonio", country)} height="280px" />
 
@@ -131,7 +131,7 @@ export default function CoseMatrimonioPage() {
               : "bg-white/70 border-2 border-gray-300 text-gray-700 hover:bg-gray-50"
           }`}
         >
-          â›ª Cerimonia ({ceremonySelections.length})
+          ⛪ Cerimonia ({ceremonySelections.length})
         </button>
         <button
           onClick={() => setActiveTab("ricevimento")}
@@ -141,7 +141,7 @@ export default function CoseMatrimonioPage() {
               : "bg-white/70 border-2 border-gray-300 text-gray-700 hover:bg-gray-50"
           }`}
         >
-          ðŸŽ‰ Ricevimento ({receptionSelections.length})
+          🎉 Ricevimento ({receptionSelections.length})
         </button>
       </div>
 
@@ -165,7 +165,7 @@ export default function CoseMatrimonioPage() {
                 >
                   <span className="font-semibold text-left">{category}</span>
                   <span className="text-gray-500">
-                    {isExpanded ? "âˆ’" : "+"} ({categoryItems.length})
+                    {isExpanded ? "−" : "+"} ({categoryItems.length})
                   </span>
                 </button>
 
@@ -190,7 +190,7 @@ export default function CoseMatrimonioPage() {
                                 : "bg-[#A3B59D] text-white hover:bg-[#8a9d84]"
                             }`}
                           >
-                            {alreadyAdded ? "âœ“ Aggiunto" : "+ Aggiungi"}
+                            {alreadyAdded ? "✓ Aggiunto" : "+ Aggiungi"}
                           </button>
                         </div>
                       );
@@ -209,7 +209,7 @@ export default function CoseMatrimonioPage() {
           </h3>
           {(activeTab === "cerimonia" ? ceremonySelections : receptionSelections).length === 0 ? (
             <div className="p-8 text-center bg-white/50 rounded-xl border-2 border-dashed border-gray-300">
-              <div className="text-4xl mb-2">ðŸ“‹</div>
+              <div className="text-4xl mb-2">📋</div>
               <p className="text-gray-500">Nessuna selezione ancora</p>
             </div>
           ) : (
@@ -225,7 +225,7 @@ export default function CoseMatrimonioPage() {
                       onClick={() => removeSelection(sel.id)}
                       className="text-red-500 hover:text-red-700 font-bold"
                     >
-                      âœ•
+                      ✕
                     </button>
                   </div>
                   <input
@@ -245,7 +245,7 @@ export default function CoseMatrimonioPage() {
       {/* Riepilogo complessivo */}
       {selections.length > 0 && (
         <div className="mt-8 p-6 bg-linear-to-br from-green-50 to-blue-50 rounded-xl border-2 border-[#A3B59D]">
-          <h3 className="text-xl font-bold mb-4">ðŸ“Š Riepilogo Totale</h3>
+          <h3 className="text-xl font-bold mb-4">📊 Riepilogo Totale</h3>
           <div className="grid grid-cols-2 gap-4 text-center">
             <div className="bg-white rounded-lg p-4 shadow">
               <div className="text-2xl font-bold text-[#A3B59D]">{ceremonySelections.length}</div>

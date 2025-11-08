@@ -44,7 +44,7 @@ export default function SelectLanguagePage() {
     >
       <div className="max-w-xl w-full mx-4 p-8 rounded-3xl bg-white/80 backdrop-blur border border-gray-200 shadow-xl">
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
-          <span aria-hidden="true" className="mr-2">ðŸŒ</span>
+          <span aria-hidden="true" className="mr-2">🌐</span>
           {t("onboarding.selectLanguageTitle", { fallback: "Scegli la lingua" })}
         </h1>
         <p className="text-center text-gray-600 mb-6">
@@ -60,7 +60,7 @@ export default function SelectLanguagePage() {
               disabled={lang.available === false}
             >
               <span aria-hidden="true" className="mr-2 text-lg">
-                {lang.emoji || "ðŸŒ"}
+                {lang.emoji || "🌐"}
               </span>
               {lang.label || lang.slug.toUpperCase()}
               {lang.available === false && (

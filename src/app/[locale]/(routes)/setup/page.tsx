@@ -6,7 +6,7 @@ import { useState } from "react";
 const LANGUAGES = [
   { value: "it", label: "Italiano" },
   { value: "en", label: "English" },
-  { value: "es", label: "EspaÃ±ol" },
+  { value: "es", label: "Español" },
 ];
 
 const COUNTRIES = [

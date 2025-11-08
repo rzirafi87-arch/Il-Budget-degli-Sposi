@@ -10,13 +10,13 @@ export default function ChiSiamoPage() {
 
       <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border-2 border-gray-200">
         <div className="prose prose-lg max-w-none">
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">ðŸŽ‰ MYBUDGETEVENTO</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">🎉 MYBUDGETEVENTO</h3>
           <p className="text-gray-700 mb-4">{t("intro")}</p>
 
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4 mt-8">ðŸŽ¯ {t("mission.title")}</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4 mt-8">🎯 {t("mission.title")}</h3>
           <p className="text-gray-700 mb-4">{t("mission.body")}</p>
 
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4 mt-8">âœ¨ {t("why.title")}</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4 mt-8">✨ {t("why.title")}</h3>
           <ul className="list-disc list-inside space-y-2 text-gray-700 mb-4">
             <li>
               <strong>{t("why.points.free.title")}</strong> {t("why.points.free.desc")}
@@ -35,7 +35,7 @@ export default function ChiSiamoPage() {
             </li>
           </ul>
 
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4 mt-8">ðŸ“ž {t("contact.title")}</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4 mt-8">📞 {t("contact.title")}</h3>
           <p className="text-gray-700 mb-4">{t("contact.body")}</p>
           <a
             href="https://wa.me/393001234567?text=Ciao!%20Vorrei%20informazioni%20su%20Il%20Budget%20degli%20Sposi"
@@ -43,7 +43,7 @@ export default function ChiSiamoPage() {
             rel="noopener noreferrer"
             className="inline-block bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors"
           >
-            ðŸ’¬ {t("contact.cta")}
+            💬 {t("contact.cta")}
           </a>
         </div>
       </div>

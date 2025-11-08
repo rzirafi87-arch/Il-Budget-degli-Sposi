@@ -32,7 +32,7 @@ export default function CresimaTimelinePage() {
       <CresimaNav />
       <section className="rounded-xl border border-neutral-200 bg-white/70 p-5">
         <h2 className="text-xl font-semibold">Timeline Cresima</h2>
-        <p className="text-neutral-600 mt-2">Una traccia orientativa delle attivitÃ  principali.</p>
+        <p className="text-neutral-600 mt-2">Una traccia orientativa delle attività principali.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {tasks.map((block) => (
             <div key={block.when} className="rounded-lg border border-gray-200 bg-white/80 p-4">

@@ -22,7 +22,7 @@ const DASHBOARD_EVENTS = new Set([
   "proposal", // Added - Proposta di Matrimonio
   "corporate", // Added - Evento Aziendale
   "bar-mitzvah", // Added - Bar/Bat Mitzvah
-  "quinceanera", // Added - QuinceaÃ±era
+  "quinceanera", // Added - Quinceañera
   "charity-gala", // Added - Evento Culturale/Charity/Gala
 ]);
 
@@ -116,7 +116,7 @@ export default function SelectEventTypePage() {
     >
       <div className="max-w-3xl w-full mx-4 p-8 rounded-3xl bg-white/80 backdrop-blur border border-gray-200 shadow-xl">
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
-          <span aria-hidden="true" className="mr-2">ðŸŽ‰</span>
+          <span aria-hidden="true" className="mr-2">🎉</span>
           {t("onboarding.selectEventTypeTitle", { fallback: "Scegli il tipo di evento" })}
         </h1>
         {tradition && (
@@ -138,7 +138,7 @@ export default function SelectEventTypePage() {
                 }`}
                 onClick={() => isAvailable && handleSelect(ev.slug)}
               >
-                <span aria-hidden="true" className="mr-2">{ev.emoji || "âœ¨"}</span>
+                <span aria-hidden="true" className="mr-2">{ev.emoji || "✨"}</span>
                 {t(`events.${ev.slug}`, { fallback: ev.label })}
                 {!isAvailable && (
                   <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-200 text-gray-500 border border-gray-300">

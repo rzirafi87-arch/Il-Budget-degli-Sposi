@@ -57,18 +57,18 @@ export default function ContattiPage() {
 
   return (
     <section>
-      <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">ðŸ“ž Contattaci</h2>
+      <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">📞 Contattaci</h2>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Form Contatto */}
         <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border-2 border-gray-200">
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">âœ‰ï¸ Inviaci un Messaggio</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">✉️ Inviaci un Messaggio</h3>
 
           {submitted ? (
             <div className="bg-green-50 border-2 border-green-300 rounded-xl p-6 text-center">
-              <div className="text-6xl mb-4">âœ…</div>
+              <div className="text-6xl mb-4">✅</div>
               <h4 className="text-xl font-bold text-green-700 mb-2">Messaggio Inviato!</h4>
-              <p className="text-green-600">Ti risponderemo al piÃ¹ presto.</p>
+              <p className="text-green-600">Ti risponderemo al più presto.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -124,7 +124,7 @@ export default function ContattiPage() {
                 disabled={loading}
                 className="w-full bg-linear-to-r from-[#A3B59D] to-[#8a9d84] text-white px-6 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loading ? "Invio in corso..." : "ðŸ“¤ Invia Messaggio"}
+                {loading ? "Invio in corso..." : "📤 Invia Messaggio"}
               </button>
             </form>
           )}
@@ -134,7 +134,7 @@ export default function ContattiPage() {
   <div className="space-y-6">
           {/* WhatsApp */}
           <div className="bg-linear-to-br from-green-50 to-green-100 rounded-2xl shadow-lg p-6 border-2 border-green-300">
-            <div className="text-5xl mb-3">ðŸ’¬</div>
+            <div className="text-5xl mb-3">💬</div>
             <h3 className="text-xl font-bold text-green-700 mb-2">WhatsApp</h3>
             <p className="text-gray-700 mb-4">
               Chatta con noi direttamente su WhatsApp per supporto immediato!
@@ -151,7 +151,7 @@ export default function ContattiPage() {
 
           {/* Email */}
           <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg p-6 border-2 border-blue-300">
-            <div className="text-5xl mb-3">ðŸ“§</div>
+            <div className="text-5xl mb-3">📧</div>
             <h3 className="text-xl font-bold text-blue-700 mb-2">Email</h3>
             <p className="text-gray-700 mb-2">
               <strong>Supporto:</strong> support@ilbudgetdeglisposi.it
@@ -163,7 +163,7 @@ export default function ContattiPage() {
 
           {/* Orari */}
           <div className="bg-linear-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg p-6 border-2 border-purple-300">
-            <div className="text-5xl mb-3">ðŸ•</div>
+            <div className="text-5xl mb-3">🕐</div>
             <h3 className="text-xl font-bold text-purple-700 mb-2">Orari di Supporto</h3>
             <p className="text-gray-700">
               <strong>Lun - Ven:</strong> 9:00 - 18:00<br/>
@@ -174,17 +174,17 @@ export default function ContattiPage() {
 
           {/* Social */}
           <div className="bg-linear-to-br from-pink-50 to-pink-100 rounded-2xl shadow-lg p-6 border-2 border-pink-300">
-            <div className="text-5xl mb-3">ðŸ“±</div>
+            <div className="text-5xl mb-3">📱</div>
             <h3 className="text-xl font-bold text-pink-700 mb-2">Seguici sui Social</h3>
             <div className="flex gap-3 mt-4">
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-pink-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-pink-600 transition-colors">
-                ðŸ“·
+                📷
               </a>
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors">
-                ðŸ‘¥
+                👥
               </a>
               <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="bg-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-red-600 transition-colors">
-                ðŸ“Œ
+                📌
               </a>
             </div>
           </div>

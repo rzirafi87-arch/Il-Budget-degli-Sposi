@@ -142,7 +142,7 @@ export default function PartecipazionePage() {
     setGenerating(true);
     try {
       alert(
-        "Funzione video in sviluppo: sarÃ  possibile scaricare un video Save the Date personalizzato!",
+        "Funzione video in sviluppo: sarà possibile scaricare un video Save the Date personalizzato!",
       );
     } finally {
       setGenerating(false);
@@ -160,14 +160,14 @@ export default function PartecipazionePage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-6 text-[#A3B59D]">ðŸ“£ Crea il tuo Save the Date</h1>
+        <h1 className="text-3xl font-bold mb-6 text-[#A3B59D]">📣 Crea il tuo Save the Date</h1>
 
         <ImageCarousel images={getPageImages("save-the-date", country)} height="280px" />
 
         <div className="space-y-6">
           {/* Informazioni Sposi */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">ðŸ‘°ðŸ¤µ Informazioni Sposi</h2>
+            <h2 className="text-xl font-semibold mb-4">👰🤵 Informazioni Sposi</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Nome Sposa</label>
@@ -203,7 +203,7 @@ export default function PartecipazionePage() {
 
           {/* Cerimonia */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">â›ª Cerimonia</h2>
+            <h2 className="text-xl font-semibold mb-4">⛪ Cerimonia</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Nome Chiesa</label>
@@ -239,7 +239,7 @@ export default function PartecipazionePage() {
 
           {/* Location / Ricevimento */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">ðŸ›ï¸ Location / Ricevimento</h2>
+            <h2 className="text-xl font-semibold mb-4">🏛️ Location / Ricevimento</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Nome Location</label>
@@ -275,7 +275,7 @@ export default function PartecipazionePage() {
 
           {/* Bonifico (Opzionale) */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">ðŸ’³ Informazioni Bonifico (Facoltativo)</h2>
+            <h2 className="text-xl font-semibold mb-4">💳 Informazioni Bonifico (Facoltativo)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">IBAN</label>
@@ -302,7 +302,7 @@ export default function PartecipazionePage() {
 
           {/* Design */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">ðŸŽ¨ Personalizzazione</h2>
+            <h2 className="text-xl font-semibold mb-4">🎨 Personalizzazione</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Font Nomi</label>
@@ -351,12 +351,12 @@ export default function PartecipazionePage() {
 
           {/* Messaggio Personalizzato */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">ðŸ“ Messaggio Personalizzato</h2>
+            <h2 className="text-xl font-semibold mb-4">📝 Messaggio Personalizzato</h2>
             <textarea
               value={config.custom_message}
               onChange={(e) => setConfig({ ...config, custom_message: e.target.value })}
               className="w-full border rounded px-3 py-2 h-24"
-              placeholder="Saremo felici di condividere con voi il giorno piÃ¹ importante della nostra vita..."
+              placeholder="Saremo felici di condividere con voi il giorno più importante della nostra vita..."
             />
           </div>
 
@@ -367,21 +367,21 @@ export default function PartecipazionePage() {
               disabled={loading}
               className="flex-1 bg-[#A3B59D] text-white py-3 px-6 rounded font-semibold hover:bg-[#8da182] disabled:opacity-50"
             >
-              {loading ? "Salvataggio..." : "ðŸ’¾ Salva Configurazione"}
+              {loading ? "Salvataggio..." : "💾 Salva Configurazione"}
             </button>
             <button
               onClick={handleGeneratePDF}
               disabled={generating || !config.bride_name || !config.groom_name}
               className="flex-1 bg-blue-600 text-white py-3 px-6 rounded font-semibold hover:bg-blue-700 disabled:opacity-50"
             >
-              {generating ? "Generazione..." : "ðŸ“„ Genera PDF"}
+              {generating ? "Generazione..." : "📄 Genera PDF"}
             </button>
             <button
               onClick={handleGenerateVideo}
               disabled={generating || !config.bride_name || !config.groom_name}
               className="flex-1 bg-pink-600 text-white py-3 px-6 rounded font-semibold hover:bg-pink-700 disabled:opacity-50"
             >
-              {generating ? "Generazione..." : "ðŸŽ¬ Genera Video"}
+              {generating ? "Generazione..." : "🎬 Genera Video"}
             </button>
           </div>
 

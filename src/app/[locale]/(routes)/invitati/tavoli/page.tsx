@@ -193,7 +193,7 @@ export default function TavoliPage() {
             {tables.map((t, idx) => (
               <div key={idx} className="border rounded p-3">
                 <div className="font-semibold">{t.tableName || `Tavolo ${t.tableNumber}`}</div>
-                <div className="text-xs text-gray-500 mb-2">Tipo: {t.tableType || 'n/d'} Â• Posti: {t.totalSeats} Â• Assegnati: {t.assignedGuests.length}</div>
+                <div className="text-xs text-gray-500 mb-2">Tipo: {t.tableType || 'n/d'} • Posti: {t.totalSeats} • Assegnati: {t.assignedGuests.length}</div>
                 <ul className="text-sm list-disc pl-5">
                   {t.assignedGuests.map((ag) => (
                     <li key={ag.guestId}>{ag.guestName || ag.guestId}</li>

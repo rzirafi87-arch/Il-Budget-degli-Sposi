@@ -44,7 +44,7 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
     return null;
   }
 
-  // iOS style: piÃ¹ arrotondato, icone piÃ¹ grandi
+  // iOS style: più arrotondato, icone più grandi
   const isIOSStyle = os === "ios";
 
   return (

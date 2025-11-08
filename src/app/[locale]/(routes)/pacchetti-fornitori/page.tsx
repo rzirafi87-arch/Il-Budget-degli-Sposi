@@ -30,7 +30,7 @@ function PacchettiContent() {
 
     const paymentStatus = searchParams.get("payment");
     if (paymentStatus === "success") {
-      alert("Pagamento completato con successo! Il tuo abbonamento Ã¨ ora attivo.");
+      alert("Pagamento completato con successo! Il tuo abbonamento è ora attivo.");
     } else if (paymentStatus === "cancelled") {
       alert("Pagamento annullato. Puoi riprovare quando vuoi.");
     }
@@ -82,7 +82,7 @@ function PacchettiContent() {
 
   async function handlePurchase(pkg: Package) {
     if (pkg.tier === "free") {
-      alert("Il piano gratuito Ã¨ sempre disponibile!");
+      alert("Il piano gratuito è sempre disponibile!");
       return;
     }
 
@@ -105,7 +105,7 @@ function PacchettiContent() {
       const dataProfile = await resProfile.json();
 
       if (!dataProfile.profile) {
-        alert("Devi prima creare un profilo fornitore. Vai a /fornitori e proponi la tua attivitÃ .");
+        alert("Devi prima creare un profilo fornitore. Vai a /fornitori e proponi la tua attività.");
         return;
       }
 
@@ -176,7 +176,7 @@ function PacchettiContent() {
                 <div className="text-3xl font-bold mb-4">{getPrice(pkg)}</div>
                 <ul className="text-sm text-gray-700 space-y-1 mb-4">
                   {pkg.features?.map((f, i) => (
-                    <li key={i}>â€¢ {f}</li>
+                    <li key={i}>• {f}</li>
                   ))}
                 </ul>
                 <button

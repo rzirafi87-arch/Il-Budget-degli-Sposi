@@ -49,7 +49,7 @@ export default function FavoritesPage() {
       const json = await res.json();
       
       if (json.favorites) {
-        // Arricchisci con i dettagli (simulato â€” in produzione fare join)
+        // Arricchisci con i dettagli (simulato — in produzione fare join)
         const enriched = json.favorites.map((fav: Favorite) => ({
           ...fav,
           name: `${fav.item_type} #${fav.item_id.slice(0, 8)}`,
@@ -96,7 +96,7 @@ export default function FavoritesPage() {
     <section className="space-y-6">
       <div className="bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200">
         <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
-          â¤ï¸ I Miei Preferiti
+          ❤️ I Miei Preferiti
         </h1>
         <p className="text-gray-600">
           Tutti i fornitori, location e chiese che avete salvato in un unico posto.
@@ -104,7 +104,7 @@ export default function FavoritesPage() {
       </div>
 
       <PageInfoNote
-        icon="â¤ï¸"
+        icon="❤️"
         title="Raccogli i Tuoi Fornitori Preferiti"
         description="Qui trovi tutti i fornitori, location e chiese che hai salvato mentre esploravi i database. Puoi aggiungere note personali, valutazioni e confrontarli facilmente. Quando sei pronto, contatta direttamente i preferiti o aggiungili alle spese."
         tips={[
@@ -112,7 +112,7 @@ export default function FavoritesPage() {
           "Aggiungi note personali (es. 'Chiamato il 15/01, molto disponibile')",
           "Usa le stelle per dare una valutazione personale a ciascun fornitore",
           "Filtra per tipo (fornitori, location, chiese) per organizzare meglio la ricerca",
-          "Rimuovi dai preferiti ciÃ² che hai scartato per mantenere la lista pulita"
+          "Rimuovi dai preferiti ciò che hai scartato per mantenere la lista pulita"
         ]}
         eventTypeSpecific={{
           wedding: "Per il matrimonio, salva tutti i professionisti che ti colpiscono: fotografi, fioristi, catering, location. Confronta i preferiti prima di decidere e prenotare!",
@@ -144,7 +144,7 @@ export default function FavoritesPage() {
           }`}
           style={filter === "supplier" ? { background: "var(--color-sage)" } : {}}
         >
-          ðŸ¢ Fornitori ({favorites.filter(f => f.item_type === "supplier").length})
+          🏢 Fornitori ({favorites.filter(f => f.item_type === "supplier").length})
         </button>
         <button
           onClick={() => setFilter("location")}
@@ -155,7 +155,7 @@ export default function FavoritesPage() {
           }`}
           style={filter === "location" ? { background: "var(--color-sage)" } : {}}
         >
-          ðŸ›ï¸ Location ({favorites.filter(f => f.item_type === "location").length})
+          🏛️ Location ({favorites.filter(f => f.item_type === "location").length})
         </button>
         <button
           onClick={() => setFilter("church")}
@@ -166,14 +166,14 @@ export default function FavoritesPage() {
           }`}
           style={filter === "church" ? { background: "var(--color-sage)" } : {}}
         >
-          â›ª Chiese ({favorites.filter(f => f.item_type === "church").length})
+          ⛪ Chiese ({favorites.filter(f => f.item_type === "church").length})
         </button>
       </div>
 
       {/* Lista preferiti */}
       {filteredFavorites.length === 0 ? (
         <div className="p-12 text-center bg-white rounded-xl border-2 border-dashed border-gray-300">
-          <div className="text-6xl mb-4">ðŸ’”</div>
+          <div className="text-6xl mb-4">💔</div>
           <h3 className="text-xl font-bold text-gray-700 mb-2">Nessun preferito ancora</h3>
           <p className="text-gray-500 mb-6">
             Inizia a salvare fornitori, location e chiese che ti piacciono!
@@ -204,7 +204,7 @@ export default function FavoritesPage() {
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <span className="text-2xl mb-2 block">
-                    {fav.item_type === "supplier" ? "ðŸ¢" : fav.item_type === "location" ? "ðŸ›ï¸" : "â›ª"}
+                    {fav.item_type === "supplier" ? "🏢" : fav.item_type === "location" ? "🏛️" : "⛪"}
                   </span>
                   <h3 className="font-bold text-lg text-gray-800">{fav.name}</h3>
                   <p className="text-sm text-gray-500">{fav.city}</p>
@@ -214,7 +214,7 @@ export default function FavoritesPage() {
                   className="text-red-500 hover:text-red-700 transition"
                   title="Rimuovi dai preferiti"
                 >
-                  â¤ï¸
+                  ❤️
                 </button>
               </div>
 
@@ -222,7 +222,7 @@ export default function FavoritesPage() {
                 <div className="mb-2">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i} className={i < fav.rating! ? "text-yellow-400" : "text-gray-300"}>
-                      â­
+                      ⭐
                     </span>
                   ))}
                 </div>

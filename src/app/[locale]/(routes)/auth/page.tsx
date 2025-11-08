@@ -139,7 +139,7 @@ export default function AuthPage() {
       />
       {eventType === "wedding" && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ðŸ“… Data Matrimonio</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">📅 Data Matrimonio</label>
           <input
             className="border px-3 py-2 block w-full max-w-sm rounded"
             type="date"
@@ -155,13 +155,13 @@ export default function AuthPage() {
             <input
               name="brideBudget"
               className="border px-3 py-2 block w-full max-w-xs"
-              placeholder="Budget sposa (â‚¬)"
+              placeholder="Budget sposa (€)"
               type="number"
             />
             <input
               name="groomBudget"
               className="border px-3 py-2 block w-full max-w-xs"
-              placeholder="Budget sposo (â‚¬)"
+              placeholder="Budget sposo (€)"
               type="number"
             />
           </div>
@@ -169,7 +169,7 @@ export default function AuthPage() {
           <input
             name="brideBudget"
             className="border px-3 py-2 block w-full max-w-sm"
-            placeholder="Budget totale (â‚¬)"
+            placeholder="Budget totale (€)"
             type="number"
           />
         )}

@@ -11,23 +11,23 @@ const supabase = getBrowserClient();
 
 // Icone per categorie
 const CATEGORY_ICONS: Record<string, string> = {
-  "Abiti & Accessori (altri)": "ðŸ‘&mdash;",
-  "Cerimonia/Chiesa Location": "â›ª",
-  "Fiori & Decor": "ðŸ’",
-  "Foto & Video": "ðŸ“¸",
-  "Inviti & Stationery": "ðŸ’Œ",
-  "Sposa": "ðŸ‘°",
-  "Sposo": "ðŸ¤µ",
-  "Ricevimento Location": "ðŸ›ï¸",
-  "Musica & Intrattenimento": "ðŸŽµ",
-  "Trasporti": "ðŸš&mdash;",
-  "Bomboniere & Regali": "ðŸŽ",
-  "OspitalitÃ  & Logistica": "ðŸ¨",
-  "Burocrazia": "ðŸ“‹",
-  "Beauty & Benessere": "ðŸ’†",
-  "Viaggio di nozze": "âœˆï¸",
-  "Comunicazione & Media": "ðŸ“±",
-  "Extra & Contingenze": "âœ¨",
+  "Abiti & Accessori (altri)": "👗",
+  "Cerimonia/Chiesa Location": "⛪",
+  "Fiori & Decor": "💐",
+  "Foto & Video": "📸",
+  "Inviti & Stationery": "💌",
+  "Sposa": "👰",
+  "Sposo": "🤵",
+  "Ricevimento Location": "🏛️",
+  "Musica & Intrattenimento": "🎵",
+  "Trasporti": "🚗",
+  "Bomboniere & Regali": "🎁",
+  "Ospitalità & Logistica": "🏨",
+  "Burocrazia": "📋",
+  "Beauty & Benessere": "💆",
+  "Viaggio di nozze": "✈️",
+  "Comunicazione & Media": "📱",
+  "Extra & Contingenze": "✨",
 };
 
 type Supplier = {
@@ -61,7 +61,7 @@ const CATEGORIES = [
   "Abiti & Accessori (altri)", "Cerimonia/Chiesa Location", "Fiori & Decor", "Foto & Video",
   "Inviti & Stationery", "Sposa", "Sposo", "Ricevimento Location",
   "Musica & Intrattenimento", "Trasporti", "Bomboniere & Regali",
-  "OspitalitÃ  & Logistica", "Burocrazia", "Beauty & Benessere",
+  "Ospitalità & Logistica", "Burocrazia", "Beauty & Benessere",
   "Viaggio di nozze", "Comunicazione & Media", "Extra & Contingenze"
 ];
 
@@ -90,7 +90,7 @@ export default function FornitoriPage() {
     email: "",
     website: "",
     description: "",
-    priceRange: "â‚¬â‚¬",
+    priceRange: "€€",
   });
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export default function FornitoriPage() {
       const jwt = data.session?.access_token;
 
       if (!jwt) {
-        setMessage("âŒ Devi essere autenticato per proporre un fornitore. Clicca su 'Registrati' in alto.");
+        setMessage("❌ Devi essere autenticato per proporre un fornitore. Clicca su 'Registrati' in alto.");
         return;
       }
 
@@ -145,7 +145,7 @@ export default function FornitoriPage() {
       });
 
       if (r.ok) {
-        setMessage("âœ… Fornitore proposto con successo! SarÃ  revisionato dal nostro team.");
+        setMessage("✅ Fornitore proposto con successo! Sarà revisionato dal nostro team.");
         setShowAddForm(false);
         setNewSupplier({
           name: "",
@@ -159,16 +159,16 @@ export default function FornitoriPage() {
           email: "",
           website: "",
           description: "",
-          priceRange: "â‚¬â‚¬",
+          priceRange: "€€",
         });
         setTimeout(() => setMessage(null), 5000);
       } else {
         const j = await r.json();
-        setMessage(`âŒ Errore: ${j.error || "Impossibile inviare"}`);
+        setMessage(`❌ Errore: ${j.error || "Impossibile inviare"}`);
       }
     } catch (err) {
       console.error("Errore:", err);
-      setMessage("âŒ Errore di rete");
+      setMessage("❌ Errore di rete");
     }
   };
 
@@ -181,7 +181,7 @@ export default function FornitoriPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2">ðŸ¢ Fornitori</h2>
+      <h2 className="font-serif text-3xl mb-2">🏢 Fornitori</h2>
       <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
         Esplora il database di fornitori per il tuo matrimonio: location, fotografi, fioristi, catering e molto altro. 
         Filtra per regione, provincia e categoria. Puoi anche aggiungere fornitori personalizzati.
@@ -281,7 +281,7 @@ export default function FornitoriPage() {
           onClick={() => setShowAddForm(!showAddForm)}
           className="border border-[#A3B59D] text-[#A3B59D] rounded-lg px-4 py-2 hover:bg-[#A3B59D] hover:text-white"
         >
-          {showAddForm ? "Annulla" : "ðŸ’¡ Proponi un nuovo fornitore"}
+          {showAddForm ? "Annulla" : "💡 Proponi un nuovo fornitore"}
         </button>
       </div>
 
@@ -339,7 +339,7 @@ export default function FornitoriPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">CittÃ </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Città</label>
               <input
                 type="text"
                 className="border border-gray-300 rounded px-3 py-2 w-full"
@@ -414,7 +414,7 @@ export default function FornitoriPage() {
                 : "border border-gray-300 text-gray-700 hover:bg-gray-50"
             }`}
           >
-            ðŸ”² Griglia
+            🔲 Griglia
           </button>
           <button
             onClick={() => setViewMode("list")}
@@ -424,7 +424,7 @@ export default function FornitoriPage() {
                 : "border border-gray-300 text-gray-700 hover:bg-gray-50"
             }`}
           >
-            ðŸ“‹ Lista
+            📋 Lista
           </button>
         </div>
       </div>
@@ -434,7 +434,7 @@ export default function FornitoriPage() {
         <p className="text-gray-500">Caricamento...</p>
       ) : filteredSuppliers.length === 0 ? (
         <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
-          <div className="text-5xl mb-4">ðŸ”</div>
+          <div className="text-5xl mb-4">🔍</div>
           <p className="text-lg font-medium">Nessun fornitore trovato</p>
           <p className="text-sm mt-2">Prova a modificare i filtri o proponi un nuovo fornitore</p>
         </div>
@@ -448,11 +448,11 @@ export default function FornitoriPage() {
               {/* Icona Categoria */}
               <div className="flex items-start justify-between mb-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#EAD9D4] to-[#A6B5A0] flex items-center justify-center text-3xl">
-                  {CATEGORY_ICONS[supplier.category] || "ðŸ¢"}
+                  {CATEGORY_ICONS[supplier.category] || "🏢"}
                 </div>
                 {supplier.rating > 0 && (
                   <div className="flex items-center gap-1 text-sm">
-                    <span className="text-yellow-500">â­</span>
+                    <span className="text-yellow-500">⭐</span>
                     <span className="font-bold text-gray-800">{supplier.rating.toFixed(1)}</span>
                   </div>
                 )}
@@ -463,13 +463,13 @@ export default function FornitoriPage() {
                 {supplier.name}
               </h3>
               <p className="text-sm text-gray-600 mb-3 flex items-center gap-1">
-                <span>{CATEGORY_ICONS[supplier.category] || "ðŸ¢"}</span>
+                <span>{CATEGORY_ICONS[supplier.category] || "🏢"}</span>
                 <span>{supplier.category}</span>
               </p>
 
-              {/* LocalitÃ  */}
+              {/* Località */}
               <p className="text-sm text-gray-700 mb-3 flex items-center gap-1">
-                <span>ðŸ“</span>
+                <span>📍</span>
                 <span>{supplier.city}, {supplier.province}</span>
               </p>
 
@@ -496,7 +496,7 @@ export default function FornitoriPage() {
                     rel="noopener noreferrer"
                     className="text-center bg-white border-2 border-[#A6B5A0] text-[#A6B5A0] px-4 py-2 rounded-lg font-medium hover:bg-[#A6B5A0] hover:text-white transition-colors text-sm"
                   >
-                    ðŸŒ Visita sito
+                    🌐 Visita sito
                   </a>
                 )}
                 <button
@@ -505,7 +505,7 @@ export default function FornitoriPage() {
                   }}
                   className="text-center bg-[#A6B5A0] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#8a9d84] transition-colors text-sm"
                 >
-                  â¤ï¸ Aggiungi al mio evento
+                  ❤️ Aggiungi al mio evento
                 </button>
               </div>
             </div>
@@ -519,23 +519,23 @@ export default function FornitoriPage() {
                 <div className="flex gap-4 flex-1">
                   {/* Icona */}
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#EAD9D4] to-[#A6B5A0] flex items-center justify-center text-2xl flex-shrink-0">
-                    {CATEGORY_ICONS[supplier.category] || "ðŸ¢"}
+                    {CATEGORY_ICONS[supplier.category] || "🏢"}
                   </div>
 
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg text-gray-800">{supplier.name}</h3>
                     <div className="text-sm text-gray-600 mt-1">
-                      {supplier.category} â€¢ {supplier.city}, {supplier.province} ({supplier.region})
+                      {supplier.category} • {supplier.city}, {supplier.province} ({supplier.region})
                     </div>
                     {supplier.description && (
                       <p className="text-sm text-gray-700 mt-2">{supplier.description}</p>
                     )}
                     <div className="flex gap-4 mt-3 text-xs text-gray-500">
-                      {supplier.phone && <span>ðŸ“ž {supplier.phone}</span>}
-                      {supplier.email && <span>âœ‰ï¸ {supplier.email}</span>}
+                      {supplier.phone && <span>📞 {supplier.phone}</span>}
+                      {supplier.email && <span>✉️ {supplier.email}</span>}
                       {supplier.website && (
                         <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                          ðŸŒ Sito web
+                          🌐 Sito web
                         </a>
                       )}
                     </div>
@@ -545,7 +545,7 @@ export default function FornitoriPage() {
                   <div className="text-sm font-medium text-gray-700">{supplier.priceRange}</div>
                   {supplier.rating > 0 && (
                     <div className="text-xs text-yellow-600">
-                      â­ {supplier.rating.toFixed(1)}
+                      ⭐ {supplier.rating.toFixed(1)}
                     </div>
                   )}
                   <button
@@ -554,7 +554,7 @@ export default function FornitoriPage() {
                     }}
                     className="mt-2 bg-[#A6B5A0] text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-[#8a9d84] transition-colors"
                   >
-                    â¤ï¸ Aggiungi
+                    ❤️ Aggiungi
                   </button>
                 </div>
               </div>

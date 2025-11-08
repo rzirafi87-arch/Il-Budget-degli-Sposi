@@ -77,7 +77,7 @@ export default function Breadcrumbs() {
             <span className="text-gray-900 font-bold">{crumb.label}</span>
           )}
 
-          {index < breadcrumbs.length - 1 && <span className="text-gray-400" aria-hidden>â€º</span>}
+          {index < breadcrumbs.length - 1 && <span className="text-gray-400" aria-hidden>›</span>}
         </span>
       ))}
     </nav>

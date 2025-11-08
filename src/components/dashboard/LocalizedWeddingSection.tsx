@@ -55,7 +55,7 @@ export default function LocalizedWeddingSection({ data }: Props) {
     <section className="mt-8 grid gap-6">
       <header className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <h2 className="text-xl font-semibold">
-          Preset localizzati â€” {event_name} in {country_name}
+          Preset localizzati — {event_name} in {country_name}
         </h2>
         {description ? (
           <p className="mt-2 text-sm text-gray-700">{description}</p>

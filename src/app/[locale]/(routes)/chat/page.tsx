@@ -57,7 +57,7 @@ export default function ChatPage() {
   if (enabled === null) {
     return (
   <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
-        <div className="text-gray-700">Verifica disponibilitÃ  assistenteâ€¦</div>
+        <div className="text-gray-700">Verifica disponibilità assistente…</div>
       </div>
     );
   }

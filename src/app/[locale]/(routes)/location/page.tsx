@@ -6,7 +6,7 @@ import { GEO, getUserCountrySafe } from "@/constants/geo";
 import { getGeographyLevels } from "@/lib/geographyFilters";
 import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type Location = {
   id: string;
@@ -41,12 +41,13 @@ const LOCATION_TYPES = [
 ];
 
 export default function LocationiPage() {
-  const [locations] = useState<Location[]>([]);
-  const [loading] = useState(true);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [country] = useState<string>(getUserCountrySafe());
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
   
-  const geographyLevels = getGeographyLevels(country);
+  const geographyLevels = useMemo(() => getGeographyLevels(country), [country]);
 
   // Utility per ottenere le opzioni per ogni livello geografico (generica)
   function getOptionsForLevel(levelKey: string): string[] {
@@ -96,12 +97,75 @@ export default function LocationiPage() {
     return initial;
   });
 
+  const handleFilterChange = useCallback(
+    (key: string, value: string) => {
+      setFilterValues((prev) => {
+        const next = { ...prev, [key]: value };
+        const levelIndex = geographyLevels.findIndex((level) => level.key === key);
+        if (levelIndex >= 0) {
+          for (let i = levelIndex + 1; i < geographyLevels.length; i += 1) {
+            delete next[geographyLevels[i].key];
+          }
+        }
+        if (value === "") {
+          delete next[key];
+        }
+        return next;
+      });
+    },
+    [geographyLevels]
+  );
+
+  const fetchLocations = useCallback(
+    async (currentFilters: Record<string, string>, signal?: AbortSignal) => {
+      setLoading(true);
+      setError(null);
+      const params = new URLSearchParams();
+      const normalizedCountry = (country || "").toLowerCase();
+      if (normalizedCountry) {
+        params.set("country", normalizedCountry);
+      }
+      const region = currentFilters.region?.trim();
+      const province = currentFilters.province?.trim();
+      const locationType = currentFilters.type?.trim().toLowerCase();
+      if (region) params.set("region", region);
+      if (province) params.set("province", province);
+      if (locationType) params.set("type", locationType);
+
+      try {
+        const response = await fetch(`/api/locations?${params.toString()}`, { signal });
+        if (!response.ok) {
+          throw new Error("Impossibile recuperare le location");
+        }
+        const json = await response.json();
+        if (signal?.aborted) return;
+        setLocations(Array.isArray(json?.locations) ? (json.locations as Location[]) : []);
+      } catch (err) {
+        if (signal?.aborted) return;
+        console.error("Errore nel caricamento delle location", err);
+        setError("Non è stato possibile caricare le location. Riprova più tardi.");
+        setLocations([]);
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      }
+    },
+    [country]
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchLocations(filterValues, controller.signal);
+    return () => controller.abort();
+  }, [fetchLocations, filterValues]);
+
   return (
   <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
       <div className="max-w-7xl mx-auto">
         <ImageCarousel images={getPageImages("location", country)} height="280px" />
         <div className="mb-6">
-          <h1 className="text-4xl font-bold text-gray-800">ðŸ›ï¸ Location Ricevimento</h1>
+          <h1 className="text-4xl font-bold text-gray-800">🏛️ Location Ricevimento</h1>
           <p className="text-gray-700 text-sm sm:text-base max-w-3xl mt-2">
             Scopri e proponi ville, castelli, agriturismi e altri spazi dedicati al ricevimento. Filtra per area geografica e
             tipologia per trovare la location perfetta.
@@ -118,14 +182,17 @@ export default function LocationiPage() {
                   <label className="block text-sm font-semibold mb-2">{level.label}</label>
                   <select
                     value={filterValues[level.key] || ""}
-                    onChange={(e) => setFilterValues({ ...filterValues, [level.key]: e.target.value })}
+                    onChange={(e) => handleFilterChange(level.key, e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     disabled={isDisabled}
                   >
                     <option value="">Tutte</option>
-                    {options.map((opt: string) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
+                    {options.map((opt: string) => {
+                      const optionValue = level.key === "type" ? opt.toLowerCase() : opt;
+                      return (
+                        <option key={opt} value={optionValue}>{opt}</option>
+                      );
+                    })}
                   </select>
                 </div>
               );
@@ -172,7 +239,7 @@ export default function LocationiPage() {
               );
             })}
             <div>
-              <label className="block text-sm font-semibold mb-1">CittÃ  *</label>
+              <label className="block text-sm font-semibold mb-1">Città *</label>
               <input
                 type="text"
                 required
@@ -221,14 +288,14 @@ export default function LocationiPage() {
               <label className="block text-sm font-semibold mb-1">Fascia di Prezzo</label>
               <input
                 type="text"
-                placeholder="es. â‚¬â‚¬â‚¬, 50-100â‚¬ a persona"
+                placeholder="es. €€€, 50-100€ a persona"
                 value={formData.price_range}
                 onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
                 className="w-full border rounded px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">CapacitÃ  Minima (persone)</label>
+              <label className="block text-sm font-semibold mb-1">Capacità Minima (persone)</label>
               <input
                 type="number"
                 min="0"
@@ -238,7 +305,7 @@ export default function LocationiPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">CapacitÃ  Massima (persone)</label>
+              <label className="block text-sm font-semibold mb-1">Capacità Massima (persone)</label>
               <input
                 type="number"
                 min="0"
@@ -253,7 +320,7 @@ export default function LocationiPage() {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full border rounded px-3 py-2 h-24"
-                placeholder="Descrivi la location, i servizi offerti, particolaritÃ ..."
+                placeholder="Descrivi la location, i servizi offerti, particolarità..."
               />
             </div>
             <div className="col-span-2">
@@ -269,6 +336,8 @@ export default function LocationiPage() {
         <div>
           {loading ? (
             <div className="text-center py-12">Caricamento...</div>
+          ) : error ? (
+            <div className="text-center py-12 text-red-600">{error}</div>
           ) : locations.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               Nessuna location trovata. Prova a cambiare i filtri o aggiungi la prima!
@@ -297,14 +366,14 @@ export default function LocationiPage() {
                     </p>
                   )}
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">ðŸ“</span> {location.city}, {location.province} ({location.region})
+                    <span className="font-semibold">📍</span> {location.city}, {location.province} ({location.region})
                   </p>
                   {location.address && (
                     <p className="text-sm text-gray-600 mb-2">{location.address}</p>
                   )}
                   {(location.capacity_min || location.capacity_max) && (
                     <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">ðŸ‘¥ CapacitÃ :</span>{" "}
+                      <span className="font-semibold">👥 Capacità:</span>{" "}
                       {location.capacity_min && location.capacity_max
                         ? `${location.capacity_min}-${location.capacity_max} persone`
                         : location.capacity_min
@@ -314,7 +383,7 @@ export default function LocationiPage() {
                   )}
                   {location.price_range && (
                     <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">ï¿½ Prezzo:</span> {location.price_range}
+                      <span className="font-semibold">� Prezzo:</span> {location.price_range}
                     </p>
                   )}
                   {location.description && (

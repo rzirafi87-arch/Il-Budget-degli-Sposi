@@ -14,9 +14,9 @@ function getLang(): SupportedLang {
 function tComingSoon(lang: string) {
   switch (lang) {
     case "it": return "In arrivo";
-    case "es": return "PrÃ³ximamente";
-    case "fr": return "BientÃ´t disponible";
-    case "de": return "DemnÃ¤chst verfÃ¼gbar";
+    case "es": return "Próximamente";
+    case "fr": return "Bientôt disponible";
+    case "de": return "Demnächst verfügbar";
     case "ru": return "Ð¡ÐºÐ¾Ñ€Ð¾";
     case "zh": return "å³å°†æŽ¨å‡º";
     default: return "Coming Soon";
@@ -26,12 +26,12 @@ function tComingSoon(lang: string) {
 const LABELS: Record<string, {it:string; es:string; en:string}> = {
   wedding: { it: "Matrimonio", es: "Boda", en: "Wedding" },
   baptism: { it: "Battesimo", es: "Bautizo", en: "Baptism" },
-  "turning-18": { it: "Diciottesimo", es: "18Âº CumpleaÃ±os", en: "18th Birthday" },
-  "anniversary-50": { it: "50Âº Anniversario", es: "50Âº Aniversario", en: "50th Anniversary" },
-  "turning-50": { it: "50 Anni", es: "50 AÃ±os", en: "50 Years" },
-  retirement: { it: "Pensione", es: "JubilaciÃ³n", en: "Retirement" },
-  confirmation: { it: "Cresima", es: "ConfirmaciÃ³n", en: "Confirmation" },
-  graduation: { it: "Laurea", es: "GraduaciÃ³n", en: "Graduation" },
+  "turning-18": { it: "Diciottesimo", es: "18º Cumpleaños", en: "18th Birthday" },
+  "anniversary-50": { it: "50º Anniversario", es: "50º Aniversario", en: "50th Anniversary" },
+  "turning-50": { it: "50 Anni", es: "50 Años", en: "50 Years" },
+  retirement: { it: "Pensione", es: "Jubilación", en: "Retirement" },
+  confirmation: { it: "Cresima", es: "Confirmación", en: "Confirmation" },
+  graduation: { it: "Laurea", es: "Graduación", en: "Graduation" },
 };
 
 export default function ComingSoonPage() {
@@ -57,8 +57,8 @@ export default function ComingSoonPage() {
           <p className="text-lg text-gray-700 mb-6">{eventLabel}</p>
         ) : null}
         <p className="text-gray-600 mb-8">
-          Questa sezione non Ã¨ ancora pronta per questo tipo di evento.
-          Nel frattempo puoi esplorare la nostra demo o creare un evento Matrimonio per usare tutte le funzionalitÃ .
+          Questa sezione non è ancora pronta per questo tipo di evento.
+          Nel frattempo puoi esplorare la nostra demo o creare un evento Matrimonio per usare tutte le funzionalità.
         </p>
         <div className="flex gap-3 justify-center">
           <Link href="/" className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 font-semibold">Vai alla Home</Link>

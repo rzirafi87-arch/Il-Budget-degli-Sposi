@@ -221,11 +221,11 @@ export default function EntratePage() {
           <Link href={`/${locale}/dashboard`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("incomesPage.toolbar.backDashboard")}</Link>
         </div>
       </div>
-      {/* titolo rimosso: giÃ  presente nella toolbar sopra */}
+      {/* titolo rimosso: già presente nella toolbar sopra */}
       <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">{t("incomesPage.info.lead")}</p>
 
       <PageInfoNote
-        icon="ðŸ’µ"
+        icon="💵"
         title={t("incomesPage.info.title")}
         description={t("incomesPage.info.description")}
         tips={[
@@ -416,9 +416,9 @@ export default function EntratePage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold">
-                    {income.type === "regalo" ? "â€”" : formatEuro(income.amount)}
+                    {income.type === "regalo" ? "—" : formatEuro(income.amount)}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{income.notes || "â€”"}</td>
+                  <td className="px-4 py-3 text-gray-600">{income.notes || "—"}</td>
                   <td className="px-4 py-3 text-center">
                     <button
                       onClick={() => deleteIncome(income.id!)}
