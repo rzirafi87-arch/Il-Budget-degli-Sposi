@@ -1,3 +1,41 @@
+-- Traduzioni Cresima (IT/EN)
+-- event_type_translations
+insert into event_type_translations (code, locale, label) values
+('CONFIRMATION','it','Cresima'),
+('CONFIRMATION','en','Confirmation')
+on conflict do nothing;
+
+-- category_translations
+insert into category_translations (category_code, locale, label) values
+('FESTEGGIATO','it','Festeggiato'),
+('FESTEGGIATO','en','Confirmed person'),
+('FESTA','it','Festa'),
+('FESTA','en','Party')
+on conflict do nothing;
+
+-- subcategory_translations
+insert into subcategory_translations (subcategory_code, locale, label) values
+('LOCATION','it','Location festa'),
+('LOCATION','en','Party location'),
+('FOTOGRAFO','it','Fotografo'),
+('FOTOGRAFO','en','Photographer'),
+('CATERING','it','Catering'),
+('CATERING','en','Catering'),
+('TORTA','it','Torta'),
+('TORTA','en','Cake'),
+('BOMBONIERE','it','Bomboniere'),
+('BOMBONIERE','en','Favors')
+on conflict do nothing;
+
+-- timeline_translations
+insert into timeline_translations (timeline_code, locale, label) values
+('PREPARAZIONE','it','Preparazione cresima'),
+('PREPARAZIONE','en','Confirmation preparation'),
+('ORGANIZZA_FESTA','it','Organizza la festa'),
+('ORGANIZZA_FESTA','en','Plan the party'),
+('GIORNO_CRESIMA','it','Giorno della cresima'),
+('GIORNO_CRESIMA','en','Confirmation day')
+on conflict do nothing;
 -- Traduzioni Diciottesimo (IT/EN)
 -- event_type_translations
 insert into event_type_translations (code, locale, label) values
