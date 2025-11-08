@@ -18,10 +18,6 @@ export default function OnboardingSelector() {
   const [selectedLanguage, setSelectedLanguage] = useState(currentLocale);
   const [selectedCountry, setSelectedCountry] = useState("it");
   const [selectedEvent, setSelectedEvent] = useState("wedding");
-  const [showSelector, setShowSelector] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return localStorage.getItem("onboardingComplete") !== "true";
-  });
 
   useEffect(() => {
     try {
@@ -55,7 +51,6 @@ export default function OnboardingSelector() {
   };
 
   const handleContinue = () => {
-    localStorage.setItem("onboardingComplete", "true");
     localStorage.setItem("language", selectedLanguage);
     localStorage.setItem("country", selectedCountry);
     localStorage.setItem("eventType", selectedEvent);
@@ -65,11 +60,8 @@ export default function OnboardingSelector() {
     document.cookie = `eventType=${selectedEvent}; Path=/; Max-Age=15552000; SameSite=Lax`;
 
     const targetLocale = locales.includes(selectedLanguage as (typeof locales)[number]) ? selectedLanguage : currentLocale;
-    setShowSelector(false);
     router.push(`/${targetLocale}/dashboard`);
   };
-
-  if (!showSelector) return null;
 
   return (
     <div className="w-full max-w-6xl mx-auto bg-white/80 backdrop-blur border border-[#A3B59D]/30 rounded-3xl shadow-xl px-6 py-8 sm:px-10 sm:py-10">
