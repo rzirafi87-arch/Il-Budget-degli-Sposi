@@ -1,3 +1,37 @@
+-- Traduzioni Anniversario (IT/EN)
+-- event_type_translations
+insert into event_type_translations (code, locale, label) values
+('ANNIVERSARY','it','Anniversario'),
+('ANNIVERSARY','en','Anniversary')
+on conflict do nothing;
+
+-- category_translations
+insert into category_translations (category_code, locale, label) values
+('COPPIA','it','Coppia'),
+('COPPIA','en','Couple'),
+('FESTA','it','Festa'),
+('FESTA','en','Party')
+on conflict do nothing;
+
+-- subcategory_translations
+insert into subcategory_translations (subcategory_code, locale, label) values
+('REGALO','it','Regalo'),
+('REGALO','en','Gift'),
+('FOTOGRAFO','it','Fotografo'),
+('FOTOGRAFO','en','Photographer'),
+('TORTA','it','Torta'),
+('TORTA','en','Cake')
+on conflict do nothing;
+
+-- timeline_translations
+insert into timeline_translations (timeline_code, locale, label) values
+('INVITI','it','Invio inviti'),
+('INVITI','en','Send invitations'),
+('FESTA','it','Festa'),
+('FESTA','en','Party'),
+('ANNIVERSARIO','it','Anniversario'),
+('ANNIVERSARIO','en','Anniversary')
+on conflict do nothing;
 -- Traduzioni Laurea (IT/EN)
 -- event_type_translations
 insert into event_type_translations (code, locale, label) values
