@@ -325,7 +325,7 @@
         },
         "suppliers": {
           "title": "Directory fornitori",
-          "description": "Trova location, fotografi, fioristi nella tua zona",
+          "description": "Trova location ricevimento, fotografi, fioristi nella tua zona",
           "href": "/fornitori"
         },
         "favorites": {
@@ -539,7 +539,7 @@
       },
       "4": {
         "title": "💡 Trova Fornitori",
-        "desc": "Accedi al nostro database di fornitori verificati in tutta Italia: location, chiese, fotografi, wedding planner, musicisti e molto altro."
+        "desc": "Accedi al nostro database di fornitori verificati in tutta Italia: location ricevimento, location cerimonia, fotografi, wedding planner, musicisti e molto altro."
       },
       "5": {
         "title": "💍¥ Gestisci gli Invitati",
@@ -1637,7 +1637,7 @@
     }
   },
   "suppliersChurches": {
-    "title": "â›ª Chiese e Luoghi di Cerimonia",
+    "title": "⛪ Location Cerimonia e Luoghi di Culto",
     "description": "Trova la chiesa perfetta per la tua cerimonia religiosa: cattoliche, ortodosse, protestanti e altri luoghi di culto. Scopri requisiti, capienza e informazioni di contatto. Filtra per regione, provincia e tipologia.",
     "buttons": {
       "add": "+ Aggiungi Chiesa",
