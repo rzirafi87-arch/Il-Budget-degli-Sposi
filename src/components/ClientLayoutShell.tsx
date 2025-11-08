@@ -4,7 +4,6 @@ import Background from "@/components/Background";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DynamicHeader from "@/components/DynamicHeader";
 import Footer from "@/components/Footer";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import NavTabs from "@/components/NavTabs";
 import QuickSettings from "@/components/QuickSettings";
 import { ToastProvider } from "@/components/ToastProvider";
@@ -30,14 +29,12 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
   })();
 
   const isSaveTheDate = normalizedPath.startsWith("/save-the-date");
-  const isPublicHome = normalizedPath === "/";
   const isOnboarding =
     normalizedPath.startsWith("/select-language") ||
     normalizedPath.startsWith("/select-country") ||
     normalizedPath.startsWith("/select-event-type") ||
     normalizedPath === "/auth" ||
     normalizedPath === "/welcome";
-  const showLanguageSwitcher = !isPublicHome;
 
   // Evita letture non deterministiche in fase SSR: inizializza neutro.
   const [eventType, setEventType] = useState<string | null>(null);
@@ -102,7 +99,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                 </h1>
                 <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <TopBarSelector />
-                  {showLanguageSwitcher ? <LanguageSwitcher /> : null}
                   {!isSaveTheDate && (
                     <>
                       <Link
