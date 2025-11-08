@@ -98,7 +98,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
               <Link
-                href={`/${locale}/auth`}
+                href={localizedAuthPath}
                 className="w-full sm:w-auto bg-[#A6B5A0] text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-[#8a9d84] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
               >
                 {t("hero.ctaPrimary")}
