@@ -32,6 +32,11 @@ export default function DashboardPage() {
   const [clientReady, setClientReady] = useState(false);
   const [clientPrefs, setClientPrefs] = useState({ language: "", country: "", eventType: "" });
 
+  const userLang = clientPrefs.language;
+  const userCountry = clientPrefs.country;
+  const userEventType = clientPrefs.eventType;
+  const normalizedEventType = userEventType || "";
+
   useEffect(() => {
     // Deep-link: redirect automatico se mancano preferenze
     if (typeof window !== "undefined" && clientReady) {
@@ -80,11 +85,6 @@ export default function DashboardPage() {
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, [clientReady, userLang, userCountry, normalizedEventType, pathname, router]);
-
-  const userLang = clientPrefs.language;
-  const userCountry = clientPrefs.country;
-  const userEventType = clientPrefs.eventType;
-  const normalizedEventType = userEventType || "";
   const effectiveEventType = normalizedEventType || "wedding";
   const isWedding = effectiveEventType === "wedding";
   // Locale corrente (mockato nei test). Fallback a 'it' se vuoto
