@@ -7,9 +7,9 @@ import LocalizedWeddingSection, { LocalizedWeddingData } from "@/components/dash
 import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useLocale } from "next-intl";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
 type BudgetItem = { name: string; amount?: number };
 type ChecklistModule = { module_name: string; is_required?: boolean };
@@ -50,7 +50,7 @@ export default function DashboardPage() {
   // Fetch dashboard data from API endpoints
   useEffect(() => {
     if (!isReady) return;
-    
+
     let active = true;
     const supabase = getBrowserClient();
     (async () => {
@@ -170,7 +170,7 @@ export default function DashboardPage() {
         return;
       }
 
-      const headers: HeadersInit = { 
+      const headers: HeadersInit = {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${jwt}`
       };
