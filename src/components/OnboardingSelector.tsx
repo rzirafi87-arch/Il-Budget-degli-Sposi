@@ -73,8 +73,8 @@ export default function OnboardingSelector() {
             Scegli lingua, Paese e tipo di evento per ricevere dashboard e consigli su misura.
           </p>
         </div>
-        <div className="flex items-center gap-3 text-sm text-[#4F5D4B] bg-[#A3B59D]/15 border border-[#A3B59D]/30 rounded-full px-5 py-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#6F7E69] font-semibold shadow">
+        <div className="flex items-center gap-3 text-base font-semibold text-[#1F1B14] bg-[#A3B59D]/25 border border-[#7C8D73] rounded-full px-5 py-2">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1F1B14] text-white font-bold shadow-inner">
             1
           </span>
           Completa le preferenze iniziali e passa alla dashboard.
