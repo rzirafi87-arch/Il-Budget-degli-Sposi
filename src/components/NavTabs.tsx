@@ -142,7 +142,6 @@ export default function NavTabs() {
             <Link
               key={tab.path}
               href={tab.href}
-              locale={locale}
               aria-label={tab.label}
               aria-current={active ? "page" : undefined}
               className={clsx(
@@ -218,7 +217,6 @@ export default function NavTabs() {
                   <Link
                     key={tab.path}
                     href={tab.href}
-                    locale={locale}
                     aria-label={tab.label}
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMobileMenuOpen(false)}
