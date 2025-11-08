@@ -1,3 +1,41 @@
+-- Traduzioni Comunione (IT/EN)
+-- event_type_translations
+insert into event_type_translations (code, locale, label) values
+('COMMUNION','it','Comunione'),
+('COMMUNION','en','First Communion')
+on conflict do nothing;
+
+-- category_translations
+insert into category_translations (category_code, locale, label) values
+('BAMBINO','it','Bambino'),
+('BAMBINO','en','Child'),
+('FESTA','it','Festa'),
+('FESTA','en','Party'),
+('CERIMONIA','it','Cerimonia'),
+('CERIMONIA','en','Ceremony')
+on conflict do nothing;
+
+-- subcategory_translations
+insert into subcategory_translations (subcategory_code, locale, label) values
+('ABITO','it','Abito'),
+('ABITO','en','Dress'),
+('BOMBONIERE','it','Bomboniere'),
+('BOMBONIERE','en','Favors'),
+('FOTOGRAFO','it','Fotografo'),
+('FOTOGRAFO','en','Photographer'),
+('TORTA','it','Torta'),
+('TORTA','en','Cake')
+on conflict do nothing;
+
+-- timeline_translations
+insert into timeline_translations (timeline_code, locale, label) values
+('INVITI','it','Invio inviti'),
+('INVITI','en','Send invitations'),
+('CERIMONIA','it','Cerimonia'),
+('CERIMONIA','en','Ceremony'),
+('FESTA','it','Festa'),
+('FESTA','en','Party')
+on conflict do nothing;
 -- Traduzioni Battesimo (IT/EN)
 -- event_type_translations
 insert into event_type_translations (code, locale, label) values
