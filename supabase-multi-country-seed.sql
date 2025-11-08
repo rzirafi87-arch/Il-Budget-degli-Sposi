@@ -1,3 +1,39 @@
+-- Traduzioni Graduation/Laurea (IT/EN)
+-- event_type_translations
+insert into event_type_translations (code, locale, label) values
+('GRADUATION','it','Laurea'),
+('GRADUATION','en','Graduation')
+on conflict do nothing;
+
+-- category_translations
+insert into category_translations (category_code, locale, label) values
+('FESTEGGIATO','it','Festeggiato'),
+('FESTEGGIATO','en','Graduate'),
+('FESTA','it','Festa'),
+('FESTA','en','Party')
+on conflict do nothing;
+
+-- subcategory_translations
+insert into subcategory_translations (subcategory_code, locale, label) values
+('TOGA','it','Toga e tocco'),
+('TOGA','en','Gown and cap'),
+('LOCATION','it','Location festa'),
+('LOCATION','en','Party location'),
+('FOTOGRAFO','it','Fotografo'),
+('FOTOGRAFO','en','Photographer'),
+('CATERING','it','Catering'),
+('CATERING','en','Catering')
+on conflict do nothing;
+
+-- timeline_translations
+insert into timeline_translations (timeline_code, locale, label) values
+('TESI','it','Discussione tesi'),
+('TESI','en','Thesis discussion'),
+('ORGANIZZA_FESTA','it','Organizza la festa'),
+('ORGANIZZA_FESTA','en','Plan the party'),
+('GIORNO_LAUREA','it','Giorno della laurea'),
+('GIORNO_LAUREA','en','Graduation day')
+on conflict do nothing;
 -- Seed location ricevimento, chiesa e fornitori per Messico, Italia, Indonesia, Giappone, USA, Emirati Arabi, Russia, Francia, Spagna, Germania
 -- Struttura basata su quella usata per l'Italia
 
