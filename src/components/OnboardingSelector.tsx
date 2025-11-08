@@ -3,7 +3,7 @@
 import { locales, defaultLocale } from "@/i18n/config";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function OnboardingSelector() {
   const router = useRouter();
@@ -18,6 +18,23 @@ export default function OnboardingSelector() {
   const [selectedLanguage, setSelectedLanguage] = useState(currentLocale);
   const [selectedCountry, setSelectedCountry] = useState("it");
   const [selectedEvent, setSelectedEvent] = useState("wedding");
+  const [showSelector, setShowSelector] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("onboardingComplete") !== "true";
+  });
+
+  useEffect(() => {
+    try {
+      const storedLang = localStorage.getItem("language");
+      const storedCountry = localStorage.getItem("country");
+      const storedEvent = localStorage.getItem("eventType");
+      if (storedLang) setSelectedLanguage(storedLang);
+      if (storedCountry) setSelectedCountry(storedCountry);
+      if (storedEvent) setSelectedEvent(storedEvent);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const handleLanguageChange = (langCode: string) => {
     setSelectedLanguage(langCode);
@@ -48,8 +65,11 @@ export default function OnboardingSelector() {
     document.cookie = `eventType=${selectedEvent}; Path=/; Max-Age=15552000; SameSite=Lax`;
 
     const targetLocale = locales.includes(selectedLanguage as (typeof locales)[number]) ? selectedLanguage : currentLocale;
+    setShowSelector(false);
     router.push(`/${targetLocale}/dashboard`);
   };
+
+  if (!showSelector) return null;
 
   return (
     <div className="w-full max-w-6xl mx-auto bg-white/80 backdrop-blur border border-[#A3B59D]/30 rounded-3xl shadow-xl px-6 py-8 sm:px-10 sm:py-10">
@@ -61,8 +81,8 @@ export default function OnboardingSelector() {
             Scegli lingua, Paese e tipo di evento per ricevere dashboard e consigli su misura.
           </p>
         </div>
-        <div className="flex items-center gap-3 text-sm text-gray-500 bg-[#F5F1EB] rounded-full px-5 py-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#7A8A74] font-semibold shadow">
+        <div className="flex items-center gap-3 text-sm text-[#4F5D4B] bg-[#A3B59D]/15 border border-[#A3B59D]/30 rounded-full px-5 py-2">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#6F7E69] font-semibold shadow">
             1
           </span>
           Completa le preferenze iniziali e passa alla dashboard.
