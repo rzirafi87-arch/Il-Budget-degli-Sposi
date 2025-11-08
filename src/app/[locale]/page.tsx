@@ -74,8 +74,13 @@ export default function Home() {
   if (!loading && !isLoggedIn) {
     return (
       <main className="min-h-screen bg-linear-to-br from-[#FDFBF7] via-[#FAF8F5] to-[#F5F1EB] -mt-20 -mx-6">
+        {/* Onboarding Selector */}
+        <section className="container mx-auto px-6 pt-28 pb-12">
+          <OnboardingSelector />
+        </section>
+
         {/* Hero Section */}
-        <section className="container mx-auto px-6 py-32 text-center">
+        <section className="container mx-auto px-6 pb-24 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             <div className="space-y-4">
               <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-gray-800 leading-tight">
@@ -109,11 +114,6 @@ export default function Home() {
 
             <p className="text-sm text-gray-500 pt-4">{t("hero.footnote")}</p>
           </div>
-        </section>
-
-        {/* Onboarding Selector */}
-        <section className="container mx-auto px-6 py-12">
-          <OnboardingSelector />
         </section>
 
         {/* USP Cards */}
