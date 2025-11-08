@@ -140,7 +140,7 @@ const COUNTRIES = [
   { name: "Panama", available: false },
   { name: "Papua Nuova Guinea", available: false },
   { name: "Paraguay", available: false },
-  { name: "PerÃ¹", available: false },
+  { name: "Perù", available: false },
   { name: "Polonia", available: false },
   { name: "Portogallo", available: false },
   { name: "Qatar", available: false },
@@ -157,7 +157,7 @@ const COUNTRIES = [
   { name: "Saint Vincent e Grenadine", available: false },
   { name: "Samoa", available: false },
   { name: "San Marino", available: false },
-  { name: "SÃ£o TomÃ© e PrÃ­ncipe", available: false },
+  { name: "São Tomé e Príncipe", available: false },
   { name: "Senegal", available: false },
   { name: "Serbia", available: false },
   { name: "Seychelles", available: false },
@@ -240,7 +240,7 @@ const LANGUAGES = [
   { name: "Giapponese", available: false },
   { name: "Giavanese", available: false },
   { name: "Greco", available: false },
-  { name: "GuaranÃ­", available: false },
+  { name: "Guaraní", available: false },
   { name: "Gujarati", available: false },
   { name: "Hausa", available: false },
   { name: "Hawaiano", available: false },
@@ -337,12 +337,12 @@ type PageInfoNoteProps = {
  * Componente per mostrare note informative contestuali in ogni pagina.
  * Spiega il funzionamento della pagina e fornisce suggerimenti in base al tipo di evento.
  */
-export default function PageInfoNote({ 
-  title, 
-  description, 
-  tips = [], 
+export default function PageInfoNote({
+  title,
+  description,
+  tips = [],
   eventTypeSpecific,
-  icon = "ðŸ’¡",
+  icon = "💡",
   showCountries = false,
   showLanguages = false,
 }: PageInfoNoteProps) {
@@ -358,7 +358,7 @@ export default function PageInfoNote({
   }, []);
 
   // Messaggio specifico per tipo di evento
-  const eventSpecificMessage = eventTypeSpecific && eventType 
+  const eventSpecificMessage = eventTypeSpecific && eventType
     ? eventTypeSpecific[eventType as keyof typeof eventTypeSpecific]
     : null;
 
@@ -388,7 +388,7 @@ export default function PageInfoNote({
               <ul className="text-sm text-gray-700 space-y-1">
                 {tips.map((tip, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-[#A3B59D] shrink-0">â€¢</span>
+                    <span className="text-[#A3B59D] shrink-0">•</span>
                     <span>{tip}</span>
                   </li>
                 ))}
@@ -399,15 +399,15 @@ export default function PageInfoNote({
           {/* Lista Paesi */}
           {showCountries && (
             <div className="mt-4 p-3 rounded-lg bg-white/40 border border-[#A3B59D]/15">
-              <p className="text-xs font-semibold text-gray-700 mb-2">ðŸŒ Paesi Supportati:</p>
+              <p className="text-xs font-semibold text-gray-700 mb-2">🌍 Paesi supportati:</p>
               <div className="max-h-48 overflow-y-auto text-xs text-gray-600">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {COUNTRIES.map((country) => (
                     <div key={country.name} className="flex items-center gap-1">
                       {country.available ? (
-                        <span className="text-green-600 font-semibold">âœ“</span>
+                        <span className="text-green-600 font-semibold">✓</span>
                       ) : (
-                        <span className="text-gray-400">â&mdash;‹</span>
+                        <span className="text-gray-400">•</span>
                       )}
                       <span className={country.available ? "font-medium" : ""}>
                         {country.name}
@@ -425,15 +425,15 @@ export default function PageInfoNote({
           {/* Lista Lingue */}
           {showLanguages && (
             <div className="mt-4 p-3 rounded-lg bg-white/40 border border-[#A3B59D]/15">
-              <p className="text-xs font-semibold text-gray-700 mb-2">ðŸ&mdash;£ï¸ Lingue Disponibili:</p>
+              <p className="text-xs font-semibold text-gray-700 mb-2">🗣️ Lingue disponibili:</p>
               <div className="max-h-48 overflow-y-auto text-xs text-gray-600">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {LANGUAGES.map((language) => (
                     <div key={language.name} className="flex items-center gap-1">
                       {language.available ? (
-                        <span className="text-green-600 font-semibold">âœ“</span>
+                        <span className="text-green-600 font-semibold">✓</span>
                       ) : (
-                        <span className="text-gray-400">â&mdash;‹</span>
+                        <span className="text-gray-400">•</span>
                       )}
                       <span className={language.available ? "font-medium" : ""}>
                         {language.name}

@@ -1,8 +1,7 @@
 ﻿"use client";
 
-import React from "react";
-import Link from "next/link";
 import clsx from "clsx";
+import Link from "next/link";
 
 export type Crumb = {
   label: string;
@@ -37,7 +36,7 @@ export default function Breadcrumb({ items, className }: BreadcrumbProps) {
       <nav className={clsx("mb-4 flex items-center gap-2 text-sm text-gray-600", className)}>
         {items.map((item, idx) => (
           <span key={idx} className="flex items-center gap-2">
-            {idx > 0 && <span>â€º</span>}
+            {idx > 0 && <span>›</span>}
             {item.href ? (
               <Link href={item.href} className="hover:text-[#A3B59D] transition-colors">
                 {item.label}

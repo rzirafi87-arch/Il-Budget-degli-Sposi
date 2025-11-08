@@ -137,8 +137,8 @@
       "actions": "Azioni"
     },
     "status": {
-      "approved": "âœ“ Approvato",
-      "rejected": "âœ— Rifiutato",
+      "approved": "✓ Approvato",
+      "rejected": "✗ Rifiutato",
       "pending": "In attesa"
     },
     "spendType": {
@@ -147,9 +147,9 @@
       "groom": "Sposo"
     },
     "messages": {
-      "mustAuthAdd": "âŒ Devi essere autenticato per aggiungere spese. Clicca su 'Registrati' in alto.",
-      "networkError": "âŒ Errore di rete",
-      "successAdded": "âœ… Spesa aggiunta con successo!",
+      "mustAuthAdd": "❌ Devi essere autenticato per aggiungere spese. Clicca su 'Registrati' in alto.",
+      "networkError": "❌ Errore di rete",
+      "successAdded": "✅ Spesa aggiunta con successo!",
       "none": "Nessuna spesa registrata",
       "confirmed": "Confermato",
       "discarded": "Scartato"
