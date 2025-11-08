@@ -27,16 +27,5 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 export const config = { matcher: ["/((?!_next|favicon.ico|api).*)"] };
-  };
-
-  const onboardingTarget = computeOnboardingTarget(langCookie, countryCookie, eventCookie);
-
-  if (!hasLocale) {
-    // Se manca il locale, redireziona direttamente alla giusta pagina di onboarding.
-    const url = req.nextUrl.clone();
-    url.pathname = `/${defaultLocale}${onboardingTarget || pathname}`;
-    return NextResponse.redirect(url);
-  }
-
 
 
