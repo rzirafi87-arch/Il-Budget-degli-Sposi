@@ -305,7 +305,7 @@
       }
     },
     "demo": {
-      "title": "Esplora → Funzionalità 💍",
+      "title": "Esplora →funzionalità 💍•",
       "subtitle": "Navigazione libera senza registrazione â€” aggiungi dati e sperimenta!",
       "features": {
         "budget": {
@@ -722,7 +722,7 @@
         "p1": "Per domande sulla Cookie Policy o sulla gestione dei tuoi dati: Email: privacy@ilbudgetdeglisposi.it â€” Telefono: +39 XXX XXX XXXX"
       },
       "summary": {
-        "title": "👀 Riepilogo Rapido",
+        "title": "👀‹ Riepilogo Rapido",
         "tech": {
           "title": "Cookie Tecnici",
           "value": "âœ… Sempre attivi"
@@ -779,7 +779,7 @@
         "title": "4. Come utilizziamo i tuoi dati",
         "p1": "Usiamo i tuoi dati per:",
         "items": {
-          "i1": "Erogare e migliorare → Funzionalità della piattaforma",
+          "i1": "Erogare e migliorare →funzionalità della piattaforma",
           "i2": "Gestire autenticazione e sicurezza",
           "i3": "Salvare →tue preferenze (lingua, viste, layout)",
           "i4": "Rispondere a richieste di supporto",
@@ -895,9 +895,9 @@
         "p1": "Potremmo aggiornare periodicamente questa informativa. Le modifiche significative saranno indicate in questa pagina. Ti invitiamo a consultarla regolarmente."
       },
       "s14": {
-        "title": "14. Contatti del Responsabile Privacy",
+        "title": "14. Contatti del Responsabi→Privacy",
         "p1": "Per qualsiasi domanda o richiesta sulla privacy:",
-        "authName": "Responsabile Privacy â€” MYBUDGETEVENTO",
+        "authName": "Responsabi→Privacy â€” MYBUDGETEVENTO",
         "addr": "Indirizzo: Via Esempio 123, 00100 Roma (RM)",
         "email": "Email: privacy@ilbudgetdeglisposi.it",
         "phone": "Tel: +39 XXX XXX XXXX"
@@ -1225,7 +1225,7 @@
     },
     "viewMode": {
       "grid": "💡² Griglia",
-      "list": "👀 Lista"
+      "list": "👀‹ Lista"
     },
     "loading": "Caricamento...",
     "empty": {
@@ -1350,7 +1350,7 @@
     },
     "viewMode": {
       "grid": "💡² Griglia",
-      "list": "👀 Lista"
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessun fiorista trovato} one {# fiorista trovato} other {# fioristi trovati}}"
@@ -1394,7 +1394,7 @@
     },
     "viewMode": {
       "grid": "💡² Griglia",
-      "list": "👀 Lista"
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessun servizio catering trovato} one {# servizio catering trovato} other {# servizi catering trovati}}"
@@ -1438,7 +1438,7 @@
     },
     "viewMode": {
       "grid": "💡² Griglia",
-      "list": "👀 Lista"
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessun professionista trovato} one {# professionista trovato} other {# professionisti trovati}}"
@@ -1482,7 +1482,7 @@
     },
     "viewMode": {
       "grid": "💡² Griglia",
-      "list": "👀 Lista"
+      "list": "👀‹ Lista"
     },
     "results": {
       "count": "{count, plural, =0 {Nessuna gioielleria trovata} one {# gioielleria trovata} other {# gioiellerie trovate}}"
