@@ -99,7 +99,7 @@ export default function DashboardPage() {
           if (active && Array.isArray(json?.modules)) {
             setChecklist(
               json.modules.map((m: Record<string, unknown>) => ({
-                module_name: String(m.module_name || m.name || m.title || "AttivitÃ "),
+                module_name: String(m.module_name || m.name || m.title || "Attività"),
                 is_required: Boolean(m.is_required),
               }))
             );
