@@ -59,7 +59,6 @@ export default function NavTabs() {
   const weddingTabs = [
     { href: "/dashboard", label: t("dashboard"), icon: TABS_ICONS.dashboard },
     { href: "/budget", label: t("budget"), icon: TABS_ICONS.budget },
-    { href: "/timeline", label: t("agenda", { default: "Agenda" }), icon: TABS_ICONS.agenda, badge: 0 },
     { href: "/save-the-date", label: t("saveTheDate", { default: "Save the Date" }), icon: TABS_ICONS.saveTheDate },
     { href: "/invitati", label: t("guests"), icon: TABS_ICONS.guests },
     { href: "/contabilita", label: t("accounting"), icon: TABS_ICONS.accounting },

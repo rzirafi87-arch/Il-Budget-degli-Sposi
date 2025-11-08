@@ -30,12 +30,14 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
   })();
 
   const isSaveTheDate = normalizedPath.startsWith("/save-the-date");
+  const isPublicHome = normalizedPath === "/";
   const isOnboarding =
     normalizedPath.startsWith("/select-language") ||
     normalizedPath.startsWith("/select-country") ||
     normalizedPath.startsWith("/select-event-type") ||
     normalizedPath === "/auth" ||
     normalizedPath === "/welcome";
+  const showLanguageSwitcher = !isPublicHome;
 
   // Evita letture non deterministiche in fase SSR: inizializza neutro.
   const [eventType, setEventType] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                 </h1>
                 <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <TopBarSelector />
-                  <LanguageSwitcher />
+                  {showLanguageSwitcher ? <LanguageSwitcher /> : null}
                   {!isSaveTheDate && (
                     <>
                       <Link
