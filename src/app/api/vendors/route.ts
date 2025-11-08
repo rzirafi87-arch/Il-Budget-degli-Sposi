@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const runtime = "nodejs";
 
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -7,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 /**
  * Vendor explorer API
  * GET /api/vendors?type=location&region=Sicilia&city=Palermo&minRating=4.0&verified=true
- * 
+ *
  * Public endpoint for searching and filtering wedding vendors
  */
 
@@ -24,26 +23,72 @@ interface VendorFilters {
   offset?: number;
 }
 
+interface SupplierRow {
+  id: string;
+  name: string;
+  verified: boolean;
+  description: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  province: string | null;
+  region: string | null;
+  subscription_tier: string | null;
+  is_featured: boolean;
+  category: string | null;
+}
+
+interface VendorPlaceRow {
+  id: string;
+  name: string;
+  type: string;
+  rating: number | null;
+  rating_count: number | null;
+  price_range: string | null;
+  verified: boolean;
+  description: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  lat: number | null;
+  lng: number | null;
+  address: string | null;
+  city: string | null;
+  province: string | null;
+  region: string | null;
+  postal_code: string | null;
+  source: string | null;
+  source_id: string | null;
+  google_place_id: string | null;
+  osm_id: string | null;
+  wikidata_qid: string | null;
+  metadata: unknown;
+  updated_at: string | null;
+  last_synced_at: string | null;
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    
+
     const filters: VendorFilters = {
       type: searchParams.get("type") || undefined,
       region: searchParams.get("region") || undefined,
       province: searchParams.get("province") || undefined,
       city: searchParams.get("city") || undefined,
-      minRating: searchParams.get("minRating") 
-        ? parseFloat(searchParams.get("minRating")!) 
+      minRating: searchParams.get("minRating")
+        ? parseFloat(searchParams.get("minRating")!)
         : undefined,
       verified: searchParams.get("verified") === "true" ? true : undefined,
       priceRange: searchParams.get("priceRange") || undefined,
       source: searchParams.get("source") || undefined,
-      limit: searchParams.get("limit") 
-        ? parseInt(searchParams.get("limit")!) 
+      limit: searchParams.get("limit")
+        ? parseInt(searchParams.get("limit")!)
         : 50,
-      offset: searchParams.get("offset") 
-        ? parseInt(searchParams.get("offset")!) 
+      offset: searchParams.get("offset")
+        ? parseInt(searchParams.get("offset")!)
         : 0,
     };
 
@@ -73,7 +118,7 @@ export async function GET(req: NextRequest) {
       let rows = Array.isArray(sup) ? sup : [];
       if (filters.city) {
         const cityTerm = filters.city.toLowerCase();
-        rows = rows.filter((r: any) => (r.city || "").toLowerCase().includes(cityTerm));
+        rows = rows.filter((r: SupplierRow) => (r.city || "").toLowerCase().includes(cityTerm));
       }
 
       // Pagination client-side
@@ -82,7 +127,7 @@ export async function GET(req: NextRequest) {
       const end = start + (filters.limit ?? 50);
       const page = rows.slice(start, end);
 
-      const vendors = page.map((v: any) => ({
+      const vendors = page.map((v: SupplierRow) => ({
         id: v.id,
         name: v.name,
         type: "supplier",
@@ -151,7 +196,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Failed to fetch vendors" }, { status: 500 });
     }
 
-    const vendors = (data ?? []).map((vendor: any) => ({
+    const vendors = (data ?? []).map((vendor: VendorPlaceRow) => ({
       id: vendor.id,
       name: vendor.name,
       type: vendor.type,
@@ -200,9 +245,9 @@ export async function OPTIONS(req: NextRequest) {
     const type = searchParams.get("type");
 
     const db = getServiceClient();
-    
+
     let query = db.from("top_vendors_by_region").select("*");
-    
+
     if (type) {
       query = query.eq("type", type);
     }

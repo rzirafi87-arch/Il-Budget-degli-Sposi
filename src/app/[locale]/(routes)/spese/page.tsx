@@ -1,5 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+﻿"use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
@@ -13,6 +12,9 @@ import { useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
 
+type SpendType = "common" | "bride" | "groom";
+type ExpenseStatus = "pending" | "approved" | "rejected";
+
 type Expense = {
   id?: string;
   category: string;
@@ -20,8 +22,8 @@ type Expense = {
   supplier: string;
   description: string;
   amount: number;
-  spendType: "common" | "bride" | "groom";
-  status: "pending" | "approved" | "rejected";
+  spendType: SpendType;
+  status: ExpenseStatus;
   date: string;
   notes: string;
   fromDashboard: boolean; // indica se era nel preventivo
@@ -236,7 +238,7 @@ export default function SpesePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  
+
   const [newExpense, setNewExpense] = useState<Expense>({
     category: ALL_CATEGORIES[0],
     subcategory: CATEGORIES_MAP[ALL_CATEGORIES[0]][0],
@@ -403,7 +405,7 @@ export default function SpesePage() {
     const catIndexA = ALL_CATEGORIES.indexOf(a.category);
     const catIndexB = ALL_CATEGORIES.indexOf(b.category);
     if (catIndexA !== catIndexB) return catIndexA - catIndexB;
-    
+
     // Ordina sottocategorie all'interno della stessa categoria
     const subsA = CATEGORIES_MAP[a.category] || [];
     const subsB = CATEGORIES_MAP[b.category] || [];
@@ -532,7 +534,7 @@ export default function SpesePage() {
               <select
                 className="border border-gray-300 rounded px-3 py-2 w-full"
                 value={newExpense.spendType}
-                onChange={(e) => setNewExpense({ ...newExpense, spendType: e.target.value as any })}
+                onChange={(e) => setNewExpense({ ...newExpense, spendType: e.target.value as SpendType })}
               >
                 <option value="common">{t("expensesPage.form.spendTypeOptions.common")}</option>
                 {!isSingleBudgetEvent && <option value="bride">{t("expensesPage.form.spendTypeOptions.bride")}</option>}
@@ -617,10 +619,10 @@ export default function SpesePage() {
                 </thead>
                 <tbody>
                   {group.expenses.map((exp) => (
-                    <tr 
-                      key={exp.id} 
+                    <tr
+                      key={exp.id}
                       className={`border-b border-gray-50 hover:bg-gray-50/60 ${
-                        exp.status === "approved" ? "bg-green-50/30" : 
+                        exp.status === "approved" ? "bg-green-50/30" :
                         exp.status === "rejected" ? "bg-red-50/30" : ""
                       }`}
                     >
