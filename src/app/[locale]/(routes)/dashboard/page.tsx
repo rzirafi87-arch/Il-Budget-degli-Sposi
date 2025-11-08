@@ -76,8 +76,6 @@ export default function DashboardPage() {
   const effectiveEventType = normalizedEventType || "wedding";
   const isWedding = effectiveEventType === "wedding";
   // Locale corrente (mockato nei test). Fallback a 'it' se vuoto
-  const localeRaw = useLocale();
-  const locale = localeRaw || "it";
 
   const isReady = useMemo(
     () => clientReady && !!userLang && !!userCountry && !!normalizedEventType,
@@ -266,25 +264,20 @@ export default function DashboardPage() {
   return (
     <main className="container mx-auto p-6">
       <h1 className="text-3xl font-serif font-bold mb-6">Dashboard</h1>
-
-<<<<<<< HEAD
-      {/* Sezione Preferenze rimossa post-onboarding come richiesto */}
-=======
       {/* Preferenze in alto */}
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-lg">âš™ï¸ Preferenze</h3>
+            <h3 className="font-semibold text-lg">Preferenze</h3>
             <p className="text-sm text-gray-900">Personalizza lingua, nazione ed evento per un&apos;esperienza su misura.</p>
           </div>
           <div className="flex gap-2">
-            <a href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</a>
-            <a href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</a>
-            <a href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</a>
+            <Link href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
+            <Link href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
+            <Link href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
           </div>
         </div>
       </div>
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
 
       <PageInfoNote
         icon="ðŸ“Š"
