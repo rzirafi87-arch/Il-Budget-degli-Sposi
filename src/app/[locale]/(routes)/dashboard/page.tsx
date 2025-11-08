@@ -7,10 +7,6 @@ import LocalizedWeddingSection, { LocalizedWeddingData } from "@/components/dash
 import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-<<<<<<< HEAD
-import { useLocale } from "next-intl";
-=======
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -259,15 +255,9 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-serif font-bold">Seleziona lingua, nazione ed evento</h2>
         <p className="text-gray-800">Completa i passaggi iniziali per personalizzare l&apos;esperienza.</p>
         <div className="flex gap-3 flex-wrap justify-center">
-<<<<<<< HEAD
-          <Link href={`/${locale}/select-language`} className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
-          <Link href={`/${locale}/select-country`} className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
-          <Link href={`/${locale}/select-event-type`} className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
-=======
           <Link href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
           <Link href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
           <Link href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
         </div>
       </div>
     );
@@ -284,49 +274,36 @@ export default function DashboardPage() {
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-lg">⚙️ Preferenze</h3>
+            <h3 className="font-semibold text-lg">âš™ï¸ Preferenze</h3>
             <p className="text-sm text-gray-900">Personalizza lingua, nazione ed evento per un&apos;esperienza su misura.</p>
           </div>
           <div className="flex gap-2">
-            <Link href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
-            <Link href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
-            <Link href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
+            <a href="/select-language" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</a>
+            <a href="/select-country" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</a>
+            <a href="/select-event-type" className="px-4 py-2 rounded-lg border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</a>
           </div>
         </div>
       </div>
 >>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
 
       <PageInfoNote
-        icon="📊"
+        icon="ðŸ“Š"
         title="Centro di Controllo del Tuo Evento"
-<<<<<<< HEAD
-        description="La Dashboard è il cuore dell'applicazione. Qui puoi gestire il budget complessivo, impostare i budget separati per i partecipanti e visualizzare tutte le categorie di spesa previste. Ogni modifica viene salvata automaticamente nel tuo account."
-=======
   description="La Dashboard è il cuore dell&apos;applicazione. Qui puoi gestire il budget complessivo, impostare i budget separati per i partecipanti e visualizzare tutte le categorie di spesa previste. Ogni modifica viene salvata automaticamente sul tuo account."
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
         tips={[
-          "Imposta prima il budget totale e la data dell'evento per attivare tutte le funzionalità",
+          "Imposta prima il budget totale e la data dell'evento per attivare tutte le funzionalitÃ ",
           "Il budget si divide automaticamente tra i partecipanti, con spese comuni condivise",
           "Tutte le categorie sono personalizzabili: aggiungi preventivi, conferma spese e traccia pagamenti",
-          "Usa le 'Idee di Budget' per applicare template precompilati alle tue categorie"
+          "Usa le 'Idee di Budget' per applicare template pre-compilati alle tue categorie"
         ]}
         eventTypeSpecific={{
           wedding: "Per il matrimonio, il budget è diviso tra sposa, sposo e spese comuni. Questo ti aiuta a tenere traccia di chi contribuisce a cosa.",
-<<<<<<< HEAD
-          baptism: "Per il battesimo, tutte le spese sono considerate comuni. Non c'è divisione tra budget individuali.",
-          communion: "Per la comunione, tutte le spese sono considerate comuni. Budget familiare unificato per la celebrazione.",
-          confirmation: "Per la cresima, il budget è gestito come spese comuni della famiglia.",
-          birthday: "Per il compleanno puoi gestire il budget in modo flessibile, dividendo tra organizzatore e spese condivise.",
-          eighteenth: "Per il diciottesimo compleanno il budget è gestito come evento unico. Perfetto per celebrare la maggiore età!",
-          graduation: "Per la laurea il budget può essere gestito come spese comuni o diviso tra famiglia e laureato."
-=======
           baptism: "Per il battesimo, tutte le spese sono considerate comuni. Non c&apos;è divisione tra budget individuali.",
           communion: "Per la comunione, tutte le spese sono considerate comuni. Budget familiare unificato per la celebrazione.",
-          confirmation: "Per la cresima, il budget è gestito come spese comuni della famiglia.",
+          confirmation: "Per la cresima, il budget Ã¨ gestito come spese comuni della famiglia.",
           birthday: "Per il compleanno, puoi gestire il budget in modo flessibile, dividendo tra organizzatore e spese condivise.",
           eighteenth: "Per il diciottesimo compleanno, il budget è gestito come evento unico. Perfetto per celebrare la maggiore età!",
           graduation: "Per la laurea, il budget può essere gestito come spese comuni o diviso tra famiglia e laureato."
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
         }}
       />
 
@@ -351,7 +328,7 @@ export default function DashboardPage() {
           disabled={savingBudget}
           className="bg-[#A3B59D] hover:bg-[#8fa188] text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {savingBudget ? "Salvataggio..." : "💾 Salva Budget"}
+          {savingBudget ? "Salvataggio..." : "ðŸ’¾ Salva Budget"}
         </button>
       </div>
 
@@ -364,11 +341,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg">Idea di Budget</h3>
             <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
           </div>
-<<<<<<< HEAD
-          <Link href={`/${locale}/idea-di-budget`} className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Idea di Budget</Link>
-=======
           <Link href="/idea-di-budget" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Idea di Budget</Link>
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
         </div>
       </div>
 
@@ -383,11 +356,7 @@ export default function DashboardPage() {
               <h3 className="font-semibold text-lg">Viaggio di Nozze</h3>
               <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
             </div>
-<<<<<<< HEAD
-            <Link href={`/${locale}/suggerimenti/viaggio-di-nozze`} className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Viaggio di Nozze</Link>
-=======
             <Link href="/suggerimenti/viaggio-di-nozze" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Viaggio di Nozze</Link>
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
           </div>
         </div>
       )}
@@ -399,11 +368,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg">Suggerimenti <span className="font-extrabold text-2xl align-middle">&amp;</span> Consigli</h3>
             <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
           </div>
-<<<<<<< HEAD
-          <Link href={`/${locale}/suggerimenti`} className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Suggerimenti</Link>
-=======
           <Link href="/suggerimenti" className="px-4 py-2 rounded-full text-white inline-flex justify-center text-center min-w-40" style={{ background: 'var(--color-sage)' }}>Apri Suggerimenti</Link>
->>>>>>> b3f27e3 (auto: save 2025-11-08 16:39:53)
         </div>
       </div>
 
