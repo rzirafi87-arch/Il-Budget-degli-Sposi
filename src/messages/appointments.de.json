@@ -7,6 +7,7 @@
     "addBtn": "Termin hinzufügen",
     "empty": "Keine Termine hinzugefügt.",
     "dateLabel": "Datum",
-    "locationLabel": "Ort"
+    "locationLabel": "Ort",
+    "suggested": "Diese Beispielagenda wird automatisch aus dem Hochzeitsevent erstellt – passe sie mit deinen echten Terminen an."
   }
 }

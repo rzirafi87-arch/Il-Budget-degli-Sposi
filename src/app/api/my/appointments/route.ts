@@ -1,6 +1,117 @@
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+type WeddingAgendaParams = {
+  country?: string;
+  event?: string;
+};
+
+type WeddingAgendaRow = {
+  timeline: string[] | null;
+  location_styles?: string[] | null;
+  country_name?: string | null;
+};
+
+function formatDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function formatTime(date: Date) {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+async function buildWeddingAgenda(
+  client: SupabaseClient,
+  params: WeddingAgendaParams = {},
+): Promise<Appointment[]> {
+  const country = (params.country || "IT").toUpperCase();
+  const event = params.event || "matrimonio";
+
+  try {
+    const { data, error } = await client
+      .schema("app")
+      .from("v_country_event_wedding")
+      .select("timeline, location_styles, country_name")
+      .eq("iso2", country)
+      .eq("event_slug", event)
+      .limit(1);
+
+    if (error) {
+      console.error("appointments GET – fallback wedding agenda error", error);
+      return demoAppointments();
+    }
+
+    const row = (data?.[0] ?? null) as WeddingAgendaRow | null;
+    const timeline = Array.isArray(row?.timeline)
+      ? row!.timeline.filter((step): step is string => typeof step === "string" && step.trim().length > 0)
+      : [];
+
+    if (timeline.length === 0) {
+      return demoAppointments();
+    }
+
+    const locationStyles = Array.isArray(row?.location_styles)
+      ? row!.location_styles.filter((loc): loc is string => typeof loc === "string" && loc.trim().length > 0)
+      : [];
+
+    const baseDate = new Date();
+    baseDate.setDate(baseDate.getDate() + 30);
+    baseDate.setHours(11, 0, 0, 0);
+
+    const contextNote = row?.country_name
+      ? `Ispirato a un matrimonio in ${row.country_name}`
+      : "Esempio di agenda per il matrimonio";
+
+    return timeline.map((step, index) => {
+      const entryDate = new Date(baseDate.getTime());
+      const offsetHours = index * 2;
+      const offsetMinutes = index % 2 === 0 ? 0 : 30;
+      entryDate.setHours(baseDate.getHours() + offsetHours, offsetMinutes, 0, 0);
+
+      const location = locationStyles[index] ?? locationStyles[locationStyles.length - 1] ?? undefined;
+
+      return {
+        title: step,
+        date: formatDate(entryDate),
+        location,
+        notes: `${contextNote}. Orario indicativo: ${formatTime(entryDate)}`,
+      };
+    });
+  } catch (err) {
+    console.error("appointments GET – unexpected fallback error", err);
+    return demoAppointments();
+  }
+}
+
+function demoAppointments(): Appointment[] {
+  const inTenDays = new Date();
+  inTenDays.setDate(inTenDays.getDate() + 10);
+  const inTwentyDays = new Date();
+  inTwentyDays.setDate(inTwentyDays.getDate() + 20);
+
+  return [
+    {
+      title: "Sopralluogo Location",
+      date: formatDate(inTenDays),
+      location: "Villa Aurora",
+      notes: "Confermare capienza e menu",
+    },
+    {
+      title: "Prova Abito",
+      date: formatDate(inTwentyDays),
+      location: "Atelier Roma",
+      notes: "Portare scarpe definitive",
+    },
+  ];
+}
+
 export const runtime = "nodejs";
 
 type Appointment = {
@@ -15,25 +126,9 @@ export async function GET(req: NextRequest) {
   const jwt = getBearer(req);
 
   if (!jwt) {
-    // Demo data for unauthenticated users
-    return NextResponse.json({
-      appointments: [
-        {
-          id: "demo-1",
-          title: "Sopralluogo Location",
-          date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
-          location: "Villa Aurora",
-          notes: "Confermare capienza e menu",
-        },
-        {
-          id: "demo-2",
-          title: "Prova Abito",
-          date: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
-          location: "Atelier Roma",
-          notes: "Portare scarpe definitive",
-        },
-      ],
-    });
+    const db = getServiceClient();
+    const appointments = await buildWeddingAgenda(db);
+    return NextResponse.json({ appointments });
   }
 
   try {
@@ -49,7 +144,10 @@ export async function GET(req: NextRequest) {
       .limit(1)
       .single();
 
-    if (!ev?.id) return NextResponse.json({ appointments: [] });
+    if (!ev?.id) {
+      const appointments = await buildWeddingAgenda(db);
+      return NextResponse.json({ appointments });
+    }
 
     const { data, error } = await db
       .from("appointments")
@@ -66,6 +164,11 @@ export async function GET(req: NextRequest) {
       location: a.location || "",
       notes: a.notes || "",
     }));
+
+    if (result.length === 0) {
+      const appointments = await buildWeddingAgenda(db);
+      return NextResponse.json({ appointments });
+    }
 
     return NextResponse.json({ appointments: result });
   } catch (e: unknown) {

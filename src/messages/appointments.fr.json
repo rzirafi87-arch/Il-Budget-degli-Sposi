@@ -7,6 +7,7 @@
     "addBtn": "Ajouter un rendez-vous",
     "empty": "Aucun rendez-vous ajouté.",
     "dateLabel": "Date",
-    "locationLabel": "Lieu"
+    "locationLabel": "Lieu",
+    "suggested": "Cet agenda d'exemple est généré automatiquement à partir de l'événement mariage : personnalisez-le avec vos rendez-vous réels."
   }
 }

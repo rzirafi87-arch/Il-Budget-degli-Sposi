@@ -97,6 +97,15 @@ export default function AppuntamentiPage() {
         <div className="mb-4 p-3 rounded bg-blue-50 border border-blue-200 text-sm">{message}</div>
       )}
 
+      {!loading && appointments.some((a) => !a.id) && (
+        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          {t("appointments.suggested", {
+            default:
+              "Questa agenda di esempio è generata automaticamente per il matrimonio: personalizzala aggiungendo gli appuntamenti reali.",
+          })}
+        </div>
+      )}
+
       <form onSubmit={handleAdd} className="mb-6 p-4 bg-white rounded-xl shadow flex flex-col gap-3">
         <input
           name="title"
@@ -140,8 +149,11 @@ export default function AppuntamentiPage() {
           {appointments.length === 0 && (
             <li className="text-gray-500">{t("appointments.empty", { default: "Nessun appuntamento inserito." })}</li>
           )}
-          {appointments.map((a) => (
-            <li key={a.id} className="p-4 bg-green-50 rounded-xl border-l-4 border-green-400 flex items-start justify-between gap-4">
+          {appointments.map((a, index) => (
+            <li
+              key={a.id ?? `appointment-${index}`}
+              className="p-4 bg-green-50 rounded-xl border-l-4 border-green-400 flex items-start justify-between gap-4"
+            >
               <div>
                 <div className="font-bold text-green-800">{a.title}</div>
                 <div className="text-sm text-gray-700">{t("appointments.dateLabel", { default: "Data" })}: {a.date}</div>

@@ -7,6 +7,7 @@
     "addBtn": "添加约会",
     "empty": "尚未添加约会。",
     "dateLabel": "日期",
-    "locationLabel": "地点"
+    "locationLabel": "地点",
+    "suggested": "此示例日程根据婚礼活动自动生成，可根据实际安排进行个性化调整。"
   }
 }

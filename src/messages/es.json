@@ -2,6 +2,56 @@
   "common": "Común",
   "bride": "Novia",
   "groom": "Novio",
+  "ideaBudget": "Idea de Presupuesto",
+  "budgetPage": {
+    "approvedExpenses": "Gastos aprobados",
+    "ctaIdeaBudget": "💍¡ Ir a Idea de Presupuesto",
+    "description": "Vista de los gastos aprobados desde la sección 'Gastos', ordenados alfabéticamente por categoría y subcategoría.",
+    "totals": {
+      "title": "Total gastos aprobados",
+      "common": "Común",
+      "bride": "Novia",
+      "groom": "Novio"
+    },
+    "table": {
+      "category": "Categoría",
+      "subcategory": "Subcategoría",
+      "spendType": "Tipo de gasto",
+      "paymentMethod": "Método de pago",
+      "budget": "Presupuesto",
+      "committed": "Comprometido",
+      "paid": "Pagado",
+      "residual": "Residual",
+      "fromQuote": "Del presupuesto",
+      "difference": "Diferencia"
+    },
+    "spendType": {
+      "common": "Común",
+      "bride": "Novia",
+      "groom": "Novio",
+      "gift": "Regalo"
+    },
+    "paymentMethod": {
+      "common": "💰 Común",
+      "bride": "👰 Novia",
+      "groom": "🤵 Novio",
+      "gift": "🎁 Regalo"
+    },
+    "loading": "Cargando...",
+    "empty": "No hay gastos aprobados. Ve a la sección 'Gastos' para aprobar tus gastos.",
+    "plannedVsActual": {
+      "title": "Planificado vs Real",
+      "totalPlanned": "Total planificado",
+      "totalActualApproved": "Total real (aprobado)",
+      "difference": "Diferencia",
+      "over": "+ por encima de lo previsto",
+      "under": "por debajo de lo previsto",
+      "item": "Elemento",
+      "planned": "Planificado",
+      "actual": "Real",
+      "empty": "No hay datos para comparar. Usa 'Idea de Presupuesto' para planificar y aprobar gastos en la sección 'Gastos'."
+    }
+  },
   "table": {
     "category": "Categoría",
     "subcategory": "Subcategoría",

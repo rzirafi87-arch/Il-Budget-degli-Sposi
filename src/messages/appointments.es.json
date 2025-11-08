@@ -7,6 +7,7 @@
     "addBtn": "Agregar cita",
     "empty": "No se han agregado citas.",
     "dateLabel": "Fecha",
-    "locationLabel": "Lugar"
+    "locationLabel": "Lugar",
+    "suggested": "Esta agenda de ejemplo se genera automáticamente a partir del evento de boda: personalízala con tus citas reales."
   }
 }

@@ -1,12 +1,13 @@
 {
-    "appointments": {
-        "title": "Compromissos e Prazos",
-        "formTitle": "Título do compromisso",
-        "formLocation": "Local",
-        "formNotes": "Observações",
-        "addBtn": "Adicionar compromisso",
-        "empty": "Nenhum compromisso inserido.",
-        "dateLabel": "Data",
-        "locationLabel": "Local"
-    }
+  "appointments": {
+    "title": "Compromissos e Prazos",
+    "formTitle": "Título do compromisso",
+    "formLocation": "Local",
+    "formNotes": "Observações",
+    "addBtn": "Adicionar compromisso",
+    "empty": "Nenhum compromisso inserido.",
+    "dateLabel": "Data",
+    "locationLabel": "Local",
+    "suggested": "Esta agenda de exemplo é gerada automaticamente a partir do evento de casamento: personalize-a com os seus compromissos reais."
+  }
 }

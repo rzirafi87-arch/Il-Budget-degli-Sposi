@@ -7,6 +7,7 @@
     "addBtn": "Add appointment",
     "empty": "No appointments added.",
     "dateLabel": "Date",
-    "locationLabel": "Location"
+    "locationLabel": "Location",
+    "suggested": "This sample agenda is auto-generated from the wedding event—customize it with your real appointments."
   }
 }

@@ -41,12 +41,14 @@ const LOCATION_TYPES = [
 ];
 
 export default function LocationiPage() {
+  // TODO: Sostituire con logica reale per capire se l'utente è il fornitore
+  const isSupplierView = false;
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [country] = useState<string>(getUserCountrySafe());
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
-  
+
   const geographyLevels = useMemo(() => getGeographyLevels(country), [country]);
 
   // Utility per ottenere le opzioni per ogni livello geografico (generica)
@@ -77,7 +79,7 @@ export default function LocationiPage() {
     if (levelKey === "type") return LOCATION_TYPES;
     return [];
   }
-  
+
   // Form dinamico per tutti i livelli geografici
   const [formData, setFormData] = useState(() => {
     const initial: Record<string, string> = {
@@ -352,9 +354,18 @@ export default function LocationiPage() {
                     location.verified && "border-2 border-green-500"
                   )}
                 >
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex justify-between items-start mb-3 gap-2">
                     <h3 className="text-xl font-bold text-gray-800">{location.name}</h3>
-                    {location.verified && (
+                    {/* Badge Preferiti */}
+                    <button
+                      className="bg-white border border-[#A3B59D] text-[#A3B59D] text-xs px-2 py-1 rounded hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold ml-2"
+                      title="Aggiungi ai preferiti"
+                      // onClick={() => handleFavorite(location.id)}
+                    >
+                      Preferiti
+                    </button>
+                    {/* Badge Verificato solo se fornitore loggato e location verificata */}
+                    {location.verified && isSupplierView && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
                         Verificato
                       </span>
