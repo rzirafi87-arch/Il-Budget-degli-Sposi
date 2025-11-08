@@ -36,11 +36,12 @@ export default function QuickSettings() {
     persist("language", newLang);
     persist("country", newCountry);
     persist("eventType", newEventType);
-    if (["wedding", "baptism", "eighteenth", "confirmation", "graduation", "communion"].includes(newEventType)) {
-      window.location.href = "/dashboard";
-    } else {
-      window.location.href = "/coming-soon";
-    }
+    const currentLocale = document.documentElement?.lang || "it";
+    const basePath = `/${currentLocale || "it"}`;
+    const targetPath = ["wedding", "baptism", "eighteenth", "confirmation", "graduation", "communion"].includes(newEventType)
+      ? "/dashboard"
+      : "/coming-soon";
+    window.location.href = `${basePath}${targetPath}`;
   }
 
   return (
@@ -51,7 +52,7 @@ export default function QuickSettings() {
         style={{ background: "var(--color-sage)" }}
         onClick={() => setOpen(!open)}
       >
-        <span role="img" aria-label="Impostazioni">âš™ï¸</span> <span className="font-semibold">Impostazioni</span>
+        <span role="img" aria-label="Impostazioni">⚙️</span> <span className="font-semibold">Impostazioni</span>
       </button>
       {open && (
         <div className="fixed inset-0 z-59" onClick={() => setOpen(false)} />
@@ -96,3 +97,4 @@ export default function QuickSettings() {
     </>
   );
 }
+

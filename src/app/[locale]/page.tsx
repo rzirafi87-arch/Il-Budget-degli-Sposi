@@ -2,7 +2,7 @@
 import OnboardingSelector from "@/components/OnboardingSelector";
 import { formatCurrency, formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -18,6 +18,7 @@ type EventData = {
 
 export default function Home() {
   const t = useTranslations("home");
+  const locale = useLocale();
   const [event, setEvent] = useState<EventData | null>(null);
   const [loading, setLoading] = useState(true);
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
