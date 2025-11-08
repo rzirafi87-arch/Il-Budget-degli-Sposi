@@ -4,6 +4,8 @@
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useEffect, useState } from "react";
+import { Fragment } from "react";
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
 
 type Category = { code: string; name: string };
 type Subcategory = { code: string; name: string };
@@ -68,14 +70,21 @@ export default function DashboardPage() {
         <>
           <div className="mt-6">
             <h2 className="text-lg font-semibold mb-2">Categorie</h2>
-            <ul className="list-disc ml-6">
+            <ul className="divide-y divide-gray-200 border rounded-xl overflow-hidden">
               {categories.map((c) => (
-                <li key={c.code} className="mb-2">
-                  <div className="font-medium">{c.name}</div>
-                  {subcategories[c.code] && subcategories[c.code].length > 0 && (
-                    <ul className="list-circle ml-5 text-sm text-gray-700">
+                <li key={c.code}>
+                  <button
+                    className="w-full flex justify-between items-center px-4 py-3 bg-white hover:bg-sage-50 transition text-left"
+                    onClick={() => setOpenCategory(openCategory === c.code ? null : c.code)}
+                    aria-expanded={openCategory === c.code}
+                  >
+                    <span className="font-medium text-base">{c.name}</span>
+                    <span className="ml-2 text-sage-600">{openCategory === c.code ? "▲" : "▼"}</span>
+                  </button>
+                  {openCategory === c.code && subcategories[c.code] && subcategories[c.code].length > 0 && (
+                    <ul className="bg-sage-50 px-6 py-2 text-sm text-gray-700 animate-fade-in">
                       {subcategories[c.code].map((s) => (
-                        <li key={s.code}>{s.name}</li>
+                        <li key={s.code} className="py-1">{s.name}</li>
                       ))}
                     </ul>
                   )}
