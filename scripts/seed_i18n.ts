@@ -23,20 +23,34 @@ async function upsert<T>(table: string, rows: T[], conflict?: string) {
 }
 
 async function main() {
-  // 1) Locales + Countries
+  // 1) Locales + Countries (aggiornato)
   await upsert("i18n_locales", [
     { code: "it-IT", name: "Italiano", direction: "ltr" },
-    { code: "en-GB", name: "English",  direction: "ltr" },
+    { code: "en-GB", name: "English", direction: "ltr" },
     { code: "es-ES", name: "Español", direction: "ltr" },
+    { code: "fr-FR", name: "Français", direction: "ltr" },
+    { code: "de-DE", name: "Deutsch", direction: "ltr" },
+    { code: "ar", name: "العربية", direction: "rtl" },
+    { code: "hi-IN", name: "हिन्दी", direction: "ltr" },
     { code: "ja-JP", name: "日本語", direction: "ltr" },
+    { code: "zh-CN", name: "中文", direction: "ltr" },
+    { code: "es-MX", name: "Español (México)", direction: "ltr" },
+    { code: "pt-PT", name: "Português", direction: "ltr" },
+    { code: "ru-RU", name: "Русский", direction: "ltr" },
+    { code: "id-ID", name: "Bahasa Indonesia", direction: "ltr" },
   ], "code");
 
   await upsert("geo_countries", [
     { code: "IT", default_locale: "it-IT" },
-    { code: "MX", default_locale: "es-ES" },
+    { code: "MX", default_locale: "es-MX" },
     { code: "GB", default_locale: "en-GB" },
     { code: "US", default_locale: "en-GB" },
     { code: "JP", default_locale: "ja-JP" },
+    { code: "FR", default_locale: "fr-FR" },
+    { code: "DE", default_locale: "de-DE" },
+    { code: "ES", default_locale: "es-ES" },
+    { code: "CN", default_locale: "zh-CN" },
+    { code: "IN", default_locale: "hi-IN" },
   ], "code");
 
   // 2) Event type: WEDDING

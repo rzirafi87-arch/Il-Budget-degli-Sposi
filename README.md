@@ -8,18 +8,43 @@ Un'applicazione web completa per la gestione del budget matrimoniale, costruita 
 ![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?style=flat-square&logo=vercel)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript)
 
+
 ## ✨ Caratteristiche
 
 - 💰 **Budget Tracking** - Gestione completa del budget separato (sposo/sposa/comune)
 - 📊 **Dashboard Interattiva** - Visualizzazione in tempo reale di spese e budget residuo
-- 🏰 **Database Location** - Oltre 500+ location per matrimoni in Italia
+- 🏰 **Database Location** - Oltre 500+ location per matrimoni in Italia e supporto multi-nazione
 - ⛪ **Database Chiese** - Catalogo completo delle chiese per regione
 - 🏢 **Gestione Fornitori** - Database fornitori con categorie e contatti
 - 💸 **Tracciamento Spese** - Registrazione dettagliata di ogni spesa
 - 💌 **Partecipazioni PDF** - Generazione automatica inviti matrimonio
 - 👥 **Gestione Ospiti** - Lista invitati con assegnazione tavoli
 - 🔐 **Autenticazione Sicura** - Auth via Supabase con RLS
-- 🌍 **Multi-lingua** - Interfaccia in italiano (estendibile)
+- 🌍 **Multi-lingua** - Interfaccia disponibile in 13 lingue:
+   - Italiano (it)
+   - English (en)
+   - Español (es)
+   - Français (fr)
+   - Deutsch (de)
+   - العربية (ar)
+   - हिन्दी (hi)
+   - 日本語 (ja)
+   - 中文 (zh)
+   - Español (México) (mx)
+   - Português (pt)
+   - Русский (ru)
+   - Bahasa Indonesia (id)
+- 🌐 **Multi-nazione** - Supporto per eventi e location in:
+   - Italia (IT)
+   - Messico (MX)
+   - Regno Unito (GB)
+   - Stati Uniti (US)
+   - Giappone (JP)
+   - Francia (FR)
+   - Germania (DE)
+   - Spagna (ES)
+   - Cina (CN)
+   - India (IN)
 - 📱 **Responsive Design** - Ottimizzato per mobile e desktop
 
 ## 🚀 Quick Start
@@ -51,14 +76,14 @@ Un'applicazione web completa per la gestione del budget matrimoniale, costruita 
    ```
 
 4. **Verifica Database** (Opzionale ma raccomandato)
-   
+
    Esegui script di verifica nel [SQL Editor di Supabase](https://app.supabase.com):
-   
+
    - **Quick Check** (< 3 sec): Copia/incolla `supabase-quick-check.sql`
    - **Diagnostica Completa**: Usa `supabase-diagnostics-complete.sql`
-   
+
    📚 [Guida completa alla verifica DB →](./SUPABASE-SQL-VERIFICATION-GUIDE.md)
-   
+
    Modifica `.env.local` con le tue credenziali Supabase:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
@@ -73,7 +98,7 @@ Un'applicazione web completa per la gestione del budget matrimoniale, costruita 
    ```bash
    npm run dev
    ```
-   
+
    Apri [http://localhost:3000](http://localhost:3000)
 
 ## 🗄️ Database Setup
@@ -83,17 +108,17 @@ Un'applicazione web completa per la gestione del budget matrimoniale, costruita 
 1. Crea un progetto su [Supabase](https://app.supabase.com)
 2. Vai su **SQL Editor** in dashboard
 3. Esegui gli script in **questo ordine**:
-   
+
    ```sql
    -- 1. Schema principale
    supabase-COMPLETE-SETUP.sql
-   
+
    -- 2. Tutte le patch (include aggiornamenti schema)
    supabase-ALL-PATCHES.sql
-   
+
    -- 3. Funzioni seed
    supabase-seed-functions.sql
-   
+
    -- 4. Seed dati (scegli quali servono)
    supabase-suppliers-seed.sql
    supabase-locations-seed.sql

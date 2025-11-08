@@ -1,6 +1,43 @@
 # 📋 CHECKLIST IMPLEMENTAZIONE EVENTI - Il Budget degli Sposi
 
-**Data creazione**: 3 Novembre 2025  
+## 🌍 Copertura Multilingua e Nazioni (verifica coerenza)
+
+- Lingue supportate (i18n):
+  - Italiano (it-IT)
+  - English (en-GB)
+  - Español (es-ES)
+  - Français (fr-FR)
+  - Deutsch (de-DE)
+  - العربية (ar)
+  - हिन्दी (hi-IN)
+  - 日本語 (ja-JP)
+  - 中文 (zh-CN)
+  - Español (México) (es-MX)
+  - Português (pt-PT)
+  - Русский (ru-RU)
+  - Bahasa Indonesia (id-ID)
+
+- Nazioni supportate (geo_countries):
+  - Italia (IT)
+  - Messico (MX)
+  - Regno Unito (GB)
+  - Stati Uniti (US)
+  - Giappone (JP)
+  - Francia (FR)
+  - Germania (DE)
+  - Spagna (ES)
+  - Cina (CN)
+  - India (IN)
+
+- [x] Tutte le lingue e nazioni sono coerenti tra:
+  - Configurazione i18n (`src/i18n/config.ts`)
+  - File di traduzione (`src/messages/*.json`)
+  - Seed database (`scripts/seed_i18n.ts`, `scripts/seed_i18n_local.mjs`)
+  - UI selettori lingua/paese
+
+---
+
+**Data creazione**: 3 Novembre 2025
 **Scopo**: Verificare completezza implementazione per ogni tipo di evento
 
 ---
@@ -136,9 +173,9 @@ SELECT COUNT(*) FROM categories WHERE type_id = (SELECT id FROM event_types WHER
 ### Verifica Funzionale
 ```bash
 # Test database
-SELECT COUNT(*) FROM subcategories 
+SELECT COUNT(*) FROM subcategories
 WHERE category_id IN (
-  SELECT id FROM categories 
+  SELECT id FROM categories
   WHERE type_id = (SELECT id FROM event_types WHERE slug='baptism')
 );
 # Dovrebbe restituire 40
@@ -153,8 +190,8 @@ curl -H "Authorization: Bearer [JWT]" \
 
 **STATUS COMPLESSIVO**: ✅ **COMPLETO AL 100%**
 
-**Verifica finale**: 3 Novembre 2025 ✅  
-**Production ready**: ✅ SÌ  
+**Verifica finale**: 3 Novembre 2025 ✅
+**Production ready**: ✅ SÌ
 **Test eseguiti**: ✅ Tutti i componenti verificati
 
 ---
@@ -479,8 +516,8 @@ npm run build
 # 5. Verificare spesa salvata con spend_type="common"
 ```
 
-**STATUS COMPLESSIVO**: ✅ **100% COMPLETO**  
-**Data completamento**: Gennaio 2025  
+**STATUS COMPLESSIVO**: ✅ **100% COMPLETO**
+**Data completamento**: Gennaio 2025
 **Pattern**: Single-Budget Event (Personal Milestone)
 
 
@@ -564,8 +601,8 @@ npm run build
 # 5. Verificare spesa salvata con spend_type="common"
 ```
 
-**STATUS COMPLESSIVO**: ✅ **100% COMPLETO**  
-**Data completamento**: 4 Novembre 2025  
+**STATUS COMPLESSIVO**: ✅ **100% COMPLETO**
+**Data completamento**: 4 Novembre 2025
 **Pattern**: Single-Budget Event (Personal/Corporate Milestone)
 
 ---
@@ -854,9 +891,9 @@ npm run build
 ### Verifica Funzionale
 ```bash
 # Test database
-SELECT COUNT(*) FROM subcategories 
+SELECT COUNT(*) FROM subcategories
 WHERE category_id IN (
-  SELECT id FROM categories 
+  SELECT id FROM categories
   WHERE type_id = (SELECT id FROM event_types WHERE slug='communion')
 );
 # Dovrebbe restituire ~55
@@ -876,9 +913,9 @@ curl -X POST \
 
 **STATUS COMPLESSIVO**: ✅ **COMPLETO AL 100%**
 
-**Verifica finale**: 3 Novembre 2025 ✅  
-**Production ready**: ✅ SÌ  
-**Test eseguiti**: ✅ Tutti i componenti verificati  
+**Verifica finale**: 3 Novembre 2025 ✅
+**Production ready**: ✅ SÌ
+**Test eseguiti**: ✅ Tutti i componenti verificati
 **Pattern**: Identico a Battesimo (10 categorie vs 9, ~55 subs vs 40)
 
 ---
@@ -1075,7 +1112,7 @@ curl -X POST \
 
 **Prossimi passi consigliati**:
 1. **Cresima** - Stesso pattern di Battesimo/Comunione, ~45min di lavoro
-2. **Compleanno** - Docs eccellenti, solo API mancanti  
+2. **Compleanno** - Docs eccellenti, solo API mancanti
 3. **Engagement Party** - Documentazione completa, pronto per API
 
 ---
@@ -1126,13 +1163,13 @@ Usa questa checklist per implementare un nuovo evento o completare uno esistente
   - [ ] Seed categorie/sottocategorie
   - [ ] Parametro `country` per localizzazione
   - [ ] Return: `{ success: true, categories: X, subcategories: Y }`
-  
+
 - [ ] Creare `/api/my/[slug]-dashboard` (GET/POST)
   - [ ] GET: Recupera dati evento con categorie/sottocategorie
   - [ ] POST: Salva modifiche spese
   - [ ] Calcola totali e budget rimanente
   - [ ] Support per demo mode (no JWT = dati vuoti)
-  
+
 - [ ] Aggiungere `export const runtime = "nodejs"` in ogni route
 
 ### 5. UI COMPONENTI (Opzionale) 🖥️
@@ -1157,14 +1194,14 @@ Usa questa checklist per implementare un nuovo evento o completare uno esistente
   - [ ] Struttura categorie/sottocategorie
   - [ ] Features implementate
   - [ ] Esempi query SQL
-  
+
 - [ ] Creare `[SLUG]-SETUP-GUIDE.md`:
   - [ ] Prerequisiti
   - [ ] Installazione step-by-step
   - [ ] Comandi SQL
   - [ ] Testing
   - [ ] Troubleshooting
-  
+
 - [ ] Opzionale: `[SLUG]-QUICK-START.md` (versione 3 minuti)
 - [ ] Opzionale: `[SLUG]-IMPLEMENTATION-SUMMARY.md`
 - [ ] Aggiornare `CHECKLIST_SQL_SEEDS.md`
@@ -1172,12 +1209,12 @@ Usa questa checklist per implementare un nuovo evento o completare uno esistente
 ### 8. TESTING 🧪
 - [ ] Test database:
   ```sql
-  SELECT COUNT(*) FROM categories 
+  SELECT COUNT(*) FROM categories
   WHERE type_id = (SELECT id FROM event_types WHERE slug='[slug]');
-  
-  SELECT COUNT(*) FROM subcategories 
+
+  SELECT COUNT(*) FROM subcategories
   WHERE category_id IN (
-    SELECT id FROM categories 
+    SELECT id FROM categories
     WHERE type_id = (SELECT id FROM event_types WHERE slug='[slug]')
   );
   ```
@@ -1339,6 +1376,6 @@ Per domande sull'implementazione:
 
 ---
 
-**Ultimo aggiornamento**: 3 Novembre 2025  
-**Versione**: 1.0.0  
+**Ultimo aggiornamento**: 3 Novembre 2025
+**Versione**: 1.0.0
 **Maintainer**: AI Coding Agent

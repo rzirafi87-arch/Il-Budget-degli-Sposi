@@ -1,5 +1,15 @@
 # 📋 Checklist SQL Seeds da Eseguire in Supabase
 
+## 🌍 Verifica seed multilingua e nazioni
+
+- [x] Tutte le lingue seedate in `i18n_locales`:
+  - it-IT, en-GB, es-ES, fr-FR, de-DE, ar, hi-IN, ja-JP, zh-CN, es-MX, pt-PT, ru-RU, id-ID
+- [x] Tutte le nazioni seedate in `geo_countries`:
+  - IT, MX, GB, US, JP, FR, DE, ES, CN, IN
+- [x] Seed coerente con configurazione e file di traduzione
+
+---
+
 Questo documento elenca tutti i file SQL seed da eseguire in ordine nel tuo progetto Supabase per popolare le pagine del marketplace.
 
 ## 🎯 Setup Rapido Multi-Evento
@@ -11,8 +21,8 @@ Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIM
 ### 0. **Setup Multi-Evento (Nuovo Schema)** ⭐ RACCOMANDATO
 
 #### ⚠️ PREREQUISITO OBBLIGATORIO: Patch Colonne Multi-Evento
-**File**: `supabase-multi-event-columns-patch.sql`  
-**Quando**: PRIMA di installare qualsiasi evento seed  
+**File**: `supabase-multi-event-columns-patch.sql`
+**Quando**: PRIMA di installare qualsiasi evento seed
 **Frequenza**: UNA SOLA VOLTA
 
 **Cosa fa**:
@@ -51,7 +61,7 @@ Per il nuovo sistema multi-evento (Matrimonio, Battesimo, etc.), vedi: **[MATRIM
 
 **Note**: Questo è un sistema nuovo e separato dallo schema legacy. Vedi guide specifiche:
 - [MATRIMONIO-SETUP-GUIDE.md](MATRIMONIO-SETUP-GUIDE.md)
-- [BATTESIMO-SETUP-GUIDE.md](BATTESIMO-SETUP-GUIDE.md) 
+- [BATTESIMO-SETUP-GUIDE.md](BATTESIMO-SETUP-GUIDE.md)
 - [DICIOTTESIMO-SETUP-GUIDE.md](DICIOTTESIMO-SETUP-GUIDE.md)
 - [CRESIMA-SETUP-GUIDE.md](CRESIMA-SETUP-GUIDE.md)
 - [LAUREA-SETUP-GUIDE.md](LAUREA-SETUP-GUIDE.md)

@@ -18,7 +18,7 @@ async function main() {
   console.log('✅ Connesso!\n');
 
   try {
-    // 1) Locales + Countries
+    // 1) Locales + Countries (aggiornato)
     console.log('📍 Seeding i18n_locales...');
     await client.query(`
       INSERT INTO i18n_locales (code, name, direction)
@@ -26,23 +26,37 @@ async function main() {
         ('it-IT', 'Italiano', 'ltr'),
         ('en-GB', 'English', 'ltr'),
         ('es-ES', 'Español', 'ltr'),
-        ('ja-JP', '日本語', 'ltr')
+        ('fr-FR', 'Français', 'ltr'),
+        ('de-DE', 'Deutsch', 'ltr'),
+        ('ar', 'العربية', 'rtl'),
+        ('hi-IN', 'हिन्दी', 'ltr'),
+        ('ja-JP', '日本語', 'ltr'),
+        ('zh-CN', '中文', 'ltr'),
+        ('es-MX', 'Español (México)', 'ltr'),
+        ('pt-PT', 'Português', 'ltr'),
+        ('ru-RU', 'Русский', 'ltr'),
+        ('id-ID', 'Bahasa Indonesia', 'ltr')
       ON CONFLICT (code) DO NOTHING;
     `);
-    console.log('   ✅ Locales: it-IT, en-GB, es-ES, ja-JP\n');
+    console.log('   ✅ Locales: it-IT, en-GB, es-ES, fr-FR, de-DE, ar, hi-IN, ja-JP, zh-CN, es-MX, pt-PT, ru-RU, id-ID\n');
 
     console.log('🌍 Seeding geo_countries...');
     await client.query(`
       INSERT INTO geo_countries (code, default_locale)
       VALUES
         ('IT', 'it-IT'),
-        ('MX', 'es-ES'),
+        ('MX', 'es-MX'),
         ('GB', 'en-GB'),
         ('US', 'en-GB'),
-        ('JP', 'ja-JP')
+        ('JP', 'ja-JP'),
+        ('FR', 'fr-FR'),
+        ('DE', 'de-DE'),
+        ('ES', 'es-ES'),
+        ('CN', 'zh-CN'),
+        ('IN', 'hi-IN')
       ON CONFLICT (code) DO NOTHING;
     `);
-    console.log('   ✅ Countries: IT, MX, GB, US, JP\n');
+    console.log('   ✅ Countries: IT, MX, GB, US, JP, FR, DE, ES, CN, IN\n');
 
     // 2) Event type: WEDDING
     console.log('💍 Seeding event_types (WEDDING)...');
