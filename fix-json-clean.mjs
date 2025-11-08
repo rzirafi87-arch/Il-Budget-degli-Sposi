@@ -1,43 +1,101 @@
-import fs from 'fs';
+import fs from "fs";
 
-const filePath = './src/messages/it.json';
+const DEFAULT_FILE = "./src/messages/it.json";
+const filePath = process.argv[2] ?? DEFAULT_FILE;
 
-console.log('🔧 Fix manuale mojibake con JSON parse/stringify\n');
+console.log("🔧 Normalizzazione mojibake JSON\n");
 
-// Leggi e parse JSON
-const content = fs.readFileSync(filePath, 'utf8');
-const data = JSON.parse(content);
-
-// Funzione ricorsiva per trovare e sostituire
-function fixMojibake(obj) {
-  for (const key in obj) {
-    if (typeof obj[key] === 'string') {
-      // Sostituisci mojibake
-      const original = obj[key];
-      obj[key] = obj[key]
-        .replace(/â€"/g, '—')                    // em-dash mojibake
-        .replace(/→funzion/gi, '→ Funzion')       // arrow + testo
-        .replace(/Responsabi→/g, 'Responsabile ') // fix "Responsabile"
-        .replace(/💍•/g, '💍')                    // fix emoji
-        .replace(/›‹/g, '')                       // rimuovi caratteri strani
-        .replace(/👀‹/g, '👀');                   // fix emoji occhi
-
-      if (original !== obj[key]) {
-        console.log(`✓ Fixed: "${original.substring(0, 50)}..."`);
-      }
-    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-      fixMojibake(obj[key]);
-    }
-  }
+if (!fs.existsSync(filePath)) {
+  console.error(`❌ File non trovato: ${filePath}`);
+  process.exit(1);
 }
 
-// Applica fix
-fixMojibake(data);
+const originalContent = fs.readFileSync(filePath, "utf8");
+const json = JSON.parse(originalContent);
 
-// Backup
-fs.writeFileSync(filePath + '.before-fix', content, 'utf8');
+const arrowPlaceholder = /\u2192/g; // →
+const ringWithBang = /\u{1F48D}\u00A1\s*/gu; // 💍¡
+const eyesWithScaron = /\u{1F440}\u0160\s*/gu; // 👀Š
+const strayScaron = /\u0160/g; // Š singolo
 
-// Scrivi JSON formattato
-fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+const replacements = [
+  {
+    label: "arrow->'le '",
+    apply: (value) => value.replace(arrowPlaceholder, "le "),
+  },
+  {
+    label: "💍¡ cleanup",
+    apply: (value) => value.replace(ringWithBang, "\u{1F48D} "),
+  },
+  {
+    label: "👀Š cleanup",
+    apply: (value) => value.replace(eyesWithScaron, "\u{1F440} "),
+  },
+  {
+    label: "Š residual",
+    apply: (value) => value.replace(strayScaron, ""),
+  },
+  {
+    label: "spazi doppi",
+    apply: (value) => value.replace(/ {2,}/g, " "),
+  },
+  {
+    label: "spazi prima della punteggiatura",
+    apply: (value) => value.replace(/\s+([,.;:!?])/g, "$1"),
+  },
+  {
+    label: "spazi parentesi",
+    apply: (value) => value.replace(/\(\s+/g, "(").replace(/\s+\)/g, ")"),
+  },
+];
 
-console.log('\n✅ File normalizzato! Backup: it.json.before-fix');
+const changes = {};
+
+function cleanValue(value, path) {
+  let updated = value;
+  for (const { label, apply } of replacements) {
+    const next = apply(updated);
+    if (next !== updated) {
+      if (!changes[path]) changes[path] = new Set();
+      changes[path].add(label);
+      updated = next;
+    }
+  }
+  return updated;
+}
+
+function walk(node, path = "") {
+  if (typeof node === "string") {
+    return cleanValue(node, path);
+  }
+
+  if (Array.isArray(node)) {
+    return node.map((item, index) => walk(item, `${path}[${index}]`));
+  }
+
+  if (node && typeof node === "object") {
+    for (const [key, value] of Object.entries(node)) {
+      const nextPath = path ? `${path}.${key}` : key;
+      node[key] = walk(value, nextPath);
+    }
+  }
+
+  return node;
+}
+
+walk(json);
+
+if (Object.keys(changes).length === 0) {
+  console.log("✅ Nessuna sostituzione necessaria.");
+  process.exit(0);
+}
+
+const backupPath = `${filePath}.before-fix`;
+fs.writeFileSync(backupPath, originalContent, "utf8");
+fs.writeFileSync(filePath, JSON.stringify(json, null, 2), "utf8");
+
+console.log(`💾 Backup creato: ${backupPath}`);
+console.log("🧹 Sostituzioni applicate:");
+for (const [path, labels] of Object.entries(changes)) {
+  console.log(` - ${path}: ${[...labels].join(", ")}`);
+}

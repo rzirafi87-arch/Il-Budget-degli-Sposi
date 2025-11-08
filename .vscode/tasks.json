@@ -2,6 +2,20 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Config: Validate encoding (JSON)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"config:validate"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
 			"label": "Run SQL: Current File (local PG)",
 			"type": "shell",
 			"command": "node",

@@ -39,6 +39,8 @@
         "seed:i18n": "ts-node scripts/seed_i18n.ts",
         "seed:more": "ts-node scripts/seed_more_events.ts",
         "config:validate": "node scripts/validate-config-encoding.mjs",
+        "validate": "npm run check:utf8:strict && npm run config:validate",
+        "prebuild": "npm run validate",
         "test": "jest"
     },
     "engines": {
