@@ -1,14 +1,15 @@
 ﻿"use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export default function Footer() {
   const t = useTranslations("footer");
+  const locale = useLocale() || "it";
   const safe = (key: string, fallback: string) => {
     try {
-      return t(key as any);
+      return t(key);
     } catch {
       return fallback;
     }
@@ -108,9 +109,9 @@ export default function Footer() {
           <div>
             <h4 className="font-serif text-lg sm:text-xl font-bold mb-3 sm:mb-4">{t("toolsTitle", { default: "Strumenti" })}</h4>
             <ul className="space-y-2 text-sm text-white/90">
-              <li><Link href="/spese" className="hover:text-white transition-colors">{t("expenses", { default: "Gestione Spese" })}</Link></li>
-              <li><Link href="/entrate" className="hover:text-white transition-colors">{t("incomes", { default: "Entrate e Regali" })}</Link></li>
-              <li><Link href="/invitati" className="hover:text-white transition-colors">{t("guestsList", { default: "Lista Invitati" })}</Link></li>
+              <li><Link href={`/${locale}/spese`} className="hover:text-white transition-colors">{t("expenses", { default: "Gestione Spese" })}</Link></li>
+              <li><Link href={`/${locale}/entrate`} className="hover:text-white transition-colors">{t("incomes", { default: "Entrate e Regali" })}</Link></li>
+              <li><Link href={`/${locale}/invitati`} className="hover:text-white transition-colors">{t("guestsList", { default: "Lista Invitati" })}</Link></li>
             </ul>
           </div>
 
@@ -118,9 +119,9 @@ export default function Footer() {
           <div>
             <h4 className="font-serif text-lg sm:text-xl font-bold mb-3 sm:mb-4">{t("suppliersTitle", { default: "Trova Fornitori" })}</h4>
             <ul className="space-y-2 text-sm text-white/90">
-              <li><Link href="/location" className="hover:text-white transition-colors">{t("locations", { default: "Location Ricevimento" })}</Link></li>
-              <li><Link href="/chiese" className="hover:text-white transition-colors">{t("churches", { default: "Location Cerimonia" })}</Link></li>
-              <li><Link href="/fornitori" className="hover:text-white transition-colors">{t("allSuppliers", { default: "Tutti i Fornitori" })}</Link></li>
+              <li><Link href={`/${locale}/location`} className="hover:text-white transition-colors">{t("locations", { default: "Location Ricevimento" })}</Link></li>
+              <li><Link href={`/${locale}/chiese`} className="hover:text-white transition-colors">{t("churches", { default: "Location Cerimonia" })}</Link></li>
+              <li><Link href={`/${locale}/fornitori`} className="hover:text-white transition-colors">{t("allSuppliers", { default: "Tutti i Fornitori" })}</Link></li>
             </ul>
           </div>
 
@@ -128,15 +129,15 @@ export default function Footer() {
           <div>
             <h4 className="font-serif text-lg sm:text-xl font-bold mb-3 sm:mb-4">{t("infoTitle", { default: "Info & Supporto" })}</h4>
             <ul className="space-y-2 text-sm text-white/90 mb-4">
-              <li><Link href="/chi-siamo" className="hover:text-white transition-colors">{t("aboutUs", { default: "Chi Siamo" })}</Link></li>
-              <li><Link href="/come-funziona" className="hover:text-white transition-colors">{t("howItWorks", { default: "Come Funziona" })}</Link></li>
-              <li><Link href="/contatti" className="hover:text-white transition-colors">{t("contacts", { default: "Contatti" })}</Link></li>
+              <li><Link href={`/${locale}/chi-siamo`} className="hover:text-white transition-colors">{t("aboutUs", { default: "Chi Siamo" })}</Link></li>
+              <li><Link href={`/${locale}/come-funziona`} className="hover:text-white transition-colors">{t("howItWorks", { default: "Come Funziona" })}</Link></li>
+              <li><Link href={`/${locale}/contatti`} className="hover:text-white transition-colors">{t("contacts", { default: "Contatti" })}</Link></li>
             </ul>
             <h4 className="font-serif text-lg sm:text-xl font-bold mb-3 sm:mb-2">{safe("legalTitle", "Legale")}</h4>
             <ul className="space-y-2 text-sm text-white/90">
-              <li><Link href="/privacy-policy" className="hover:text-white transition-colors">{t("privacyPolicy", { default: "Privacy Policy" })}</Link></li>
-              <li><Link href="/termini-servizio" className="hover:text-white transition-colors">{t("termsOfService", { default: "Termini di Servizio" })}</Link></li>
-              <li><Link href="/cookie-policy" className="hover:text-white transition-colors">{t("cookiePolicy", { default: "Cookie Policy" })}</Link></li>
+              <li><Link href={`/${locale}/privacy-policy`} className="hover:text-white transition-colors">{t("privacyPolicy", { default: "Privacy Policy" })}</Link></li>
+              <li><Link href={`/${locale}/termini-servizio`} className="hover:text-white transition-colors">{t("termsOfService", { default: "Termini di Servizio" })}</Link></li>
+              <li><Link href={`/${locale}/cookie-policy`} className="hover:text-white transition-colors">{t("cookiePolicy", { default: "Cookie Policy" })}</Link></li>
             </ul>
           </div>
         </div>

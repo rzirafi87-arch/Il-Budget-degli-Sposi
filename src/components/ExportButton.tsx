@@ -2,21 +2,23 @@
 
 import type { ReactNode } from "react";
 
-type ExportButtonProps = {
-  data: any[];
+interface GenericRecord { [key: string]: unknown }
+
+type ExportButtonProps<T extends GenericRecord = GenericRecord> = {
+  data: T[];
   filename: string;
   type: "csv" | "json";
   className?: string;
   children?: ReactNode;
 };
 
-export default function ExportButton({
+export default function ExportButton<T extends GenericRecord = GenericRecord>({
   data,
   filename,
   type,
   className = "",
   children = "Esporta",
-}: ExportButtonProps) {
+}: ExportButtonProps<T>) {
   const handleExport = () => {
     if (type === "csv") {
       exportToCSV();
@@ -33,7 +35,7 @@ export default function ExportButton({
 
     // Ottieni le intestazioni dalle chiavi del primo oggetto
     const headers = Object.keys(data[0]);
-    
+
     // Crea le righe CSV
     const csvRows = [
       headers.join(","), // Intestazione

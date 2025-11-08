@@ -1,12 +1,14 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+﻿"use client";
 import Link from "next/link";
 
-function getLang(): "it"|"es"|"en"|"fr"|"de"|"ru"|"zh" {
+type SupportedLang = "it"|"es"|"en"|"fr"|"de"|"ru"|"zh";
+function getLang(): SupportedLang {
   if (typeof window === "undefined") return "en";
-  const ls = localStorage.getItem("language") as any;
-  const cookie = document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1] as any;
-  return (ls || cookie || "en") as any;
+  const ls = localStorage.getItem("language") || "";
+  const cookie = document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1] || "";
+  const raw = (ls || cookie || "en").toLowerCase();
+  const allowed: SupportedLang[] = ["it","es","en","fr","de","ru","zh"];
+  return (allowed.includes(raw as SupportedLang) ? raw : "en") as SupportedLang;
 }
 
 function tComingSoon(lang: string) {

@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* Le tipizzazioni esplicite eliminano la necessità di any */
 "use client";
 
 import { useLocale } from "next-intl";
@@ -39,14 +39,16 @@ export default function TavoliPage() {
       try {
         const res = await fetch("/api/my/tables");
         const json = await res.json();
-        setTables((json.tables || []).map((t: any) => ({
+        interface ApiTable { id?: string; tableNumber?: number; tableName?: string; tableType?: string; totalSeats?: number; notes?: string; assignedGuests?: { guestId: string; seatNumber: number; guestName?: string }[] }
+        const apiTables: ApiTable[] = json.tables || [];
+        setTables(apiTables.map((t) => ({
           id: t.id,
           tableNumber: t.tableNumber,
           tableName: t.tableName,
           tableType: t.tableType,
           totalSeats: Number(t.totalSeats || 0),
           notes: t.notes,
-          assignedGuests: (t.assignedGuests || []).map((ag: any) => ({
+          assignedGuests: (t.assignedGuests || []).map((ag) => ({
             guestId: ag.guestId,
             seatNumber: ag.seatNumber,
             guestName: ag.guestName,

@@ -1,8 +1,7 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-import React, { useEffect, useMemo, useState } from "react";
+﻿"use client";
 import CresimaNav from "@/components/cresima/CresimaNav";
-import { getUserLanguage, formatCurrency } from "@/lib/locale";
+import { formatCurrency, getUserLanguage } from "@/lib/locale";
+import { useEffect, useMemo, useState } from "react";
 
 type Row = {
   category: string;
@@ -43,16 +42,18 @@ export default function CresimaBudgetPage() {
         ]);
 
         const expensesData = await expensesRes.json();
-        const approvedExpenses = (expensesData.expenses || []).filter((exp: any) => exp.status === "approved");
+        type ExpenseRow = { category?: string; subcategory?: string; amount?: number; status?: string; from_dashboard?: boolean };
+        const rawExpenses: ExpenseRow[] = expensesData.expenses || [];
+        const approvedExpenses = rawExpenses.filter((exp) => exp.status === "approved");
 
-        const budgetRows: Row[] = approvedExpenses.map((exp: any) => ({
+        const budgetRows: Row[] = approvedExpenses.map((exp) => ({
           category: exp.category || "",
           subcategory: exp.subcategory || "",
           budget: Number(exp.amount || 0),
           committed: Number(exp.amount || 0),
           paid: 0,
           residual: Number(exp.amount || 0),
-          fromDashboard: exp.from_dashboard || false,
+          fromDashboard: Boolean(exp.from_dashboard),
           difference: 0,
         }));
 
@@ -68,8 +69,9 @@ export default function CresimaBudgetPage() {
         setTotals({ total });
 
         const plannedJson = await plannedRes.json();
+        type PlannedItem = { name?: string; category?: string; subcategory?: string; amount?: number };
         const planned = Array.isArray(plannedJson?.items)
-          ? plannedJson.items.map((it: any) => ({
+          ? (plannedJson.items as PlannedItem[]).map((it) => ({
               name: it.name || [it.category, it.subcategory].filter(Boolean).join(" - ") || "Voce",
               amount: Number(it.amount || 0) || 0,
             }))
@@ -109,7 +111,7 @@ export default function CresimaBudgetPage() {
       <section className="mb-6">
         <h2 className="text-xl font-semibold">Budget Cresima</h2>
         <p className="text-neutral-600 mt-1">
-          Riepilogo delle spese approvate e confronto con l'idea iniziale.
+          Riepilogo delle spese approvate e confronto con l&apos;idea iniziale.
         </p>
       </section>
 
@@ -137,7 +139,7 @@ export default function CresimaBudgetPage() {
           <div className="p-6 text-gray-500 text-sm">Caricamento...</div>
         ) : rows.length === 0 ? (
           <div className="p-10 text-center text-gray-500">
-            Nessuna spesa approvata. Vai alla sezione "Spese" per approvare le tue spese.
+            Nessuna spesa approvata. Vai alla sezione &quot;Spese&quot; per approvare le tue spese.
           </div>
         ) : (
           <ul>
@@ -192,7 +194,7 @@ export default function CresimaBudgetPage() {
         <div className="h-px bg-gray-100" />
         <ul>
           {compareRows.length === 0 ? (
-            <li className="px-6 py-6 text-sm text-gray-500">Nessun dato da confrontare. Usa "Idea di Budget" per pianificare e approva spese nella sezione "Spese".</li>
+            <li className="px-6 py-6 text-sm text-gray-500">Nessun dato da confrontare. Usa &quot;Idea di Budget&quot; per pianificare e approva spese nella sezione &quot;Spese&quot;.</li>
           ) : (
             compareRows.map((row) => (
               <li key={row.key} className="grid grid-cols-12 px-6 py-3 text-sm border-t border-gray-50">
