@@ -1,10 +1,4 @@
-CREATE TABLE countries (
-  code CHAR(2) PRIMARY KEY, -- ISO 3166-1 alpha-2
-  name TEXT NOT NULL,
-  native_name TEXT,
-  region TEXT
-);
-
+TRUNCATE TABLE countries RESTART IDENTITY CASCADE;
 INSERT INTO countries (code, name, native_name, region) VALUES
   ('IT', 'Italy', 'Italia', 'Europe'),
   ('FR', 'France', 'France', 'Europe'),

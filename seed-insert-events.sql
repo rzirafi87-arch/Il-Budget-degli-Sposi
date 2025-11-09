@@ -1,16 +1,4 @@
-
-DO $$ BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'event_types' AND table_schema = 'public') THEN
-    DROP TABLE public.event_types;
-  END IF;
-END $$;
-
-CREATE TABLE event_types (
-  code TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  description TEXT
-);
-
+TRUNCATE TABLE event_types;
 INSERT INTO event_types (code, name, description) VALUES
   ('wedding', 'Matrimonio', 'Evento di nozze'),
   ('birthday', 'Compleanno', 'Festa di compleanno'),
