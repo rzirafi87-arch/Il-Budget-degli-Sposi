@@ -1,6 +1,9 @@
 ﻿"use client";
 
+
 import PageInfoNote from "@/components/PageInfoNote";
+import Page from "@/components/layout/Page";
+import { CenteredCard } from "@/components/ui/CenteredCard";
 import { formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
@@ -22,6 +25,7 @@ type FavoriteWithDetails = Favorite & {
   city?: string;
   category?: string;
 };
+
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<FavoriteWithDetails[]>([]);
@@ -45,9 +49,7 @@ export default function FavoritesPage() {
       const res = await fetch("/api/my/favorites", {
         headers: { Authorization: `Bearer ${jwt}` },
       });
-      
       const json = await res.json();
-      
       if (json.favorites) {
         // Arricchisci con i dettagli (simulato — in produzione fare join)
         const enriched = json.favorites.map((fav: Favorite) => ({
@@ -56,7 +58,6 @@ export default function FavoritesPage() {
           city: "Da definire",
           category: fav.item_type,
         }));
-        
         setFavorites(enriched);
       }
     } catch (e) {
@@ -70,22 +71,19 @@ export default function FavoritesPage() {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const jwt = sessionData.session?.access_token;
-
       if (!jwt) return;
-
       await fetch(`/api/my/favorites?id=${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${jwt}` },
       });
-
       setFavorites(favorites.filter(f => f.id !== id));
     } catch (e) {
       console.error(e);
     }
   }
 
-  const filteredFavorites = filter === "all" 
-    ? favorites 
+  const filteredFavorites = filter === "all"
+    ? favorites
     : favorites.filter(f => f.item_type === filter);
 
   if (loading) {
@@ -93,15 +91,25 @@ export default function FavoritesPage() {
   }
 
   return (
-    <section className="space-y-6">
-      <div className="bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200">
-        <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
-          ❤️ I Miei Preferiti
-        </h1>
-        <p className="text-gray-600">
+    <Page>
+      <header className="mb-4">
+        <h1 className="text-3xl font-bold text-center">I Miei Preferiti</h1>
+        {/* breadcrumb centrato */}
+        <nav className="mt-1 flex justify-center text-sm text-muted-foreground">
+          <ol className="flex flex-wrap items-center gap-1">
+            <li>Home</li>
+            <li>›</li>
+            <li className="font-medium">Preferiti</li>
+          </ol>
+        </nav>
+      </header>
+
+      <CenteredCard>
+        <h2 className="mb-1 text-center text-2xl font-extrabold">I Miei Preferiti</h2>
+        <p className="text-center text-sm text-muted-foreground">
           Tutti i fornitori, location e chiese che avete salvato in un unico posto.
         </p>
-      </div>
+      </CenteredCard>
 
       <PageInfoNote
         icon="❤️"
@@ -123,10 +131,10 @@ export default function FavoritesPage() {
       />
 
       {/* Filtri */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
+  <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
         <button
           onClick={() => setFilter("all")}
-          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "all"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -137,7 +145,7 @@ export default function FavoritesPage() {
         </button>
         <button
           onClick={() => setFilter("supplier")}
-          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "supplier"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -148,7 +156,7 @@ export default function FavoritesPage() {
         </button>
         <button
           onClick={() => setFilter("location")}
-          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "location"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -159,7 +167,7 @@ export default function FavoritesPage() {
         </button>
         <button
           onClick={() => setFilter("church")}
-          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "church"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -206,7 +214,7 @@ export default function FavoritesPage() {
                   <span className="text-2xl mb-2 block">
                     {fav.item_type === "supplier" ? "🏢" : fav.item_type === "location" ? "🏛️" : "⛪"}
                   </span>
-                  <h3 className="font-bold text-lg text-gray-800">{fav.name}</h3>
+                  <h3 className="font-bold text-lg text-gray-800 text-center truncate">{fav.name}</h3>
                   <p className="text-sm text-gray-500">{fav.city}</p>
                 </div>
                 <button
@@ -239,6 +247,6 @@ export default function FavoritesPage() {
           ))}
         </div>
       )}
-    </section>
+    </Page>
   );
 }

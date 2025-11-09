@@ -31,6 +31,7 @@
         "check:utf8:strict": "node scripts/check-utf8.mjs --strict",
         "dev:ac": "npm run autocommit && next dev",
         "autocommit:watch": "node scripts/autocommit-watch.mjs",
+        "assets:carousels": "node scripts/generate-event-carousels.mjs",
         "sql:seed:birthday-50": "node scripts/seed-50th-birthday.mjs",
         "codex:sync": "node scripts/codex-sync-db.mjs",
         "codex:check": "node scripts/codex-sync-db.mjs supabase-quick-check.sql",

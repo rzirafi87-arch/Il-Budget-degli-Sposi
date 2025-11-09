@@ -51,7 +51,7 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
     <nav
       className={clsx(
         "fixed bottom-0 left-0 right-0 z-50",
-        "bg-white border-t border-gray-200",
+        "bg-bg/95 dark:bg-secondary/95 border-t border-border",
         "shadow-2xl",
         // Safe area per iOS home indicator
         os === "ios" && "pb-safe-bottom"
@@ -65,19 +65,19 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
           const isActive = normalizedPath.startsWith(item.href);
           
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              locale={locale}
-              className={clsx(
-                "flex flex-col items-center justify-center",
-                "min-w-[60px] py-2 px-3 rounded-lg",
-                "transition-all duration-200",
-                "focus:outline-none focus:ring-2 focus:ring-[#A6B5A0]",
-                isActive
-                  ? "text-[#8da182]"
-                  : "text-gray-500 active:bg-gray-100"
-              )}
+              <Link
+                key={item.href}
+                href={item.href}
+                locale={locale}
+                className={clsx(
+                  "flex flex-col items-center justify-center",
+                  "min-w-[60px] py-2 px-3 rounded-lg",
+                  "transition-all duration-200",
+                  "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg",
+                  isActive
+                    ? "text-primary bg-muted/20"
+                    : "text-muted-fg active:bg-muted/80"
+                )}
               aria-label={item.label}
               aria-current={isActive ? "page" : undefined}
               style={{
@@ -97,10 +97,10 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
                 
                 {/* Badge notifiche */}
                 {item.badge && item.badge > 0 && (
-                  <span
-                    className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1"
-                    aria-label={`${item.badge} notifiche`}
-                  >
+                <span
+                  className="absolute -top-1 -right-1 bg-destructive text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1"
+                  aria-label={`${item.badge} notifiche`}
+                >
                     {item.badge > 99 ? "99+" : item.badge}
                   </span>
                 )}
@@ -117,7 +117,7 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
               
               {/* Indicatore attivo iOS style */}
               {isActive && isIOSStyle && (
-                <div className="w-1 h-1 bg-[#8da182] rounded-full mt-0.5" />
+                <div className="w-1 h-1 bg-primary rounded-full mt-0.5" />
               )}
             </Link>
           );
