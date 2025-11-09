@@ -33,22 +33,3 @@ export default function DashboardPage({
     </main>
   );
 }
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold mb-2">Timeline</h2>
-            <ol className="list-decimal ml-6">
-              {timeline.map((t) => (
-                <li key={t.code} className="mb-1"><b>{t.title}</b>: {t.description}</li>
-              ))}
-            </ol>
-          </div>
-        </>
-      )}
-    </main>
-  );
-}

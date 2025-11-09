@@ -6,10 +6,6 @@ import { ReactNode } from "react";
 
 export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  // Se hai una lista di lingue, mettila qui; altrimenti ometti questa funzione
-  return [{ locale: "it" }, { locale: "en" }];
-}
 
 export default function LocaleLayout({
   children,
