@@ -72,5 +72,11 @@ export async function GET(req: NextRequest) {
     },
   };
 
-  return NextResponse.json({ subcategories: (demo[event][category] || []) });
+  // Type-safe access per evitare errore TS
+  type DemoEventKey = keyof typeof demo;
+  type DemoCategoryKey = keyof (typeof demo)[DemoEventKey];
+  const eventKey = event as DemoEventKey;
+  const catKey = category as DemoCategoryKey;
+  const subcats = demo[eventKey]?.[catKey] ?? [];
+  return NextResponse.json({ subcategories: subcats });
 }
