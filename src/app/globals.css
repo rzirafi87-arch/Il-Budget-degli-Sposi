@@ -652,3 +652,58 @@ h1, h2, h3, h4, h5, h6 {
 .no-liga {
   font-variant-ligatures: none;
 }
+
+:root {
+  /* BASE */
+  --bg: #faf8f5;
+  --fg: #1f2328;
+  --muted: #edeae6;
+  --muted-fg: #5e6561;
+
+  /* BRAND */
+  --primary: #8fa79a;
+  --primary-fg: #0f1412;
+  --secondary: #cbd6ce;
+  --secondary-fg: #1f2328;
+
+  /* ACCENTI & UI */
+  --accent: #c2a875;
+  --accent-fg: #111111;
+  --border: #e3e0db;
+  --ring: #8fa79a;
+
+  /* STATI */
+  --success: #3aa981;
+  --warning: #e0a400;
+  --info: #4c8bd9;
+  --destructive: #c46464;
+}
+
+:root.dark {
+  --bg: #0f1211;
+  --fg: #eef0ed;
+  --muted: #1b201e;
+  --muted-fg: #a7b0aa;
+
+  --primary: #9db6a8;
+  --primary-fg: #0a0d0c;
+  --secondary: #2a2f2c;
+  --secondary-fg: #eef0ed;
+
+  --accent: #d4bc8a;
+  --accent-fg: #0a0a0a;
+  --border: #232826;
+  --ring: #9db6a8;
+
+  --success: #46b78e;
+  --warning: #f2bc2d;
+  --info: #5a9ae6;
+  --destructive: #d57373;
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  :root,
+  :root.dark {
+    /* opzionale per schermi wide-gamut */
+  }
+}
