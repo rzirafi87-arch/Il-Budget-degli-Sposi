@@ -5,7 +5,7 @@ import AppointmentsClient from "./AppointmentsClient";
 
 export default async function AppointmentsPage() {
   // Recupera JWT dalla cookie (se presente)
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const jwt = cookieStore.get("sb-access-token")?.value;
 
   // Prepara headers per la fetch

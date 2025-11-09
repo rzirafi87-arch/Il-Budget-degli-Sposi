@@ -4,7 +4,7 @@ import AppuntamentiClient from "../../it/documenti/appuntamenti/AppuntamentiClie
 
 export default async function AppuntamentiPage() {
   // Recupera JWT dalla cookie (se presente)
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const jwt = cookieStore.get("sb-access-token")?.value;
 
   // Prepara headers per la fetch
