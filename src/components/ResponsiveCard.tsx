@@ -83,27 +83,18 @@ export default function ResponsiveCard({
   const borderClass = bordered ? "border border-border" : "";
 
   // Interattività
-  const interactiveClass = (onClick || href) ? [
-    "cursor-pointer",
-    "transition-all duration-200",
-    // Desktop hover (solo se non touch)
-    !isTouchDevice && hoverable && "hover:shadow-soft-lg hover:-translate-y-1",
-    // Mobile/tablet tap feedback
-    isTouchDevice && "active:scale-[0.98] active:shadow-sm",
-    // Focus
-    "focus:outline-none focus:ring-2 focus:ring-[#A6B5A0] focus:ring-offset-2",
-  ] : [];
-
-  // Ottimizzazioni iOS
-  const iosClass = os === "ios" ? [
-    "-webkit-tap-highlight-color: transparent",
-    "touch-action: manipulation", // Previene zoom doppio tap
-  ] : [];
-
-  // Ottimizzazioni Android
-  const androidClass = os === "android" ? [
-    "relative overflow-hidden", // Per ripple effect
-  ] : [];
+  const interactiveClass = (onClick || href)
+    ? [
+        "cursor-pointer",
+        "transition-all duration-200",
+        // Desktop hover (solo se non touch)
+        !isTouchDevice && hoverable && "hover:shadow-soft-lg hover:-translate-y-1",
+        // Mobile/tablet tap feedback
+        isTouchDevice && "active:scale-[0.98] active:shadow-sm",
+        // Focus
+        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg",
+      ]
+    : [];
 
   const cardClasses = clsx(
     "rounded-soft-lg",
@@ -112,8 +103,6 @@ export default function ResponsiveCard({
     shadowClass,
     borderClass,
     interactiveClass,
-    iosClass,
-    androidClass,
     className
   );
 
@@ -180,11 +169,11 @@ export function CardSection({
           <div className="flex items-start gap-3">
             {icon && <span className="text-2xl" aria-hidden="true">{icon}</span>}
             <div>
-              {title && (
-                <h3 className={clsx("font-serif font-bold text-gray-800", titleSize)}>
-                  {title}
-                </h3>
-              )}
+            {title && (
+              <h3 className={clsx("font-serif font-bold text-fg", titleSize)}>
+                {title}
+              </h3>
+            )}
               {subtitle && (
                 <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
               )}
