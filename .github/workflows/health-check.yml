@@ -1,0 +1,25 @@
+name: Health Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * *"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query latest health
+        run: |
+          curl -sS "$API_BASE/api/health/latest" > out.json
+          cat out.json | jq .
+      - name: Fail if any not OK
+        run: |
+          NOT_OK=$(jq '[.data[] | select(.ok==false)] | length' out.json)
+          if [ "$NOT_OK" -gt 0 ]; then
+            echo "::error::There are $NOT_OK failing health rows"
+            exit 1
+          fi
+    env:
+      # Configure in repository or organization secrets (e.g. ACTIONS_API_BASE)
+      API_BASE: https://<YOUR-VERCEL-DOMAIN>

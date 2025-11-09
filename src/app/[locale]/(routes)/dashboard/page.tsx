@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import BudgetFocusHint, { BudgetFocus } from "@/components/dashboard/BudgetFocusHint";
 import BudgetItemsSection from "@/components/dashboard/BudgetItemsSection";
@@ -11,11 +11,16 @@ import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+
 import { useEffect, useMemo, useState } from "react";
 
+// Inline type definitions for local state
 type BudgetItem = { name: string; amount?: number };
-type ChecklistModule = { module_name: string; is_required?: boolean };
+type ChecklistModule = { module_name: string; is_required: boolean };
 type Tradition = { name: string; description: string };
+
+
+export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -252,10 +257,10 @@ export default function DashboardPage() {
         throw new Error("Errore nel salvataggio del budget");
       }
 
-  alert("✅ Budget salvato con successo! I dati sono ora disponibili in 'Idea di Budget'.");
+      alert("✅ Budget salvato con successo! I dati sono ora disponibili in 'Idea di Budget'.");
     } catch (error) {
       console.error("Errore nel salvataggio:", error);
-  alert("❌ Errore nel salvataggio del budget. Riprova.");
+      alert("❌ Errore nel salvataggio del budget. Riprova.");
     } finally {
       setSavingBudget(false);
     }
@@ -266,11 +271,10 @@ export default function DashboardPage() {
     return <div className="min-h-[50vh] flex items-center justify-center text-xl">Loading...</div>;
   }
 
-
   return (
     <Page>
       <header className="mb-4">
-  <h1 className="text-3xl font-bold text-center">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-center">Dashboard</h1>
         {/* breadcrumb centrato */}
         <nav className="mt-1 flex justify-center text-sm text-muted-foreground">
           <ol className="flex flex-wrap items-center gap-1">
@@ -284,9 +288,9 @@ export default function DashboardPage() {
       {/* Preferenze in alto */}
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <Link href="/select-language" className="min-w-[7rem] rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
-          <Link href="/select-country" className="min-w-[7rem] rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
-          <Link href="/select-event-type" className="min-w-[7rem] rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
+          <Link href="/select-language" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
+          <Link href="/select-country" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
+          <Link href="/select-event-type" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
         </div>
       </div>
 
@@ -322,7 +326,6 @@ export default function DashboardPage() {
         setGroomBudget={setGroomBudget}
         setWeddingDate={setWeddingDate}
       />
-
 
       {/* Azioni principali: Salva, PDF, Video */}
       <div className="mx-auto mt-4 mb-6 grid w-full max-w-md grid-cols-1 gap-3 sm:max-w-none sm:grid-cols-3">
@@ -364,7 +367,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
             <Link href="/idea-di-budget" className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
-              🪙 Vai a Idea di Budget
+              � Vai a Idea di Budget
             </Link>
           </div>
         </div>
@@ -394,7 +397,7 @@ export default function DashboardPage() {
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-lg text-center sm:text-left">Suggerimenti <span className="font-extrabold text-2xl align-middle">&amp;</span> Consigli</h3>
+            <h3 className="font-semibold text-lg text-center sm:text-left">Suggerimenti <span className="font-extrabold text-2xl align-middle">&</span> Consigli</h3>
             <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
@@ -416,7 +419,3 @@ export default function DashboardPage() {
     </Page>
   );
 }
-
-// Named export for test convenience
-export { DashboardPage };
-
