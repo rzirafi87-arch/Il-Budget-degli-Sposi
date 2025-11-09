@@ -1,10 +1,11 @@
 "use client";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // Appointment model
-type Appointment = {
+
+export type Appointment = {
   id?: string;
   title: string;
   date: string; // YYYY-MM-DD
@@ -12,20 +13,22 @@ type Appointment = {
   notes?: string;
 };
 
+
 const supabase = getBrowserClient();
 
-export default function AppointmentsClient() {
+type Props = {
+  initialAppointments: Appointment[];
+};
+
+export default function AppointmentsClient({ initialAppointments }: Props) {
   const t = useTranslations();
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments || []);
   const [form, setForm] = useState<Appointment>({ title: "", date: new Date().toISOString().slice(0, 10) });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadAppointments();
-  }, []);
-
+  // Se vuoi ricaricare dopo mutazioni, puoi usare loadAppointments manualmente
   async function loadAppointments() {
     setLoading(true);
     try {
