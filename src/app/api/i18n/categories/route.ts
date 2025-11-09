@@ -34,5 +34,8 @@ export async function GET(req: NextRequest) {
     ],
   };
 
-  return NextResponse.json({ categories: demo[event] });
+  // Type-safe access per evitare errore TS
+  type DemoKey = keyof typeof demo;
+  const key = event as DemoKey;
+  return NextResponse.json({ categories: demo[key] ?? [] });
 }
