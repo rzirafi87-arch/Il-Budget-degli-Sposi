@@ -97,24 +97,24 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                     ? "Wedding Budget"
                     : "MYBUDGETEVENTO"}
                 </h1>
-                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-fg">
                   <TopBarSelector />
                   {!isSaveTheDate && (
                     <>
                       <Link
-                        className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 transition-colors whitespace-nowrap"
+                        className="px-3 py-2 rounded-full border border-border bg-bg/60 text-fg hover:bg-muted transition-colors whitespace-nowrap dark:bg-secondary/70 dark:hover:bg-secondary/60"
                         href={`/${locale}/auth`}
                       >
                         Accedi
                       </Link>
                       <Link
-                        className="px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 transition-colors whitespace-nowrap"
+                        className="px-3 py-2 rounded-full border border-border bg-bg/60 text-fg hover:bg-muted transition-colors whitespace-nowrap dark:bg-secondary/70 dark:hover:bg-secondary/60"
                         href={`/${locale}/idea-di-budget`}
                       >
                         Idea di Budget
                       </Link>
                       <button
-                        className="px-3 py-2 rounded-full font-semibold border border-gray-300 bg-white hover:bg-gray-50 transition-colors whitespace-nowrap"
+                        className="px-3 py-2 rounded-full font-semibold border border-border bg-bg/60 text-fg hover:bg-muted transition-colors whitespace-nowrap dark:bg-secondary/70 dark:hover:bg-secondary/60"
                         onClick={() => {
                           window.dispatchEvent(new CustomEvent("open-quick-settings"));
                         }}
@@ -122,7 +122,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                         Impostazioni
                       </button>
                       <a
-                        className="hidden md:flex bg-green-600 text-white px-3 py-2 rounded-full font-semibold hover:bg-green-700 transition-colors whitespace-nowrap items-center gap-1 shadow-sm"
+                        className="hidden md:flex bg-success text-white px-3 py-2 rounded-full font-semibold hover:bg-success/80 transition-colors whitespace-nowrap items-center gap-1 shadow-sm"
                         href="https://wa.me/393001234567?text=Ciao!%20Vorrei%20informazioni%20su%20Il%20Budget%20degli%20Sposi"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -142,7 +142,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
         <div aria-hidden className="h-0" />
       )}
 
-      <main className="min-h-screen" style={{ background: "var(--color-cream)", color: "var(--foreground)" }}>
+      <main className="min-h-screen bg-bg text-fg">
         <Background />
         <Breadcrumbs />
         <div className="max-w-6xl mx-auto px-3 sm:px-6 py-6">{children}</div>
