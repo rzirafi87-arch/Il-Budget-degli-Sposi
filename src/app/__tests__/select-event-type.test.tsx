@@ -28,11 +28,11 @@ describe('SelectEventTypePage', () => {
 
     render(<SelectEventTypePage />);
 
-    // Usa fallback se mancano traduzioni (es. "wedding")
-    const btn = screen.getByRole('button', { name: /^(Matrimonio|wedding)$/i });
-    fireEvent.click(btn);
+  // Cerca il bottone che contiene "Matrimonio" nel nome (anche se il testo è lungo)
+  const btn = screen.getByRole('button', { name: /Matrimonio/i });
+  fireEvent.click(btn);
 
-    expect(window.localStorage.getItem('eventType')).toBe('wedding');
-    expect(document.cookie).toMatch(/eventType=wedding/);
+  expect(window.localStorage.getItem('eventType')).toBe('wedding');
+  expect(document.cookie).toMatch(/eventType=wedding/);
   });
 });

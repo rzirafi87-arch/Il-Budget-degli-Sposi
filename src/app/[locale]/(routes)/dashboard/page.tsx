@@ -298,9 +298,9 @@ export default function DashboardPage() {
       {/* Preferenze in alto */}
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <Link href="/select-language" className="min-w-[7rem] rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
-          <Link href="/select-country" className="min-w-[7rem] rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
-          <Link href="/select-event-type" className="min-w-[7rem] rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
+          <Link href="/select-language" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
+          <Link href="/select-country" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
+          <Link href="/select-event-type" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
         </div>
       </div>
 
