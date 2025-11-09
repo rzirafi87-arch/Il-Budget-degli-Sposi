@@ -1,46 +1,17 @@
-<<<<<<< HEAD
-// Server component
-// @ts-ignore
-// (opz) ThemeProvider se lo usi: import { ThemeProvider } from "@/components/ThemeProvider";
 
-
-// @ts-expect-error Next.js 16 dynamic layout type workaround: params typing mismatch
-=======
 import { AppSettingsProvider } from "@/app/(providers)/app-settings";
 import ClientLayoutShell from "@/components/ClientLayoutShell";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import { JsonLd, LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
+
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/getMessages";
 import type { Metadata, Viewport } from "next";
->>>>>>> origin/main
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
-import type { ReactNode } from "react";
+import { getMessages as getIntlMessages } from "next-intl/server";
 import "../globals.css";
 
 export const dynamic = "force-dynamic";
 
-export default async function LocaleLayout({
-  children,
-  params: { locale },
-}: {
-  children: ReactNode;
-  params: { locale: string };
-}) {
-  const messages = await getMessages();
-
-<<<<<<< HEAD
-  return (
-    <html lang={locale}>
-      <body>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
-=======
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -113,7 +84,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
       ],
       apple: [{ url: "/backgrounds/icon-192.png" }],
     },
-keywords: [...L.keywords],
+    keywords: [...L.keywords],
     authors: [{ name: "MYBUDGETEVENTO" }],
     creator: "MYBUDGETEVENTO",
     publisher: "MYBUDGETEVENTO",
@@ -131,13 +102,13 @@ keywords: [...L.keywords],
     },
     openGraph: {
       type: "website",
-      url: SITE_URL,
+      url: process.env.SITE_URL,
       siteName: "MYBUDGETEVENTO",
       title: L.title,
       description: L.ogDescription,
       images: [
         {
-          url: `${SITE_URL}/opengraph-image`,
+          url: `${process.env.SITE_URL}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: "MYBUDGETEVENTO",
@@ -149,7 +120,7 @@ keywords: [...L.keywords],
       card: "summary_large_image",
       title: L.title,
       description: L.ogDescription,
-      images: [`${SITE_URL}/twitter-image`],
+      images: [`${process.env.SITE_URL}/twitter-image`],
     },
     verification: {
       google: "google-site-verification-code-here",
@@ -157,7 +128,7 @@ keywords: [...L.keywords],
     alternates: {
       canonical: `/${locale}`,
     },
-    metadataBase: new URL(SITE_URL),
+    metadataBase: new URL(process.env.SITE_URL || "https://mybudgetevento.com"),
   } satisfies Metadata;
 }
 
@@ -180,7 +151,8 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     : defaultLocale;
 
   try {
-    const messages = await getMessages(locale);
+    // getIntlMessages expects an object: { locale }
+    const messages = await getIntlMessages({ locale });
     if (!messages || Object.keys(messages).length === 0) {
       throw new Error(`Missing translations for locale ${locale}`);
     }
@@ -203,8 +175,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     );
   } catch (error) {
     console.error(error);
-    notFound();
+    // notFound();
     return null;
   }
->>>>>>> origin/main
 }

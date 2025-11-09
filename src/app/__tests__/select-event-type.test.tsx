@@ -28,9 +28,9 @@ describe('SelectEventTypePage', () => {
 
     render(<SelectEventTypePage />);
 
-  // Cerca il bottone che contiene "Matrimonio" nel nome (anche se il testo è lungo)
-  const btn = screen.getByRole('button', { name: /Matrimonio/i });
-  fireEvent.click(btn);
+  // Seleziona il primo bottone che contiene "Matrimonio" nel nome
+  const btns = screen.getAllByRole('button', { name: /Matrimonio/i });
+  fireEvent.click(btns[0]);
 
   expect(window.localStorage.getItem('eventType')).toBe('wedding');
   expect(document.cookie).toMatch(/eventType=wedding/);
