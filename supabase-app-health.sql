@@ -54,25 +54,12 @@ declare
   v_cat_translations_table text;
   v_sub_translations_table text;
   v_timeline_translations_table text;
-<<<<<<< ours
-=======
-  v_categories_schema text;
-  v_categories_name text;
-  v_timelines_schema text;
-  v_timelines_name text;
-  v_category_fk_column text;
-  v_timeline_fk_column text;
-  v_has_cat_translations boolean;
-  v_has_sub_translations boolean;
-  v_has_timeline_translations boolean;
->>>>>>> theirs
   cat_expected int;
   sub_expected int;
   time_expected int;
   cat_actual int;
   sub_actual int;
   time_actual int;
-  img_expected int := 0;
   img_actual int := 0;
   v_locale_table regclass;
   v_locale_schema text;
@@ -143,12 +130,42 @@ begin
     where table_schema = v_locale_schema and table_name = v_locale_name and column_name = 'is_active'
   );
 
+<<<<<<< ours
   v_locale_query := format('select code as locale from %I.%I', v_locale_schema, v_locale_name);
+=======
+  v_has_active := exists (
+    select 1 from information_schema.columns
+    where table_schema = v_locale_schema and table_name = v_locale_name and column_name = 'active'
+  );
+
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = v_locale_schema and table_name = v_locale_name and column_name = 'code'
+  ) then
+    v_locale_code_column := 'code';
+  elsif exists (
+    select 1 from information_schema.columns
+    where table_schema = v_locale_schema and table_name = v_locale_name and column_name = 'locale_code'
+  ) then
+    v_locale_code_column := 'locale_code';
+  elsif exists (
+    select 1 from information_schema.columns
+    where table_schema = v_locale_schema and table_name = v_locale_name and column_name = 'locale'
+  ) then
+    v_locale_code_column := 'locale';
+  else
+    raise notice 'app_health_refresh: unable to detect locale code column for %.%', v_locale_schema, v_locale_name;
+    return;
+  end if;
+
+  v_locale_query := format('select %I as locale from %I.%I', v_locale_code_column, v_locale_schema, v_locale_name);
+>>>>>>> theirs
 
   if v_has_enabled then
     v_locale_query := v_locale_query || ' where coalesce(enabled, true)';
   elsif v_has_is_active then
     v_locale_query := v_locale_query || ' where coalesce(is_active, true)';
+<<<<<<< ours
   end if;
 
   v_locale_query := v_locale_query || ' order by code';
@@ -170,6 +187,14 @@ begin
         execute format('select count(*) from %s ct join %s c on c.id = ct.category_id where c.event_type_id = $1 and ct.locale = $2',
                        v_cat_translations_table, v_categories_table)
 =======
+=======
+  elsif v_has_active then
+    v_locale_query := v_locale_query || ' where coalesce(active, true)';
+  end if;
+
+  v_locale_query := v_locale_query || format(' order by %I', v_locale_code_column);
+
+>>>>>>> theirs
   v_categories_schema := split_part(v_categories_table, '.', 1);
   v_categories_name := split_part(v_categories_table, '.', 2);
   if v_categories_name = '' then
@@ -231,6 +256,9 @@ begin
       if v_has_cat_translations then
         execute format('select count(*) from %s ct join %s c on c.id = ct.category_id where c.%I = $1 and ct.locale = $2',
                        v_cat_translations_table, v_categories_table, v_category_fk_column)
+<<<<<<< ours
+>>>>>>> theirs
+=======
 >>>>>>> theirs
           into cat_actual using v_event.id, v_loc.locale;
       else
@@ -238,9 +266,15 @@ begin
       end if;
 
 <<<<<<< ours
+<<<<<<< ours
       if to_regclass(v_sub_translations_table) is not null then
         execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.event_type_id = $1 and st.locale = $2',
                        v_sub_translations_table, v_subcategories_table, v_categories_table)
+=======
+      if v_has_sub_translations then
+        execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.%I = $1 and st.locale = $2',
+                       v_sub_translations_table, v_subcategories_table, v_categories_table, v_category_fk_column)
+>>>>>>> theirs
 =======
       if v_has_sub_translations then
         execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.%I = $1 and st.locale = $2',
@@ -252,9 +286,15 @@ begin
       end if;
 
 <<<<<<< ours
+<<<<<<< ours
       if to_regclass(v_timeline_translations_table) is not null then
         execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.event_type_id = $1 and tt.locale = $2',
                        v_timeline_translations_table, v_timelines_table)
+=======
+      if v_has_timeline_translations then
+        execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.%I = $1 and tt.locale = $2',
+                       v_timeline_translations_table, v_timelines_table, v_timeline_fk_column)
+>>>>>>> theirs
 =======
       if v_has_timeline_translations then
         execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.%I = $1 and tt.locale = $2',
