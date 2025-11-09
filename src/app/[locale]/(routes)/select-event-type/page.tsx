@@ -1,5 +1,6 @@
 ﻿"use client";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
+import { getEventCarouselMeta } from "@/data/eventCarousels";
 import { EVENTS } from "@/lib/loadConfigs";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -127,21 +128,54 @@ export default function SelectEventTypePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {EVENTS.map((ev) => {
             const isAvailable = ev.available !== false;
+            const carouselMeta = getEventCarouselMeta(ev.slug);
+            const previewImage = carouselMeta?.images?.[0];
+            const previewTagline = carouselMeta?.taglines?.[0];
             return (
               <button
                 key={ev.slug}
                 disabled={!isAvailable}
-                className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 transition-all ${
+                className={`group relative overflow-hidden rounded-2xl border transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg ${
                   isAvailable
-                    ? `border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white ${selected === ev.slug ? "bg-[#A3B59D] text-white" : ""}`
-                    : "border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed opacity-60"
+                    ? selected === ev.slug
+                      ? "border-primary shadow-lg"
+                      : "border-border shadow-sm hover:border-primary"
+                    : "border-border/60 opacity-70 cursor-not-allowed"
                 }`}
                 onClick={() => isAvailable && handleSelect(ev.slug)}
               >
-                <span aria-hidden="true" className="mr-2">{ev.emoji || "✨"}</span>
-                {t(`events.${ev.slug}`, { fallback: ev.label })}
+                <div className="relative h-56 w-full">
+                  {previewImage && (
+                    <img
+                      src={previewImage}
+                      alt={`Moodboard per ${ev.label}`}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/45 to-black/20" />
+                  {!isAvailable && (
+                    <div className="absolute inset-0 bg-bg/70 backdrop-blur-[1px]" aria-hidden />
+                  )}
+                  <div className="absolute inset-0 flex flex-col justify-between p-5 text-left text-white">
+                    <div>
+                      <div className="flex items-center gap-2 text-lg font-semibold">
+                        <span aria-hidden="true" className="text-2xl drop-shadow-sm">{ev.emoji || "✨"}</span>
+                        <span>{t(`events.${ev.slug}`, { fallback: ev.label })}</span>
+                      </div>
+                      {previewTagline && (
+                        <p className="mt-3 text-sm text-white/85 leading-relaxed">
+                          {previewTagline}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-white/80">
+                      <span>{selected === ev.slug ? t("selected", { fallback: "Selezionato" }) : t("cta.start", { fallback: "Scopri di più" })}</span>
+                      <span aria-hidden="true" className="text-base">→</span>
+                    </div>
+                  </div>
+                </div>
                 {!isAvailable && (
-                  <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-200 text-gray-500 border border-gray-300">
+                  <span className="absolute top-3 right-3 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-muted-fg shadow-sm">
                     {t("comingSoon", { fallback: "In arrivo" })}
                   </span>
                 )}

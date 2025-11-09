@@ -31,3 +31,28 @@ Questo manifest sintetizza i 27 scatti richiesti, così puoi rigenerarli (AI, Fi
 27. `onboarding-3.jpg` — CTA grande “Inizia” su sfondo ivory testurizzato.
 
 Appena i JPG sono pronti, salvali in `public/images/carousels/` con i nomi sopra e ignora i placeholder SVG già presenti in `public/carousels`.
+
+## Event Carousel Set
+
+Sono stati generati automaticamente con `scripts/generate-event-carousels.mjs` tre scatti coordinati per ciascun tipo di evento disponibile nell'app. I file seguono la convenzione `<slug>-<indice>.jpg`:
+
+- Matrimonio — `wedding-1.jpg`, `wedding-2.jpg`, `wedding-3.jpg`
+- Battesimo — `baptism-1.jpg`, `baptism-2.jpg`, `baptism-3.jpg`
+- Diciottesimo — `eighteenth-1.jpg`, `eighteenth-2.jpg`, `eighteenth-3.jpg`
+- Anniversario di matrimonio — `anniversary-1.jpg`, `anniversary-2.jpg`, `anniversary-3.jpg`
+- Gender Reveal — `gender-reveal-1.jpg`, `gender-reveal-2.jpg`, `gender-reveal-3.jpg`
+- Compleanno — `birthday-1.jpg`, `birthday-2.jpg`, `birthday-3.jpg`
+- 50 anni — `fifty-1.jpg`, `fifty-2.jpg`, `fifty-3.jpg`
+- Pensione — `retirement-1.jpg`, `retirement-2.jpg`, `retirement-3.jpg`
+- Cresima — `confirmation-1.jpg`, `confirmation-2.jpg`, `confirmation-3.jpg`
+- Laurea — `graduation-1.jpg`, `graduation-2.jpg`, `graduation-3.jpg`
+- Baby Shower — `babyshower-1.jpg`, `babyshower-2.jpg`, `babyshower-3.jpg`
+- Festa di fidanzamento — `engagement-1.jpg`, `engagement-2.jpg`, `engagement-3.jpg`
+- Proposta di matrimonio — `proposal-1.jpg`, `proposal-2.jpg`, `proposal-3.jpg`
+- Comunione — `communion-1.jpg`, `communion-2.jpg`, `communion-3.jpg`
+- Bar Mitzvah — `bar-mitzvah-1.jpg`, `bar-mitzvah-2.jpg`, `bar-mitzvah-3.jpg`
+- Quinceañera — `quinceanera-1.jpg`, `quinceanera-2.jpg`, `quinceanera-3.jpg`
+- Evento aziendale — `corporate-1.jpg`, `corporate-2.jpg`, `corporate-3.jpg`
+- Charity / Gala — `charity-gala-1.jpg`, `charity-gala-2.jpg`, `charity-gala-3.jpg`
+
+Per rigenerare gli asset è sufficiente eseguire `node scripts/generate-event-carousels.mjs` (richiede che le dipendenze del progetto siano installate, incluso `sharp`).

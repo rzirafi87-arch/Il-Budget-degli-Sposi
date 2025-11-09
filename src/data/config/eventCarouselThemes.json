@@ -1,0 +1,200 @@
+[
+  {
+    "slug": "wedding",
+    "taglines": [
+      "Palette salvia e dettagli avorio per un sì raffinato",
+      "Cerimonia romantica tra luci soffuse e botanica moderna",
+      "Ricevimento sotto le stelle con tocchi bronze e lino"
+    ],
+    "gradient": ["#f6f3ee", "#d9e5d5"],
+    "accents": ["#b78a6f", "#6f8670"],
+    "text": "#1f2b26"
+  },
+  {
+    "slug": "baptism",
+    "taglines": [
+      "Battesimo dolce tra nastri azzurro polvere e lino",
+      "Dettagli artigianali per la festa del tuo bimbo",
+      "Tavolo dei confetti con tocchi oro tenue e salvia"
+    ],
+    "gradient": ["#f7f9fb", "#d6e8f3"],
+    "accents": ["#8bb8d8", "#f3d9b1"],
+    "text": "#203347"
+  },
+  {
+    "slug": "eighteenth",
+    "taglines": [
+      "Neon party vibes con luci viola e blu notte",
+      "Dettagli glam per un diciottesimo memorabile",
+      "Dancefloor e cocktail bar in palette magenta"
+    ],
+    "gradient": ["#1a1b4b", "#532b88"],
+    "accents": ["#ff6fb7", "#39d0ff"],
+    "text": "#f6f7ff"
+  },
+  {
+    "slug": "anniversary",
+    "taglines": [
+      "Anniversario elegante tra champagne e rosa cipria",
+      "Ricordi condivisi con luce dorata e velluto",
+      "Cena intima con tocchi mauve e candele"
+    ],
+    "gradient": ["#f5ecec", "#e6d7d9"],
+    "accents": ["#c49a9c", "#f1c27d"],
+    "text": "#3b2528"
+  },
+  {
+    "slug": "gender-reveal",
+    "taglines": [
+      "Scopri il segreto tra nuvole rosa pesca e azzurro",
+      "Allestimento balloon con dettagli iridescenti",
+      "Dolci e bevande soft touch giallo vaniglia"
+    ],
+    "gradient": ["#fbe7e2", "#d8eff3"],
+    "accents": ["#ff9bb8", "#76c4d6"],
+    "text": "#2f2f49"
+  },
+  {
+    "slug": "birthday",
+    "taglines": [
+      "Festa di compleanno con energia pop e confetti",
+      "Torta scenografica tra giallo mango e teal",
+      "Area regali con pattern geometrici e neon"
+    ],
+    "gradient": ["#fef3c7", "#fde4e2"],
+    "accents": ["#f97316", "#0ea5e9"],
+    "text": "#2a1c1b"
+  },
+  {
+    "slug": "fifty",
+    "taglines": [
+      "Celebration sofisticata tra blu notte e rame",
+      "Cocktail lounge con luci calde e vinili",
+      "Dettagli tipografici per il traguardo dei 50"
+    ],
+    "gradient": ["#101c3c", "#1f2f4f"],
+    "accents": ["#c47a4e", "#f5d6a3"],
+    "text": "#f3f4f7"
+  },
+  {
+    "slug": "retirement",
+    "taglines": [
+      "Pensione vista mare tra sabbia calda e acqua",
+      "Mood board viaggi con mappe e carnet",
+      "Brindisi al futuro con tocchi corallo e teal"
+    ],
+    "gradient": ["#f3f0e6", "#cfe7e6"],
+    "accents": ["#2c6f7d", "#f29d79"],
+    "text": "#1c2f33"
+  },
+  {
+    "slug": "confirmation",
+    "taglines": [
+      "Cresima con luce calda, simboli oro e rosso rubino",
+      "Libro dei ricordi su carta pergamena",
+      "Allestimento floreale elegante con gigli"
+    ],
+    "gradient": ["#f8f2ec", "#f1d8ce"],
+    "accents": ["#9b2c2c", "#d4a373"],
+    "text": "#411313"
+  },
+  {
+    "slug": "graduation",
+    "taglines": [
+      "Laurea tra blu accademico e oro",
+      "Pergamene, tocco e festeggiamenti urbani",
+      "Traguardo celebrato con skyline serale"
+    ],
+    "gradient": ["#0f172a", "#1e293b"],
+    "accents": ["#fbbf24", "#38bdf8"],
+    "text": "#f8fafc"
+  },
+  {
+    "slug": "babyshower",
+    "taglines": [
+      "Baby shower pastello tra nuvole e stelle",
+      "Tavolo dessert con macarons e peluche",
+      "Gift corner con pattern morbidi e velluto"
+    ],
+    "gradient": ["#f6f0ff", "#e0f4ff"],
+    "accents": ["#d6a8f0", "#9ec5ff"],
+    "text": "#3a2a4d"
+  },
+  {
+    "slug": "engagement",
+    "taglines": [
+      "Festa di fidanzamento con rosa cipria e gold",
+      "Brindisi romantico con luci sospese",
+      "Dettagli calligrafici e bouquet blush"
+    ],
+    "gradient": ["#fce7ec", "#f8d7d5"],
+    "accents": ["#d48a9c", "#f2c46d"],
+    "text": "#402126"
+  },
+  {
+    "slug": "proposal",
+    "taglines": [
+      "Proposta al tramonto tra blu crepuscolo e argento",
+      "Scintille e momenti intimi con skyline",
+      "Ring box protagonista tra luci soft"
+    ],
+    "gradient": ["#1c2541", "#3a506b"],
+    "accents": ["#5bc0be", "#ffd8be"],
+    "text": "#f5f9ff"
+  },
+  {
+    "slug": "communion",
+    "taglines": [
+      "Comunione in bianco latte e cielo primaverile",
+      "Dettagli floreali con lavanda e pizzi",
+      "Tavolo bomboniere con luce soffusa"
+    ],
+    "gradient": ["#fbfbfb", "#dfe7ff"],
+    "accents": ["#b3c7ff", "#d9c2f0"],
+    "text": "#2b2d3f"
+  },
+  {
+    "slug": "bar-mitzvah",
+    "taglines": [
+      "Bar Mitzvah con mix di blu reale e argento",
+      "Simboli tradizionali con luce moderna",
+      "Dancefloor e festeggiamenti serali"
+    ],
+    "gradient": ["#0f1c3f", "#1f3d7a"],
+    "accents": ["#9fb5e4", "#f4d35e"],
+    "text": "#f1f4ff"
+  },
+  {
+    "slug": "quinceanera",
+    "taglines": [
+      "Quinceañera in rosa vibrante e oro",
+      "Abito principesco con luci viola",
+      "Ballo coreografico tra petali e glitter"
+    ],
+    "gradient": ["#ff6fae", "#b983ff"],
+    "accents": ["#ffd166", "#8ecae6"],
+    "text": "#fff7fb"
+  },
+  {
+    "slug": "corporate",
+    "taglines": [
+      "Evento corporate tra acciaio e vetro",
+      "Networking lounge con neon teal",
+      "Presentazioni su schermi panoramici"
+    ],
+    "gradient": ["#0f172a", "#1f2933"],
+    "accents": ["#4ecdc4", "#8892b0"],
+    "text": "#f5f7fa"
+  },
+  {
+    "slug": "charity-gala",
+    "taglines": [
+      "Gala charity con velluto prugna e oro lucente",
+      "Palco illuminato per speech e performance",
+      "Cena di beneficenza tra candele e cristalli"
+    ],
+    "gradient": ["#2d0b2f", "#44265a"],
+    "accents": ["#f2c94c", "#56cfe1"],
+    "text": "#fdf7ff"
+  }
+]
