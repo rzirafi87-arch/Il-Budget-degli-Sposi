@@ -1,35 +1,44 @@
-"use client";
-import { useLocale } from "@/providers/LocaleProvider";
-import { useRouter } from "next/navigation";
+// Server component (usa Link client-safe)
+import Link from "next/link";
 
-export default function WizardPage() {
-  const { locale, country, eventType, setCountry, setEventType } = useLocale();
-  const router = useRouter();
-
-  function go() {
-    // porta in dashboard/overview con i parametri selezionati
-    const q = new URLSearchParams();
-    if (country) q.set("country", country);
-    if (eventType) q.set("event", eventType);
-    router.push(`/${locale}/dashboard?${q.toString()}`);
-  }
-
+export default function WizardPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   return (
-    <main className="max-w-2xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">Configura il tuo evento</h1>
-      <p className="opacity-80">Seleziona nazione ed evento per sbloccare categorie, timeline e traduzioni.</p>
+    <main className="p-6 max-w-3xl mx-auto space-y-6">
+      <header className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Wizard iniziale</h1>
+        <Link
+          href={`/${locale}`}
+          className="inline-flex items-center rounded-2xl px-4 py-2 bg-accent text-accent-foreground hover:opacity-90 shadow"
+        >
+          Salta
+        </Link>
+      </header>
 
-      {/* puoi anche riusare LocaleSwitcher qui se vuoi */}
-      {/* ...oppure due semplici select mirate */}
-      <div className="flex gap-3">
-        {/* re-use via dynamic import if needed */}
-      </div>
+      <section className="rounded-2xl border border-border bg-white/80 dark:bg-neutral-900/60 p-6 shadow-sm space-y-4">
+        <p className="text-muted-fg">
+          Seleziona lingua, nazione ed evento per personalizzare l’esperienza.
+        </p>
 
-      <button
-        onClick={go}
-        disabled={!eventType}
-        className="rounded-xl px-4 py-2 bg-black text-white disabled:opacity-40"
-      >Continua</button>
+        {/* Qui puoi inserire i tuoi step / form */}
+        <div className="flex gap-3">
+          <Link
+            href={`/${locale}/(routes)/dashboard`}
+            className="inline-flex items-center rounded-2xl px-5 py-3 bg-primary text-primary-foreground hover:opacity-90"
+          >
+            Inizia ora
+          </Link>
+          <Link
+            href={`/${locale}`}
+            className="inline-flex items-center rounded-2xl px-5 py-3 border border-border hover:bg-muted"
+          >
+            Torna alla Home
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }

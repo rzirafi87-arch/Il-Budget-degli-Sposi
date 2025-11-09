@@ -1,108 +1,38 @@
-﻿"use client";
+﻿// Server component (può rendere client children)
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 
+export const revalidate = 0;
 
-import LocaleSwitcher from "@/components/LocaleSwitcher";
-import { useLocale } from "@/providers/LocaleProvider";
-import { useEffect, useState } from "react";
-
-type Category = { code: string; name: string };
-type Subcategory = { code: string; name: string };
-type TimelineStep = { code: string; title: string; description: string; sort: number };
-
-
-
-export default function DashboardPage() {
-  const { locale, country, eventType } = useLocale();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [timeline, setTimeline] = useState<TimelineStep[]>([]);
-  const [subcategories, setSubcategories] = useState<Record<string, Subcategory[]>>({});
-  const [loading, setLoading] = useState(false);
-  const [openCategory, setOpenCategory] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!eventType) return;
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [cat, tl] = await Promise.all([
-          fetch(`/api/i18n/categories?event=${eventType}&locale=${locale}`).then(r => r.json() as Promise<{ categories: Category[] }>),
-          fetch(`/api/i18n/timeline?event=${eventType}&locale=${locale}`).then(r => r.json() as Promise<{ timeline: TimelineStep[] }>),
-        ]);
-        setCategories(cat.categories || []);
-        setTimeline(tl.timeline || []);
-        if (cat.categories) {
-          const results = await Promise.all(
-            cat.categories.map((c: Category) =>
-              fetch(`/api/i18n/subcategories?event=${eventType}&category=${c.code}&locale=${locale}`)
-                .then(r => r.json() as Promise<{ subcategories: Subcategory[] }>)
-                .then((res) => [c.code, res.subcategories || []] as [string, Subcategory[]])
-            )
-          );
-          const map: Record<string, Subcategory[]> = {};
-          results.forEach(([code, subs]) => { map[code] = subs; });
-          setSubcategories(map);
-        } else {
-          setSubcategories({});
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [eventType, locale]);
-
-  if (!eventType) {
-    return (
-      <main className="max-w-3xl mx-auto p-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-2">Dashboard Demo</h1>
-        <LocaleSwitcher />
-        <div className="mt-4">
-          <div className="mb-2">Lingua attiva: <b>{locale}</b></div>
-          <div className="mb-2">Nazione selezionata: <b>{country || "—"}</b></div>
-          <div className="mb-2">Tipo evento: <b>—</b></div>
-        </div>
-        <div className="mt-6 p-4 bg-gray-50 rounded-xl border">
-          <p className="mb-2">Questa è una dashboard demo localizzata.<br/>Seleziona lingua, nazione ed evento dallo switcher sopra per vedere i valori aggiornarsi in tempo reale.</p>
-          <p className="text-xs opacity-60">(Categorie e timeline sono caricate dinamicamente dalle API demo se selezioni un evento supportato)</p>
-        </div>
-      </main>
-    );
-  }
-
+export default function DashboardPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   return (
-    <main className="max-w-3xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold mb-2">Dashboard Demo</h1>
-      <LocaleSwitcher />
-      <div className="mt-4">
-        <div className="mb-2">Lingua attiva: <b>{locale}</b></div>
-        <div className="mb-2">Nazione selezionata: <b>{country || "—"}</b></div>
-        <div className="mb-2">Tipo evento: <b>{eventType}</b></div>
-      </div>
-      <div className="mt-6 p-4 bg-gray-50 rounded-xl border">
-        <p className="mb-2">Questa è una dashboard demo localizzata.<br/>Seleziona lingua, nazione ed evento dallo switcher sopra per vedere i valori aggiornarsi in tempo reale.</p>
-        <p className="text-xs opacity-60">(Categorie e timeline sono caricate dinamicamente dalle API demo se selezioni un evento supportato)</p>
-      </div>
-      {loading && <div className="text-center text-sage-600">Caricamento…</div>}
-      {!loading && (
-        <>
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold mb-2">Categorie</h2>
-            <ul className="divide-y divide-gray-200 border rounded-xl overflow-hidden">
-              {categories.map((c) => (
-                <li key={c.code}>
-                  <button
-                    className="w-full flex justify-between items-center px-4 py-3 bg-white hover:bg-sage-50 transition text-left"
-                    onClick={() => setOpenCategory(openCategory === c.code ? null : c.code)}
-                    aria-expanded={openCategory === c.code}
-                  >
-                    <span className="font-medium text-base">{c.name}</span>
-                    <span className="ml-2 text-sage-600">{openCategory === c.code ? "▲" : "▼"}</span>
-                  </button>
-                  {openCategory === c.code && subcategories[c.code] && subcategories[c.code].length > 0 && (
-                    <ul className="bg-sage-50 px-6 py-2 text-sm text-gray-700 animate-fade-in">
-                      {subcategories[c.code].map((s) => (
-                        <li key={s.code} className="py-1">{s.name}</li>
-                      ))}
+    <main className="p-6 space-y-6">
+      <header className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <LocaleSwitcher />
+      </header>
+
+      {/* Demo contenuti localizzati */}
+      <section className="grid gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-border bg-white/80 dark:bg-neutral-900/60 p-6 shadow-sm">
+          <h2 className="text-lg font-medium">Budget</h2>
+          <p className="text-muted-fg">Riepilogo spese e categorie</p>
+        </div>
+        <div className="rounded-2xl border border-border bg-white/80 dark:bg-neutral-900/60 p-6 shadow-sm">
+          <h2 className="text-lg font-medium">Timeline</h2>
+          <p className="text-muted-fg">Step e scadenze evento</p>
+        </div>
+        <div className="rounded-2xl border border-border bg-white/80 dark:bg-neutral-900/60 p-6 shadow-sm">
+          <h2 className="text-lg font-medium">Fornitori</h2>
+          <p className="text-muted-fg">Ricerca e contatti</p>
+        </div>
+      </section>
+    </main>
+  );
+}
                     </ul>
                   )}
                 </li>
