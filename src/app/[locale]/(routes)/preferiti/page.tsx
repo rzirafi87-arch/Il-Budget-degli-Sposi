@@ -131,10 +131,10 @@ export default function FavoritesPage() {
       />
 
       {/* Filtri */}
-      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+  <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
         <button
           onClick={() => setFilter("all")}
-          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "all"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -145,7 +145,7 @@ export default function FavoritesPage() {
         </button>
         <button
           onClick={() => setFilter("supplier")}
-          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "supplier"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -156,7 +156,7 @@ export default function FavoritesPage() {
         </button>
         <button
           onClick={() => setFilter("location")}
-          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "location"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -167,7 +167,7 @@ export default function FavoritesPage() {
         </button>
         <button
           onClick={() => setFilter("church")}
-          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-all ${
+          className={`min-w-[7rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap truncate transition-all ${
             filter === "church"
               ? "text-white shadow-md"
               : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -214,7 +214,7 @@ export default function FavoritesPage() {
                   <span className="text-2xl mb-2 block">
                     {fav.item_type === "supplier" ? "🏢" : fav.item_type === "location" ? "🏛️" : "⛪"}
                   </span>
-                  <h3 className="font-bold text-lg text-gray-800">{fav.name}</h3>
+                  <h3 className="font-bold text-lg text-gray-800 text-center truncate">{fav.name}</h3>
                   <p className="text-sm text-gray-500">{fav.city}</p>
                 </div>
                 <button

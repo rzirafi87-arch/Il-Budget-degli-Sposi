@@ -270,7 +270,7 @@ export default function DashboardPage() {
   return (
     <Page>
       <header className="mb-4">
-        <h1 className="text-3xl font-bold text-center">Dashboard</h1>
+  <h1 className="text-3xl font-bold text-center">Dashboard</h1>
         {/* breadcrumb centrato */}
         <nav className="mt-1 flex justify-center text-sm text-muted-foreground">
           <ol className="flex flex-wrap items-center gap-1">
@@ -359,7 +359,7 @@ export default function DashboardPage() {
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-lg">Idea di Budget</h3>
+            <h3 className="font-semibold text-lg text-center sm:text-left">Idea di Budget</h3>
             <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
@@ -378,7 +378,7 @@ export default function DashboardPage() {
         <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="text-center sm:text-left">
-              <h3 className="font-semibold text-lg">Viaggio di Nozze</h3>
+              <h3 className="font-semibold text-lg text-center sm:text-left">Viaggio di Nozze</h3>
               <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
             </div>
             <div className="mt-4 flex justify-center sm:mt-0">
@@ -394,7 +394,7 @@ export default function DashboardPage() {
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-lg">Suggerimenti <span className="font-extrabold text-2xl align-middle">&amp;</span> Consigli</h3>
+            <h3 className="font-semibold text-lg text-center sm:text-left">Suggerimenti <span className="font-extrabold text-2xl align-middle">&amp;</span> Consigli</h3>
             <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">

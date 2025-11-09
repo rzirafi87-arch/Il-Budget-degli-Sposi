@@ -415,7 +415,7 @@ export default function SpesePage() {
   if (loading) {
     return (
       <section className="pt-6">
-        <h2 className="font-serif text-3xl mb-6">{t("expensesPage.title")}</h2>
+  <h2 className="font-serif text-3xl mb-6 text-center">{t("expensesPage.title")}</h2>
         <p className="text-gray-500">{t("expensesPage.loading")}</p>
       </section>
     );
@@ -423,7 +423,7 @@ export default function SpesePage() {
 
   return (
     <section className="pt-6">
-  <h2 className="font-serif text-3xl mb-2">💸 {t("expensesPage.title")}</h2>
+  <h2 className="font-serif text-3xl mb-2 text-center">💸 {t("expensesPage.title")}</h2>
       <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">{t("expensesPage.info.lead")}</p>
 
       <PageInfoNote
@@ -479,7 +479,7 @@ export default function SpesePage() {
       {/* Form nuova spesa */}
       {showForm && (
         <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold mb-4">{t("expensesPage.form.new")}</h3>
+          <h3 className="font-semibold mb-4 text-center">{t("expensesPage.form.new")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.category")}</label>
@@ -594,7 +594,7 @@ export default function SpesePage() {
             <div key={idx} className="rounded-2xl border border-gray-200 bg-white/70 shadow-sm overflow-hidden">
               {/* Header gruppo */}
               <div className="bg-[#A3B59D]/10 px-6 py-3 border-b border-gray-200">
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-gray-800 text-center sm:text-left">
                   {group.category} → {group.subcategory}
                 </h3>
                 <div className="text-xs text-gray-600 mt-1">
@@ -602,38 +602,19 @@ export default function SpesePage() {
                 </div>
               </div>
 
-              {/* Tabella preventivi per questo gruppo (scroll orizzontale su mobile) */}
-              <div className="overflow-x-auto">
-              <table className="w-full min-w-[920px] text-sm">
-                <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50/50">
-                    <th className="px-4 py-2 text-left font-medium text-gray-700">{t("expensesPage.table.supplier")}</th>
-                    <th className="px-4 py-2 text-left font-medium text-gray-700">{t("expensesPage.table.description")}</th>
-                    <th className="px-4 py-2 text-right font-medium text-gray-700">{t("expensesPage.table.amount")}</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.type")}</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.date")}</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.status")}</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.fromQuote")}</th>
-                    <th className="px-4 py-2 text-center font-medium text-gray-700">{t("expensesPage.table.actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {group.expenses.map((exp) => (
-                    <tr
-                      key={exp.id}
-                      className={`border-b border-gray-50 hover:bg-gray-50/60 ${
-                        exp.status === "approved" ? "bg-green-50/30" :
-                        exp.status === "rejected" ? "bg-red-50/30" : ""
-                      }`}
-                    >
-                      <td className="px-4 py-3 font-medium">{exp.supplier || "—"}</td>
-                      <td className="px-4 py-3">{exp.description || "—"}</td>
-                      <td className="px-4 py-3 text-right font-semibold">{formatEuro(exp.amount)}</td>
-                      <td className="px-4 py-3 text-center capitalize text-xs">
-                        {isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}
-                      </td>
-                      <td className="px-4 py-3 text-center text-xs">{formatDate(new Date(exp.date))}</td>
-                      <td className="px-4 py-3 text-center">
+              {/* MOBILE: cards */}
+              <ul className="space-y-3 sm:hidden p-4">
+                {group.expenses.map((exp) => (
+                  <li key={exp.id} className="rounded-2xl border bg-card p-4 shadow-sm">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="font-semibold">{exp.supplier || "—"}</span>
+                      <span className="text-xs text-muted-foreground">{exp.description || "—"}</span>
+                    </div>
+                    <dl className="grid grid-cols-2 gap-2 text-sm">
+                      <div><dt className="text-muted-foreground">{t("expensesPage.table.amount")}</dt><dd>{formatEuro(exp.amount)}</dd></div>
+                      <div><dt className="text-muted-foreground">{t("expensesPage.table.type")}</dt><dd>{isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}</dd></div>
+                      <div><dt className="text-muted-foreground">{t("expensesPage.table.date")}</dt><dd>{formatDate(new Date(exp.date))}</dd></div>
+                      <div><dt className="text-muted-foreground">{t("expensesPage.table.status")}</dt><dd>
                         <span className={`inline-block px-2 py-1 rounded text-xs ${
                           exp.status === "approved" ? "bg-green-100 text-green-800 font-semibold" :
                           exp.status === "rejected" ? "bg-red-100 text-red-800" :
@@ -641,11 +622,9 @@ export default function SpesePage() {
                         }`}>
                           {exp.status === "approved" ? t("expensesPage.status.approved") : exp.status === "rejected" ? t("expensesPage.status.rejected") : t("expensesPage.status.pending")}
                         </span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}
-                      </td>
-                      <td className="px-4 py-3 text-center">
+                      </dd></div>
+                      <div className="col-span-2"><dt className="text-muted-foreground">{t("expensesPage.table.fromQuote")}</dt><dd>{exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}</dd></div>
+                      <div className="col-span-2"><dt className="text-muted-foreground">Azioni</dt><dd>
                         {exp.status === "pending" && (
                           <div className="flex gap-2 justify-center">
                             <button
@@ -668,11 +647,83 @@ export default function SpesePage() {
                         {exp.status === "rejected" && (
                           <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
                         )}
-                      </td>
+                      </dd></div>
+                    </dl>
+                  </li>
+                ))}
+              </ul>
+
+              {/* DESKTOP: tabella classica */}
+              <div className="-mx-4 overflow-x-auto hidden sm:block">
+                <table className="min-w-[680px] table-auto text-xs sm:min-w-full sm:text-sm">
+                  <thead className="text-left">
+                    <tr className="border-b border-gray-100 bg-gray-50/50">
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.supplier")}</th>
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.description")}</th>
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.amount")}</th>
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.type")}</th>
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.date")}</th>
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.status")}</th>
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.fromQuote")}</th>
+                      <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.actions")}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {group.expenses.map((exp) => (
+                      <tr
+                        key={exp.id}
+                        className={`border-b border-gray-50 hover:bg-gray-50/60 ${
+                          exp.status === "approved" ? "bg-green-50/30" :
+                          exp.status === "rejected" ? "bg-red-50/30" : ""
+                        }`}
+                      >
+                        <td className="whitespace-nowrap px-4 py-2 font-medium">{exp.supplier || "—"}</td>
+                        <td className="whitespace-nowrap px-4 py-2">{exp.description || "—"}</td>
+                        <td className="whitespace-nowrap px-4 py-2 text-right font-semibold">{formatEuro(exp.amount)}</td>
+                        <td className="whitespace-nowrap px-4 py-2 text-center capitalize text-xs">
+                          {isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-center text-xs">{formatDate(new Date(exp.date))}</td>
+                        <td className="whitespace-nowrap px-4 py-2 text-center">
+                          <span className={`inline-block px-2 py-1 rounded text-xs ${
+                            exp.status === "approved" ? "bg-green-100 text-green-800 font-semibold" :
+                            exp.status === "rejected" ? "bg-red-100 text-red-800" :
+                            "bg-yellow-100 text-yellow-800"
+                          }`}>
+                            {exp.status === "approved" ? t("expensesPage.status.approved") : exp.status === "rejected" ? t("expensesPage.status.rejected") : t("expensesPage.status.pending")}
+                          </span>
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-center">
+                          {exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-center">
+                          {exp.status === "pending" && (
+                            <div className="flex gap-2 justify-center">
+                              <button
+                                onClick={() => updateExpenseStatus(exp.id!, "approved")}
+                                className="text-green-600 hover:text-green-800 text-xs font-medium"
+                              >
+                                {t("expensesPage.buttons.approve")}
+                              </button>
+                              <button
+                                onClick={() => updateExpenseStatus(exp.id!, "rejected")}
+                                className="text-red-600 hover:text-red-800 text-xs font-medium"
+                              >
+                                {t("expensesPage.buttons.reject")}
+                              </button>
+                            </div>
+                          )}
+                          {exp.status === "approved" && (
+                            <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
+                          )}
+                          {exp.status === "rejected" && (
+                            <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           ))
