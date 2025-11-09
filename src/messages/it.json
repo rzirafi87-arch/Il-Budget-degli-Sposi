@@ -272,11 +272,6 @@
     "quinceanera": "Quinceañera",
     "charity-gala": "Evento culturale/Charity/Gala"
   },
-  "header": {
-    "today": "Oggi!",
-    "dayLeft": "Manca 1 giorno",
-    "daysLeft": "Mancano {count} giorni"
-  },
   "home": {
     "hero": {
       "title1": "Organizza il tuo",
@@ -1792,5 +1787,19 @@
     "contact": "Contatti"
   },
   "locationReception": "Location Ricevimento",
-  "locationCeremony": "Location Cerimonia"
+  "locationCeremony": "Location Cerimonia",
+  "wizard": {
+    "title": "Benvenuto!",
+    "step1": "Scegli la lingua",
+    "step2": "Seleziona il paese",
+    "step3": "Scegli l'evento",
+    "continue": "Continua",
+    "back": "Indietro",
+    "goToDashboard": "Vai alla dashboard"
+  },
+  "header": {
+    "language": "Lingua",
+    "country": "Paese",
+    "event": "Evento"
+  }
 }

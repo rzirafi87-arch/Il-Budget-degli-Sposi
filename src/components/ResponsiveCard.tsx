@@ -65,10 +65,10 @@ export default function ResponsiveCard({
 
   // Background variants
   const variantClass = {
-    default: "bg-white",
-    sage: "bg-gradient-to-br from-white to-[#f5f9f5]",
-    rose: "bg-gradient-to-br from-white to-[#fff5f7]",
-    beige: "bg-gradient-to-br from-white to-[#faf8f5]",
+    default: "bg-bg/95 dark:bg-secondary/10 text-fg",
+    sage: "bg-gradient-to-br from-white via-secondary/40 to-primary/60 dark:from-secondary/30 dark:via-secondary/50 dark:to-primary/70 text-fg",
+    rose: "bg-gradient-to-br from-white to-[#fff5f7] dark:from-[#30211d] dark:to-[#1b1b1b] text-fg",
+    beige: "bg-gradient-to-br from-white to-[#faf8f5] dark:from-[#1b1b19] dark:to-[#151513] text-fg",
   }[variant];
 
   // Elevazione ombre
@@ -80,30 +80,21 @@ export default function ResponsiveCard({
   }[elevation];
 
   // Border
-  const borderClass = bordered ? "border border-gray-200" : "";
+  const borderClass = bordered ? "border border-border" : "";
 
   // Interattività
-  const interactiveClass = (onClick || href) ? [
-    "cursor-pointer",
-    "transition-all duration-200",
-    // Desktop hover (solo se non touch)
-    !isTouchDevice && hoverable && "hover:shadow-soft-lg hover:-translate-y-1",
-    // Mobile/tablet tap feedback
-    isTouchDevice && "active:scale-[0.98] active:shadow-sm",
-    // Focus
-    "focus:outline-none focus:ring-2 focus:ring-[#A6B5A0] focus:ring-offset-2",
-  ] : [];
-
-  // Ottimizzazioni iOS
-  const iosClass = os === "ios" ? [
-    "-webkit-tap-highlight-color: transparent",
-    "touch-action: manipulation", // Previene zoom doppio tap
-  ] : [];
-
-  // Ottimizzazioni Android
-  const androidClass = os === "android" ? [
-    "relative overflow-hidden", // Per ripple effect
-  ] : [];
+  const interactiveClass = (onClick || href)
+    ? [
+        "cursor-pointer",
+        "transition-all duration-200",
+        // Desktop hover (solo se non touch)
+        !isTouchDevice && hoverable && "hover:shadow-soft-lg hover:-translate-y-1",
+        // Mobile/tablet tap feedback
+        isTouchDevice && "active:scale-[0.98] active:shadow-sm",
+        // Focus
+        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg",
+      ]
+    : [];
 
   const cardClasses = clsx(
     "rounded-soft-lg",
@@ -112,8 +103,6 @@ export default function ResponsiveCard({
     shadowClass,
     borderClass,
     interactiveClass,
-    iosClass,
-    androidClass,
     className
   );
 
@@ -180,13 +169,13 @@ export function CardSection({
           <div className="flex items-start gap-3">
             {icon && <span className="text-2xl" aria-hidden="true">{icon}</span>}
             <div>
-              {title && (
-                <h3 className={clsx("font-serif font-bold text-gray-800", titleSize)}>
-                  {title}
-                </h3>
-              )}
+            {title && (
+              <h3 className={clsx("font-serif font-bold text-fg", titleSize)}>
+                {title}
+              </h3>
+            )}
               {subtitle && (
-                <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+                <p className="text-sm text-muted-fg mt-1">{subtitle}</p>
               )}
             </div>
           </div>
@@ -197,7 +186,7 @@ export function CardSection({
       <div>{children}</div>
       
       {footer && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 pt-4 border-t border-border">
           {footer}
         </div>
       )}

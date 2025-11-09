@@ -64,6 +64,9 @@
   --safe-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
   --safe-left: max(env(safe-area-inset-left, 0px), 0px);
   --safe-right: max(env(safe-area-inset-right, 0px), 0px);
+
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -102,6 +105,11 @@ html {
   overflow-x: hidden;
 }
 
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
 body {
   background: var(--background);
   color: var(--text-primary);
@@ -112,9 +120,24 @@ body {
   min-height: 100%;
   max-width: 100vw;
   overflow-x: hidden;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+a,
+[role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px;
 }
 
 main,
@@ -651,4 +674,59 @@ h1, h2, h3, h4, h5, h6 {
 /* Utility class for disabling ligatures */
 .no-liga {
   font-variant-ligatures: none;
+}
+
+:root {
+  /* BASE */
+  --bg: #faf8f5;
+  --fg: #1f2328;
+  --muted: #edeae6;
+  --muted-fg: #5e6561;
+
+  /* BRAND */
+  --primary: #8fa79a;
+  --primary-fg: #0f1412;
+  --secondary: #cbd6ce;
+  --secondary-fg: #1f2328;
+
+  /* ACCENTI & UI */
+  --accent: #c2a875;
+  --accent-fg: #111111;
+  --border: #e3e0db;
+  --ring: #8fa79a;
+
+  /* STATI */
+  --success: #3aa981;
+  --warning: #e0a400;
+  --info: #4c8bd9;
+  --destructive: #c46464;
+}
+
+:root.dark {
+  --bg: #0f1211;
+  --fg: #eef0ed;
+  --muted: #1b201e;
+  --muted-fg: #a7b0aa;
+
+  --primary: #9db6a8;
+  --primary-fg: #0a0d0c;
+  --secondary: #2a2f2c;
+  --secondary-fg: #eef0ed;
+
+  --accent: #d4bc8a;
+  --accent-fg: #0a0a0a;
+  --border: #232826;
+  --ring: #9db6a8;
+
+  --success: #46b78e;
+  --warning: #f2bc2d;
+  --info: #5a9ae6;
+  --destructive: #d57373;
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  :root,
+  :root.dark {
+    /* opzionale per schermi wide-gamut */
+  }
 }

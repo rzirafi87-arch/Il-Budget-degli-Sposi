@@ -164,6 +164,7 @@ export default function IdeaDiBudgetPage() {
         const json = await res.json();
         if (disposed) return;
 
+        // Se ci sono dati reali, mostra quelli. Altrimenti, mostra sempre righe demo.
         if (Array.isArray(json?.data) && json.data.length > 0) {
           const aggregated = new Map<string, BudgetIdeaRow>();
           json.data.forEach((entry: Record<string, unknown>) => {
@@ -217,9 +218,11 @@ export default function IdeaDiBudgetPage() {
           });
           setRows(Array.from(aggregated.values()));
         } else {
+          // Mostra SEMPRE righe demo anche se non autenticato/tester
           setRows(buildDefaultRows(eventConfig));
         }
       } catch (error) {
+        // Mostra SEMPRE righe demo anche in caso di errore
         console.error(t("messages.loadError"), error);
         if (!disposed) {
           setRows(buildDefaultRows(eventConfig));
