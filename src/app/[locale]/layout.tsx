@@ -1,11 +1,12 @@
 // Server component
+// @ts-ignore
 import "@/app/globals.css";
 import { LocaleProvider } from "@/providers/LocaleProvider";
 // (opz) ThemeProvider se lo usi: import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const dynamic = "force-dynamic";
 
-export default function LocaleLayout({
+export default function RootLayout({
   children,
   params,
 }: {
