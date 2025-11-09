@@ -1,5 +1,13 @@
 -- SEED: Catalogo eventi disponibili
-CREATE TABLE IF NOT EXISTS public.event_types (
+
+-- Drop table solo se esiste (compatibilità massima)
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'event_types' AND table_schema = 'public') THEN
+    DROP TABLE public.event_types;
+  END IF;
+END $$;
+
+CREATE TABLE public.event_types (
   code TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT

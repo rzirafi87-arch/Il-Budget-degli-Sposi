@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     });
   }
   const db = getServiceClient();
-  const { data: userData, error } = await db.auth.getUser(jwt);
+  const { error } = await db.auth.getUser(jwt);
   if (error) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   const { data, error: dbErr } = await db.from("countries").select("code, name, native_name, region");
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
