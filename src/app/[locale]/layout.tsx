@@ -1,28 +1,31 @@
 // Server component
 // @ts-ignore
-import "@/app/globals.css";
-import { LocaleProvider } from "@/providers/LocaleProvider";
 // (opz) ThemeProvider se lo usi: import { ThemeProvider } from "@/components/ThemeProvider";
+
+
+// @ts-expect-error Next.js 16 dynamic layout type workaround: params typing mismatch
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import type { ReactNode } from "react";
+import "../globals.css";
 
 export const dynamic = "force-dynamic";
 
-// @ts-expect-error Next.js 16 dynamic layout type workaround: params typing mismatch
-export default function RootLayout({
+export default async function LocaleLayout({
   children,
-  params,
+  params: { locale },
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   params: { locale: string };
 }) {
-  const { locale } = params;
+  const messages = await getMessages();
+
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className="min-h-screen bg-bg text-fg antialiased">
-  <LocaleProvider initial={{ locale: locale as any }}>
-          {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
-            {children}
-          {/* </ThemeProvider> */}
-        </LocaleProvider>
+    <html lang={locale}>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
