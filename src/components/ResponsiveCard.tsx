@@ -175,7 +175,7 @@ export function CardSection({
               </h3>
             )}
               {subtitle && (
-                <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+                <p className="text-sm text-muted-fg mt-1">{subtitle}</p>
               )}
             </div>
           </div>
