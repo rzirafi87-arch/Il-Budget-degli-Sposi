@@ -97,10 +97,10 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
                 
                 {/* Badge notifiche */}
                 {item.badge && item.badge > 0 && (
-                  <span
-                    className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1"
-                    aria-label={`${item.badge} notifiche`}
-                  >
+                <span
+                  className="absolute -top-1 -right-1 bg-destructive text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1"
+                  aria-label={`${item.badge} notifiche`}
+                >
                     {item.badge > 99 ? "99+" : item.badge}
                   </span>
                 )}
@@ -117,7 +117,7 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
               
               {/* Indicatore attivo iOS style */}
               {isActive && isIOSStyle && (
-                <div className="w-1 h-1 bg-[#8da182] rounded-full mt-0.5" />
+                <div className="w-1 h-1 bg-primary rounded-full mt-0.5" />
               )}
             </Link>
           );

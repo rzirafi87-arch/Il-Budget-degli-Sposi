@@ -85,12 +85,12 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
   return (
     <ToastProvider>
       {showHeader ? (
-        <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-soft">
+        <header className="sticky top-0 z-50 bg-bg/95 dark:bg-secondary/95 backdrop-blur-sm shadow-soft border-b border-border">
           <DynamicHeader />
-          <div className="border-b border-gray-200">
+          <div className="border-b border-border">
             <div className="max-w-6xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
               <div className="flex items-center justify-between gap-2 mb-3">
-                <h1 className="text-lg sm:text-2xl font-serif font-bold" style={{ color: "var(--color-warm-gray)" }}>
+                <h1 className="text-lg sm:text-2xl font-serif font-bold text-fg">
                   {locale === "es"
                     ? "El Presupuesto de los Novios"
                     : locale === "en"
