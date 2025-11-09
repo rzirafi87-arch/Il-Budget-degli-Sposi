@@ -6,6 +6,7 @@ import { LocaleProvider } from "@/providers/LocaleProvider";
 
 export const dynamic = "force-dynamic";
 
+// @ts-expect-error Next.js 16 dynamic layout type workaround: params typing mismatch
 export default function RootLayout({
   children,
   params,
