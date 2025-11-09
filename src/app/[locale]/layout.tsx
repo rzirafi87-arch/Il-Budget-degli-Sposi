@@ -1,19 +1,16 @@
 // Server component
 import "@/app/globals.css";
 import { LocaleProvider } from "@/providers/LocaleProvider";
-import { ReactNode } from "react";
+import type { LayoutProps } from "next";
 // (opz) ThemeProvider se lo usi: import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const dynamic = "force-dynamic";
 
 
-export default function LocaleLayout({
   children,
-  params: { locale },
-}: {
-  children: ReactNode;
-  params: { locale: string };
-}) {
+  params,
+}: LayoutProps) {
+  const { locale } = params;
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className="min-h-screen bg-bg text-fg antialiased">
