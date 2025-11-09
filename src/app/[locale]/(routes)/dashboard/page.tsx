@@ -11,7 +11,13 @@ import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+
 import { useEffect, useMemo, useState } from "react";
+
+// Inline type definitions for local state
+type BudgetItem = { name: string; amount?: number };
+type ChecklistModule = { module_name: string; is_required: boolean };
+type Tradition = { name: string; description: string };
 
 
 export const dynamic = "force-dynamic";

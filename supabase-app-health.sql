@@ -54,6 +54,18 @@ declare
   v_cat_translations_table text;
   v_sub_translations_table text;
   v_timeline_translations_table text;
+<<<<<<< ours
+=======
+  v_categories_schema text;
+  v_categories_name text;
+  v_timelines_schema text;
+  v_timelines_name text;
+  v_category_fk_column text;
+  v_timeline_fk_column text;
+  v_has_cat_translations boolean;
+  v_has_sub_translations boolean;
+  v_has_timeline_translations boolean;
+>>>>>>> theirs
   cat_expected int;
   sub_expected int;
   time_expected int;
@@ -141,6 +153,7 @@ begin
 
   v_locale_query := v_locale_query || ' order by code';
 
+<<<<<<< ours
   for v_event in execute v_event_query loop
     execute format('select count(*) from %s where event_type_id = $1', v_categories_table)
       into cat_expected using v_event.id;
@@ -156,22 +169,97 @@ begin
       if to_regclass(v_cat_translations_table) is not null then
         execute format('select count(*) from %s ct join %s c on c.id = ct.category_id where c.event_type_id = $1 and ct.locale = $2',
                        v_cat_translations_table, v_categories_table)
+=======
+  v_categories_schema := split_part(v_categories_table, '.', 1);
+  v_categories_name := split_part(v_categories_table, '.', 2);
+  if v_categories_name = '' then
+    v_categories_name := v_categories_schema;
+    v_categories_schema := 'public';
+  end if;
+
+  v_timelines_schema := split_part(v_timelines_table, '.', 1);
+  v_timelines_name := split_part(v_timelines_table, '.', 2);
+  if v_timelines_name = '' then
+    v_timelines_name := v_timelines_schema;
+    v_timelines_schema := 'public';
+  end if;
+
+  select column_name
+  into v_category_fk_column
+  from information_schema.columns
+  where table_schema = v_categories_schema
+    and table_name = v_categories_name
+    and column_name in ('event_type_id', 'type_id', 'event_id')
+  order by case column_name when 'event_type_id' then 1 when 'type_id' then 2 else 3 end
+  limit 1;
+
+  if v_category_fk_column is null then
+    raise notice 'app_health_refresh: unable to detect event foreign key column for %', v_categories_table;
+    return;
+  end if;
+
+  select column_name
+  into v_timeline_fk_column
+  from information_schema.columns
+  where table_schema = v_timelines_schema
+    and table_name = v_timelines_name
+    and column_name in ('event_type_id', 'type_id', 'event_id')
+  order by case column_name when 'event_type_id' then 1 when 'type_id' then 2 else 3 end
+  limit 1;
+
+  if v_timeline_fk_column is null then
+    raise notice 'app_health_refresh: unable to detect event foreign key column for %', v_timelines_table;
+    return;
+  end if;
+
+  v_has_cat_translations := to_regclass(v_cat_translations_table) is not null;
+  v_has_sub_translations := to_regclass(v_sub_translations_table) is not null;
+  v_has_timeline_translations := to_regclass(v_timeline_translations_table) is not null;
+
+  for v_event in execute v_event_query loop
+    execute format('select count(*) from %s where %I = $1', v_categories_table, v_category_fk_column)
+      into cat_expected using v_event.id;
+
+    execute format('select count(*) from %s s join %s c on c.id = s.category_id where c.%I = $1',
+                   v_subcategories_table, v_categories_table, v_category_fk_column)
+      into sub_expected using v_event.id;
+
+    execute format('select count(*) from %s where %I = $1', v_timelines_table, v_timeline_fk_column)
+      into time_expected using v_event.id;
+
+    for v_loc in execute v_locale_query loop
+      if v_has_cat_translations then
+        execute format('select count(*) from %s ct join %s c on c.id = ct.category_id where c.%I = $1 and ct.locale = $2',
+                       v_cat_translations_table, v_categories_table, v_category_fk_column)
+>>>>>>> theirs
           into cat_actual using v_event.id, v_loc.locale;
       else
         cat_actual := 0;
       end if;
 
+<<<<<<< ours
       if to_regclass(v_sub_translations_table) is not null then
         execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.event_type_id = $1 and st.locale = $2',
                        v_sub_translations_table, v_subcategories_table, v_categories_table)
+=======
+      if v_has_sub_translations then
+        execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.%I = $1 and st.locale = $2',
+                       v_sub_translations_table, v_subcategories_table, v_categories_table, v_category_fk_column)
+>>>>>>> theirs
           into sub_actual using v_event.id, v_loc.locale;
       else
         sub_actual := 0;
       end if;
 
+<<<<<<< ours
       if to_regclass(v_timeline_translations_table) is not null then
         execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.event_type_id = $1 and tt.locale = $2',
                        v_timeline_translations_table, v_timelines_table)
+=======
+      if v_has_timeline_translations then
+        execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.%I = $1 and tt.locale = $2',
+                       v_timeline_translations_table, v_timelines_table, v_timeline_fk_column)
+>>>>>>> theirs
           into time_actual using v_event.id, v_loc.locale;
       else
         time_actual := 0;
