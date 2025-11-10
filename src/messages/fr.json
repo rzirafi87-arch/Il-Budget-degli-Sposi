@@ -268,5 +268,79 @@
     "bar-mitzvah": "Bar Mitzvah",
     "quinceanera": "Quinceañera",
     "charity-gala": "Événement caritatif/Gala"
+  },
+  "footer": {
+    "newsletterTitle": "Restez informé",
+    "newsletterDesc": "Recevez des conseils, des listes de contrôle et des offres exclusives pour votre mariage parfait !",
+    "newsletterFormLabel": "Inscription à la newsletter",
+    "emailPlaceholder": "Votre e-mail...",
+    "emailAriaLabel": "Entrez votre e-mail",
+    "subscribeBtn": "S'abonner",
+    "thankYouMsg": "Merci pour votre inscription ! Vérifiez votre e-mail.",
+    "aboutTitle": "MYBUDGETEVENTO",
+    "aboutDesc": "La plateforme italienne pour planifier le budget de votre mariage. Simple, complète et gratuite.",
+    "toolsTitle": "Outils",
+    "expenses": "Gestion des Dépenses",
+    "incomes": "Revenus et Cadeaux",
+    "guestsList": "Liste des Invités",
+    "suppliersTitle": "Trouver des Fournisseurs",
+    "locations": "Lieux de Réception",
+    "churches": "Lieux de Cérémonie",
+    "allSuppliers": "Tous les Fournisseurs",
+    "infoTitle": "Infos & Support",
+    "aboutUs": "Qui sommes-nous",
+    "howItWorks": "Comment ça marche",
+    "contacts": "Contacts",
+    "legalTitle": "Légal",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions d'Utilisation",
+    "cookiePolicy": "Politique de Cookies",
+    "securePayments": "Paiements Sécurisés",
+    "madeInItaly": "Made in Italy",
+    "gdprCompliant": "Conforme au RGPD",
+    "free100": "100% Gratuit",
+    "copyright": "Tous droits réservés.",
+    "madeWithLove": "Fait avec amour pour les couples",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "contact": "Contacts"
+  },
+  "about": {
+    "title": "💍°🤵 Qui sommes-nous",
+    "intro": "Nous sommes la première plateforme italienne de gestion de budget de mariage. Née de l'expérience directe de couples ayant vécu les défis de l'organisation d'un mariage, notre mission est de rendre ce processus plus simple, transparent et agréable.",
+    "mission": {
+      "title": "Notre Mission",
+      "body": "Aider les couples italiens à planifier leur mariage de rêve sans stress financier. Nous offrons des outils gratuits, intuitifs et complets pour gérer chaque aspect du budget de mariage."
+    },
+    "why": {
+      "title": "Pourquoi nous choisir",
+      "points": {
+        "free": {
+          "title": "100% Gratuit :",
+          "desc": "Tous les outils sont entièrement gratuits"
+        },
+        "madeInItaly": {
+          "title": "Made in Italy :",
+          "desc": "Conçu spécifiquement pour les mariages italiens"
+        },
+        "privacy": {
+          "title": "Confidentialité garantie :",
+          "desc": "Vos données sont protégées et conformes au RGPD"
+        },
+        "database": {
+          "title": "Base de données Fournisseurs :",
+          "desc": "Accès à des milliers de fournisseurs dans toute l'Italie"
+        },
+        "support": {
+          "title": "Support dédié :",
+          "desc": "Notre équipe est toujours disponible pour vous aider"
+        }
+      }
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "body": "Des questions ou des suggestions ? Nous sommes là pour vous !",
+      "cta": "Discutez avec nous sur WhatsApp"
+    }
   }
 }

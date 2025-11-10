@@ -269,42 +269,6 @@
       "confirmDelete": "¿Estás seguro de que quieres eliminar este ingreso?"
     }
   },
-  "footer": {
-    "newsletterTitle": "Mantente informado",
-    "newsletterDesc": "Recibe consejos, listas de verificación y ofertas exclusivas para tu boda perfecta!",
-    "newsletterFormLabel": "Suscripción al boletín",
-    "emailPlaceholder": "Tu correo electrónico...",
-    "emailAriaLabel": "Introduce tu correo electrónico",
-    "subscribeBtn": "Suscribirse",
-    "thankYouMsg": "¡Gracias por suscribirte! Revisa tu correo electrónico.",
-    "aboutTitle": "MYBUDGETEVENTO",
-    "aboutDesc": "La plataforma italiana para planificar el presupuesto de tu boda. Sencilla, completa y gratuita.",
-    "toolsTitle": "Herramientas",
-    "expenses": "Gestión de Gastos",
-    "incomes": "Entradas y Regalos",
-    "guestsList": "Lista de Invitados",
-    "suppliersTitle": "Buscar Proveedores",
-    "locations": "Lugares de Recepción",
-    "churches": "Lugares de Ceremonia",
-    "allSuppliers": "Todos los Proveedores",
-    "infoTitle": "Información y Soporte",
-    "aboutUs": "Quiénes Somos",
-    "howItWorks": "Cómo Funciona",
-    "contacts": "Contactos",
-    "legalTitle": "Legal",
-    "privacyPolicy": "Política de Privacidad",
-    "termsOfService": "Términos de Servicio",
-    "cookiePolicy": "Política de Cookies",
-    "securePayments": "Pagos Seguros",
-    "madeInItaly": "Hecho en Italia",
-    "gdprCompliant": "Cumple con GDPR",
-    "free100": "100% Gratis",
-    "copyright": "Todos los derechos reservados.",
-    "madeWithLove": "Hecho con amor para las parejas",
-    "privacy": "Privacidad",
-    "terms": "Términos",
-    "contact": "Contactos"
-  },
   "events": {
     "wedding": "Boda",
     "baptism": "Bautizo",
@@ -326,5 +290,45 @@
     "bar-mitzvah": "Bar Mitzvah",
     "quinceanera": "Quinceañera",
     "charity-gala": "Evento benéfico/Gala"
+  },
+  "footer": {
+  },
+  "about": {
+    "title": "💍°🤵 Quiénes somos",
+    "intro": "Somos la plataforma italiana número uno para la gestión del presupuesto de bodas. Nacida de la experiencia directa de parejas que han vivido los desafíos de organizar una boda, nuestra misión es hacer este proceso más simple, transparente y agradable.",
+    "mission": {
+      "title": "Nuestra Misión",
+      "body": "Ayudar a las parejas italianas a planificar la boda de sus sueños sin estrés financiero. Ofrecemos herramientas gratuitas, intuitivas y completas para gestionar cada aspecto del presupuesto de bodas."
+    },
+    "why": {
+      "title": "Por qué elegirnos",
+      "points": {
+        "free": {
+          "title": "100% Gratis:",
+          "desc": "Todas las herramientas son completamente gratuitas"
+        },
+        "madeInItaly": {
+          "title": "Hecho en Italia:",
+          "desc": "Pensado específicamente para bodas italianas"
+        },
+        "privacy": {
+          "title": "Privacidad Garantizada:",
+          "desc": "Tus datos están protegidos y cumplen con GDPR"
+        },
+        "database": {
+          "title": "Base de Datos de Proveedores:",
+          "desc": "Acceso a miles de proveedores en toda Italia"
+        },
+        "support": {
+          "title": "Soporte Dedicado:",
+          "desc": "Nuestro equipo siempre está disponible para ayudarte"
+        }
+      }
+    },
+    "contact": {
+      "title": "Contáctanos",
+      "body": "¿Tienes preguntas o sugerencias? ¡Estamos aquí para ti!",
+      "cta": "Chatea con nosotros en WhatsApp"
+    }
   }
 }
