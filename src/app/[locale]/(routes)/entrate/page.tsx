@@ -102,6 +102,7 @@ export default function EntratePage() {
       </div>
     </section>
   );
+}
 async function handleExportCSV() {
   try {
     const supabase = getBrowserClient();
@@ -117,67 +118,8 @@ async function handleExportCSV() {
     alert("Errore durante l'esportazione CSV");
   }
 }
-            type: i.type,
             amount: i.amount,
-            notes: i.notes,
-            date: i.date,
-            incomeSource: "common" as const
-          }))
-        : raw.map(i => ({
-            id: i.id,
-            name: i.name,
-            type: i.type,
-            amount: i.amount,
-            notes: i.notes,
-            date: i.date,
-            incomeSource: i.incomeSource
-          }));
-      setIncomes(mapped);
-    } catch (err) {
-      console.error("Errore caricamento:", err);
-      setIncomes([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [isSingleBudgetEvent]);
-
-  useEffect(() => {
-    loadIncomes();
-  }, [loadIncomes]);
-
-  const addIncome = async () => {
-    setSaving(true);
-    setMessage(null);
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-
-      if (!jwt) {
-        setMessage(t("incomesPage.messages.mustAuthAdd"));
-        setSaving(false);
-        return;
-      }
-
-      const r = await fetch("/api/my/incomes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify(newIncome),
-      });
-
-      if (!r.ok) {
-        const j = await r.json();
-        setMessage(`${t("incomesPage.messages.networkError")}: ${j.error || "Impossibile salvare"}`);
-      } else {
-        setMessage(t("incomesPage.messages.successAdded"));
-        setShowForm(false);
-        loadIncomes();
-        // Reset form
-        setNewIncome({
-          name: "",
-          type: "busta",
+// ...existing code...
           incomeSource: "common",
           amount: 0,
           notes: "",
@@ -459,6 +401,23 @@ async function handleExportCSV() {
       </div>
     </section>
   );
+
+
+// Funzione esportazione CSV
+async function handleExportCSV() {
+  try {
+    const supabase = getBrowserClient();
+    const { data } = await supabase.auth.getSession();
+    const jwt = data.session?.access_token;
+    const headers: HeadersInit = {};
+    if (jwt) headers.Authorization = `Bearer ${jwt}`;
+    const res = await fetch("/api/my/incomes/export-csv", { headers });
+    if (!res.ok) throw new Error("Errore nell'esportazione CSV");
+    const blob = await res.blob();
+    saveAs(blob, "entrate.csv");
+  } catch (e) {
+    alert("Errore durante l'esportazione CSV");
+  }
 }
 
 function formatEuro(n: number) {

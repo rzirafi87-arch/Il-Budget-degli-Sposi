@@ -57,6 +57,7 @@
         "clsx": "^2.1.1",
         "dotenv": "^16.4.5",
         "embla-carousel-react": "^8.6.0",
+        "file-saver": "^2.0.5",
         "json2csv": "^6.0.0-alpha.2",
         "jspdf": "^3.0.3",
         "leaflet": "^1.9.4",
