@@ -16,111 +16,12 @@ const supabase = getBrowserClient();
 type SpendType = "common" | "bride" | "groom";
 type ExpenseStatus = "pending" | "approved" | "rejected";
 
-type Expense = {
-  id?: string;
-  category: string;
-  subcategory: string;
-  supplier: string;
-  description: string;
-  amount: number;
-  spendType: SpendType;
-  status: ExpenseStatus;
-  date: string;
-  notes: string;
-  fromDashboard: boolean; // indica se era nel preventivo
-};
-
-// Stesse categorie della dashboard
-const CATEGORIES_MAP: Record<string, string[]> = {
-  "Abiti & Accessori (altri)": [
-    "Abiti ospiti / Genitori",
-    "Accessori damigelle",
-    "Accessori testimoni",
-    "Fedi nuziali",
-    "Anello fidanzamento",
-    "Accessori vari",
+    "DJ / Band",
+    "Audio / Luci",
+    "Animazione",
+    "Diritti SIAE",
+    "Guestbook phone / Postazioni",
   ],
-  "Cerimonia/Chiesa Location": [
-    "Chiesa / Comune",
-    "Musiche",
-    "Libretti Messa",
-    "Fiori cerimonia",
-    "Wedding bag",
-    "Ventagli",
-    "Pulizia chiesa",
-    "Cesto doni",
-    "Documenti e pratiche",
-    "Offerte / Diritti",
-    "Colombe uscita",
-    "Riso/Petali",
-    "Bottiglia per brindisi",
-    "Bicchieri per brindisi",
-    "Forfait cerimonia",
-  ],
-  "Fuochi d'artificio": [
-    "Fuochi d'artificio tradizionali",
-    "Fontane luminose",
-    "Spettacolo pirotecnico",
-    "Bengala per ospiti",
-    "Lancio palloncini luminosi",
-    "Forfait fuochi d'artificio",
-  ],
-  "Fiori & Decor": [
-    "Bouquet",
-    "Boutonnière",
-    "Centrotavola",
-    "Allestimenti",
-    "Candele",
-    "Tableau",
-    "Segnaposto",
-    "Noleggi (vasi / strutture)",
-    "Forfait fioraio",
-  ],
-  "Foto & Video": [
-    "Servizio fotografico",
-    "Video",
-    "Drone",
-    "Album",
-    "Stampe",
-    "Secondo fotografo",
-    "Forfait fotografo",
-  ],
-  "Inviti & Stationery": [
-    "Partecipazioni",
-    "Menu",
-    "Segnaposto",
-    "Libretti Messa",
-    "Timbri / Cliché",
-    "Francobolli / Spedizioni",
-    "Calligrafia",
-    "Cartoncini / Tag",
-    "QR Code / Stampa",
-  ],
-  "Sposa": [
-    "Abito sposa",
-    "Scarpe sposa",
-    "Accessori (velo, gioielli, ecc.)",
-    "Intimo / sottogonna",
-    "Parrucchiera",
-    "Make-up",
-    "Prove",
-    "e)",
-    "Altro sposa",
-  ],
-  "Sposo": [
-    "Abito sposo",
-    "Scarpe sposo",
-    "Accessori (cravatta, gemelli, ecc.)",
-    "Barbiere / Grooming",
-    "Prove",
-    "Altro sposo",
-  ],
-  "Ricevimento Location": [
-    "Affitto sala",
-    "Catering / Banqueting",
-    "Torta nuziale",
-    "Vini & Bevande",
-    "Open bar",
     "Mise en place",
     "Noleggio tovagliato / piatti",
     "Forfait location",
