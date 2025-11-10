@@ -126,111 +126,11 @@ const CATEGORIES_MAP: Record<string, string[]> = {
     "Forfait location",
     "Forfait catering (prezzo a persona)",
   ],
-  "Musica & Intrattenimento": [
     "DJ / Band",
     "Audio / Luci",
     "Animazione",
     "Diritti SIAE",
     "Guestbook phone / Postazioni",
-    return (
-      <section className="container mx-auto px-2 md:px-0 py-4">
-        <PageInfoNote
-          title={t("expensesPage.title")}
-          description={t("expensesPage.description")}
-          images={getPageImages("spese")}
-        />
-        <div className="flex justify-end mb-4">
-          <button
-            className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-4 py-2 rounded shadow text-sm"
-            onClick={handleExportCSV}
-          >
-            {t("expensesPage.buttons.exportCSV", { defaultValue: "Esporta CSV" })}
-          </button>
-        </div>
-        <div className="mt-4">
-          {loading ? (
-            <div className="text-center py-8 text-gray-400">{t("common.loading")}</div>
-          ) : (
-            Object.entries(groupedExpenses).map(([cat, group]) => (
-              <div key={cat} className="mb-8">
-                <h2 className="text-lg font-bold mb-2 text-gray-700">{cat}</h2>
-                <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-                  <table className="min-w-full divide-y divide-gray-100 text-sm">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.supplier")}</th>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.description")}</th>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.amount")}</th>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.type")}</th>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.date")}</th>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.status")}</th>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.fromQuote")}</th>
-                        <th className="whitespace-nowrap px-4 py-2">{t("expensesPage.table.actions")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {group.expenses.map((exp) => (
-                        <tr
-                          key={exp.id}
-                          className={`border-b border-gray-50 hover:bg-gray-50/60 ${
-                            exp.status === "approved" ? "bg-green-50/30" :
-                            exp.status === "rejected" ? "bg-red-50/30" : ""
-                          }`}
-                        >
-                          <td className="whitespace-nowrap px-4 py-2 font-medium">{exp.supplier || "—"}</td>
-                          <td className="whitespace-nowrap px-4 py-2">{exp.description || "—"}</td>
-                          <td className="whitespace-nowrap px-4 py-2 text-right font-semibold">{formatEuro(exp.amount)}</td>
-                          <td className="whitespace-nowrap px-4 py-2 text-center capitalize text-xs">
-                            {isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-2 text-center text-xs">{formatDate(new Date(exp.date))}</td>
-                          <td className="whitespace-nowrap px-4 py-2 text-center">
-                            <span className={`inline-block px-2 py-1 rounded text-xs ${
-                              exp.status === "approved" ? "bg-green-100 text-green-800 font-semibold" :
-                              exp.status === "rejected" ? "bg-red-100 text-red-800" :
-                              "bg-yellow-100 text-yellow-800"
-                            }`}>
-                              {exp.status === "approved" ? t("expensesPage.status.approved") : exp.status === "rejected" ? t("expensesPage.status.rejected") : t("expensesPage.status.pending")}
-                            </span>
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-2 text-center">
-                            {exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-2 text-center">
-                            {exp.status === "pending" && (
-                              <div className="flex gap-2 justify-center">
-                                <button
-                                  onClick={() => updateExpenseStatus(exp.id!, "approved")}
-                                  className="text-green-600 hover:text-green-800 text-xs font-medium"
-                                >
-                                  {t("expensesPage.buttons.approve")}
-                                </button>
-                                <button
-                                  onClick={() => updateExpenseStatus(exp.id!, "rejected")}
-                                  className="text-red-600 hover:text-red-800 text-xs font-medium"
-                                >
-                                  {t("expensesPage.buttons.reject")}
-                                </button>
-                              </div>
-                            )}
-                            {exp.status === "approved" && (
-                              <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
-                            )}
-                            {exp.status === "rejected" && (
-                              <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
-    );
 async function handleExportCSV() {
   try {
     const supabase = getBrowserClient();
@@ -411,8 +311,27 @@ export default function SpesePage() {
   const totalPending = expenses.filter(e => e.status === "pending").reduce((sum, e) => sum + e.amount, 0);
   const totalApproved = expenses.filter(e => e.status === "approved").reduce((sum, e) => sum + e.amount, 0);
 
+
+  // Stato filtri
+  const [filterCategory, setFilterCategory] = useState<string>("");
+  const [filterSupplier, setFilterSupplier] = useState<string>("");
+  const [filterType, setFilterType] = useState<string>("");
+  const [filterDate, setFilterDate] = useState<string>("");
+
+  // Ricava tutti i fornitori unici
+  const allSuppliers = Array.from(new Set(expenses.map(e => e.supplier).filter(Boolean)));
+
   // Raggruppa le spese per categoria e sottocategoria
   const groupedExpenses = expenses.reduce((acc, exp) => {
+    // Applica filtri
+    if (
+      (filterCategory && exp.category !== filterCategory) ||
+      (filterSupplier && exp.supplier !== filterSupplier) ||
+      (filterType && exp.spendType !== filterType) ||
+      (filterDate && !exp.date.startsWith(filterDate))
+    ) {
+      return acc;
+    }
     const key = `${exp.category}|${exp.subcategory}`;
     if (!acc[key]) {
       acc[key] = {
@@ -430,7 +349,6 @@ export default function SpesePage() {
     const catIndexA = ALL_CATEGORIES.indexOf(a.category);
     const catIndexB = ALL_CATEGORIES.indexOf(b.category);
     if (catIndexA !== catIndexB) return catIndexA - catIndexB;
-
     // Ordina sottocategorie all'interno della stessa categoria
     const subsA = CATEGORIES_MAP[a.category] || [];
     const subsB = CATEGORIES_MAP[b.category] || [];
@@ -446,9 +364,10 @@ export default function SpesePage() {
     );
   }
 
+
   return (
     <section className="pt-6">
-  <h2 className="font-serif text-3xl mb-2 text-center">💸 {t("expensesPage.title")}</h2>
+      <h2 className="font-serif text-3xl mb-2 text-center">💸 {t("expensesPage.title")}</h2>
       <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">{t("expensesPage.info.lead")}</p>
 
       <PageInfoNote
@@ -478,6 +397,30 @@ export default function SpesePage() {
           {message}
         </div>
       )}
+
+      {/* FILTRI avanzati */}
+      <div className="mb-6 flex flex-wrap gap-2 items-end">
+        <select className="border rounded px-2 py-1" value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
+          <option value="">Tutte le categorie</option>
+          {ALL_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+        <select className="border rounded px-2 py-1" value={filterSupplier} onChange={e => setFilterSupplier(e.target.value)}>
+          <option value="">Tutti i fornitori</option>
+          {allSuppliers.map(sup => <option key={sup} value={sup}>{sup}</option>)}
+        </select>
+        <select className="border rounded px-2 py-1" value={filterType} onChange={e => setFilterType(e.target.value)}>
+          <option value="">Tutti i tipi</option>
+          <option value="common">Comune</option>
+          <option value="bride">Sposa</option>
+          <option value="groom">Sposo</option>
+        </select>
+        <input type="date" className="border rounded px-2 py-1" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
+        {(filterCategory || filterSupplier || filterType || filterDate) && (
+          <button className="ml-2 text-xs text-gray-500 underline" onClick={() => { setFilterCategory(""); setFilterSupplier(""); setFilterType(""); setFilterDate(""); }}>
+            Azzera filtri
+          </button>
+        )}
+      </div>
 
       {/* Riepilogo */}
       <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
