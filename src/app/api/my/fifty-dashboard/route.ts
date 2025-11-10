@@ -13,9 +13,9 @@ export type ExpenseRow = {
   notes?: string;
 };
 
+import { getBearer } from "@/lib/apiAuth";
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
+  const jwt = getBearer(req);
   const country = new URL(req.url).searchParams.get("country") || "it";
 
   if (!jwt) {
@@ -103,8 +103,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
+  const jwt = getBearer(req);
   if (!jwt) return NextResponse.json({ ok: false, error: "Not authenticated" }, { status: 401 });
 
   const db = getServiceClient();

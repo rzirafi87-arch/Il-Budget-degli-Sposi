@@ -346,6 +346,17 @@ Tutti gli altri paesi sono configurati ma **NON hanno**:
 
 ---
 
+## 🚦 Stato test e refactor (Nov 2025)
+
+- ✅ Verifica API dopo integrazione utility e patch
+- ✅ Test unitari e integrazione: tutti superati
+- ✅ Proposta step successivi automatica
+- [ ] Estendere test integrazione alle API autenticate (mock JWT valido)
+- [ ] Aggiornare documentazione API e utility
+- [ ] Refactor: uniformare gestione headers in tutte le route API
+
+---
+
 **Legenda Stati**:
 - ✅ = Completato e testato
 - 🔄 = In sviluppo/parziale

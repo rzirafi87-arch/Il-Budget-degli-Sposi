@@ -7,9 +7,9 @@ export const runtime = "nodejs";
 
 // GET /api/my/baptism-dashboard
 // Returns all categories and subcategories for baptism event type
+import { getBearer } from "@/lib/apiAuth";
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
+  const jwt = getBearer(req);
 
   // Demo data for unauthenticated users
   if (!jwt) {
@@ -155,8 +155,7 @@ export async function GET(req: NextRequest) {
 // POST /api/my/baptism-dashboard
 // Save all budget rows (upsert expenses)
 export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
+  const jwt = getBearer(req);
 
   if (!jwt) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
