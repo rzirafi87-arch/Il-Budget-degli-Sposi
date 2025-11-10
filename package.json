@@ -48,6 +48,7 @@
         "node": ">=18.17.0"
     },
     "dependencies": {
+        "@react-email/components": "^1.0.0",
         "@remotion/player": "^4.0.366",
         "@stripe/stripe-js": "^8.1.0",
         "@supabase/auth-helpers-nextjs": "^0.10.0",
@@ -66,8 +67,8 @@
         "react-dom": "19.2.0",
         "react-leaflet": "^5.0.0",
         "remotion": "^4.0.366",
-        "resend": "^6.2.2",
-        "stripe": "^19.1.0"
+        "resend": "^6.4.2",
+        "stripe": "^19.3.0"
     },
     "devDependencies": {
         "@babel/core": "^7.28.0",
@@ -78,7 +79,7 @@
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.0",
         "@types/jest": "^30.0.0",
-        "@types/node": "^20",
+        "@types/node": "^20.19.24",
         "@types/react-dom": "^19",
         "babel-jest": "^30.2.0",
         "babel-plugin-dynamic-import-node": "^2.3.3",
