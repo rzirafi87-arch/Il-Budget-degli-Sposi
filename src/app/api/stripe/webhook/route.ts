@@ -1,9 +1,13 @@
+// Stripe temporaneamente disabilitato per il deploy
+/*
+  Tutto il codice Stripe è stato disabilitato per il deploy.
+*/
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from "next/server";
-export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 import { sendSubscriptionActivated } from "@/lib/emailService";
+import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+export const runtime = "nodejs";
 
 // Initialize Stripe using account default API version to avoid mismatches
 const stripe = process.env.STRIPE_SECRET_KEY

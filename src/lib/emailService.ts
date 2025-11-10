@@ -50,7 +50,7 @@ function getEmailCopy(locale: string) {
             </div>
             <div class="content">
               <p>${t.greeting(supplierName)}</p>
-              
+
               <div class="alert-box">
                 <strong>${t.alertTitle(tier, daysRemaining)}</strong>
                 <br>
@@ -150,7 +150,7 @@ function getEmailCopy(locale: string) {
                     </div>
                     <div class="content">
                       <p>${t.greeting(supplierName)}</p>
-              
+
                       <div class="success-box">
                         <strong>${t.successTitle(tier)}</strong>
                       </div>
@@ -263,7 +263,7 @@ export async function sendSubscriptionExpiryWarning(
             </div>
             <div class="content">
               <p>${t.greeting(supplierName)}</p>
-              
+
               <div class="alert-box">
                 <strong>${t.alertTitle(tier, daysRemaining)}</strong>
                 <br>
@@ -345,7 +345,7 @@ export async function sendSubscriptionActivated(
             </div>
             <div class="content">
               <p>${t.greeting(supplierName)}</p>
-              
+
               <div class="success-box">
                 <strong>${t.successTitle(tier)}</strong>
               </div>
@@ -451,7 +451,7 @@ export async function sendAppointmentReminder(
               </div>
 
               <p>
-                ${lang === "en" 
+                ${lang === "en"
                   ? "You can review or update your agenda from the app."
                   : "Puoi rivedere o aggiornare l'agenda dall'app."}
               </p>
