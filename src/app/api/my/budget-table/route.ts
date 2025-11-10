@@ -1,6 +1,6 @@
-import { calculateResidual } from "@/lib/budgetUtils";
-import { calculateDifference, splitBudgetByType } from "@/lib/budgetCalc";
 import { getBearer, requireUser } from "@/lib/apiAuth";
+import { calculateDifference, splitBudgetByType } from "@/lib/budgetCalc";
+import { calculateResidual } from "@/lib/budgetUtils";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
@@ -178,17 +178,13 @@ export async function GET(req: NextRequest) {
     };
 
     const rows: Row[] = [];
-    let totalCommon = 0, totalBride = 0, totalGroom = 0;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
-    (subs || []).forEach((s: any) => {
-      const catName = s.category?.name || "";
+    (subs || []).forEach((s) => {
+  const catName = (s.category && typeof s.category === 'object' && 'name' in s.category) ? String(s.category.name) : "";
       const subName = s.name;
-      const expenses = s.expenses || [];
-
+      const expenses: Array<{committed_amount?: number; paid_amount?: number; spend_type?: string; status?: string; from_dashboard?: boolean}> = s.expenses || [];
       let budget = 0, committed = 0, paid = 0;
-        let spendType: "common" | "bride" | "groom" = "common";
-      expenses.forEach((e: any) => {
+      let spendType: "common" | "bride" | "groom" = "common";
+      expenses.forEach((e) => {
         const expenseSpendType = (e.spend_type as "common" | "bride" | "groom") || "common";
         budget += Number(e.committed_amount || 0);
         committed += Number(e.status === "committed" ? e.committed_amount || 0 : 0);
@@ -196,9 +192,8 @@ export async function GET(req: NextRequest) {
         if (expenseSpendType !== "common") spendType = expenseSpendType;
       });
       const residual = calculateResidual(budget, paid);
-      const hasFromDashboard = expenses.some((e: any) => e.from_dashboard);
+      const hasFromDashboard = expenses.some((e) => e.from_dashboard);
       const difference = calculateDifference(budget, paid);
-
       rows.push({
         category: catName,
         subcategory: subName,
