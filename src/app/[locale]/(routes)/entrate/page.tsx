@@ -9,6 +9,7 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { saveAs } from "file-saver";
 
 const supabase = getBrowserClient();
 
@@ -23,76 +24,99 @@ type Income = {
 };
 
 export default function EntratePage() {
-  const t = useTranslations();
-  const locale = useLocale() || "it";
-  const country = getUserCountrySafe();
-  const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
-  const isBaptism = userEventType === "baptism";
-  const isCommunion = userEventType === "communion";
-  const isConfirmation = userEventType === "confirmation";
-  const isBirthday = userEventType === "birthday";
-  const isEighteenth = userEventType === "eighteenth";
-  const isGraduation = userEventType === "graduation";
-  const isFifty = userEventType === "fifty";
-  const isRetirement = userEventType === "retirement";
-  const isBabyShower = userEventType === "babyshower";
-  const isProposal = userEventType === "proposal";
-  const isCorporate = userEventType === "corporate";
-  const isBarMitzvah = userEventType === "bar-mitzvah";
-  const isQuinceanera = userEventType === "quinceanera";
-  const isCharityGala = userEventType === "charity-gala";
-  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement || isBabyShower || isProposal || isCorporate || isBarMitzvah || isQuinceanera || isCharityGala;
-  const isWedding = userEventType === "wedding";
-  const [incomes, setIncomes] = useState<Income[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
-
-  const [newIncome, setNewIncome] = useState<Income>({
-    name: "",
-    type: "busta",
-    incomeSource: "common",
-    amount: 0,
-    notes: "",
-    date: new Date().toISOString().split("T")[0],
-  });
-
-    // For single-budget events (baptism, communion), force incomeSource to common
-  useEffect(() => {
-    if (isSingleBudgetEvent && newIncome.incomeSource !== "common") {
-      setNewIncome((prev) => ({ ...prev, incomeSource: "common" }));
-    }
-  }, [isSingleBudgetEvent, newIncome.incomeSource]);
-
-  const loadIncomes = useCallback(async () => {
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-
-      const headers: HeadersInit = {};
-      if (jwt) {
-        headers.Authorization = `Bearer ${jwt}`;
-      }
-
-      const r = await fetch("/api/my/incomes", { headers });
-      const j = await r.json();
-
-      type IncomeRow = {
-        id: string;
-        name: string;
-        type: "busta" | "bonifico" | "regalo";
-        amount: number;
-        notes: string;
-        date: string;
-        incomeSource: "bride" | "groom" | "common";
-      };
-      const raw: IncomeRow[] = j.incomes || [];
-      // For Battesimo, Comunione, and Cresima: force incomeSource to 'common' on UI side
-      const mapped: Income[] = isSingleBudgetEvent
-        ? raw.map((i) => ({
-            id: i.id,
-            name: i.name,
+  return (
+    <section className="container mx-auto px-2 md:px-0 py-4">
+      <PageInfoNote
+        title={t("incomesPage.title")}
+        description={t("incomesPage.description")}
+        images={getPageImages("entrate")}
+      />
+      <div className="flex justify-end mb-4">
+        <button
+          className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-4 py-2 rounded shadow text-sm"
+          onClick={handleExportCSV}
+        >
+          {t("incomesPage.buttons.exportCSV", { defaultValue: "Esporta CSV" })}
+        </button>
+      </div>
+      <div className="mt-4">
+        <table className="min-w-full divide-y divide-gray-100 text-sm">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.name")}</th>
+              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.type")}</th>
+              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.source")}</th>
+              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.amount")}</th>
+              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.notes")}</th>
+              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.actions")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {incomes.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-gray-400">{t("incomesPage.empty")}</td>
+              </tr>
+            ) : (
+              incomes.map((income) => (
+                <tr key={income.id} className="border-b border-gray-50 hover:bg-gray-50/60">
+                  <td className="whitespace-nowrap px-4 py-2 font-medium">{income.name}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`inline-block px-2 py-1 rounded text-xs ${
+                      income.type === "busta" ? "bg-yellow-100 text-yellow-700" :
+                      income.type === "bonifico" ? "bg-blue-100 text-blue-700" :
+                      "bg-green-100 text-green-700"
+                    }`}>
+                      {income.type === "busta" ? t("incomesPage.badges.type.busta") :
+                       income.type === "bonifico" ? t("incomesPage.badges.type.bonifico") :
+                       t("incomesPage.badges.type.regalo")}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`inline-block px-2 py-1 rounded text-xs ${
+                      income.incomeSource === "bride" ? "bg-pink-100 text-pink-700" :
+                      income.incomeSource === "groom" ? "bg-blue-100 text-blue-700" :
+                      "bg-gray-100 text-gray-700"
+                    }`}>
+                      {income.incomeSource === "bride" ? t("incomesPage.badges.source.bride") :
+                       income.incomeSource === "groom" ? t("incomesPage.badges.source.groom") :
+                       t("incomesPage.badges.source.common")}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right font-semibold">
+                    {income.type === "regalo" ? "—" : formatEuro(income.amount)}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">{income.notes || "—"}</td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => deleteIncome(income.id!)}
+                      className="text-red-600 hover:text-red-800 text-xs"
+                    >
+                      {t("incomesPage.buttons.delete")}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+async function handleExportCSV() {
+  try {
+    const supabase = getBrowserClient();
+    const { data } = await supabase.auth.getSession();
+    const jwt = data.session?.access_token;
+    const headers: HeadersInit = {};
+    if (jwt) headers.Authorization = `Bearer ${jwt}`;
+    const res = await fetch("/api/my/incomes/export-csv", { headers });
+    if (!res.ok) throw new Error("Errore nell'esportazione CSV");
+    const blob = await res.blob();
+    saveAs(blob, "entrate.csv");
+  } catch (e) {
+    alert("Errore durante l'esportazione CSV");
+  }
+}
             type: i.type,
             amount: i.amount,
             notes: i.notes,
