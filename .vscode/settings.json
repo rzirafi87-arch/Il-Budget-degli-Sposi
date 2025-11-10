@@ -78,7 +78,9 @@
     "messages",
     "src/i18n",
     "src/messages",
-    "src/lib/i18n"
+    "src/lib/i18n",
+    "src/app/api/i18n",
+    "src/app/api/locales"
   ],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.enabledFrameworks": [
