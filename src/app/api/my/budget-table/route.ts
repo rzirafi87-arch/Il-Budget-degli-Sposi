@@ -1,3 +1,5 @@
+import { calculateResidual } from "@/lib/budgetUtils";
+import { calculateDifference, splitBudgetByType } from "@/lib/budgetCalc";
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -177,33 +179,25 @@ export async function GET(req: NextRequest) {
 
     const rows: Row[] = [];
     let totalCommon = 0, totalBride = 0, totalGroom = 0;
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (subs || []).forEach((s: any) => {
       const catName = s.category?.name || "";
       const subName = s.name;
       const expenses = s.expenses || [];
 
-      // somma i campi per sottocategoria (se non esistono spese, 0)
-      let budget = 0, committed = 0, paid = 0, residual = 0;
-      let spendType = "common" as "common" | "bride" | "groom";
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let budget = 0, committed = 0, paid = 0;
+        let spendType: "common" | "bride" | "groom" = "common";
       expenses.forEach((e: any) => {
-        // "budget": usiamo committed_amount per i planned/committed (è la colonna già in schema)
         const expenseSpendType = (e.spend_type as "common" | "bride" | "groom") || "common";
         budget += Number(e.committed_amount || 0);
         committed += Number(e.status === "committed" ? e.committed_amount || 0 : 0);
         paid     += Number(e.paid_amount || 0);
-        // prendi l'ultimo tipo (o il primo non-common se c'è)
         if (expenseSpendType !== "common") spendType = expenseSpendType;
       });
-      residual = Math.max(0, budget - paid);
-
-      // Verifica se almeno una spesa era from_dashboard
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const residual = calculateResidual(budget, paid);
       const hasFromDashboard = expenses.some((e: any) => e.from_dashboard);
-      const difference = paid - budget; // negativo = sotto budget, positivo = sopra budget
+      const difference = calculateDifference(budget, paid);
 
       rows.push({
         category: catName,
@@ -216,18 +210,13 @@ export async function GET(req: NextRequest) {
         fromDashboard: hasFromDashboard,
         difference,
       });
-
-      if (spendType === "bride") totalBride += budget;
-      else if (spendType === "groom") totalGroom += budget;
-      else totalCommon += budget;
     });
 
-    const totals = {
-      total: totalCommon + totalBride + totalGroom,
-      common: totalCommon,
-      bride: totalBride,
-      groom: totalGroom,
-    };
+    // Calcolo split budget usando la utility
+    const split = splitBudgetByType(rows.map(r => ({ budget: r.budget, spendType: r.spend_type })));
+    const totals = split;
+
+
 
     return NextResponse.json({ rows, totals, eventId }, { status: 200 });
   } catch (e: unknown) {
