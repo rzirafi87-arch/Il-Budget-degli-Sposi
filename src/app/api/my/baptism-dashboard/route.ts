@@ -13,8 +13,7 @@ export async function GET(req: NextRequest) {
 
   // Demo data for unauthenticated users
   if (!jwt) {
-    const url = new URL(req.url);
-    const country = url.searchParams.get("country") || "it";
+  const country = req.nextUrl?.searchParams?.get("country") || "it";
     const template = getBaptismTemplate(country);
 
     const demoRows = template.flatMap(cat =>
@@ -33,6 +32,13 @@ export async function GET(req: NextRequest) {
       totalBudget: 0,
       eventDate: "",
     });
+  }
+
+  // Verifica JWT
+  const db = getServiceClient();
+  const { data: userData, error: authError } = await db.auth.getUser(jwt);
+  if (authError || !userData?.user) {
+    return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
 
   // Authenticated flow

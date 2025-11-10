@@ -18,7 +18,7 @@ export type ExpenseRow = {
 import { getBearer } from "@/lib/apiAuth";
 export async function GET(req: NextRequest) {
   const jwt = getBearer(req);
-  const country = new URL(req.url).searchParams.get("country") || "it";
+  const country = req.nextUrl?.searchParams?.get("country") || "it";
 
   if (!jwt) {
     // Demo mode: return template-only data
@@ -35,6 +35,13 @@ export async function GET(req: NextRequest) {
       rows: demoRows,
       budgets: { total: 0 },
     });
+  }
+
+  // Verifica JWT
+  const db = getServiceClient();
+  const { data: userData, error: authError } = await db.auth.getUser(jwt);
+  if (authError || !userData?.user) {
+    return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
 
   const db = getServiceClient();

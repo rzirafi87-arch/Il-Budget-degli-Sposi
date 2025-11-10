@@ -6,9 +6,10 @@ describe('/api/my/baptism-dashboard API', () => {
     const req = new NextRequest('http://localhost/api/my/baptism-dashboard', { method: 'GET', headers: new Headers() });
     const response = await GET(req);
     const json = await response.json();
-    expect(json).toHaveProperty('rows');
-    expect(Array.isArray(json.rows)).toBe(true);
-    expect(json).toHaveProperty('totalBudget');
+  expect(json).toHaveProperty('rows');
+  expect(Array.isArray(json.rows)).toBe(true);
+  expect(json).toHaveProperty('budgets');
+  expect(json.budgets).toHaveProperty('total');
   });
 
   it('restituisce errore se JWT non valido', async () => {
