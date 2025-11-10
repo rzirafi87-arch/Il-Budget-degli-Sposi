@@ -1,7 +1,7 @@
 ﻿import { currencyForCountry } from "@/lib/currency";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import React from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   brideBudget: number;
@@ -9,22 +9,11 @@ type Props = {
   totalBudget: number;
   weddingDate: string;
   countryState: string;
-  import { currencyForCountry } from "@/lib/currency";
-  import { useTranslations } from "next-intl";
-  import Link from "next/link";
-  import React from "react";
-
-  type Props = {
-    brideBudget: number;
-    groomBudget: number;
-    totalBudget: number;
-    weddingDate: string;
-    countryState: string;
-    eventType?: string;
-    setBrideBudget: (n: number) => void;
-    setGroomBudget: (n: number) => void;
-    setWeddingDate: (d: string) => void;
-  };
+  eventType?: string;
+  setBrideBudget: (n: number) => void;
+  setGroomBudget: (n: number) => void;
+  setWeddingDate: (d: string) => void;
+};
 
   export default function BudgetSummary({ brideBudget, groomBudget, totalBudget, weddingDate, countryState, eventType, setBrideBudget, setGroomBudget, setWeddingDate }: Props) {
     const t = useTranslations("budgetUi");
@@ -41,13 +30,13 @@ type Props = {
     const currencyLabel = `(${currencyCode})`;
     const isSingle = eventType === 'baptism' || eventType === 'graduation' || eventType === 'eighteenth' || eventType === 'confirmation';
 
-    const [contingencyPct, setContingencyPct] = React.useState<number>(() => {
+    const [contingencyPct, setContingencyPct] = useState<number>(() => {
       if (typeof window === 'undefined') return 0;
       const v = Number(localStorage.getItem('budgetIdea.contingencyPct') || 0);
       return Number.isFinite(v) ? v : 0;
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (typeof window !== 'undefined') {
         localStorage.setItem('budgetIdea.contingencyPct', String(contingencyPct));
       }
@@ -141,6 +130,4 @@ type Props = {
         </div>
       </div>
     );
-  }
-  );
 }
