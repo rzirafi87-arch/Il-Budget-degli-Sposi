@@ -14,9 +14,9 @@
  - [x] Database su Supabase Cloud
  - [x] Pipeline automatica Codex (SQL → Commit → Deploy)
  - [x] Utility calcolo budget integrate in tutte le API principali
- - [ ] Test automatizzati (da implementare)
- - [ ] Documentazione tecnica dettagliata (in aggiornamento)
- - [ ] UI/UX review finale
+ - [x] Test automatizzati (copertura base presente)
+ - [x] Documentazione tecnica dettagliata (struttura aggiornata, vedi /docs)
+ - [ ] UI/UX review finale (in corso)
 # 📋 CHECKLIST IMPLEMENTAZIONE COMPLETA - Il Budget degli Sposi
 **Ultimo Aggiornamento**: 5 Novembre 2025
 
@@ -25,21 +25,19 @@
 ### ✅ Completamente Implementate (1)
 - [x] **Italiano** 🇮🇹 - COMPLETO (lingua principale, tutte traduzioni presenti)
 
-### 🔄 In Sviluppo (0)
-_Nessuna lingua in sviluppo al momento_
+### � Parzialmente Complete (8)
+- [x] English 🇬🇧
+- [x] Français 🇫🇷
+- [x] Español 🇪🇸
+- [x] Português ��
+- [x] Русский 🇷🇺
+- [x] 中文 🇨🇳
+- [x] 日本語 🇯🇵
+- [x] العربية 🇦🇪
 
-### ⏳ Coming Soon (58)
-Tutte le altre lingue sono configurate ma **NON hanno traduzioni complete**:
-- [ ] Español 🇪🇸
-- [ ] English 🇬🇧
-- [ ] Français 🇫🇷
-- [ ] Deutsch 🇩🇪
-- [ ] Русский 🇷🇺
-- [ ] 中文 🇨🇳
-- [ ] 日本語 🇯🇵
-- [ ] العربية 🇦🇪
-- [ ] Português 🇧🇷
-- [ ] E altre 49 lingue...
+### ⏳ Da completare (altre lingue)
+- [ ] Deutsch �� (file mancante)
+- [ ] Hindi, altre lingue secondarie: da tradurre
 
 ---
 
@@ -52,12 +50,12 @@ Tutte le altre lingue sono configurate ma **NON hanno traduzioni complete**:
   - Tutte le categorie eventi
   - Regioni/Province complete
 
-### 🔄 Parzialmente Implementati (3)
+### � Parzialmente Implementati (3)
 - [ ] **Messico** 🇲🇽
   - Seeds fornitori: ✅
   - Seeds locations: ✅
   - Tradizioni: ✅
-  - Chiese: ❌
+  - Chiese: ❌ (da completare)
   - Regioni complete: ✅
 
 - [ ] **India** 🇮🇳

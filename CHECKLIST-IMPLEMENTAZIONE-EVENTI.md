@@ -2,20 +2,13 @@
 
 ## 🌍 Copertura Multilingua e Nazioni (verifica coerenza)
 
-- Lingue supportate (i18n):
-  - Italiano (it-IT)
-  - English (en-GB)
-  - Español (es-ES)
-  - Français (fr-FR)
-  - Deutsch (de-DE)
-  - العربية (ar)
-  - हिन्दी (hi-IN)
-  - 日本語 (ja-JP)
-  - 中文 (zh-CN)
-  - Español (México) (es-MX)
-  - Português (pt-PT)
-  - Русский (ru-RU)
-  - Bahasa Indonesia (id-ID)
+
+Lingue supportate (i18n):
+  - Italiano (it-IT) ✅ completo
+  - English (en-GB), Français (fr-FR), Español (es-ES), Português (pt-PT), Русский (ru-RU), 中文 (zh-CN), 日本語 (ja-JP), العربية (ar) 🟡 quasi completo
+  - Deutsch (de-DE) ❌ file mancante
+  - हिन्दी (hi-IN) 🟡 da tradurre
+  - Español (México) (es-MX), Bahasa Indonesia (id-ID) 🟡 parziale
 
 - Nazioni supportate (geo_countries):
   - Italia (IT)
@@ -29,11 +22,7 @@
   - Cina (CN)
   - India (IN)
 
-- [x] Tutte le lingue e nazioni sono coerenti tra:
-  - Configurazione i18n (`src/i18n/config.ts`)
-  - File di traduzione (`src/messages/*.json`)
-  - Seed database (`scripts/seed_i18n.ts`, `scripts/seed_i18n_local.mjs`)
-  - UI selettori lingua/paese
+- [x] Tutte le lingue e nazioni sono coerenti tra configurazione, file di traduzione e seed. Alcune lingue secondarie sono ancora da completare.
 
 ---
 

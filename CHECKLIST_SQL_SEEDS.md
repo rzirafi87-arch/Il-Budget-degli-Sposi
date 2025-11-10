@@ -174,18 +174,28 @@ Nota: eseguire solo se stai adottando lo schema multi-evento e vuoi popolare il 
 6. Clicca su **RUN** per eseguire
 7. Verifica che l'esecuzione sia completata con successo (controlla output in basso)
 
+
 ## ✅ Checklist di Verifica
 
 Dopo aver eseguito i seeds, verifica che le seguenti pagine mostrino dati:
 
-- [ ] `/fotografi` - Deve mostrare fotografi (categoria: "Foto & Video")
-- [ ] `/fiorai` - Deve mostrare fioristi (categoria: "Fiori & Decor")
-- [ ] `/catering` - Deve mostrare servizi catering (categoria: "Catering")
-- [ ] `/beauty` - Deve mostrare parrucchieri/makeup (categoria: "Beauty & Benessere")
-- [ ] `/gioiellerie` - Deve mostrare gioiellerie (categoria: "Gioiellerie")
-- [ ] `/chiese` - Deve mostrare chiese dalla tabella `churches`
-- [ ] `/atelier` - Deve mostrare atelier dalla tabella `atelier`
-- [ ] `/location` - Deve mostrare location dalla tabella `locations`
+- [x] `/fotografi` - Deve mostrare fotografi (categoria: "Foto & Video")
+- [x] `/fiorai` - Deve mostrare fioristi (categoria: "Fiori & Decor")
+- [x] `/catering` - Deve mostrare servizi catering (categoria: "Catering")
+- [x] `/beauty` - Deve mostrare parrucchieri/makeup (categoria: "Beauty & Benessere")
+- [x] `/gioiellerie` - Deve mostrare gioiellerie (categoria: "Gioiellerie")
+- [ ] `/chiese` - Deve mostrare chiese dalla tabella `churches` _(seed Messico chiese da completare)_
+- [x] `/atelier` - Deve mostrare atelier dalla tabella `atelier`
+- [x] `/location` - Deve mostrare location dalla tabella `locations`
+
+### Stato seed lingue
+
+- [x] Italiano (completo)
+- [x] Inglese (completo)
+- [x] Spagnolo (completo)
+- [x] Francese (completo)
+- [ ] Tedesco (da completare)
+- [ ] Hindi (da completare)
 
 ## ⚠️ Note Importanti
 
