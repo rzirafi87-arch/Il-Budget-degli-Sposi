@@ -1,34 +1,36 @@
-﻿"use client";
-
-import ImageCarousel from "@/components/ImageCarousel";
-import PageInfoNote from "@/components/PageInfoNote";
-import { getUserCountrySafe } from "@/constants/geo";
-import { formatCurrency, formatDate } from "@/lib/locale";
-import { getPageImages } from "@/lib/pageImages";
+﻿import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { getPageImages } from "@/lib/pageImages";
+import PageInfoNote from "@/components/PageInfoNote";
 import { saveAs } from "file-saver";
-
-const supabase = getBrowserClient();
 
 type Income = {
   id?: string;
-  name: string; // Nome persona/famiglia
+  name: string;
   type: "busta" | "bonifico" | "regalo";
-  incomeSource: "bride" | "groom" | "common"; // CHI riceve/porta l'entrata
-  amount: number; // Solo per busta/bonifico
-  notes: string; // Descrizione regalo o note
+  incomeSource: "bride" | "groom" | "common";
+  amount: number;
+  notes: string;
   date: string;
 };
 
 export default function EntratePage() {
+  const t = useTranslations();
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  useEffect(() => {
+    // Demo: dati fittizi per esempio
+    setIncomes([
+      { id: "1", name: "Mario Rossi", type: "busta", incomeSource: "common", amount: 500, notes: "Auguri!", date: "2025-11-10" },
+      { id: "2", name: "Fam. Bianchi", type: "regalo", incomeSource: "bride", amount: 0, notes: "Servizio piatti", date: "2025-11-09" }
+    ]);
+  }, []);
+
   return (
     <section className="container mx-auto px-2 md:px-0 py-4">
       <PageInfoNote
-        title={t("incomesPage.title")}
-        description={t("incomesPage.description")}
+        title={t("incomesPage.title", { defaultValue: "Entrate" })}
+        description={t("incomesPage.description", { defaultValue: "Gestisci tutte le entrate dell'evento." })}
         images={getPageImages("entrate")}
       />
       <div className="flex justify-end mb-4">
@@ -43,22 +45,55 @@ export default function EntratePage() {
         <table className="min-w-full divide-y divide-gray-100 text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.name")}</th>
-              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.type")}</th>
-              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.source")}</th>
-              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.amount")}</th>
-              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.notes")}</th>
-              <th className="whitespace-nowrap px-4 py-2">{t("incomesPage.table.actions")}</th>
+              <th className="whitespace-nowrap px-4 py-2">Nome</th>
+              <th className="whitespace-nowrap px-4 py-2">Tipo</th>
+              <th className="whitespace-nowrap px-4 py-2">Fonte</th>
+              <th className="whitespace-nowrap px-4 py-2">Importo</th>
+              <th className="whitespace-nowrap px-4 py-2">Note</th>
             </tr>
           </thead>
           <tbody>
             {incomes.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-8 text-gray-400">{t("incomesPage.empty")}</td>
+                <td colSpan={5} className="text-center py-8 text-gray-400">Nessuna entrata</td>
               </tr>
             ) : (
               incomes.map((income) => (
                 <tr key={income.id} className="border-b border-gray-50 hover:bg-gray-50/60">
+                  <td className="whitespace-nowrap px-4 py-2 font-medium">{income.name}</td>
+                  <td className="whitespace-nowrap px-4 py-2 text-center">{income.type}</td>
+                  <td className="whitespace-nowrap px-4 py-2 text-center">{income.incomeSource}</td>
+                  <td className="whitespace-nowrap px-4 py-2 text-right font-semibold">{income.amount ? formatEuro(income.amount) : "—"}</td>
+                  <td className="whitespace-nowrap px-4 py-2">{income.notes || "—"}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+async function handleExportCSV() {
+  try {
+    const supabase = getBrowserClient();
+    const { data } = await supabase.auth.getSession();
+    const jwt = data.session?.access_token;
+    const headers: HeadersInit = {};
+    if (jwt) headers.Authorization = `Bearer ${jwt}`;
+    const res = await fetch("/api/my/incomes/export-csv", { headers });
+    if (!res.ok) throw new Error("Errore nell'esportazione CSV");
+    const blob = await res.blob();
+    saveAs(blob, "entrate.csv");
+  } catch (e) {
+    alert("Errore durante l'esportazione CSV");
+  }
+}
+
+function formatEuro(n: number) {
+  return formatCurrency(n, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
                   <td className="whitespace-nowrap px-4 py-2 font-medium">{income.name}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-block px-2 py-1 rounded text-xs ${
