@@ -1,12 +1,8 @@
-﻿import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { getPageImages } from "@/lib/pageImages";
-import PageInfoNote from "@/components/PageInfoNote";
+﻿import React, { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 
 type Income = {
-  id?: string;
+  id: string;
   name: string;
   type: "busta" | "bonifico" | "regalo";
   incomeSource: "bride" | "groom" | "common";
@@ -16,10 +12,8 @@ type Income = {
 };
 
 export default function EntratePage() {
-  const t = useTranslations();
   const [incomes, setIncomes] = useState<Income[]>([]);
   useEffect(() => {
-    // Demo: dati fittizi per esempio
     setIncomes([
       { id: "1", name: "Mario Rossi", type: "busta", incomeSource: "common", amount: 500, notes: "Auguri!", date: "2025-11-10" },
       { id: "2", name: "Fam. Bianchi", type: "regalo", incomeSource: "bride", amount: 0, notes: "Servizio piatti", date: "2025-11-09" }
@@ -28,17 +22,12 @@ export default function EntratePage() {
 
   return (
     <section className="container mx-auto px-2 md:px-0 py-4">
-      <PageInfoNote
-        title={t("incomesPage.title", { defaultValue: "Entrate" })}
-        description={t("incomesPage.description", { defaultValue: "Gestisci tutte le entrate dell'evento." })}
-        images={getPageImages("entrate")}
-      />
       <div className="flex justify-end mb-4">
         <button
           className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-4 py-2 rounded shadow text-sm"
           onClick={handleExportCSV}
         >
-          {t("incomesPage.buttons.exportCSV", { defaultValue: "Esporta CSV" })}
+          Esporta CSV
         </button>
       </div>
       <div className="mt-4">
@@ -434,14 +423,15 @@ async function handleExportCSV() {
           </tbody>
         </table>
       </div>
+
     </section>
   );
-
+}
 
 // Funzione esportazione CSV
 async function handleExportCSV() {
   try {
-    const supabase = getBrowserClient();
+    const supabase = (await import("@/lib/supabaseBrowser")).getBrowserClient();
     const { data } = await supabase.auth.getSession();
     const jwt = data.session?.access_token;
     const headers: HeadersInit = {};
@@ -449,12 +439,12 @@ async function handleExportCSV() {
     const res = await fetch("/api/my/incomes/export-csv", { headers });
     if (!res.ok) throw new Error("Errore nell'esportazione CSV");
     const blob = await res.blob();
-    saveAs(blob, "entrate.csv");
+    (await import("file-saver")).saveAs(blob, "entrate.csv");
   } catch (e) {
     alert("Errore durante l'esportazione CSV");
   }
 }
 
 function formatEuro(n: number) {
-  return formatCurrency(n, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 }
