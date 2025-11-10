@@ -1,24 +1,247 @@
 {
-    "TODO": "Traduzione tedesca completa. Sostituire i valori con la traduzione corretta.",
     "dashboard": "Dashboard",
-    "timeline": "Timeline",
+    "timeline": "Zeitplan",
     "budget": "Budget",
-    "weddingThings": "Hochzeitsdinge",
+    "weddingThings": "Hochzeitssachen",
     "saveTheDate": "Save the Date",
     "guests": "Gäste",
     "accounting": "Buchhaltung",
     "suppliers": "Dienstleister",
-    "location": "Location",
+    "location": "Veranstaltungsort",
     "churches": "Kirchen",
     "documents": "Dokumente",
     "giftList": "Geschenkliste",
     "favorites": "Favoriten",
-    "suggestions": "Tipps & Vorschläge",
+    "suggestions": "Tipps & Ratschläge",
     "ideaBudget": "Budget-Idee",
     "auth": "Anmelden",
     "chat": "Chatte mit uns auf WhatsApp",
     "settings": "Einstellungen",
-    "loading": "Laden…",
-    "comingSoon": "Demnächst verfügbar",
-    "retirement": "Ruhestand"
+    "loading": "Lädt…",
+    "comingSoon": "Kommt bald",
+    "retirement": "Ruhestand",
+    "budgetPage": {
+        "approvedExpenses": "Genehmigte Ausgaben",
+        "ctaIdeaBudget": "💍 Zur Budget-Idee gehen",
+        "description": "Ansicht der genehmigten Ausgaben aus dem Bereich 'Ausgaben', alphabetisch nach Kategorie und Unterkategorie sortiert.",
+        "totals": {
+            "title": "Summe genehmigter Ausgaben",
+            "common": "Gemeinsam",
+            "bride": "Braut",
+            "groom": "Bräutigam"
+        },
+        "table": {
+            "category": "Kategorie",
+            "subcategory": "Unterkategorie",
+            "spendType": "Ausgabentyp",
+            "paymentMethod": "Zahlungsmethode",
+            "budget": "Budget",
+            "committed": "Verpflichtet",
+            "paid": "Bezahlt",
+            "residual": "Restbetrag",
+            "fromQuote": "Aus Angebot",
+            "difference": "Differenz"
+        },
+        "spendType": {
+            "common": "Gemeinsam",
+            "bride": "Braut",
+            "groom": "Bräutigam",
+            "gift": "Geschenk"
+        },
+        "paymentMethod": {
+            "common": "💍 Gemeinsam",
+            "bride": "💍 Braut",
+            "groom": "🤵 Bräutigam",
+            "gift": "🎁 Geschenk"
+        },
+        "loading": "Lädt...",
+        "empty": "Keine genehmigten Ausgaben. Gehen Sie zum Bereich 'Ausgaben', um Ihre Ausgaben zu genehmigen.",
+        "plannedVsActual": {
+            "title": "Geplant vs. Tatsächlich",
+            "totalPlanned": "Gesamt geplant",
+            "totalActualApproved": "Gesamt tatsächlich (genehmigt)",
+            "difference": "Differenz",
+            "over": "+ über Plan",
+            "under": "unter Plan",
+            "item": "Posten",
+            "planned": "Geplant",
+            "actual": "Tatsächlich",
+            "empty": "Keine Daten zum Vergleichen. Verwenden Sie 'Budget-Idee', um zu planen und Ausgaben im Bereich 'Ausgaben' zu genehmigen."
+        }
+    },
+    "expensesPage": {
+        "info": {
+            "lead": "Erfassen und verwalten Sie alle Hochzeitsausgaben. Sie können Angebote eingeben, diese als genehmigte Ausgaben bestätigen und Zahlungsstatus verfolgen. Filtern Sie nach Kategorie, Ausgabentyp (gemeinsam/Braut/Bräutigam) und Status.",
+            "title": "Komplettes Ausgabenmanagement",
+            "description": "Auf dieser Seite können Sie alle tatsächlichen Ausgaben und Angebote erfassen. Jede Ausgabe kann kategorisiert, der Braut/dem Bräutigam/gemeinsam zugewiesen und mit Genehmigungs- und Zahlungsstatus verfolgt werden. Bestätigte Ausgaben aus dem Dashboard erscheinen hier automatisch.",
+            "tips": {
+                "tip1": "Verwenden Sie den Status 'Angebot' für erhaltene Angebote, dann auf 'Genehmigt' ändern, wenn Sie bestätigen",
+                "tip2": "Das Feld 'Aus Angebot' zeigt an, ob die Ausgabe aus dem Dashboard stammt (bereits budgetiert)",
+                "tip3": "Fügen Sie immer den Dienstleister hinzu, um nachzuverfolgen, wer welche Leistung erbracht hat",
+                "tip4": "Filtern Sie nach Kategorie oder Ausgabentyp, um zu analysieren, wofür Sie am meisten ausgeben"
+            },
+            "eventTypeSpecific": {
+                "wedding": "Für eine Hochzeit können Sie Ausgaben zwischen Braut, Bräutigam und gemeinsam aufteilen. Das hilft, die Beiträge jedes Einzelnen zu verstehen und die Finanzen transparent zu verwalten.",
+                "baptism": "Bei einer Taufe werden alle Ausgaben automatisch als 'gemeinsam' festgelegt – es muss nicht angegeben werden, wer bezahlt.",
+                "birthday": "Für einen Geburtstag teilen Sie die Ausgaben zwischen dem Hauptorganisator und gemeinsamen Kosten auf.",
+                "graduation": "Für einen Abschluss verfolgen Sie alle veranstaltungsbezogenen Ausgaben: Veranstaltungsort, Catering, Einladungen, Dekorationen und Andenken."
+            }
+        },
+        "title": "Ausgaben",
+        "loading": "Lädt...",
+        "summary": {
+            "pending": "Genehmigung ausstehend",
+            "approved": "Genehmigte Ausgaben"
+        },
+        "buttons": {
+            "add": "+ Ausgabe hinzufügen",
+            "cancel": "Abbrechen",
+            "save": "Ausgabe speichern",
+            "approve": "Genehmigen",
+            "reject": "Ablehnen"
+        },
+        "form": {
+            "new": "Neue Ausgabe",
+            "category": "Kategorie",
+            "subcategory": "Unterkategorie",
+            "supplier": "Dienstleister",
+            "amount": "Betrag",
+            "spendType": "Ausgabentyp",
+            "date": "Datum",
+            "description": "Beschreibung",
+            "notes": "Notizen",
+            "placeholders": {
+                "supplier": "Name des Dienstleisters",
+                "amount": "0",
+                "description": "Detaillierte Beschreibung",
+                "notes": "Zusätzliche Notizen..."
+            },
+            "spendTypeOptions": {
+                "common": "Gemeinsam",
+                "bride": "Braut",
+                "groom": "Bräutigam"
+            }
+        },
+        "table": {
+            "supplier": "Dienstleister",
+            "description": "Beschreibung",
+            "amount": "Betrag",
+            "type": "Typ",
+            "date": "Datum",
+            "status": "Status",
+            "fromQuote": "Aus Angebot",
+            "actions": "Aktionen"
+        },
+        "status": {
+            "approved": "✓ Genehmigt",
+            "rejected": "✗ Abgelehnt",
+            "pending": "Ausstehend"
+        },
+        "spendType": {
+            "common": "Gemeinsam",
+            "bride": "Braut",
+            "groom": "Bräutigam"
+        },
+        "messages": {
+            "mustAuthAdd": "Sie müssen angemeldet sein, um Ausgaben hinzuzufügen. Klicken Sie oben auf 'Registrieren'.",
+            "networkError": "Netzwerkfehler",
+            "successAdded": "Ausgabe erfolgreich hinzugefügt!",
+            "none": "Keine Ausgaben erfasst",
+            "confirmed": "Bestätigt",
+            "discarded": "Verworfen"
+        }
+    },
+    "incomesPage": {
+        "info": {
+            "lead": "Verfolgen Sie alle Einnahmen, die zum Hochzeitsbudget beitragen: Geschenke der Eltern, Familienbeiträge, persönliche Ersparnisse oder andere Quellen. Geben Sie an, ob die Einnahme von der Braut, dem Bräutigam oder gemeinsam stammt.",
+            "title": "Alle Einnahmen verfolgen",
+            "description": "Hier können Sie alle Geldquellen erfassen, die zum Budget Ihres Events beitragen: Familienbeiträge, Geldgeschenke, Überweisungen, persönliche Ersparnisse. Jede Einnahme kann kategorisiert werden, um zu wissen, wer sie bringt (Braut/Bräutigam/gemeinsam) und von wem sie stammt.",
+            "tips": {
+                "tip1": "Verwenden Sie 'Umschlag' für Bargeldgeschenke während des Events",
+                "tip2": "Verwenden Sie 'Überweisung' für Beiträge vor dem Event",
+                "tip3": "Verwenden Sie 'Sachgeschenk' für materielle Geschenke (ohne bestimmten Betrag)",
+                "tip4": "Die Gesamtsumme der Einnahmen hilft Ihnen zu verstehen, wie viel Budget tatsächlich zur Verfügung steht"
+            },
+            "eventTypeSpecific": {
+                "wedding": "Bei Hochzeiten ist es üblich, Umschläge mit Geldbeiträgen von Gästen zu erhalten. Erfassen Sie jeden erhaltenen Umschlag für eine vollständige Nachverfolgung.",
+                "baptism": "Bei einer Taufe erfassen Sie Beiträge von Paten und Familienmitgliedern, die sich an den Ausgaben beteiligen möchten.",
+                "birthday": "Für einen Geburtstag verfolgen Sie Beiträge von Freunden und Verwandten, die bei der Organisation helfen möchten.",
+                "graduation": "Für einen Abschluss erfassen Sie Familienbeiträge und Geschenke zur Feier des Meilensteins."
+            }
+        },
+        "title": "Einnahmen",
+        "loading": "Lädt...",
+        "toolbar": {
+            "giftList": "Geschenkliste",
+            "backDashboard": "Zurück zum Dashboard"
+        },
+        "summary": {
+            "bride": "Einnahmen Braut",
+            "groom": "Einnahmen Bräutigam",
+            "common": "Gemeinsame Einnahmen",
+            "totalMoney": "Gesamtsumme",
+            "physicalGifts": "Sachgeschenke"
+        },
+        "buttons": {
+            "add": "+ Einnahme hinzufügen",
+            "cancel": "Abbrechen",
+            "save": "Einnahme speichern",
+            "delete": "Löschen"
+        },
+        "form": {
+            "new": "Neue Einnahme",
+            "name": "Name Person/Familie *",
+            "type": "Typ *",
+            "incomeSource": "Einnahmequelle *",
+            "amount": "Betrag (€) *",
+            "date": "Datum",
+            "notes": "Notizen",
+            "giftDescription": "Geschenkbeschreibung *",
+            "placeholders": {
+                "name": "z.B. Familie Müller",
+                "amount": "0",
+                "notes": "Zusätzliche Notizen...",
+                "gift": "z.B. Komplettes Tafelservice"
+            },
+            "typeOptions": {
+                "busta": "Umschlag",
+                "bonifico": "Überweisung",
+                "regalo": "Sachgeschenk"
+            },
+            "sourceOptions": {
+                "common": "Gemeinsam",
+                "bride": "Braut",
+                "groom": "Bräutigam"
+            }
+        },
+        "table": {
+            "date": "Datum",
+            "name": "Name",
+            "type": "Typ",
+            "source": "Quelle",
+            "amount": "Betrag",
+            "notes": "Notizen / Beschreibung",
+            "actions": "Aktionen"
+        },
+        "empty": "Keine Einnahmen erfasst",
+        "badges": {
+            "type": {
+                "busta": "💶 Umschlag",
+                "bonifico": "🏦 Überweisung",
+                "regalo": "🎁 Sachgeschenk"
+            },
+            "source": {
+                "bride": "💍 Braut",
+                "groom": "🤵 Bräutigam",
+                "common": "💍 Gemeinsam"
+            }
+        },
+        "messages": {
+            "mustAuthAdd": "Sie müssen angemeldet sein, um Einnahmen hinzuzufügen. Klicken Sie oben auf 'Registrieren'.",
+            "networkError": "Netzwerkfehler",
+            "successAdded": "Einnahme erfolgreich gespeichert!",
+            "deleted": "Einnahme gelöscht",
+            "confirmDelete": "Sind Sie sicher, dass Sie diese Einnahme löschen möchten?"
+        }
+    }
 }
