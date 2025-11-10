@@ -1,15 +1,9 @@
-import { createMocks } from 'node-mocks-http';
+import { NextRequest } from 'next/server';
 import { GET } from './route';
 
 describe('/api/my/dashboard API', () => {
   it('restituisce demo data se non autenticato', async () => {
-    const { req, res } = createMocks({
-      method: 'GET',
-      headers: {},
-      url: '/api/my/dashboard',
-    });
-    // Simula NextRequest
-    req.headers = {};
+  const req = new NextRequest('http://localhost/api/my/dashboard', { method: 'GET', headers: new Headers() });
     const response = await GET(req);
     const json = await response.json();
     expect(json).toHaveProperty('rows');
