@@ -1,5 +1,4 @@
-import * as React from "react";
-import { Html, Head, Preview, Body, Container, Heading, Text } from "@react-email/components";
+import { Body, Container, Head, Heading, Html, Preview, Text } from "@react-email/components";
 
 export default function InviteEmail({ name, link }: { name: string; link: string }) {
   return (

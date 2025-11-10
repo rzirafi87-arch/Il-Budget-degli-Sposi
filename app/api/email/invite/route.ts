@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
 import InviteEmail from "@/emails/Invite";
-import { resend, EMAIL_FROM } from "@/lib/email";
+import { EMAIL_FROM, resend } from "@/lib/email";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { to, name, link } = await req.json();
