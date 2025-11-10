@@ -1,8 +1,10 @@
 import {
-  EVENT_BUDGET_CATEGORIES,
-  WEDDING_BUDGET_CATEGORIES,
+    EVENT_BUDGET_CATEGORIES,
+    WEDDING_BUDGET_CATEGORIES,
 } from "@/constants/budgetCategories";
 import type { EventType } from "@/constants/eventConfigs";
+import { calculateDifference, splitBudgetByType } from "@/lib/budgetCalc";
+import { calculateResidual } from "@/lib/budgetUtils";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,6 +18,7 @@ type SpendRow = {
   amount: number;
   spendType: string;
   notes: string;
+  paid?: number;
   paymentMethod?: string;
   paymentDate?: string;
   paymentStatus?: string;
@@ -87,7 +90,7 @@ function mergeExpenses(
       if (!categoryName || !subcategoryName) continue;
 
       const key = `${categoryName}|||${subcategoryName}`;
-      const updated: SpendRow = {
+  const updated: SpendRow = {
         id: expense.id,
         category: categoryName,
         subcategory: subcategoryName,
@@ -101,6 +104,7 @@ function mergeExpenses(
         paymentDate: expense.payment_date || undefined,
         paymentStatus: expense.payment_status || undefined,
         paymentNotes: expense.payment_notes || undefined,
+  paid: typeof (expense as any).paid_amount === 'number' ? (expense as any).paid_amount : 0,
       };
 
       if (rowsByKey.has(key)) {
@@ -158,10 +162,7 @@ export async function GET(req: NextRequest) {
 
     const eventId = ev.id;
     const eventType = (ev.event_type as string | null) ?? DEFAULT_EVENT_TYPE;
-    const totalBudget = ev.total_budget || 0;
-    const brideBudget = ev.bride_initial_budget || 0;
-    const groomBudget = ev.groom_initial_budget || 0;
-    const weddingDate = ev.wedding_date || "";
+  const weddingDate = ev.wedding_date || "";
 
     const categoriesMap = getCategoriesForEvent(eventType);
     const baseRows = generateAllRows(categoriesMap);
@@ -192,12 +193,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: e2.message }, { status: 500 });
     }
 
-    const rows = mergeExpenses(baseRows, expenses || null);
-
+    let rows = mergeExpenses(baseRows, expenses || null);
+    // Calcola residual e difference per ogni riga
+    rows = rows.map((row) => ({
+      ...row,
+      residual: calculateResidual(row.amount, row.paid ?? 0),
+      difference: calculateDifference(row.amount, row.paid ?? 0),
+    }));
+    // Calcola split budget
+    const split = splitBudgetByType(rows.map(r => ({ budget: r.amount, spendType: r.spendType as "common"|"bride"|"groom" })));
     return NextResponse.json({
-      totalBudget,
-      brideBudget,
-      groomBudget,
+      totalBudget: split.total,
+      brideBudget: split.bride,
+      groomBudget: split.groom,
       weddingDate,
       rows,
     });
