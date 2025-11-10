@@ -1,7 +1,9 @@
-export const runtime = "nodejs";
 import { getEngagementTemplate } from "@/data/templates/engagement";
+import { calculateDifference, splitBudgetByType } from "@/lib/budgetCalc";
+import { calculateResidual } from "@/lib/budgetUtils";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
+export const runtime = "nodejs";
 
 export type ExpenseRow = {
   id?: string;
@@ -99,8 +101,16 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const rows = Array.from(subIdToRow.values());
-  return NextResponse.json({ ok: true, rows, budgets: { total: 0 } });
+  let rows = Array.from(subIdToRow.values());
+  // Calcola residual e difference per ogni riga (qui manca paid, quindi residual = amount)
+  rows = rows.map((row) => ({
+    ...row,
+    residual: calculateResidual(row.amount || 0, 0),
+    difference: calculateDifference(row.amount || 0, 0),
+  }));
+  // Calcola split budget
+  const split = splitBudgetByType(rows.map(r => ({ budget: r.amount || 0, spendType: r.spendType as "common"|"bride"|"groom" })));
+  return NextResponse.json({ ok: true, rows, budgets: { total: split.total, bride: split.bride, groom: split.groom } });
 }
 
 export async function POST(req: NextRequest) {

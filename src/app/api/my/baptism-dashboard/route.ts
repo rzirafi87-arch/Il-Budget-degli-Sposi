@@ -1,4 +1,6 @@
 import { getBaptismTemplate } from "@/data/templates/baptism";
+import { calculateDifference, splitBudgetByType } from "@/lib/budgetCalc";
+import { calculateResidual } from "@/lib/budgetUtils";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
@@ -14,7 +16,7 @@ export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     const country = url.searchParams.get("country") || "it";
     const template = getBaptismTemplate(country);
-    
+
     const demoRows = template.flatMap(cat =>
       cat.subs.map(sub => ({
         category: cat.name,
@@ -36,7 +38,7 @@ export async function GET(req: NextRequest) {
   // Authenticated flow
   const db = getServiceClient();
   const { data: userData, error: authError } = await db.auth.getUser(jwt);
-  
+
   if (authError || !userData?.user) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
@@ -58,7 +60,7 @@ export async function GET(req: NextRequest) {
       const url = new URL(req.url);
       const country = url.searchParams.get("country") || "it";
       const template = getBaptismTemplate(country);
-      
+
       const emptyRows = template.flatMap(cat =>
         cat.subs.map(sub => ({
           category: cat.name,
@@ -108,26 +110,37 @@ export async function GET(req: NextRequest) {
     if (expError) throw expError;
 
     // Build rows: one per subcategory
-    const rows = (categories || []).flatMap(cat => {
+    let rows = (categories || []).flatMap(cat => {
       const subs = (subcategories || []).filter(s => s.category_id === cat.id);
       return subs.map(sub => {
         // Find matching expense
         const exp = (expenses || []).find(e => e.subcategory_id === sub.id);
+        const amount = exp?.amount || 0;
+        const paid = exp?.paid_amount || 0;
         return {
           id: exp?.id,
           category: cat.name,
           subcategory: sub.name,
           supplier: exp?.supplier || "",
-          amount: exp?.amount || 0,
+          amount,
+          paid,
           spendType: "common", // Baptism always common
           notes: exp?.notes || "",
         };
       });
     });
+    // Calcola residual e difference per ogni riga
+    rows = rows.map((row) => ({
+      ...row,
+      residual: calculateResidual(row.amount, row.paid ?? 0),
+      difference: calculateDifference(row.amount, row.paid ?? 0),
+    }));
+    // Calcola split budget
+    const split = splitBudgetByType(rows.map(r => ({ budget: r.amount, spendType: r.spendType as "common"|"bride"|"groom" })));
 
     return NextResponse.json({
       rows,
-      totalBudget: event.total_budget || 0,
+      totalBudget: split.total,
       eventDate: event.event_date || "",
     });
   } catch (e: unknown) {
@@ -151,7 +164,7 @@ export async function POST(req: NextRequest) {
 
   const db = getServiceClient();
   const { data: userData, error: authError } = await db.auth.getUser(jwt);
-  
+
   if (authError || !userData?.user) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }

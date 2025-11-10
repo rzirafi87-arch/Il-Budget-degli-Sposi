@@ -1,21 +1,22 @@
 # ✅ Checklist Stato Progetto (Sintesi)
 
-- [x] Budget Tracking (Gestione budget separato sposo/sposa/comune)
-- [x] Dashboard Interattiva (Visualizzazione spese e budget residuo)
-- [x] Database Location (Oltre 500+ location, supporto multi-nazione)
-- [x] Database Chiese (Catalogo chiese per regione)
-- [x] Gestione Fornitori (Database fornitori con categorie e contatti)
-- [x] Tracciamento Spese (Registrazione dettagliata spese)
-- [x] Partecipazioni PDF (Generazione automatica inviti matrimonio)
-- [x] Gestione Ospiti (Lista invitati con assegnazione tavoli)
-- [x] Autenticazione Sicura (Auth via Supabase con RLS)
-- [x] Multi-lingua (Interfaccia in 13 lingue)
-- [x] Deploy automatico (Vercel)
-- [x] Database su Supabase Cloud
-- [x] Pipeline automatica Codex (SQL → Commit → Deploy)
-- [ ] Test automatizzati (da implementare)
-- [ ] Documentazione tecnica dettagliata (in aggiornamento)
-- [ ] UI/UX review finale
+ - [x] Budget Tracking (Gestione budget separato sposo/sposa/comune)
+ - [x] Dashboard Interattiva (Visualizzazione spese e budget residuo)
+ - [x] Database Location (Oltre 500+ location, supporto multi-nazione)
+ - [x] Database Chiese (Catalogo chiese per regione)
+ - [x] Gestione Fornitori (Database fornitori con categorie e contatti)
+ - [x] Tracciamento Spese (Registrazione dettagliata spese)
+ - [x] Partecipazioni PDF (Generazione automatica inviti matrimonio)
+ - [x] Gestione Ospiti (Lista invitati con assegnazione tavoli)
+ - [x] Autenticazione Sicura (Auth via Supabase con RLS)
+ - [x] Multi-lingua (Interfaccia in 13 lingue)
+ - [x] Deploy automatico (Vercel)
+ - [x] Database su Supabase Cloud
+ - [x] Pipeline automatica Codex (SQL → Commit → Deploy)
+ - [x] Utility calcolo budget integrate in tutte le API principali
+ - [ ] Test automatizzati (da implementare)
+ - [ ] Documentazione tecnica dettagliata (in aggiornamento)
+ - [ ] UI/UX review finale
 # 📋 CHECKLIST IMPLEMENTAZIONE COMPLETA - Il Budget degli Sposi
 **Ultimo Aggiornamento**: 5 Novembre 2025
 
