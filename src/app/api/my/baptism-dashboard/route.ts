@@ -13,9 +13,8 @@ export async function GET(req: NextRequest) {
 
   // Demo data for unauthenticated users
   if (!jwt) {
-  const country = req.nextUrl?.searchParams?.get("country") || "it";
+    const country = req.nextUrl?.searchParams?.get("country") || "it";
     const template = getBaptismTemplate(country);
-
     const demoRows = template.flatMap(cat =>
       cat.subs.map(sub => ({
         category: cat.name,
@@ -26,11 +25,11 @@ export async function GET(req: NextRequest) {
         notes: "",
       }))
     );
-
     return NextResponse.json({
+      ok: true,
+      demo: true,
       rows: demoRows,
-      totalBudget: 0,
-      eventDate: "",
+      budgets: { total: 0 },
     });
   }
 
@@ -40,15 +39,6 @@ export async function GET(req: NextRequest) {
   if (authError || !userData?.user) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
-
-  // Authenticated flow
-  const db = getServiceClient();
-  const { data: userData, error: authError } = await db.auth.getUser(jwt);
-
-  if (authError || !userData?.user) {
-    return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
-  }
-
   const userId = userData.user.id;
 
   try {

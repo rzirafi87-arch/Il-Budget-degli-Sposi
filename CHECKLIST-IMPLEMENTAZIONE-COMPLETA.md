@@ -357,6 +357,30 @@ Tutti gli altri paesi sono configurati ma **NON hanno**:
 
 ---
 
+## 📑 Documentazione API Dashboard (Nov 2025)
+
+### /api/my/baptism-dashboard [GET]
+- Demo: restituisce `{ ok, demo, rows, budgets }` se non autenticato
+- Autenticato: restituisce dati evento battesimo utente
+- JWT non valido: status 401 o 200 (ambiente demo)
+
+### /api/my/engagement-dashboard [GET]
+- Demo: restituisce `{ ok, demo, rows, budgets }` se non autenticato
+- Autenticato: restituisce dati evento fidanzamento utente
+- JWT non valido: status 401 o 200 (ambiente demo)
+
+### /api/my/fifty-dashboard [GET]
+- Demo: restituisce `{ ok, demo, rows, budgets }` se non autenticato
+- Autenticato: restituisce dati evento cinquantesimo utente
+- JWT non valido: status 401 o 200 (ambiente demo)
+
+**Nota:**
+- In ambiente demo (senza Supabase reale) le API accettano qualsiasi JWT e restituiscono sempre dati demo.
+- In produzione, JWT non valido restituisce status 401.
+- Le proprietà `rows` e `budgets` sono sempre presenti nella risposta demo e autenticata.
+
+---
+
 **Legenda Stati**:
 - ✅ = Completato e testato
 - 🔄 = In sviluppo/parziale

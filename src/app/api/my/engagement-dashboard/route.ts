@@ -43,11 +43,6 @@ export async function GET(req: NextRequest) {
   if (authError || !userData?.user) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
-
-  const db = getServiceClient();
-  const { data: userData, error: authErr } = await db.auth.getUser(jwt);
-  if (authErr) return NextResponse.json({ ok: false, error: authErr.message }, { status: 401 });
-
   const userId = userData.user.id;
 
   // Find engagement event for user
