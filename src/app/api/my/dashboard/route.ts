@@ -120,7 +120,7 @@ function mergeExpenses(
 
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
+  const authHeader = req.headers?.get?.("authorization");
     const jwt = authHeader?.split(" ")[1];
 
     if (!jwt) {
@@ -218,7 +218,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
+  const authHeader = req.headers?.get?.("authorization");
     const jwt = authHeader?.split(" ")[1];
 
     if (!jwt) {
