@@ -10,6 +10,10 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Modal from "@/components/ui/Modal";
+  // Stato per modal storico modifiche
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [selectedExpenseId, setSelectedExpenseId] = useState<string|null>(null);
 // import { saveAs } from "file-saver";
 
 
@@ -616,28 +620,36 @@ const CATEGORIES_MAP: Record<string, string[]> = {
                       </dd></div>
                       <div className="col-span-2"><dt className="text-muted-foreground">{t("expensesPage.table.fromQuote")}</dt><dd>{exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}</dd></div>
                       <div className="col-span-2"><dt className="text-muted-foreground">Azioni</dt><dd>
-                        {exp.status === "pending" && (
-                          <div className="flex gap-2 justify-center">
-                            <button
-                              onClick={() => updateExpenseStatus(exp.id!, "approved")}
-                              className="text-green-600 hover:text-green-800 text-xs font-medium"
-                            >
-                              {t("expensesPage.buttons.approve")}
-                            </button>
-                            <button
-                              onClick={() => updateExpenseStatus(exp.id!, "rejected")}
-                              className="text-red-600 hover:text-red-800 text-xs font-medium"
-                            >
-                              {t("expensesPage.buttons.reject")}
-                            </button>
-                          </div>
-                        )}
-                        {exp.status === "approved" && (
-                          <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
-                        )}
-                        {exp.status === "rejected" && (
-                          <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
-                        )}
+                        <div className="flex gap-2 flex-wrap justify-center">
+                          <button
+                            onClick={() => { setSelectedExpenseId(exp.id!); setShowHistoryModal(true); }}
+                            className="text-blue-600 hover:text-blue-800 text-xs font-medium border border-blue-200 rounded px-2 py-1 bg-blue-50"
+                          >
+                            Storico modifiche
+                          </button>
+                          {exp.status === "pending" && (
+                            <>
+                              <button
+                                onClick={() => updateExpenseStatus(exp.id!, "approved")}
+                                className="text-green-600 hover:text-green-800 text-xs font-medium"
+                              >
+                                {t("expensesPage.buttons.approve")}
+                              </button>
+                              <button
+                                onClick={() => updateExpenseStatus(exp.id!, "rejected")}
+                                className="text-red-600 hover:text-red-800 text-xs font-medium"
+                              >
+                                {t("expensesPage.buttons.reject")}
+                              </button>
+                            </>
+                          )}
+                          {exp.status === "approved" && (
+                            <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
+                          )}
+                          {exp.status === "rejected" && (
+                            <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
+                          )}
+                        </div>
                       </dd></div>
                     </dl>
                   </li>
@@ -688,29 +700,47 @@ const CATEGORIES_MAP: Record<string, string[]> = {
                           {exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-center">
-                          {exp.status === "pending" && (
-                            <div className="flex gap-2 justify-center">
-                              <button
-                                onClick={() => updateExpenseStatus(exp.id!, "approved")}
-                                className="text-green-600 hover:text-green-800 text-xs font-medium"
-                              >
-                                {t("expensesPage.buttons.approve")}
-                              </button>
-                              <button
-                                onClick={() => updateExpenseStatus(exp.id!, "rejected")}
-                                className="text-red-600 hover:text-red-800 text-xs font-medium"
-                              >
-                                {t("expensesPage.buttons.reject")}
-                              </button>
-                            </div>
-                          )}
-                          {exp.status === "approved" && (
-                            <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
-                          )}
-                          {exp.status === "rejected" && (
-                            <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
-                          )}
+                          <div className="flex gap-2 flex-wrap justify-center">
+                            <button
+                              onClick={() => { setSelectedExpenseId(exp.id!); setShowHistoryModal(true); }}
+                              className="text-blue-600 hover:text-blue-800 text-xs font-medium border border-blue-200 rounded px-2 py-1 bg-blue-50"
+                            >
+                              Storico modifiche
+                            </button>
+                            {exp.status === "pending" && (
+                              <>
+                                <button
+                                  onClick={() => updateExpenseStatus(exp.id!, "approved")}
+                                  className="text-green-600 hover:text-green-800 text-xs font-medium"
+                                >
+                                  {t("expensesPage.buttons.approve")}
+                                </button>
+                                <button
+                                  onClick={() => updateExpenseStatus(exp.id!, "rejected")}
+                                  className="text-red-600 hover:text-red-800 text-xs font-medium"
+                                >
+                                  {t("expensesPage.buttons.reject")}
+                                </button>
+                              </>
+                            )}
+                            {exp.status === "approved" && (
+                              <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
+                            )}
+                            {exp.status === "rejected" && (
+                              <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
+                            )}
+                          </div>
                         </td>
+      {/* Modal storico modifiche */}
+      <Modal open={showHistoryModal} onClose={() => setShowHistoryModal(false)} title="Storico modifiche spesa" widthClass="max-w-xl">
+        <div className="min-h-[120px] flex items-center justify-center text-gray-500">
+          {selectedExpenseId ? (
+            <span>Storico modifiche per spesa ID: <b>{selectedExpenseId}</b> (prossimamente...)</span>
+          ) : (
+            <span>Nessuna spesa selezionata</span>
+          )}
+        </div>
+      </Modal>
                       </tr>
                     ))}
                   </tbody>
