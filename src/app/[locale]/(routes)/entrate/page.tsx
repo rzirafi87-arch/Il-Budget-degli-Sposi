@@ -82,7 +82,7 @@ export default function IncomesPage() {
 
   // Stato per budget pianificato (da /api/budget-items)
   const [plannedBudget, setPlannedBudget] = useState<{ bride: number; groom: number; common: number; total: number }>({ bride: 0, groom: 0, common: 0, total: 0 });
-  const [overBudget, setOverBudget] = useState<{ bride: boolean; groom: boolean; common: boolean; total: boolean }>({ bride: false, groom: false, common: false, total: false });
+  const [overBudget] = useState<{ bride: boolean; groom: boolean; common: boolean; total: boolean }>({ bride: false, groom: false, common: false, total: false });
 
   // Caricamento entrate
   const loadIncomes = async () => {
@@ -106,8 +106,7 @@ export default function IncomesPage() {
 
   useEffect(() => {
     loadIncomes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [supabase.auth]);
 
   // Carica budget pianificato
   useEffect(() => {
@@ -291,20 +290,6 @@ export default function IncomesPage() {
             value={filter.dateTo}
             onChange={e => setFilter(f => ({ ...f, dateTo: e.target.value }))}
           />
-  useEffect(() => {
-    const filtered = incomes.filter((income: Income) => {
-      if (filter.dateFrom && income.date < filter.dateFrom) return false;
-      if (filter.dateTo && income.date > filter.dateTo) return false;
-      if (filter.type && income.type !== filter.type) return false;
-      if (filter.incomeSource && income.incomeSource !== filter.incomeSource) return false;
-      if (filter.search) {
-        const s = filter.search.toLowerCase();
-        if (!income.name.toLowerCase().includes(s) && !(income.notes || "").toLowerCase().includes(s)) return false;
-      }
-      return true;
-    });
-    setFilteredIncomes(filtered);
-  }, [incomes, filter]);
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Tipo</label>
