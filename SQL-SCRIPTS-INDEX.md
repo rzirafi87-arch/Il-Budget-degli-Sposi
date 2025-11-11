@@ -1,4 +1,4 @@
-# Indice Script SQL - MYBUDGETEVENTO
+# Indice Script SQL - Il Budget degli Sposi
 
 ## 📂 Script di Verifica e Monitoraggio (Read-Only)
 

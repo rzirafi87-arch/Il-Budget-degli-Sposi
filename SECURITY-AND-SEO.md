@@ -1,4 +1,4 @@
-# 🔒 Report Vulnerabilità e SEO - MYBUDGETEVENTO
+# 🔒 Report Vulnerabilità e SEO - Il Budget degli Sposi
 
 ## 🚨 VULNERABILITÀ RILEVATE E RISOLTE
 
@@ -127,7 +127,7 @@ headers: async () => [
 
 **Setup:**
 1. Vai su [analytics.google.com](https://analytics.google.com)
-2. Crea proprietà "MYBUDGETEVENTO"
+2. Crea proprietà "Il Budget degli Sposi"
 3. Copia il Measurement ID (es. `G-XXXXXXXXXX`)
 4. Aggiungi al `.env.local`:
    ```env
@@ -156,7 +156,7 @@ Aggiunge informazioni strutturate che Google usa per:
 
 **Risultato:** Il tuo sito apparirà più ricco nei risultati Google con:
 ```
-MYBUDGETEVENTO
+Il Budget degli Sposi
 ★★★★★ 4.8 (127 recensioni)
 Gratuito - Strumenti per organizzare il matrimonio
 • Gestione budget • Fornitori • Location • Chiese

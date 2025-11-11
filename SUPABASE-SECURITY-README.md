@@ -49,7 +49,7 @@ Questo documento spiega come risolvere i problemi di sicurezza evidenziati dal *
 ### Metodo 1: SQL Editor Supabase (Consigliato)
 
 1. Vai su [Supabase Dashboard](https://supabase.com/dashboard)
-2. Seleziona il progetto "MYBUDGETEVENTO"
+2. Seleziona il progetto "Il Budget degli Sposi"
 3. Vai su **SQL Editor**
 4. Copia e incolla il contenuto di `supabase-security-fixes.sql`
 5. Clicca su **Run**

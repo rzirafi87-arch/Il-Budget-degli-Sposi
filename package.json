@@ -3,6 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "description": "Gestione budget eventi. Il Budget degli Sposi: Next.js, Supabase, Tailwind, React.",
+  "homepage": "https://ilbudgetdeglisposi.it",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ilbudgetdeglisposi/il-budget-degli-sposi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ilbudgetdeglisposi/il-budget-degli-sposi/issues"
+  },
+  "author": "Il Budget degli Sposi Team <contatti@ilbudgetdeglisposi.it>",
+  "keywords": [
+    "il budget degli sposi",
+    "nextjs",
+    "react",
+    "supabase",
+    "tailwind",
+    "wedding",
+    "event planning"
+  ],
   "scripts": {
     "dev": "npm run autocommit && next dev",
     "build": "next build",
@@ -88,6 +106,7 @@
     "jest-environment-jsdom": "^30.2.0",
     "pg": "^8.13.1",
     "tailwindcss": "^4",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
   }
 }

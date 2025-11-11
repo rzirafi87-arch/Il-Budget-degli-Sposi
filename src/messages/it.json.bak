@@ -898,7 +898,7 @@
       "s14": {
         "title": "14. Contatti del Responsabi→Privacy",
         "p1": "Per qualsiasi domanda o richiesta sulla privacy:",
-        "authName": "Responsabi→Privacy â€” MYBUDGETEVENTO",
+        "authName": "Responsabi→Privacy â€” Il Budget degli Sposi",
         "addr": "Indirizzo: Via Esempio 123, 00100 Roma (RM)",
         "email": "Email: privacy@ilbudgetdeglisposi.it",
         "phone": "Tel: +39 XXX XXX XXXX"
@@ -918,7 +918,7 @@
       },
       "s2": {
         "title": "2. Descrizione del Servizio",
-        "p1": "MYBUDGETEVENTO è una piattaforma online gratuita che permette di:",
+        "p1": "Il Budget degli Sposi è una piattaforma online gratuita che permette di:",
         "items": {
           "i1": "Pianificare e gestire il budget del proprio matrimonio",
           "i2": "Tenere traccia di spese ed entrate",
@@ -1765,7 +1765,7 @@
     "emailAriaLabel": "Inserisci la tua email",
     "subscribeBtn": "Iscriviti",
     "thankYouMsg": "Grazie per esserti iscritto! Controlla la tua email.",
-    "aboutTitle": "MYBUDGETEVENTO",
+    "aboutTitle": "Il Budget degli Sposi",
     "aboutDesc": "La piattaforma italiana per pianificare il budget del tuo evento. Semplice, completa e gratuita.",
     "toolsTitle": "Strumenti",
     "expenses": "Gestione Spese",
