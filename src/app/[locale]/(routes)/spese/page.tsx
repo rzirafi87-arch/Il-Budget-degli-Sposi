@@ -2,183 +2,225 @@
 
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
-import { useToast } from "@/components/ToastProvider";
-import { getUserCountrySafe } from "@/constants/geo";
+// import { useToast } from "@/components/ToastProvider";
+// import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, formatDate } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { saveAs } from "file-saver";
+// import { saveAs } from "file-saver";
+
 
 const supabase = getBrowserClient();
-
+const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
+// Tipi
 type SpendType = "common" | "bride" | "groom";
-type ExpenseStatus = "pending" | "approved" | "rejected";
-
-    "DJ / Band",
-    "Audio / Luci",
-    "Animazione",
-    "Diritti SIAE",
-    "Guestbook phone / Postazioni",
-  ],
-    "Mise en place",
-    "Noleggio tovagliato / piatti",
-    "Forfait location",
-    "Forfait catering (prezzo a persona)",
-  ],
-    "DJ / Band",
-    "Audio / Luci",
-    "Animazione",
-    "Diritti SIAE",
-    "Guestbook phone / Postazioni",
-async function handleExportCSV() {
-  try {
-    const supabase = getBrowserClient();
-    const { data } = await supabase.auth.getSession();
-    const jwt = data.session?.access_token;
-    const headers: HeadersInit = {};
-    if (jwt) headers.Authorization = `Bearer ${jwt}`;
-    const res = await fetch("/api/my/expenses/export-csv", { headers });
-    if (!res.ok) throw new Error("Errore nell'esportazione CSV");
-    const blob = await res.blob();
-    // Usa file-saver per download cross-browser
-    saveAs(blob, "spese.csv");
-  } catch (e) {
-    alert("Errore durante l'esportazione CSV");
-  }
-}
-    "Spese varie",
-  ],
+type Expense = {
+  id?: string;
+  category: string;
+  subcategory: string;
+  supplier: string;
+  amount: number;
+  spendType: SpendType;
+  notes?: string;
+  date: string;
+  status: "pending" | "approved" | "rejected";
+  fromDashboard?: boolean;
+  description?: string;
 };
 
-const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
+export default function ExpensesPage() {
 
-export default function SpesePage() {
   const t = useTranslations();
-  const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
-  const country = getUserCountrySafe();
-  const { showToast } = useToast();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string|null>(null);
   const [showForm, setShowForm] = useState(false);
-
+  const [saving, setSaving] = useState(false);
   const [newExpense, setNewExpense] = useState<Expense>({
-    category: ALL_CATEGORIES[0],
-    subcategory: CATEGORIES_MAP[ALL_CATEGORIES[0]][0],
+    category: "",
+    subcategory: "",
     supplier: "",
-    description: "",
     amount: 0,
     spendType: "common",
-    status: "pending",
-    date: new Date().toISOString().split("T")[0],
     notes: "",
-    fromDashboard: false,
+    date: "",
+    status: "pending",
+    description: "",
   });
+  // Ricava il paese utente (mock: "IT")
+  const country = "IT";
+  // Determina se l'evento è a budget unico (mock: false)
+  const isSingleBudgetEvent = false;
 
-  // Detect single-budget events (baptism, communion, confirmation, birthday, eighteenth, graduation, fifty, retirement)
-  const isBaptism = userEventType === "baptism";
-  const isCommunion = userEventType === "communion";
-  const isConfirmation = userEventType === "confirmation";
-  const isBirthday = userEventType === "birthday";
-  const isEighteenth = userEventType === "eighteenth";
-  const isGraduation = userEventType === "graduation";
-  const isFifty = userEventType === "fifty";
-  const isRetirement = userEventType === "retirement";
-  const isBabyShower = userEventType === "babyshower";
-  const isProposal = userEventType === "proposal";
-  const isCorporate = userEventType === "corporate";
-  const isBarMitzvah = userEventType === "bar-mitzvah";
-  const isQuinceanera = userEventType === "quinceanera";
-  const isCharityGala = userEventType === "charity-gala";
-  const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement || isBabyShower || isProposal || isCorporate || isBarMitzvah || isQuinceanera || isCharityGala;
-
-  // For single-budget events: force spend type to common
-  useEffect(() => {
-    if (isSingleBudgetEvent && newExpense.spendType !== "common") {
-      setNewExpense((prev) => ({ ...prev, spendType: "common" }));
-    }
-  }, [isSingleBudgetEvent, newExpense.spendType]);
-
-  // Carica le spese
-  useEffect(() => {
-    loadExpenses();
-  }, []);
-
-  const loadExpenses = async () => {
+  // Aggiungi nuova spesa
+  const addExpense = async () => {
+    setSaving(true);
     try {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
-
-      const headers: HeadersInit = {};
-      if (jwt) {
-        headers.Authorization = `Bearer ${jwt}`;
+      const headers: HeadersInit = { "Content-Type": "application/json" };
+      if (jwt) headers.Authorization = `Bearer ${jwt}`;
+      const res = await fetch("/api/my/expenses", {
+        method: "POST",
+        headers,
+        body: JSON.stringify(newExpense),
+      });
+      if (res.ok) {
+        setMessage(t("expensesPage.messages.saved"));
+        setShowForm(false);
+        setNewExpense({
+          category: "",
+          subcategory: "",
+          supplier: "",
+          amount: 0,
+          spendType: "common",
+          notes: "",
+          date: "",
+          status: "pending",
+          description: "",
+        });
+        loadExpenses();
+      } else {
+        setMessage(t("expensesPage.messages.saveError", { fallback: "Errore salvataggio" }));
       }
+    } catch {
+      setMessage("Errore salvataggio spesa");
+    } finally {
+      setSaving(false);
+    }
+  };
 
-      const r = await fetch("/api/my/expenses", { headers });
-      const j = await r.json();
-
-      setExpenses(j.expenses || []);
-    } catch (err) {
-      console.error("Errore caricamento:", err);
-      setExpenses([]);
+  // Caricamento spese
+  const loadExpenses = async () => {
+    setLoading(true);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      const headers: HeadersInit = {};
+      if (jwt) headers.Authorization = `Bearer ${jwt}`;
+      const res = await fetch("/api/my/expenses", { headers });
+      const json = await res.json();
+      setExpenses(json.expenses || []);
+    } catch {
+      setMessage("Errore nel caricamento delle spese");
     } finally {
       setLoading(false);
     }
   };
 
-  const addExpense = async () => {
-    setSaving(true);
-    setMessage(null);
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
+  useEffect(() => {
+    loadExpenses();
+  }, []);
 
-      if (!jwt) {
-        setMessage(t("expensesPage.messages.mustAuthAdd"));
-        setSaving(false);
-        return;
-      }
 
-      const r = await fetch("/api/my/expenses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify(newExpense),
-      });
-
-      if (!r.ok) {
-        const j = await r.json();
-        showToast(`Errore: ${j.error || "Impossibile salvare"}`, "error");
-      } else {
-        showToast(t("expensesPage.messages.successAdded"), "success");
-        setShowForm(false);
-        loadExpenses();
-        // Reset form
-        setNewExpense({
-          category: ALL_CATEGORIES[0],
-          subcategory: CATEGORIES_MAP[ALL_CATEGORIES[0]][0],
-          supplier: "",
-          description: "",
-          amount: 0,
-          spendType: "common",
-          status: "pending",
-          date: new Date().toISOString().split("T")[0],
-          notes: "",
-          fromDashboard: false,
-        });
-      }
-    } catch (err) {
-      console.error("Errore:", err);
-      showToast(t("expensesPage.messages.networkError"), "error");
-    } finally {
-      setSaving(false);
-    }
-  };
+// Stesse categorie della dashboard
+const CATEGORIES_MAP: Record<string, string[]> = {
+  "Abiti & Accessori (altri)": [
+    "Abiti ospiti / Genitori",
+    "Accessori damigelle",
+    "Accessori testimoni",
+    "Fedi nuziali",
+    "Anello fidanzamento",
+    "Accessori vari",
+  ],
+  "Cerimonia/Chiesa Location": [
+    "Chiesa / Comune",
+    "Musiche",
+    "Libretti Messa",
+    "Fiori cerimonia",
+    "Wedding bag",
+    "Ventagli",
+    "Pulizia chiesa",
+    "Cesto doni",
+    "Documenti e pratiche",
+    "Offerte / Diritti",
+    "Colombe uscita",
+    "Riso/Petali",
+    "Bottiglia per brindisi",
+    "Bicchieri per brindisi",
+    "Forfait cerimonia",
+  ],
+  "Fuochi d'artificio": [
+    "Fuochi d'artificio tradizionali",
+    "Fontane luminose",
+    "Spettacolo pirotecnico",
+    "Bengala per ospiti",
+    "Lancio palloncini luminosi",
+    "Forfait fuochi d'artificio",
+  ],
+  "Fiori & Decor": [
+    "Bouquet",
+    "Boutonnière",
+    "Centrotavola",
+    "Allestimenti",
+    "Candele",
+    "Tableau",
+    "Segnaposto",
+    "Noleggi (vasi / strutture)",
+    "Forfait fioraio",
+  ],
+  "Foto & Video": [
+    "Servizio fotografico",
+    "Video",
+    "Drone",
+    "Album",
+    "Stampe",
+    "Secondo fotografo",
+    "Forfait fotografo",
+  ],
+  "Inviti & Stationery": [
+    "Partecipazioni",
+    "Menu",
+    "Segnaposto",
+    "Libretti Messa",
+    "Timbri / Cliché",
+    "Francobolli / Spedizioni",
+    "Calligrafia",
+    "Cartoncini / Tag",
+    "QR Code / Stampa",
+  ],
+  "Sposa": [
+    "Abito sposa",
+    "Scarpe sposa",
+    "Accessori (velo, gioielli, ecc.)",
+    "Intimo / sottogonna",
+    "Parrucchiera",
+    "Make-up",
+    "Prove",
+    "Altro sposa",
+  ],
+  "Sposo": [
+    "Abito sposo",
+    "Scarpe sposo",
+    "Accessori (cravatta, gemelli, ecc.)",
+    "Barbiere / Grooming",
+    "Prove",
+    "Altro sposo",
+  ],
+  "Ricevimento Location": [
+    "Affitto sala",
+    "Catering / Banqueting",
+    "Torta nuziale",
+    "Vini & Bevande",
+    "Open bar",
+    "Mise en place",
+    "Noleggio tovagliato / piatti",
+    "Forfait location",
+    "Forfait catering (prezzo a persona)",
+  ],
+  "Musica & Intrattenimento": [
+    "DJ / Band",
+    "Audio / Luci",
+    "Animazione",
+    "Diritti SIAE",
+    "Guestbook phone / Postazioni",
+  ],
+  "Spese varie": [
+    "Spese varie",
+  ],
+};
 
   const updateExpenseStatus = async (id: string, status: "approved" | "rejected") => {
     try {
