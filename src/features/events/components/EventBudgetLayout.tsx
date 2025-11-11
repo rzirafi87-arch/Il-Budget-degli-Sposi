@@ -25,7 +25,6 @@ export default function EventBudgetLayout({ meta }: EventBudgetLayoutProps) {
 
   return (
     <main className="space-y-12 py-10">
-      <header className="rounded-3xl bg-emerald-50 px-8 py-10 text-emerald-900 shadow-sm ring-1 ring-emerald-100">
 <<<<<<< ours
         <p className="text-sm font-semibold uppercase tracking-widest text-emerald-700">
           Budget template

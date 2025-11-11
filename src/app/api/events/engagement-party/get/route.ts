@@ -1,9 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
 <<<<<<< ours
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 =======
 import { supabaseAdmin } from "@/lib/supabase-admin";
 >>>>>>> theirs
+
+export async function GET(req: NextRequest) {
+  const userId = req.nextUrl.searchParams.get("userId");
+  if (!userId) {
+    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from("budgets")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("event_key", "engagement-party")
+    .maybeSingle();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ data });
+}
+
+import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");
