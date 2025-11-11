@@ -82,7 +82,7 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
     "Cartoncini / Tag",
     "QR Code / Stampa",
   ],
-  "Sposa": [
+  Sposa: [
     "Abito sposa",
     "Scarpe sposa",
     "Accessori (velo, gioielli, ecc.)",
@@ -92,7 +92,7 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
     "Prove",
     "Altro sposa",
   ],
-  "Sposo": [
+  Sposo: [
     "Abito sposo",
     "Scarpe sposo",
     "Accessori (cravatta, gemelli, ecc.)",
@@ -119,7 +119,7 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
     "Guestbook phone / Postazioni",
     "Forfait musica e intrattenimento",
   ],
-  "Trasporti": ["Auto sposi", "Navette ospiti", "Carburante / Pedaggi"],
+  Trasporti: ["Auto sposi", "Navette ospiti", "Carburante / Pedaggi"],
   "Bomboniere & Regali": [
     "Bomboniere",
     "Confetti",
@@ -135,7 +135,7 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
     "Welcome bag / Kit",
     "Cartellonistica / Segnaletica",
   ],
-  "Burocrazia": ["Pubblicazioni", "Certificati", "Traduzioni / Apostille"],
+  Burocrazia: ["Pubblicazioni", "Certificati", "Traduzioni / Apostille"],
   "Addio al Nubilato": [
     "Location addio al nubilato",
     "Ristorante / Cena",
@@ -198,23 +198,23 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
 };
 
 export const BAPTISM_BUDGET_CATEGORIES = templateToMap(
-  getBaptismTemplate("it"),
+  getBaptismTemplate("it")
 );
 
 export const COMMUNION_BUDGET_CATEGORIES = templateToMap(
-  getCommunionTemplate("it"),
+  getCommunionTemplate("it")
 );
 
 export const CONFIRMATION_BUDGET_CATEGORIES = templateToMap(
-  getConfirmationTemplate("it"),
+  getConfirmationTemplate("it")
 );
 
 export const EIGHTEENTH_BUDGET_CATEGORIES = templateToMap(
-  getEighteenthTemplate("it"),
+  getEighteenthTemplate("it")
 );
 
 export const GRADUATION_BUDGET_CATEGORIES = templateToMap(
-  getGraduationTemplate("it"),
+  getGraduationTemplate("it")
 );
 
 export const ANNIVERSARY_BUDGET_CATEGORIES: BudgetCategoryMap = {
@@ -231,7 +231,12 @@ export const GENDER_REVEAL_BUDGET_CATEGORIES: BudgetCategoryMap = {
   Location: ["Affitto", "Pulizie", "Permessi", "Illuminazione"],
   Catering: ["Dolci", "Snack salati", "Bevande", "Torta reveal"],
   Decor: ["Backdrop", "Balloon art", "Fiori", "Stationery"],
-  Intrattenimento: ["Giochi pronostico", "Animazione", "Playlist", "Photobooth"],
+  Intrattenimento: [
+    "Giochi pronostico",
+    "Animazione",
+    "Playlist",
+    "Photobooth",
+  ],
   Comunicazione: ["Inviti", "Ringraziamenti", "Social", "Streaming"],
   Ricordi: ["Fotografo", "Video", "Album", "Regali ospiti"],
   Extra: ["Baby sitter", "Trasporti", "Mance", "Contingenze"],
@@ -268,6 +273,28 @@ export const RETIREMENT_BUDGET_CATEGORIES: BudgetCategoryMap = {
   Extra: ["Mance", "Assicurazione", "Contingenze", "Beneficenza"],
 };
 
+export const BABY_SHOWER_BUDGET_CATEGORIES: BudgetCategoryMap = {
+  Location: ["Casa", "Affitto sala", "Pulizie", "Permessi"],
+  Catering: ["Dolci", "Snack salati", "Bevande", "Torta a tema"],
+  Decor: ["Backdrop", "Balloon art", "Fiori", "Stationery"],
+  Intrattenimento: ["Giochi pronostico", "Animazione", "Playlist", "Photobooth"],
+  Comunicazione: ["Inviti", "RSVP", "Ringraziamenti", "Social"],
+  Regali: ["Lista nascita", "Gift table", "Gadget ospiti", "Packaging"],
+  Ricordi: ["Fotografo", "Video", "Album", "Guestbook"],
+  Extra: ["Baby sitter", "Trasporti", "Mance", "Contingenze"],
+};
+
+export const ENGAGEMENT_PARTY_BUDGET_CATEGORIES: BudgetCategoryMap = {
+  Location: ["Affitto", "Allestimento base", "Luci", "Permessi"],
+  Catering: ["Aperitivo", "Finger food", "Bevande", "Torta/Brindisi"],
+  Decor: ["Fiori", "Backdrop", "Segnaposto", "Stampa cartelli"],
+  Musica: ["DJ/Playlist", "Audio", "Microfono", "SIAE"],
+  Ospiti: ["Inviti", "RSVP", "Welcome kit", "Ringraziamenti"],
+  Ricordi: ["Fotografo", "Video", "Polaroid/Photobooth", "Album"],
+  Programma: ["Speech", "Scaletta", "Sorprese", "Brindisi"],
+  Extra: ["Trasporti", "Mance", "Contingenze", "Noleggi vari"],
+};
+
 export const EVENT_BUDGET_CATEGORIES: Record<EventType, BudgetCategoryMap> = {
   wedding: WEDDING_BUDGET_CATEGORIES,
   baptism: BAPTISM_BUDGET_CATEGORIES,
@@ -279,4 +306,6 @@ export const EVENT_BUDGET_CATEGORIES: Record<EventType, BudgetCategoryMap> = {
   birthday: BIRTHDAY_BUDGET_CATEGORIES,
   "turning-50": TURNING50_BUDGET_CATEGORIES,
   retirement: RETIREMENT_BUDGET_CATEGORIES,
+  "baby-shower": BABY_SHOWER_BUDGET_CATEGORIES,          // ⬅️ nuovo
+  "engagement-party": ENGAGEMENT_PARTY_BUDGET_CATEGORIES, // ⬅️ nuovo
 };
