@@ -137,30 +137,7 @@ export default function IncomesPage() {
 
   // ...existing code...
 
-  // Caricamento entrate
-  const loadIncomes = async () => {
-    setLoading(true);
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-      const headers: HeadersInit = {};
-      if (jwt) headers.Authorization = `Bearer ${jwt}`;
-
-      const res = await fetch("/api/my/incomes", { headers });
-      const json = await res.json();
-      setIncomes(Array.isArray(json.incomes) ? json.incomes : []);
-    } catch (e) {
-      console.error(e);
-      setMessage("Errore nel caricamento delle entrate");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadIncomes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // ...existing code...
 
   // Aggiungi entrata
   const addIncome = async () => {
@@ -250,6 +227,22 @@ export default function IncomesPage() {
   const totalGroom = incomes.filter(i => i.incomeSource === "groom").reduce((s, i) => s + (i.amount || 0), 0);
   const totalCommon = incomes.filter(i => i.incomeSource === "common").reduce((s, i) => s + (i.amount || 0), 0);
 
+  const [filteredIncomes, setFilteredIncomes] = useState<Income[]>([]);
+
+  useEffect(() => {
+    const filtered = incomes.filter((income: Income) => {
+      if (filter.dateFrom && income.date < filter.dateFrom) return false;
+      if (filter.dateTo && income.date > filter.dateTo) return false;
+      if (filter.type && income.type !== filter.type) return false;
+      if (filter.incomeSource && income.incomeSource !== filter.incomeSource) return false;
+      if (filter.search) {
+        const s = filter.search.toLowerCase();
+        if (!income.name.toLowerCase().includes(s) && !(income.notes || "").toLowerCase().includes(s)) return false;
+      }
+      return true;
+    });
+    setFilteredIncomes(filtered);
+  }, [incomes, filter]);
   if (loading) {
     return (
       <section className="pt-6">
@@ -298,6 +291,20 @@ export default function IncomesPage() {
             value={filter.dateTo}
             onChange={e => setFilter(f => ({ ...f, dateTo: e.target.value }))}
           />
+  useEffect(() => {
+    const filtered = incomes.filter((income: Income) => {
+      if (filter.dateFrom && income.date < filter.dateFrom) return false;
+      if (filter.dateTo && income.date > filter.dateTo) return false;
+      if (filter.type && income.type !== filter.type) return false;
+      if (filter.incomeSource && income.incomeSource !== filter.incomeSource) return false;
+      if (filter.search) {
+        const s = filter.search.toLowerCase();
+        if (!income.name.toLowerCase().includes(s) && !(income.notes || "").toLowerCase().includes(s)) return false;
+      }
+      return true;
+    });
+    setFilteredIncomes(filtered);
+  }, [incomes, filter]);
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Tipo</label>
