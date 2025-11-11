@@ -96,13 +96,13 @@ export const eventsRegistry: Record<EventKey, EventRegistryItem> = {
   },
   "baby-shower": {
     label: "Baby Shower",
-    available: flags.enable_babyshower,
+    available: flags.enable_baby_shower,
     icon: "Baby",
     route: "/[locale]/baby-shower",
   },
   "engagement-party": {
     label: "Engagement Party",
-    available: flags.enable_engagement,
+    available: flags.enable_engagement_party,
     icon: "HeartHandshake",
     route: "/[locale]/engagement-party",
   },

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-<<<<<<< ours
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
-=======
 import { supabaseAdmin } from "@/lib/supabase-admin";
->>>>>>> theirs
+
+const EVENT_KEY = "birthday";
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");
@@ -15,7 +13,7 @@ export async function GET(req: NextRequest) {
     .from("budgets")
     .select("*")
     .eq("user_id", userId)
-    .eq("event_key", "engagement-party")
+    .eq("event_key", EVENT_KEY)
     .maybeSingle();
 
   if (error) {
