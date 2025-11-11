@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",
-  "test": "jest",
+    "test": "jest",
     "test:ui": "vitest",
     "e2e:install": "npx playwright install --with-deps",
     "e2e": "playwright test",
