@@ -15,6 +15,77 @@ import { useCallback, useEffect, useState } from "react";
 
 
 function ExpensesPage() {
+  // Funzione di utilità per formattare l'euro
+  function formatEuro(n: number) {
+    return formatCurrency(n, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  // Aggiorna stato spesa
+  const updateExpenseStatus = async (id: string, status: "approved" | "rejected") => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) {
+        setMessage(t("expensesPage.messages.mustAuthAdd"));
+        return;
+      }
+      const r = await fetch(`/api/my/expenses/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (r.ok) {
+        setMessage(status === "approved" ? t("expensesPage.status.approved") : t("expensesPage.status.rejected"));
+        loadExpenses();
+        setTimeout(() => setMessage(null), 3000);
+      }
+    } catch (err) {
+      console.error("Errore:", err);
+    }
+  };
+
+  // Totali
+  const totalPending = expenses.filter((e: Expense) => e.status === "pending").reduce((sum: number, e: Expense) => sum + e.amount, 0);
+  const totalApproved = expenses.filter((e: Expense) => e.status === "approved").reduce((sum: number, e: Expense) => sum + e.amount, 0);
+
+  // Fornitori unici
+  const allSuppliers = Array.from(new Set(expenses.map((e: Expense) => e.supplier).filter(Boolean)));
+
+  // Raggruppa spese per categoria/sottocategoria
+  const groupedExpenses = expenses.reduce((acc: Record<string, { category: string; subcategory: string; expenses: Expense[] }>, exp: Expense) => {
+    // Applica filtri
+    if (
+      (filterCategory && exp.category !== filterCategory) ||
+      (filterSupplier && exp.supplier !== filterSupplier) ||
+      (filterType && exp.spendType !== filterType) ||
+      (filterDate && !exp.date.startsWith(filterDate))
+    ) {
+      return acc;
+    }
+    const key = `${exp.category}|${exp.subcategory}`;
+    if (!acc[key]) {
+      acc[key] = {
+        category: exp.category,
+        subcategory: exp.subcategory,
+        expenses: [],
+      };
+    }
+    acc[key].expenses.push(exp);
+    return acc;
+  }, {});
+
+  // Ordina i gruppi
+  const orderedGroups = Object.values(groupedExpenses).sort((a, b) => {
+    const catIndexA = ALL_CATEGORIES.indexOf(a.category);
+    const catIndexB = ALL_CATEGORIES.indexOf(b.category);
+    if (catIndexA !== catIndexB) return catIndexA - catIndexB;
+    const subsA = CATEGORIES_MAP[a.category] || [];
+    const subsB = CATEGORIES_MAP[b.category] || [];
+    return subsA.indexOf(a.subcategory) - subsB.indexOf(b.subcategory);
+  });
   // Tipi
   type SpendType = "common" | "bride" | "groom";
   type Expense = {
@@ -178,59 +249,84 @@ function ExpensesPage() {
               <ul className="divide-y divide-gray-100">
                 {group.expenses.map((exp) => (
                   <li key={exp.id} className="py-3 px-2">
-                    <dl className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs sm:text-sm">
-                      <div className="col-span-2"><dt className="text-muted-foreground">{t("expensesPage.table.supplier")}</dt><dd>{exp.supplier || "—"}</dd></div>
-                      <div className="col-span-2"><dt className="text-muted-foreground">{t("expensesPage.table.description")}</dt><dd>{exp.description || "—"}</dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.amount")}</dt><dd>{formatEuro(exp.amount)}</dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.type")}</dt><dd>{isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}</dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.date")}</dt><dd>{formatDate(new Date(exp.date))}</dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.status")}</dt><dd>
-                        <span className={`inline-block px-2 py-1 rounded text-xs ${
-                          exp.status === "approved" ? "bg-green-100 text-green-800 font-semibold" :
-                          exp.status === "rejected" ? "bg-red-100 text-red-800" :
-                          "bg-yellow-100 text-yellow-800"
-                        }`}>
-                          {exp.status === "approved" ? t("expensesPage.status.approved") : exp.status === "rejected" ? t("expensesPage.status.rejected") : t("expensesPage.status.pending")}
-                        </span>
-                      </dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.fromQuote")}</dt><dd>{exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}</dd></div>
-                      <div className="col-span-2"><dt className="text-muted-foreground">Azioni</dt><dd>
-                        <div className="flex gap-2 flex-wrap justify-center">
-                          <button
-                            onClick={() => openHistoryModal(exp.id!)}
-                            className="text-blue-600 hover:text-blue-800 text-xs font-medium border border-blue-200 rounded px-2 py-1 bg-blue-50"
-                          >
-                            Storico modifiche
-                          </button>
-                          {exp.status === "pending" && (
-                            <>
-                              <button
-                                onClick={() => updateExpenseStatus(exp.id!, "approved")}
-                                className="text-green-600 hover:text-green-800 text-xs font-medium"
-                              >
-                                {t("expensesPage.buttons.approve")}
-                              </button>
-                              <button
-                                onClick={() => updateExpenseStatus(exp.id!, "rejected")}
-                                className="text-red-600 hover:text-red-800 text-xs font-medium"
-                              >
-                                {t("expensesPage.buttons.reject")}
-                              </button>
-                            </>
-                          )}
-                          {exp.status === "approved" && (
-                            <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
-                          )}
-                          {exp.status === "rejected" && (
-                            <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
-                          )}
+                    <div>
+                      <dl className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs sm:text-sm">
+                        <div className="col-span-2">
+                          <dt className="text-muted-foreground">{t("expensesPage.table.supplier")}</dt>
+                          <dd>{exp.supplier || "—"}</dd>
                         </div>
-                      </dd></div>
-                    </dl>
+                        <div className="col-span-2">
+                          <dt className="text-muted-foreground">{t("expensesPage.table.description")}</dt>
+                          <dd>{exp.description || "—"}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">{t("expensesPage.table.amount")}</dt>
+                          <dd>{formatEuro(exp.amount)}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">{t("expensesPage.table.type")}</dt>
+                          <dd>{isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">{t("expensesPage.table.date")}</dt>
+                          <dd>{formatDate(new Date(exp.date))}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">{t("expensesPage.table.status")}</dt>
+                          <dd>
+                            <span className={`inline-block px-2 py-1 rounded text-xs ${
+                              exp.status === "approved" ? "bg-green-100 text-green-800 font-semibold" :
+                              exp.status === "rejected" ? "bg-red-100 text-red-800" :
+                              "bg-yellow-100 text-yellow-800"
+                            }`}>
+                              {exp.status === "approved" ? t("expensesPage.status.approved") : exp.status === "rejected" ? t("expensesPage.status.rejected") : t("expensesPage.status.pending")}
+                            </span>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">{t("expensesPage.table.fromQuote")}</dt>
+                          <dd>{exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}</dd>
+                        </div>
+                        <div className="col-span-2">
+                          <dt className="text-muted-foreground">Azioni</dt>
+                          <dd>
+                            <div className="flex gap-2 flex-wrap justify-center">
+                              <button
+                                onClick={() => openHistoryModal(exp.id!)}
+                                className="text-blue-600 hover:text-blue-800 text-xs font-medium border border-blue-200 rounded px-2 py-1 bg-blue-50"
+                              >
+                                Storico modifiche
+                              </button>
+                              {exp.status === "pending" && (
+                                <>
+                                  <button
+                                    onClick={() => updateExpenseStatus(exp.id!, "approved")}
+                                    className="text-green-600 hover:text-green-800 text-xs font-medium"
+                                  >
+                                    {t("expensesPage.buttons.approve")}
+                                  </button>
+                                  <button
+                                    onClick={() => updateExpenseStatus(exp.id!, "rejected")}
+                                    className="text-red-600 hover:text-red-800 text-xs font-medium"
+                                  >
+                                    {t("expensesPage.buttons.reject")}
+                                  </button>
+                                </>
+                              )}
+                              {exp.status === "approved" && (
+                                <span className="text-xs text-gray-400">{t("expensesPage.messages.confirmed")}</span>
+                              )}
+                              {exp.status === "rejected" && (
+                                <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
+                              )}
+                            </div>
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
                   </li>
                 ))}
               </ul>
-
               {/* Tabella desktop */}
               <div className="-mx-4 overflow-x-auto hidden sm:block mt-4">
                 <table className="min-w-[680px] table-auto text-xs sm:min-w-full sm:text-sm">
@@ -350,10 +446,6 @@ function ExpensesPage() {
 
 
 export default ExpensesPage;
-
-function formatEuro(n: number) {
-  return formatCurrency(n, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-}
 
   const updateExpenseStatus = async (id: string, status: "approved" | "rejected") => {
     try {
