@@ -11,108 +11,58 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-  // Stato per modal storico modifiche
+
+
+
+function ExpensesPage() {
+  // Tipi
+  type SpendType = "common" | "bride" | "groom";
+  type Expense = {
+    id?: string;
+    category: string;
+    subcategory: string;
+    supplier: string;
+    amount: number;
+    spendType: SpendType;
+    notes?: string;
+    date: string;
+    status: "pending" | "approved" | "rejected";
+    fromDashboard?: boolean;
+    description?: string;
+  };
+
+  const supabase = getBrowserClient();
+  const t = useTranslations();
+  const country = "IT";
+  const isSingleBudgetEvent = false;
+  const [plannedBudget, setPlannedBudget] = useState<Record<string, number>>({});
+  const [overBudgetKeys, setOverBudgetKeys] = useState<string[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string|null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [newExpense, setNewExpense] = useState<Expense>({
+    category: "",
+    subcategory: "",
+    supplier: "",
+    amount: 0,
+    spendType: "common",
+    notes: "",
+    date: "",
+    status: "pending",
+    description: "",
+  });
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedExpenseId, setSelectedExpenseId] = useState<string|null>(null);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [expenseHistory, setExpenseHistory] = useState<any[]>([]);
 
-  // Carica storico modifiche quando si apre il modal
-  const loadExpenseHistory = useCallback(async (expenseId: string) => {
-    setHistoryLoading(true);
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-      const headers: HeadersInit = {};
-      if (jwt) headers.Authorization = `Bearer ${jwt}`;
-      const res = await fetch(`/api/my/expenses/history?expenseId=${expenseId}`, { headers });
-      const json = await res.json();
-      setExpenseHistory(Array.isArray(json.history) ? json.history : []);
-    } catch {
-      setExpenseHistory([]);
-    } finally {
+  // ...qui va tutto il resto della logica, useEffect, funzioni, return JSX...
+  // (sposta qui tutto il codice che era fuori dal componente, assicurandoti che sia dentro ExpensesPage)
+}
 
-      "use client";
-
-      import ImageCarousel from "@/components/ImageCarousel";
-      import PageInfoNote from "@/components/PageInfoNote";
-      import Modal from "@/components/ui/Modal";
-      import { useCallback, useEffect, useState } from "react";
-      import { formatCurrency, formatDate } from "@/lib/locale";
-      import { getPageImages } from "@/lib/pageImages";
-      import { getBrowserClient } from "@/lib/supabaseBrowser";
-      import { useTranslations } from "next-intl";
-      import Link from "next/link";
-
-      function ExpensesPage() {
-        const supabase = getBrowserClient();
-        const t = useTranslations();
-        // Stato per modal storico modifiche
-        const [showHistoryModal, setShowHistoryModal] = useState(false);
-        const [selectedExpenseId, setSelectedExpenseId] = useState<string|null>(null);
-        const [historyLoading, setHistoryLoading] = useState(false);
-        const [expenseHistory, setExpenseHistory] = useState<any[]>([]);
-
-        // ...Tipi e costanti...
-        type SpendType = "common" | "bride" | "groom";
-        type Expense = {
-          id?: string;
-          category: string;
-          subcategory: string;
-          supplier: string;
-          amount: number;
-          spendType: SpendType;
-          notes?: string;
-          date: string;
-          status: "pending" | "approved" | "rejected";
-          fromDashboard?: boolean;
-          description?: string;
-        };
-
-        // Ricava il paese utente (mock: "IT")
-        const country = "IT";
-        // Determina se l'evento è a budget unico (mock: false)
-        const isSingleBudgetEvent = false;
-
-        // Stato per budget pianificato (da /api/budget-items)
-        const [plannedBudget, setPlannedBudget] = useState<Record<string, number>>({});
-        const [overBudgetKeys, setOverBudgetKeys] = useState<string[]>([]);
-
-        // Stato spese
-        const [expenses, setExpenses] = useState<Expense[]>([]);
-        const [loading, setLoading] = useState(true);
-        const [message, setMessage] = useState<string|null>(null);
-        const [showForm, setShowForm] = useState(false);
-        const [saving, setSaving] = useState(false);
-        const [newExpense, setNewExpense] = useState<Expense>({
-          category: "",
-          subcategory: "",
-          supplier: "",
-          amount: 0,
-          spendType: "common",
-          notes: "",
-          date: "",
-          status: "pending",
-          description: "",
-        });
-
-        // Carica storico modifiche quando si apre il modal
-        const loadExpenseHistory = useCallback(async (expenseId: string) => {
-          setHistoryLoading(true);
-          try {
-            const { data } = await supabase.auth.getSession();
-            const jwt = data.session?.access_token;
-            const headers: HeadersInit = {};
-            if (jwt) headers.Authorization = `Bearer ${jwt}`;
-            const res = await fetch(`/api/my/expenses/history?expenseId=${expenseId}`, { headers });
-            const json = await res.json();
-            setExpenseHistory(Array.isArray(json.history) ? json.history : []);
-          } catch {
-            setExpenseHistory([]);
-          } finally {
-            setHistoryLoading(false);
-          }
-        }, [supabase]);
+export default ExpensesPage;
 
         // Apri modal e carica storico
         const openHistoryModal = (expenseId: string) => {
@@ -572,188 +522,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
       <div className="mb-6 flex flex-wrap gap-2 items-end">
         <select className="border rounded px-2 py-1" value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
           <option value="">Tutte le categorie</option>
-          {ALL_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-        </select>
-        <select className="border rounded px-2 py-1" value={filterSupplier} onChange={e => setFilterSupplier(e.target.value)}>
-          <option value="">Tutti i fornitori</option>
-          {allSuppliers.map(sup => <option key={sup} value={sup}>{sup}</option>)}
-        </select>
-        <select className="border rounded px-2 py-1" value={filterType} onChange={e => setFilterType(e.target.value)}>
-          <option value="">Tutti i tipi</option>
-          <option value="common">Comune</option>
-          <option value="bride">Sposa</option>
-          <option value="groom">Sposo</option>
-        </select>
-        <input type="date" className="border rounded px-2 py-1" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
-        {(filterCategory || filterSupplier || filterType || filterDate) && (
-          <button className="ml-2 text-xs text-gray-500 underline" onClick={() => { setFilterCategory(""); setFilterSupplier(""); setFilterType(""); setFilterDate(""); }}>
-            Azzera filtri
-          </button>
-        )}
-      </div>
 
-      {/* Riepilogo */}
-      <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-          <div className="text-sm text-gray-600">{t("expensesPage.summary.pending")}</div>
-          <div className="text-2xl font-semibold">{formatEuro(totalPending)}</div>
-        </div>
-        <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-          <div className="text-sm text-gray-600">{t("expensesPage.summary.approved")}</div>
-          <div className="text-2xl font-semibold">{formatEuro(totalApproved)}</div>
-        </div>
-      </div>
-
-      {/* Bottone aggiungi */}
-      <div className="mb-6">
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-[#A3B59D] text-white rounded-lg px-4 py-2 hover:bg-[#8a9d84]"
-        >
-          {showForm ? t("expensesPage.buttons.cancel") : t("expensesPage.buttons.add")}
-        </button>
-      </div>
-
-      {/* Form nuova spesa */}
-      {showForm && (
-        <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold mb-4 text-center">{t("expensesPage.form.new")}</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.category")}</label>
-              <select
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.category}
-                onChange={(e) => setNewExpense({
-                  ...newExpense,
-                  category: e.target.value,
-                  subcategory: CATEGORIES_MAP[e.target.value][0]
-                })}
-              >
-                {ALL_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.subcategory")}</label>
-              <select
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.subcategory}
-                onChange={(e) => setNewExpense({ ...newExpense, subcategory: e.target.value })}
-              >
-                {(CATEGORIES_MAP[newExpense.category] || []).map((sub) => (
-                  <option key={sub} value={sub}>{sub}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.supplier")}</label>
-              <input
-                type="text"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.supplier}
-                onChange={(e) => setNewExpense({ ...newExpense, supplier: e.target.value })}
-                placeholder={t("expensesPage.form.placeholders.supplier")}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.amount")}</label>
-              <input
-                type="number"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.amount || ""}
-                onChange={(e) => setNewExpense({ ...newExpense, amount: Number(e.target.value) || 0 })}
-                placeholder={t("expensesPage.form.placeholders.amount")}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.spendType")}</label>
-              <select
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.spendType}
-                onChange={(e) => setNewExpense({ ...newExpense, spendType: e.target.value as SpendType })}
-              >
-                <option value="common">{t("expensesPage.form.spendTypeOptions.common")}</option>
-                {!isSingleBudgetEvent && <option value="bride">{t("expensesPage.form.spendTypeOptions.bride")}</option>}
-                {!isSingleBudgetEvent && <option value="groom">{t("expensesPage.form.spendTypeOptions.groom")}</option>}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.date")}</label>
-              <input
-                type="date"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.date}
-                onChange={(e) => setNewExpense({ ...newExpense, date: e.target.value })}
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.description")}</label>
-              <input
-                type="text"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.description}
-                onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
-                placeholder={t("expensesPage.form.placeholders.description")}
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.notes")}</label>
-              <textarea
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                rows={2}
-                value={newExpense.notes}
-                onChange={(e) => setNewExpense({ ...newExpense, notes: e.target.value })}
-                placeholder={t("expensesPage.form.placeholders.notes")}
-              />
-            </div>
-          </div>
-          <div className="mt-4">
-            <button
-              onClick={addExpense}
-              disabled={saving}
-              className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84] disabled:opacity-50"
-            >
-              {saving ? t("loading", { fallback: "Salvataggio..." }) : t("expensesPage.buttons.save")}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Preventivi raggruppati per categoria */}
-      <div className="space-y-8">
-        {orderedGroups.length === 0 ? (
-          <div className="p-10 text-center text-gray-400 rounded-2xl border border-gray-200 bg-white/70">
-            {t("expensesPage.messages.none")}
-          </div>
-        ) : (
-          orderedGroups.map((group, idx) => (
-            <div key={idx} className="rounded-2xl border border-gray-200 bg-white/70 shadow-sm overflow-hidden">
-              {/* Header gruppo */}
-              <div className="bg-[#A3B59D]/10 px-6 py-3 border-b border-gray-200">
-                <h3 className="font-semibold text-gray-800 text-center sm:text-left">
-                  {group.category} → {group.subcategory}
-                </h3>
-                <div className="text-xs text-gray-600 mt-1">
-                  {group.expenses.length} preventivo{group.expenses.length !== 1 ? "i" : ""}
-                </div>
-              </div>
-
-              {/* MOBILE: cards */}
-              <ul className="space-y-3 sm:hidden p-4">
-                {group.expenses.map((exp) => (
-                  <li key={exp.id} className="rounded-2xl border bg-card p-4 shadow-sm">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="font-semibold">{exp.supplier || "—"}</span>
-                      <span className="text-xs text-muted-foreground">{exp.description || "—"}</span>
-                    </div>
-                    <dl className="grid grid-cols-2 gap-2 text-sm">
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.amount")}</dt><dd>{formatEuro(exp.amount)}</dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.type")}</dt><dd>{isSingleBudgetEvent ? t("expensesPage.spendType.common") : (exp.spendType === "common" ? t("expensesPage.spendType.common") : exp.spendType === "bride" ? t("expensesPage.spendType.bride") : t("expensesPage.spendType.groom"))}</dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.date")}</dt><dd>{formatDate(new Date(exp.date))}</dd></div>
-                      <div><dt className="text-muted-foreground">{t("expensesPage.table.status")}</dt><dd>
-                        <span className={`inline-block px-2 py-1 rounded text-xs ${
                           exp.status === "approved" ? "bg-green-100 text-green-800 font-semibold" :
                           exp.status === "rejected" ? "bg-red-100 text-red-800" :
                           "bg-yellow-100 text-yellow-800"
