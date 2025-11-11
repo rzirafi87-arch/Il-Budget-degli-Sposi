@@ -8,42 +8,14 @@ import { formatCurrency, formatDate } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 // import { saveAs } from "file-saver";
 
 
 const supabase = getBrowserClient();
-// Stesse categorie della dashboard
-const CATEGORIES_MAP: Record<string, string[]> = {
-  "Abiti & Accessori (altri)": [
-    "Abiti ospiti / Genitori",
-    "Accessori damigelle",
-    "Accessori testimoni",
-    "Fedi nuziali",
-    "Anello fidanzamento",
-    "Accessori vari",
-  ],
-  "Cerimonia/Chiesa Location": [
-    "Chiesa / Comune",
-    "Musiche",
-    "Libretti Messa",
-    "Fiori cerimonia",
-    "Wedding bag",
-    "Ventagli",
-    "Pulizia chiesa",
-    "Cesto doni",
-    "Documenti e pratiche",
-    "Offerte / Diritti",
-    "Colombe uscita",
-    "Riso/Petali",
-    "Bottiglia per brindisi",
-    "Bicchieri per brindisi",
-    "Forfait cerimonia",
-  ],
-  // ... (tutte le altre categorie, copia/incolla dal blocco esistente)
-};
-
-const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
+// ...definizione unica di CATEGORIES_MAP sopra...
+// const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP); // già definito sopra
 // Tipi
 type SpendType = "common" | "bride" | "groom";
 type Expense = {
@@ -60,7 +32,6 @@ type Expense = {
   description?: string;
 };
 
-export default function ExpensesPage() {
 
   const t = useTranslations();
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -83,6 +54,57 @@ export default function ExpensesPage() {
   const country = "IT";
   // Determina se l'evento è a budget unico (mock: false)
   const isSingleBudgetEvent = false;
+
+  // Stato per budget pianificato (da /api/budget-items)
+  const [plannedBudget, setPlannedBudget] = useState<Record<string, number>>({});
+  const [overBudgetKeys, setOverBudgetKeys] = useState<string[]>([]);
+
+  // Carica budget pianificato per categoria-sottocategoria
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const jwt = data.session?.access_token;
+        const headers: HeadersInit = {};
+        if (jwt) headers.Authorization = `Bearer ${jwt}`;
+        const country = (typeof window !== "undefined" ? localStorage.getItem("country") : "it") || "it";
+        const res = await fetch(`/api/budget-items?country=${encodeURIComponent(country)}`, { headers });
+        const json = await res.json();
+        // Crea mappa "Categoria|Sottocategoria" => importo pianificato
+        const map: Record<string, number> = {};
+        if (Array.isArray(json?.items)) {
+          for (const it of json.items) {
+            const cat = it.category || (it.name ? String(it.name).split(" - ")[0] : "");
+            const sub = it.subcategory || (it.name ? String(it.name).split(" - ")[1] : "");
+            const key = `${cat}|${sub}`;
+            map[key] = Number(it.amount || 0);
+          }
+        }
+        setPlannedBudget(map);
+      } catch {
+        setPlannedBudget({});
+      }
+    })();
+  }, []);
+
+  // Calcola se ci sono superamenti budget
+  useEffect(() => {
+    if (!expenses.length || !Object.keys(plannedBudget).length) {
+      setOverBudgetKeys([]);
+      return;
+    }
+    // Somma spese per chiave
+    const actual: Record<string, number> = {};
+    for (const exp of expenses) {
+      const key = `${exp.category}|${exp.subcategory}`;
+      actual[key] = (actual[key] || 0) + (exp.amount || 0);
+    }
+    // Trova chiavi over budget
+    const over = Object.keys(plannedBudget).filter(
+      key => actual[key] > plannedBudget[key] && plannedBudget[key] > 0
+    );
+    setOverBudgetKeys(over);
+  }, [expenses, plannedBudget]);
 
   // Aggiungi nuova spesa
   const addExpense = async () => {
@@ -338,6 +360,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
   }
 
 
+
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-2 text-center">💸 {t("expensesPage.title")}</h2>
@@ -368,6 +391,33 @@ const CATEGORIES_MAP: Record<string, string[]> = {
       {message && (
         <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">
           {message}
+        </div>
+      )}
+
+      {/* Banner superamento budget */}
+      {overBudgetKeys && overBudgetKeys.length > 0 && (
+        <div className="mb-4 p-4 rounded-lg bg-red-50 border border-red-300 text-red-800 shadow-sm">
+          <div className="font-semibold mb-1 flex items-center gap-2">
+            <span>⚠️</span>
+            <span>Attenzione: alcune voci hanno superato il budget pianificato!</span>
+          </div>
+          <ul className="list-disc pl-6 text-sm">
+            {overBudgetKeys.map(key => {
+              const [cat, sub] = key.split("|");
+              return (
+                <li key={key}>
+                  <span className="font-medium">{cat}</span>
+                  {sub ? <span className="text-gray-700"> &rarr; {sub}</span> : null}
+                  {plannedBudget[key] ? (
+                    <span className="ml-2 text-xs text-gray-500">(Budget: {formatCurrency(plannedBudget[key], "EUR")})</span>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+          <div className="mt-2 text-xs">
+            <Link href="/budget" className="underline text-red-700 hover:text-red-900">Vai al dettaglio budget</Link>
+          </div>
         </div>
       )}
 
@@ -672,7 +722,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
       </div>
     </section>
   );
-}
+// Rimuovi chiusura extra
 
 function formatEuro(n: number) {
   return formatCurrency(n, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });

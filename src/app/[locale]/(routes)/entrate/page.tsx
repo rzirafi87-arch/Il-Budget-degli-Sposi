@@ -5,8 +5,7 @@ import PageInfoNote from "@/components/PageInfoNote";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+
 
 // ---------- Tipi ----------
 type IncomeType = "busta" | "bonifico" | "regalo";
@@ -46,7 +45,6 @@ function formatDate(d: Date) {
 }
 
 // ---------- Componente ----------
-export default function IncomesPage() {
   // Stato filtri avanzati
   const [filter, setFilter] = useState({
     dateFrom: "",
@@ -55,6 +53,46 @@ export default function IncomesPage() {
     incomeSource: "",
     search: "",
   });
+
+  // Stato per budget pianificato (da /api/budget-items)
+  const [plannedBudget, setPlannedBudget] = useState<{ bride: number; groom: number; common: number; total: number }>({ bride: 0, groom: 0, common: 0, total: 0 });
+  const [overBudget, setOverBudget] = useState<{ bride: boolean; groom: boolean; common: boolean; total: boolean }>({ bride: false, groom: false, common: false, total: false });
+
+  // Carica budget pianificato
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const jwt = data.session?.access_token;
+        const headers: HeadersInit = {};
+        if (jwt) headers.Authorization = `Bearer ${jwt}`;
+        const country = (typeof window !== "undefined" ? localStorage.getItem("country") : "it") || "it";
+        const res = await fetch(`/api/budget-items?country=${encodeURIComponent(country)}`, { headers });
+        const json = await res.json();
+        let bride = 0, groom = 0, common = 0;
+        if (Array.isArray(json?.items)) {
+          for (const it of json.items) {
+            if (it.spend_type === "bride") bride += Number(it.amount || 0);
+            else if (it.spend_type === "groom") groom += Number(it.amount || 0);
+            else if (it.spend_type === "common") common += Number(it.amount || 0);
+          }
+        }
+        setPlannedBudget({ bride, groom, common, total: bride + groom + common });
+      } catch {
+        setPlannedBudget({ bride: 0, groom: 0, common: 0, total: 0 });
+      }
+    })();
+  }, []);
+
+  // Calcola se ci sono superamenti budget
+  useEffect(() => {
+    setOverBudget({
+      bride: totalBride > plannedBudget.bride && plannedBudget.bride > 0,
+      groom: totalGroom > plannedBudget.groom && plannedBudget.groom > 0,
+      common: totalCommon > plannedBudget.common && plannedBudget.common > 0,
+      total: totalMoney > plannedBudget.total && plannedBudget.total > 0,
+    });
+  }, [totalBride, totalGroom, totalCommon, totalMoney, plannedBudget]);
 
   // Funzione di filtro
   const filteredIncomes = incomes.filter((income) => {
@@ -222,6 +260,24 @@ export default function IncomesPage() {
 
   return (
     <section className="pt-6">
+      {/* Banner superamento budget */}
+      {(overBudget.bride || overBudget.groom || overBudget.common || overBudget.total) && (
+        <div className="mb-4 p-4 rounded-lg bg-red-50 border border-red-300 text-red-800 shadow-sm">
+          <div className="font-semibold mb-1 flex items-center gap-2">
+            <span>⚠️</span>
+            <span>Attenzione: hai superato il budget pianificato per alcune voci!</span>
+          </div>
+          <ul className="list-disc pl-6 text-sm">
+            {overBudget.bride && <li><span className="font-medium">Sposa</span>{plannedBudget.bride ? <span className="ml-2 text-xs text-gray-500">(Budget: {formatEuro(plannedBudget.bride)})</span> : null}</li>}
+            {overBudget.groom && <li><span className="font-medium">Sposo</span>{plannedBudget.groom ? <span className="ml-2 text-xs text-gray-500">(Budget: {formatEuro(plannedBudget.groom)})</span> : null}</li>}
+            {overBudget.common && <li><span className="font-medium">Comune</span>{plannedBudget.common ? <span className="ml-2 text-xs text-gray-500">(Budget: {formatEuro(plannedBudget.common)})</span> : null}</li>}
+            {overBudget.total && <li><span className="font-medium">Totale</span>{plannedBudget.total ? <span className="ml-2 text-xs text-gray-500">(Budget: {formatEuro(plannedBudget.total)})</span> : null}</li>}
+          </ul>
+          <div className="mt-2 text-xs">
+            <Link href="/budget" className="underline text-red-700 hover:text-red-900">Vai al dettaglio budget</Link>
+          </div>
+        </div>
+      )}
       {/* Barra filtri avanzati */}
       <div className="mb-6 flex flex-wrap gap-4 items-end bg-white/80 border border-gray-200 rounded-xl p-4 shadow-sm">
         <div>
