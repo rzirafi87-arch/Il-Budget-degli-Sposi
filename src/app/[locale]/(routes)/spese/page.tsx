@@ -13,6 +13,36 @@ import { useEffect, useState } from "react";
 
 
 const supabase = getBrowserClient();
+// Stesse categorie della dashboard
+const CATEGORIES_MAP: Record<string, string[]> = {
+  "Abiti & Accessori (altri)": [
+    "Abiti ospiti / Genitori",
+    "Accessori damigelle",
+    "Accessori testimoni",
+    "Fedi nuziali",
+    "Anello fidanzamento",
+    "Accessori vari",
+  ],
+  "Cerimonia/Chiesa Location": [
+    "Chiesa / Comune",
+    "Musiche",
+    "Libretti Messa",
+    "Fiori cerimonia",
+    "Wedding bag",
+    "Ventagli",
+    "Pulizia chiesa",
+    "Cesto doni",
+    "Documenti e pratiche",
+    "Offerte / Diritti",
+    "Colombe uscita",
+    "Riso/Petali",
+    "Bottiglia per brindisi",
+    "Bicchieri per brindisi",
+    "Forfait cerimonia",
+  ],
+  // ... (tutte le altre categorie, copia/incolla dal blocco esistente)
+};
+
 const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
 // Tipi
 type SpendType = "common" | "bride" | "groom";

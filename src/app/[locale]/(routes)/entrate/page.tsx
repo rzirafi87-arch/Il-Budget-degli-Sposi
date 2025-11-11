@@ -1,5 +1,10 @@
-﻿import React, { useEffect, useState } from "react";
-import { saveAs } from "file-saver";
+﻿"use client";
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import PageInfoNote from "@/components/PageInfoNote";
+import ImageCarousel from "@/components/ImageCarousel";
+import { getPageImages } from "@/lib/pageImages";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 
 type Income = {
   id: string;
@@ -12,57 +17,64 @@ type Income = {
 };
 
 export default function EntratePage() {
+  const t = useTranslations();
   const [incomes, setIncomes] = useState<Income[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string|null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [newIncome, setNewIncome] = useState<Income>({
+    id: "",
+    name: "",
+    type: "busta",
+    incomeSource: "common",
+    amount: 0,
+    notes: "",
+    date: new Date().toISOString().split("T")[0],
+  });
+  const country = "IT";
+  const isSingleBudgetEvent = false;
+
+  // Caricamento entrate
+  const loadIncomes = async () => {
+    setLoading(true);
+    try {
+      const { data } = await getBrowserClient().auth.getSession();
+      const jwt = data.session?.access_token;
+      const headers: HeadersInit = {};
+      if (jwt) headers.Authorization = `Bearer ${jwt}`;
+      const res = await fetch("/api/my/incomes", { headers });
+      const json = await res.json();
+      setIncomes(json.incomes || []);
+    } catch {
+      setMessage("Errore nel caricamento delle entrate");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setIncomes([
-      { id: "1", name: "Mario Rossi", type: "busta", incomeSource: "common", amount: 500, notes: "Auguri!", date: "2025-11-10" },
-      { id: "2", name: "Fam. Bianchi", type: "regalo", incomeSource: "bride", amount: 0, notes: "Servizio piatti", date: "2025-11-09" }
-    ]);
+    loadIncomes();
   }, []);
 
-  return (
-    <section className="container mx-auto px-2 md:px-0 py-4">
-      <div className="flex justify-end mb-4">
-        <button
-          className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-4 py-2 rounded shadow text-sm"
-          onClick={handleExportCSV}
-        >
-          Esporta CSV
-        </button>
-      </div>
-      <div className="mt-4">
-        <table className="min-w-full divide-y divide-gray-100 text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="whitespace-nowrap px-4 py-2">Nome</th>
-              <th className="whitespace-nowrap px-4 py-2">Tipo</th>
-              <th className="whitespace-nowrap px-4 py-2">Fonte</th>
-              <th className="whitespace-nowrap px-4 py-2">Importo</th>
-              <th className="whitespace-nowrap px-4 py-2">Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            {incomes.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center py-8 text-gray-400">Nessuna entrata</td>
-              </tr>
-            ) : (
-              incomes.map((income) => (
-                <tr key={income.id} className="border-b border-gray-50 hover:bg-gray-50/60">
-                  <td className="whitespace-nowrap px-4 py-2 font-medium">{income.name}</td>
-                  <td className="whitespace-nowrap px-4 py-2 text-center">{income.type}</td>
-                  <td className="whitespace-nowrap px-4 py-2 text-center">{income.incomeSource}</td>
-                  <td className="whitespace-nowrap px-4 py-2 text-right font-semibold">{income.amount ? formatEuro(income.amount) : "—"}</td>
-                  <td className="whitespace-nowrap px-4 py-2">{income.notes || "—"}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  );
-}
+  // Esporta CSV
+  const handleExportCSV = async () => {
+    try {
+      const supabase = getBrowserClient();
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      const headers: HeadersInit = {};
+      if (jwt) headers.Authorization = `Bearer ${jwt}`;
+      const res = await fetch("/api/my/incomes/export-csv", { headers });
+      if (!res.ok) throw new Error("Errore nell'esportazione CSV");
+      const blob = await res.blob();
+      (await import("file-saver")).saveAs(blob, "entrate.csv");
+    } catch {
+      alert("Errore durante l'esportazione CSV");
+    }
+  };
+
+  // ...existing code...
 
 async function handleExportCSV() {
   try {
