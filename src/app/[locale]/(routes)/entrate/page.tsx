@@ -13,78 +13,9 @@ type Income = {
   type: "busta" | "bonifico" | "regalo";
   incomeSource: "bride" | "groom" | "common";
   amount: number;
-  notes: string;
-  date: string;
-};
-
-export default function EntratePage() {
-  const t = useTranslations();
-  const [incomes, setIncomes] = useState<Income[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState<string|null>(null);
-  const [showForm, setShowForm] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [newIncome, setNewIncome] = useState<Income>({
-    id: "",
-    name: "",
-    type: "busta",
-    incomeSource: "common",
-    amount: 0,
-    notes: "",
-    date: new Date().toISOString().split("T")[0],
-  });
-  const country = "IT";
-  const locale = "it";
-  const isSingleBudgetEvent = false;
-  // MOCK: isWedding true per mostrare link lista nozze
-  const isWedding = true;
-
-  // Caricamento entrate
-  const loadIncomes = async () => {
-    setLoading(true);
-    try {
-      const { data } = await getBrowserClient().auth.getSession();
-      const jwt = data.session?.access_token;
-      const headers: HeadersInit = {};
-      if (jwt) headers.Authorization = `Bearer ${jwt}`;
-      const res = await fetch("/api/my/incomes", { headers });
-      const json = await res.json();
-      setIncomes(json.incomes || []);
-    } catch {
-      setMessage("Errore nel caricamento delle entrate");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadIncomes();
-  }, []);
-
-  // Esporta CSV
-  const handleExportCSV = async () => {
-    try {
-      const supabase = getBrowserClient();
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-      const headers: HeadersInit = {};
-      if (jwt) headers.Authorization = `Bearer ${jwt}`;
-      const res = await fetch("/api/my/incomes/export-csv", { headers });
-      if (!res.ok) throw new Error("Errore nell'esportazione CSV");
-      const blob = await res.blob();
-      (await import("file-saver")).saveAs(blob, "entrate.csv");
-    } catch {
-      alert("Errore durante l'esportazione CSV");
-    }
-  };
-
-  function formatEuro(n: number) {
-    return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
-  }
-
-  // MOCK: totali (da implementare calcolo reale)
-  const totalBride = 0;
-  const totalGroom = 0;
+    </section>
+  );
+}
   const totalCommon = 0;
   const totalMoney = 0;
   const totalRegali = 0;
@@ -332,31 +263,6 @@ export default function EntratePage() {
 }
 }
 
-// Funzione duplicata handleExportCSV e blocco JSX duplicato rimossi
-          title={t("incomesPage.info.title")}
-          description={t("incomesPage.info.description")}
-          tips={[
-            t("incomesPage.info.tips.tip1"),
-            t("incomesPage.info.tips.tip2"),
-            t("incomesPage.info.tips.tip3"),
-            t("incomesPage.info.tips.tip4"),
-          ]}
-          eventTypeSpecific={{
-            wedding: t("incomesPage.info.eventTypeSpecific.wedding"),
-            baptism: t("incomesPage.info.eventTypeSpecific.baptism"),
-            birthday: t("incomesPage.info.eventTypeSpecific.birthday"),
-            graduation: t("incomesPage.info.eventTypeSpecific.graduation"),
-          }}
-        />
-
-        {/* Carosello immagini */}
-        <ImageCarousel images={getPageImages("entrate", country)} height="280px" />
-
-        {message && (
-          <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">
-            {message}
-          </div>
-        )}
 
         {/* Riepilogo */}
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
