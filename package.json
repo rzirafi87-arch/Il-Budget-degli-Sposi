@@ -22,7 +22,7 @@
     "event planning"
   ],
   "scripts": {
-    "dev": "npm run autocommit && next dev",
+    "dev": "next dev",
     "build": "next build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "next start",
@@ -61,8 +61,7 @@
     "validate": "npm run check:utf8:strict && npm run config:validate",
     "prebuild": "npm run validate",
     "test": "jest",
-    "test:e2e": "playwright test",
-    "dev:e2e": "start powershell -NoExit -Command 'npm run dev' ; npx wait-on tcp:3000 && npm run test:e2e"
+    "test:e2e": "playwright test"
   },
   "engines": {
     "node": ">=18.17.0"
