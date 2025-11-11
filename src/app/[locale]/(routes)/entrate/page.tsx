@@ -47,6 +47,32 @@ function formatDate(d: Date) {
 
 // ---------- Componente ----------
 export default function IncomesPage() {
+  // Stato filtri avanzati
+  const [filter, setFilter] = useState({
+    dateFrom: "",
+    dateTo: "",
+    type: "",
+    incomeSource: "",
+    search: "",
+  });
+
+  // Funzione di filtro
+  const filteredIncomes = incomes.filter((income) => {
+    // Filtro data da
+    if (filter.dateFrom && income.date < filter.dateFrom) return false;
+    // Filtro data a
+    if (filter.dateTo && income.date > filter.dateTo) return false;
+    // Filtro tipo
+    if (filter.type && income.type !== filter.type) return false;
+    // Filtro sorgente
+    if (filter.incomeSource && income.incomeSource !== filter.incomeSource) return false;
+    // Filtro testo libero su nome e note
+    if (filter.search) {
+      const s = filter.search.toLowerCase();
+      if (!income.name.toLowerCase().includes(s) && !(income.notes || "").toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
   const t = useTranslations();
 
   // TODO: sostituisci con i tuoi hook/contesto reali
@@ -196,6 +222,70 @@ export default function IncomesPage() {
 
   return (
     <section className="pt-6">
+      {/* Barra filtri avanzati */}
+      <div className="mb-6 flex flex-wrap gap-4 items-end bg-white/80 border border-gray-200 rounded-xl p-4 shadow-sm">
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Data da</label>
+          <input
+            type="date"
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+            value={filter.dateFrom}
+            onChange={e => setFilter(f => ({ ...f, dateFrom: e.target.value }))}
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Data a</label>
+          <input
+            type="date"
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+            value={filter.dateTo}
+            onChange={e => setFilter(f => ({ ...f, dateTo: e.target.value }))}
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Tipo</label>
+          <select
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+            value={filter.type}
+            onChange={e => setFilter(f => ({ ...f, type: e.target.value }))}
+          >
+            <option value="">Tutti</option>
+            <option value="busta">Busta</option>
+            <option value="bonifico">Bonifico</option>
+            <option value="regalo">Regalo</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Sorgente</label>
+          <select
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+            value={filter.incomeSource}
+            onChange={e => setFilter(f => ({ ...f, incomeSource: e.target.value }))}
+          >
+            <option value="">Tutte</option>
+            <option value="common">Comune</option>
+            {!isSingleBudgetEvent && <option value="bride">Sposa</option>}
+            {!isSingleBudgetEvent && <option value="groom">Sposo</option>}
+          </select>
+        </div>
+        <div className="flex-1 min-w-[180px]">
+          <label className="block text-xs font-medium text-gray-600 mb-1">Ricerca</label>
+          <input
+            type="text"
+            className="border border-gray-300 rounded px-2 py-1 text-sm w-full"
+            placeholder="Nome o note..."
+            value={filter.search}
+            onChange={e => setFilter(f => ({ ...f, search: e.target.value }))}
+          />
+        </div>
+        <button
+          type="button"
+          className="ml-auto bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-3 py-1 text-xs"
+          onClick={() => setFilter({ dateFrom: "", dateTo: "", type: "", incomeSource: "", search: "" })}
+        >
+          Reset filtri
+        </button>
+      </div>
       <div className="flex items-start justify-between mb-2">
         <h2 className="font-serif text-3xl">{t("incomesPage.title")}</h2>
         <div className="flex gap-2">
@@ -424,14 +514,14 @@ export default function IncomesPage() {
             </tr>
           </thead>
           <tbody>
-            {incomes.length === 0 ? (
+            {filteredIncomes.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-10 text-center text-gray-400">
                   {t("incomesPage.empty")}
                 </td>
               </tr>
             ) : (
-              incomes.map((income) => (
+              filteredIncomes.map((income) => (
                 <tr key={income.id} className="border-b border-gray-50 hover:bg-gray-50/60">
                   <td className="px-4 py-3">{formatDate(new Date(income.date))}</td>
                   <td className="whitespace-nowrap px-4 py-2 font-medium">{income.name}</td>
