@@ -4,13 +4,13 @@ import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
 // import { useToast } from "@/components/ToastProvider";
 // import { getUserCountrySafe } from "@/constants/geo";
+import Modal from "@/components/ui/Modal";
 import { formatCurrency, formatDate } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Modal from "@/components/ui/Modal";
   // Stato per modal storico modifiche
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedExpenseId, setSelectedExpenseId] = useState<string|null>(null);
