@@ -78,7 +78,7 @@
   },
   {
     "slug": "engagement",
-    "label": "Festa di fidanzamento",
+    "label": "Engagement Party",
     "emoji": "💘",
     "group": "personale",
     "available": true
@@ -88,7 +88,7 @@
     "label": "Proposta di Matrimonio",
     "emoji": "💍",
     "group": "personale",
-    "available": true
+    "available": false
   },
   {
     "slug": "communion",
@@ -102,27 +102,27 @@
     "label": "Bar Mitzvah",
     "emoji": "🕎",
     "group": "famiglia",
-    "available": true
+    "available": false
   },
   {
     "slug": "quinceanera",
     "label": "Quinceañera",
     "emoji": "👗",
     "group": "famiglia",
-    "available": true
+    "available": false
   },
   {
     "slug": "corporate",
     "label": "Evento aziendale",
     "emoji": "🏢",
     "group": "professionale",
-    "available": true
+    "available": false
   },
   {
     "slug": "charity-gala",
     "label": "Evento culturale/Charity/Gala",
     "emoji": "🎗️",
     "group": "professionale",
-    "available": true
+    "available": false
   }
 ]
