@@ -1,11 +1,25 @@
 import { Resend } from "resend";
 
+import {
+  BRAND_FROM_EMAIL,
+  BRAND_NAME,
+  BRAND_SITE_HOST,
+  BRAND_SITE_URL,
+} from "@/config/brand";
+
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 // Mittente configurabile da env per evitare modifiche al codice tra ambienti
 // Esempi validi:
-//   MYBUDGETEVENTO <onboarding@resend.dev>
-//   MYBUDGETEVENTO <noreply@mybudgetevento.it>
-const FROM = process.env.RESEND_FROM || "MYBUDGETEVENTO <onboarding@resend.dev>";
+//   Il Budget degli Sposi <onboarding@resend.dev>
+//   Il Budget degli Sposi <noreply@ilbudgetdeglisposi.it>
+const FROM = process.env.RESEND_FROM || BRAND_FROM_EMAIL;
+
+const BRAND_DISPLAY_NAME = process.env.NEXT_PUBLIC_APP_NAME || BRAND_NAME;
+const DEFAULT_SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
+    ? BRAND_SITE_URL
+    : "http://localhost:3000");
 
 function normLang(locale?: string) {
   const l = (locale || "it").toLowerCase();
@@ -18,6 +32,7 @@ function getEmailCopy(locale: string) {
   const lang = normLang(locale);
   // English
   if (lang === "en") {
+    const brand = BRAND_DISPLAY_NAME;
     return {
       expiry: {
         subject: (tier: string, days: number) => `⏰ Your ${tier} subscription expires in ${days} days`,
@@ -52,12 +67,13 @@ function getEmailCopy(locale: string) {
           "Manage your profile and photos",
         ],
         dashboardCta: "Go to Dashboard",
-  thanksText: (baseUrl: string) => `Thanks for choosing MYBUDGETEVENTO! <a href="${baseUrl}/contatti">Contact us</a> if you need any help.`,
+        thanksText: (baseUrl: string) => `Thanks for choosing ${brand}! <a href="${baseUrl}/contatti">Contact us</a> if you need any help.`,
       },
     } as const;
   }
   // Spanish
   if (lang === "es") {
+    const brand = BRAND_DISPLAY_NAME;
     return {
       expiry: {
         subject: (tier: string, days: number) => `⏰ Tu suscripción ${tier} vence en ${days} días`,
@@ -92,12 +108,13 @@ function getEmailCopy(locale: string) {
           "Gestiona tu perfil y fotos",
         ],
         dashboardCta: "Ir al Panel",
-  thanksText: (baseUrl: string) => `¡Gracias por elegir MYBUDGETEVENTO! <a href="${baseUrl}/contatti">Contáctanos</a> si necesitas ayuda.`,
+        thanksText: (baseUrl: string) => `¡Gracias por elegir ${brand}! <a href="${baseUrl}/contatti">Contáctanos</a> si necesitas ayuda.`,
       },
     } as const;
   }
   // French
   if (lang === "fr") {
+    const brand = BRAND_DISPLAY_NAME;
     return {
       expiry: {
         subject: (tier: string, days: number) => `⏰ Votre abonnement ${tier} expire dans ${days} jours`,
@@ -132,12 +149,13 @@ function getEmailCopy(locale: string) {
           "Gérez votre profil et vos photos",
         ],
         dashboardCta: "Aller au tableau de bord",
-  thanksText: (baseUrl: string) => `Merci d'avoir choisi MYBUDGETEVENTO ! <a href="${baseUrl}/contatti">Contactez-nous</a> si vous avez besoin d'aide.`,
+        thanksText: (baseUrl: string) => `Merci d'avoir choisi ${brand} ! <a href="${baseUrl}/contatti">Contactez-nous</a> si vous avez besoin d'aide.`,
       },
     } as const;
   }
   // German
   if (lang === "de") {
+    const brand = BRAND_DISPLAY_NAME;
     return {
       expiry: {
         subject: (tier: string, days: number) => `⏰ Dein ${tier}-Abonnement läuft in ${days} Tagen ab`,
@@ -172,12 +190,13 @@ function getEmailCopy(locale: string) {
           "Verwalte dein Profil und deine Fotos",
         ],
         dashboardCta: "Zum Dashboard",
-  thanksText: (baseUrl: string) => `Danke, dass du MYBUDGETEVENTO gewählt hast! <a href="${baseUrl}/contatti">Kontaktiere uns</a>, wenn du Hilfe benötigst.`,
+        thanksText: (baseUrl: string) => `Danke, dass du ${brand} gewählt hast! <a href="${baseUrl}/contatti">Kontaktiere uns</a>, wenn du Hilfe benötigst.`,
       },
     } as const;
   }
   // Italian default
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const base = DEFAULT_SITE_URL;
+  const brand = BRAND_DISPLAY_NAME;
   return {
     expiry: {
       subject: (tier: string, days: number) => `⏰ Il tuo abbonamento ${tier} scade tra ${days} giorni`,
@@ -212,7 +231,7 @@ function getEmailCopy(locale: string) {
         "Gestisci il tuo profilo e le foto",
       ],
       dashboardCta: "Vai alla Dashboard",
-  thanksText: (baseUrl: string) => `Grazie per aver scelto MYBUDGETEVENTO! <a href="${baseUrl}/contatti">Contattaci</a> se hai bisogno di assistenza.`,
+        thanksText: (baseUrl: string) => `Grazie per aver scelto ${brand}! <a href="${baseUrl}/contatti">Contattaci</a> se hai bisogno di assistenza.`,
     },
   } as const;
 }
@@ -231,7 +250,7 @@ export async function sendSubscriptionExpiryWarning(
   }
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const baseUrl = DEFAULT_SITE_URL;
     const t = getEmailCopy(locale).expiry;
     await resend.emails.send({
       from: FROM,
@@ -281,8 +300,8 @@ export async function sendSubscriptionExpiryWarning(
             </div>
             <div class="footer">
               <p>
-                MYBUDGETEVENTO<br>
-                <a href="${baseUrl}">ilbudgetdeglisposi.it</a>
+                ${BRAND_DISPLAY_NAME}<br>
+                <a href="${baseUrl}">${BRAND_SITE_HOST}</a>
               </p>
             </div>
           </div>
@@ -312,7 +331,7 @@ export async function sendSubscriptionActivated(
   }
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const baseUrl = DEFAULT_SITE_URL;
     const t = getEmailCopy(locale).activated;
     await resend.emails.send({
       from: FROM,
@@ -368,8 +387,8 @@ export async function sendSubscriptionActivated(
             </div>
             <div class="footer">
               <p>
-                MYBUDGETEVENTO<br>
-                <a href="${baseUrl}">ilbudgetdeglisposi.it</a>
+                ${BRAND_DISPLAY_NAME}<br>
+                <a href="${baseUrl}">${BRAND_SITE_HOST}</a>
               </p>
             </div>
           </div>
@@ -400,7 +419,7 @@ export async function sendAppointmentReminder(
   }
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const baseUrl = DEFAULT_SITE_URL;
     const lang = (locale || "it").slice(0, 2);
     const subjectByLang: Record<string, (days: number, title: string) => string> = {
       en: (d, t) => (d === 7 ? `Reminder: ${t} in 7 days` : `Reminder: ${t} in 48 hours`),
@@ -460,8 +479,8 @@ export async function sendAppointmentReminder(
             </div>
             <div class="footer">
               <p>
-                MYBUDGETEVENTO<br>
-                <a href="${baseUrl}">ilbudgetdeglisposi.it</a>
+                ${BRAND_DISPLAY_NAME}<br>
+                <a href="${baseUrl}">${BRAND_SITE_HOST}</a>
               </p>
             </div>
           </div>

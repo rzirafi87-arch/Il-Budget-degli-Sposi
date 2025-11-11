@@ -13,6 +13,22 @@ export type ExpenseRow = {
   notes?: string;
 };
 
+const ENGAGEMENT_PRIMARY_SLUG = "engagement-party";
+const ENGAGEMENT_FALLBACK_SLUG = "engagement";
+
+async function getEngagementTypeId(db: ReturnType<typeof getServiceClient>) {
+  const { data, error } = await db
+    .from("event_types")
+    .select("id, slug")
+    .in("slug", [ENGAGEMENT_PRIMARY_SLUG, ENGAGEMENT_FALLBACK_SLUG]);
+
+  if (error) throw error;
+  if (!data?.length) return null;
+
+  const preferred = data.find((row) => row.slug === ENGAGEMENT_PRIMARY_SLUG) ?? data[0];
+  return (preferred?.id as string | undefined) ?? null;
+}
+
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
@@ -61,11 +77,17 @@ export async function GET(req: NextRequest) {
   }
 
   // Fetch categories/subcategories for engagement
-  const { data: typeRow } = await db.from("event_types").select("id").eq("slug", "engagement").single();
-  const { data: cats } = await db
-    .from("categories")
-    .select("id, name")
-    .eq("type_id", typeRow?.id || null);
+  let engagementTypeId: string | null = null;
+  try {
+    engagementTypeId = await getEngagementTypeId(db);
+  } catch (typeError) {
+    const message = typeError instanceof Error ? typeError.message : "Failed to load engagement event type";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+  }
+
+  const { data: cats } = engagementTypeId
+    ? await db.from("categories").select("id, name").eq("type_id", engagementTypeId)
+    : { data: [] as { id: string; name: string }[] };
 
   const catNameToId = new Map<string, string>();
   (cats || []).forEach((c) => catNameToId.set(c.name, c.id));
@@ -142,11 +164,17 @@ export async function POST(req: NextRequest) {
     .eq("id", ev.id);
 
   // Map category+sub to subcategory_id
-  const { data: typeRow } = await db.from("event_types").select("id").eq("slug", "engagement").single();
-  const { data: cats } = await db
-    .from("categories")
-    .select("id, name")
-    .eq("type_id", typeRow?.id || null);
+  let engagementTypeId: string | null = null;
+  try {
+    engagementTypeId = await getEngagementTypeId(db);
+  } catch (typeError) {
+    const message = typeError instanceof Error ? typeError.message : "Failed to load engagement event type";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+  }
+
+  const { data: cats } = engagementTypeId
+    ? await db.from("categories").select("id, name").eq("type_id", engagementTypeId)
+    : { data: [] as { id: string; name: string }[] };
   const { data: subs } = await db
     .from("subcategories")
     .select("id, name, category_id");

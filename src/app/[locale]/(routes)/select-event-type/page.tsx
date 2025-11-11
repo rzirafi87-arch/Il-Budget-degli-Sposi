@@ -18,8 +18,8 @@ const DASHBOARD_EVENTS = new Set([
   "fifty",
   "gender-reveal",
   "retirement", // Added for testing - evento Pensione
-  "babyshower", // Added for testing - evento Baby Shower
-  "engagement", // Added - Festa di Fidanzamento
+  "baby-shower", // Added for testing - evento Baby Shower
+  "engagement-party", // Added - Festa di Fidanzamento
   "proposal", // Added - Proposta di Matrimonio
   "corporate", // Added - Evento Aziendale
   "bar-mitzvah", // Added - Bar/Bat Mitzvah
@@ -64,7 +64,9 @@ export default function SelectEventTypePage() {
       if (lsCountry && !cookieCountry) document.cookie = `country=${lsCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
       if (cookieEventType || lsEventType) {
         if (!cookieEventType && lsEventType) document.cookie = `eventType=${lsEventType}; Path=/; Max-Age=15552000; SameSite=Lax`;
-        const ev = cookieEventType || lsEventType || "";
+        let ev = cookieEventType || lsEventType || "";
+        if (ev === "babyshower") ev = "baby-shower";
+        if (ev === "engagement") ev = "engagement-party";
         router.replace(`/${locale}${DASHBOARD_EVENTS.has(ev) ? "/dashboard" : "/coming-soon"}`);
       }
     } catch {

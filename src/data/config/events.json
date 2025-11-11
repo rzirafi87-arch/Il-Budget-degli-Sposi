@@ -70,14 +70,14 @@
     "available": true
   },
   {
-    "slug": "babyshower",
+    "slug": "baby-shower",
     "label": "Baby Shower",
     "emoji": "🧸",
     "group": "famiglia",
     "available": true
   },
   {
-    "slug": "engagement",
+    "slug": "engagement-party",
     "label": "Engagement Party",
     "emoji": "💘",
     "group": "personale",

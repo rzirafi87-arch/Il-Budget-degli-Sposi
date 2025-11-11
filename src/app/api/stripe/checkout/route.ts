@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@/config/brand";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -73,7 +74,7 @@ export async function POST(req: NextRequest) {
             currency: "eur",
             product_data: {
               name: `${packageData.name_it} - ${billing_period === "monthly" ? "Mensile" : "Annuale"}`,
-              description: `Abbonamento ${tier} per MYBUDGETEVENTO`,
+              description: `Abbonamento ${tier} per ${BRAND_NAME}`,
             },
             unit_amount: amountInCents,
           },

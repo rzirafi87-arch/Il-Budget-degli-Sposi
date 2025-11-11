@@ -18,7 +18,9 @@ const EVENT_EMOJIS: Record<string, string> = {
   confirmation: "🕊️",
   communion: "✝️",
   graduation: "🎓",
+  "baby-shower": "🍼",
   babyshower: "🍼",
+  "engagement-party": "💍",
   engagement: "💍",
   proposal: "💍",
   "bar-mitzvah": "🕎",
@@ -101,7 +103,9 @@ export default function TopBarSelector() {
         document.cookie = `country=gb; Path=/; Max-Age=15552000; SameSite=Lax`;
         localStorage.setItem("country", "gb");
       }
-      const ev = localStorage.getItem("eventType") || c("eventType") || "wedding";
+      let ev = localStorage.getItem("eventType") || c("eventType") || "wedding";
+      if (ev === "babyshower") ev = "baby-shower";
+      if (ev === "engagement") ev = "engagement-party";
       setLang(ln);
       setCountry(ct);
       setEventType(ev);

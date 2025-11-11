@@ -19,7 +19,7 @@ export type EventTimelineItem = {
 
 export type EventMeta = {
   key: string;
-  name: string;
+  name?: string;
   defaultCurrency: Currency;
   sections: EventSection[];
   timeline: EventTimelineItem[];

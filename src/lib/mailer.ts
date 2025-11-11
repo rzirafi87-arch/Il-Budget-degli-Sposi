@@ -1,7 +1,13 @@
 import { Resend } from "resend";
 
+import {
+  BRAND_FROM_EMAIL,
+  BRAND_NAME,
+  BRAND_SITE_URL,
+} from "@/config/brand";
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const RESEND_FROM = process.env.RESEND_FROM || "onboarding@resend.dev";
+const RESEND_FROM = process.env.RESEND_FROM || BRAND_FROM_EMAIL;
 
 let resend: Resend | null = null;
 if (RESEND_API_KEY) {
@@ -27,13 +33,13 @@ export function siteUrl() {
   return (
     process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
-      ? "https://il-budget-degli-sposi-kbg1.vercel.app"
+      ? BRAND_SITE_URL
       : "http://localhost:3000")
   );
 }
 
 export function magicLinkTemplate(link: string) {
-  const brand = process.env.NEXT_PUBLIC_APP_NAME || "MYBUDGETEVENTO";
+  const brand = process.env.NEXT_PUBLIC_APP_NAME || BRAND_NAME;
   return `
   <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; line-height:1.5; color:#111">
     <h2 style="margin:0 0 12px">Benvenuto/a su ${brand}</h2>

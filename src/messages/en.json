@@ -263,7 +263,8 @@
     "communion": "First Communion",
     "bar-mitzvah": "Bar Mitzvah",
     "quinceanera": "Quinceañera",
-    "charity-gala": "Charity/Gala"
+    "charity-gala": "Charity/Gala",
+    "engagement-party": "Engagement Party"
   },
   "header": {
     "today": "Today!",
@@ -879,7 +880,7 @@
         "s14": {
           "title": "14. Privacy Officer Contacts",
           "p1": "For any privacy question or request:",
-          "authName": "Privacy Officer — MYBUDGETEVENTO",
+          "authName": "Privacy Officer — Il Budget degli Sposi",
           "addr": "Address: Via Esempio 123, 00100 Rome (RM)",
           "email": "Email: privacy@ilbudgetdeglisposi.it",
           "phone": "Phone: +39 XXX XXX XXXX"
@@ -899,7 +900,7 @@
         },
         "s2": {
           "title": "2. Service Description",
-          "p1": "MYBUDGETEVENTO is a free online platform that allows you to:",
+          "p1": "Il Budget degli Sposi is a free online platform that allows you to:",
           "items": {
             "i1": "Plan and manage your wedding budget",
             "i2": "Track expenses and incomes",

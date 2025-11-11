@@ -8,12 +8,20 @@ function formatOffsetDays(offset: number): string {
   return offset < 0 ? `${abs} ${unit} before` : `${abs} ${unit} after`;
 }
 
+function humanizeEventKey(key: string): string {
+  return key
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
+}
+
 type EventBudgetLayoutProps = {
   meta: EventMeta;
 };
 
 export default function EventBudgetLayout({ meta }: EventBudgetLayoutProps) {
-  const friendlyName = meta.name || meta.key;
+  const friendlyName = meta.name || humanizeEventKey(meta.key);
 
   return (
     <main className="space-y-12 py-10">

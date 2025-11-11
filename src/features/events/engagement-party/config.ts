@@ -1,7 +1,7 @@
 import type { EventMeta } from "@/features/events/types";
 
 export const ENGAGEMENT_PARTY_META: EventMeta = {
-  key: "engagement",
+  key: "engagement-party",
   name: "Engagement Party",
   defaultCurrency: "EUR",
   sections: [

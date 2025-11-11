@@ -12,8 +12,8 @@ export type EventKey =
   | "fifty"
   | "retirement"
   | "eighteenth"
-  | "babyshower"
-  | "engagement"
+  | "baby-shower"
+  | "engagement-party"
   | "proposal"
   | "bar-mitzvah"
   | "quinceanera"
@@ -94,13 +94,13 @@ export const eventsRegistry: Record<EventKey, EventRegistryItem> = {
     icon: "Sparkle",
     route: "/[locale]/turning-18",
   },
-  babyshower: {
+  "baby-shower": {
     label: "Baby Shower",
     available: flags.enable_babyshower,
     icon: "Baby",
     route: "/[locale]/baby-shower",
   },
-  engagement: {
+  "engagement-party": {
     label: "Engagement Party",
     available: flags.enable_engagement,
     icon: "HeartHandshake",
@@ -138,4 +138,6 @@ export const eventsRegistry: Record<EventKey, EventRegistryItem> = {
   },
 };
 
-export const activeEventEntries = Object.entries(eventsRegistry).filter(([, value]) => value.available);
+export const activeEventEntries = Object.entries(eventsRegistry).filter(
+  ([, value]) => value.available
+);

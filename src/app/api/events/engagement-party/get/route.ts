@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     .from("budgets")
     .select("*")
     .eq("user_id", userId)
-    .eq("event_key", "engagement")
+    .eq("event_key", "engagement-party")
     .maybeSingle();
 
   if (error) {

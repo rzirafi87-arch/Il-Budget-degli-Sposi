@@ -1,7 +1,7 @@
 import type { EventMeta } from "@/features/events/types";
 
 export const BABY_SHOWER_META: EventMeta = {
-  key: "babyshower",
+  key: "baby-shower",
   name: "Baby Shower",
   defaultCurrency: "EUR",
   sections: [

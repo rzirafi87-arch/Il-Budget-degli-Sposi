@@ -277,7 +277,7 @@
     "emailAriaLabel": "Introduce tu correo electrónico",
     "subscribeBtn": "Suscribirse",
     "thankYouMsg": "¡Gracias por suscribirte! Revisa tu correo electrónico.",
-    "aboutTitle": "MYBUDGETEVENTO",
+    "aboutTitle": "Il Budget degli Sposi",
     "aboutDesc": "La plataforma italiana para planificar el presupuesto de tu boda. Sencilla, completa y gratuita.",
     "toolsTitle": "Herramientas",
     "expenses": "Gestión de Gastos",
@@ -325,6 +325,7 @@
     "communion": "Primera comunión",
     "bar-mitzvah": "Bar Mitzvah",
     "quinceanera": "Quinceañera",
-    "charity-gala": "Evento benéfico/Gala"
+    "charity-gala": "Evento benéfico/Gala",
+    "engagement-party": "Fiesta de compromiso"
   }
 }

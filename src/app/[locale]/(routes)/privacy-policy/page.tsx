@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { BRAND_NAME } from "@/config/brand";
 import { formatDate } from "@/lib/locale";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -21,7 +22,7 @@ export default function PrivacyPolicyPage() {
         <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s2.title")}</h2>
         <p className="leading-relaxed">
           {t("privacy.s2.lead")}<br />
-          <strong>MYBUDGETEVENTO</strong><br />
+          <strong>{BRAND_NAME}</strong><br />
           <strong>{t("privacy.s2.emailLabel")}</strong> privacy@ilbudgetdeglisposi.it<br />
           <strong>{t("privacy.s2.pecLabel")}</strong> ilbudgetdeglisposi@pec.it
         </p>
