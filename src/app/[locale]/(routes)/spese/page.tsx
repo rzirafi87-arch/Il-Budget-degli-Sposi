@@ -10,86 +10,229 @@ import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
   // Stato per modal storico modifiche
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedExpenseId, setSelectedExpenseId] = useState<string|null>(null);
-// import { saveAs } from "file-saver";
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [expenseHistory, setExpenseHistory] = useState<any[]>([]);
 
+  // Carica storico modifiche quando si apre il modal
+  const loadExpenseHistory = useCallback(async (expenseId: string) => {
+    setHistoryLoading(true);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      const headers: HeadersInit = {};
+      if (jwt) headers.Authorization = `Bearer ${jwt}`;
+      const res = await fetch(`/api/my/expenses/history?expenseId=${expenseId}`, { headers });
+      const json = await res.json();
+      setExpenseHistory(Array.isArray(json.history) ? json.history : []);
+    } catch {
+      setExpenseHistory([]);
+    } finally {
 
-const supabase = getBrowserClient();
-// ...definizione unica di CATEGORIES_MAP sopra...
-// const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP); // già definito sopra
-// Tipi
-type SpendType = "common" | "bride" | "groom";
-type Expense = {
-  id?: string;
-  category: string;
-  subcategory: string;
-  supplier: string;
-  amount: number;
-  spendType: SpendType;
-  notes?: string;
-  date: string;
-  status: "pending" | "approved" | "rejected";
-  fromDashboard?: boolean;
-  description?: string;
-};
+      "use client";
 
+      import ImageCarousel from "@/components/ImageCarousel";
+      import PageInfoNote from "@/components/PageInfoNote";
+      import Modal from "@/components/ui/Modal";
+      import { useCallback, useEffect, useState } from "react";
+      import { formatCurrency, formatDate } from "@/lib/locale";
+      import { getPageImages } from "@/lib/pageImages";
+      import { getBrowserClient } from "@/lib/supabaseBrowser";
+      import { useTranslations } from "next-intl";
+      import Link from "next/link";
 
-  const t = useTranslations();
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState<string|null>(null);
-  const [showForm, setShowForm] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [newExpense, setNewExpense] = useState<Expense>({
-    category: "",
-    subcategory: "",
-    supplier: "",
-    amount: 0,
-    spendType: "common",
-    notes: "",
-    date: "",
-    status: "pending",
-    description: "",
-  });
-  // Ricava il paese utente (mock: "IT")
-  const country = "IT";
-  // Determina se l'evento è a budget unico (mock: false)
-  const isSingleBudgetEvent = false;
+      function ExpensesPage() {
+        const supabase = getBrowserClient();
+        const t = useTranslations();
+        // Stato per modal storico modifiche
+        const [showHistoryModal, setShowHistoryModal] = useState(false);
+        const [selectedExpenseId, setSelectedExpenseId] = useState<string|null>(null);
+        const [historyLoading, setHistoryLoading] = useState(false);
+        const [expenseHistory, setExpenseHistory] = useState<any[]>([]);
 
-  // Stato per budget pianificato (da /api/budget-items)
-  const [plannedBudget, setPlannedBudget] = useState<Record<string, number>>({});
-  const [overBudgetKeys, setOverBudgetKeys] = useState<string[]>([]);
+        // ...Tipi e costanti...
+        type SpendType = "common" | "bride" | "groom";
+        type Expense = {
+          id?: string;
+          category: string;
+          subcategory: string;
+          supplier: string;
+          amount: number;
+          spendType: SpendType;
+          notes?: string;
+          date: string;
+          status: "pending" | "approved" | "rejected";
+          fromDashboard?: boolean;
+          description?: string;
+        };
 
-  // Carica budget pianificato per categoria-sottocategoria
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        const jwt = data.session?.access_token;
-        const headers: HeadersInit = {};
-        if (jwt) headers.Authorization = `Bearer ${jwt}`;
-        const country = (typeof window !== "undefined" ? localStorage.getItem("country") : "it") || "it";
-        const res = await fetch(`/api/budget-items?country=${encodeURIComponent(country)}`, { headers });
-        const json = await res.json();
-        // Crea mappa "Categoria|Sottocategoria" => importo pianificato
-        const map: Record<string, number> = {};
-        if (Array.isArray(json?.items)) {
-          for (const it of json.items) {
-            const cat = it.category || (it.name ? String(it.name).split(" - ")[0] : "");
-            const sub = it.subcategory || (it.name ? String(it.name).split(" - ")[1] : "");
-            const key = `${cat}|${sub}`;
-            map[key] = Number(it.amount || 0);
+        // Ricava il paese utente (mock: "IT")
+        const country = "IT";
+        // Determina se l'evento è a budget unico (mock: false)
+        const isSingleBudgetEvent = false;
+
+        // Stato per budget pianificato (da /api/budget-items)
+        const [plannedBudget, setPlannedBudget] = useState<Record<string, number>>({});
+        const [overBudgetKeys, setOverBudgetKeys] = useState<string[]>([]);
+
+        // Stato spese
+        const [expenses, setExpenses] = useState<Expense[]>([]);
+        const [loading, setLoading] = useState(true);
+        const [message, setMessage] = useState<string|null>(null);
+        const [showForm, setShowForm] = useState(false);
+        const [saving, setSaving] = useState(false);
+        const [newExpense, setNewExpense] = useState<Expense>({
+          category: "",
+          subcategory: "",
+          supplier: "",
+          amount: 0,
+          spendType: "common",
+          notes: "",
+          date: "",
+          status: "pending",
+          description: "",
+        });
+
+        // Carica storico modifiche quando si apre il modal
+        const loadExpenseHistory = useCallback(async (expenseId: string) => {
+          setHistoryLoading(true);
+          try {
+            const { data } = await supabase.auth.getSession();
+            const jwt = data.session?.access_token;
+            const headers: HeadersInit = {};
+            if (jwt) headers.Authorization = `Bearer ${jwt}`;
+            const res = await fetch(`/api/my/expenses/history?expenseId=${expenseId}`, { headers });
+            const json = await res.json();
+            setExpenseHistory(Array.isArray(json.history) ? json.history : []);
+          } catch {
+            setExpenseHistory([]);
+          } finally {
+            setHistoryLoading(false);
           }
-        }
-        setPlannedBudget(map);
-      } catch {
-        setPlannedBudget({});
-      }
-    })();
-  }, []);
+        }, [supabase]);
+
+        // Apri modal e carica storico
+        const openHistoryModal = (expenseId: string) => {
+          setSelectedExpenseId(expenseId);
+          setShowHistoryModal(true);
+          loadExpenseHistory(expenseId);
+        };
+
+        // ...resto del codice esistente (copia tutto il contenuto della pagina qui dentro, senza duplicare hook)...
+
+        // Stesse categorie della dashboard
+        const CATEGORIES_MAP: Record<string, string[]> = {
+          "Abiti & Accessori (altri)": [
+            "Abiti ospiti / Genitori",
+            "Accessori damigelle",
+            "Accessori testimoni",
+            "Fedi nuziali",
+            "Anello fidanzamento",
+            "Accessori vari",
+          ],
+          "Cerimonia/Chiesa Location": [
+            "Chiesa / Comune",
+            "Musiche",
+            "Libretti Messa",
+            "Fiori cerimonia",
+            "Wedding bag",
+            "Ventagli",
+            "Pulizia chiesa",
+            "Cesto doni",
+            "Documenti e pratiche",
+            "Offerte / Diritti",
+            "Colombe uscita",
+            "Riso/Petali",
+            "Bottiglia per brindisi",
+            "Bicchieri per brindisi",
+            "Forfait cerimonia",
+          ],
+          "Fuochi d'artificio": [
+            "Fuochi d'artificio tradizionali",
+            "Fontane luminose",
+            "Spettacolo pirotecnico",
+            "Bengala per ospiti",
+            "Lancio palloncini luminosi",
+            "Forfait fuochi d'artificio",
+          ],
+          "Fiori & Decor": [
+            "Bouquet",
+            "Boutonnière",
+            "Centrotavola",
+            "Allestimenti",
+            "Candele",
+            "Tableau",
+            "Segnaposto",
+            "Noleggi (vasi / strutture)",
+            "Forfait fioraio",
+          ],
+          "Foto & Video": [
+            "Servizio fotografico",
+            "Video",
+            "Drone",
+            "Album",
+            "Stampe",
+            "Secondo fotografo",
+            "Forfait fotografo",
+          ],
+          "Inviti & Stationery": [
+            "Partecipazioni",
+            "Menu",
+            "Segnaposto",
+            "Libretti Messa",
+            "Timbri / Cliché",
+            "Francobolli / Spedizioni",
+            "Calligrafia",
+            "Cartoncini / Tag",
+            "QR Code / Stampa",
+          ],
+          "Sposa": [
+            "Abito sposa",
+            "Scarpe sposa",
+            "Accessori (velo, gioielli, ecc.)",
+            "Intimo / sottogonna",
+            "Parrucchiera",
+            "Make-up",
+            "Prove",
+            "Altro sposa",
+          ],
+          "Sposo": [
+            "Abito sposo",
+            "Scarpe sposo",
+            "Accessori (cravatta, gemelli, ecc.)",
+            "Barbiere / Grooming",
+            "Prove",
+            "Altro sposo",
+          ],
+          "Ricevimento Location": [
+            "Affitto sala",
+            "Catering / Banqueting",
+            "Torta nuziale",
+            "Vini & Bevande",
+            "Open bar",
+            "Mise en place",
+            "Noleggio tovagliato / piatti",
+            "Forfait location",
+            "Forfait catering (prezzo a persona)",
+          ],
+          "Musica & Intrattenimento": [
+            "DJ / Band",
+            "Audio / Luci",
+            "Animazione",
+            "Diritti SIAE",
+            "Guestbook phone / Postazioni",
+          ],
+          "Spese varie": [
+            "Spese varie",
+          ],
+        };
+
+        const ALL_CATEGORIES = Object.keys(CATEGORIES_MAP);
+
+
 
   // Calcola se ci sono superamenti budget
   useEffect(() => {
@@ -622,7 +765,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
                       <div className="col-span-2"><dt className="text-muted-foreground">Azioni</dt><dd>
                         <div className="flex gap-2 flex-wrap justify-center">
                           <button
-                            onClick={() => { setSelectedExpenseId(exp.id!); setShowHistoryModal(true); }}
+                            onClick={() => openHistoryModal(exp.id!)}
                             className="text-blue-600 hover:text-blue-800 text-xs font-medium border border-blue-200 rounded px-2 py-1 bg-blue-50"
                           >
                             Storico modifiche
@@ -702,7 +845,7 @@ const CATEGORIES_MAP: Record<string, string[]> = {
                         <td className="whitespace-nowrap px-4 py-2 text-center">
                           <div className="flex gap-2 flex-wrap justify-center">
                             <button
-                              onClick={() => { setSelectedExpenseId(exp.id!); setShowHistoryModal(true); }}
+                              onClick={() => openHistoryModal(exp.id!)}
                               className="text-blue-600 hover:text-blue-800 text-xs font-medium border border-blue-200 rounded px-2 py-1 bg-blue-50"
                             >
                               Storico modifiche
@@ -733,11 +876,29 @@ const CATEGORIES_MAP: Record<string, string[]> = {
                         </td>
       {/* Modal storico modifiche */}
       <Modal open={showHistoryModal} onClose={() => setShowHistoryModal(false)} title="Storico modifiche spesa" widthClass="max-w-xl">
-        <div className="min-h-[120px] flex items-center justify-center text-gray-500">
-          {selectedExpenseId ? (
-            <span>Storico modifiche per spesa ID: <b>{selectedExpenseId}</b> (prossimamente...)</span>
+        <div className="min-h-[120px]">
+          {historyLoading ? (
+            <div className="flex items-center justify-center h-24 text-gray-400">Caricamento...</div>
           ) : (
-            <span>Nessuna spesa selezionata</span>
+            expenseHistory.length === 0 ? (
+              <div className="flex items-center justify-center h-24 text-gray-400">Nessuna modifica registrata</div>
+            ) : (
+              <ul className="divide-y divide-gray-100">
+                {expenseHistory.map((h) => (
+                  <li key={h.id} className="py-3 px-2">
+                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+                      <span className="font-mono text-gray-400">{new Date(h.created_at).toLocaleString("it-IT")}</span>
+                      <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-700 ml-2">{h.action}</span>
+                    </div>
+                    <div className="text-sm">
+                      {/* Placeholder: mostra differenze old_data/new_data */}
+                      <span className="text-gray-700">Modifica: </span>
+                      <span className="font-mono text-xs text-gray-600">{JSON.stringify(h.new_data)}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )
           )}
         </div>
       </Modal>
