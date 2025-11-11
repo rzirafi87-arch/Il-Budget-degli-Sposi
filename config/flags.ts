@@ -5,4 +5,6 @@ export const flags = {
   country_india: false,
   ai_suggestions: false,
   payments_stripe: true,
-};
+} as const;
+
+export type FeatureFlags = typeof flags;

@@ -1,4 +1,5 @@
 import { BRAND_NAME } from "@/config/brand";
+import { flags } from "@/config/flags";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -19,6 +20,9 @@ type CheckoutRequest = {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!flags.payments_stripe) {
+      return NextResponse.json({ error: "Pagamenti temporaneamente disabilitati" }, { status: 503 });
+    }
     if (!stripe) {
       return NextResponse.json({ error: "Stripe non configurato" }, { status: 503 });
     }
