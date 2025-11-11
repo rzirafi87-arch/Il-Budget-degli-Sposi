@@ -277,7 +277,12 @@ export const BABY_SHOWER_BUDGET_CATEGORIES: BudgetCategoryMap = {
   Location: ["Casa", "Affitto sala", "Pulizie", "Permessi"],
   Catering: ["Dolci", "Snack salati", "Bevande", "Torta a tema"],
   Decor: ["Backdrop", "Balloon art", "Fiori", "Stationery"],
-  Intrattenimento: ["Giochi pronostico", "Animazione", "Playlist", "Photobooth"],
+  Intrattenimento: [
+    "Giochi pronostico",
+    "Animazione",
+    "Playlist",
+    "Photobooth",
+  ],
   Comunicazione: ["Inviti", "RSVP", "Ringraziamenti", "Social"],
   Regali: ["Lista nascita", "Gift table", "Gadget ospiti", "Packaging"],
   Ricordi: ["Fotografo", "Video", "Album", "Guestbook"],
@@ -306,6 +311,6 @@ export const EVENT_BUDGET_CATEGORIES: Record<EventType, BudgetCategoryMap> = {
   birthday: BIRTHDAY_BUDGET_CATEGORIES,
   "turning-50": TURNING50_BUDGET_CATEGORIES,
   retirement: RETIREMENT_BUDGET_CATEGORIES,
-  "baby-shower": BABY_SHOWER_BUDGET_CATEGORIES,          // ⬅️ nuovo
+  "baby-shower": BABY_SHOWER_BUDGET_CATEGORIES, // ⬅️ nuovo
   "engagement-party": ENGAGEMENT_PARTY_BUDGET_CATEGORIES, // ⬅️ nuovo
 };
