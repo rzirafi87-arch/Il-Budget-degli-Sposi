@@ -1,10 +1,13 @@
 ﻿"use client";
 
+
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 
 // ---------- Tipi ----------
@@ -44,7 +47,17 @@ function formatDate(d: Date) {
   return new Intl.DateTimeFormat("it-IT").format(d);
 }
 
+
 // ---------- Componente ----------
+export default function IncomesPage() {
+  const t = useTranslations();
+  // TODO: sostituisci con i tuoi hook/contesto reali
+  const locale = "it";
+  const country = "it";
+  const isWedding = true;
+  const isSingleBudgetEvent = false;
+  const supabase = getBrowserClient();
+
   // Stato filtri avanzati
   const [filter, setFilter] = useState({
     dateFrom: "",
@@ -53,10 +66,48 @@ function formatDate(d: Date) {
     incomeSource: "",
     search: "",
   });
+  const [loading, setLoading] = useState<boolean>(true);
+  const [saving, setSaving] = useState<boolean>(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [newIncome, setNewIncome] = useState<NewIncome>({
+    name: "",
+    type: "busta",
+    incomeSource: "common",
+    amount: 0,
+    date: new Date().toISOString().split("T")[0],
+    notes: "",
+  });
 
   // Stato per budget pianificato (da /api/budget-items)
   const [plannedBudget, setPlannedBudget] = useState<{ bride: number; groom: number; common: number; total: number }>({ bride: 0, groom: 0, common: 0, total: 0 });
   const [overBudget, setOverBudget] = useState<{ bride: boolean; groom: boolean; common: boolean; total: boolean }>({ bride: false, groom: false, common: false, total: false });
+
+  // Caricamento entrate
+  const loadIncomes = async () => {
+    setLoading(true);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      const headers: HeadersInit = {};
+      if (jwt) headers.Authorization = `Bearer ${jwt}`;
+
+      const res = await fetch("/api/my/incomes", { headers });
+      const json = await res.json();
+      setIncomes(Array.isArray(json.incomes) ? json.incomes : []);
+    } catch (e) {
+      console.error(e);
+      setMessage("Errore nel caricamento delle entrate");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadIncomes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Carica budget pianificato
   useEffect(() => {
@@ -84,57 +135,7 @@ function formatDate(d: Date) {
     })();
   }, []);
 
-  // Calcola se ci sono superamenti budget
-  useEffect(() => {
-    setOverBudget({
-      bride: totalBride > plannedBudget.bride && plannedBudget.bride > 0,
-      groom: totalGroom > plannedBudget.groom && plannedBudget.groom > 0,
-      common: totalCommon > plannedBudget.common && plannedBudget.common > 0,
-      total: totalMoney > plannedBudget.total && plannedBudget.total > 0,
-    });
-  }, [totalBride, totalGroom, totalCommon, totalMoney, plannedBudget]);
-
-  // Funzione di filtro
-  const filteredIncomes = incomes.filter((income) => {
-    // Filtro data da
-    if (filter.dateFrom && income.date < filter.dateFrom) return false;
-    // Filtro data a
-    if (filter.dateTo && income.date > filter.dateTo) return false;
-    // Filtro tipo
-    if (filter.type && income.type !== filter.type) return false;
-    // Filtro sorgente
-    if (filter.incomeSource && income.incomeSource !== filter.incomeSource) return false;
-    // Filtro testo libero su nome e note
-    if (filter.search) {
-      const s = filter.search.toLowerCase();
-      if (!income.name.toLowerCase().includes(s) && !(income.notes || "").toLowerCase().includes(s)) return false;
-    }
-    return true;
-  });
-  const t = useTranslations();
-
-  // TODO: sostituisci con i tuoi hook/contesto reali
-  const locale = "it";
-  const country = "it";
-  const isWedding = true;
-  const isSingleBudgetEvent = false;
-
-  const supabase = getBrowserClient();
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const [saving, setSaving] = useState<boolean>(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [incomes, setIncomes] = useState<Income[]>([]);
-  const [showForm, setShowForm] = useState<boolean>(false);
-
-  const [newIncome, setNewIncome] = useState<NewIncome>({
-    name: "",
-    type: "busta",
-    incomeSource: "common",
-    amount: 0,
-    date: new Date().toISOString().split("T")[0],
-    notes: "",
-  });
+  // ...existing code...
 
   // Caricamento entrate
   const loadIncomes = async () => {
