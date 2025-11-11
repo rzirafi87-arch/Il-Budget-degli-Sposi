@@ -12,12 +12,12 @@ export const flags = {
   enable_graduation: true,
   enable_anniversary: true,
   enable_gender_reveal: true,
-  enable_birthday: true,
+  enable_birthday: true, // Ensure this flag is enabled
   enable_fifty: true,
   enable_retirement: true,
   enable_eighteenth: true,
-  enable_baby_shower: true,
-  enable_engagement_party: true,
+  enable_baby_shower: true, // Ensure this flag is enabled
+  enable_engagement_party: true, // Ensure this flag is enabled
   enable_proposal: true,
   enable_bar_mitzvah: true,
   enable_quinceanera: true,
