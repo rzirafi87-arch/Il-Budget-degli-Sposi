@@ -1,4 +1,3 @@
-
 export const flags = {
   enable_wedding: true,
   enable_baptism: true,
