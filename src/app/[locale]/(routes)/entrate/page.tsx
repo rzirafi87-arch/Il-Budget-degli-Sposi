@@ -490,6 +490,8 @@ export default function IncomesPage() {
     </section>
   );
 }
+  );
+}
 "use client";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
