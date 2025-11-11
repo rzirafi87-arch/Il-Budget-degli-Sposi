@@ -26,8 +26,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ data: existingBudget });
   }
 
-
-
   const payload = {
     user_id: userId,
     event_key: ENGAGEMENT_PARTY_META.key,

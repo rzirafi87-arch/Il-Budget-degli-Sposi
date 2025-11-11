@@ -37,7 +37,11 @@ export const ENGAGEMENT_PARTY_META: EventMeta = {
     { id: "pick-date", label: "Pick a date & budget", offsetDays: -60 },
     { id: "book-venue", label: "Book the venue", offsetDays: -45 },
     { id: "send-invites", label: "Send invitations", offsetDays: -30 },
-    { id: "final-headcount", label: "Final headcount to catering", offsetDays: -7 },
+    {
+      id: "final-headcount",
+      label: "Final headcount to catering",
+      offsetDays: -7,
+    },
     { id: "event-day", label: "Event day", offsetDays: 0 },
   ],
 };
