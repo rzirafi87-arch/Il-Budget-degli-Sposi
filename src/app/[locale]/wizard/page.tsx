@@ -88,7 +88,7 @@ export default function Page({ params }: Props) {
           >
             {EVENT_OPTIONS.map((event) => (
               <option key={event.key} value={event.key}>
-                {event.label}
+                {event.name || event.key}
               </option>
             ))}
           </select>

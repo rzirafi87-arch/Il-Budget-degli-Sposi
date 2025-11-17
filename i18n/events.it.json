@@ -99,6 +99,10 @@
     }
   },
   "baby-shower": {
+  },
+  "graduation": {
+    "label": "Laurea (coming soon)"
+  },
     "label": "Baby Shower (coming soon)",
     "sections": {
       "venue": "Location e Allestimento",

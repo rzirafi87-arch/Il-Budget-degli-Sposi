@@ -27,7 +27,7 @@ export type TimelineTaskTemplate = {
   description: string;
   monthsBefore: number;
   category: string;
-  priority: string; // "alta" | "media" | "bassa"
+  priority: "alta" | "media" | "bassa";
 };
 
 export type TimelineBucket = {
