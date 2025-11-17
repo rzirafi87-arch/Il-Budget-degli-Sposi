@@ -26,7 +26,8 @@ const COUNTRY_OPTIONS = [
   // { code: "US", label: "Stati Uniti" },
 ];
 
-export default function Page({ params }: Props) {
+export default async function Page({ params }: Props) {
+  const { locale } = await params;
   const router = useRouter();
   const [country, setCountry] = useState("IT");
   const [eventKey, setEventKey] = useState<string>(EVENT_OPTIONS[0].key);
@@ -35,7 +36,7 @@ export default function Page({ params }: Props) {
     e.preventDefault();
     // Qui decidi dove portare l’utente dopo la scelta
     // Esempio: /it/baby-shower, /it/birthday, ecc.
-    router.push(`/${params.locale}/${eventKey}`);
+    router.push(`/${locale}/${eventKey}`);
   };
 
   return (
