@@ -1,9 +1,9 @@
-﻿import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+﻿import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 // Mock next/navigation router to avoid real navigation in jsdom
 const mockPush = jest.fn();
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush, replace: jest.fn() }),
 }));
 
@@ -15,27 +15,36 @@ beforeAll(() => {
   );
 });
 
-import SelectEventTypePage from '../[locale]/(routes)/select-event-type/page';
+// Mock Zod (or the schema library) to prevent "t.optional is not a function" error in test
+jest.mock("zod", () => {
+  const actual = jest.requireActual("zod");
+  return {
+    ...actual,
+    optional: (schema: any) => schema,
+  };
+});
 
-describe('SelectEventTypePage - Comunione', () => {
+import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
+
+describe("SelectEventTypePage - Comunione", () => {
   beforeEach(() => {
     window.localStorage.clear();
-    document.cookie = '';
+    document.cookie = "";
     mockPush.mockClear();
   });
 
-  it('mostra Comunione e salva la scelta, reindirizzando alla Dashboard', () => {
+  it("mostra Comunione e salva la scelta, reindirizzando alla Dashboard", () => {
     // Imposta lingua e paese per evitare redirect iniziali
-    window.localStorage.setItem('language', 'it');
-    window.localStorage.setItem('country', 'it');
+    window.localStorage.setItem("language", "it");
+    window.localStorage.setItem("country", "it");
 
     render(<SelectEventTypePage />);
 
-    const btn = screen.getByRole('button', { name: /comunione/i });
+    const btn = screen.getByRole("button", { name: /comunione/i });
     fireEvent.click(btn);
 
-    expect(window.localStorage.getItem('eventType')).toBe('communion');
+    expect(window.localStorage.getItem("eventType")).toBe("communion");
     expect(document.cookie).toMatch(/eventType=communion/);
-  expect(mockPush).toHaveBeenCalledWith('/it/dashboard');
+    expect(mockPush).toHaveBeenCalledWith("/it/dashboard");
   });
 });

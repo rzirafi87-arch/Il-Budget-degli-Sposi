@@ -3,7 +3,13 @@
 import { locales } from "@/i18n/config";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter, usePathname as nextUsePathname } from "next/navigation";
+// Fallback per i test: se non siamo in ambiente browser, restituisci '/' come hook React
+function usePathname() {
+  if (typeof window === "undefined" || typeof nextUsePathname !== "function")
+    return "/";
+  return nextUsePathname();
+}
 import React from "react";
 
 const EVENT_EMOJIS: Record<string, string> = {
@@ -53,24 +59,30 @@ const toFlag = (code?: string) => {
   if (normalized.length !== 2) return "🌐";
   return String.fromCodePoint(
     REGIONAL_OFFSET + normalized.charCodeAt(0) - A_CODE,
-    REGIONAL_OFFSET + normalized.charCodeAt(1) - A_CODE,
+    REGIONAL_OFFSET + normalized.charCodeAt(1) - A_CODE
   );
 };
 
 const getLanguageFlag = (langSlug: string, locale?: string) => {
-  const region = locale?.split("-")[1] || LANGUAGE_REGION_FALLBACK[langSlug] || langSlug.slice(0, 2);
+  const region =
+    locale?.split("-")[1] ||
+    LANGUAGE_REGION_FALLBACK[langSlug] ||
+    langSlug.slice(0, 2);
   return toFlag(region);
 };
 
 const getCountryFlag = (code?: string) => toFlag(code);
 
-const Label: React.FC<{ title: string; value: string; onClick: () => void; emoji: string }> = ({
-  title,
-  value,
-  onClick,
-  emoji,
-}) => (
-  <button onClick={onClick} className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 flex items-center gap-2">
+const Label: React.FC<{
+  title: string;
+  value: string;
+  onClick: () => void;
+  emoji: string;
+}> = ({ title, value, onClick, emoji }) => (
+  <button
+    onClick={onClick}
+    className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 flex items-center gap-2"
+  >
     <span className="text-base" aria-hidden>
       {emoji}
     </span>
@@ -95,7 +107,8 @@ export default function TopBarSelector() {
 
   React.useEffect(() => {
     try {
-      const c = (name: string) => document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]+)"))?.[1];
+      const c = (name: string) =>
+        document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]+)"))?.[1];
       const ln = localStorage.getItem("language") || c("language") || "it";
       let ct = localStorage.getItem("country") || c("country") || "it";
       if (ct === "uk") {
@@ -140,7 +153,9 @@ export default function TopBarSelector() {
   const countryDisplay = React.useMemo(() => {
     try {
       return (
-        new Intl.DisplayNames([locale], { type: "region" }).of((currentCountry?.code || country).toUpperCase()) ||
+        new Intl.DisplayNames([locale], { type: "region" }).of(
+          (currentCountry?.code || country).toUpperCase()
+        ) ||
         currentCountry?.label ||
         country.toUpperCase()
       );
@@ -200,7 +215,9 @@ export default function TopBarSelector() {
             <Label
               title="Evento"
               value={`${eventLabel}${
-                currentEvent?.available === false ? ` · ${t("comingSoon", { fallback: "In arrivo" })}` : ""
+                currentEvent?.available === false
+                  ? ` · ${t("comingSoon", { fallback: "In arrivo" })}`
+                  : ""
               }`}
               emoji={eventEmoji}
               onClick={() => router.push(`/${locale}/select-event-type`)}

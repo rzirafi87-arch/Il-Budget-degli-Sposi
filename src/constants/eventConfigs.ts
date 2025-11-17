@@ -1,40 +1,33 @@
 import {
-  ANNIVERSARY_BUDGET_CATEGORIES,
-  BAPTISM_BUDGET_CATEGORIES,
-  BIRTHDAY_BUDGET_CATEGORIES,
-  CONFIRMATION_BUDGET_CATEGORIES,
-  EIGHTEENTH_BUDGET_CATEGORIES,
-  GENDER_REVEAL_BUDGET_CATEGORIES,
-  GRADUATION_BUDGET_CATEGORIES,
-  RETIREMENT_BUDGET_CATEGORIES,
-  TURNING50_BUDGET_CATEGORIES,
   WEDDING_BUDGET_CATEGORIES,
-  BABY_SHOWER_BUDGET_CATEGORIES,
-  ENGAGEMENT_PARTY_BUDGET_CATEGORIES,
+  BAPTISM_BUDGET_CATEGORIES,
+  EIGHTEENTH_BUDGET_CATEGORIES,
+  ANNIVERSARY_BUDGET_CATEGORIES,
+  GENDER_REVEAL_BUDGET_CATEGORIES,
+  BIRTHDAY_BUDGET_CATEGORIES,
+  TURNING50_BUDGET_CATEGORIES,
+  RETIREMENT_BUDGET_CATEGORIES,
 } from "./budgetCategories";
 
 export type EventType =
   | "wedding"
   | "baptism"
-  | "turning-18"
+  | "eighteenth"
   | "anniversary"
   | "gender-reveal"
   | "birthday"
-  | "turning-50"
+  | "fifty"
   | "retirement"
-  | "confirmation"
   | "graduation"
-  | "baby-shower"
-  | "engagement-party";
-
-type TimelinePriority = "alta" | "media" | "bassa";
+  | "confirmation"
+  | "communion";
 
 export type TimelineTaskTemplate = {
   title: string;
   description: string;
   monthsBefore: number;
   category: string;
-  priority: TimelinePriority;
+  priority: string; // "alta" | "media" | "bassa"
 };
 
 export type TimelineBucket = {
@@ -78,6 +71,78 @@ const INFINITY = Number.POSITIVE_INFINITY;
 export const DEFAULT_EVENT_TYPE: EventType = "wedding";
 
 export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
+  graduation: {
+    name: "Laurea",
+    emoji: "🎓",
+    budgetSectionTitle: "Imposta Budget Laurea",
+    dateLabel: "Data Laurea",
+    totalBudgetLabel: "Budget Laurea",
+    spendTypeLabel: "Pagato da",
+    eventDateMessage: "La laurea è il",
+    timelineTitle: "Timeline Laurea",
+    timelineDescription: "Organizza la festa di laurea perfetta!",
+    timelineBuckets: [],
+    timelineTasks: [],
+    budgetCategories: {},
+    spendTypes: [{ value: "graduate", label: "Laureato/a" }],
+    contributors: [
+      {
+        value: "graduate",
+        label: "Budget Laureato/a",
+        cardClass: "border-2 border-green-300 bg-green-50",
+        textClass: "text-green-700",
+      },
+    ],
+    defaultSpendType: "graduate",
+  },
+  confirmation: {
+    name: "Cresima",
+    emoji: "✝️",
+    budgetSectionTitle: "Imposta Budget Cresima",
+    dateLabel: "Data Cresima",
+    totalBudgetLabel: "Budget Cresima",
+    spendTypeLabel: "Pagato da",
+    eventDateMessage: "La cresima è il",
+    timelineTitle: "Timeline Cresima",
+    timelineDescription: "Organizza la cresima senza stress!",
+    timelineBuckets: [],
+    timelineTasks: [],
+    budgetCategories: {},
+    spendTypes: [{ value: "family", label: "Famiglia" }],
+    contributors: [
+      {
+        value: "family",
+        label: "Budget Famiglia",
+        cardClass: "border-2 border-purple-300 bg-purple-50",
+        textClass: "text-purple-700",
+      },
+    ],
+    defaultSpendType: "family",
+  },
+  communion: {
+    name: "Comunione",
+    emoji: "✝️",
+    budgetSectionTitle: "Imposta Budget Comunione",
+    dateLabel: "Data Comunione",
+    totalBudgetLabel: "Budget Comunione",
+    spendTypeLabel: "Pagato da",
+    eventDateMessage: "La comunione è il",
+    timelineTitle: "Timeline Comunione",
+    timelineDescription: "Organizza la comunione senza stress!",
+    timelineBuckets: [],
+    timelineTasks: [],
+    budgetCategories: {},
+    spendTypes: [{ value: "family", label: "Famiglia" }],
+    contributors: [
+      {
+        value: "family",
+        label: "Budget Famiglia",
+        cardClass: "border-2 border-blue-300 bg-blue-50",
+        textClass: "text-blue-700",
+      },
+    ],
+    defaultSpendType: "family",
+  },
   wedding: {
     name: "Matrimonio",
     emoji: "💍💒",
@@ -101,85 +166,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
       { label: "1-2 mesi prima", minMonthsBefore: 1, maxMonthsBefore: 2 },
       { label: "Ultime settimane", minMonthsBefore: 0, maxMonthsBefore: 0.99 },
     ],
-    timelineTasks: [
-      {
-        title: "Annunciate il fidanzamento",
-        description: "Condividete la notizia con chi amate",
-        monthsBefore: 12,
-        category: "Inizio",
-        priority: "alta",
-      },
-      {
-        title: "Definite budget e stile",
-        description: "Scegliete priorità e moodboard",
-        monthsBefore: 10,
-        category: "Budget",
-        priority: "alta",
-      },
-      {
-        title: "Prenotate location e data",
-        description: "Allineate cerimonia e ricevimento",
-        monthsBefore: 9.5,
-        category: "Cerimonia",
-        priority: "alta",
-      },
-      {
-        title: "Selezionate fornitori chiave",
-        description: "Foto, video, musica e catering",
-        monthsBefore: 8,
-        category: "Servizi",
-        priority: "alta",
-      },
-      {
-        title: "Scegliete abiti degli sposi",
-        description: "Avviate prove e personalizzazioni",
-        monthsBefore: 7,
-        category: "Sposa",
-        priority: "media",
-      },
-      {
-        title: "Invii Save the Date",
-        description: "Avvisate gli ospiti",
-        monthsBefore: 6,
-        category: "Invitati",
-        priority: "media",
-      },
-      {
-        title: "Curate inviti e decor",
-        description: "Grafica, fiori e scenografie",
-        monthsBefore: 4,
-        category: "Decor",
-        priority: "media",
-      },
-      {
-        title: "Definite menù e logistica",
-        description: "Tavoli, ospiti e trasporti",
-        monthsBefore: 3,
-        category: "Ricevimento",
-        priority: "media",
-      },
-      {
-        title: "Ultimate prove beauty",
-        description: "Trucco, acconciatura e accessori",
-        monthsBefore: 1.5,
-        category: "Sposa",
-        priority: "media",
-      },
-      {
-        title: "Confermate fornitori e pagamenti",
-        description: "Verificate timeline della giornata",
-        monthsBefore: 0.5,
-        category: "Servizi",
-        priority: "alta",
-      },
-      {
-        title: "Preparatevi al viaggio di nozze",
-        description: "Documenti, valigie e assicurazioni",
-        monthsBefore: 0.25,
-        category: "Viaggio",
-        priority: "bassa",
-      },
-    ],
+    timelineTasks: [], // ...popolato dopo
     budgetCategories: WEDDING_BUDGET_CATEGORIES,
     spendTypes: [
       { value: "bride", label: "Sposa" },
@@ -329,7 +316,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
     ],
     defaultSpendType: "parents",
   },
-  "turning-18": {
+  eighteenth: {
     name: "Festa dei 18 anni",
     emoji: "🎂🎓",
     budgetSectionTitle: "Imposta Budget per il Diciottesimo",
@@ -779,7 +766,7 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
     ],
     defaultSpendType: "celebrant",
   },
-  "turning-50": {
+  fifty: {
     name: "50° compleanno",
     emoji: "🎂🎊",
     budgetSectionTitle: "Imposta Budget per i 50 anni",
@@ -1019,422 +1006,8 @@ export const EVENT_CONFIGS: Record<EventType, EventConfiguration> = {
     ],
     defaultSpendType: "retiree",
   },
-  confirmation: {
-    name: "Cresima",
-    emoji: "✝️🕊️",
-    budgetSectionTitle: "Imposta Budget per la Cresima",
-    dateLabel: "Data Cresima",
-    totalBudgetLabel: "Budget Familiare",
-    spendTypeLabel: "Pagato da",
-    eventDateMessage: "La cresima è il",
-    timelineTitle: "Timeline Cresima",
-    timelineDescription:
-      "Guida pratica per preparare la cresima con serenità e cura.",
-    timelineBuckets: [
-      { label: "6 mesi prima", minMonthsBefore: 6, maxMonthsBefore: INFINITY },
-      { label: "4-5 mesi prima", minMonthsBefore: 4, maxMonthsBefore: 5 },
-      { label: "3 mesi prima", minMonthsBefore: 3, maxMonthsBefore: 3 },
-      { label: "2 mesi prima", minMonthsBefore: 2, maxMonthsBefore: 2 },
-      { label: "1 mese prima", minMonthsBefore: 1, maxMonthsBefore: 1 },
-      { label: "Ultime settimane", minMonthsBefore: 0, maxMonthsBefore: 0.99 },
-    ],
-    timelineTasks: [
-      {
-        title: "Conferma percorso catechesi",
-        description: "Partecipa agli incontri dedicati",
-        monthsBefore: 6,
-        category: "Preparazione",
-        priority: "alta",
-      },
-      {
-        title: "Scegli padrino o madrina",
-        description: "Confrontati con il parroco",
-        monthsBefore: 5,
-        category: "Famiglia",
-        priority: "alta",
-      },
-      {
-        title: "Raccogli documenti",
-        description: "Certificati e pratiche parrocchiali",
-        monthsBefore: 4.5,
-        category: "Burocrazia",
-        priority: "media",
-      },
-      {
-        title: "Definisci budget e lista ospiti",
-        description: "Riparti spese tra famiglia e padrini",
-        monthsBefore: 4,
-        category: "Budget",
-        priority: "media",
-      },
-      {
-        title: "Prenota ristorante o catering",
-        description: "Valuta pranzo o buffet informale",
-        monthsBefore: 3,
-        category: "Ricevimento",
-        priority: "media",
-      },
-      {
-        title: "Scegli abito e accessori",
-        description: "Coordinati con padrino/madrina",
-        monthsBefore: 2.5,
-        category: "Stile personale",
-        priority: "media",
-      },
-      {
-        title: "Ordina bomboniere e inviti",
-        description: "Personalizza confetti e biglietti",
-        monthsBefore: 2,
-        category: "Ricordi",
-        priority: "media",
-      },
-      {
-        title: "Organizza foto e video",
-        description: "Prenota fotografo o servizio streaming",
-        monthsBefore: 1.5,
-        category: "Ricordi",
-        priority: "media",
-      },
-      {
-        title: "Conferma ospiti e menù",
-        description: "Adatta menù a eventuali esigenze",
-        monthsBefore: 1,
-        category: "Ricevimento",
-        priority: "media",
-      },
-      {
-        title: "Prepara kit ricordi e ringraziamenti",
-        description: "Guestbook, lettera al cresimando",
-        monthsBefore: 0.5,
-        category: "Ricordi",
-        priority: "bassa",
-      },
-      {
-        title: "Allestisci chiesa e location",
-        description: "Fiori, segnaposto e simboli",
-        monthsBefore: 0.25,
-        category: "Decor",
-        priority: "media",
-      },
-    ],
-    budgetCategories: CONFIRMATION_BUDGET_CATEGORIES,
-    spendTypes: [
-      { value: "parents", label: "Genitori" },
-      { value: "godparents", label: "Padrino/Madrina" },
-      { value: "parish", label: "Parrocchia" },
-      { value: "gift", label: "Regalo" },
-    ],
-    contributors: [
-      {
-        value: "parents",
-        label: "Budget Genitori",
-        cardClass: "border-2 border-red-300 bg-red-50",
-        textClass: "text-red-700",
-      },
-      {
-        value: "godparents",
-        label: "Budget Padrini",
-        cardClass: "border-2 border-indigo-300 bg-indigo-50",
-        textClass: "text-indigo-700",
-      },
-      {
-        value: "parish",
-        label: "Budget Parrocchia",
-        cardClass: "border-2 border-slate-300 bg-slate-50",
-        textClass: "text-slate-700",
-      },
-    ],
-    defaultSpendType: "parents",
-  },
-  graduation: {
-    name: "Laurea",
-    emoji: "🎓📚",
-    budgetSectionTitle: "Imposta Budget per la Laurea",
-    dateLabel: "Data Laurea",
-    totalBudgetLabel: "Budget Festa",
-    spendTypeLabel: "Pagato da",
-    eventDateMessage: "La laurea è il",
-    timelineTitle: "Timeline Laurea",
-    timelineDescription:
-      "Segui questa tabella di marcia per arrivare alla proclamazione senza stress.",
-    timelineBuckets: [
-      { label: "6 mesi prima", minMonthsBefore: 6, maxMonthsBefore: INFINITY },
-      { label: "4-5 mesi prima", minMonthsBefore: 4, maxMonthsBefore: 5 },
-      { label: "3 mesi prima", minMonthsBefore: 3, maxMonthsBefore: 3 },
-      { label: "2 mesi prima", minMonthsBefore: 2, maxMonthsBefore: 2 },
-      { label: "1 mese prima", minMonthsBefore: 1, maxMonthsBefore: 1 },
-      { label: "Ultime settimane", minMonthsBefore: 0, maxMonthsBefore: 0.99 },
-    ],
-    timelineTasks: [
-      {
-        title: "Verifica requisiti accademici",
-        description: "Crediti, tasse e domanda di laurea",
-        monthsBefore: 6,
-        category: "Burocrazia",
-        priority: "alta",
-      },
-      {
-        title: "Pianifica calendario tesi",
-        description: "Fissa obiettivi con relatore",
-        monthsBefore: 5,
-        category: "Tesi",
-        priority: "alta",
-      },
-      {
-        title: "Stabilisci budget festa",
-        description: "Coinvolgi famiglia e festeggiato",
-        monthsBefore: 4.5,
-        category: "Budget",
-        priority: "media",
-      },
-      {
-        title: "Prenota location per la festa",
-        description: "Locale, terrazza o casa",
-        monthsBefore: 4,
-        category: "Festa",
-        priority: "media",
-      },
-      {
-        title: "Organizza inviti e comunicazione",
-        description: "Crea grafica coordinata",
-        monthsBefore: 3,
-        category: "Comunicazione",
-        priority: "media",
-      },
-      {
-        title: "Scegli outfit e beauty",
-        description: "Look per la proclamazione e la festa",
-        monthsBefore: 2.5,
-        category: "Stile personale",
-        priority: "media",
-      },
-      {
-        title: "Prenota fotografo e video",
-        description: "Servizio durante discussione e party",
-        monthsBefore: 2,
-        category: "Ricordi",
-        priority: "media",
-      },
-      {
-        title: "Ordina bomboniere e confetti",
-        description: "Personalizza con tema rosso laurea",
-        monthsBefore: 1.5,
-        category: "Ricordi",
-        priority: "media",
-      },
-      {
-        title: "Conferma catering e torta",
-        description: "Finger food, bollicine e dessert",
-        monthsBefore: 1,
-        category: "Festa",
-        priority: "media",
-      },
-      {
-        title: "Stampa e rilegatura tesi",
-        description: "Versioni per commissione e amici",
-        monthsBefore: 0.75,
-        category: "Tesi",
-        priority: "alta",
-      },
-      {
-        title: "Prepara discorso e ringraziamenti",
-        description: "Dedica parole a famiglia e amici",
-        monthsBefore: 0.5,
-        category: "Tesi",
-        priority: "media",
-      },
-      {
-        title: "Allestisci location festa",
-        description: "Decorazioni rosso laurea e gadget",
-        monthsBefore: 0.25,
-        category: "Festa",
-        priority: "media",
-      },
-    ],
-    budgetCategories: GRADUATION_BUDGET_CATEGORIES,
-    spendTypes: [
-      { value: "graduate", label: "Laureando/a" },
-      { value: "parents", label: "Genitori" },
-      { value: "gift", label: "Regalo" },
-    ],
-    contributors: [
-      {
-        value: "graduate",
-        label: "Budget Laureando/a",
-        cardClass: "border-2 border-red-300 bg-red-50",
-        textClass: "text-red-700",
-      },
-      {
-        value: "parents",
-        label: "Budget Genitori",
-        cardClass: "border-2 border-slate-300 bg-slate-50",
-        textClass: "text-slate-700",
-      },
-    ],
-    defaultSpendType: "graduate",
-  },
 
   // Baby Shower (placeholder: categorie battesimo)
-  "baby-shower": {
-    name: "Baby Shower",
-    emoji: "🍼🎀",
-    budgetSectionTitle: "Imposta Budget Baby Shower",
-    dateLabel: "Data Evento",
-    totalBudgetLabel: "Budget Famiglia",
-    spendTypeLabel: "Pagato da",
-    eventDateMessage: "Il baby shower è il",
-    timelineTitle: "Timeline Baby Shower",
-    timelineDescription: "Organizza un baby shower tenero e senza stress.",
-    timelineBuckets: [
-      { label: "3 mesi prima", minMonthsBefore: 3, maxMonthsBefore: 3 },
-      { label: "2 mesi prima", minMonthsBefore: 2, maxMonthsBefore: 2 },
-      { label: "1 mese prima", minMonthsBefore: 1, maxMonthsBefore: 1 },
-      { label: "Ultime settimane", minMonthsBefore: 0, maxMonthsBefore: 0.99 },
-    ],
-    timelineTasks: [
-      {
-        title: "Definisci tema e ospiti",
-        description: "Palette, giochi e lista invitati",
-        monthsBefore: 3,
-        category: "Organizzazione",
-        priority: "alta",
-      },
-      {
-        title: "Prenota location/casa",
-        description: "Spazio comodo per la mamma",
-        monthsBefore: 2,
-        category: "Location",
-        priority: "media",
-      },
-      {
-        title: "Invia inviti e wishlist",
-        description: "Lista nascita o regali utili",
-        monthsBefore: 1.5,
-        category: "Comunicazione",
-        priority: "media",
-      },
-      {
-        title: "Organizza catering leggero",
-        description: "Dolci, finger food e torta",
-        monthsBefore: 1,
-        category: "Catering",
-        priority: "media",
-      },
-      {
-        title: "Prepara giochi e set fotografico",
-        description: "Guestbook, pronostici, photobooth",
-        monthsBefore: 0.5,
-        category: "Intrattenimento",
-        priority: "media",
-      },
-      {
-        title: "Allestisci e verifica scaletta",
-        description: "Decorazioni e tempi attività",
-        monthsBefore: 0.25,
-        category: "Decor",
-        priority: "bassa",
-      },
-    ],
-    budgetCategories: BAPTISM_BUDGET_CATEGORIES, // placeholder
-    spendTypes: [
-      { value: "parents", label: "Genitori" },
-      { value: "family", label: "Famiglia" },
-      { value: "friends", label: "Amici" },
-      { value: "gift", label: "Regalo" },
-    ],
-    contributors: [
-      {
-        value: "parents",
-        label: "Budget Genitori",
-        cardClass: "border-2 border-sky-300 bg-sky-50",
-        textClass: "text-sky-700",
-      },
-      {
-        value: "family",
-        label: "Budget Famiglia",
-        cardClass: "border-2 border-pink-300 bg-pink-50",
-        textClass: "text-pink-700",
-      },
-    ],
-    defaultSpendType: "parents",
-  },
-
-  // Engagement Party (placeholder: categorie compleanno)
-  "engagement-party": {
-    name: "Festa di Fidanzamento",
-    emoji: "💍🥂",
-    budgetSectionTitle: "Imposta Budget Festa di Fidanzamento",
-    dateLabel: "Data Evento",
-    totalBudgetLabel: "Budget Festa",
-    spendTypeLabel: "Pagato da",
-    eventDateMessage: "La festa di fidanzamento è il",
-    timelineTitle: "Timeline Festa di Fidanzamento",
-    timelineDescription:
-      "Celebra l’annuncio con una pianificazione semplice e chic.",
-    timelineBuckets: [
-      { label: "2 mesi prima", minMonthsBefore: 2, maxMonthsBefore: 2 },
-      { label: "1 mese prima", minMonthsBefore: 1, maxMonthsBefore: 1 },
-      { label: "Ultime settimane", minMonthsBefore: 0, maxMonthsBefore: 0.99 },
-    ],
-    timelineTasks: [
-      {
-        title: "Definite formato e budget",
-        description: "Aperitivo, cena o party",
-        monthsBefore: 2,
-        category: "Organizzazione",
-        priority: "alta",
-      },
-      {
-        title: "Scegliete location e inviti",
-        description: "Lista ospiti e comunicazione",
-        monthsBefore: 1.5,
-        category: "Comunicazione",
-        priority: "media",
-      },
-      {
-        title: "Prenotate catering e musica",
-        description: "Finger food, torta, playlist",
-        monthsBefore: 1,
-        category: "Catering",
-        priority: "media",
-      },
-      {
-        title: "Preparate speech e sorprese",
-        description: "Annuncio ufficiale e brindisi",
-        monthsBefore: 0.5,
-        category: "Programma",
-        priority: "media",
-      },
-      {
-        title: "Allestite e verificate logistica",
-        description: "Decor, luci, foto",
-        monthsBefore: 0.25,
-        category: "Decor",
-        priority: "bassa",
-      },
-    ],
-    budgetCategories: BIRTHDAY_BUDGET_CATEGORIES, // placeholder
-    spendTypes: [
-      { value: "couple", label: "Coppia" },
-      { value: "family", label: "Famiglie" },
-      { value: "gift", label: "Regalo" },
-    ],
-    contributors: [
-      {
-        value: "couple",
-        label: "Budget Coppia",
-        cardClass: "border-2 border-rose-300 bg-rose-50",
-        textClass: "text-rose-700",
-      },
-      {
-        value: "family",
-        label: "Budget Famiglie",
-        cardClass: "border-2 border-indigo-300 bg-indigo-50",
-        textClass: "text-indigo-700",
-      },
-    ],
-    defaultSpendType: "couple",
-  },
 };
 
 export function resolveEventType(raw?: string | null): EventType {

@@ -1,8 +1,8 @@
-﻿import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+﻿import "@testing-library/jest-dom";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 // Mock next/navigation router to avoid real navigation in jsdom
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
 }));
 
@@ -13,26 +13,38 @@ beforeAll(() => {
   ) as unknown as typeof fetch;
 });
 
-import SelectEventTypePage from '../[locale]/(routes)/select-event-type/page';
+import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
 
-describe('SelectEventTypePage', () => {
+describe("SelectEventTypePage", () => {
   beforeEach(() => {
     window.localStorage.clear();
-  (document as unknown as { cookie: string }).cookie = '';
+    (document as unknown as { cookie: string }).cookie = "";
   });
 
-  it('mostra i tipi di evento e salva la scelta', () => {
+  it("mostra i tipi di evento e salva la scelta", async () => {
     // Imposta lingua e paese per evitare redirect iniziali
-    window.localStorage.setItem('language', 'it');
-    window.localStorage.setItem('country', 'it');
+    window.localStorage.setItem("language", "it");
+    window.localStorage.setItem("country", "it");
 
     render(<SelectEventTypePage />);
 
-  // Seleziona il primo bottone che contiene "Matrimonio" nel nome
-  const btns = screen.getAllByRole('button', { name: /Matrimonio/i });
-  fireEvent.click(btns[0]);
+    // Seleziona il bottone evento con name "Matrimonio Scopri di più"
+    const buttons = await screen.findAllByRole("button", {
+      name: /Matrimonio Scopri di più/i,
+    });
+    // Scegli il bottone che ha come label evento esattamente "Matrimonio"
+    const btn = buttons.find(
+      (b) =>
+        b.textContent &&
+        b.textContent.includes("Matrimonio") &&
+        !b.textContent.includes("Anniversario")
+    );
+    expect(btn).toBeTruthy();
+    fireEvent.click(btn!);
 
-  expect(window.localStorage.getItem('eventType')).toBe('wedding');
-  expect(document.cookie).toMatch(/eventType=wedding/);
+    await waitFor(() => {
+      expect(window.localStorage.getItem("eventType")).toBe("wedding");
+      expect(document.cookie).toMatch(/eventType=wedding/);
+    });
   });
 });

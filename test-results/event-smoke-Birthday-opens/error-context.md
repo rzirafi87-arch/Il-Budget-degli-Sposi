@@ -1,0 +1,83 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - paragraph [ref=e4]: Budget template
+      - heading "Birthday planning workspace" [level=1] [ref=e5]
+      - paragraph [ref=e6]:
+        - text: Use this guided layout to kick-start the birthday budget. The default currency is
+        - generic [ref=e7]: EUR
+        - text: ", but you can adapt every figure to your preferred currency inside the budget table."
+      - paragraph [ref=e8]:
+        - text: Need help filling it in? Explore the
+        - link "budget ideas" [ref=e9] [cursor=pointer]:
+          - /url: /idea-di-budget
+        - text: section to compare suggested allocations.
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - heading "Budget sections" [level=2] [ref=e12]
+        - paragraph [ref=e13]: Organize estimates by category and track the main cost buckets of the event.
+      - generic [ref=e14]:
+        - article [ref=e15]:
+          - heading "Venue" [level=3] [ref=e16]
+          - list [ref=e17]:
+            - listitem [ref=e18]:
+              - generic [ref=e20]: Venue Rent
+            - listitem [ref=e21]:
+              - generic [ref=e23]: Decor
+            - listitem [ref=e24]:
+              - generic [ref=e26]: Music
+        - article [ref=e27]:
+          - heading "Food & Beverage" [level=3] [ref=e28]
+          - list [ref=e29]:
+            - listitem [ref=e30]:
+              - generic [ref=e32]: Catering
+            - listitem [ref=e33]:
+              - generic [ref=e35]: Cake
+            - listitem [ref=e36]:
+              - generic [ref=e38]: Drinks
+        - article [ref=e39]:
+          - heading "Extras" [level=3] [ref=e40]
+          - list [ref=e41]:
+            - listitem [ref=e42]:
+              - generic [ref=e44]: Photography
+            - listitem [ref=e45]:
+              - generic [ref=e47]: Invitations
+            - listitem [ref=e48]:
+              - generic [ref=e50]: Gifts
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - heading "Timeline checkpoints" [level=2] [ref=e53]
+        - paragraph [ref=e54]: Schedule the key milestones leading up to the celebration and keep the team aligned on priorities.
+      - list [ref=e55]:
+        - listitem [ref=e56]:
+          - generic [ref=e57]:
+            - paragraph [ref=e58]: 60 days before
+            - paragraph [ref=e59]: Pick a date & theme
+          - generic [ref=e60]: "ID: date"
+        - listitem [ref=e61]:
+          - generic [ref=e62]:
+            - paragraph [ref=e63]: 45 days before
+            - paragraph [ref=e64]: Book venue & supplier
+          - generic [ref=e65]: "ID: book"
+        - listitem [ref=e66]:
+          - generic [ref=e67]:
+            - paragraph [ref=e68]: 30 days before
+            - paragraph [ref=e69]: Send invites
+          - generic [ref=e70]: "ID: invites"
+        - listitem [ref=e71]:
+          - generic [ref=e72]:
+            - paragraph [ref=e73]: 7 days before
+            - paragraph [ref=e74]: Confirm suppliers
+          - generic [ref=e75]: "ID: confirm"
+        - listitem [ref=e76]:
+          - generic [ref=e77]:
+            - paragraph [ref=e78]: Event day
+            - paragraph [ref=e79]: Event day
+          - generic [ref=e80]: "ID: event"
+  - button "Open Next.js Dev Tools" [ref=e86] [cursor=pointer]:
+    - img [ref=e87]
+  - alert [ref=e90]
+```
