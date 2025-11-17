@@ -41,5 +41,6 @@
     "src/lib/i18n",
     "src/app/api/i18n",
     "src/app/api/locales"
-  ]
+  ],
+  "i18n-ally.sourceLanguage": "it"
 }
