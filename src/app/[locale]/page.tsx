@@ -1,5 +1,10 @@
 ﻿import { redirect } from "next/navigation";
 
-export default function LocaleHome({ params }: { params: { locale: string } }) {
-  redirect(`/${params.locale}/dashboard`);
+type Props = {
+  params: { locale: string };
+};
+
+export default function LocaleHome({ params }: Props) {
+  // Quando apri /it, /en, ecc. → vai al wizard
+  redirect(`/${params.locale}/wizard`);
 }
