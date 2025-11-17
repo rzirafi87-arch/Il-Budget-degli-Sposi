@@ -26,8 +26,8 @@ const COUNTRY_OPTIONS = [
   // { code: "US", label: "Stati Uniti" },
 ];
 
-export default async function Page({ params }: Props) {
-  const { locale } = await params;
+export default function Page({ params }: Props) {
+  const { locale } = params;
   const router = useRouter();
   const [country, setCountry] = useState("IT");
   const [eventKey, setEventKey] = useState<string>(EVENT_OPTIONS[0].key);
