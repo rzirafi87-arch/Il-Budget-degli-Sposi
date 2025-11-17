@@ -4,6 +4,15 @@ import ClientLayoutShell from "@/components/ClientLayoutShell";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import { JsonLd, LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
 
+import {
+  BRAND_DEFAULT_DESCRIPTION,
+  BRAND_DEFAULT_DESCRIPTION_EN,
+  BRAND_DEFAULT_TITLE,
+  BRAND_DEFAULT_TITLE_EN,
+  BRAND_NAME,
+  BRAND_SITE_URL,
+} from "@/config/brand";
+
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
@@ -28,9 +37,8 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
 
   const i18n = {
     it: {
-      title: "MYBUDGETEVENTO - Organizza il Tuo Evento",
-      description:
-        "Organizza il tuo evento con MYBUDGETEVENTO: gestisci il budget, trova fornitori, location e chiese in tutta Italia. Strumenti gratuiti per pianificare ogni occasione.",
+      title: BRAND_DEFAULT_TITLE,
+      description: BRAND_DEFAULT_DESCRIPTION,
       keywords: [
         "budget matrimonio",
         "organizzare matrimonio",
@@ -47,9 +55,8 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
         "Strumenti gratuiti per organizzare il tuo evento: gestione budget, fornitori, location e molto altro.",
     },
     en: {
-      title: "MYBUDGETEVENTO - Plan Your Event",
-      description:
-        "Plan your event with MYBUDGETEVENTO: manage budget, find suppliers, venues and churches. Free tools to plan every occasion.",
+      title: BRAND_DEFAULT_TITLE_EN,
+      description: BRAND_DEFAULT_DESCRIPTION_EN,
       keywords: [
         "wedding budget",
         "plan wedding",
@@ -69,11 +76,13 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
 
   const L = i18n[(locale === "en" ? "en" : "it")];
 
+  const siteUrl = process.env.SITE_URL || BRAND_SITE_URL;
+
   return {
-    applicationName: "MYBUDGETEVENTO",
+    applicationName: BRAND_NAME,
     title: {
       default: L.title,
-      template: "%s | MYBUDGETEVENTO",
+      template: `%s | ${BRAND_NAME}`,
     },
     description: L.description,
     manifest: "/manifest.webmanifest",
@@ -85,9 +94,9 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
       apple: [{ url: "/backgrounds/icon-192.png" }],
     },
     keywords: [...L.keywords],
-    authors: [{ name: "MYBUDGETEVENTO" }],
-    creator: "MYBUDGETEVENTO",
-    publisher: "MYBUDGETEVENTO",
+    authors: [{ name: BRAND_NAME }],
+    creator: BRAND_NAME,
+    publisher: BRAND_NAME,
     category: "Lifestyle",
     robots: {
       index: true,
@@ -102,16 +111,16 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     },
     openGraph: {
       type: "website",
-      url: process.env.SITE_URL,
-      siteName: "MYBUDGETEVENTO",
+      url: siteUrl,
+      siteName: BRAND_NAME,
       title: L.title,
       description: L.ogDescription,
       images: [
         {
-          url: `${process.env.SITE_URL}/opengraph-image`,
+          url: `${siteUrl}/opengraph-image`,
           width: 1200,
           height: 630,
-          alt: "MYBUDGETEVENTO",
+          alt: BRAND_NAME,
         },
       ],
       locale: locale === "en" ? "en_US" : "it_IT",
@@ -120,7 +129,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
       card: "summary_large_image",
       title: L.title,
       description: L.ogDescription,
-      images: [`${process.env.SITE_URL}/twitter-image`],
+      images: [`${siteUrl}/twitter-image`],
     },
     verification: {
       google: "google-site-verification-code-here",
@@ -128,7 +137,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     alternates: {
       canonical: `/${locale}`,
     },
-    metadataBase: new URL(process.env.SITE_URL || "https://mybudgetevento.com"),
+    metadataBase: new URL(siteUrl),
   } satisfies Metadata;
 }
 

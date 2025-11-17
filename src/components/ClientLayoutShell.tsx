@@ -1,5 +1,6 @@
 "use client";
 
+import { BRAND_NAME } from "@/config/brand";
 import Background from "@/components/Background";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DynamicHeader from "@/components/DynamicHeader";
@@ -95,7 +96,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                     ? "El Presupuesto de los Novios"
                     : locale === "en"
                     ? "Wedding Budget"
-                    : "MYBUDGETEVENTO"}
+                    : BRAND_NAME}
                 </h1>
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-fg">
                   <TopBarSelector />

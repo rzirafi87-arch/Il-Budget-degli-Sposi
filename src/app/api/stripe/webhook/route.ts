@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { flags } from "@/config/flags";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -14,6 +15,9 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!flags.payments_stripe) {
+      return NextResponse.json({ error: "Pagamenti temporaneamente disabilitati" }, { status: 503 });
+    }
     if (!stripe) {
       return NextResponse.json({ error: "Stripe not configured" }, { status: 503 });
     }

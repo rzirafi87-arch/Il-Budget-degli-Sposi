@@ -10,6 +10,7 @@ import Page from "@/components/layout/Page";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
@@ -25,6 +26,7 @@ export const dynamic = "force-dynamic";
 export default function DashboardPage() {
   const router = useRouter();
   const pathname = usePathname();
+  const locale = useLocale();
   // All hooks at the top - before any conditional returns
   const [brideBudget, setBrideBudget] = useState<number>(0);
   const [groomBudget, setGroomBudget] = useState<number>(0);
@@ -285,15 +287,6 @@ export default function DashboardPage() {
         </nav>
       </header>
 
-      {/* Preferenze in alto */}
-      <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <Link href="/select-language" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Lingua</Link>
-          <Link href="/select-country" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Nazione</Link>
-          <Link href="/select-event-type" className="min-w-28 rounded-full px-4 py-2 border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition">Evento</Link>
-        </div>
-      </div>
-
       <PageInfoNote
         icon="📊"
         title="Centro di Controllo del Tuo Evento"
@@ -366,7 +359,10 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
-            <Link href="/idea-di-budget" className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
+            <Link
+              href={`/${locale}/idea-di-budget`}
+              className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white"
+            >
               � Vai a Idea di Budget
             </Link>
           </div>

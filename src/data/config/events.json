@@ -2,56 +2,56 @@
   {
     "slug": "wedding",
     "label": "Matrimonio",
-    "emoji": "💍",
+    "emoji": "💍💒",
     "group": "personale",
     "available": true
   },
   {
     "slug": "baptism",
     "label": "Battesimo",
-    "emoji": "👶",
+    "emoji": "👶💧",
     "group": "famiglia",
     "available": true
   },
   {
     "slug": "eighteenth",
-    "label": "Diciottesimo",
-    "emoji": "🎈",
+    "label": "Festa dei 18 anni",
+    "emoji": "🎂🎓",
     "group": "personale",
     "available": true
   },
   {
     "slug": "anniversary",
     "label": "Anniversario di matrimonio",
-    "emoji": "💞",
+    "emoji": "💐💍",
     "group": "famiglia",
     "available": true
   },
   {
     "slug": "gender-reveal",
-    "label": "Gender Reveal",
-    "emoji": "🍼",
+    "label": "Gender reveal",
+    "emoji": "🎈👶",
     "group": "famiglia",
     "available": true
   },
   {
     "slug": "birthday",
     "label": "Compleanno",
-    "emoji": "🎂",
+    "emoji": "🎂🎉",
     "group": "personale",
     "available": true
   },
   {
     "slug": "fifty",
-    "label": "50 anni",
-    "emoji": "🎉",
+    "label": "50° compleanno",
+    "emoji": "🎂🎊",
     "group": "personale",
     "available": true
   },
   {
     "slug": "retirement",
     "label": "Pensione",
-    "emoji": "🧳",
+    "emoji": "🧓🌴",
     "group": "famiglia",
     "available": true
   },
@@ -60,69 +60,69 @@
     "label": "Cresima",
     "emoji": "✝️",
     "group": "famiglia",
-    "available": true
+    "available": false
   },
   {
     "slug": "graduation",
     "label": "Laurea",
     "emoji": "🎓",
     "group": "personale",
-    "available": true
+    "available": false
   },
   {
-    "slug": "babyshower",
-    "label": "Baby Shower",
-    "emoji": "🧸",
+    "slug": "baby-shower",
+    "label": "Baby Shower (coming soon)",
+    "emoji": "🍼",
     "group": "famiglia",
-    "available": true
+    "available": false
   },
   {
     "slug": "engagement",
-    "label": "Festa di fidanzamento",
+    "label": "Engagement Party (coming soon)",
     "emoji": "💘",
     "group": "personale",
-    "available": true
+    "available": false
   },
   {
     "slug": "proposal",
-    "label": "Proposta di Matrimonio",
+    "label": "Proposta di Matrimonio (coming soon)",
     "emoji": "💍",
     "group": "personale",
-    "available": true
+    "available": false
   },
   {
     "slug": "communion",
     "label": "Comunione",
     "emoji": "✝️",
     "group": "famiglia",
-    "available": true
+    "available": false
   },
   {
     "slug": "bar-mitzvah",
     "label": "Bar Mitzvah",
-    "emoji": "🕎",
+    "emoji": "🔎",
     "group": "famiglia",
-    "available": true
+    "available": false
   },
   {
     "slug": "quinceanera",
     "label": "Quinceañera",
     "emoji": "👗",
     "group": "famiglia",
-    "available": true
+    "available": false
   },
   {
     "slug": "corporate",
     "label": "Evento aziendale",
     "emoji": "🏢",
     "group": "professionale",
-    "available": true
+    "available": false
   },
   {
     "slug": "charity-gala",
     "label": "Evento culturale/Charity/Gala",
     "emoji": "🎗️",
     "group": "professionale",
-    "available": true
+    "available": false
   }
 ]

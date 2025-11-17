@@ -1,36 +1,9 @@
 {
   "recommendations": [
-    // GitHub Integration
-    "github.copilot",
-    "github.copilot-chat",
-    "github.vscode-pull-request-github",
-    
-    // Database & Supabase
-    "supabase.vscode-supabase-extension",
-    "ms-ossdata.vscode-pgsql",
-    "ms-mssql.mssql",
-    "ms-mssql.data-workspace-vscode",
-    "ms-mssql.sql-database-projects-vscode",
-    
-    // Vercel Deployment
-    "frenco.vscode-vercel",
-    
-    // Code Quality & Formatting
-    "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss",
-    
-    // Testing
-    "Orta.vscode-jest",
-    
-    // Internationalization
-    "antfu.i18n-ally",
-    
-    // Environment Variables
-    "mikestead.dotenv",
-    
-    // Docker (for local Postgres)
-    "ms-azuretools.vscode-docker"
-  ],
-  "unwantedRecommendations": []
+    "dbaeumer.vscode-eslint",
+    "github.copilot",
+    "ms-playwright.playwright",
+    "bradlc.vscode-tailwindcss"
+  ]
 }

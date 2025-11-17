@@ -1,4 +1,5 @@
-﻿import { cookies } from "next/headers";
+import { BRAND_NAME } from "@/config/brand";
+import { cookies } from "next/headers";
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -39,7 +40,7 @@ export default async function Image() {
           }}
         >
           <div style={{ fontSize: 56, fontWeight: 800, color: "#2D2A26" }}>
-            MYBUDGETEVENTO
+            {BRAND_NAME}
           </div>
           <div style={{ fontSize: 28, marginTop: 12, color: "#4A4A4A" }}>{subtitle}</div>
         </div>

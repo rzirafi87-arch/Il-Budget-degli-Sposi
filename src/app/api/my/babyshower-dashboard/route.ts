@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   // Demo: dati placeholder se non autenticato
   if (!jwt) {
     return NextResponse.json({
-      eventType: "babyshower",
+      eventType: "baby-shower",
       isSingleBudgetEvent: true,
       categories: [],
       expenses: [],
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   const { data: event } = await db
     .from("events")
     .select("id, total_budget, color_theme")
-    .eq("event_type", "babyshower")
+    .in("event_type", ["baby-shower", "babyshower"])
     .eq("user_id", userId)
     .single();
   if (!event) {
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
     .order("display_order", { ascending: true });
 
   return NextResponse.json({
-    eventType: "babyshower",
+    eventType: "baby-shower",
     isSingleBudgetEvent: true,
     categories,
     subcategories,

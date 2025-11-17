@@ -6,7 +6,7 @@ import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, getUserLanguage } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -29,6 +29,7 @@ type Row = {
 export default function BudgetPage() {
   const country = getUserCountrySafe();
   const t = useTranslations();
+  const locale = useLocale();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isSingleEvent = userEventType === "baptism" || userEventType === "graduation";
   const [rows, setRows] = useState<Row[]>([]);
@@ -128,7 +129,7 @@ export default function BudgetPage() {
       {/* CTA per Idea di Budget */}
       <div className="flex justify-end mt-3">
         <Link
-          href="/idea-di-budget"
+          href={`/${locale}/idea-di-budget`}
           className="px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50 relative text-transparent"
         >
           <span className="absolute inset-0 flex items-center justify-center text-current pointer-events-none">{t("budgetPage.ctaIdeaBudget")}</span>

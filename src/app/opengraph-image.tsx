@@ -1,4 +1,5 @@
-﻿import { cookies } from "next/headers";
+import { BRAND_NAME } from "@/config/brand";
+import { cookies } from "next/headers";
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -14,7 +15,7 @@ export default async function Image() {
     if (v) lang = v.toLowerCase();
   } catch {}
 
-  const siteName = "MYBUDGETEVENTO";
+  const siteName = BRAND_NAME;
   const title = lang === "en" ? "Plan your event with peace of mind" : "Organizza il tuo evento con serenità";
   const subtitle = lang === "en"
     ? "Budget, suppliers and calm — all in one place"

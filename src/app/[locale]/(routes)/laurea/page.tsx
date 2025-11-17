@@ -1,8 +1,11 @@
 ﻿"use client";
 
 import React from "react";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 
 export default function LaureaPage() {
+  const locale = useLocale();
   const [tasks, setTasks] = React.useState<Record<string, boolean>>(() => {
     if (typeof window === "undefined") return {};
     try {
@@ -141,19 +144,19 @@ export default function LaureaPage() {
         >
           Imposta evento: Laurea
         </button>
-        <a
-          href="/idea-di-budget"
+        <Link
+          href={`/${locale}/idea-di-budget`}
           className="px-5 py-3 rounded-full text-white font-semibold shadow-sm"
           style={{ background: '#6b7e65' }}
         >
           Apri Idea di Budget
-        </a>
-        <a
-          href="/select-event-type"
+        </Link>
+        <Link
+          href={`/${locale}/select-event-type`}
           className="px-5 py-3 rounded-full border-2 border-[#A3B59D] text-[#2f4231] hover:bg-[#A3B59D] hover:text-white transition font-semibold"
         >
           Torna alla scelta evento
-        </a>
+        </Link>
       </div>
 
       <div className="mt-8 p-5 rounded-2xl border border-amber-200 bg-amber-50 text-amber-900">

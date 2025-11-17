@@ -1,6 +1,7 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { flags } from "@/config/flags";
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
@@ -19,6 +20,7 @@ type Package = {
 };
 
 function PacchettiContent() {
+  const paymentsEnabled = flags.payments_stripe;
   const searchParams = useSearchParams();
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,6 +83,10 @@ function PacchettiContent() {
   }
 
   async function handlePurchase(pkg: Package) {
+    if (!paymentsEnabled) {
+      alert("I pagamenti online sono temporaneamente disabilitati. Riprova più tardi o contattaci per acquistare il piano.");
+      return;
+    }
     if (pkg.tier === "free") {
       alert("Il piano gratuito è sempre disponibile!");
       return;
@@ -180,18 +186,30 @@ function PacchettiContent() {
                   ))}
                 </ul>
                 <button
-                  disabled={processingPayment === pkg.tier}
+                  disabled={!paymentsEnabled || processingPayment === pkg.tier}
                   onClick={() => handlePurchase(pkg)}
                   className="w-full px-4 py-2 rounded-lg border bg-white hover:bg-gray-50"
                 >
-                  {processingPayment === pkg.tier ? "Elaborazione..." : "Acquista"}
+                  {!paymentsEnabled
+                    ? "Prossimamente"
+                    : processingPayment === pkg.tier
+                    ? "Elaborazione..."
+                    : "Acquista"}
                 </button>
               </div>
             ))}
           </div>
         )}
 
-        <div className="mt-12 text-center text-sm text-gray-500">
+        <div className="mt-6">
+          {!paymentsEnabled && (
+            <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              I pagamenti Stripe sono momentaneamente in manutenzione. I piani resteranno visibili ma non acquistabili.
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 text-center text-sm text-gray-500">
           <Link href="/fornitori">Scopri come funziona</Link>
         </div>
       </div>

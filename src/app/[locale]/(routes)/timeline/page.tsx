@@ -3,11 +3,11 @@
 import ExportButton from "@/components/ExportButton";
 import ExportPDFButton from "@/components/ExportPDFButton";
 import {
-    DEFAULT_EVENT_TYPE,
-    TimelineBucket,
-    TimelineTaskTemplate,
-    getEventConfig,
-    resolveEventType,
+  DEFAULT_EVENT_TYPE,
+  TimelineBucket,
+  TimelineTaskTemplate,
+  getEventConfig,
+  resolveEventType,
 } from "@/constants/eventConfigs";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
@@ -36,13 +36,17 @@ export default function TimelinePage() {
   const [tasksFromDb, setTasksFromDb] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("Tutti");
-  const [localizedTemplates, setLocalizedTemplates] = useState<TimelineTaskTemplate[] | null>(null);
+  const [localizedTemplates, setLocalizedTemplates] = useState<
+    TimelineTaskTemplate[] | null
+  >(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
     const stored = window.localStorage.getItem("eventType");
-    const resolved = resolveEventType(stored || cookieMatch || DEFAULT_EVENT_TYPE);
+    const resolved = resolveEventType(
+      stored || cookieMatch || DEFAULT_EVENT_TYPE
+    );
     setEventType(resolved);
   }, []);
 
@@ -76,18 +80,27 @@ export default function TimelinePage() {
               if (items.length > 0) {
                 setTasksFromDb(true);
                 setTasks(
-                  items.map((it: { id: string; title: string; description?: string | null; days_before?: number | null; category?: string | null; completed?: boolean | null }) => ({
-                    id: String(it.id),
-                    title: it.title,
-                    description: it.description || "",
-                    monthsBefore:
-                      typeof it.days_before === "number"
-                        ? Math.max(0, Math.round(it.days_before / 30))
-                        : 0,
-                    category: it.category || "Organizzazione",
-                    completed: Boolean(it.completed),
-                    priority: "media" as const,
-                  })),
+                  items.map(
+                    (it: {
+                      id: string;
+                      title: string;
+                      description?: string | null;
+                      days_before?: number | null;
+                      category?: string | null;
+                      completed?: boolean | null;
+                    }) => ({
+                      id: String(it.id),
+                      title: it.title,
+                      description: it.description || "",
+                      monthsBefore:
+                        typeof it.days_before === "number"
+                          ? Math.max(0, Math.round(it.days_before / 30))
+                          : 0,
+                      category: it.category || "Organizzazione",
+                      completed: Boolean(it.completed),
+                      priority: "media" as const,
+                    })
+                  )
                 );
               } else {
                 setTasksFromDb(false);
@@ -120,7 +133,7 @@ export default function TimelinePage() {
     async function loadLocalizedTimeline() {
       try {
         const res = await fetch(
-          `/api/my/wedding/localized?country=${country.toUpperCase()}&event=matrimonio`,
+          `/api/my/wedding/localized?country=${country.toUpperCase()}&event=matrimonio`
         );
         if (!res.ok) {
           if (!disposed) setLocalizedTemplates(null);
@@ -153,13 +166,19 @@ export default function TimelinePage() {
       ...template,
       id: `${eventType}-task-${index}`,
       completed: false,
+      priority:
+        template.priority === "alta" ||
+        template.priority === "media" ||
+        template.priority === "bassa"
+          ? template.priority
+          : "media",
     }));
     setTasks(generated);
   }, [localizedTemplates, eventConfig, eventType, tasksFromDb]);
 
   const categories = useMemo(
     () => ["Tutti", ...Array.from(new Set(tasks.map((task) => task.category)))],
-    [tasks],
+    [tasks]
   );
 
   const filteredTasks = useMemo(
@@ -167,7 +186,7 @@ export default function TimelinePage() {
       selectedCategory === "Tutti"
         ? tasks
         : tasks.filter((task) => task.category === selectedCategory),
-    [selectedCategory, tasks],
+    [selectedCategory, tasks]
   );
 
   const getTasksForBucket = (bucket: TimelineBucket) => {
@@ -177,12 +196,14 @@ export default function TimelinePage() {
         ? Number.POSITIVE_INFINITY
         : bucket.maxMonthsBefore;
     return filteredTasks.filter(
-      (task) => task.monthsBefore >= min && task.monthsBefore <= max,
+      (task) => task.monthsBefore >= min && task.monthsBefore <= max
     );
   };
 
   const toggleTask = async (id: string) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+    );
     try {
       if (!hasSession || !tasksFromDb) return;
       const { data: sessionData } = await supabase.auth.getSession();
@@ -219,7 +240,10 @@ export default function TimelinePage() {
       }));
       const res = await fetch("/api/my/timeline", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
         body: JSON.stringify(payload),
       });
       if (res.ok) {
@@ -232,7 +256,7 @@ export default function TimelinePage() {
 
   const completedCount = useMemo(
     () => tasks.filter((task) => task.completed).length,
-    [tasks],
+    [tasks]
   );
   const progressPercent =
     tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
@@ -249,7 +273,9 @@ export default function TimelinePage() {
     <section className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-gray-500">{eventConfig.timelineDescription}</p>
+          <p className="text-sm text-gray-500">
+            {eventConfig.timelineDescription}
+          </p>
           <h1 className="font-serif text-3xl font-bold text-gray-800">
             {eventConfig.emoji} {eventConfig.timelineTitle}
           </h1>
@@ -412,7 +438,9 @@ export default function TimelinePage() {
 
       {eventDate && (
         <div className="rounded-xl border border-gray-200 bg-gradient-to-r from-rose-50 to-blue-50 p-6 text-center">
-          <p className="text-sm text-gray-500">{eventConfig.eventDateMessage}</p>
+          <p className="text-sm text-gray-500">
+            {eventConfig.eventDateMessage}
+          </p>
           <p className="text-xl font-semibold text-gray-800">
             {eventDate.toLocaleDateString("it-IT", {
               weekday: "long",

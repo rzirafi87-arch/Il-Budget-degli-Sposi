@@ -1,4 +1,4 @@
-npm run codex:checknpm run codex:check# MYBUDGETEVENTO 🎉
+# Il Budget degli Sposi 🎉
 
 Un'applicazione web completa per la gestione del budget matrimoniale, costruita con **Next.js 16**, **React 19**, **Supabase** e **Tailwind CSS 4**.
 

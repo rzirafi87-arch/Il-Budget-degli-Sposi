@@ -26,6 +26,12 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const url = new URL(req.url);
   const eventType = body.eventType || url.searchParams.get("eventType") || "wedding";
+  const normalizedEventType =
+    eventType === "baby-shower"
+      ? "babyshower"
+      : eventType === "engagement-party"
+      ? "engagement"
+      : eventType;
   // Country/Rite (for localization presets)
   const country = (body.country || url.searchParams.get("country") || "").toString();
   const rite = (body.rite || url.searchParams.get("rite") || "").toString();
@@ -48,13 +54,14 @@ export async function POST(req: NextRequest) {
     // 2) se non c'è, creane uno e seedalo
     if (!eventId) {
       // Get type_id from event_types table
-      const eventTypeSlug = 
-        eventType === "baptism" ? "baptism" : 
-        eventType === "eighteenth" ? "eighteenth" :
-        eventType === "confirmation" ? "confirmation" :
-        eventType === "graduation" ? "graduation" :
-        eventType === "communion" ? "communion" :
-        eventType === "engagement" ? "engagement" :
+      const eventTypeSlug =
+        normalizedEventType === "baptism" ? "baptism" :
+        normalizedEventType === "eighteenth" ? "eighteenth" :
+        normalizedEventType === "confirmation" ? "confirmation" :
+        normalizedEventType === "graduation" ? "graduation" :
+        normalizedEventType === "communion" ? "communion" :
+        normalizedEventType === "babyshower" ? "babyshower" :
+        normalizedEventType === "engagement" ? "engagement" :
         "wedding";
       
       const { data: eventTypeData, error: typeError } = await db
@@ -74,13 +81,14 @@ export async function POST(req: NextRequest) {
       }
 
       const publicId = Math.random().toString(36).slice(2, 10);
-      const eventName = 
-        eventType === "baptism" ? "Battesimo" : 
-        eventType === "eighteenth" ? "Il mio Diciottesimo" :
-        eventType === "confirmation" ? "La mia Cresima" :
-        eventType === "graduation" ? "La mia Laurea" :
-        eventType === "communion" ? "La mia Prima Comunione" :
-        eventType === "engagement" ? "La nostra Festa di Fidanzamento" :
+      const eventName =
+        normalizedEventType === "baptism" ? "Battesimo" :
+        normalizedEventType === "eighteenth" ? "Il mio Diciottesimo" :
+        normalizedEventType === "confirmation" ? "La mia Cresima" :
+        normalizedEventType === "graduation" ? "La mia Laurea" :
+        normalizedEventType === "communion" ? "La mia Prima Comunione" :
+        normalizedEventType === "babyshower" ? "Il nostro Baby Shower" :
+        normalizedEventType === "engagement" ? "La nostra Festa di Fidanzamento" :
         "Il nostro matrimonio";
       
       const { data: ev, error: e2 } = await db
@@ -104,7 +112,7 @@ export async function POST(req: NextRequest) {
       eventId = ev!.id;
 
       // Seed based on event type
-      if (eventType === "baptism") {
+      if (normalizedEventType === "baptism") {
         // Call baptism seed endpoint internally
         const country = body.country || "it";
         const seedUrl = new URL(`/api/baptism/seed/${eventId}?country=${country}`, req.url);
@@ -118,7 +126,7 @@ export async function POST(req: NextRequest) {
           console.error("ENSURE-DEFAULT – Baptism seed error:", seedError);
           return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
         }
-      } else if (eventType === "eighteenth") {
+      } else if (normalizedEventType === "eighteenth") {
         // Call eighteenth seed endpoint internally
         const country = body.country || "it";
         const seedUrl = new URL(`/api/eighteenth/seed/${eventId}?country=${country}`, req.url);
@@ -132,7 +140,7 @@ export async function POST(req: NextRequest) {
           console.error("ENSURE-DEFAULT – Eighteenth seed error:", seedError);
           return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
         }
-      } else if (eventType === "confirmation") {
+      } else if (normalizedEventType === "confirmation") {
         // Call confirmation seed endpoint internally
         const country = body.country || "it";
         const seedUrl = new URL(`/api/confirmation/seed/${eventId}?country=${country}`, req.url);
@@ -146,7 +154,7 @@ export async function POST(req: NextRequest) {
           console.error("ENSURE-DEFAULT – Confirmation seed error:", seedError);
           return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
         }
-      } else if (eventType === "graduation") {
+      } else if (normalizedEventType === "graduation") {
         // Call graduation seed endpoint internally
         const country = body.country || "it";
         const seedUrl = new URL(`/api/graduation/seed/${eventId}?country=${country}`, req.url);
@@ -160,7 +168,7 @@ export async function POST(req: NextRequest) {
           console.error("ENSURE-DEFAULT – Graduation seed error:", seedError);
           return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
         }
-      } else if (eventType === "communion") {
+      } else if (normalizedEventType === "communion") {
         // Call communion seed endpoint internally
         const country = body.country || "it";
         const seedUrl = new URL(`/api/communion/seed/${eventId}?country=${country}`, req.url);
@@ -173,7 +181,7 @@ export async function POST(req: NextRequest) {
           console.error("ENSURE-DEFAULT – Communion seed error:", seedError);
           return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
         }
-      } else if (eventType === "engagement") {
+      } else if (normalizedEventType === "engagement") {
         // Call engagement seed endpoint internally
         const country = body.country || "it";
         const seedUrl = new URL(`/api/engagement/seed/${eventId}?country=${country}`, req.url);

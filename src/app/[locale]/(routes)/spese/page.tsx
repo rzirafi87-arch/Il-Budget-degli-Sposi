@@ -261,7 +261,7 @@ export default function SpesePage() {
   const isGraduation = userEventType === "graduation";
   const isFifty = userEventType === "fifty";
   const isRetirement = userEventType === "retirement";
-  const isBabyShower = userEventType === "babyshower";
+  const isBabyShower = userEventType === "baby-shower" || userEventType === "babyshower";
   const isProposal = userEventType === "proposal";
   const isCorporate = userEventType === "corporate";
   const isBarMitzvah = userEventType === "bar-mitzvah";

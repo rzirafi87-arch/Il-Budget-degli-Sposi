@@ -31,109 +31,15 @@
   "dataworkspace.excludedProjects": [],
   // ===== Editor Settings =====
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
-  },
-  // ===== File Associations =====
-  "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[sql]": {
-    "editor.defaultFormatter": "ms-ossdata.vscode-pgsql"
-  },
-  // ===== Tailwind CSS Settings =====
-  "tailwindCSS.experimental.classRegex": [
-    [
-      "clsx\\(([^)]*)\\)",
-      "(?:'|\"|`)([^']*)(?:'|\"|`)"
-    ],
-    [
-      "cn\\(([^)]*)\\)",
-      "(?:'|\"|`)([^']*)(?:'|\"|`)"
-    ]
-  ],
-  "tailwindCSS.includeLanguages": {
-    "typescript": "javascript",
-    "typescriptreact": "javascript"
-  },
-  // ===== i18n Ally Settings =====
+  "files.eol": "\n",
+  "eslint.validate": ["javascript", "typescript", "typescriptreact"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "i18n-ally.localesPaths": [
     "messages",
     "src/i18n",
     "src/messages",
-    "src/lib/i18n"
-  ],
-  "i18n-ally.keystyle": "nested",
-  "i18n-ally.enabledFrameworks": [
-    "next-international",
-    "general"
-  ],
-  "i18n-ally.namespace": false,
-  "i18n-ally.sortKeys": true,
-  "i18n-ally.displayLanguage": "it",
-  // ===== ESLint Settings =====
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  // ===== GitHub Copilot Settings =====
-  "github.copilot.enable": {
-    "*": true,
-    "yaml": true,
-    "plaintext": true,
-    "markdown": true,
-    "sql": true
-  },
-  "github.copilot.editor.enableAutoCompletions": true,
-  // ===== Files Settings =====
-  "files.encoding": "utf8",
-  "files.eol": "\n",
-  "files.insertFinalNewline": true,
-  "files.trimTrailingWhitespace": true,
-  "files.autoGuessEncoding": false,
-  "editor.renderControlCharacters": false,
-  "files.exclude": {
-    "**/.git": true,
-    "**/.next": true,
-    "**/.vercel": true,
-    "**/node_modules": true,
-    "**/*.tsbuildinfo": true
-  },
-  "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/node_modules/**": true,
-    "**/.next/**": true,
-    "**/.vercel/**": true
-  },
-  // ===== TypeScript Settings =====
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  // ===== Search Settings =====
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/.next": true,
-    "**/.vercel": true,
-    "**/dist": true,
-    "**/.git": true
-  }
+    "src/lib/i18n",
+    "src/app/api/i18n",
+    "src/app/api/locales"
+  ]
 }

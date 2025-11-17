@@ -4,7 +4,7 @@
 import { EventTemplate } from "./types";
 
 const babyShowerTemplate: EventTemplate = {
-  eventType: "babyshower",
+  eventType: "baby-shower",
   name: "Baby Shower",
   colorTheme: ["#F8E8D8", "#A3B59D", "#E7B7D3"],
   totalBudget: 1800,

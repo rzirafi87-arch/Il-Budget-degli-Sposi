@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { BRAND_NAME } from "@/config/brand";
 import { useTranslations } from "next-intl";
 
 export default function ChiSiamoPage() {
@@ -10,7 +11,7 @@ export default function ChiSiamoPage() {
 
       <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border-2 border-gray-200">
         <div className="prose prose-lg max-w-none">
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">🎉 MYBUDGETEVENTO</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">🎉 {BRAND_NAME}</h3>
           <p className="text-gray-700 mb-4">{t("intro")}</p>
 
           <h3 className="text-xl font-bold text-[#A3B59D] mb-4 mt-8">🎯 {t("mission.title")}</h3>

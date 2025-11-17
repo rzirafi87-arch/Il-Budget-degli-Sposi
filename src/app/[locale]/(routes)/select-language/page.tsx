@@ -19,15 +19,21 @@ export default function SelectLanguagePage() {
         router.replace(`/${locale}/select-country`);
       }
     } catch {}
-  }, []);
+  }, [locale, router]);
   const [selected, setSelected] = useState<string>("");
 
   function handleSelect(code: string) {
     setSelected(code);
     localStorage.setItem("language", code);
-    document.cookie = `language=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
     router.push(`/${locale}/select-country`);
   }
+
+  // Fix: set cookie in effect to avoid direct mutation
+  useEffect(() => {
+    if (selected) {
+      document.cookie = `language=${selected}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    }
+  }, [selected]);
 
   return (
     <main
@@ -44,18 +50,28 @@ export default function SelectLanguagePage() {
     >
       <div className="max-w-xl w-full mx-4 p-8 rounded-3xl bg-white/80 backdrop-blur border border-gray-200 shadow-xl">
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
-          <span aria-hidden="true" className="mr-2">🌐</span>
-          {t("onboarding.selectLanguageTitle", { fallback: "Scegli la lingua" })}
+          <span aria-hidden="true" className="mr-2">
+            🌐
+          </span>
+          {t("onboarding.selectLanguageTitle", {
+            fallback: "Scegli la lingua",
+          })}
         </h1>
         <p className="text-center text-gray-600 mb-6">
-          {t("onboarding.selectLanguageDesc", { fallback: "Seleziona la lingua che preferisci per continuare" })}
+          {t("onboarding.selectLanguageDesc", {
+            fallback: "Seleziona la lingua che preferisci per continuare",
+          })}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {LANGS.map((lang) => (
             <button
               key={lang.slug}
-              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all flex items-center justify-center gap-2 ${selected === lang.slug ? "bg-[#A3B59D] text-white" : ""}`}
-              onClick={() => lang.available !== false && handleSelect(lang.slug)}
+              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all flex items-center justify-center gap-2 ${
+                selected === lang.slug ? "bg-[#A3B59D] text-white" : ""
+              }`}
+              onClick={() =>
+                lang.available !== false && handleSelect(lang.slug)
+              }
               aria-label={lang.label || lang.slug.toUpperCase()}
               disabled={lang.available === false}
             >
@@ -75,4 +91,3 @@ export default function SelectLanguagePage() {
     </main>
   );
 }
-
