@@ -130,9 +130,6 @@ begin
     where table_schema = v_locale_schema and table_name = v_locale_name and column_name = 'is_active'
   );
 
-<<<<<<< ours
-  v_locale_query := format('select code as locale from %I.%I', v_locale_schema, v_locale_name);
-=======
   v_has_active := exists (
     select 1 from information_schema.columns
     where table_schema = v_locale_schema and table_name = v_locale_name and column_name = 'active'
@@ -159,42 +156,17 @@ begin
   end if;
 
   v_locale_query := format('select %I as locale from %I.%I', v_locale_code_column, v_locale_schema, v_locale_name);
->>>>>>> theirs
 
   if v_has_enabled then
     v_locale_query := v_locale_query || ' where coalesce(enabled, true)';
   elsif v_has_is_active then
     v_locale_query := v_locale_query || ' where coalesce(is_active, true)';
-<<<<<<< ours
-  end if;
-
-  v_locale_query := v_locale_query || ' order by code';
-
-<<<<<<< ours
-  for v_event in execute v_event_query loop
-    execute format('select count(*) from %s where event_type_id = $1', v_categories_table)
-      into cat_expected using v_event.id;
-
-    execute format('select count(*) from %s s join %s c on c.id = s.category_id where c.event_type_id = $1',
-                   v_subcategories_table, v_categories_table)
-      into sub_expected using v_event.id;
-
-    execute format('select count(*) from %s where event_type_id = $1', v_timelines_table)
-      into time_expected using v_event.id;
-
-    for v_loc in execute v_locale_query loop
-      if to_regclass(v_cat_translations_table) is not null then
-        execute format('select count(*) from %s ct join %s c on c.id = ct.category_id where c.event_type_id = $1 and ct.locale = $2',
-                       v_cat_translations_table, v_categories_table)
-=======
-=======
   elsif v_has_active then
     v_locale_query := v_locale_query || ' where coalesce(active, true)';
   end if;
 
   v_locale_query := v_locale_query || format(' order by %I', v_locale_code_column);
 
->>>>>>> theirs
   v_categories_schema := split_part(v_categories_table, '.', 1);
   v_categories_name := split_part(v_categories_table, '.', 2);
   if v_categories_name = '' then
@@ -256,50 +228,22 @@ begin
       if v_has_cat_translations then
         execute format('select count(*) from %s ct join %s c on c.id = ct.category_id where c.%I = $1 and ct.locale = $2',
                        v_cat_translations_table, v_categories_table, v_category_fk_column)
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
           into cat_actual using v_event.id, v_loc.locale;
       else
         cat_actual := 0;
       end if;
 
-<<<<<<< ours
-<<<<<<< ours
-      if to_regclass(v_sub_translations_table) is not null then
-        execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.event_type_id = $1 and st.locale = $2',
-                       v_sub_translations_table, v_subcategories_table, v_categories_table)
-=======
       if v_has_sub_translations then
         execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.%I = $1 and st.locale = $2',
                        v_sub_translations_table, v_subcategories_table, v_categories_table, v_category_fk_column)
->>>>>>> theirs
-=======
-      if v_has_sub_translations then
-        execute format('select count(*) from %s st join %s s on s.id = st.subcategory_id join %s c on c.id = s.category_id where c.%I = $1 and st.locale = $2',
-                       v_sub_translations_table, v_subcategories_table, v_categories_table, v_category_fk_column)
->>>>>>> theirs
           into sub_actual using v_event.id, v_loc.locale;
       else
         sub_actual := 0;
       end if;
 
-<<<<<<< ours
-<<<<<<< ours
-      if to_regclass(v_timeline_translations_table) is not null then
-        execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.event_type_id = $1 and tt.locale = $2',
-                       v_timeline_translations_table, v_timelines_table)
-=======
       if v_has_timeline_translations then
         execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.%I = $1 and tt.locale = $2',
                        v_timeline_translations_table, v_timelines_table, v_timeline_fk_column)
->>>>>>> theirs
-=======
-      if v_has_timeline_translations then
-        execute format('select count(*) from %s tt join %s t on t.id = tt.timeline_id where t.%I = $1 and tt.locale = $2',
-                       v_timeline_translations_table, v_timelines_table, v_timeline_fk_column)
->>>>>>> theirs
           into time_actual using v_event.id, v_loc.locale;
       else
         time_actual := 0;

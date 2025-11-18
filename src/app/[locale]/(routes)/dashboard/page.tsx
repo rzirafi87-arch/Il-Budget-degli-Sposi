@@ -1,10 +1,14 @@
 "use client";
 
-import BudgetFocusHint, { BudgetFocus } from "@/components/dashboard/BudgetFocusHint";
+import BudgetFocusHint, {
+  BudgetFocus,
+} from "@/components/dashboard/BudgetFocusHint";
 import BudgetItemsSection from "@/components/dashboard/BudgetItemsSection";
 import BudgetSummary from "@/components/dashboard/BudgetSummary";
 import ChecklistSection from "@/components/dashboard/ChecklistSection";
-import LocalizedWeddingSection, { LocalizedWeddingData } from "@/components/dashboard/LocalizedWeddingSection";
+import LocalizedWeddingSection, {
+  LocalizedWeddingData,
+} from "@/components/dashboard/LocalizedWeddingSection";
 import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import Page from "@/components/layout/Page";
 import PageInfoNote from "@/components/PageInfoNote";
@@ -20,7 +24,6 @@ type BudgetItem = { name: string; amount?: number };
 type ChecklistModule = { module_name: string; is_required: boolean };
 type Tradition = { name: string; description: string };
 
-
 export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
@@ -31,7 +34,9 @@ export default function DashboardPage() {
   const [brideBudget, setBrideBudget] = useState<number>(0);
   const [groomBudget, setGroomBudget] = useState<number>(0);
   const [weddingDate, setWeddingDate] = useState<string>("");
-  const [checkedChecklist, setCheckedChecklist] = useState<{ [k: string]: boolean }>({});
+  const [checkedChecklist, setCheckedChecklist] = useState<{
+    [k: string]: boolean;
+  }>({});
   const [budgetItems, setBudgetItems] = useState<BudgetItem[]>([]);
   const [checklist, setChecklist] = useState<ChecklistModule[]>([]);
   const [traditions, setTraditions] = useState<Tradition[]>([]);
@@ -39,7 +44,11 @@ export default function DashboardPage() {
   const [budgetFocus, setBudgetFocus] = useState<BudgetFocus | null>(null);
   const [savingBudget, setSavingBudget] = useState(false);
   const [clientReady, setClientReady] = useState(false);
-  const [clientPrefs, setClientPrefs] = useState({ language: "", country: "", eventType: "" });
+  const [clientPrefs, setClientPrefs] = useState({
+    language: "",
+    country: "",
+    eventType: "",
+  });
 
   const userLang = clientPrefs.language;
   const userCountry = clientPrefs.country;
@@ -68,10 +77,29 @@ export default function DashboardPage() {
           localStorage.getItem("country") ||
           document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] ||
           "";
-        const eventType =
+        let eventType =
           localStorage.getItem("eventType") ||
           document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1] ||
           "";
+        // Validate eventType, force to 'wedding' if missing/invalid
+        const validEventTypes = [
+          "wedding",
+          "baptism",
+          "eighteenth",
+          "anniversary",
+          "gender-reveal",
+          "birthday",
+          "fifty",
+          "retirement",
+          "graduation",
+          "confirmation",
+          "communion",
+        ];
+        if (!eventType || !validEventTypes.includes(eventType)) {
+          eventType = "wedding";
+          window.localStorage.setItem("eventType", "wedding");
+          document.cookie = "eventType=wedding; path=/;";
+        }
         setClientPrefs({
           language,
           country,
@@ -86,14 +114,24 @@ export default function DashboardPage() {
     setClientReady(true);
 
     const onStorage = (event: StorageEvent) => {
-      if (event.key && ["language", "country", "eventType"].includes(event.key)) {
+      if (
+        event.key &&
+        ["language", "country", "eventType"].includes(event.key)
+      ) {
         readPreferences();
       }
     };
 
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
-  }, [clientReady, userLang, userCountry, normalizedEventType, pathname, router]);
+  }, [
+    clientReady,
+    userLang,
+    userCountry,
+    normalizedEventType,
+    pathname,
+    router,
+  ]);
   const effectiveEventType = normalizedEventType || "wedding";
   const isWedding = effectiveEventType === "wedding";
   // Locale corrente (mockato nei test). Fallback a 'it' se vuoto
@@ -115,7 +153,9 @@ export default function DashboardPage() {
       try {
         const { data: session } = await supabase.auth.getSession();
         const jwt = session.session?.access_token;
-        const headers: Record<string, string> = jwt ? { Authorization: `Bearer ${jwt}` } : {};
+        const headers: Record<string, string> = jwt
+          ? { Authorization: `Bearer ${jwt}` }
+          : {};
         const country = userCountry || "it";
 
         // Ensure default event exists with correct type
@@ -136,7 +176,10 @@ export default function DashboardPage() {
 
         // Budget Items
         try {
-          const res = await fetch(`/api/budget-items?country=${encodeURIComponent(country)}`, { headers });
+          const res = await fetch(
+            `/api/budget-items?country=${encodeURIComponent(country)}`,
+            { headers }
+          );
           const json = await res.json();
           if (active && Array.isArray(json?.items)) {
             setBudgetItems(
@@ -152,12 +195,16 @@ export default function DashboardPage() {
 
         // Checklist modules
         try {
-          const res = await fetch(`/api/checklist-modules?country=${encodeURIComponent(country)}`);
+          const res = await fetch(
+            `/api/checklist-modules?country=${encodeURIComponent(country)}`
+          );
           const json = await res.json();
           if (active && Array.isArray(json?.modules)) {
             setChecklist(
               json.modules.map((m: Record<string, unknown>) => ({
-                module_name: String(m.module_name || m.name || m.title || "Attività"),
+                module_name: String(
+                  m.module_name || m.name || m.title || "Attività"
+                ),
                 is_required: Boolean(m.is_required),
               }))
             );
@@ -168,7 +215,9 @@ export default function DashboardPage() {
 
         // Traditions
         try {
-          const res = await fetch(`/api/traditions?country=${encodeURIComponent(country)}`);
+          const res = await fetch(
+            `/api/traditions?country=${encodeURIComponent(country)}`
+          );
           const json = await res.json();
           if (active && Array.isArray(json?.traditions)) {
             setTraditions(
@@ -185,7 +234,12 @@ export default function DashboardPage() {
         // Localized presets (wedding only)
         if (isWedding) {
           try {
-            const res = await fetch(`/api/my/wedding/localized?country=${encodeURIComponent(country)}&event=wedding`, { headers });
+            const res = await fetch(
+              `/api/my/wedding/localized?country=${encodeURIComponent(
+                country
+              )}&event=wedding`,
+              { headers }
+            );
             const json = await res.json();
             if (active && json?.ok && json?.data) {
               setLocalized(json.data as LocalizedWeddingData);
@@ -196,7 +250,12 @@ export default function DashboardPage() {
 
           // Budget focus (slim endpoint)
           try {
-            const res = await fetch(`/api/my/wedding/budget-focus?country=${encodeURIComponent(country)}&event=wedding`, { headers });
+            const res = await fetch(
+              `/api/my/wedding/budget-focus?country=${encodeURIComponent(
+                country
+              )}&event=wedding`,
+              { headers }
+            );
             const json = await res.json();
             if (active && json?.ok && json?.budget) {
               setBudgetFocus(json.budget as BudgetFocus);
@@ -230,7 +289,7 @@ export default function DashboardPage() {
 
       const headers: HeadersInit = {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`,
       };
 
       // Salva il budget usando l'endpoint esistente
@@ -239,27 +298,29 @@ export default function DashboardPage() {
         brideBudget: brideBudget,
         groomBudget: groomBudget,
         weddingDate: weddingDate,
-        rows: budgetItems.map(item => ({
+        rows: budgetItems.map((item) => ({
           category: item.name.split(" - ")[0] || "Varie",
           subcategory: item.name.split(" - ")[1] || item.name,
           supplier: "",
           amount: item.amount || 0,
           spendType: "common",
-          notes: ""
-        }))
+          notes: "",
+        })),
       };
 
       const response = await fetch("/api/my/dashboard", {
         method: "POST",
         headers,
-        body: JSON.stringify(budgetPayload)
+        body: JSON.stringify(budgetPayload),
       });
 
       if (!response.ok) {
         throw new Error("Errore nel salvataggio del budget");
       }
 
-      alert("✅ Budget salvato con successo! I dati sono ora disponibili in 'Idea di Budget'.");
+      alert(
+        "✅ Budget salvato con successo! I dati sono ora disponibili in 'Idea di Budget'."
+      );
     } catch (error) {
       console.error("Errore nel salvataggio:", error);
       alert("❌ Errore nel salvataggio del budget. Riprova.");
@@ -270,7 +331,11 @@ export default function DashboardPage() {
 
   if (!isReady) {
     // Mostra solo un loader breve, il redirect avviene sopra
-    return <div className="min-h-[50vh] flex items-center justify-center text-xl">Loading...</div>;
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center text-xl">
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -295,16 +360,23 @@ export default function DashboardPage() {
           "Imposta prima il budget totale e la data dell'evento per attivare tutte le funzionalità",
           "Il budget si divide automaticamente tra i partecipanti, con spese comuni condivise",
           "Tutte le categorie sono personalizzabili: aggiungi preventivi, conferma spese e traccia pagamenti",
-          "Usa le 'Idee di Budget' per applicare template pre-compilati alle tue categorie"
+          "Usa le 'Idee di Budget' per applicare template pre-compilati alle tue categorie",
         ]}
         eventTypeSpecific={{
-          wedding: "Per il matrimonio, il budget è diviso tra sposa, sposo e spese comuni. Questo ti aiuta a tenere traccia di chi contribuisce a cosa.",
-          baptism: "Per il battesimo, tutte le spese sono considerate comuni. Non c'è divisione tra budget individuali.",
-          communion: "Per la comunione, tutte le spese sono considerate comuni. Budget familiare unificato per la celebrazione.",
-          confirmation: "Per la cresima, il budget è gestito come spese comuni della famiglia.",
-          birthday: "Per il compleanno, puoi gestire il budget in modo flessibile, dividendo tra organizzatore e spese condivise.",
-          eighteenth: "Per il diciottesimo compleanno, il budget è gestito come evento unico. Perfetto per celebrare la maggiore età!",
-          graduation: "Per la laurea, il budget può essere gestito come spese comuni o diviso tra famiglia e laureato."
+          wedding:
+            "Per il matrimonio, il budget è diviso tra sposa, sposo e spese comuni. Questo ti aiuta a tenere traccia di chi contribuisce a cosa.",
+          baptism:
+            "Per il battesimo, tutte le spese sono considerate comuni. Non c'è divisione tra budget individuali.",
+          communion:
+            "Per la comunione, tutte le spese sono considerate comuni. Budget familiare unificato per la celebrazione.",
+          confirmation:
+            "Per la cresima, il budget è gestito come spese comuni della famiglia.",
+          birthday:
+            "Per il compleanno, puoi gestire il budget in modo flessibile, dividendo tra organizzatore e spese condivise.",
+          eighteenth:
+            "Per il diciottesimo compleanno, il budget è gestito come evento unico. Perfetto per celebrare la maggiore età!",
+          graduation:
+            "Per la laurea, il budget può essere gestito come spese comuni o diviso tra famiglia e laureato.",
         }}
       />
 
@@ -355,8 +427,12 @@ export default function DashboardPage() {
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-lg text-center sm:text-left">Idea di Budget</h3>
-            <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
+            <h3 className="font-semibold text-lg text-center sm:text-left">
+              Idea di Budget
+            </h3>
+            <p className="text-sm text-gray-900">
+              Compila le voci e applicale al budget.
+            </p>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
             <Link
@@ -377,11 +453,18 @@ export default function DashboardPage() {
         <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="text-center sm:text-left">
-              <h3 className="font-semibold text-lg text-center sm:text-left">Viaggio di Nozze</h3>
-              <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
+              <h3 className="font-semibold text-lg text-center sm:text-left">
+                Viaggio di Nozze
+              </h3>
+              <p className="text-sm text-gray-900">
+                Consigli e idee per la luna di miele.
+              </p>
             </div>
             <div className="mt-4 flex justify-center sm:mt-0">
-              <Link href="/suggerimenti/viaggio-di-nozze" className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
+              <Link
+                href="/suggerimenti/viaggio-di-nozze"
+                className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white"
+              >
                 🌍 Apri Viaggio di Nozze
               </Link>
             </div>
@@ -393,11 +476,20 @@ export default function DashboardPage() {
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-lg text-center sm:text-left">Suggerimenti <span className="font-extrabold text-2xl align-middle">&</span> Consigli</h3>
-            <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
+            <h3 className="font-semibold text-lg text-center sm:text-left">
+              Suggerimenti{" "}
+              <span className="font-extrabold text-2xl align-middle">&</span>{" "}
+              Consigli
+            </h3>
+            <p className="text-sm text-gray-900">
+              Idee utili in base alle tue scelte.
+            </p>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
-            <Link href="/suggerimenti" className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
+            <Link
+              href="/suggerimenti"
+              className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white"
+            >
               💡 Apri Suggerimenti
             </Link>
           </div>

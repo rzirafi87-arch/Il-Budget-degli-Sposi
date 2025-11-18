@@ -8,7 +8,7 @@ import { ENGAGEMENT_PARTY_META } from "@/features/events/engagement-party/config
 import { BABY_SHOWER_META } from "@/features/events/baby-shower/config";
 
 type Props = {
-  params: { locale: string };
+  params: { locale?: string } | Promise<{ locale?: string }>;
 };
 
 // Tutti gli eventi disponibili nel wizard (per ora questi 3)
@@ -27,11 +27,14 @@ const COUNTRY_OPTIONS = [
 ];
 
 export default function Page({ params }: Props) {
-  const { locale } = params;
+  // Support both resolved and Promise params (defensive for Next.js 16)
+  let locale = "it";
+  if (typeof params === "object" && params !== null && "locale" in params) {
+    locale = params.locale || "it";
+  }
   const router = useRouter();
   const [country, setCountry] = useState("IT");
   const [eventKey, setEventKey] = useState<string>(EVENT_OPTIONS[0].key);
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // Qui decidi dove portare l’utente dopo la scelta
@@ -40,7 +43,14 @@ export default function Page({ params }: Props) {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4">
+    router.push(`/${locale}/${eventKey}`);
+  }
+  
+  // Support both resolved and Promise params (defensive for Next.js 16)
+  let locale = "it";
+  if (typeof params === "object" && params !== null && "locale" in params) {
+    locale = params.locale || "it";
+  }
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-xl space-y-6 border rounded-2xl p-8 shadow-sm"
@@ -58,10 +68,10 @@ export default function Page({ params }: Props) {
           <label className="text-sm font-medium">Lingua</label>
           <input
             className="w-full border rounded-lg px-3 py-2 bg-gray-50"
-            value={params.locale?.toUpperCase?.() || "IT"}
+            value={locale?.toUpperCase?.() || "IT"}
             disabled
           />
-        </div>
+            value={locale?.toUpperCase?.() || "IT"}
 
         {/* Nazione */}
         <div className="space-y-2">

@@ -34,7 +34,6 @@ export default function SelectLanguagePage() {
       document.cookie = `language=${selected}; Path=/; Max-Age=15552000; SameSite=Lax`;
     }
   }, [selected]);
-
   return (
     <main
       className="min-h-screen flex items-center justify-center"

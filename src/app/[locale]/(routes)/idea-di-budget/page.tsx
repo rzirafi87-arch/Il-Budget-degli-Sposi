@@ -2,9 +2,9 @@
 
 import type { EventConfiguration } from "@/constants/eventConfigs";
 import {
-    DEFAULT_EVENT_TYPE,
-    getEventConfig,
-    resolveEventType,
+  DEFAULT_EVENT_TYPE,
+  getEventConfig,
+  resolveEventType,
 } from "@/constants/eventConfigs";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
@@ -40,18 +40,20 @@ function formatAmount(value: number, currency: string) {
 
 function buildDefaultRows(config: EventConfiguration): BudgetIdeaRow[] {
   const rows: BudgetIdeaRow[] = [];
-  Object.entries(config.budgetCategories).forEach(([category, subcategories]) => {
-    subcategories.forEach((subcategory) => {
-      rows.push({
-        category,
-        subcategory,
-        spendType: config.defaultSpendType,
-        amount: 0,
-        supplier: "",
-        notes: "",
+  Object.entries(config.budgetCategories).forEach(
+    ([category, subcategories]) => {
+      subcategories.forEach((subcategory) => {
+        rows.push({
+          category,
+          subcategory,
+          spendType: config.defaultSpendType,
+          amount: 0,
+          supplier: "",
+          notes: "",
+        });
       });
-    });
-  });
+    }
+  );
   return rows;
 }
 
@@ -61,36 +63,45 @@ export default function IdeaDiBudgetPage() {
   const eventConfig = getEventConfig(eventType);
 
   const [rows, setRows] = useState<BudgetIdeaRow[]>(() =>
-    buildDefaultRows(eventConfig),
+    buildDefaultRows(eventConfig)
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [contributorBudgets, setContributorBudgets] = useState<ContributorBudgets>(
-    {},
-  );
+  const [contributorBudgets, setContributorBudgets] =
+    useState<ContributorBudgets>({});
   const [eventDate, setEventDate] = useState("");
   const [currency, setCurrency] = useState(
     () =>
       (typeof window !== "undefined" &&
         localStorage.getItem("budgetIdea.currency")) ||
-      "EUR",
+      "EUR"
   );
   const [contingencyPct, setContingencyPct] = useState<number>(() => {
     if (typeof window === "undefined") return 0;
-    const stored = Number(localStorage.getItem("budgetIdea.contingencyPct") || 0);
+    const stored = Number(
+      localStorage.getItem("budgetIdea.contingencyPct") || 0
+    );
     return Number.isFinite(stored) ? stored : 0;
   });
   const [compactView, setCompactView] = useState<boolean>(
     () =>
       typeof window !== "undefined" &&
-      localStorage.getItem("budgetIdea.compactView") === "1",
+      localStorage.getItem("budgetIdea.compactView") === "1"
   );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
-    const stored = window.localStorage.getItem("eventType");
-    const resolved = resolveEventType(stored || cookieMatch || DEFAULT_EVENT_TYPE);
+    let cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+    let stored = window.localStorage.getItem("eventType");
+    let resolved: string;
+    try {
+      resolved = resolveEventType(stored || cookieMatch || DEFAULT_EVENT_TYPE);
+    } catch {
+      // If value is invalid, force to 'wedding' and update storage/cookie
+      resolved = "wedding";
+      window.localStorage.setItem("eventType", "wedding");
+      document.cookie = "eventType=wedding; path=/;";
+    }
     setEventType(resolved);
   }, []);
 
@@ -99,7 +110,7 @@ export default function IdeaDiBudgetPage() {
     const nextBudgets: ContributorBudgets = {};
     eventConfig.contributors.forEach(({ value }) => {
       const stored = Number(
-        localStorage.getItem(`budgetIdea.budget.${eventType}.${value}`) || 0,
+        localStorage.getItem(`budgetIdea.budget.${eventType}.${value}`) || 0
       );
       nextBudgets[value] = Number.isFinite(stored) ? stored : 0;
     });
@@ -119,7 +130,7 @@ export default function IdeaDiBudgetPage() {
       const amount = contributorBudgets[value] || 0;
       localStorage.setItem(
         `budgetIdea.budget.${eventType}.${value}`,
-        String(amount),
+        String(amount)
       );
     });
     localStorage.setItem(`budgetIdea.eventDate.${eventType}`, eventDate);
@@ -128,14 +139,14 @@ export default function IdeaDiBudgetPage() {
       const first = eventConfig.contributors[0].value;
       localStorage.setItem(
         "brideBudget",
-        String(contributorBudgets[first] || 0),
+        String(contributorBudgets[first] || 0)
       );
     }
     if (eventConfig.contributors[1]) {
       const second = eventConfig.contributors[1].value;
       localStorage.setItem(
         "groomBudget",
-        String(contributorBudgets[second] || 0),
+        String(contributorBudgets[second] || 0)
       );
     }
     localStorage.setItem("weddingDate", eventDate);
@@ -170,20 +181,26 @@ export default function IdeaDiBudgetPage() {
           json.data.forEach((entry: Record<string, unknown>) => {
             const relation = entry.categories;
             let categoryFromRelation = "";
-            if (relation && typeof relation === "object" && "name" in relation) {
+            if (
+              relation &&
+              typeof relation === "object" &&
+              "name" in relation
+            ) {
               const maybeName = (relation as { name?: unknown }).name;
               if (typeof maybeName === "string") {
                 categoryFromRelation = maybeName;
               }
             }
-            const category = String(categoryFromRelation || entry.category || "");
+            const category = String(
+              categoryFromRelation || entry.category || ""
+            );
             const subcategory = String(entry.subcategory || "");
             if (!category || !subcategory) return;
             const key = `${category}|||${subcategory}`;
             const spendTypeRaw = String(
               entry.spendType ??
                 entry.spend_type ??
-                eventConfig.defaultSpendType,
+                eventConfig.defaultSpendType
             );
             const spendType =
               spendTypeRaw === "common"
@@ -243,8 +260,8 @@ export default function IdeaDiBudgetPage() {
       new Set(
         rows
           .map((row) => row.spendType)
-          .filter((value) => value && !base.some((opt) => opt.value === value)),
-      ),
+          .filter((value) => value && !base.some((opt) => opt.value === value))
+      )
     ).map((value) => ({ value, label: value }));
     return [...base, ...extras];
   }, [eventConfig.spendTypes, rows]);
@@ -262,34 +279,35 @@ export default function IdeaDiBudgetPage() {
 
   const plannedTotal = useMemo(
     () => rows.reduce((sum, row) => sum + toNumber(row.amount), 0),
-    [rows],
+    [rows]
   );
 
   const totalBudget = useMemo(
     () =>
       eventConfig.contributors.reduce(
-        (sum, contributor) => sum + (contributorBudgets[contributor.value] || 0),
-        0,
+        (sum, contributor) =>
+          sum + (contributorBudgets[contributor.value] || 0),
+        0
       ),
-    [contributorBudgets, eventConfig.contributors],
+    [contributorBudgets, eventConfig.contributors]
   );
 
   const extraSpendItems = useMemo(() => {
     const validKeys = new Set(
-      eventConfig.contributors.map((contributor) => contributor.value),
+      eventConfig.contributors.map((contributor) => contributor.value)
     );
     return Object.entries(plannedBySpendType).filter(
-      ([value]) => !validKeys.has(value),
+      ([value]) => !validKeys.has(value)
     );
   }, [eventConfig.contributors, plannedBySpendType]);
 
   function handleRowChange<K extends keyof BudgetIdeaRow>(
     index: number,
     field: K,
-    value: BudgetIdeaRow[K],
+    value: BudgetIdeaRow[K]
   ) {
     setRows((prev) =>
-      prev.map((row, idx) => (idx === index ? { ...row, [field]: value } : row)),
+      prev.map((row, idx) => (idx === index ? { ...row, [field]: value } : row))
     );
   }
 
@@ -367,7 +385,7 @@ export default function IdeaDiBudgetPage() {
           method: "POST",
           headers,
           body: JSON.stringify({ country, rows }),
-        },
+        }
       );
       if (!res.ok) throw new Error(`Apply failed (${res.status})`);
       const json = await res.json();
@@ -385,9 +403,7 @@ export default function IdeaDiBudgetPage() {
 
   if (loading) {
     return (
-      <div className="py-12 text-center text-gray-500">
-        {t("loading")}
-      </div>
+      <div className="py-12 text-center text-gray-500">{t("loading")}</div>
     );
   }
 
@@ -416,7 +432,9 @@ export default function IdeaDiBudgetPage() {
       <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-5">
         <div className="grid gap-4 sm:grid-cols-4">
           <div className="sm:col-span-2">
-            <label className="block text-sm font-semibold text-gray-700">{t("form.eventDate")}</label>
+            <label className="block text-sm font-semibold text-gray-700">
+              {t("form.eventDate")}
+            </label>
             <input
               type="date"
               value={eventDate}
@@ -426,7 +444,9 @@ export default function IdeaDiBudgetPage() {
             <p className="mt-1 text-xs text-gray-500">{t("form.syncedNote")}</p>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700">{t("form.currency")}</label>
+            <label className="block text-sm font-semibold text-gray-700">
+              {t("form.currency")}
+            </label>
             <input
               type="text"
               value={currency}
@@ -438,7 +458,9 @@ export default function IdeaDiBudgetPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700">{t("form.contingency")}</label>
+            <label className="block text-sm font-semibold text-gray-700">
+              {t("form.contingency")}
+            </label>
             <input
               type="number"
               min={0}
@@ -490,11 +512,19 @@ export default function IdeaDiBudgetPage() {
               <h4 className="font-semibold text-gray-800">
                 {contributor.label}
               </h4>
-              <div className="mt-2 text-sm text-gray-600">{t("panel.available")} {formatAmount(available, currency)}</div>
-              <div className="text-sm text-gray-600">{t("panel.planned")} {formatAmount(planned, currency)}</div>
-              <div className="text-sm font-semibold text-emerald-600">{t("panel.residual")} {formatAmount(residue, currency)}</div>
+              <div className="mt-2 text-sm text-gray-600">
+                {t("panel.available")} {formatAmount(available, currency)}
+              </div>
+              <div className="text-sm text-gray-600">
+                {t("panel.planned")} {formatAmount(planned, currency)}
+              </div>
+              <div className="text-sm font-semibold text-emerald-600">
+                {t("panel.residual")} {formatAmount(residue, currency)}
+              </div>
               <div className="mt-3">
-                <label className="block text-xs font-semibold text-gray-600">{t("panel.budget")}</label>
+                <label className="block text-xs font-semibold text-gray-600">
+                  {t("panel.budget")}
+                </label>
                 <input
                   type="number"
                   value={available}
@@ -502,7 +532,7 @@ export default function IdeaDiBudgetPage() {
                   onChange={(event) =>
                     handleBudgetChange(
                       contributor.value,
-                      Number(event.target.value),
+                      Number(event.target.value)
                     )
                   }
                   className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
@@ -522,11 +552,14 @@ export default function IdeaDiBudgetPage() {
             {t("totalCard.planned")} {formatAmount(plannedTotal, currency)}
           </div>
           <div className="text-sm font-semibold text-emerald-600">
-            {t("totalCard.residual")} {formatAmount(Math.max(totalBudget - plannedTotal, 0), currency)}
+            {t("totalCard.residual")}{" "}
+            {formatAmount(Math.max(totalBudget - plannedTotal, 0), currency)}
           </div>
           {extraSpendItems.length > 0 && (
             <div className="mt-3 text-xs text-gray-500">
-              <p className="font-semibold">{t("totalCard.extraContributions")}</p>
+              <p className="font-semibold">
+                {t("totalCard.extraContributions")}
+              </p>
               <ul className="mt-1 space-y-1">
                 {extraSpendItems.map(([value, amount]) => (
                   <li key={value}>
@@ -558,7 +591,9 @@ export default function IdeaDiBudgetPage() {
                 key={`${row.category}-${row.subcategory}-${index}`}
                 className="border-b border-gray-100 hover:bg-gray-50"
               >
-                <td className="p-3 font-medium text-gray-800">{row.category}</td>
+                <td className="p-3 font-medium text-gray-800">
+                  {row.category}
+                </td>
                 <td className="p-3 text-gray-700">{row.subcategory}</td>
                 <td className="p-3">
                   <input
@@ -566,7 +601,11 @@ export default function IdeaDiBudgetPage() {
                     min={0}
                     value={row.amount}
                     onChange={(event) =>
-                      handleRowChange(index, "amount", toNumber(event.target.value))
+                      handleRowChange(
+                        index,
+                        "amount",
+                        toNumber(event.target.value)
+                      )
                     }
                     className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
                   />
