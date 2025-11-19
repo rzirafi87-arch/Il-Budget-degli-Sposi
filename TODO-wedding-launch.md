@@ -48,10 +48,12 @@ Per ciascun paese:
 ### Fase 1 – Wedding IT/EN + Italia/Messico (IN CORSO)
 - [ ] Consolidare struttura evento Wedding (budget, timeline, i18n)
 - [x] Verificare categorie e sottocategorie Wedding senza buchi (vedi `supabase-wedding-event-seed.sql`)
-- [ ] Completare template timeline Wedding (proposta, preparativi, giorno, post)
-- [ ] Tradurre event_type/categorie/timeline in IT e EN
+- [x] Completare template timeline Wedding (proposta, preparativi, giorno, post) – già modellato in `supabase-timeline-wedding-restore.sql`
+- [ ] Tradurre event_type/categorie/timeline in IT e EN (inizio: script timeline + preparazione traduzioni categorie)
 - [ ] Configurare geo_countries: Italia (it-IT/EUR), Messico (es-ES/MXN o EUR)
 - [ ] Flusso completo utente IT/EN per Italia/Messico fino a PDF invito
+
+(Nota: Timeline e traduzioni IT/EN possono essere ripristinate tramite `supabase-timeline-wedding-restore.sql`. Per evitare duplicati, controllare `event_timeline_translations` e `event_type_translations` già presenti prima di inserire nuove righe.)
 
 (Nota: prima di inserire nuovi record di timeline verificare eventuali seed già esistenti in Supabase oppure `supabase-wedding-event-seed.sql`, e confermare in `event_timeline_translations` che non ci siano entry duplicate.)
 
