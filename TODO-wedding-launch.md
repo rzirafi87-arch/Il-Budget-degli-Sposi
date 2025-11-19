@@ -1,9 +1,11 @@
 # Roadmap Lancio – Evento MATRIMONIO
 
 ## Definition of Done – Matrimonio pronto al lancio
+
 Quando diciamo “Matrimonio pronto” dobbiamo coprire:
 
 ### A. Funzionalità per Wedding
+
 - [ ] Onboarding + selezione lingua/nazione/evento (Wedding)
 - [ ] Budget completo con categorie, sottocategorie, entrate/uscite, split bride/groom/common, totali e progressi visibili
 - [ ] Invitati: lista completa, stato RSVP, supporto tavoli (anche di base)
@@ -13,6 +15,7 @@ Quando diciamo “Matrimonio pronto” dobbiamo coprire:
 - [ ] PDF inviti template IT/EN funzionante
 
 ### B. Lingue supportate per Wedding
+
 - [ ] Italiano
 - [ ] Inglese
 - [ ] Francese
@@ -22,7 +25,9 @@ Quando diciamo “Matrimonio pronto” dobbiamo coprire:
 - [ ] Tradurre UI (menu, pulsanti, form), categorie/sottocategorie, timeline, messaggi principali (onboarding, errori, pulsanti)
 
 ### C. Paesi supportati (lista screenshot)
+
 Per ciascun paese:
+
 - default locale (es. IT → it-IT, MX → es-ES) e valuta/formattazione (anche se si inizia con EUR)
 - flag “solo Wedding” pronto
 - rimuovere eventuale “coming soon” dalla UI quando pronto
@@ -42,10 +47,10 @@ Per ciascun paese:
 - [ ] Cina 🇨🇳
 - [ ] Indonesia 🇮🇩
 
-
 ## Tabella di marcia cronologica
 
 ### Fase 1 – Wedding IT/EN + Italia/Messico (COMPLETATA)
+
 - [x] Consolidare struttura evento Wedding (budget, timeline, i18n)
 - [x] Verificare categorie e sottocategorie Wedding senza buchi (vedi `supabase-wedding-event-seed.sql`)
 - [x] Completare template timeline Wedding (proposta, preparativi, giorno, post) – già modellato in `supabase-timeline-wedding-restore.sql`
@@ -57,22 +62,22 @@ Per ciascun paese:
 
 (Nota: prima di inserire nuovi record di timeline verificare eventuali seed già esistenti in Supabase oppure `supabase-wedding-event-seed.sql`, e confermare in `event_timeline_translations` che non ci siano entry duplicate.)
 
-### Fase 2 – Estensione lingue Wedding (FR/ES/PT/ZH)
+### Fase 2 – Estensione lingue Wedding (FR/ES/PT/ZH) – ✅ Completata il 19/11/2025
+
 - [x] UI core tradotta in FR/ES/PT/ZH (menu, bottoni, label, errori) – verifica i JSON aggiornati
 - [x] Traduzioni Wedding (categorie + timeline) per FR/ES/PT/ZH (timelineSteps + script SQL)
 - [x] Verifica switch lingua (categorie, timeline, onboarding aggiornati)
 
-### Mini workflow – switch lingua + timeline (completato)
-1. Cambia lingua nel wizard o nei controlli di layout e conferma che `/[locale]/timeline` carichi le stringhe `timelineSteps` corrispondenti.
-2. Controlla che i pulsanti e i menu principali usino i valori dall’JSON localizzato; aggiorna eventuali catene di testo custom.
-3. Documenta i comandi di test e il risultato (vedi `docs/wedding-test-workflow.md`) prima di passare all’espansione geografica.
+#### Mini workflow – switch lingua + timeline (completato)
 
-### Mini workflow – switch lingua + timeline
-1. Attiva/assicurati che `timelineSteps` in `src/messages/{fr|es|pt|zh}.json` venga letta quando la lingua cambia (usa il nuovo provider AppContext + middleware).
-2. Conferma che la timeline `/[locale]/timeline` richiami le traduzioni corrette (titolo/descriptions e bucket label).
-3. Verifica che i test minimal (build, lint) non segnalino assenze di chiavi locali; correggi eventuali fallback mancanti prima di passare alla Fase 3.
+- Cambiata lingua tramite wizard/provider: `/[locale]/timeline` mostra correttamente i testi localizzati (FR/ES/PT/ZH)
+- Menu, pulsanti e bucket usano le chiavi localizzate
+- Lint, test e build: nessun errore di chiavi mancanti o fallback i18n
+- Validazione UI manuale OK anche su mobile/responsive
+- Vedi dettagli in `docs/wedding-test-workflow.md`
 
 ### Fase 3 – Estensione paesi
+
 - [ ] Configurare Spagna
 - [ ] Configurare Francia
 - [ ] Configurare India
@@ -88,6 +93,7 @@ Per ciascun paese:
 - [ ] Aggiornare UI lista paesi togliendo “coming soon” dove Wedding è pronto
 
 ### Fase 4 – Rifiniture & pre-lancio
+
 - [ ] Test mobile completo (onboarding/wizard, budget, invitati, timeline)
 - [ ] Sistemare padding/alignment mobile problematici
 - [ ] `npm run build` pulito (senza warning importanti)
