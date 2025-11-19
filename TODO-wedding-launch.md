@@ -57,10 +57,15 @@ Per ciascun paese:
 
 (Nota: prima di inserire nuovi record di timeline verificare eventuali seed già esistenti in Supabase oppure `supabase-wedding-event-seed.sql`, e confermare in `event_timeline_translations` che non ci siano entry duplicate.)
 
-### Fase 2 – Estensione lingue Wedding (FR/ES/PT/ZH) (INIZIATA)
-- [ ] UI core tradotta in FR/ES/PT/ZH (menu, bottoni, label, errori)
-- [ ] Traduzioni Wedding (categorie + timeline) per FR/ES/PT/ZH
-- [ ] Verifica switch lingua (categorie, timeline, onboarding aggiornati)
+### Fase 2 – Estensione lingue Wedding (FR/ES/PT/ZH)
+- [x] UI core tradotta in FR/ES/PT/ZH (menu, bottoni, label, errori) – verifica i JSON aggiornati
+- [x] Traduzioni Wedding (categorie + timeline) per FR/ES/PT/ZH (timelineSteps + script SQL)
+- [x] Verifica switch lingua (categorie, timeline, onboarding aggiornati)
+
+### Mini workflow – switch lingua + timeline (completato)
+1. Cambia lingua nel wizard o nei controlli di layout e conferma che `/[locale]/timeline` carichi le stringhe `timelineSteps` corrispondenti.
+2. Controlla che i pulsanti e i menu principali usino i valori dall’JSON localizzato; aggiorna eventuali catene di testo custom.
+3. Documenta i comandi di test e il risultato (vedi `docs/wedding-test-workflow.md`) prima di passare all’espansione geografica.
 
 ### Mini workflow – switch lingua + timeline
 1. Attiva/assicurati che `timelineSteps` in `src/messages/{fr|es|pt|zh}.json` venga letta quando la lingua cambia (usa il nuovo provider AppContext + middleware).
