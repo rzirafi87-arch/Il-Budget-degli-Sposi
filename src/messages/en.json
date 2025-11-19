@@ -1,6 +1,88 @@
 {
   "dashboard": "Dashboard",
   "timeline": "Timeline",
+  "timelineSteps": {
+    "announce-engagement": {
+      "title": "Announce engagement",
+      "description": "Share the big news with family and friends"
+    },
+    "set-budget-style": {
+      "title": "Set budget and style",
+      "description": "Establish total budget and choose wedding style"
+    },
+    "book-venue-date": {
+      "title": "Book venue and date",
+      "description": "Secure venue and date with deposit"
+    },
+    "photographer": {
+      "title": "Photographer",
+      "description": "Book photographer to capture your special day"
+    },
+    "videomaker": {
+      "title": "Videographer",
+      "description": "Book videographer to create your wedding film"
+    },
+    "church-townhall": {
+      "title": "Church/Town Hall",
+      "description": "Book church or town hall for ceremony"
+    },
+    "catering": {
+      "title": "Catering",
+      "description": "Choose menu and book catering service"
+    },
+    "music-ceremony": {
+      "title": "Ceremony music",
+      "description": "Book musicians for ceremony"
+    },
+    "music-party": {
+      "title": "Reception music",
+      "description": "Book DJ or band for reception"
+    },
+    "save-the-date": {
+      "title": "Save the date",
+      "description": "Send save the dates to guests"
+    },
+    "flowers": {
+      "title": "Flowers and decorations",
+      "description": "Choose florist and decorations for venue and church"
+    },
+    "stationery": {
+      "title": "Invitations",
+      "description": "Order and prepare invitations"
+    },
+    "invitations-send": {
+      "title": "Send invitations",
+      "description": "Send invitations to guests"
+    },
+    "transport": {
+      "title": "Transport",
+      "description": "Organize transport for couple and guests"
+    },
+    "rings": {
+      "title": "Wedding rings",
+      "description": "Choose and order wedding rings"
+    },
+    "final-menu": {
+      "title": "Final menu",
+      "description": "Confirm final menu with caterer"
+    },
+    "seating-plan": {
+      "title": "Seating plan",
+      "description": "Organize table arrangements and seating chart"
+    },
+    "final-payments": {
+      "title": "Final payments",
+      "description": "Complete final payments to suppliers"
+    },
+    "wedding-day": {
+      "title": "Wedding day",
+      "description": "Your special day has arrived!"
+    },
+    "thank-you": {
+      "title": "Thank you notes",
+      "description": "Send thank you cards to guests"
+    }
+  },
   "budget": "Budget",
   "weddingThings": "Wedding Things",
   "saveTheDate": "Save the Date",
