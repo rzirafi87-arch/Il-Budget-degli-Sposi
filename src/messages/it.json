@@ -15,6 +15,88 @@
   },
   "dashboard": "Dashboard",
   "timeline": "Timeline",
+  "timelineSteps": {
+    "announce-engagement": {
+      "title": "Annuncio del fidanzamento",
+      "description": "Comunicate la grande notizia a familiari e amici"
+    },
+    "set-budget-style": {
+      "title": "Definite budget e stile",
+      "description": "Stabilite il budget totale e scegliete lo stile del matrimonio"
+    },
+    "book-venue-date": {
+      "title": "Prenotate location e data",
+      "description": "Bloccate la location e la data con caparra"
+    },
+    "photographer": {
+      "title": "Fotografo",
+      "description": "Prenotate il fotografo per immortalare il vostro giorno speciale"
+    },
+    "videomaker": {
+      "title": "Videomaker",
+      "description": "Prenotate il videomaker per creare il vostro film di nozze"
+    },
+    "church-townhall": {
+      "title": "Chiesa/Comune",
+      "description": "Prenotate chiesa o comune per la cerimonia"
+    },
+    "catering": {
+      "title": "Catering",
+      "description": "Scegliete il menu e prenotate il servizio catering"
+    },
+    "music-ceremony": {
+      "title": "Musica cerimonia",
+      "description": "Prenotate musicisti per la cerimonia"
+    },
+    "music-party": {
+      "title": "Musica festa",
+      "description": "Prenotate DJ o band per il ricevimento"
+    },
+    "save-the-date": {
+      "title": "Save the date",
+      "description": "Inviate i save the date agli invitati"
+    },
+    "flowers": {
+      "title": "Fiori e decorazioni",
+      "description": "Scegliete fiorista e decorazioni per location e chiesa"
+    },
+    "stationery": {
+      "title": "Partecipazioni",
+      "description": "Ordinate e preparate le partecipazioni"
+    },
+    "invitations-send": {
+      "title": "Invio partecipazioni",
+      "description": "Inviate le partecipazioni agli ospiti"
+    },
+    "transport": {
+      "title": "Trasporti",
+      "description": "Organizzate i trasporti per sposi e invitati"
+    },
+    "rings": {
+      "title": "Fedi nuziali",
+      "description": "Scegliete e ordinate le fedi nuziali"
+    },
+    "final-menu": {
+      "title": "Menu definitivo",
+      "description": "Confermate il menu finale con il catering"
+    },
+    "seating-plan": {
+      "title": "Tableau e tavoli",
+      "description": "Organizzate la disposizione dei tavoli e il tableau"
+    },
+    "final-payments": {
+      "title": "Saldi finali",
+      "description": "Completate i pagamenti finali ai fornitori"
+    },
+    "wedding-day": {
+      "title": "Giorno del matrimonio",
+      "description": "Il vostro giorno speciale è arrivato!"
+    },
+    "thank-you": {
+      "title": "Ringraziamenti",
+      "description": "Inviate i biglietti di ringraziamento agli ospiti"
+    }
+  },
   "budget": "Budget",
   "weddingThings": "Cose matrimonio",
   "saveTheDate": "Save the Date",
