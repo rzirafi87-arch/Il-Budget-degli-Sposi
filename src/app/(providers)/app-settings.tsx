@@ -7,7 +7,7 @@ type AppSettingsProviderProps = {
   children: ReactNode;
 };
 
-export async function AppSettingsProvider({
+export default async function AppSettingsProvider({
   initialLocale,
   children,
 }: AppSettingsProviderProps) {

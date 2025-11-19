@@ -1,8 +1,12 @@
-
-import { AppSettingsProvider } from "@/app/(providers)/app-settings";
+import AppSettingsProvider from "@/app/(providers)/app-settings";
 import ClientLayoutShell from "@/components/ClientLayoutShell";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
-import { JsonLd, LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
+import {
+  JsonLd,
+  LocalBusinessSchema,
+  OrganizationSchema,
+  WebsiteSchema,
+} from "@/components/StructuredData";
 
 import {
   BRAND_DEFAULT_DESCRIPTION,
@@ -29,9 +33,13 @@ type MetadataParams = {
   params: Promise<{ locale?: string }>;
 };
 
-export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: MetadataParams): Promise<Metadata> {
   const resolvedParams = await params;
-  const locale = locales.includes((resolvedParams.locale || defaultLocale) as Locale)
+  const locale = locales.includes(
+    (resolvedParams.locale || defaultLocale) as Locale
+  )
     ? (resolvedParams.locale as Locale)
     : defaultLocale;
 
@@ -74,7 +82,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     },
   } as const;
 
-  const L = i18n[(locale === "en" ? "en" : "it")];
+  const L = i18n[locale === "en" ? "en" : "it"];
 
   const siteUrl = process.env.SITE_URL || BRAND_SITE_URL;
 
@@ -88,8 +96,16 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     manifest: "/manifest.webmanifest",
     icons: {
       icon: [
-        { url: "/backgrounds/icon-192.png", sizes: "192x192", type: "image/png" },
-        { url: "/backgrounds/icon-512.png", sizes: "512x512", type: "image/png" },
+        {
+          url: "/backgrounds/icon-192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          url: "/backgrounds/icon-512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
       ],
       apple: [{ url: "/backgrounds/icon-192.png" }],
     },
@@ -153,9 +169,14 @@ type LocaleLayoutProps = {
   params: Promise<{ locale?: string }>;
 };
 
-export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
+export default async function LocaleLayout({
+  children,
+  params,
+}: LocaleLayoutProps) {
   const resolvedParams = await params;
-  const locale = locales.includes((resolvedParams.locale || defaultLocale) as Locale)
+  const locale = locales.includes(
+    (resolvedParams.locale || defaultLocale) as Locale
+  )
     ? (resolvedParams.locale as Locale)
     : defaultLocale;
 
@@ -173,10 +194,16 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <LocalBusinessSchema />
         <WebsiteSchema />
         <OrganizationSchema />
-        {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
+        {process.env.NEXT_PUBLIC_GA_ID ? (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        ) : null}
 
         <AppSettingsProvider initialLocale={locale}>
-          <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
+          <NextIntlClientProvider
+            locale={locale}
+            messages={messages}
+            timeZone="Europe/Rome"
+          >
             <ClientLayoutShell>{children}</ClientLayoutShell>
           </NextIntlClientProvider>
         </AppSettingsProvider>
