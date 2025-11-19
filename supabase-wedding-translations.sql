@@ -84,13 +84,13 @@ END$$;
 DO $$
 DECLARE
   v_timeline_id uuid;
-  key text;
+  v_key text;
   title_it text;
   desc_it text;
   title_en text;
   desc_en text;
 BEGIN
-  FOR key, title_it, desc_it, title_en, desc_en IN
+  FOR v_key, title_it, desc_it, title_en, desc_en IN
     SELECT data.key, data.title_it, data.desc_it, data.title_en, data.desc_en FROM (
       VALUES
         ('announce-engagement','Annuncio del fidanzamento','Comunicate la grande notizia a familiari e amici','Announce engagement','Share the big news with family and friends'),
@@ -117,7 +117,7 @@ BEGIN
   LOOP
     SELECT et.id INTO v_timeline_id FROM public.event_timelines et
     JOIN public.event_types ety ON ety.id = et.event_type_id
-    WHERE ety.code = 'WEDDING' AND et.key = key;
+    WHERE ety.code = 'WEDDING' AND et.key = v_key;
 
     IF v_timeline_id IS NOT NULL THEN
       INSERT INTO public.event_timeline_translations (timeline_id, locale, title, description)
