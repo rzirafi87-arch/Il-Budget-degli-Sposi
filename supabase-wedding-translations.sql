@@ -91,7 +91,7 @@ DECLARE
   desc_en text;
 BEGIN
   FOR key, title_it, desc_it, title_en, desc_en IN
-    SELECT key, title_it, desc_it, title_en, desc_en FROM (
+    SELECT data.key, data.title_it, data.desc_it, data.title_en, data.desc_en FROM (
       VALUES
         ('announce-engagement','Annuncio del fidanzamento','Comunicate la grande notizia a familiari e amici','Announce engagement','Share the big news with family and friends'),
         ('set-budget-style','Definite budget e stile','Stabilite il budget totale e scegliete lo stile del matrimonio','Set budget and style','Establish total budget and choose wedding style'),
@@ -115,7 +115,7 @@ BEGIN
         ('thank-you','Ringraziamenti','Inviate i biglietti di ringraziamento agli ospiti','Thank you notes','Send thank you cards to guests')
     ) AS data(key, title_it, desc_it, title_en, desc_en)
   LOOP
-    SELECT id INTO v_timeline_id FROM public.event_timelines et
+    SELECT et.id INTO v_timeline_id FROM public.event_timelines et
     JOIN public.event_types ety ON ety.id = et.event_type_id
     WHERE ety.code = 'WEDDING' AND et.key = key;
 
