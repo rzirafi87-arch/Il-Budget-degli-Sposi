@@ -1,6 +1,88 @@
 {
     "dashboard": "仪表板",
     "timeline": "时间线",
+    "timelineSteps": {
+      "announce-engagement": {
+        "title": "宣布订婚",
+        "description": "将喜讯告知亲友"
+      },
+      "set-budget-style": {
+        "title": "确定预算与风格",
+        "description": "设定整体预算并选择婚礼风格"
+      },
+      "book-venue-date": {
+        "title": "预定场地与日期",
+        "description": "支付定金锁定场地和日期"
+      },
+      "photographer": {
+        "title": "摄影师",
+        "description": "安排摄影师记录婚礼"
+      },
+      "videomaker": {
+        "title": "摄像师",
+        "description": "预约摄像师制作婚礼影片"
+      },
+      "church-townhall": {
+        "title": "教堂/市政厅",
+        "description": "预订仪式场地"
+      },
+      "catering": {
+        "title": "餐饮",
+        "description": "确定菜单并预定餐饮服务"
+      },
+      "music-ceremony": {
+        "title": "仪式音乐",
+        "description": "安排仪式音乐演出"
+      },
+      "music-party": {
+        "title": "宴会音乐",
+        "description": "预定DJ或乐队"
+      },
+      "save-the-date": {
+        "title": "Save the date",
+        "description": "发送 Save the Date 给宾客"
+      },
+      "flowers": {
+        "title": "鲜花与布置",
+        "description": "选定花艺与装饰"
+      },
+      "stationery": {
+        "title": "婚礼文案",
+        "description": "准备请柬与卡片"
+      },
+      "invitations-send": {
+        "title": "发送请柬",
+        "description": "交付请柬给宾客"
+      },
+      "transport": {
+        "title": "交通",
+        "description": "安排交通接驳"
+      },
+      "rings": {
+        "title": "婚戒",
+        "description": "选购并订购婚戒"
+      },
+      "final-menu": {
+        "title": "最终菜单",
+        "description": "确认菜单与餐饮"
+      },
+      "seating-plan": {
+        "title": "座位表",
+        "description": "规划桌位与座次"
+      },
+      "final-payments": {
+        "title": "尾款",
+        "description": "结清供应商尾款"
+      },
+      "wedding-day": {
+        "title": "婚礼当天",
+        "description": "你们的重要日在此刻到来"
+      },
+      "thank-you": {
+        "title": "感谢信",
+        "description": "向宾客发送感谢卡"
+      }
+    },
     "budget": "预算",
     "weddingThings": "婚礼事项",
     "saveTheDate": "保存日期",

@@ -62,6 +62,11 @@ Per ciascun paese:
 - [ ] Traduzioni Wedding (categorie + timeline) per FR/ES/PT/ZH
 - [ ] Verifica switch lingua (categorie, timeline, onboarding aggiornati)
 
+### Mini workflow – switch lingua + timeline
+1. Attiva/assicurati che `timelineSteps` in `src/messages/{fr|es|pt|zh}.json` venga letta quando la lingua cambia (usa il nuovo provider AppContext + middleware).
+2. Conferma che la timeline `/[locale]/timeline` richiami le traduzioni corrette (titolo/descriptions e bucket label).
+3. Verifica che i test minimal (build, lint) non segnalino assenze di chiavi locali; correggi eventuali fallback mancanti prima di passare alla Fase 3.
+
 ### Fase 3 – Estensione paesi
 - [ ] Configurare Spagna
 - [ ] Configurare Francia
