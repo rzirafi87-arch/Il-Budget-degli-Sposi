@@ -1,6 +1,9 @@
 export const flags = {
   en_ui: true,
-  es_ui: false,
+  es_ui: true,
+  fr_ui: true,
+  pt_ui: true,
+  zh_ui: true,
   country_mexico: true,
   country_india: false,
   ai_suggestions: false,
