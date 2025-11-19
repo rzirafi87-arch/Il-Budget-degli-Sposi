@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
+import { useTranslations } from "next-intl";
 
 import { BIRTHDAY_META } from "@/features/events/birthday/config";
 import { ENGAGEMENT_PARTY_META } from "@/features/events/engagement-party/config";
@@ -27,6 +28,7 @@ const COUNTRY_OPTIONS = [
 ];
 
 export default function Page({ params }: Props) {
+  const t = useTranslations();
   // Support both resolved and Promise params (defensive for Next.js 16)
   let locale = "it";
   if (typeof params === "object" && params !== null && "locale" in params) {
@@ -37,20 +39,75 @@ export default function Page({ params }: Props) {
   const [eventKey, setEventKey] = useState<string>(EVENT_OPTIONS[0].key);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Qui decidi dove portare l’utente dopo la scelta
-    // Esempio: /it/baby-shower, /it/birthday, ecc.
     router.push(`/${locale}/${eventKey}`);
   };
 
   return (
-    router.push(`/${locale}/${eventKey}`);
-  }
-  
-  // Support both resolved and Promise params (defensive for Next.js 16)
-  let locale = "it";
-  if (typeof params === "object" && params !== null && "locale" in params) {
-    locale = params.locale || "it";
-  }
+    <main className="min-h-screen flex items-center justify-center px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-xl space-y-6 border rounded-2xl p-8 shadow-sm"
+      >
+        <h1 className="text-2xl font-bold mb-2 text-center">
+          {t("onboarding.selectEventTypeTitle")}
+        </h1>
+        <p className="text-sm text-gray-600 text-center">
+          Seleziona lingua, nazione ed evento per iniziare a configurare il
+          budget.
+        </p>
+
+        {/* Lingua – per ora fissata su locale della URL */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Lingua</label>
+          <input
+            className="w-full border rounded-lg px-3 py-2 bg-gray-50"
+            value={locale?.toUpperCase?.() || "IT"}
+            disabled
+          />
+        </div>
+
+        {/* Nazione */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Nazione</label>
+          <select
+            className="w-full border rounded-lg px-3 py-2"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          >
+            {COUNTRY_OPTIONS.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Evento */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Evento</label>
+          <select
+            className="w-full border rounded-lg px-3 py-2"
+            value={eventKey}
+            onChange={(e) => setEventKey(e.target.value)}
+          >
+            {EVENT_OPTIONS.map((event) => (
+              <option key={event.key} value={event.key}>
+                {t(`events.${event.key}`)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full mt-4 rounded-xl px-4 py-2 text-white bg-black font-semibold"
+        >
+          Continua
+        </button>
+      </form>
+    </main>
+  );
+}
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-xl space-y-6 border rounded-2xl p-8 shadow-sm"

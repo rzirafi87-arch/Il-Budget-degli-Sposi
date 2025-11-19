@@ -1,4 +1,18 @@
 {
+  "events": {
+    "birthday": "Compleanno",
+    "engagement-party": "Festa di fidanzamento",
+    "baby-shower": "Baby Shower"
+  },
+  "onboarding": {
+    "selectLanguageTitle": "Scegli la lingua",
+    "selectLanguageDesc": "Seleziona la lingua preferita per continuare.",
+    "selectCountryTitle": "Scegli il paese",
+    "selectCountryDesc": "Seleziona il paese per personalizzare i contenuti.",
+    "selectEventTypeTitle": "Scegli il tipo di evento",
+    "nextBtn": "Avanti",
+    "creatingEvent": "Creazione evento in corso..."
+  },
   "dashboard": "Dashboard",
   "timeline": "Timeline",
   "budget": "Budget",

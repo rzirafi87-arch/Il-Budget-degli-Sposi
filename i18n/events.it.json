@@ -99,10 +99,6 @@
     }
   },
   "baby-shower": {
-  },
-  "graduation": {
-    "label": "Laurea (coming soon)"
-  },
     "label": "Baby Shower (coming soon)",
     "sections": {
       "venue": "Location e Allestimento",
@@ -129,7 +125,7 @@
       "rsvp_tool": "RSVP / Sito web",
       "transport": "Trasporti",
       "cleaning": "Pulizie / Aiuti",
-      "contingency": "Fondo imprevisti (5–10%)"
+      "contingency": "Fondo imprevisti (5%-10%)"
     },
     "timeline": {
       "t-70-budget": "Budget, tema e host definiti",
@@ -147,5 +143,8 @@
       "t0-event": "Giorno evento",
       "t+2-thanks": "Ringraziamenti e condivisione foto"
     }
+  },
+  "graduation": {
+    "label": "Laurea (coming soon)"
   }
 }
