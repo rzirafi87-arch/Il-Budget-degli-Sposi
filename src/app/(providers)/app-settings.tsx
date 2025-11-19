@@ -1,19 +1,24 @@
-// Minimal stub for app-settings context/provider
+import { cookies } from "next/headers";
+import { type ReactNode } from "react";
+import { AppContextProvider } from "@/providers/AppContext";
 
-import React from "react";
+type AppSettingsProviderProps = {
+  initialLocale: string;
+  children: ReactNode;
+};
 
-export function useAppSettings() {
-  // Return demo settings for now
-  return {
-    locale: 'it',
-    theme: 'default',
-    countryCode: 'IT',
-    eventType: 'wedding',
-  };
-}
+export function AppSettingsProvider({ initialLocale, children }: AppSettingsProviderProps) {
+  const cookieStore = cookies();
+  const countryCode = cookieStore.get("country_code")?.value ?? cookieStore.get("country")?.value;
+  const eventType = cookieStore.get("event_type")?.value ?? cookieStore.get("eventType")?.value;
 
-// Minimal AppSettingsProvider for layout usage
-export function AppSettingsProvider({ initialLocale, children }: { initialLocale: string, children: React.ReactNode }) {
-  // In a real app, would provide context. Here, just render children.
-  return <>{children}</>;
+  return (
+    <AppContextProvider
+      initialLocale={initialLocale}
+      initialCountryCode={countryCode ?? undefined}
+      initialEventType={eventType ?? undefined}
+    >
+      {children}
+    </AppContextProvider>
+  );
 }
