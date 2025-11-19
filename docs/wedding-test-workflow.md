@@ -20,6 +20,11 @@ Questo documento raccoglie i comandi e i passaggi manuali consigliati per verifi
 3. Apri `/[locale]/dashboard` e `/[locale]/onboarding` (soprattutto il wizard) per assicurarti che menu/pulsanti usino le chiavi localizzate (puoi cercare i new keys `timelineSteps` in DevTools o `next-intl`).
 4. Ripeti il blocco anche su mobile/responsive (riduci la finestra) per verificare che il layout non si rompa con testi più lunghi.
 
+## 2.1 Check aggiuntivi per i paesi
+
+* Verifica che la lista dei paesi (`src/data/locales.ts` / `COUNTRIES`) mostri i nuovi entry (Spagna, Francia, India, Giappone, Regno Unito, Emirati, USA, Brasile, Germania, Canada, Cina, Indonesia). Mantieni lo stato “coming soon” attivo finché non testi i contenuti specifici.
+* Controlla che `src/constants/geo.ts` fornisca almeno una regione placeholder per ciascun paese, così la UI responsive non rompe la ricerca geografica.
+
 ## 3. Report
 
 * Se i comandi automatici passano e le UI sono corrette, aggiorna `TODO-wedding-launch.md` con la data del check (Fase 2 completata).
