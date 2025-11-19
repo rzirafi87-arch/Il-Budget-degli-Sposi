@@ -49,7 +49,7 @@ Per ciascun paese:
 - [ ] Consolidare struttura evento Wedding (budget, timeline, i18n)
 - [x] Verificare categorie e sottocategorie Wedding senza buchi (vedi `supabase-wedding-event-seed.sql`)
 - [x] Completare template timeline Wedding (proposta, preparativi, giorno, post) – già modellato in `supabase-timeline-wedding-restore.sql`
-- [ ] Tradurre event_type/categorie/timeline in IT e EN (documento `docs/wedding-timeline-translations.md` pronto come riferimento)
+- [ ] Tradurre event_type/categorie/timeline in IT e EN (usa `docs/wedding-timeline-translations.md` e il nuovo script `supabase-wedding-translations.sql`)
 - [ ] Configurare geo_countries: Italia (it-IT/EUR), Messico (es-ES/MXN o EUR)
 - [ ] Flusso completo utente IT/EN per Italia/Messico fino a PDF invito
 
