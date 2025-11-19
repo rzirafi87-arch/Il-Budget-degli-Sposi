@@ -8,10 +8,22 @@ import { useEffect, useState } from "react";
 
 type EventOption = { code: string; name: string; description?: string };
 type CountryOption = { code: string; name: string; emoji?: string };
-type LocaleOption = { code: string; name: string; native_name?: string; rtl?: boolean };
+type LocaleOption = {
+  code: string;
+  name: string;
+  native_name?: string;
+  rtl?: boolean;
+};
 
 export default function WizardPage() {
-  const { locale, countryCode, eventType, setLocale, setCountryCode, setEventType } = useAppContext();
+  const {
+    locale,
+    countryCode,
+    eventType,
+    setLocale,
+    setCountryCode,
+    setEventType,
+  } = useAppContext();
   const t = useTranslations("onboarding");
   const router = useRouter();
   const [events, setEvents] = useState<EventOption[]>([]);
@@ -63,17 +75,17 @@ export default function WizardPage() {
       const { data } = await supabase.auth.getSession();
       const user = data.session?.user;
       if (user) {
-        const { error: dbError } = await supabase
-          .from("profiles")
-          .upsert(
+        const { error: dbError } = await supabase.from("profiles").upsert(
+          [
             {
               id: user.id,
               preferred_locale: locale,
               country_code: countryCode,
               last_event_type: eventType,
             },
-            { onConflict: "id", returning: "minimal" }
-          );
+          ],
+          { onConflict: "id" }
+        );
         if (dbError) {
           throw dbError;
         }
@@ -120,11 +132,15 @@ export default function WizardPage() {
                 {t("wizard.title", { fallback: "Wizard linguistico" })}
               </p>
               <h1 className="text-2xl font-semibold text-gray-800">
-                {t("wizard.headline", { fallback: "Configura lingua, paese ed evento" })}
+                {t("wizard.headline", {
+                  fallback: "Configura lingua, paese ed evento",
+                })}
               </h1>
             </div>
             <p className="text-sm text-gray-600">
-              {t("wizard.subtitle", { fallback: "3 step per personalizzare la tua dashboard" })}
+              {t("wizard.subtitle", {
+                fallback: "3 step per personalizzare la tua dashboard",
+              })}
             </p>
           </div>
         </div>
@@ -140,13 +156,18 @@ export default function WizardPage() {
                   {t("wizard.eventStepTitle", { fallback: "Tipo di evento" })}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {t("wizard.eventStepDesc", { fallback: "Seleziona un tipo di evento per guidare i contenuti" })}
+                  {t("wizard.eventStepDesc", {
+                    fallback:
+                      "Seleziona un tipo di evento per guidare i contenuti",
+                  })}
                 </p>
               </div>
               <span className="text-sm font-semibold text-sage-700">
                 {eventType
                   ? eventType
-                  : t("wizard.pendingEvent", { fallback: "Ancora da scegliere" })}
+                  : t("wizard.pendingEvent", {
+                      fallback: "Ancora da scegliere",
+                    })}
               </span>
             </div>
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -162,8 +183,15 @@ export default function WizardPage() {
                   }`}
                   aria-pressed={eventType === item.code}
                 >
-                  <span className="text-lg font-semibold text-gray-800">{item.name}</span>
-                  <p className="text-sm text-gray-600">{item.description || t("wizard.eventDefaultTag", { fallback: "Scegli in base alle tue esigenze" })}</p>
+                  <span className="text-lg font-semibold text-gray-800">
+                    {item.name}
+                  </span>
+                  <p className="text-sm text-gray-600">
+                    {item.description ||
+                      t("wizard.eventDefaultTag", {
+                        fallback: "Scegli in base alle tue esigenze",
+                      })}
+                  </p>
                 </button>
               ))}
             </div>
@@ -179,11 +207,17 @@ export default function WizardPage() {
                   {t("wizard.countryStepTitle", { fallback: "Paese" })}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {t("wizard.countryStepDesc", { fallback: "Scegli il paese principale per adattare contenuti e fornitori" })}
+                  {t("wizard.countryStepDesc", {
+                    fallback:
+                      "Scegli il paese principale per adattare contenuti e fornitori",
+                  })}
                 </p>
               </div>
               <span className="text-sm font-semibold text-slate-600">
-                {countryCode || t("wizard.pendingCountry", { fallback: "Ancora da scegliere" })}
+                {countryCode ||
+                  t("wizard.pendingCountry", {
+                    fallback: "Ancora da scegliere",
+                  })}
               </span>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -211,13 +245,17 @@ export default function WizardPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-500">
-                  {t("wizard.stepLabelLanguage", { fallback: "Step 3 • Lingua" })}
+                  {t("wizard.stepLabelLanguage", {
+                    fallback: "Step 3 • Lingua",
+                  })}
                 </p>
                 <h2 className="text-xl font-semibold text-gray-800">
                   {t("wizard.languageStepTitle", { fallback: "Lingua" })}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {t("wizard.languageStepDesc", { fallback: "Seleziona l'interfaccia che preferisci" })}
+                  {t("wizard.languageStepDesc", {
+                    fallback: "Seleziona l'interfaccia che preferisci",
+                  })}
                 </p>
               </div>
               <span className="text-sm font-semibold text-slate-600">
@@ -236,7 +274,9 @@ export default function WizardPage() {
                       : "border-gray-200 hover:border-slate-300"
                   }`}
                 >
-                  {locItem.native_name || locItem.name || locItem.code.toUpperCase()}
+                  {locItem.native_name ||
+                    locItem.name ||
+                    locItem.code.toUpperCase()}
                 </button>
               ))}
             </div>
