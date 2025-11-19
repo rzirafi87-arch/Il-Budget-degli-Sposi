@@ -335,6 +335,58 @@ export const GEO: GeoRegistry = {
       { name: "Yogyakarta" },
     ],
   },
+  cn: {
+    label: "Cina",
+    regions: [{ name: "China" }],
+  },
+  de: {
+    label: "Germania",
+    regions: [{ name: "Deutschland" }],
+  },
+  gb: {
+    label: "Regno Unito",
+    regions: [{ name: "Regno Unito" }],
+  },
+  us: {
+    label: "Stati Uniti",
+    regions: [{ name: "USA" }],
+  },
+  fr: {
+    label: "Francia",
+    regions: [{ name: "France" }],
+  },
+  es: {
+    label: "Spagna",
+    regions: [{ name: "España" }],
+  },
+  pt: {
+    label: "Portogallo",
+    regions: [{ name: "Portugal" }],
+  },
+  br: {
+    label: "Brasile",
+    regions: [{ name: "Brasil" }],
+  },
+  jp: {
+    label: "Giappone",
+    regions: [{ name: "Japan" }],
+  },
+  ae: {
+    label: "Emirati Arabi Uniti",
+    regions: [{ name: "Emirates" }],
+  },
+  id: {
+    label: "Indonesia",
+    regions: [{ name: "Indonesia" }],
+  },
+  in: {
+    label: "India",
+    regions: [{ name: "India" }],
+  },
+  ca: {
+    label: "Canada",
+    regions: [{ name: "Canada" }],
+  },
   sa: {
     label: "Arabia Saudita",
     regions: [

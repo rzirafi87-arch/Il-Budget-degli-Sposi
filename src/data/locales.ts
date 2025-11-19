@@ -15,14 +15,15 @@ export type LocaleInfo = {
 export const LOCALES: LocaleInfo[] = [
   { code: "it-IT", label: "Italiano", active: true },
   { code: "en-GB", label: "English", active: flags.en_ui },
-  { code: "es-ES", label: "Espa\u00F1ol", active: flags.es_ui },
-  { code: "fr-FR", label: "Fran\u00E7ais", active: false },
+  { code: "es-ES", label: "Español", active: flags.es_ui },
+  { code: "fr-FR", label: "Français", active: flags.fr_ui },
   { code: "de-DE", label: "Deutsch", active: false },
-  { code: "ru", label: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439", active: false },
-  { code: "zh-CN", label: "\u4E2D\u6587", active: false },
-  { code: "ja-JP", label: "\u65E5\u672C\u8A9E", active: false },
-  { code: "ar", label: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", rtl: true, active: false },
-  { code: "hi-IN", label: "\u0939\u093F\u0928\u094D\u0926\u0940", active: flags.country_india },
+  { code: "ru", label: "Русский", active: false },
+  { code: "zh-CN", label: "中文", active: flags.zh_ui },
+  { code: "ja-JP", label: "日本語", active: false },
+  { code: "ar", label: "العربية", rtl: true, active: false },
+  { code: "hi-IN", label: "हिन्दी", active: flags.country_india },
+  { code: "pt-PT", label: "Português", active: flags.pt_ui },
 ];
 
 export type CountryInfo = {
@@ -34,18 +35,18 @@ export type CountryInfo = {
 export const COUNTRIES: CountryInfo[] = [
   { code: "IT", label: "Italia", active: true },
   { code: "MX", label: "Messico", active: flags.country_mexico },
-  { code: "ES", label: "Spagna", active: false },
-  { code: "FR", label: "Francia", active: false },
+  { code: "ES", label: "Spagna", active: true },
+  { code: "FR", label: "Francia", active: true },
   { code: "IN", label: "India", active: flags.country_india },
-  { code: "JP", label: "Giappone", active: false },
-  { code: "GB", label: "Regno Unito", active: false },
-  { code: "AE", label: "Emirati Arabi Uniti", active: false },
-  { code: "US", label: "Stati Uniti", active: false },
-  { code: "BR", label: "Brasile", active: false },
-  { code: "DE", label: "Germania", active: false },
-  { code: "CA", label: "Canada", active: false },
-  { code: "CN", label: "Cina", active: false },
-  { code: "ID", label: "Indonesia", active: false },
+  { code: "JP", label: "Giappone", active: true },
+  { code: "GB", label: "Regno Unito", active: true },
+  { code: "AE", label: "Emirati Arabi Uniti", active: true },
+  { code: "US", label: "Stati Uniti", active: true },
+  { code: "BR", label: "Brasile", active: true },
+  { code: "DE", label: "Germania", active: true },
+  { code: "CA", label: "Canada", active: true },
+  { code: "CN", label: "Cina", active: true },
+  { code: "ID", label: "Indonesia", active: true },
 ];
 
 /**

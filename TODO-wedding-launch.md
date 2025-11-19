@@ -76,21 +76,23 @@ Per ciascun paese:
 - Validazione UI manuale OK anche su mobile/responsive
 - Vedi dettagli in `docs/wedding-test-workflow.md`
 
-### Fase 3 – Estensione paesi
+### Fase 3 – Estensione paesi (INIZIATA)
 
-- [ ] Configurare Spagna
-- [ ] Configurare Francia
-- [ ] Configurare India
-- [ ] Configurare Giappone
-- [ ] Configurare Regno Unito
-- [ ] Configurare Emirati Arabi Uniti
-- [ ] Configurare Stati Uniti
-- [ ] Configurare Brasile
-- [ ] Configurare Germania
-- [ ] Configurare Canada
-- [ ] Configurare Cina
-- [ ] Configurare Indonesia
+- [x] Configurare Spagna (attivata in `src/data/locales.ts`, `COUNTRIES` e `GEO`)
+- [x] Configurare Francia (idem)
+- [x] Configurare India (mantiene il flag `country_india`)
+- [x] Configurare Giappone
+- [x] Configurare Regno Unito
+- [x] Configurare Emirati Arabi Uniti
+- [x] Configurare Stati Uniti
+- [x] Configurare Brasile
+- [x] Configurare Germania
+- [x] Configurare Canada
+- [x] Configurare Cina
+- [x] Configurare Indonesia
 - [ ] Aggiornare UI lista paesi togliendo “coming soon” dove Wedding è pronto
+
+> Nota: i paesi aggiuntivi sono ora inclusi nei dati `COUNTRIES` e `GEO`. L’ultimo passaggio consiste nello sbloccare la UI (toggle “coming soon”) e verificare fornitori/localizzazione per ognuno prima di considerare la fase conclusa.
 
 ### Fase 4 – Rifiniture & pre-lancio
 
