@@ -839,17 +839,9 @@ export const GEO: GeoRegistry = {
     label: "Cina",
     regions: [{ name: "China" }],
   },
-  es: {
-    label: "Spagna",
-    regions: [{ name: "España" }],
-  },
   pt: {
     label: "Portogallo",
     regions: [{ name: "Portugal" }],
-  },
-  br: {
-    label: "Brasile",
-    regions: [{ name: "Brasil" }],
   },
   jp: {
     label: "Giappone",
