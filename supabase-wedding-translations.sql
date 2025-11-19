@@ -28,8 +28,12 @@ BEGIN
     SELECT id, name FROM public.categories
     WHERE event_type_id = v_event_type_id
   )
+
   INSERT INTO public.category_translations (category_id, locale, name)
-  SELECT id, 'it-IT', name FROM cat
+  SELECT id, 'it-IT', name FROM (
+    SELECT id, name FROM public.categories
+    WHERE event_type_id = v_event_type_id
+  ) cat
     WHERE name IN (
       'Sposa','Sposo','Abiti & Accessori (altri)','Cerimonia','Location & Catering',
       'Fiori & Decor','Foto & Video','Inviti & Stationery','Musica & Intrattenimento',
@@ -60,7 +64,17 @@ BEGIN
     WHEN 'Comunicazione & Media' THEN 'Communication & Media'
     WHEN 'Extra & Contingenze' THEN 'Extras & Contingencies'
     ELSE name
-  END FROM cat
+  END FROM (
+    SELECT id, name FROM public.categories
+    WHERE event_type_id = v_event_type_id
+  ) cat
+    WHERE name IN (
+      'Sposa','Sposo','Abiti & Accessori (altri)','Cerimonia','Location & Catering',
+      'Fiori & Decor','Foto & Video','Inviti & Stationery','Musica & Intrattenimento',
+      'Beauty & Benessere','Bomboniere & Regali','Trasporti','Ospitalità & Logistica',
+      'Viaggio di nozze','Staff & Coordinamento','Burocrazia & Documenti',
+      'Comunicazione & Media','Extra & Contingenze'
+    )
   ON CONFLICT (category_id, locale) DO UPDATE SET name = EXCLUDED.name;
 
 END$$;
@@ -70,6 +84,11 @@ END$$;
 DO $$
 DECLARE
   v_timeline_id uuid;
+  key text;
+  title_it text;
+  desc_it text;
+  title_en text;
+  desc_en text;
 BEGIN
   FOR key, title_it, desc_it, title_en, desc_en IN
     SELECT key, title_it, desc_it, title_en, desc_en FROM (
