@@ -1,6 +1,88 @@
 {
   "dashboard": "Painel",
   "timeline": "Linha do tempo",
+  "timelineSteps": {
+    "announce-engagement": {
+      "title": "Anuncie o noivado",
+      "description": "Compartilhe a grande novidade com familiares e amigos"
+    },
+    "set-budget-style": {
+      "title": "Defina orçamento e estilo",
+      "description": "Estabeleça o orçamento total e o estilo do casamento"
+    },
+    "book-venue-date": {
+      "title": "Reserve local e data",
+      "description": "Garanta a locação e data com um sinal"
+    },
+    "photographer": {
+      "title": "Fotógrafo",
+      "description": "Contrate um fotógrafo para registrar o dia"
+    },
+    "videomaker": {
+      "title": "Videomaker",
+      "description": "Reserve um videomaker para o filme da cerimônia"
+    },
+    "church-townhall": {
+      "title": "Igreja ou cartório",
+      "description": "Agende a igreja ou o cartório para a cerimônia"
+    },
+    "catering": {
+      "title": "Buffet",
+      "description": "Escolha o menu e confirme o buffet"
+    },
+    "music-ceremony": {
+      "title": "Música da cerimônia",
+      "description": "Contrate músicos para a cerimônia"
+    },
+    "music-party": {
+      "title": "Música da festa",
+      "description": "Reserve DJ ou banda para a recepção"
+    },
+    "save-the-date": {
+      "title": "Save the date",
+      "description": "Envie os save the dates para os convidados"
+    },
+    "flowers": {
+      "title": "Flores e decoração",
+      "description": "Escolha o florista e a decoração dos espaços"
+    },
+    "stationery": {
+      "title": "Papelaria",
+      "description": "Peça os convites e cartões"
+    },
+    "invitations-send": {
+      "title": "Envio dos convites",
+      "description": "Despache os convites aos convidados"
+    },
+    "transport": {
+      "title": "Transporte",
+      "description": "Organize deslocamentos para noivos e convidados"
+    },
+    "rings": {
+      "title": "Alianças",
+      "description": "Escolha e encomende as alianças"
+    },
+    "final-menu": {
+      "title": "Cardápio definido",
+      "description": "Confirme o menu final com o buffet"
+    },
+    "seating-plan": {
+      "title": "Mapa de mesas",
+      "description": "Organize o seating plan e as mesas"
+    },
+    "final-payments": {
+      "title": "Pagamentos finais",
+      "description": "Quite os fornecedores"
+    },
+    "wedding-day": {
+      "title": "Dia do casamento",
+      "description": "Chegou o seu grande dia!"
+    },
+    "thank-you": {
+      "title": "Agradecimentos",
+      "description": "Envie bilhetes de agradecimento aos convidados"
+    }
+  },
   "budget": "Orçamento",
   "weddingThings": "Coisas do casamento",
   "saveTheDate": "Save the Date",

@@ -2,6 +2,88 @@
   "common": "Común",
   "bride": "Novia",
   "groom": "Novio",
+  "timelineSteps": {
+    "announce-engagement": {
+      "title": "Anuncia el compromiso",
+      "description": "Comparte la gran noticia con familiares y amigos"
+    },
+    "set-budget-style": {
+      "title": "Define presupuesto y estilo",
+      "description": "Establece el presupuesto total y el estilo de la boda"
+    },
+    "book-venue-date": {
+      "title": "Reserva lugar y fecha",
+      "description": "Asegura la locación y la fecha con un depósito"
+    },
+    "photographer": {
+      "title": "Fotógrafo",
+      "description": "Contrata a un fotógrafo para capturar el momento"
+    },
+    "videomaker": {
+      "title": "Videógrafo",
+      "description": "Reserva un videógrafo para el video de la boda"
+    },
+    "church-townhall": {
+      "title": "Iglesia o ayuntamiento",
+      "description": "Reserva la ceremonia en la iglesia o el ayuntamiento"
+    },
+    "catering": {
+      "title": "Catering",
+      "description": "Elige el menú y reserva el servicio de catering"
+    },
+    "music-ceremony": {
+      "title": "Música para ceremonia",
+      "description": "Agenda músicos para la ceremonia"
+    },
+    "music-party": {
+      "title": "Música para la fiesta",
+      "description": "Reserva DJ o banda para la recepción"
+    },
+    "save-the-date": {
+      "title": "Save the date",
+      "description": "Envía los save the date a tus invitados"
+    },
+    "flowers": {
+      "title": "Flores y decoraciones",
+      "description": "Elige florista y decoración para la locación"
+    },
+    "stationery": {
+      "title": "Papelería",
+      "description": "Ordena las invitaciones y tarjetas"
+    },
+    "invitations-send": {
+      "title": "Envía las invitaciones",
+      "description": "Distribuye las invitaciones a los invitados"
+    },
+    "transport": {
+      "title": "Transporte",
+      "description": "Organiza traslados para novios e invitados"
+    },
+    "rings": {
+      "title": "Anillos",
+      "description": "Selecciona y ordena las alianzas"
+    },
+    "final-menu": {
+      "title": "Menú definitivo",
+      "description": "Confirma el menú final con el catering"
+    },
+    "seating-plan": {
+      "title": "Plan de mesas",
+      "description": "Organiza el seating plan y la disposición"
+    },
+    "final-payments": {
+      "title": "Pagos finales",
+      "description": "Haz los pagos pendientes a proveedores"
+    },
+    "wedding-day": {
+      "title": "Día de la boda",
+      "description": "¡Ha llegado tu gran día!"
+    },
+    "thank-you": {
+      "title": "Agradecimientos",
+      "description": "Envía notas de agradecimiento a tus invitados"
+    }
+  },
   "ideaBudget": "Idea de Presupuesto",
   "budgetPage": {
     "approvedExpenses": "Gastos aprobados",

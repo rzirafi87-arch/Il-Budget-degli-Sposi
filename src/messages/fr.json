@@ -1,6 +1,88 @@
 {
   "dashboard": "Tableau de bord",
   "timeline": "Chronologie",
+  "timelineSteps": {
+    "announce-engagement": {
+      "title": "Annonce des fiançailles",
+      "description": "Partagez la grande nouvelle avec la famille et les amis"
+    },
+    "set-budget-style": {
+      "title": "Définissez budget et style",
+      "description": "Fixez le budget total et choisissez le style du mariage"
+    },
+    "book-venue-date": {
+      "title": "Réservez lieu et date",
+      "description": "Bloquez la salle et la date avec un acompte"
+    },
+    "photographer": {
+      "title": "Photographe",
+      "description": "Réservez un photographe pour immortaliser votre journée"
+    },
+    "videomaker": {
+      "title": "Vidéaste",
+      "description": "Engagez un vidéaste pour créer le film de votre mariage"
+    },
+    "church-townhall": {
+      "title": "Église ou mairie",
+      "description": "Réservez l'église ou la mairie pour la cérémonie"
+    },
+    "catering": {
+      "title": "Traiteur",
+      "description": "Choisissez le menu et réservez le service traiteur"
+    },
+    "music-ceremony": {
+      "title": "Musique de cérémonie",
+      "description": "Réservez des musiciens pour la cérémonie"
+    },
+    "music-party": {
+      "title": "Musique de réception",
+      "description": "Engagez un DJ ou un groupe pour la fête"
+    },
+    "save-the-date": {
+      "title": "Save the date",
+      "description": "Envoyez les Save the Date à vos invités"
+    },
+    "flowers": {
+      "title": "Fleurs et décor",
+      "description": "Choisissez un fleuriste pour décorer les lieux"
+    },
+    "stationery": {
+      "title": "Papeterie",
+      "description": "Commandez les faire-part et autres cartes"
+    },
+    "invitations-send": {
+      "title": "Envoi des invitations",
+      "description": "Expédiez les invitations à vos invités"
+    },
+    "transport": {
+      "title": "Transports",
+      "description": "Organisez les déplacements des mariés et invités"
+    },
+    "rings": {
+      "title": "Alliances",
+      "description": "Choisissez et commandez vos alliances"
+    },
+    "final-menu": {
+      "title": "Menu définitif",
+      "description": "Validez le menu final avec votre traiteur"
+    },
+    "seating-plan": {
+      "title": "Plan de table",
+      "description": "Organisez la disposition des tables et le tableau"
+    },
+    "final-payments": {
+      "title": "Soldes finaux",
+      "description": "Régler les paiements finaux auprès des fournisseurs"
+    },
+    "wedding-day": {
+      "title": "Jour du mariage",
+      "description": "Votre grand jour est arrivé !"
+    },
+    "thank-you": {
+      "title": "Remerciements",
+      "description": "Envoyez vos cartes de remerciement aux invités"
+    }
+  },
   "budget": "Budget",
   "weddingThings": "Éléments du mariage",
   "saveTheDate": "Réservez la date",
