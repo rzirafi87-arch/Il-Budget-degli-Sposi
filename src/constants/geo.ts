@@ -843,10 +843,6 @@ export const GEO: GeoRegistry = {
     label: "Portogallo",
     regions: [{ name: "Portugal" }],
   },
-  ca: {
-    label: "Canada",
-    regions: [{ name: "Canada" }],
-  },
   sa: {
     label: "Arabia Saudita",
     regions: [
