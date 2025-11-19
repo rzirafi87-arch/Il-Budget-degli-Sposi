@@ -269,5 +269,14 @@
     "quinceanera": "Quinceañera",
     "charity-gala": "Événement caritatif/Gala",
     "engagement-party": "Fête de fiançailles"
+  },
+  "wizard": {
+    "title": "Bienvenue !",
+    "step1": "Choisissez la langue",
+    "step2": "Sélectionnez le pays",
+    "step3": "Choisissez l'événement",
+    "continue": "Continuer",
+    "back": "Retour",
+    "goToDashboard": "Aller au tableau de bord"
   }
 }

@@ -270,7 +270,8 @@ export default function TimelinePage() {
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 py-6">
+      <div className="mx-auto w-full max-w-screen-xl space-y-6 px-4 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm text-gray-500">
@@ -288,7 +289,7 @@ export default function TimelinePage() {
         </a>
       </div>
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm text-gray-500">
@@ -451,6 +452,7 @@ export default function TimelinePage() {
           </p>
         </div>
       )}
+      </div>
     </section>
   );
 }

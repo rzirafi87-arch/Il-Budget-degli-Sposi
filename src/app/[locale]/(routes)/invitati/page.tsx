@@ -309,7 +309,8 @@ export default function InvitatiPage() {
   }
 
   return (
-    <section className="pt-6">
+    <section className="py-6">
+      <div className="mx-auto w-full max-w-screen-xl space-y-6 px-4 sm:px-6">
       <h2 className="font-serif text-3xl mb-2 text-gray-800">Gestione Invitati</h2>
       <p className="text-gray-700 mb-6 text-sm sm:text-base leading-relaxed font-semibold">
         Organizza la lista degli invitati, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli.
@@ -362,6 +363,7 @@ export default function InvitatiPage() {
       {/* Tab Content */}
       {activeTab === "guests" && renderGuestsTab()}
       {activeTab === "tables" && renderTablesTab()}
+      </div>
     </section>
   );
 

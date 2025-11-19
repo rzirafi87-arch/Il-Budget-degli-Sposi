@@ -120,14 +120,15 @@ export default function BudgetPage() {
   }, [plannedItems, rows]);
 
   return (
-    <section className="pt-6">
+    <section className="py-6">
+      <div className="mx-auto w-full max-w-screen-xl space-y-6 px-4 sm:px-6">
       <h3 className="sr-only">{t("budgetPage.approvedExpenses")}</h3>
 
       {/* Carosello immagini */}
       <ImageCarousel images={getPageImages("budget", country)} height="280px" />
 
       {/* CTA per Idea di Budget */}
-      <div className="flex justify-end mt-3">
+      <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end mt-3">
         <Link
           href={`/${locale}/idea-di-budget`}
           className="px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50 relative text-transparent"
@@ -139,7 +140,7 @@ export default function BudgetPage() {
 
       <p className="text-sm text-gray-900 mb-4">{t("budgetPage.description")}</p>
 
-      <div className="flex items-center justify-end mb-4 gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end">
         <ExportPDFButton
           data={rows.map((r) => ({
             Categoria: r.category,
@@ -163,6 +164,8 @@ export default function BudgetPage() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
+        <div className="overflow-x-auto">
+          <div className="min-w-[1200px]">
         <div className="grid grid-cols-10 gap-0 px-6 py-3 text-sm text-gray-900 hidden">
           <div>{t("budgetPage.table.category")}</div>
           <div>{t("budgetPage.table.subcategory")}</div>
@@ -281,7 +284,10 @@ export default function BudgetPage() {
             ))
           )}
         </ul>
+          </div>
+        </div>
       </div>
+    </div>
     </section>
   );
 }

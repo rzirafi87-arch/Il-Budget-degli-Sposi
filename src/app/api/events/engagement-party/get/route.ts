@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { supabaseAdmin } from "@/lib/supabase-admin.server";
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");

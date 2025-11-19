@@ -1,10 +1,11 @@
-"use client";
+\"use client\";
+
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import { useLocale } from "@/providers/LocaleProvider";
+import { useAppContext } from "@/providers/AppContext";
 import Link from "next/link";
 
 export default function OnboardingPage() {
-  const { locale } = useLocale();
+  const { locale } = useAppContext();
   return (
     <main className="max-w-2xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-bold mb-2">Benvenuto!</h1>

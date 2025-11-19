@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BABY_SHOWER_META } from "@/features/events/baby-shower/config";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { supabaseAdmin } from "@/lib/supabase-admin.server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);

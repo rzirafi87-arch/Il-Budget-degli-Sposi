@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { supabaseAdmin } from "@/lib/supabase-admin.server";
 import { ENGAGEMENT_PARTY_META } from "@/features/events/engagement-party/config";
 
 export async function POST(req: NextRequest) {

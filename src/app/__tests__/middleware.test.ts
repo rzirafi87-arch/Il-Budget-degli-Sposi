@@ -1,23 +1,34 @@
 // Mock next/server to avoid edge runtime globals in Jest
 
-jest.mock('next/server', () => {
-  const next = () => ({ status: 200, headers: new Headers() });
+jest.mock("next/server", () => {
+  // Mock cookies object with set/delete as jest.fn()
+  const cookies = {
+    set: jest.fn(),
+    delete: jest.fn(),
+  };
+  const next = () => ({ status: 200, headers: new Headers(), cookies });
   const redirect = (url: string | URL) => {
-    const location = typeof url === 'string' ? url : url.toString();
+    const location = typeof url === "string" ? url : url.toString();
     const headers = new Headers();
-    headers.set('location', location);
-    return { status: 307, headers };
+    headers.set("location", location);
+    return { status: 307, headers, cookies };
   };
   return { NextResponse: { next, redirect } };
 });
 
-import { middleware } from '../../../middleware';
+import { middleware } from "../../../middleware";
 
 // Minimal shape mock per soddisfare il middleware senza dipendere da Next internals
-type MockNextRequest = { nextUrl: URL & { clone: () => URL }; cookies: { get: (name: string) => { value: string } | undefined } };
+type MockNextRequest = {
+  nextUrl: URL & { clone: () => URL };
+  cookies: { get: (name: string) => { value: string } | undefined };
+};
 
-function makeReq(pathname: string, cookieMap: Record<string, string> = {}): MockNextRequest {
-  const base = new URL('http://localhost' + pathname);
+function makeReq(
+  pathname: string,
+  cookieMap: Record<string, string> = {}
+): MockNextRequest {
+  const base = new URL("http://localhost" + pathname);
   const nextUrl = Object.assign(base, {
     clone() {
       return new URL(this.toString());
@@ -33,35 +44,44 @@ function makeReq(pathname: string, cookieMap: Record<string, string> = {}): Mock
 
 type MiddlewareResponse = { status: number; headers: Headers };
 
-describe('middleware redirects onboarding', () => {
-
-  it('redirects to select-language when no cookies', () => {
+describe("middleware redirects onboarding", () => {
+  it("redirects to select-language when no cookies", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq('/dashboard') as unknown as any) as MiddlewareResponse; // cast per firma NextRequest
+    const res = middleware(
+      makeReq("/dashboard") as unknown as any
+    ) as MiddlewareResponse; // cast per firma NextRequest
     expect(res.status).toBe(307);
-    expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
+    expect(res.headers.get("location")).toBe("http://localhost/it/dashboard");
   });
 
-
-  it('redirects to select-country when language only', () => {
+  it("redirects to select-country when language only", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq('/dashboard', { language: 'it' }) as unknown as any) as MiddlewareResponse;
+    const res = middleware(
+      makeReq("/dashboard", { language: "it" }) as unknown as any
+    ) as MiddlewareResponse;
     expect(res.status).toBe(307);
-    expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
+    expect(res.headers.get("location")).toBe("http://localhost/it/dashboard");
   });
 
-
-  it('redirects to select-event-type when language and country only', () => {
+  it("redirects to select-event-type when language and country only", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq('/dashboard', { language: 'it', country: 'it' }) as unknown as any) as MiddlewareResponse;
+    const res = middleware(
+      makeReq("/dashboard", { language: "it", country: "it" }) as unknown as any
+    ) as MiddlewareResponse;
     expect(res.status).toBe(307);
-    expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
+    expect(res.headers.get("location")).toBe("http://localhost/it/dashboard");
   });
 
-  it('redirects to locale dashboard when all cookies present and no locale prefix', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const res = middleware(makeReq('/dashboard', { language: 'it', country: 'it', eventType: 'wedding' }) as unknown as any) as MiddlewareResponse;
+  it("redirects to locale dashboard when all cookies present and no locale prefix", () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = middleware(
+      makeReq("/dashboard", {
+        language: "it",
+        country: "it",
+        eventType: "wedding",
+      }) as unknown as any
+    ) as MiddlewareResponse;
     expect(res.status).toBe(307);
-    expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
+    expect(res.headers.get("location")).toBe("http://localhost/it/dashboard");
   });
 });
