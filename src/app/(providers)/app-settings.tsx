@@ -7,10 +7,15 @@ type AppSettingsProviderProps = {
   children: ReactNode;
 };
 
-export function AppSettingsProvider({ initialLocale, children }: AppSettingsProviderProps) {
-  const cookieStore = cookies();
-  const countryCode = cookieStore.get("country_code")?.value ?? cookieStore.get("country")?.value;
-  const eventType = cookieStore.get("event_type")?.value ?? cookieStore.get("eventType")?.value;
+export async function AppSettingsProvider({
+  initialLocale,
+  children,
+}: AppSettingsProviderProps) {
+  const cookieStore = await cookies();
+  const countryCode =
+    cookieStore.get("country_code")?.value ?? cookieStore.get("country")?.value;
+  const eventType =
+    cookieStore.get("event_type")?.value ?? cookieStore.get("eventType")?.value;
 
   return (
     <AppContextProvider
