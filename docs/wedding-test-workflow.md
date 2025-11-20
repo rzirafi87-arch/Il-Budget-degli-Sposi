@@ -36,3 +36,10 @@ Una volta confermato il funzionamento multilingua, procedi con:
 
 - (Fase 3) Configurazione dei paesi aggiuntivi (geo_countries e UI “coming soon”)
 - (Fase 4) Test mobile + build finale + sessioni reali
+
+## 4.1 Workflow Fase 4
+
+1. **Test mobile completo** su onboarding (+wizard), dashboard, budget, invitati, timeline, ripetendo i flussi in landscape/portrait su due breakpoint (sm/md). Tieni traccia di screenshot o note di layout che si rompono (padding, overflow).
+2. **Build finale** (`npm run build`) con `node --trace-warnings` se vuoi indagare warning addizionali; cattura eventuali errori di stringhe mancanti o moduli dynamic.
+3. **Sessione tester reali (soft beta)**: invita 1–3 persone, chiedi di completare un wedding (lingua es. FR, nazione ES); raccogli feedback su bug, confusione UX, testi scorretti e inseriscili in `docs/wedding-beta-feedback.md` (nuovo file da creare se necessario).
+4. **Fix immediati**: correggi bug critici, poi ricorri al TODO per segnare i passaggi completati (soprattutto il test mobile e la build finale).
