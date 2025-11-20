@@ -91,8 +91,8 @@ export default function IdeaDiBudgetPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    let cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
-    let stored = window.localStorage.getItem("eventType");
+    const cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+    const stored = window.localStorage.getItem("eventType");
     let resolved: string;
     try {
       resolved = resolveEventType(stored || cookieMatch || DEFAULT_EVENT_TYPE);
