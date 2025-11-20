@@ -1,20 +1,291 @@
 {
   "dashboard": "Dashboard",
   "timeline": "Zeitplan",
+  "onboarding": {
+    "selectLanguageTitle": "Sprache wählen",
+    "selectLanguageDesc": "Bitte wählen Sie Ihre bevorzugte Sprache.",
+    "selectCountryTitle": "Land wählen",
+    "selectCountryDesc": "Wählen Sie Ihr Land für personalisierte Inhalte.",
+    "selectEventTypeTitle": "Ereignistyp wählen",
+    "nextBtn": "Weiter",
+    "creatingEvent": "Ereignis wird erstellt..."
+  },
+  "wizard": {
+    "title": "Schnellstart",
+    "subtitle": "Sprache, Land und Ereignis für den Start festlegen.",
+    "stepLanguage": "Sprache",
+    "stepCountry": "Land",
+    "stepEvent": "Ereignis",
+    "selectLanguage": "Sprache wählen",
+    "selectCountry": "Land wählen",
+    "selectEvent": "Ereignis wählen",
+    "continue": "Fortfahren",
+    "complete": "Abschließen",
+    "error": "Bitte alle drei Schritte ausfüllen, um fortzufahren",
+    "saving": "Speichern...",
+    "success": "Einstellungen erfolgreich gespeichert!",
+    "back": "Zurück"
+  },
   "budget": "Budget",
+  "ideaBudget": "Budget-Idee",
+  "budgetIdea": {
+    "title": "Budget-Idee",
+    "loading": "Budget-Ideen werden geladen...",
+    "buttons": {
+      "save": "Budget-Idee speichern",
+      "saving": "Speichern...",
+      "apply": "Auf Budget anwenden"
+    },
+    "form": {
+      "eventDate": "Ereignisdatum",
+      "currency": "Währung",
+      "contingency": "Unvorhergesehenes (%)",
+      "compact": "Kompakte Ansicht (dichtere Zeilen)",
+      "syncedNote": "Mit Haupt-Dashboard synchronisiert."
+    },
+    "summary": {
+      "plannedTotal": "Geplant gesamt:",
+      "contingency": "Unvorhergesehenes:",
+      "totalWithContingency": "Gesamt inkl. Unvorhergesehenes:"
+    },
+    "panel": {
+      "available": "Verfügbar:",
+      "planned": "Geplant:",
+      "residual": "Rest:",
+      "budget": "Budget"
+    },
+    "totalCard": {
+      "available": "Verfügbar:",
+      "planned": "Geplant:",
+      "residual": "Rest:",
+      "extraContributions": "Weitere Beiträge"
+    },
+    "table": {
+      "category": "Kategorie",
+      "subcategory": "Unterkategorie",
+      "amountCurrency": "Betrag ({currency})",
+      "spendType": "Ausgabentyp",
+      "supplier": "Anbieter",
+      "notes": "Notizen"
+    },
+    "messages": {
+      "loadError": "Fehler beim Laden der Budget-Idee.",
+      "saveError": "Fehler beim Speichern der Budget-Idee.",
+      "applyDone": "Angewendet: {count} Elemente erstellt oder aktualisiert.",
+      "applyError": "Fehler beim Anwenden auf das Budget."
+    }
+  },
   "weddingThings": "Hochzeitsdinge",
   "saveTheDate": "Save the Date",
-  "choose_language": "Sprache wählen",
-  "choose_country": "Land wählen",
-  "choose_event": "Ereignistyp wählen",
+  "guests": "Gäste",
+  "accounting": "Buchhaltung",
   "suppliers": "Anbieter",
   "location": "Location",
   "churches": "Kirchen",
-  "guests": "Gäste",
-  "accounting": "Buchhaltung",
   "documents": "Dokumente",
   "giftList": "Geschenkliste",
   "favorites": "Favoriten",
-  "suggestions": "Tipps & Vorschläge"
+  "suggestions": "Tipps & Vorschläge",
+  "expensesPage": {
+    "info": {
+      "lead": "Erfassen und verwalten Sie alle Hochzeitsausgaben. Sie können Angebote eingeben, diese als genehmigte Ausgaben bestätigen und Zahlungsstatus verfolgen. Filtern Sie nach Kategorie, Ausgabentyp (gemeinsam/Braut/Bräutigam) und Status.",
+      "title": "Komplettes Ausgabenmanagement",
+      "description": "Auf dieser Seite können Sie alle tatsächlichen Ausgaben und Angebote erfassen. Jede Ausgabe kann kategorisiert, der Braut/dem Bräutigam/gemeinsam zugewiesen und mit Genehmigungs- und Zahlungsstatus verfolgt werden. Vom Dashboard bestätigte Ausgaben erscheinen hier automatisch.",
+      "tips": {
+        "tip1": "Verwenden Sie den Status 'Angebot' für erhaltene Angebote, dann auf 'Genehmigt' ändern, wenn bestätigt",
+        "tip2": "Das Feld 'Vom Angebot' zeigt an, ob die Ausgabe vom Dashboard stammt (bereits budgetiert)",
+        "tip3": "Fügen Sie immer den Anbieter hinzu, um zu verfolgen, wer welche Dienstleistung erbracht hat",
+        "tip4": "Filtern Sie nach Kategorie oder Ausgabentyp, um zu analysieren, wo Sie am meisten ausgeben"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Für die Hochzeit können Sie Ausgaben zwischen Braut, Bräutigam und gemeinsam aufteilen. Das hilft, den Beitrag jedes Einzelnen zu verstehen und die Finanzen transparent zu verwalten.",
+        "baptism": "Für die Taufe werden alle Ausgaben automatisch als 'gemeinsam' festgelegt - es muss nicht angegeben werden, wer bezahlt.",
+        "eighteenth": "Für den 18. Geburtstag sind alle Ausgaben gemeinsam. Planen Sie Location, Catering, Unterhaltung und Andenken, um diese Feier unvergesslich zu machen!",
+        "confirmation": "Für die Firmung sind alle Ausgaben gemeinsam. Organisieren Sie Zeremonie, Empfang, Andenken und Geschenke, um diesen besonderen Moment des spirituellen Wachstums zu feiern.",
+        "birthday": "Für den Geburtstag teilen Sie die Ausgaben zwischen Hauptorganisator und gemeinsam geteilten Ausgaben auf.",
+        "graduation": "Für den Abschluss verfolgen Sie alle ausgabenbezogenen Kosten: Location, Catering, Einladungen, Dekorationen und Andenken.",
+        "anniversary": "Für den Hochzeitstag verwalten Sie die Ausgaben gemeinsam. Ob 25. (Silber), 50. (Gold) oder ein intimeres Jubiläum – jedes Detail zählt, um diesen Moment der Liebe besonders zu machen."
+      }
+    },
+    "title": "Ausgaben",
+    "loading": "Lädt...",
+    "summary": {
+      "pending": "Ausstehend",
+      "approved": "Genehmigte Ausgaben"
+    },
+    "buttons": {
+      "add": "+ Ausgabe hinzufügen",
+      "cancel": "Abbrechen",
+      "save": "Ausgabe speichern",
+      "approve": "Genehmigen",
+      "reject": "Ablehnen"
+    },
+    "form": {
+      "new": "Neue Ausgabe",
+      "category": "Kategorie",
+      "subcategory": "Unterkategorie",
+      "supplier": "Anbieter",
+      "amount": "Betrag",
+      "spendType": "Ausgabentyp",
+      "date": "Datum",
+      "description": "Beschreibung",
+      "notes": "Notizen",
+      "placeholders": {
+        "supplier": "Name des Anbieters",
+        "amount": "0",
+        "description": "Detaillierte Beschreibung",
+        "notes": "Weitere Notizen..."
+      },
+      "spendTypeOptions": {
+        "common": "Gemeinsam",
+        "bride": "Braut",
+        "groom": "Bräutigam"
+      }
+    },
+    "table": {
+      "supplier": "Anbieter",
+      "description": "Beschreibung",
+      "amount": "Betrag",
+      "type": "Typ",
+      "date": "Datum",
+      "status": "Status",
+      "fromQuote": "Vom Angebot",
+      "actions": "Aktionen"
+    },
+    "status": {
+      "approved": "✓ Genehmigt",
+      "rejected": "✗ Abgelehnt",
+      "pending": "Ausstehend"
+    },
+    "spendType": {
+      "common": "Gemeinsam",
+      "bride": "Braut",
+      "groom": "Bräutigam"
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Sie müssen angemeldet sein, um Ausgaben hinzuzufügen. Klicken Sie oben auf 'Registrieren'.",
+      "networkError": "❌ Netzwerkfehler",
+      "successAdded": "✅ Ausgabe erfolgreich hinzugefügt!",
+      "none": "Keine Ausgaben registriert",
+      "confirmed": "Bestätigt",
+      "discarded": "Verworfen"
+    }
+  },
+  "incomesPage": {
+    "info": {
+      "lead": "Verfolgen Sie alle Einnahmen, die zum Hochzeitsbudget beitragen: Geschenke der Eltern, familiäre Beiträge, persönliche Ersparnisse oder andere Quellen. Geben Sie an, ob die Einnahme von der Braut, dem Bräutigam oder gemeinsam stammt.",
+      "title": "Alle Einnahmen verfolgen",
+      "description": "Hier können Sie alle Geldquellen erfassen, die zum Budget Ihres Events beitragen: familiäre Beiträge, Geldgeschenke, Überweisungen, persönliche Ersparnisse. Jede Einnahme kann kategorisiert werden, um zu wissen, wer sie bringt (Braut/Bräutigam/gemeinsam) und von wem sie stammt.",
+      "tips": {
+        "tip1": "Verwenden Sie 'Umschlag' für Geldgeschenke während des Events",
+        "tip2": "Verwenden Sie 'Überweisung' für Beiträge, die vor dem Event eingehen",
+        "tip3": "Verwenden Sie 'Geschenk' für materielle Geschenke (ohne bestimmten Betrag)",
+        "tip4": "Die Gesamteinnahmen helfen Ihnen zu verstehen, wie viel effektives Budget Sie haben"
+      },
+      "eventTypeSpecific": {
+        "wedding": "Während der Hochzeit ist es Tradition, Umschläge mit finanziellen Beiträgen von Gästen zu erhalten. Erfassen Sie jeden erhaltenen Umschlag für eine vollständige Nachverfolgung.",
+        "baptism": "Für die Taufe erfassen Sie Beiträge von Paten, Patinnen und Familienmitgliedern, die sich an den Ausgaben beteiligen möchten.",
+        "birthday": "Für den Geburtstag verfolgen Sie Beiträge von Freunden und Verwandten, die bei der Organisation helfen möchten.",
+        "graduation": "Für den Abschluss erfassen Sie familiäre Beiträge und erhaltene Geschenke zur Feier des Erfolgs.",
+        "anniversary": "Für den Hochzeitstag erfassen Sie Beiträge von Kindern, Enkeln und Verwandten, die an der Feier teilnehmen möchten. Oft schließen sich Familien zusammen, um eine Überraschungsparty zu organisieren oder zu den Ausgaben beizutragen."
+      }
+    },
+    "title": "Einnahmen",
+    "loading": "Lädt...",
+    "toolbar": {
+      "giftList": "Geschenkliste",
+      "backDashboard": "Zurück zum Dashboard"
+    },
+    "summary": {
+      "bride": "Einnahmen Braut",
+      "groom": "Einnahmen Bräutigam",
+      "common": "Gemeinsame Einnahmen",
+      "totalMoney": "Gesamtsumme",
+      "physicalGifts": "Materielle Geschenke"
+    },
+    "buttons": {
+      "add": "+ Einnahme hinzufügen",
+      "cancel": "Abbrechen",
+      "save": "Einnahme speichern",
+      "delete": "Löschen"
+    },
+    "form": {
+      "new": "Neue Einnahme",
+      "name": "Name Person/Familie *",
+      "type": "Typ *",
+      "incomeSource": "Einnahmequelle *",
+      "amount": "Betrag (€) *",
+      "date": "Datum",
+      "notes": "Notizen",
+      "giftDescription": "Geschenkbeschreibung *",
+      "placeholders": {
+        "name": "z.B. Familie Müller",
+        "amount": "0",
+        "notes": "Weitere Notizen...",
+        "gift": "z.B. komplettes Geschirrset"
+      },
+      "typeOptions": {
+        "busta": "Umschlag",
+        "bonifico": "Überweisung",
+        "regalo": "Materielles Geschenk"
+      },
+      "sourceOptions": {
+        "common": "Gemeinsam",
+        "bride": "Braut",
+        "groom": "Bräutigam"
+      }
+    },
+    "table": {
+      "date": "Datum",
+      "name": "Name",
+      "type": "Typ",
+      "source": "Quelle",
+      "amount": "Betrag",
+      "notes": "Notizen / Beschreibung",
+      "actions": "Aktionen"
+    },
+    "empty": "Keine Einnahmen registriert",
+    "badges": {
+      "type": {
+        "busta": "💵 Umschlag",
+        "bonifico": "🏦 Überweisung",
+        "regalo": "🎁 Geschenk"
+      },
+      "source": {
+        "bride": "👰 Braut",
+        "groom": "🤵 Bräutigam",
+        "common": "💑 Gemeinsam"
+      }
+    },
+    "messages": {
+      "mustAuthAdd": "❌ Sie müssen angemeldet sein, um Einnahmen hinzuzufügen. Klicken Sie oben auf 'Registrieren'.",
+      "networkError": "❌ Netzwerkfehler",
+      "successAdded": "✅ Einnahme erfolgreich registriert!",
+      "deleted": "✅ Einnahme gelöscht",
+      "confirmDelete": "Sind Sie sicher, dass Sie diese Einnahme löschen möchten?"
+    }
+  },
+  "events": {
+    "wedding": "Hochzeit",
+    "baptism": "Taufe",
+    "eighteenth": "18. Geburtstag",
+    "anniversary": "Hochzeitstag",
+    "gender-reveal": "Gender Reveal",
+    "birthday": "Geburtstag",
+    "fifty": "50 Jahre",
+    "retirement": "Ruhestand",
+    "confirmation": "Firmung",
+    "graduation": "Abschluss",
+    "baby-shower": "Baby Shower",
+    "engagement": "Verlobungsfeier",
+    "corporate": "Firmenveranstaltung",
+    "milestone-birthday": "Meilenstein-Geburtstag",
+    "gender-reveal-party": "Gender Reveal Party",
+    "proposal": "Heiratsantrag-Party",
+    "communion": "Erstkommunion",
+    "bar-mitzvah": "Bar Mizwa",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Wohltätigkeitsveranstaltung/Gala",
+    "engagement-party": "Verlobungsfeier"
+  }
 }
-
