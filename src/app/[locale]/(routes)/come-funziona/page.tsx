@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 export default function ComeFunzionaPage() {
@@ -91,12 +92,12 @@ export default function ComeFunzionaPage() {
         <div className="bg-linear-to-r from-[#A3B59D] to-[#8a9d84] rounded-2xl shadow-xl p-8 text-center">
           <h3 className="text-2xl font-bold text-white mb-4">{t("cta.title")}</h3>
           <p className="text-white/90 mb-6">{t("cta.subtitle")}</p>
-          <a
+          <Link
             href="/auth"
             className="inline-block bg-white text-[#A3B59D] px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition-all active:scale-95"
           >
             {t("cta.button")}
-          </a>
+          </Link>
         </div>
       </div>
     </section>
