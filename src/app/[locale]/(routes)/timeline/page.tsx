@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import Link from "next/link";
 import ExportButton from "@/components/ExportButton";
 import ExportPDFButton from "@/components/ExportPDFButton";
 import {
@@ -272,21 +273,21 @@ export default function TimelinePage() {
   return (
     <section className="space-y-6 py-6">
       <div className="mx-auto w-full max-w-screen-xl space-y-6 px-4 sm:px-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm text-gray-500">
-            {eventConfig.timelineDescription}
-          </p>
-          <h1 className="font-serif text-3xl font-bold text-gray-800">
-            {eventConfig.emoji} {eventConfig.timelineTitle}
-          </h1>
-        </div>
-        <a
-          href="/dashboard"
-          className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
-        >
-          Torna alla dashboard
-        </a>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm text-gray-500">
+              {eventConfig.timelineDescription}
+            </p>
+            <h1 className="font-serif text-3xl font-bold text-gray-800">
+              {eventConfig.emoji} {eventConfig.timelineTitle}
+            </h1>
+          </div>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
+          >
+            Torna alla dashboard
+          </Link>
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">

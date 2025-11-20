@@ -12,20 +12,20 @@ Questo file tiene traccia dello stato di avanzamento delle traduzioni per ogni e
 
 ### Matrimonio – Stato dettagliato per pagina
 
-| Pagina                | Italiano | Inglese | Francese | Portoghese | Spagnolo | Tedesco | Arabo | Cinese | Giapponese | Indonesiano |
-| --------------------- | :------: | :-----: | :------: | :--------: | :------: | :-----: | :---: | :----: | :--------: | :---------: |
-| Dashboard             |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Timeline              |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Onboarding            |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Wizard                |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Budget                |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Idea di Budget        |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Spese                 |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Entrate               |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Fornitori             |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Location              |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Chiese                |    ✅    |   ✅    |    ✅    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Partecipazione/Invito |   ⬜️    |   ⬜️   |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Pagina                | Italiano | Inglese | Francese | Russo | Portoghese | Spagnolo | Tedesco | Arabo | Cinese | Giapponese | Indonesiano |
+| --------------------- | :------: | :-----: | :------: | :---: | :--------: | :------: | :-----: | :---: | :----: | :--------: | :---------: |
+| Dashboard             |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Timeline              |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Onboarding            |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Wizard                |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Budget                |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Idea di Budget        |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Spese                 |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Entrate               |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Fornitori             |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Location              |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Chiese                |    ✅    |   ✅    |    ✅    |  ✅   |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Partecipazione/Invito |   ⬜️    |   ⬜️   |   ⬜️    |  ⬜️  |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
 
 > Nota: La pagina "Partecipazione/Invito" sarà implementata in seguito anche in italiano.
 

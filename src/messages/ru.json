@@ -17,6 +17,78 @@
   "auth": "Войти",
   "chat": "Свяжитесь с нами в WhatsApp",
   "settings": "Настройки",
+  "onboarding": {
+    "selectLanguageTitle": "Выберите язык",
+    "selectLanguageDesc": "Выберите предпочитаемый язык для продолжения.",
+    "selectCountryTitle": "Выберите страну",
+    "selectCountryDesc": "Выберите страну для персонализации контента.",
+    "selectEventTypeTitle": "Выберите тип события",
+    "nextBtn": "Далее",
+    "creatingEvent": "Создание события..."
+  },
+  "wizard": {
+    "title": "Быстрая настройка",
+    "subtitle": "Настройте язык, страну и событие для начала.",
+    "stepLanguage": "Язык",
+    "stepCountry": "Страна",
+    "stepEvent": "Событие",
+    "selectLanguage": "Выберите язык",
+    "selectCountry": "Выберите страну",
+    "selectEvent": "Выберите событие",
+    "continue": "Продолжить",
+    "complete": "Завершить",
+    "error": "Пожалуйста, заполните все три шага для продолжения",
+    "saving": "Сохранение...",
+    "success": "Настройки успешно сохранены!",
+    "back": "Назад"
+  },
+  "budgetIdea": {
+    "title": "Идея бюджета",
+    "loading": "Загрузка идей бюджета...",
+    "buttons": {
+      "save": "Сохранить идею бюджета",
+      "saving": "Сохранение...",
+      "apply": "Применить к бюджету"
+    },
+    "form": {
+      "eventDate": "Дата события",
+      "currency": "Валюта",
+      "contingency": "Непредвиденные расходы (%)",
+      "compact": "Компактный вид (более плотные строки)",
+      "syncedNote": "Синхронизировано с основной панелью."
+    },
+    "summary": {
+      "plannedTotal": "Всего запланировано:",
+      "contingency": "Непредвиденные:",
+      "totalWithContingency": "Всего с непредвиденными:"
+    },
+    "panel": {
+      "available": "Доступно:",
+      "planned": "Запланировано:",
+      "residual": "Остаток:",
+      "budget": "Бюджет"
+    },
+    "totalCard": {
+      "available": "Доступно:",
+      "planned": "Запланировано:",
+      "residual": "Остаток:",
+      "extraContributions": "Другие взносы"
+    },
+    "table": {
+      "category": "Категория",
+      "subcategory": "Подкатегория",
+      "amountCurrency": "Сумма ({currency})",
+      "spendType": "Тип расхода",
+      "supplier": "Поставщик",
+      "notes": "Заметки"
+    },
+    "messages": {
+      "loadError": "Ошибка загрузки идеи бюджета.",
+      "saveError": "Ошибка сохранения идеи бюджета.",
+      "applyDone": "Применено: создано или обновлено {count} элементов.",
+      "applyError": "Ошибка применения к бюджету."
+    }
+  },
   "loading": "Загрузка…",
   "comingSoon": "Скоро",
   "budgetPage": {
