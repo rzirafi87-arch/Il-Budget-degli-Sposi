@@ -13,7 +13,7 @@ Questo file tiene traccia dello stato di avanzamento delle traduzioni per ogni e
 ### Matrimonio – Stato dettagliato per pagina
 
 | Pagina                | Italiano | Inglese | Francese | Portoghese | Spagnolo | Tedesco | Arabo | Cinese | Giapponese | Indonesiano |
-|-----------------------|:--------:|:-------:|:--------:|:----------:|:--------:|:-------:|:-----:|:------:|:----------:|:-----------:|
+| --------------------- | :------: | :-----: | :------: | :--------: | :------: | :-----: | :---: | :----: | :--------: | :---------: |
 | Dashboard             |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
 | Timeline              |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
 | Onboarding            |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
@@ -25,7 +25,7 @@ Questo file tiene traccia dello stato di avanzamento delle traduzioni per ogni e
 | Fornitori             |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
 | Location              |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
 | Chiese                |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| Partecipazione/Invito |    ⬜️    |   ⬜️   |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Partecipazione/Invito |   ⬜️    |   ⬜️   |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
 
 > Nota: La pagina "Partecipazione/Invito" sarà implementata in seguito anche in italiano.
 
