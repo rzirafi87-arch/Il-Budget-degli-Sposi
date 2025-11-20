@@ -10,9 +10,23 @@ Questo file tiene traccia dello stato di avanzamento delle traduzioni per ogni e
 
 ## Tabella Avanzamento
 
-| Evento     | Italiano | Inglese | Francese | Portoghese | Spagnolo | Tedesco | Arabo | Cinese | Giapponese | Indonesiano |
-| ---------- | :------: | :-----: | :------: | :--------: | :------: | :-----: | :---: | :----: | :--------: | :---------: |
-| Matrimonio |    ✅    |   🟡    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
-| ...        |          |         |          |            |          |         |       |        |            |             |
+### Matrimonio – Stato dettagliato per pagina
 
-> Aggiorna questa tabella man mano che completi la revisione di ciascuna lingua per ogni evento.
+| Pagina                | Italiano | Inglese | Francese | Portoghese | Spagnolo | Tedesco | Arabo | Cinese | Giapponese | Indonesiano |
+|-----------------------|:--------:|:-------:|:--------:|:----------:|:--------:|:-------:|:-----:|:------:|:----------:|:-----------:|
+| Dashboard             |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Timeline              |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Onboarding            |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Wizard                |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Budget                |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Idea di Budget        |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Spese                 |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Entrate               |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Fornitori             |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Location              |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Chiese                |    ✅    |   ✅    |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+| Partecipazione/Invito |    ⬜️    |   ⬜️   |   ⬜️    |    ⬜️     |   ⬜️    |   ⬜️   |  ⬜️  |  ⬜️   |    ⬜️     |     ⬜️     |
+
+> Nota: La pagina "Partecipazione/Invito" sarà implementata in seguito anche in italiano.
+
+> Aggiorna questa tabella man mano che completi la revisione di ciascuna lingua per ogni evento/pagina.
