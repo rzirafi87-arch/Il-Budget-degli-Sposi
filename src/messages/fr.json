@@ -99,6 +99,31 @@
   "auth": "Connexion",
   "chat": "Discutez avec nous sur WhatsApp",
   "settings": "Paramètres",
+  "onboarding": {
+    "selectLanguageTitle": "Choisissez la langue",
+    "selectLanguageDesc": "Sélectionnez la langue préférée pour continuer.",
+    "selectCountryTitle": "Choisissez le pays",
+    "selectCountryDesc": "Sélectionnez le pays pour personnaliser le contenu.",
+    "selectEventTypeTitle": "Choisissez le type d'événement",
+    "nextBtn": "Suivant",
+    "creatingEvent": "Création de l'événement en cours..."
+  },
+  "wizard": {
+    "title": "Configuration rapide",
+    "subtitle": "Configurez la langue, le pays et l'événement pour commencer.",
+    "stepLanguage": "Langue",
+    "stepCountry": "Pays",
+    "stepEvent": "Événement",
+    "selectLanguage": "Sélectionnez la langue",
+    "selectCountry": "Sélectionnez le pays",
+    "selectEvent": "Sélectionnez l'événement",
+    "continue": "Continuer",
+    "complete": "Terminer",
+    "error": "Veuillez compléter les trois étapes pour continuer",
+    "saving": "Enregistrement...",
+    "success": "Configuration enregistrée avec succès!",
+    "back": "Retour"
+  },
   "loading": "Chargement…",
   "comingSoon": "Bientôt disponible",
   "budgetPage": {
