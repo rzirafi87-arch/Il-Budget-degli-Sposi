@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { requireUser } from "@/lib/apiAuth";
 
 const EVENT_KEY = "birthday";
 
 export async function GET(req: NextRequest) {
-  const supabaseAdmin = getSupabaseAdmin();
-  const userId = req.nextUrl.searchParams.get("userId");
-  if (!userId) {
-    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(req));
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const supabaseAdmin = getSupabaseAdmin();
 
   const { data, error } = await supabaseAdmin
     .from("budgets")
