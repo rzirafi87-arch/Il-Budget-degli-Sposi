@@ -11,7 +11,7 @@ jest.mock("@/lib/supabaseServer", () => ({
   getServiceClient: () => mockGetServiceClient(),
 }));
 
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { POST as postPlaces } from "@/app/api/sync/places/route";
 import { POST as postWikidata } from "@/app/api/sync/wikidata/route";
 import { POST as postOsm } from "@/app/api/sync/osm/route";
@@ -24,15 +24,14 @@ const handlers: Array<[string, SyncHandler]> = [
   ["osm", postOsm],
 ];
 
-function request(body: Record<string, unknown>) {
-  return new NextRequest("http://localhost/api/sync/test", {
-    method: "POST",
-    headers: {
+function request(body: Record<string, unknown>): NextRequest {
+  return {
+    headers: new Headers({
       authorization: "Bearer test-admin-secret",
       "content-type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+    }),
+    json: jest.fn().mockResolvedValue(body),
+  } as unknown as NextRequest;
 }
 
 describe("protected sync routes", () => {
