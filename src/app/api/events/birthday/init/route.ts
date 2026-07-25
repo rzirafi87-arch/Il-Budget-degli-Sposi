@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BIRTHDAY_META } from "@/features/events/birthday/config";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 export async function POST(req: NextRequest) {
+  const supabaseAdmin = getSupabaseAdmin();
   const body = await req.json().catch(() => null);
   const userId = body?.userId as string | undefined;
   const currency = body?.currency as string | undefined;
