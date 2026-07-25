@@ -10,7 +10,17 @@
 
 import "dotenv/config";
 
-const API_BASE = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const API_BASE = "http://localhost:3000";
+const ADMIN_SYNC_SECRET = process.env.ADMIN_SYNC_SECRET;
+
+if (!ADMIN_SYNC_SECRET) {
+  throw new Error("ADMIN_SYNC_SECRET is required");
+}
+
+const syncHeaders = {
+  authorization: `Bearer ${ADMIN_SYNC_SECRET}`,
+  "content-type": "application/json",
+};
 
 const REGIONS = [
   "Sicilia",
@@ -85,14 +95,16 @@ const stats = {
  * Sync Google Places for one region and type
  */
 async function syncGooglePlaces(region, type, force = false) {
-  const url = `${API_BASE}/api/sync/places?region=${encodeURIComponent(
-    region
-  )}&type=${type}&force=${force}`;
+  const url = `${API_BASE}/api/sync/places`;
 
   console.log(`\n🔍 Syncing Google Places: ${type} in ${region}...`);
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: syncHeaders,
+      body: JSON.stringify({ region, type, force }),
+    });
     const result = await response.json();
 
     if (result.success) {
@@ -121,14 +133,16 @@ async function syncGooglePlaces(region, type, force = false) {
  * Sync OpenStreetMap for one province and type
  */
 async function syncOSM(area, type, region) {
-  const url = `${API_BASE}/api/sync/osm?area=${encodeURIComponent(
-    area
-  )}&type=${type}&region=${encodeURIComponent(region)}`;
+  const url = `${API_BASE}/api/sync/osm`;
 
   console.log(`\n🗺️  Syncing OSM: ${type} in ${area}...`);
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: syncHeaders,
+      body: JSON.stringify({ area, type, region }),
+    });
     const result = await response.json();
 
     if (result.success) {
@@ -296,9 +310,9 @@ Examples:
   node scripts/sync-all-vendors.mjs --region=Sicilia,Lombardia --osm-only
 
 Environment:
-  NEXT_PUBLIC_APP_URL   Base URL for API (default: http://localhost:3000)
   GOOGLE_PLACES_API_KEY Google API key (required for --google-only)
   SUPABASE_SERVICE_ROLE Supabase service role key (required)
+  ADMIN_SYNC_SECRET     Bearer secret required by local sync endpoints
   `);
   process.exit(0);
 }

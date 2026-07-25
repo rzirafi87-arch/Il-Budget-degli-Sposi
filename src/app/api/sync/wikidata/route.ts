@@ -2,6 +2,7 @@
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdminSync } from "@/lib/adminSyncAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 /**
@@ -237,11 +238,16 @@ async function syncWikidataVenues(force: boolean = false): Promise<{ count: numb
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const force = searchParams.get("force") === "true";
+    requireAdminSync(req);
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
+  try {
+    const body = (await req.json()) as Record<string, unknown>;
+    const force = body.force === true;
     const result = await syncWikidataVenues(force);
 
     return NextResponse.json({

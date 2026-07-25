@@ -2,6 +2,7 @@
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdminSync } from "@/lib/adminSyncAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 /**
@@ -42,6 +43,31 @@ const OSM_QUERIES = {
     out center tags;
   `,
 };
+
+const ALLOWED_REGIONS = new Set([
+  "Abruzzo",
+  "Basilicata",
+  "Calabria",
+  "Campania",
+  "Emilia-Romagna",
+  "Friuli-Venezia Giulia",
+  "Lazio",
+  "Liguria",
+  "Lombardia",
+  "Marche",
+  "Molise",
+  "Piemonte",
+  "Puglia",
+  "Sardegna",
+  "Sicilia",
+  "Toscana",
+  "Trentino-Alto Adige",
+  "Umbria",
+  "Valle d'Aosta",
+  "Veneto",
+]);
+
+const SAFE_AREA_PATTERN = /^[\p{L}' -]{2,80}$/u;
 
 interface OSMElement {
   type: "node" | "way" | "relation";
@@ -300,30 +326,38 @@ async function syncOSMData(
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const area = searchParams.get("area");
-    const type = searchParams.get("type");
-    const region = searchParams.get("region");
+    requireAdminSync(req);
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-    if (!area || !type) {
-      return NextResponse.json(
-        { error: "Missing required parameters: area, type" },
-        { status: 400 }
-      );
+  try {
+    const body = (await req.json()) as Record<string, unknown>;
+    const area = typeof body.area === "string" ? body.area.trim() : "";
+    const type = typeof body.type === "string" ? body.type : "";
+    const region = typeof body.region === "string" ? body.region : "";
+
+    if (!SAFE_AREA_PATTERN.test(area)) {
+      return NextResponse.json({ error: "Invalid area" }, { status: 400 });
     }
 
-    // Try to infer region from area if not provided
-    const inferredRegion = region || area.split(" ").pop() || "Unknown";
+    if (!Object.prototype.hasOwnProperty.call(OSM_QUERIES, type)) {
+      return NextResponse.json({ error: "Invalid type" }, { status: 400 });
+    }
 
-    const result = await syncOSMData(area, type, inferredRegion);
+    if (!ALLOWED_REGIONS.has(region)) {
+      return NextResponse.json({ error: "Invalid region" }, { status: 400 });
+    }
+
+    const result = await syncOSMData(area, type, region);
 
     return NextResponse.json({
       success: true,
       area,
       type,
-      region: inferredRegion,
+      region,
       count: result.count,
       newCount: result.newCount,
       message: `Synced ${result.count} vendors (${result.newCount} new) for ${type} in ${area}`,
