@@ -8,30 +8,30 @@ let content = fs.readFileSync(filePath, 'utf8');
 // Pattern di sostituzione per emoji corrotti
 // Ogni riga: [pattern corrotto, emoji corretto]
 const replacements = [
-  ['ðŸ'', '💍'],  // Ring
-  ['ðŸ'€', '👀'],  // Eyes
-  ['ðŸ'¡', '💡'],  // Light bulb
-  ['ðŸ'°', '💰'],  // Money bag
-  ['ðŸ'µ', '💵'],  // Dollar bill
-  ['ðŸ¦', '🏦'],  // Bank
-  ['ðŸ''', '💑'],  // Couple with heart
-  ['ðŸ'•', '💕'],  // Two hearts
-  ['ðŸ ', '🏠'],  // House
-  ['ðŸŒŸ', '🌟'],  // Glowing star
-  ['ðŸ'ª', '�'],  // Flexed biceps
-  ['ðŸ"', '📋'],  // Clipboard
-  ['ðŸ¢', '🏢'],  // Office building
-  ['ðŸ"–', '�'],  // Open book
-  ['ðŸ"', '📝'],  // Memo
-  ['ðŸ"Š', '📊'],  // Bar chart
-  ['ðŸ'¥', '👥'],  // Busts in silhouette
-  ['ðŸ'¾', '💾'],  // Floppy disk
-  ['ðŸ"'', '🔒'],  // Lock
-  ['ðŸ"¢', '📢'],  // Loudspeaker
-  ['ðŸ"‹', '📋'],  // Clipboard
-  ['ðŸ"˜', '📘'],  // Blue book
-  ['ðŸ¤µ', '🤵'],  // Man in tuxedo
-  ['â€"', '—'],   // Em dash
+  [`ðŸ'`, '💍'],  // Ring
+  [`ðŸ'€`, '👀'],  // Eyes
+  [`ðŸ'¡`, '💡'],  // Light bulb
+  [`ðŸ'°`, '💰'],  // Money bag
+  [`ðŸ'µ`, '💵'],  // Dollar bill
+  [`ðŸ¦`, '🏦'],  // Bank
+  [`ðŸ''`, '💑'],  // Couple with heart
+  [`ðŸ'•`, '💕'],  // Two hearts
+  [`ðŸ `, '🏠'],  // House
+  [`ðŸŒŸ`, '🌟'],  // Glowing star
+  [`ðŸ'ª`, '�'],  // Flexed biceps
+  [`ðŸ"`, '📋'],  // Clipboard
+  [`ðŸ¢`, '🏢'],  // Office building
+  [`ðŸ"–`, '�'],  // Open book
+  [`ðŸ"`, '📝'],  // Memo
+  [`ðŸ"Š`, '📊'],  // Bar chart
+  [`ðŸ'¥`, '👥'],  // Busts in silhouette
+  [`ðŸ'¾`, '💾'],  // Floppy disk
+  [`ðŸ"'`, '🔒'],  // Lock
+  [`ðŸ"¢`, '📢'],  // Loudspeaker
+  [`ðŸ"‹`, '📋'],  // Clipboard
+  [`ðŸ"˜`, '📘'],  // Blue book
+  [`ðŸ¤µ`, '🤵'],  // Man in tuxedo
+  [`â€"`, '—'],   // Em dash
 ];
 
 // Contatore per le sostituzioni

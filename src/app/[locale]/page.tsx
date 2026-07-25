@@ -1,10 +1,12 @@
-﻿import { redirect } from "next/navigation";
+import { buildLocalizedPath } from "@/lib/localizedPath";
+import { redirect } from "next/navigation";
 
 type Props = {
-  params: { locale: string };
+  params: Promise<{ locale?: string }>;
 };
 
-export default function LocaleHome({ params }: Props) {
+export default async function LocaleHome({ params }: Props) {
+  const { locale } = await params;
   // Quando apri /it, /en, ecc. → vai al wizard
-  redirect(`/${params.locale}/wizard`);
+  redirect(buildLocalizedPath(locale, "/wizard"));
 }

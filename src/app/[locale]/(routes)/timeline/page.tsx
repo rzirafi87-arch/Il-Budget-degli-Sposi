@@ -12,6 +12,7 @@ import {
 import { getUserCountrySafe } from "@/constants/geo";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 const supabase = getBrowserClient();
 
@@ -280,12 +281,12 @@ export default function TimelinePage() {
             {eventConfig.emoji} {eventConfig.timelineTitle}
           </h1>
         </div>
-        <a
+        <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
         >
           Torna alla dashboard
-        </a>
+        </Link>
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">

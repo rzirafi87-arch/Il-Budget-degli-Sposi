@@ -2,14 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
+import { useLocale } from "next-intl";
 
 import { BIRTHDAY_META } from "@/features/events/birthday/config";
 import { ENGAGEMENT_PARTY_META } from "@/features/events/engagement-party/config";
 import { BABY_SHOWER_META } from "@/features/events/baby-shower/config";
-
-type Props = {
-  params: { locale: string };
-};
+import { buildLocalizedPath } from "@/lib/localizedPath";
 
 // Tutti gli eventi disponibili nel wizard (per ora questi 3)
 const EVENT_OPTIONS = [
@@ -26,8 +24,9 @@ const COUNTRY_OPTIONS = [
   // { code: "US", label: "Stati Uniti" },
 ];
 
-export default function Page({ params }: Props) {
+export default function Page() {
   const router = useRouter();
+  const locale = useLocale();
   const [country, setCountry] = useState("IT");
   const [eventKey, setEventKey] = useState<string>(EVENT_OPTIONS[0].key);
 
@@ -35,7 +34,7 @@ export default function Page({ params }: Props) {
     e.preventDefault();
     // Qui decidi dove portare l’utente dopo la scelta
     // Esempio: /it/baby-shower, /it/birthday, ecc.
-    router.push(`/${params.locale}/${eventKey}`);
+    router.push(buildLocalizedPath(locale, `/${eventKey}`));
   };
 
   return (
@@ -57,7 +56,7 @@ export default function Page({ params }: Props) {
           <label className="text-sm font-medium">Lingua</label>
           <input
             className="w-full border rounded-lg px-3 py-2 bg-gray-50"
-            value={params.locale?.toUpperCase?.() || "IT"}
+            value={locale.toUpperCase() || "IT"}
             disabled
           />
         </div>

@@ -224,7 +224,7 @@ export default function DocumentiPage() {
                   </div>
                   
                   {doc.notes && (
-                    <p className="text-sm text-gray-600 mt-2 italic">"{doc.notes}"</p>
+                    <p className="text-sm text-gray-600 mt-2 italic">&quot;{doc.notes}&quot;</p>
                   )}
                 </div>
               </div>

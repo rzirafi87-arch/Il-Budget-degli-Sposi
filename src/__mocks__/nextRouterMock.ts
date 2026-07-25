@@ -1,5 +1,21 @@
 // Simple Next.js router mock for testing
-export function createMockRouter(overrides: Partial<any> = {}) {
+type MockRouter = {
+  basePath: string;
+  pathname: string;
+  route: string;
+  asPath: string;
+  query: Record<string, string | string[]>;
+  push: jest.Mock;
+  replace: jest.Mock;
+  reload: jest.Mock;
+  back: jest.Mock;
+  prefetch: jest.Mock;
+  beforePopState: jest.Mock;
+  events: { on: jest.Mock; off: jest.Mock; emit: jest.Mock };
+  isFallback: boolean;
+};
+
+export function createMockRouter(overrides: Partial<MockRouter> = {}): MockRouter {
   return {
     basePath: "",
     pathname: "/",

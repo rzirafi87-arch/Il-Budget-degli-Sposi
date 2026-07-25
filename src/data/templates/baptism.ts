@@ -1,3 +1,5 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 // Baptism (Battesimo) template for Italy
 // Provides: event fields schema, categories/subcategories, budget guide, vendors, checklist, notes
 // And a seed helper compatible with Supabase JS client
@@ -240,7 +242,7 @@ export function getBaptismComplianceNotes(country?: string) {
 // Usage:
 //   import { createBaptismSeed } from '@/data/templates/baptism';
 //   await createBaptismSeed(db, eventId);
-export async function createBaptismSeed(db: any, eventId: string, country?: string) {
+export async function createBaptismSeed(db: SupabaseClient, eventId: string, country?: string) {
   const template = getBaptismTemplate(country);
   for (const cat of template) {
     // Find or create category

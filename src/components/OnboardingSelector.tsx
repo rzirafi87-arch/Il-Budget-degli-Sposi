@@ -20,16 +20,19 @@ export default function OnboardingSelector() {
   const [selectedEvent, setSelectedEvent] = useState("wedding");
 
   useEffect(() => {
-    try {
-      const storedLang = localStorage.getItem("language");
-      const storedCountry = localStorage.getItem("country");
-      const storedEvent = localStorage.getItem("eventType");
-      if (storedLang) setSelectedLanguage(storedLang);
-      if (storedCountry) setSelectedCountry(storedCountry);
-      if (storedEvent) setSelectedEvent(storedEvent);
-    } catch {
-      // ignore
-    }
+    const timer = window.setTimeout(() => {
+      try {
+        const storedLang = localStorage.getItem("language");
+        const storedCountry = localStorage.getItem("country");
+        const storedEvent = localStorage.getItem("eventType");
+        if (storedLang) setSelectedLanguage(storedLang);
+        if (storedCountry) setSelectedCountry(storedCountry);
+        if (storedEvent) setSelectedEvent(storedEvent);
+      } catch {
+        // ignore
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const handleLanguageChange = (langCode: string) => {

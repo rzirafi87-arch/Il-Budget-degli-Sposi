@@ -54,18 +54,23 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
 
   useEffect(() => {
     // Recupera valori client-only dopo mount.
-    try {
-      const cookieEvt = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
-      const lsEvt = localStorage.getItem("eventType");
-      setEventType(cookieEvt || lsEvt || "wedding");
-    } catch {}
-    setMounted(true);
+    const timer = window.setTimeout(() => {
+      try {
+        const cookieEvt = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+        const lsEvt = localStorage.getItem("eventType");
+        setEventType(cookieEvt || lsEvt || "wedding");
+      } catch {}
+      setMounted(true);
+    }, 0);
 
     const onStorage = (e: StorageEvent) => {
       if (e.key === "eventType") setEventType(e.newValue);
     };
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("storage", onStorage);
+    };
   }, []);
 
   useEffect(() => {

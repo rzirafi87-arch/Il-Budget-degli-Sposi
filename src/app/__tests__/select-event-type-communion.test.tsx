@@ -17,10 +17,10 @@ beforeAll(() => {
 
 // Mock Zod (or the schema library) to prevent "t.optional is not a function" error in test
 jest.mock("zod", () => {
-  const actual = jest.requireActual("zod");
+  const actual = jest.requireActual<typeof import("zod")>("zod");
   return {
     ...actual,
-    optional: (schema: any) => schema,
+    optional: <T,>(schema: T): T => schema,
   };
 });
 
