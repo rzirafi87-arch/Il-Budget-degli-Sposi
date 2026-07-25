@@ -44,13 +44,13 @@ describe("protected sync routes", () => {
   it.each(handlers)(
     "rejects an unauthorized %s sync before accessing Supabase",
     async (_name, handler) => {
-    mockRequireAdminSync.mockImplementation(() => {
-      throw new Error("Unauthorized");
-    });
+      mockRequireAdminSync.mockImplementation(() => {
+        throw new Error("Unauthorized");
+      });
 
-    const response = await handler(request({}));
+      const response = await handler(request({}));
 
-    expect(response.status).toBe(401);
+      expect(response.status).toBe(401);
       expect(mockGetServiceClient).not.toHaveBeenCalled();
     },
   );
