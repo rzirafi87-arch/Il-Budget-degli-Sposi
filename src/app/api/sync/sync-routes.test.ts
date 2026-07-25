@@ -16,6 +16,14 @@ import { POST as postPlaces } from "@/app/api/sync/places/route";
 import { POST as postWikidata } from "@/app/api/sync/wikidata/route";
 import { POST as postOsm } from "@/app/api/sync/osm/route";
 
+type SyncHandler = (request: NextRequest) => Promise<Response>;
+
+const handlers: Array<[string, SyncHandler]> = [
+  ["places", postPlaces],
+  ["wikidata", postWikidata],
+  ["osm", postOsm],
+];
+
 function request(body: Record<string, unknown>) {
   return new NextRequest("http://localhost/api/sync/test", {
     method: "POST",
@@ -33,11 +41,9 @@ describe("protected sync routes", () => {
     mockRequireAdminSync.mockImplementation(() => undefined);
   });
 
-  it.each([
-    ["places", postPlaces],
-    ["wikidata", postWikidata],
-    ["osm", postOsm],
-  ])("rejects an unauthorized %s sync before accessing Supabase", async (_name, handler) => {
+  it.each(handlers)(
+    "rejects an unauthorized %s sync before accessing Supabase",
+    async (_name, handler) => {
     mockRequireAdminSync.mockImplementation(() => {
       throw new Error("Unauthorized");
     });
@@ -45,8 +51,9 @@ describe("protected sync routes", () => {
     const response = await handler(request({}));
 
     expect(response.status).toBe(401);
-    expect(mockGetServiceClient).not.toHaveBeenCalled();
-  });
+      expect(mockGetServiceClient).not.toHaveBeenCalled();
+    },
+  );
 
   it("rejects a Google Places region outside the allowlist", async () => {
     const response = await postPlaces(
