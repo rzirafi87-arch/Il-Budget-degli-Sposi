@@ -9,6 +9,7 @@ import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import Page from "@/components/layout/Page";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { buildLocalizedPath } from "@/lib/localizedPath";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
@@ -51,8 +52,8 @@ export default function DashboardPage() {
     if (typeof window !== "undefined" && clientReady) {
       if (!userLang || !userCountry || !normalizedEventType) {
         const parts = pathname.split("/").filter(Boolean);
-        const locale = parts[0] || "it";
-        router.replace(`/${locale}/wizard`);
+        const pathLocale = parts[0];
+        router.replace(buildLocalizedPath(pathLocale, "/wizard"));
         return;
       }
     }
