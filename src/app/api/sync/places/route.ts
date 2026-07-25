@@ -1,6 +1,7 @@
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdminSync } from "@/lib/adminSyncAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 /**
@@ -372,18 +373,25 @@ async function syncRegionType(
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const region = searchParams.get("region");
-    const type = searchParams.get("type");
-    const force = searchParams.get("force") === "true";
+    requireAdminSync(req);
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-    if (!region || !type) {
-      return NextResponse.json(
-        { error: "Missing required parameters: region, type" },
-        { status: 400 }
-      );
+  try {
+    const body = (await req.json()) as Record<string, unknown>;
+    const region = typeof body.region === "string" ? body.region : "";
+    const type = typeof body.type === "string" ? body.type : "";
+    const force = body.force === true;
+
+    if (!Object.prototype.hasOwnProperty.call(REGION_COORDS, region)) {
+      return NextResponse.json({ error: "Invalid region" }, { status: 400 });
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(TYPE_CONFIG, type)) {
+      return NextResponse.json({ error: "Invalid type" }, { status: 400 });
     }
 
     const result = await syncRegionType(region, type, force);
@@ -399,9 +407,6 @@ export async function GET(req: NextRequest) {
   } catch (error: unknown) {
     const errorMsg = error instanceof Error ? error.message : "Sync failed";
     console.error("Sync error:", error);
-    return NextResponse.json(
-      { error: errorMsg },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
