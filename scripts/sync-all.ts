@@ -3,31 +3,38 @@
 
 import fetch from "node-fetch";
 
-const endpoints = [
-  // Google Places: diversi tipi in Sicilia
-  "/api/sync/places?region=Sicilia&type=location",
-  "/api/sync/places?region=Sicilia&type=church",
-  "/api/sync/places?region=Sicilia&type=photographer",
-  "/api/sync/places?region=Sicilia&type=florist",
-  "/api/sync/places?region=Sicilia&type=planner",
-  
-  // OSM: church e location in Sicilia
-  "/api/sync/osm?area=Sicilia&type=church",
-  "/api/sync/osm?area=Sicilia&type=location",
-  
-  // Wikidata: ville storiche
-  "/api/sync/wikidata"
+const adminSecret = process.env.ADMIN_SYNC_SECRET;
+if (!adminSecret) {
+  throw new Error("ADMIN_SYNC_SECRET is required");
+}
+
+const syncs = [
+  { path: "/api/sync/places", body: { region: "Sicilia", type: "location" } },
+  { path: "/api/sync/places", body: { region: "Sicilia", type: "church" } },
+  { path: "/api/sync/places", body: { region: "Sicilia", type: "photographer" } },
+  { path: "/api/sync/places", body: { region: "Sicilia", type: "florist" } },
+  { path: "/api/sync/places", body: { region: "Sicilia", type: "planner" } },
+  { path: "/api/sync/osm", body: { area: "Sicilia", type: "church", region: "Sicilia" } },
+  { path: "/api/sync/osm", body: { area: "Sicilia", type: "location", region: "Sicilia" } },
+  { path: "/api/sync/wikidata", body: {} },
 ];
 
 async function syncAll() {
-  for (const ep of endpoints) {
+  for (const sync of syncs) {
     try {
-      console.log(`Chiamata a ${ep}...`);
-      const res = await fetch(`http://localhost:3000${ep}`, { method: "POST" });
+      console.log(`Chiamata a ${sync.path}...`);
+      const res = await fetch(`http://localhost:3000${sync.path}`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${adminSecret}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(sync.body),
+      });
       const json = await res.json();
-      console.log(`Risposta da ${ep}:`, JSON.stringify(json, null, 2));
-    } catch (e) {
-      console.error(`Errore sync ${ep}:`, e);
+      console.log(`Risposta da ${sync.path}:`, JSON.stringify(json, null, 2));
+    } catch (error) {
+      console.error(`Errore sync ${sync.path}:`, error);
     }
   }
   console.log("Sync completato.");
