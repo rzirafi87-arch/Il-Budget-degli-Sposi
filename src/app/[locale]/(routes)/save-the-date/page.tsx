@@ -1,6 +1,6 @@
 ﻿"use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
@@ -50,7 +50,7 @@ const templateStyles = [
 ];
 
 export default function PartecipazionePage() {
-  const router = useRouter();
+  const supabase = getBrowserClient();
   const country = getUserCountrySafe();
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -79,7 +79,13 @@ export default function PartecipazionePage() {
   async function loadConfig() {
     setLoading(true);
     try {
-      const res = await fetch("/api/wedding-card");
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) return;
+
+      const res = await fetch("/api/wedding-card", {
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
       if (res.ok) {
         const data = await res.json();
         if (data.config) setConfig(data.config);
@@ -94,9 +100,19 @@ export default function PartecipazionePage() {
   async function handleSave() {
     setLoading(true);
     try {
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) {
+        alert("Accedi per salvare la configurazione");
+        return;
+      }
+
       const res = await fetch("/api/wedding-card", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
         body: JSON.stringify(config),
       });
       if (res.ok) alert("Configurazione salvata con successo!");
