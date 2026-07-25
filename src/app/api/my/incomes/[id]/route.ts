@@ -9,16 +9,45 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireUser(req);
+    const { userId } = await requireUser(req);
     const db = getServiceClient();
 
     const { id } = await params;
 
-    // Elimina l'entrata (RLS policies si occuperanno della verifica proprietà)
+    const { data: income, error: incomeError } = await db
+      .from("incomes")
+      .select("event_id")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (incomeError) {
+      logger.error("INCOMES DELETE lookup error", { error: incomeError });
+      return NextResponse.json({ error: incomeError.message }, { status: 500 });
+    }
+    if (!income?.event_id) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    const { data: ownedEvent, error: eventError } = await db
+      .from("events")
+      .select("id")
+      .eq("id", income.event_id)
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (eventError) {
+      logger.error("INCOMES DELETE ownership error", { error: eventError });
+      return NextResponse.json({ error: eventError.message }, { status: 500 });
+    }
+    if (!ownedEvent) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
     const { error: deleteError } = await db
       .from("incomes")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .eq("event_id", ownedEvent.id);
 
     if (deleteError) {
       logger.error("INCOMES DELETE error", { error: deleteError });
