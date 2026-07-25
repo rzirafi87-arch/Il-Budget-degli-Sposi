@@ -14,6 +14,28 @@ type ExpenseRow = {
   notes: string;
 };
 
+type DashboardExpense = {
+  id: string;
+  amount: number | null;
+  notes: string | null;
+  supplier: string | null;
+  spend_type: string | null;
+  subcategory_id: string;
+};
+
+type ExpenseSummary = {
+  id: string;
+  amount: number;
+  notes: string;
+  supplier: string;
+  spendType: string;
+};
+
+type DashboardCategory = {
+  name: string;
+  subcategories: Array<{ id: string; name: string }> | null;
+};
+
 // GET /api/my/birthday-dashboard
 // Returns all categories and subcategories for birthday event type
 export async function GET(req: NextRequest) {
@@ -149,9 +171,9 @@ export async function GET(req: NextRequest) {
     }
 
     // Build expense map by subcategory
-    const expenseMap = new Map<string, any>();
+    const expenseMap = new Map<string, ExpenseSummary[]>();
     if (expenses) {
-      expenses.forEach((exp: any) => {
+      (expenses as DashboardExpense[]).forEach((exp) => {
         const subId = exp.subcategory_id;
         if (!expenseMap.has(subId)) {
           expenseMap.set(subId, []);
@@ -168,12 +190,12 @@ export async function GET(req: NextRequest) {
 
     // Build rows with all categories/subcategories
     const rows: ExpenseRow[] = [];
-    categories?.forEach((cat: any) => {
+    (categories as DashboardCategory[] | null)?.forEach((cat) => {
       const subs = cat.subcategories || [];
-      subs.forEach((sub: any) => {
+      subs.forEach((sub) => {
         const expensesForSub = expenseMap.get(sub.id) || [];
         if (expensesForSub.length > 0) {
-          expensesForSub.forEach((exp: any) => {
+          expensesForSub.forEach((exp) => {
             rows.push({
               id: exp.id,
               category: cat.name,

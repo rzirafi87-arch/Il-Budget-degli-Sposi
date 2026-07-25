@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-type GenericClient = SupabaseClient<any, any, any>;
+type GenericClient = SupabaseClient;
 
 export interface LocalizedSubcategory {
   id: string;

@@ -14,33 +14,33 @@ uniquePatterns.forEach(p => console.log(`  ${JSON.stringify(p)}`));
 
 // Mapping manuale dei pattern più comuni ai loro emoji corretti
 const emojiMap = {
-  'ðŸ'': '💍',   // Ring
-  'ðŸ'€': '👀',   // Eyes  
-  'ðŸ'¡': '💡',   // Bulb
-  'ðŸ'°': '💰',   // Money bag
-  'ðŸ'µ': '💵',   // Dollar
-  'ðŸ¦': '🏦',   // Bank
-  'ðŸ''': '💑',   // Couple
-  'ðŸ'•': '💕',   // Hearts
-  'ðŸ ': '🏠',   // House
-  'ðŸŒŸ': '🌟',   // Star
-  'ðŸ'ª': '💪',   // Muscle
-  'ðŸ"': '�',   // Clipboard
-  'ðŸ¢': '🏢',   // Building
-  'ðŸ"–': '📖',   // Book
-  'ðŸ"': '�',   // Memo
-  'ðŸ"Š': '📊',   // Chart
-  'ðŸ'¥': '👥',   // People
-  'ðŸ'¾': '💾',   // Disk
-  'ðŸ"'': '🔒',   // Lock
-  'ðŸ"¢': '📢',   // Loudspeaker
-  'ðŸ"‹': '📋',   // Clipboard
-  'ðŸ"˜': '�',   // Blue book
-  'ðŸ¤µ': '🤵',   // Tuxedo
-  'ðŸ"¸': '📸',   // Camera
-  'ðŸ"²': '📲',   // Phone
-  'ðŸŒ': '🌐',   // Globe
-  'ðŸ"ž': '�',   // Telephone
+  [`ðŸ'`]: '💍',   // Ring
+  [`ðŸ'€`]: '👀',   // Eyes
+  [`ðŸ'¡`]: '💡',   // Bulb
+  [`ðŸ'°`]: '💰',   // Money bag
+  [`ðŸ'µ`]: '💵',   // Dollar
+  [`ðŸ¦`]: '🏦',   // Bank
+  [`ðŸ''`]: '💑',   // Couple
+  [`ðŸ'•`]: '💕',   // Hearts
+  [`ðŸ `]: '🏠',   // House
+  [`ðŸŒŸ`]: '🌟',   // Star
+  [`ðŸ'ª`]: '💪',   // Muscle
+  [`ðŸ"`]: '�',   // Clipboard
+  [`ðŸ¢`]: '🏢',   // Building
+  [`ðŸ"–`]: '📖',   // Book
+  [`ðŸ"`]: '�',   // Memo
+  [`ðŸ"Š`]: '📊',   // Chart
+  [`ðŸ'¥`]: '👥',   // People
+  [`ðŸ'¾`]: '💾',   // Disk
+  [`ðŸ"'`]: '🔒',   // Lock
+  [`ðŸ"¢`]: '📢',   // Loudspeaker
+  [`ðŸ"‹`]: '📋',   // Clipboard
+  [`ðŸ"˜`]: '�',   // Blue book
+  [`ðŸ¤µ`]: '🤵',   // Tuxedo
+  [`ðŸ"¸`]: '📸',   // Camera
+  [`ðŸ"²`]: '📲',   // Phone
+  [`ðŸŒ`]: '🌐',   // Globe
+  [`ðŸ"ž`]: '�',   // Telephone
 };
 
 let totalCount = 0;
@@ -49,7 +49,7 @@ console.log('\nSostituzioni:');
 for (const [corrupted, correct] of Object.entries(emojiMap)) {
   const regex = new RegExp(corrupted.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
   const count = (content.match(regex) || []).length;
-  
+
   if (count > 0) {
     content = content.replace(regex, correct);
     console.log(`✓ ${JSON.stringify(corrupted)} → ${correct} (${count}x)`);
