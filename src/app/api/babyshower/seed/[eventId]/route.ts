@@ -1,20 +1,43 @@
 export const runtime = "nodejs";
 import babyShowerTemplate from "@/data/templates/babyshower";
+import { requireUser } from "@/lib/apiAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ eventId: string }> }) {
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(req));
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { eventId } = await params;
   if (!eventId) return NextResponse.json({ error: "Missing eventId" }, { status: 400 });
 
   const db = getServiceClient();
+  const { data: event, error: eventError } = await db
+    .from("events")
+    .select("id")
+    .eq("id", eventId)
+    .eq("owner_id", userId)
+    .maybeSingle();
+
+  if (eventError) {
+    return NextResponse.json({ error: eventError.message }, { status: 500 });
+  }
+  if (!event) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  const verifiedEventId = event.id;
 
   // Upsert categories
   for (const [catIdx, cat] of babyShowerTemplate.categories.entries()) {
     const { data: catData, error: catError } = await db
       .from("categories")
       .upsert({
-        event_id: eventId,
+        event_id: verifiedEventId,
         name: cat.name,
         display_order: catIdx + 1,
         icon: cat.icon,
@@ -47,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ eve
       const { error: timelineError } = await db
         .from("timeline_items")
         .upsert({
-          event_id: eventId,
+          event_id: verifiedEventId,
           phase: phase.phase,
           title: item.title,
           description: item.description,
