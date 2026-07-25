@@ -7,6 +7,5 @@ type Props = {
 
 export default async function LocaleHome({ params }: Props) {
   const { locale } = await params;
-  // Quando apri /it, /en, ecc. → vai al wizard
-  redirect(buildLocalizedPath(locale, "/wizard"));
+  redirect(buildLocalizedPath(locale, "/select-language"));
 }
