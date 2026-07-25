@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BABY_SHOWER_META } from "@/features/events/baby-shower/config";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { requireUser } from "@/lib/apiAuth";
 
 export async function POST(req: NextRequest) {
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(req));
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const supabaseAdmin = getSupabaseAdmin();
   const body = await req.json().catch(() => null);
-  const userId = body?.userId as string | undefined;
   const currency = body?.currency as string | undefined;
-
-  if (!userId) {
-    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
-  }
 
   const { data: existingBudget, error: existingError } = await supabaseAdmin
     .from("budgets")
@@ -37,7 +40,7 @@ export async function POST(req: NextRequest) {
   const { data, error } = await supabaseAdmin
     .from("budgets")
     .insert(payload)
-    .select()
+    .select("*")
     .single();
 
   if (error) {
