@@ -44,7 +44,7 @@ jest.mock("@/data/templates/babyshower", () => ({
 type EventRow = { id: string; owner_id: string };
 type Filter = { column: string; value: unknown };
 type Operation = {
-  kind: "select" | "upsert" | "rpc";
+  kind: "select" | "insert" | "upsert" | "rpc";
   table?: string;
   columns?: string;
   filters?: Filter[];
@@ -81,7 +81,13 @@ function createQuery(table: string) {
       );
       return { data: row ? { id: verifiedEventId ?? row.id } : null, error: null };
     }
+    if (table === "event_types") {
+      return { data: { id: "event-type-1" }, error: null };
+    }
     if (table === "categories") {
+      if (record.kind === "select" && record.columns === "id, name") {
+        return { data: [], error: null };
+      }
       return { data: { id: nextCategoryId }, error: null };
     }
     return { data: null, error: null };
@@ -100,6 +106,11 @@ function createQuery(table: string) {
       record.kind = "upsert";
       record.values = values;
       record.options = options;
+      return query;
+    },
+    insert(values: Record<string, unknown>) {
+      record.kind = "insert";
+      record.values = values;
       return query;
     },
     async maybeSingle() {
@@ -136,6 +147,7 @@ jest.mock("@/lib/supabaseServer", () => ({
 function request(token?: string) {
   return {
     headers: new Headers(token ? { authorization: `Bearer ${token}` } : {}),
+    url: "https://example.test/api/seed/event-a?country=it",
   } as unknown as import("next/server").NextRequest;
 }
 
@@ -153,6 +165,26 @@ const routes = [
     name: "baby shower seed",
     load: () => import("./babyshower/seed/[eventId]/route"),
     seedKinds: ["upsert"],
+  },
+  {
+    name: "anniversary template seed",
+    load: () => import("./anniversary/seed/[eventId]/route"),
+    seedKinds: ["select", "insert"],
+  },
+  {
+    name: "graduation template seed",
+    load: () => import("./graduation/seed/[eventId]/route"),
+    seedKinds: ["select", "insert"],
+  },
+  {
+    name: "fiftieth birthday template seed",
+    load: () => import("./fifty/seed/[eventId]/route"),
+    seedKinds: ["select", "insert"],
+  },
+  {
+    name: "gender reveal template seed",
+    load: () => import("./gender-reveal/seed/[eventId]/route"),
+    seedKinds: ["select", "insert"],
   },
 ];
 
