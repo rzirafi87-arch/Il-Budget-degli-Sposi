@@ -1,33 +1,32 @@
 export const runtime = "nodejs";
 import { getGenderRevealTemplate } from "@/data/templates/genderreveal";
+import { requireUser } from "@/lib/apiAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
 type CtxEvent = { params: Promise<{ eventId: string }> };
 
 export async function POST(req: NextRequest, ctx: CtxEvent) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-  if (!jwt) {
-    return NextResponse.json({ ok: false, error: "Not authenticated" }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(req));
+  } catch {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const db = getServiceClient();
-  const { data: userData, error: userErr } = await db.auth.getUser(jwt);
-  if (userErr) return NextResponse.json({ ok: false, error: userErr.message }, { status: 401 });
-
-  const userId = userData.user.id;
   const { eventId } = await ctx.params;
   const country = new URL(req.url).searchParams.get("country") || "it";
 
   // Verify event ownership
   const { data: ev, error: evErr } = await db
     .from("events")
-    .select("id, user_id")
+    .select("id")
     .eq("id", eventId)
-    .single();
-  if (evErr || !ev || ev.user_id !== userId) {
-    return NextResponse.json({ ok: false, error: "Event not found or unauthorized" }, { status: 404 });
+    .eq("owner_id", userId)
+    .maybeSingle();
+  if (evErr || !ev) {
+    return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
   }
 
   // Ensure event type is gender-reveal
