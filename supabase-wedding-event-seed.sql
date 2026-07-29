@@ -11,6 +11,20 @@
 -- Esegui questo file in Supabase SQL Editor o tramite:
 -- node scripts/run-sql.mjs supabase-wedding-event-seed.sql
 
+BEGIN;
+
+CREATE TEMP TABLE seed_wedding_categories (
+  type_id bigint,
+  name text,
+  sort integer
+) ON COMMIT DROP;
+
+CREATE TEMP TABLE seed_wedding_subcategories (
+  category_id bigint,
+  name text,
+  sort integer
+) ON COMMIT DROP;
+
 -- =========================================
 -- 1. TIPO EVENTO
 -- =========================================
@@ -21,7 +35,7 @@ ON CONFLICT (slug) DO NOTHING;
 -- =========================================
 -- 2. CATEGORIE MATRIMONIO
 -- =========================================
-INSERT INTO categories (type_id, name, sort)
+INSERT INTO seed_wedding_categories (type_id, name, sort)
 SELECT (SELECT id FROM event_types WHERE slug='wedding'), 'Sposa', 1 UNION ALL
 SELECT (SELECT id FROM event_types WHERE slug='wedding'), 'Sposo', 2 UNION ALL
 SELECT (SELECT id FROM event_types WHERE slug='wedding'), 'Abiti & Accessori (altri)', 3 UNION ALL
@@ -42,10 +56,26 @@ SELECT (SELECT id FROM event_types WHERE slug='wedding'), 'Comunicazione & Media
 SELECT (SELECT id FROM event_types WHERE slug='wedding'), 'Extra & Contingenze', 18
 ON CONFLICT DO NOTHING;
 
+UPDATE categories AS category
+SET sort = seed.sort
+FROM seed_wedding_categories AS seed
+WHERE category.type_id = seed.type_id
+  AND category.name = seed.name;
+
+INSERT INTO categories (type_id, name, sort)
+SELECT seed.type_id, seed.name, seed.sort
+FROM seed_wedding_categories AS seed
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM categories AS category
+  WHERE category.type_id = seed.type_id
+    AND category.name = seed.name
+);
+
 -- =========================================
 -- 3. SOTTOCATEGORIE - SPOSA
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Sposa' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Abito sposa', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Sposa' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Scarpe sposa', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Sposa' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Accessori (velo, gioielli, ecc.)', 3 UNION ALL
@@ -59,7 +89,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 4. SOTTOCATEGORIE - SPOSO
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Sposo' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Abito sposo', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Sposo' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Scarpe sposo', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Sposo' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Accessori (cravatta, gemelli, ecc.)', 3 UNION ALL
@@ -71,7 +101,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 5. SOTTOCATEGORIE - ABITI & ACCESSORI (ALTRI)
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Abiti & Accessori (altri)' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Damigelle / testimoni', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Abiti & Accessori (altri)' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Paggetti / bambini', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Abiti & Accessori (altri)' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Genitori', 3 UNION ALL
@@ -82,7 +112,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 6. SOTTOCATEGORIE - CERIMONIA
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Cerimonia' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Chiesa / luogo cerimonia', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Cerimonia' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Celebrante / sacerdote', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Cerimonia' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Musicisti cerimonia', 3 UNION ALL
@@ -95,7 +125,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 7. SOTTOCATEGORIE - LOCATION & CATERING
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Location & Catering' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Location ricevimento', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Location & Catering' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Menù / Catering', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Location & Catering' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Torta nuziale', 3 UNION ALL
@@ -108,7 +138,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 8. SOTTOCATEGORIE - FIORI & DECOR
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Fiori & Decor' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Bouquet sposa', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Fiori & Decor' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Boutonnière sposo', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Fiori & Decor' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Centrotavola', 3 UNION ALL
@@ -121,7 +151,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 9. SOTTOCATEGORIE - FOTO & VIDEO
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Foto & Video' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Fotografo', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Foto & Video' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Videomaker', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Foto & Video' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Album fotografico', 3 UNION ALL
@@ -134,7 +164,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 10. SOTTOCATEGORIE - INVITI & STATIONERY
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Inviti & Stationery' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Partecipazioni', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Inviti & Stationery' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Save the date', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Inviti & Stationery' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Tableau / segnaposto', 3 UNION ALL
@@ -147,7 +177,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 11. SOTTOCATEGORIE - MUSICA & INTRATTENIMENTO
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Musica & Intrattenimento' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'DJ', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Musica & Intrattenimento' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Band / gruppo musicale', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Musica & Intrattenimento' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Animazione', 3 UNION ALL
@@ -159,7 +189,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 12. SOTTOCATEGORIE - BEAUTY & BENESSERE
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Beauty & Benessere' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Trattamenti pre-matrimonio', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Beauty & Benessere' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Spa / massaggi', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Beauty & Benessere' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Nail art / manicure', 3 UNION ALL
@@ -170,7 +200,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 13. SOTTOCATEGORIE - BOMBONIERE & REGALI
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Bomboniere & Regali' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Bomboniere', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Bomboniere & Regali' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Confetti', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Bomboniere & Regali' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Sacchetti / packaging', 3 UNION ALL
@@ -182,7 +212,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 14. SOTTOCATEGORIE - TRASPORTI
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Trasporti' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Auto sposi', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Trasporti' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Navetta invitati', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Trasporti' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Parcheggio', 3 UNION ALL
@@ -192,7 +222,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 15. SOTTOCATEGORIE - OSPITALITÀ & LOGISTICA
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Ospitalità & Logistica' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Hotel sposi', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Ospitalità & Logistica' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Hotel invitati', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Ospitalità & Logistica' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Welcome bag', 3 UNION ALL
@@ -202,7 +232,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 16. SOTTOCATEGORIE - VIAGGIO DI NOZZE
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Viaggio di nozze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Voli', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Viaggio di nozze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Hotel / resort', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Viaggio di nozze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Escursioni / attività', 3 UNION ALL
@@ -212,7 +242,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 17. SOTTOCATEGORIE - STAFF & COORDINAMENTO
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Staff & Coordinamento' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Wedding planner', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Staff & Coordinamento' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Coordinatore giorno', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Staff & Coordinamento' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Hostess / steward', 3 UNION ALL
@@ -222,7 +252,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 18. SOTTOCATEGORIE - BUROCRAZIA & DOCUMENTI
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Burocrazia & Documenti' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Pubblicazioni matrimonio', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Burocrazia & Documenti' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Certificati', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Burocrazia & Documenti' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Permessi / autorizzazioni', 3 UNION ALL
@@ -232,7 +262,7 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 19. SOTTOCATEGORIE - COMUNICAZIONE & MEDIA
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Comunicazione & Media' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Sito web matrimonio', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Comunicazione & Media' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Social media', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Comunicazione & Media' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Video inviti digitali', 3 UNION ALL
@@ -242,13 +272,31 @@ ON CONFLICT DO NOTHING;
 -- =========================================
 -- 20. SOTTOCATEGORIE - EXTRA & CONTINGENZE
 -- =========================================
-INSERT INTO subcategories (category_id, name, sort)
+INSERT INTO seed_wedding_subcategories (category_id, name, sort)
 SELECT (SELECT id FROM categories WHERE name='Extra & Contingenze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Fondo emergenze', 1 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Extra & Contingenze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Assicurazione matrimonio', 2 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Extra & Contingenze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Regali last minute', 3 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Extra & Contingenze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Spese impreviste', 4 UNION ALL
 SELECT (SELECT id FROM categories WHERE name='Extra & Contingenze' AND type_id=(SELECT id FROM event_types WHERE slug='wedding')), 'Altro', 5
 ON CONFLICT DO NOTHING;
+
+UPDATE subcategories AS subcategory
+SET sort = seed.sort
+FROM seed_wedding_subcategories AS seed
+WHERE subcategory.category_id = seed.category_id
+  AND subcategory.name = seed.name;
+
+INSERT INTO subcategories (category_id, name, sort)
+SELECT seed.category_id, seed.name, seed.sort
+FROM seed_wedding_subcategories AS seed
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM subcategories AS subcategory
+  WHERE subcategory.category_id = seed.category_id
+    AND subcategory.name = seed.name
+);
+
+COMMIT;
 
 -- =========================================
 -- VERIFICA COMPLETAMENTO

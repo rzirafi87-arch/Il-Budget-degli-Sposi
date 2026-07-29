@@ -11,17 +11,18 @@ if (!url || !key) {
   throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE");
 }
 const db = createClient(url, key);
+const i18n = db.schema("app_i18n");
 
 // ---------- Helpers ----------
 async function upsert<T>(table: string, rows: T[], conflict?: string) {
   if (!rows.length) return [];
-  const { data, error } = await db.from(table).upsert(rows, conflict ? { onConflict: conflict } : undefined).select();
+  const { data, error } = await i18n.from(table).upsert(rows, conflict ? { onConflict: conflict } : undefined).select();
   if (error) throw error;
   return data!;
 }
 
 async function ensureLocales() {
-  await upsert("i18n_locales", [
+  await upsert("locales", [
     { code: "it-IT", name: "Italiano", direction: "ltr" },
     { code: "en-GB", name: "English",  direction: "ltr" },
     { code: "es-ES", name: "Español", direction: "ltr" },
@@ -30,9 +31,9 @@ async function ensureLocales() {
 }
 
 async function ensureEventType(code: string, nameIT: string, nameEN: string) {
-  const { data: et } = await db
+  const { data: et } = await i18n
     .from("event_types")
-    .upsert({ code, name: nameIT, locale: "it-IT" }, { onConflict: "code" })
+    .upsert({ code }, { onConflict: "code" })
     .select("*")
     .single();
   if (!et) {
@@ -45,16 +46,16 @@ async function ensureEventType(code: string, nameIT: string, nameEN: string) {
   return et.id;
 }
 
-type CatDef = { it: string; en: string; sub: { it: string; en: string }[] };
+type CatDef = { code?: string; it: string; en: string; sub: { code?: string; it: string; en: string }[] };
 type TLDef  = { key: string; offset: number; it: { title: string; desc?: string }, en: { title: string; desc?: string } };
 
-async function alreadySeeded(eventTypeId: string) {
-  const { error } = await db.from("categories").select("id", { count: "exact", head: true }).eq("event_type_id", eventTypeId);
-  if (error) throw error;
-  const { data: d2, error: e2 } = await db.from("categories").select("id").eq("event_type_id", eventTypeId).limit(1);
-  if (e2) throw e2;
-  return (d2?.length ?? 0) > 0;
-}
+const stableCode = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 async function seedEvent(
   code: string,
@@ -65,44 +66,62 @@ async function seedEvent(
 ) {
   const eventTypeId = await ensureEventType(code, nameIT, nameEN);
 
-  if (await alreadySeeded(eventTypeId)) {
-    console.log(`-> Skipping ${code}: categories already present.`);
-    return;
-  }
-
-  // Insert categories
-  const catRows = cats.map((_, i) => ({ event_type_id: eventTypeId, sort: i }));
-  const insertedCats = await upsert("categories", catRows);
+  const catRows = cats.map((cat, sort) => ({
+    event_type_id: eventTypeId,
+    code: cat.code ?? stableCode(cat.it),
+    sort,
+  }));
+  const insertedCats = await upsert("categories", catRows, "event_type_id,code");
+  const categoriesByCode = new Map(insertedCats.map((category) => [category.code, category]));
 
   // Category translations + subcategories
   for (let i = 0; i < cats.length; i++) {
-    const catId = insertedCats[i].id;
     const c = cats[i];
+    const categoryCode = c.code ?? stableCode(c.it);
+    const category = categoriesByCode.get(categoryCode);
+    if (!category) throw new Error(`Category upsert failed: ${c.it}`);
+    const catId = category.id;
     await upsert("category_translations", [
       { category_id: catId, locale: "it-IT", name: c.it },
       { category_id: catId, locale: "en-GB", name: c.en },
-    ]);
+    ], "category_id,locale");
 
-    const subRows = c.sub.map((_, idx) => ({ category_id: catId, sort: idx }));
-    const insertedSubs = await upsert("subcategories", subRows);
+    const subRows = c.sub.map((subcategory, sort) => ({
+      category_id: catId,
+      code: subcategory.code ?? stableCode(subcategory.it),
+      sort,
+    }));
+    const insertedSubs = await upsert("subcategories", subRows, "category_id,code");
+    const subcategoriesByCode = new Map(insertedSubs.map((subcategory) => [subcategory.code, subcategory]));
 
     for (let j = 0; j < c.sub.length; j++) {
+      const subcategoryCode = c.sub[j].code ?? stableCode(c.sub[j].it);
+      const subcategory = subcategoriesByCode.get(subcategoryCode);
+      if (!subcategory) throw new Error(`Subcategory upsert failed: ${c.sub[j].it}`);
       await upsert("subcategory_translations", [
-        { subcategory_id: insertedSubs[j].id, locale: "it-IT", name: c.sub[j].it },
-        { subcategory_id: insertedSubs[j].id, locale: "en-GB", name: c.sub[j].en },
-      ]);
+        { subcategory_id: subcategory.id, locale: "it-IT", name: c.sub[j].it },
+        { subcategory_id: subcategory.id, locale: "en-GB", name: c.sub[j].en },
+      ], "subcategory_id,locale");
     }
   }
 
   // Timeline
-  const tlRows = tl.map(t => ({ event_type_id: eventTypeId, key: t.key, offset_days: t.offset }));
-  const insertedTl = await upsert("event_timelines", tlRows);
+  const tlRows = tl.map((t, sort) => ({
+    event_type_id: eventTypeId,
+    key: t.key,
+    sort,
+    offset_days: t.offset,
+  }));
+  const insertedTl = await upsert("event_timelines", tlRows, "event_type_id,key");
+  const timelinesByKey = new Map(insertedTl.map((timeline) => [timeline.key, timeline]));
 
   for (let i = 0; i < tl.length; i++) {
+    const timeline = timelinesByKey.get(tl[i].key);
+    if (!timeline) throw new Error(`Timeline upsert failed: ${tl[i].key}`);
     await upsert("event_timeline_translations", [
-      { timeline_id: insertedTl[i].id, locale: "it-IT", title: tl[i].it.title, description: tl[i].it.desc ?? null },
-      { timeline_id: insertedTl[i].id, locale: "en-GB", title: tl[i].en.title, description: tl[i].en.desc ?? null },
-    ]);
+      { timeline_id: timeline.id, locale: "it-IT", title: tl[i].it.title, description: tl[i].it.desc ?? null },
+      { timeline_id: timeline.id, locale: "en-GB", title: tl[i].en.title, description: tl[i].en.desc ?? null },
+    ], "timeline_id,locale");
   }
 
   console.log(`Seeded ${code} (${nameIT}/${nameEN})`);
