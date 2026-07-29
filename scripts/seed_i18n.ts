@@ -6,9 +6,13 @@ import path from "node:path";
 config({ path: path.resolve(process.cwd(), ".env.local") });
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const key = process.env.SUPABASE_SERVICE_ROLE!;
+const key =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE;
 if (!url || !key) {
-  console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE in environment");
+  console.error(
+    "Missing NEXT_PUBLIC_SUPABASE_URL or service-role key: set SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SERVICE_ROLE"
+  );
   process.exit(1);
 }
 const db = createClient(url, key);
