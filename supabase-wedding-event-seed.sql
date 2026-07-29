@@ -20,7 +20,7 @@ CREATE TEMP TABLE seed_wedding_categories (
 ) ON COMMIT DROP;
 
 CREATE TEMP TABLE seed_wedding_subcategories (
-  category_id bigint,
+  category_id UUID,
   name text,
   sort integer
 ) ON COMMIT DROP;
