@@ -69,9 +69,10 @@ export async function fetchLocalizedCategories(
   params: { eventTypeCode: string; locale: string; fallbackLocale?: string }
 ): Promise<LocalizedCategory[]> {
   const { eventTypeCode, locale, fallbackLocale = DEFAULT_FALLBACK_LOCALE } = params;
+  const i18n = client.schema("app_i18n");
 
-  const { data: eventType, error: eventTypeError } = await client
-    .from("app_i18n.event_types")
+  const { data: eventType, error: eventTypeError } = await i18n
+    .from("event_types")
     .select("id")
     .eq("code", eventTypeCode)
     .maybeSingle();
@@ -84,8 +85,8 @@ export async function fetchLocalizedCategories(
     return [];
   }
 
-  const { data: categories, error: categoriesError } = await client
-    .from("app_i18n.categories")
+  const { data: categories, error: categoriesError } = await i18n
+    .from("categories")
     .select("id, code, sort")
     .eq("event_type_id", eventType.id)
     .order("sort", { ascending: true });
@@ -103,8 +104,8 @@ export async function fetchLocalizedCategories(
   const categoryIds = categoryList.map((category) => category.id);
   const localesToFetch = Array.from(new Set([locale, fallbackLocale]));
 
-  const { data: categoryTranslations, error: categoryTranslationError } = await client
-    .from("app_i18n.category_translations")
+  const { data: categoryTranslations, error: categoryTranslationError } = await i18n
+    .from("category_translations")
     .select("category_id, locale, name")
     .in("category_id", categoryIds)
     .in("locale", localesToFetch);
@@ -121,8 +122,8 @@ export async function fetchLocalizedCategories(
     categoryTranslationMap.get(row.category_id)!.set(row.locale, row.name);
   }
 
-  const { data: subcategories, error: subcategoriesError } = await client
-    .from("app_i18n.subcategories")
+  const { data: subcategories, error: subcategoriesError } = await i18n
+    .from("subcategories")
     .select("id, code, sort, category_id")
     .in("category_id", categoryIds)
     .order("sort", { ascending: true });
@@ -142,8 +143,8 @@ export async function fetchLocalizedCategories(
 
   let subcategoryTranslations: Array<{ subcategory_id: string; locale: string; name: string }> = [];
   if (subcategoryIds.length > 0) {
-    const { data, error } = await client
-      .from("app_i18n.subcategory_translations")
+    const { data, error } = await i18n
+      .from("subcategory_translations")
       .select("subcategory_id, locale, name")
       .in("subcategory_id", subcategoryIds)
       .in("locale", localesToFetch);
@@ -204,9 +205,10 @@ export async function fetchLocalizedTimeline(
   params: { eventTypeCode: string; locale: string; fallbackLocale?: string }
 ): Promise<LocalizedTimelineEntry[]> {
   const { eventTypeCode, locale, fallbackLocale = DEFAULT_FALLBACK_LOCALE } = params;
+  const i18n = client.schema("app_i18n");
 
-  const { data: eventType, error: eventTypeError } = await client
-    .from("app_i18n.event_types")
+  const { data: eventType, error: eventTypeError } = await i18n
+    .from("event_types")
     .select("id")
     .eq("code", eventTypeCode)
     .maybeSingle();
@@ -219,8 +221,8 @@ export async function fetchLocalizedTimeline(
     return [];
   }
 
-  const { data: entries, error: entriesError } = await client
-    .from("app_i18n.event_timelines")
+  const { data: entries, error: entriesError } = await i18n
+    .from("event_timelines")
     .select("id, key, sort, offset_days")
     .eq("event_type_id", eventType.id)
     .order("sort", { ascending: true });
@@ -240,8 +242,8 @@ export async function fetchLocalizedTimeline(
 
   let timelineTranslations: Array<{ timeline_id: string; locale: string; title: string; description: string | null }> = [];
   if (entryIds.length > 0) {
-    const { data, error } = await client
-      .from("app_i18n.event_timeline_translations")
+    const { data, error } = await i18n
+      .from("event_timeline_translations")
       .select("timeline_id, locale, title, description")
       .in("timeline_id", entryIds)
       .in("locale", localesToFetch);
