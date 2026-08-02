@@ -40,6 +40,7 @@
     "sql:init:lists": "node scripts/run-sql.mjs supabase-supported-lists.sql",
     "sql:init:storage": "node scripts/run-sql.mjs supabase-storage-policies.sql",
     "sql:seed:events": "node scripts/run-sql.mjs supabase-events-seed.sql",
+    "sql:seed:wedding": "node scripts/run-sql.mjs supabase-wedding-event-seed.sql",
     "sql:init:core-events": "node scripts/run-sql.mjs supabase-core-events-schema.sql supabase-seed-event-types.sql supabase-seed-event-categories.sql",
     "sql:seed:core-demo": "node scripts/run-sql.mjs supabase-demo-public-event.sql",
     "sql:seed:all": "node scripts/run-sql.mjs supabase-events-seed.sql supabase-india-seed.sql supabase-mexico-seed.sql supabase-mx-seed-locations.sql supabase-mx-seed-suppliers.sql supabase-traditions-extend-and-seed.sql supabase-traditions-seed-more.sql supabase-traditions-policies.sql",

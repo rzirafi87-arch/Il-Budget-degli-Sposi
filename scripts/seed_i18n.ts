@@ -6,17 +6,22 @@ import path from "node:path";
 config({ path: path.resolve(process.cwd(), ".env.local") });
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const key = process.env.SUPABASE_SERVICE_ROLE!;
+const key =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE;
 if (!url || !key) {
-  console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE in environment");
+  console.error(
+    "Missing NEXT_PUBLIC_SUPABASE_URL or service-role key: set SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SERVICE_ROLE"
+  );
   process.exit(1);
 }
 const db = createClient(url, key);
+const i18n = db.schema("app_i18n");
 
 // helper
 async function upsert<T>(table: string, rows: T[], conflict?: string) {
   if (!rows.length) return { data: [], error: null };
-  const q = db.from(table).upsert(rows, conflict ? { onConflict: conflict } : undefined).select();
+  const q = i18n.from(table).upsert(rows, conflict ? { onConflict: conflict } : undefined).select();
   const { data, error } = await q;
   if (error) throw error;
   return { data, error };
@@ -24,7 +29,7 @@ async function upsert<T>(table: string, rows: T[], conflict?: string) {
 
 async function main() {
   // 1) Locales + Countries (aggiornato)
-  await upsert("i18n_locales", [
+  await upsert("locales", [
     { code: "it-IT", name: "Italiano", direction: "ltr" },
     { code: "en-GB", name: "English", direction: "ltr" },
     { code: "es-ES", name: "Español", direction: "ltr" },
@@ -40,24 +45,24 @@ async function main() {
     { code: "id-ID", name: "Bahasa Indonesia", direction: "ltr" },
   ], "code");
 
-  await upsert("geo_countries", [
-    { code: "IT", default_locale: "it-IT" },
-    { code: "MX", default_locale: "es-MX" },
-    { code: "GB", default_locale: "en-GB" },
-    { code: "US", default_locale: "en-GB" },
-    { code: "JP", default_locale: "ja-JP" },
-    { code: "FR", default_locale: "fr-FR" },
-    { code: "DE", default_locale: "de-DE" },
-    { code: "ES", default_locale: "es-ES" },
-    { code: "CN", default_locale: "zh-CN" },
-    { code: "IN", default_locale: "hi-IN" },
+  await upsert("countries", [
+    { code: "IT", name: "Italia", default_locale: "it-IT" },
+    { code: "MX", name: "México", default_locale: "es-MX" },
+    { code: "GB", name: "United Kingdom", default_locale: "en-GB" },
+    { code: "US", name: "United States", default_locale: "en-GB" },
+    { code: "JP", name: "日本", default_locale: "ja-JP" },
+    { code: "FR", name: "France", default_locale: "fr-FR" },
+    { code: "DE", name: "Deutschland", default_locale: "de-DE" },
+    { code: "ES", name: "España", default_locale: "es-ES" },
+    { code: "CN", name: "中国", default_locale: "zh-CN" },
+    { code: "IN", name: "India", default_locale: "hi-IN" },
   ], "code");
 
   // 2) Event type: WEDDING
-  const { data: etIns } = await db
+  const { data: etIns } = await i18n
     .from("event_types")
     .upsert(
-      { code: "WEDDING", name: "Matrimonio", locale: "it-IT" },
+      { code: "WEDDING" },
       { onConflict: "code" }
     )
     .select("*")
@@ -171,7 +176,7 @@ async function main() {
       ]
     },
     {
-      name_it: "Ospitalit+á & Logistica", name_en: "Hospitality & Logistics",
+      name_it: "Ospitalità & Logistica", name_en: "Hospitality & Logistics",
       sub: [
         { it: "Alloggi ospiti", en: "Guest accommodation" },
         { it: "Welcome kit", en: "Welcome kit" },
@@ -198,34 +203,56 @@ async function main() {
     },
   ];
 
-  // insert categories
-  const catRows = [];
-  for (let i = 0; i < cats.length; i++) {
-    catRows.push({ event_type_id: eventTypeId, sort: i });
-  }
-  const { data: insertedCats } = await db.from("categories").insert(catRows).select("*");
-  if (!insertedCats) throw new Error("Categories insert failed");
+  const stableCode = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+  const { data: insertedCats } = await upsert(
+    "categories",
+    cats.map((cat, sort) => ({
+      event_type_id: eventTypeId,
+      code: stableCode(cat.name_it),
+      sort,
+    })),
+    "event_type_id,code"
+  );
+  const categoriesByCode = new Map(insertedCats.map((category) => [category.code, category]));
 
   // translations + subcategories
   for (let i = 0; i < cats.length; i++) {
     const c = cats[i];
-    const catId = insertedCats[i].id;
+    const category = categoriesByCode.get(stableCode(c.name_it));
+    if (!category) throw new Error(`Category upsert failed: ${c.name_it}`);
+    const catId = category.id;
 
     await upsert("category_translations", [
       { category_id: catId, locale: "it-IT", name: c.name_it },
       { category_id: catId, locale: "en-GB", name: c.name_en },
-    ]);
+    ], "category_id,locale");
 
-    const subRows = c.sub.map((s, idx) => ({ category_id: catId, sort: idx }));
-    const { data: insertedSubs } = await db.from("subcategories").insert(subRows).select("*");
-    if (!insertedSubs) throw new Error("Subcategories insert failed");
+    const { data: insertedSubs } = await upsert(
+      "subcategories",
+      c.sub.map((subcategory, sort) => ({
+        category_id: catId,
+        code: stableCode(subcategory.it),
+        sort,
+      })),
+      "category_id,code"
+    );
+    const subcategoriesByCode = new Map(insertedSubs.map((subcategory) => [subcategory.code, subcategory]));
 
     for (let j = 0; j < c.sub.length; j++) {
-      const scId = insertedSubs[j].id;
+      const subcategory = subcategoriesByCode.get(stableCode(c.sub[j].it));
+      if (!subcategory) throw new Error(`Subcategory upsert failed: ${c.sub[j].it}`);
+      const scId = subcategory.id;
       await upsert("subcategory_translations", [
         { subcategory_id: scId, locale: "it-IT", name: c.sub[j].it },
         { subcategory_id: scId, locale: "en-GB", name: c.sub[j].en },
-      ]);
+      ], "subcategory_id,locale");
     }
   }
 
@@ -235,7 +262,7 @@ async function main() {
       it: { title: "Annunciate il fidanzamento", desc: "Condividete la notizia con chi amate" },
       en: { title: "Announce engagement", desc: "Share the news with loved ones" } },
     { key: "set-budget-style", offset: -330,
-      it: { title: "Definite budget e stile", desc: "Scegliete priorit+á e moodboard" },
+      it: { title: "Definite budget e stile", desc: "Scegliete priorità e moodboard" },
       en: { title: "Set budget & style", desc: "Define priorities and moodboard" } },
     { key: "book-venue-date", offset: -300,
       it: { title: "Prenotate location e data", desc: "Blocca location e data con caparra" },
@@ -250,7 +277,7 @@ async function main() {
       it: { title: "Chiesa/Comune", desc: "Prenota e verifica documenti" },
       en: { title: "Church/Town hall", desc: "Book and verify documents" } },
     { key: "catering", offset: -240,
-      it: { title: "Conferma catering", desc: "Bozza men+¦ e allergie" },
+      it: { title: "Conferma catering", desc: "Bozza menù e allergie" },
       en: { title: "Confirm catering", desc: "Draft menu and allergies" } },
     { key: "ceremony-music", offset: -210,
       it: { title: "Musica cerimonia", desc: "Trio/Quartetto, prove brani" },
@@ -277,7 +304,7 @@ async function main() {
       it: { title: "Acquista fedi", desc: "Misure e incisioni" },
       en: { title: "Buy rings", desc: "Sizing and engravings" } },
     { key: "final-menu", offset: -30,
-      it: { title: "Conferma men+¦", desc: "TortA e intolleranze finali" },
+      it: { title: "Conferma menù", desc: "Torta e intolleranze finali" },
       en: { title: "Finalize menu", desc: "Cake and final allergies" } },
     { key: "seating-plan", offset: -21,
       it: { title: "Seating plan", desc: "Tavoli e segnaposto" },
@@ -293,9 +320,16 @@ async function main() {
       en: { title: "Thank-you notes", desc: "Send thanks & photos" } },
   ];
 
-  const tlRows = tl.map(t => ({ event_type_id: eventTypeId, key: t.key, offset_days: t.offset }));
-  const { data: insertedTl } = await db.from("event_timelines").insert(tlRows).select("*");
-  if (!insertedTl) throw new Error("Timeline insert failed");
+  const { data: insertedTl } = await upsert(
+    "event_timelines",
+    tl.map((t, sort) => ({
+      event_type_id: eventTypeId,
+      key: t.key,
+      sort,
+      offset_days: t.offset,
+    })),
+    "event_type_id,key"
+  );
 
   // translations
   for (const t of tl) {
@@ -304,10 +338,10 @@ async function main() {
     await upsert("event_timeline_translations", [
       { timeline_id: row.id, locale: "it-IT", title: t.it.title, description: t.it.desc ?? null },
       { timeline_id: row.id, locale: "en-GB", title: t.en.title, description: t.en.desc ?? null },
-    ]);
+    ], "timeline_id,locale");
   }
 
-  console.log("Ô£à Seed completato (Matrimonio IT/EN).");
+  console.log("Seed completato (Matrimonio IT/EN).");
 }
 
 main().catch((e) => {
