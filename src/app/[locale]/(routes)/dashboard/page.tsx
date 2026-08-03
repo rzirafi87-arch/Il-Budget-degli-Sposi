@@ -53,7 +53,7 @@ export default function DashboardPage() {
       if (!userLang || !userCountry || !normalizedEventType) {
         const parts = pathname.split("/").filter(Boolean);
         const pathLocale = parts[0];
-        router.replace(buildLocalizedPath(pathLocale, "/wizard"));
+        router.replace(buildLocalizedPath(pathLocale, "/select-language"));
         return;
       }
     }
