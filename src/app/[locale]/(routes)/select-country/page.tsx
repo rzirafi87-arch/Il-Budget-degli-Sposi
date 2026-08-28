@@ -1,7 +1,6 @@
 ﻿"use client";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { COUNTRIES } from "@/lib/loadConfigs";
-import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,37 +12,6 @@ export default function SelectCountryPage() {
 
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  // Update cookies when country is selected
-  useEffect(() => {
-    if (!selectedCountry) return;
-    // Salvataggio già fatto in handleSelect per reattività immediata
-    // Aggiorna evento in background
-    (async () => {
-      try {
-        setLoading(true);
-        const supabase = getBrowserClient();
-        const { data } = await supabase.auth.getSession();
-        const jwt = data.session?.access_token;
-        const headers: HeadersInit = {};
-        if (jwt) headers.Authorization = `Bearer ${jwt}`;
-        await fetch("/api/event/ensure-default", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...headers,
-          },
-          body: JSON.stringify({ country: selectedCountry }),
-        });
-      } catch {
-        // Non bloccare la UI
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [selectedCountry]);
 
   // Prefetch tradition preview when country changes
   useEffect(() => {
@@ -78,17 +46,19 @@ export default function SelectCountryPage() {
     } catch {
       // Ignore errors in SSR
     }
-  }, [router]);
+  }, [locale, router]);
+
+  useEffect(() => {
+    if (!selectedCountry) return;
+    try {
+      localStorage.setItem("country", selectedCountry);
+      document.cookie = `country=${selectedCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
+    } catch {
+      // Lo storage può essere disabilitato dal browser.
+    }
+  }, [selectedCountry]);
 
   function handleSelect(code: string) {
-    setError(null);
-    // Aggiorna subito storage e cookie per evitare ritardi nei test/UX
-    try {
-      localStorage.setItem("country", code);
-      document.cookie = `country=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
-    } catch {
-      // ignore
-    }
     setSelectedCountry(code);
   }
 
@@ -119,7 +89,7 @@ export default function SelectCountryPage() {
               key={c.code}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 hover:bg-[#A3B59D]/10 text-lg font-semibold transition-all w-full justify-center ${selectedCountry === c.code ? 'ring-2 ring-[#A3B59D]' : ''}`}
               onClick={() => c.available !== false && handleSelect(c.code)}
-              disabled={loading || c.available === false}
+              disabled={c.available === false}
             >
               <span className="text-2xl" aria-hidden="true">{c.emoji}</span>
               <span>{new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of(c.code.toUpperCase()) || c.label}</span>
@@ -143,12 +113,6 @@ export default function SelectCountryPage() {
           >
             {t("onboarding.nextBtn", { fallback: "Avanti" })}
           </button>
-        )}
-        {loading && (
-          <div className="mt-6 text-center text-[#A3B59D] font-semibold">{t("onboarding.creatingEvent", { fallback: "Creazione evento in corso..." })}</div>
-        )}
-        {error && (
-          <div className="mt-4 text-center text-red-500 font-semibold">{error}</div>
         )}
       </div>
     </main>

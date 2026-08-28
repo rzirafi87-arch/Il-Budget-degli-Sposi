@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   // Trova il primo evento creato dall'utente (logica coerente con altre API del repo)
   const { data: ev, error: evErr } = await db
     .from("events")
-    .select("id, name, currency, total_budget, inserted_at")
+    .select("id, name, currency, total_budget, inserted_at, language, country, event_type")
     .eq("owner_id", userData.user.id)
     .order("inserted_at", { ascending: true })
     .limit(1)
@@ -65,6 +65,9 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     event: {
       id: ev.id,
+      language: ev.language || null,
+      country: ev.country || null,
+      event_type: ev.event_type || "wedding",
       total_budget: ev.total_budget ?? 0,
       spent_amount: totalSpent,
       currency: ev.currency ?? "EUR",
@@ -75,4 +78,3 @@ export async function GET(req: NextRequest) {
     },
   });
 }
-

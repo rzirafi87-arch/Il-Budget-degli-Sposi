@@ -25,6 +25,10 @@ export async function POST(req: NextRequest) {
     const password = "password" in body && typeof body.password === "string" ? body.password : "";
     const weddingDate =
       "weddingDate" in body && typeof body.weddingDate === "string" ? body.weddingDate : null;
+    const eventType =
+      "eventType" in body && typeof body.eventType === "string" && body.eventType.trim()
+        ? body.eventType.trim().toLowerCase()
+        : "wedding";
 
     if (!EMAIL_PATTERN.test(primaryEmail) || password.length < 10 || password.length > 128) {
       return NextResponse.json(
@@ -71,6 +75,7 @@ export async function POST(req: NextRequest) {
         public_id: publicId,
         name: "Il nostro matrimonio",
         owner_id: ownerId,
+        event_type: eventType,
         total_budget: 0,
         bride_email: primaryEmail,
         groom_email: partnerEmail || null,

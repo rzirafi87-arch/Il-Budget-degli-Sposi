@@ -8,11 +8,12 @@ import LocalizedWeddingSection, { LocalizedWeddingData } from "@/components/dash
 import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import Page from "@/components/layout/Page";
 import PageInfoNote from "@/components/PageInfoNote";
+import { getOnboardingStatus } from "@/lib/onboardingClient";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -26,7 +27,6 @@ export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const pathname = usePathname();
   const locale = useLocale();
   // All hooks at the top - before any conditional returns
   const [brideBudget, setBrideBudget] = useState<number>(0);
@@ -39,7 +39,9 @@ export default function DashboardPage() {
   const [localized, setLocalized] = useState<LocalizedWeddingData | null>(null);
   const [budgetFocus, setBudgetFocus] = useState<BudgetFocus | null>(null);
   const [savingBudget, setSavingBudget] = useState(false);
-  const [clientReady, setClientReady] = useState(false);
+  const [routeStatus, setRouteStatus] = useState<"loading" | "ready" | "redirecting" | "error">("loading");
+  const [routeError, setRouteError] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [clientPrefs, setClientPrefs] = useState({ language: "", country: "", eventType: "" });
 
   const userLang = clientPrefs.language;
@@ -48,60 +50,64 @@ export default function DashboardPage() {
   const normalizedEventType = userEventType || "";
 
   useEffect(() => {
-    // Deep-link: redirect automatico se mancano preferenze
-    if (typeof window !== "undefined" && clientReady) {
-      if (!userLang || !userCountry || !normalizedEventType) {
-        const parts = pathname.split("/").filter(Boolean);
-        const pathLocale = parts[0];
-        router.replace(buildLocalizedPath(pathLocale, "/wizard"));
-        return;
-      }
-    }
-    if (typeof window === "undefined") return;
+    let active = true;
 
-    const readPreferences = () => {
+    const resolveAccess = async () => {
       try {
-        const language =
-          localStorage.getItem("language") ||
-          document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1] ||
-          "";
-        const country =
-          localStorage.getItem("country") ||
-          document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] ||
-          "";
-        const eventType =
-          localStorage.getItem("eventType") ||
-          document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1] ||
-          "";
+        const status = await getOnboardingStatus();
+        if (!active) return;
+
+        if (status.kind !== "complete") {
+          setRouteStatus("redirecting");
+          const destination = status.kind === "anonymous" ? "/auth" : "/wizard";
+          router.replace(buildLocalizedPath(locale, destination));
+          return;
+        }
+
+        const storedLanguage = localStorage.getItem("language") || document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1];
+        const storedCountry = localStorage.getItem("country") || document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1];
+        const storedEventType = localStorage.getItem("eventType") || document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+        const eventTypeAliases: Record<string, string> = {
+          babyshower: "baby-shower",
+          engagement: "engagement-party",
+        };
+        const eventType = eventTypeAliases[status.event.event_type || ""] || status.event.event_type || storedEventType || "wedding";
+        const language = status.event.language || storedLanguage || locale || "it";
+        const country = status.event.country || storedCountry || "it";
+
+        localStorage.setItem("language", language);
+        localStorage.setItem("country", country);
+        localStorage.setItem("eventType", eventType);
+        document.cookie = `language=${language}; Path=/; Max-Age=15552000; SameSite=Lax`;
+        document.cookie = `country=${country}; Path=/; Max-Age=15552000; SameSite=Lax`;
+        document.cookie = `eventType=${eventType}; Path=/; Max-Age=15552000; SameSite=Lax`;
+
         setClientPrefs({
           language,
           country,
           eventType,
         });
-      } catch {
-        setClientPrefs({ language: "", country: "", eventType: "" });
+        setAccessToken(status.accessToken);
+        setRouteStatus("ready");
+      } catch (cause) {
+        if (!active) return;
+        setRouteError(cause instanceof Error ? cause.message : "Impossibile caricare la Dashboard");
+        setRouteStatus("error");
       }
     };
 
-    readPreferences();
-    setClientReady(true);
-
-    const onStorage = (event: StorageEvent) => {
-      if (event.key && ["language", "country", "eventType"].includes(event.key)) {
-        readPreferences();
-      }
+    void resolveAccess();
+    return () => {
+      active = false;
     };
-
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [clientReady, userLang, userCountry, normalizedEventType, pathname, router]);
+  }, [locale, router]);
   const effectiveEventType = normalizedEventType || "wedding";
   const isWedding = effectiveEventType === "wedding";
   // Locale corrente (mockato nei test). Fallback a 'it' se vuoto
 
   const isReady = useMemo(
-    () => clientReady && !!userLang && !!userCountry && !!normalizedEventType,
-    [clientReady, userLang, userCountry, normalizedEventType]
+    () => routeStatus === "ready" && !!userLang && !!userCountry && !!normalizedEventType,
+    [routeStatus, userLang, userCountry, normalizedEventType]
   );
   const totalBudget = (brideBudget || 0) + (groomBudget || 0);
   const countryState = userCountry;
@@ -111,29 +117,10 @@ export default function DashboardPage() {
     if (!isReady) return;
 
     let active = true;
-    const supabase = getBrowserClient();
     (async () => {
       try {
-        const { data: session } = await supabase.auth.getSession();
-        const jwt = session.session?.access_token;
-        const headers: Record<string, string> = jwt ? { Authorization: `Bearer ${jwt}` } : {};
+        const headers: Record<string, string> = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
         const country = userCountry || "it";
-
-        // Ensure default event exists with correct type
-        if (jwt) {
-          try {
-            await fetch("/api/event/ensure-default", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${jwt}`,
-              },
-              body: JSON.stringify({ eventType: effectiveEventType, country }),
-            });
-          } catch {
-            // Ignore error
-          }
-        }
 
         // Budget Items
         try {
@@ -216,7 +203,7 @@ export default function DashboardPage() {
     return () => {
       active = false;
     };
-  }, [userCountry, effectiveEventType, isReady, isWedding]);
+  }, [accessToken, userCountry, effectiveEventType, isReady, isWedding]);
 
   // Funzione per salvare il budget in Idea di Budget
   async function handleSaveBudget() {
@@ -269,9 +256,20 @@ export default function DashboardPage() {
     }
   }
 
+  if (routeStatus === "error") {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
+        <p className="text-xl font-semibold">Impossibile caricare la Dashboard</p>
+        <p className="text-muted-fg">{routeError}</p>
+        <button className="rounded-xl bg-primary px-5 py-3 font-semibold text-white" onClick={() => window.location.reload()}>
+          Riprova
+        </button>
+      </div>
+    );
+  }
+
   if (!isReady) {
-    // Mostra solo un loader breve, il redirect avviene sopra
-    return <div className="min-h-[50vh] flex items-center justify-center text-xl">Loading...</div>;
+    return <div className="min-h-[50vh] flex items-center justify-center text-xl">Caricamento…</div>;
   }
 
   return (
@@ -364,7 +362,7 @@ export default function DashboardPage() {
               href={`/${locale}/idea-di-budget`}
               className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white"
             >
-              � Vai a Idea di Budget
+              💡 Vai a Idea di Budget
             </Link>
           </div>
         </div>
@@ -382,7 +380,7 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
             </div>
             <div className="mt-4 flex justify-center sm:mt-0">
-              <Link href="/suggerimenti/viaggio-di-nozze" className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
+              <Link href={`/${locale}/suggerimenti/viaggio-di-nozze`} className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
                 🌍 Apri Viaggio di Nozze
               </Link>
             </div>
@@ -398,7 +396,7 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
-            <Link href="/suggerimenti" className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
+            <Link href={`/${locale}/suggerimenti`} className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
               💡 Apri Suggerimenti
             </Link>
           </div>

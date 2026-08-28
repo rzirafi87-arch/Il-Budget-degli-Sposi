@@ -29,18 +29,18 @@ export async function POST(req: NextRequest) {
   const eventType = body.eventType || url.searchParams.get("eventType") || "wedding";
   const normalizedEventType =
     eventType === "baby-shower"
-      ? "babyshower"
+      ? "baby-shower"
       : eventType === "engagement-party"
-      ? "engagement"
+      ? "engagement-party"
       : eventType;
-  // Country/Rite (for localization presets)
+  // Country (for localization presets)
   const country = (body.country || url.searchParams.get("country") || "").toString();
-  const rite = (body.rite || url.searchParams.get("rite") || "").toString();
+  const language = (body.language || url.searchParams.get("language") || "").toString();
 
     // 1) c'è già un evento dell'utente?
     const { data: events, error: e1 } = await db
       .from("events")
-      .select("id, type_id")
+      .select("id, event_type")
       .eq("owner_id", userId)
       .order("inserted_at", { ascending: true })
       .limit(1);
@@ -54,43 +54,35 @@ export async function POST(req: NextRequest) {
 
     // 2) se non c'è, creane uno e seedalo
     if (!eventId) {
-      // Get type_id from event_types table
-      const eventTypeSlug =
-        normalizedEventType === "baptism" ? "baptism" :
-        normalizedEventType === "eighteenth" ? "eighteenth" :
-        normalizedEventType === "confirmation" ? "confirmation" :
-        normalizedEventType === "graduation" ? "graduation" :
-        normalizedEventType === "communion" ? "communion" :
-        normalizedEventType === "babyshower" ? "babyshower" :
-        normalizedEventType === "engagement" ? "engagement" :
-        "wedding";
+      const supportedEventTypes = new Set([
+        "wedding", "baptism", "eighteenth", "graduation", "confirmation", "communion",
+        "anniversary", "birthday", "fifty", "gender-reveal", "retirement", "baby-shower",
+        "engagement-party", "proposal", "corporate", "bar-mitzvah", "quinceanera", "charity-gala",
+      ]);
+      const eventTypeSlug = supportedEventTypes.has(normalizedEventType) ? normalizedEventType : "wedding";
       
-      const { data: eventTypeData, error: typeError } = await db
-        .from("event_types")
-        .select("id")
-        .eq("slug", eventTypeSlug)
-        .single();
-
-      if (typeError) {
-        console.error("ENSURE-DEFAULT – Get event type error:", typeError);
-        return NextResponse.json({ ok: false, error: typeError.message }, { status: 500 });
-      }
-
-      const typeId = eventTypeData?.id;
-      if (!typeId) {
-        return NextResponse.json({ ok: false, error: "Event type not found" }, { status: 404 });
-      }
-
       const publicId = generatePublicId();
-      const eventName =
-        normalizedEventType === "baptism" ? "Battesimo" :
-        normalizedEventType === "eighteenth" ? "Il mio Diciottesimo" :
-        normalizedEventType === "confirmation" ? "La mia Cresima" :
-        normalizedEventType === "graduation" ? "La mia Laurea" :
-        normalizedEventType === "communion" ? "La mia Prima Comunione" :
-        normalizedEventType === "babyshower" ? "Il nostro Baby Shower" :
-        normalizedEventType === "engagement" ? "La nostra Festa di Fidanzamento" :
-        "Il nostro matrimonio";
+      const eventNames: Record<string, string> = {
+        wedding: "Il nostro matrimonio",
+        baptism: "Il mio Battesimo",
+        eighteenth: "Il mio Diciottesimo",
+        confirmation: "La mia Cresima",
+        graduation: "La mia Laurea",
+        communion: "La mia Prima Comunione",
+        anniversary: "Il nostro Anniversario",
+        birthday: "Il mio Compleanno",
+        fifty: "Il mio Cinquantesimo",
+        "gender-reveal": "Il nostro Gender Reveal",
+        retirement: "La mia Festa di Pensionamento",
+        "baby-shower": "Il nostro Baby Shower",
+        "engagement-party": "La nostra Festa di Fidanzamento",
+        proposal: "La nostra Proposta",
+        corporate: "Il nostro Evento Aziendale",
+        "bar-mitzvah": "Il mio Bar Mitzvah",
+        quinceanera: "La mia Quinceañera",
+        "charity-gala": "Il nostro Gala di Beneficenza",
+      };
+      const eventName = eventNames[eventTypeSlug] || "Il mio evento";
       
       const { data: ev, error: e2 } = await db
         .from("events")
@@ -98,9 +90,9 @@ export async function POST(req: NextRequest) {
           public_id: publicId, 
           name: eventName,
           owner_id: userId,
-          type_id: typeId,
-          country: country || null,
-          rite: rite || null
+          event_type: eventTypeSlug,
+          language: language || null,
+          country: country || null
         })
         .select("id")
         .single();
@@ -112,95 +104,26 @@ export async function POST(req: NextRequest) {
 
       eventId = ev!.id;
 
-      // Seed based on event type
-      if (normalizedEventType === "baptism") {
-        // Call baptism seed endpoint internally
-        const country = body.country || "it";
-        const seedUrl = new URL(`/api/baptism/seed/${eventId}?country=${country}`, req.url);
-        const seedRes = await fetch(seedUrl.toString(), {
-          method: "POST",
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
-        
-        if (!seedRes.ok) {
-          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
-          console.error("ENSURE-DEFAULT – Baptism seed error:", seedError);
-          return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
-        }
-      } else if (normalizedEventType === "eighteenth") {
-        // Call eighteenth seed endpoint internally
-        const country = body.country || "it";
-        const seedUrl = new URL(`/api/eighteenth/seed/${eventId}?country=${country}`, req.url);
-        const seedRes = await fetch(seedUrl.toString(), {
-          method: "POST",
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
-        
-        if (!seedRes.ok) {
-          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
-          console.error("ENSURE-DEFAULT – Eighteenth seed error:", seedError);
-          return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
-        }
-      } else if (normalizedEventType === "confirmation") {
-        // Call confirmation seed endpoint internally
-        const country = body.country || "it";
-        const seedUrl = new URL(`/api/confirmation/seed/${eventId}?country=${country}`, req.url);
-        const seedRes = await fetch(seedUrl.toString(), {
-          method: "POST",
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
-        
-        if (!seedRes.ok) {
-          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
-          console.error("ENSURE-DEFAULT – Confirmation seed error:", seedError);
-          return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
-        }
-      } else if (normalizedEventType === "graduation") {
-        // Call graduation seed endpoint internally
-        const country = body.country || "it";
-        const seedUrl = new URL(`/api/graduation/seed/${eventId}?country=${country}`, req.url);
-        const seedRes = await fetch(seedUrl.toString(), {
-          method: "POST",
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
-        
-        if (!seedRes.ok) {
-          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
-          console.error("ENSURE-DEFAULT – Graduation seed error:", seedError);
-          return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
-        }
-      } else if (normalizedEventType === "communion") {
-        // Call communion seed endpoint internally
-        const country = body.country || "it";
-        const seedUrl = new URL(`/api/communion/seed/${eventId}?country=${country}`, req.url);
-        const seedRes = await fetch(seedUrl.toString(), {
-          method: "POST",
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
-        if (!seedRes.ok) {
-          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
-          console.error("ENSURE-DEFAULT – Communion seed error:", seedError);
-          return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
-        }
-      } else if (normalizedEventType === "engagement") {
-        // Call engagement seed endpoint internally
-        const country = body.country || "it";
-        const seedUrl = new URL(`/api/engagement/seed/${eventId}?country=${country}`, req.url);
-        const seedRes = await fetch(seedUrl.toString(), {
-          method: "POST",
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
-        if (!seedRes.ok) {
-          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
-          console.error("ENSURE-DEFAULT – Engagement seed error:", seedError);
-          return NextResponse.json({ ok: false, error: seedError.error }, { status: 500 });
-        }
-      } else {
+      if (eventTypeSlug === "wedding") {
         // Wedding: use RPC seed_full_event
         const { error: e3 } = await db.rpc("seed_full_event", { p_event: eventId });
         if (e3) {
           console.error("ENSURE-DEFAULT – Seed error:", e3);
-          return NextResponse.json({ ok: false, error: e3.message }, { status: 500 });
+        }
+      } else {
+        const seedSlugs: Record<string, string> = {
+          "baby-shower": "babyshower",
+          "engagement-party": "engagement",
+        };
+        const seedSlug = seedSlugs[eventTypeSlug] || eventTypeSlug;
+        const seedUrl = new URL(`/api/${seedSlug}/seed/${eventId}?country=${country || "it"}`, req.url);
+        const seedRes = await fetch(seedUrl.toString(), {
+          method: "POST",
+          headers: { Authorization: `Bearer ${jwt}` },
+        });
+        if (!seedRes.ok) {
+          const seedError = await seedRes.json().catch(() => ({ error: "Seed failed" }));
+          console.error(`ENSURE-DEFAULT – ${eventTypeSlug} seed error:`, seedError);
         }
       }
     }

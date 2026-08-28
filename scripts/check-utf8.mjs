@@ -13,7 +13,7 @@ const INCLUDED_EXTS = new Set([
   '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.json', '.css', '.md', '.mdx', '.sql'
 ]);
 
-const decoder = new TextDecoder('utf-8', { fatal: true });
+const MOJIBAKE_MARKERS = ['\uFFFD', 'Ã', 'Â', 'â€™', 'â€œ', 'â€', 'ðŸ', 'ï¸', 'âœ', 'âš', 'Ð¡Ð', 'å'];
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -33,8 +33,16 @@ function walk(dir, out = []) {
 function checkFile(path) {
   try {
     const buf = readFileSync(path);
-    // If this throws, it's not valid UTF-8
-    decoder.decode(buf);
+    const text = new TextDecoder('utf-8', { fatal: true }).decode(buf);
+    const normalizedPath = path.replaceAll('\\', '/');
+    const isRuntimeText =
+      normalizedPath.includes('/src/app/') ||
+      normalizedPath.includes('/src/components/') ||
+      normalizedPath.includes('/src/messages/');
+    if (isRuntimeText) {
+      const marker = MOJIBAKE_MARKERS.find((value) => text.includes(value));
+      if (marker) return { path, error: `suspicious mojibake marker: ${marker}` };
+    }
     return null;
   } catch (e) {
     return { path, error: e?.message || String(e) };
@@ -54,7 +62,7 @@ if (issues.length === 0) {
 } else {
   console.error(`[check-utf8] Found ${issues.length} file(s) with invalid UTF-8:`);
   for (const i of issues) {
-    console.error(' -', i.path);
+    console.error(' -', i.path, `(${i.error})`);
   }
   if (STRICT) {
     process.exit(1);

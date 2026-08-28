@@ -1,17 +1,21 @@
 ﻿import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 // Mock next/navigation router to avoid real navigation in jsdom
 const mockPush = jest.fn();
+const mockReplace = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush, replace: jest.fn() }),
+  useRouter: () => ({ push: mockPush, replace: mockReplace }),
+}));
+jest.mock("@/lib/supabaseBrowser", () => ({
+  getBrowserClient: () => ({ auth: { getSession: async () => ({ data: { session: { access_token: "token" } }, error: null }) } }),
 }));
 
 // Simple fetch mock for the traditions preview
 beforeAll(() => {
   // @ts-expect-error - Mocking global fetch for testing
-  global.fetch = jest.fn(() =>
-    Promise.resolve({ json: () => Promise.resolve({ traditions: [] }) })
+  global.fetch = jest.fn((input) =>
+    Promise.resolve({ ok: true, json: () => Promise.resolve(String(input).includes("traditions") ? { traditions: [] } : { ok: true }) })
   );
 });
 
@@ -27,7 +31,7 @@ describe("SelectEventTypePage - Cresima", () => {
     mockPush.mockClear();
   });
 
-  it("mostra Cresima e salva la scelta, reindirizzando alla Dashboard", () => {
+  it("mostra Cresima e salva la scelta, reindirizzando alla Dashboard", async () => {
     // Imposta lingua e paese per evitare redirect iniziali
     window.localStorage.setItem("language", "it");
     window.localStorage.setItem("country", "it");
@@ -43,6 +47,6 @@ describe("SelectEventTypePage - Cresima", () => {
 
     expect(window.localStorage.getItem("eventType")).toBe("confirmation");
     expect(document.cookie).toMatch(/eventType=confirmation/);
-    expect(mockPush).toHaveBeenCalledWith("/it/dashboard");
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/dashboard"));
   });
 });

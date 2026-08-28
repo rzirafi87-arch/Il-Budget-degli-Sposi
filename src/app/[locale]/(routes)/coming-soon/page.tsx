@@ -17,8 +17,8 @@ function tComingSoon(lang: string) {
     case "es": return "Próximamente";
     case "fr": return "Bientôt disponible";
     case "de": return "Demnächst verfügbar";
-    case "ru": return "Ð¡ÐºÐ¾Ñ€Ð¾";
-    case "zh": return "å³å°†æŽ¨å‡º";
+    case "ru": return "Скоро";
+    case "zh": return "即将推出";
     default: return "Coming Soon";
   }
 }
@@ -61,12 +61,12 @@ export default function ComingSoonPage() {
           Nel frattempo puoi esplorare la nostra demo o creare un evento Matrimonio per usare tutte le funzionalità.
         </p>
         <div className="flex gap-3 justify-center">
-          <Link href="/" className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 font-semibold">Vai alla Home</Link>
+          <Link href={`/${lang}`} className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 font-semibold">Vai alla Home</Link>
           <button
             onClick={() => {
               localStorage.setItem("eventType", "wedding");
               document.cookie = `eventType=wedding; Path=/; Max-Age=15552000; SameSite=Lax`;
-              window.location.href = "/dashboard";
+              window.location.href = `/${lang}/dashboard`;
             }}
             className="px-5 py-3 rounded-lg text-white font-semibold"
             style={{ background: "var(--color-sage)" }}
@@ -78,4 +78,3 @@ export default function ComingSoonPage() {
     </main>
   );
 }
-

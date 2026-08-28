@@ -169,7 +169,7 @@ export default function FornitoriDashboardPage() {
             <div>
               <p className="text-sm text-gray-600 mb-1">Stato Abbonamento</p>
               <p className={`font-semibold ${isActive ? "text-green-600" : "text-red-600"}`}>
-                {isActive ? "✓ Attivo" : "âœ&mdash; Scaduto"}
+                {isActive ? "✓ Attivo" : "✗ Scaduto"}
               </p>
             </div>
             {profile.subscription_expires_at && (
@@ -264,15 +264,15 @@ export default function FornitoriDashboardPage() {
             {profile.subscription_tier === "base" && isActive && (
               <>
                 <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
-                <li className="text-gray-600">âœ&mdash; Non appare nella pagina hub Fornitori</li>
-                <li className="text-gray-600">âœ&mdash; Non appare nella Demo (utenti non registrati)</li>
+                <li className="text-gray-600">✗ Non appare nella pagina hub Fornitori</li>
+                <li className="text-gray-600">✗ Non appare nella Demo (utenti non registrati)</li>
               </>
             )}
             {profile.subscription_tier === "premium" && isActive && (
               <>
                 <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
                 <li className="text-green-600">✓ Appare nella pagina hub <strong>Fornitori</strong></li>
-                <li className="text-gray-600">âœ&mdash; Non appare nella Demo (utenti non registrati)</li>
+                <li className="text-gray-600">✗ Non appare nella Demo (utenti non registrati)</li>
               </>
             )}
             {profile.subscription_tier === "premium_plus" && isActive && (

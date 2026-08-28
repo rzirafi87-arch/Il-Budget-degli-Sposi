@@ -394,7 +394,7 @@ export default function LocationiPage() {
                   )}
                   {location.price_range && (
                     <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">� Prezzo:</span> {location.price_range}
+                      <span className="font-semibold">💶 Prezzo:</span> {location.price_range}
                     </p>
                   )}
                   {location.description && (
