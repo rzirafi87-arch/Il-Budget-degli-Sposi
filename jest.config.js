@@ -9,7 +9,6 @@ module.exports = {
     "<rootDir>/jest.setup.js",
   ],
   moduleNameMapper: {
-    "^../dashboard/page$": "<rootDir>/__mocks__/dashboardPage.tsx",
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@/lib/supabaseServer$": "<rootDir>/__mocks__/supabaseServer.ts",
   },

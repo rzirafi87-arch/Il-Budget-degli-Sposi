@@ -1,5 +1,5 @@
 ﻿import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 // Mock next/navigation for useRouter
 jest.mock('next/navigation', () => ({
@@ -32,14 +32,16 @@ describe('SelectCountryPage', () => {
     expect(screen.queryAllByText(/^(MX|Messico)$/i).length).toBeGreaterThan(0);
   });
 
-  it('salva paese selezionato in localStorage e cookie e abilita Avanti', () => {
+  it('salva paese selezionato in localStorage e cookie e abilita Avanti', async () => {
     render(<SelectCountryPage />);
 
     const btn = screen.getByText(/^(MX|Messico)$/i);
     fireEvent.click(btn);
 
-    expect(window.localStorage.getItem('country')).toBe('mx');
-    expect(document.cookie).toMatch(/country=mx/);
+    await waitFor(() => {
+      expect(window.localStorage.getItem('country')).toBe('mx');
+      expect(document.cookie).toMatch(/country=mx/);
+    });
 
     // Dopo selezione compare il pulsante Avanti
     const avanti = screen.getByRole('button', { name: /avanti/i });

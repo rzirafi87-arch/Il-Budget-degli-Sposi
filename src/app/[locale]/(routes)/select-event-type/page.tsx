@@ -4,6 +4,7 @@ import WeddingTraditionInfo, {
   WeddingTradition,
 } from "@/components/WeddingTraditionInfo";
 import { EVENT_CONFIGS } from "@/constants/eventConfigs";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -34,6 +35,8 @@ export default function SelectEventTypePage() {
   const router = useRouter();
   const locale = useLocale();
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const country =
     typeof window !== "undefined"
       ? localStorage.getItem("country") ||
@@ -55,12 +58,8 @@ export default function SelectEventTypePage() {
       const cookieCountry = document.cookie.match(
         /(?:^|; )country=([^;]+)/
       )?.[1];
-      const cookieEventType = document.cookie.match(
-        /(?:^|; )eventType=([^;]+)/
-      )?.[1];
       const lsLang = localStorage.getItem("language");
       const lsCountry = localStorage.getItem("country");
-      const lsEventType = localStorage.getItem("eventType");
       if (!(cookieLang || lsLang)) {
         router.replace(`/${locale}/select-language`);
         return;
@@ -73,18 +72,6 @@ export default function SelectEventTypePage() {
         document.cookie = `language=${lsLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
       if (lsCountry && !cookieCountry)
         document.cookie = `country=${lsCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
-      if (cookieEventType || lsEventType) {
-        if (!cookieEventType && lsEventType)
-          document.cookie = `eventType=${lsEventType}; Path=/; Max-Age=15552000; SameSite=Lax`;
-        let ev = cookieEventType || lsEventType || "";
-        if (ev === "babyshower") ev = "baby-shower";
-        if (ev === "engagement") ev = "engagement-party";
-        router.replace(
-          `/${locale}${
-            DASHBOARD_EVENTS.has(ev) ? "/dashboard" : "/coming-soon"
-          }`
-        );
-      }
     } catch {
       // Ignore errors in SSR
     }
@@ -102,17 +89,41 @@ export default function SelectEventTypePage() {
     }
   }, [selected]);
 
-  function handleSelect(code: string) {
+  async function handleSelect(code: string) {
+    if (saving) return;
+    setSaving(true);
+    setError(null);
     try {
       localStorage.setItem("eventType", code);
-    } catch {
-      // ignore storage errors
+      document.cookie = `eventType=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
+      setSelected(code);
+
+      const { data, error: sessionError } = await getBrowserClient().auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (sessionError || !accessToken) {
+        router.replace(`/${locale}/auth`);
+        return;
+      }
+
+      const response = await fetch("/api/event/ensure-default", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ eventType: code, country, language: locale }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || "Impossibile completare la configurazione");
+      }
+
+      const destination = DASHBOARD_EVENTS.has(code) ? "/dashboard" : "/coming-soon";
+      router.replace(`/${locale}${destination}`);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Impossibile completare la configurazione");
+      setSaving(false);
     }
-    setSelected(code);
-    const destination = DASHBOARD_EVENTS.has(code)
-      ? "/dashboard"
-      : "/coming-soon";
-    router.push(`/${locale}${destination}`);
   }
 
   const EVENTS = Object.entries(EVENT_CONFIGS).map(([slug, cfg]) => ({
@@ -174,7 +185,7 @@ export default function SelectEventTypePage() {
             return (
               <button
                 key={ev.slug}
-                disabled={!isAvailable}
+                disabled={!isAvailable || saving}
                 className={`group relative overflow-hidden rounded-2xl border transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg ${
                   isAvailable
                     ? selected === ev.slug
@@ -218,6 +229,8 @@ export default function SelectEventTypePage() {
             );
           })}
         </div>
+        {saving && <p className="mt-6 text-center font-semibold text-[#7A8A74]">Creazione del tuo evento…</p>}
+        {error && <p className="mt-6 text-center font-semibold text-red-600" role="alert">{error}</p>}
       </div>
     </main>
   );
