@@ -159,15 +159,13 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     ? (resolvedParams.locale as Locale)
     : defaultLocale;
 
-  try {
-    // getIntlMessages expects an object: { locale }
-    const messages = await getIntlMessages({ locale });
-    if (!messages || Object.keys(messages).length === 0) {
-      throw new Error(`Missing translations for locale ${locale}`);
-    }
+  const messages = await getIntlMessages({ locale });
+  if (!messages || Object.keys(messages).length === 0) {
+    throw new Error(`Missing translations for locale ${locale}`);
+  }
 
-    return (
-      <>
+  return (
+    <>
         {/* JSON-LD structured data can be rendered in the body; search engines accept it there */}
         <JsonLd />
         <LocalBusinessSchema />
@@ -180,11 +178,6 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
             <ClientLayoutShell>{children}</ClientLayoutShell>
           </NextIntlClientProvider>
         </AppSettingsProvider>
-      </>
-    );
-  } catch (error) {
-    console.error(error);
-    // notFound();
-    return null;
-  }
+    </>
+  );
 }

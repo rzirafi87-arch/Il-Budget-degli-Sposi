@@ -137,8 +137,8 @@
       "actions": "Azioni"
     },
     "status": {
-      "approved": "âœ“ Approvato",
-      "rejected": "âœ— Rifiutato",
+      "approved": "✓ Approvato",
+      "rejected": "✗ Rifiutato",
       "pending": "In attesa"
     },
     "spendType": {
@@ -149,7 +149,7 @@
     "messages": {
       "mustAuthAdd": "âŒ Devi essere autenticato per aggiungere spese. Clicca su 'Registrati' in alto.",
       "networkError": "âŒ Errore di rete",
-      "successAdded": "âœ… Spesa aggiunta con successo!",
+      "successAdded": "✅ Spesa aggiunta con successo!",
       "none": "Nessuna spesa registrata",
       "confirmed": "Confermato",
       "discarded": "Scartato"
@@ -244,8 +244,8 @@
     "messages": {
       "mustAuthAdd": "âŒ Devi essere autenticato per aggiungere entrate. Clicca su 'Registrati' in alto.",
       "networkError": "âŒ Errore di rete",
-      "successAdded": "âœ… Entrata registrata con successo!",
-      "deleted": "âœ… Entrata eliminata",
+      "successAdded": "✅ Entrata registrata con successo!",
+      "deleted": "✅ Entrata eliminata",
       "confirmDelete": "Sei sicuro di voler eliminare questa entrata?"
     }
   },
@@ -279,8 +279,8 @@
       "title2Highlighted": "matrimonio",
       "title3": "in modo semplice",
       "title4": "e senza stress 💍",
-      "subtitle": "L'unica app che unisce budget, fornitori e serenità â€” senza pubblicità né caos.",
-      "ctaPrimary": "🎉 Inizia ora â€” È gratis",
+      "subtitle": "L'unica app che unisce budget, fornitori e serenità — senza pubblicità né caos.",
+      "ctaPrimary": "🎉 Inizia ora — È gratis",
       "ctaSecondary": "👀 Guarda la demo",
       "footnote": "✨ Non serve carta di credito • Crea il tuo evento in 2 minuti"
     },
@@ -293,7 +293,7 @@
         },
         "control": {
           "title": "Controllo",
-          "description": "Budget, fornitori, invitati, timeline â€” tutto sotto controllo in un unico posto."
+          "description": "Budget, fornitori, invitati e timeline — tutto sotto controllo in un unico posto."
         },
         "inspiration": {
           "title": "Ispirazione",
@@ -303,7 +303,7 @@
     },
     "demo": {
       "title": "Esplora → Funzionalità 💍",
-      "subtitle": "Navigazione libera senza registrazione â€” aggiungi dati e sperimenta!",
+      "subtitle": "Navigazione libera senza registrazione — aggiungi dati e sperimenta!",
       "features": {
         "budget": {
           "title": "Budget intelligente",
@@ -358,7 +358,7 @@
       "fallback": {
         "lead": "Organizza il tuo matrimonio in modo semplice e sereno.",
         "sub": "Gestisci budget, fornitori, invitati e molto altro.",
-        "cta": "Inizia ora â€” È gratis",
+        "cta": "Inizia ora — È gratis",
         "note": "Non serve carta di credito. Crea il tuo evento in 2 minuti."
       },
       "budget": {
@@ -677,7 +677,7 @@
           "safari": "Preferenze â†’ Privacy â†’ Gestisci dati siti web",
           "edge": "Impostazioni â†’ Cookie e autorizzazioni sito"
         },
-        "warning": "âš ï¸ Attenzione: Disabilitando i cookie tecnici, alcune funzionalità del sito potrebbero non funzionare correttamente (es. impossibilità di accedere al tuo account)."
+        "warning": "⚠️ Attenzione: disabilitando i cookie tecnici, alcune funzionalità del sito potrebbero non funzionare correttamente (ad esempio, l'accesso al tuo account)."
       },
       "s5": {
         "title": "5. Do Not Track (DNT)",
@@ -716,13 +716,13 @@
       },
       "s9": {
         "title": "9. Contatti",
-        "p1": "Per domande sulla Cookie Policy o sulla gestione dei tuoi dati: Email: privacy@ilbudgetdeglisposi.it â€” Telefono: +39 XXX XXX XXXX"
+        "p1": "Per domande sulla Cookie Policy o sulla gestione dei tuoi dati: email privacy@ilbudgetdeglisposi.it — telefono +39 XXX XXX XXXX"
       },
       "summary": {
         "title": "👀 Riepilogo Rapido",
         "tech": {
           "title": "Cookie Tecnici",
-          "value": "âœ… Sempre attivi"
+          "value": "✅ Sempre attivi"
         },
         "prefs": {
           "title": "Cookie Preferenze",
@@ -894,7 +894,7 @@
       "s14": {
         "title": "14. Contatti del Responsabile Privacy",
         "p1": "Per qualsiasi domanda o richiesta sulla privacy:",
-        "authName": "Responsabile Privacy â€” Il Budget degli Sposi",
+        "authName": "Responsabile Privacy — Il Budget degli Sposi",
         "addr": "Indirizzo: Via Esempio 123, 00100 Roma (RM)",
         "email": "Email: privacy@ilbudgetdeglisposi.it",
         "phone": "Tel: +39 XXX XXX XXXX"
@@ -1105,7 +1105,7 @@
     }
   },
   "suppliersLocations": {
-    "title": "Ricevimento Â· Location",
+    "title": "Ricevimento · Location",
     "buttons": {
       "add": "+ Aggiungi Location",
       "cancel": "Annulla"
@@ -1233,7 +1233,7 @@
       "website": "💰 Sito",
       "websiteLink": "💰 Sito web",
       "call": "👀ž Chiama",
-      "email": "âœ‰ï¸ Email",
+      "email": "✉️ Email",
       "addToFavorites": "Aggiungi ai preferiti",
       "removeFromFavorites": "Rimuovi dai preferiti",
       "add": "Aggiungi",
@@ -1301,7 +1301,7 @@
       "count": "Trovati {count} atelier{region, select, other { in {region}} }"
     },
     "labels": {
-      "verified": "âœ“ Verificato",
+      "verified": "✓ Verificato",
       "visitWebsite": "Visita sito",
       "priceRange": "FASCIA PREZZO",
       "services": "Servizi"
@@ -1360,7 +1360,7 @@
     "actions": {
       "website": "💰 Sito",
       "call": "👀ž Chiama",
-      "email": "âœ‰ï¸ Email",
+      "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
       "add": "Aggiungi",
@@ -1373,7 +1373,7 @@
       "suppliers": "Fornitori",
       "catering": "Catering"
     },
-    "title": "💵½ï¸ Catering & Banqueting",
+    "title": "🍽️ Catering & Banqueting",
     "description": "Trova i migliori servizi di catering per il tuo matrimonio. Menù personalizzati, buffet gourmet e servizio impeccabile.",
     "buttons": {
       "backToSuppliers": "â† Tutti i Fornitori"
@@ -1404,7 +1404,7 @@
     "actions": {
       "website": "💰 Sito",
       "call": "👀ž Chiama",
-      "email": "âœ‰ï¸ Email",
+      "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
       "add": "Aggiungi",
@@ -1448,7 +1448,7 @@
     "actions": {
       "website": "💰 Sito",
       "call": "👀ž Chiama",
-      "email": "âœ‰ï¸ Email",
+      "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
       "add": "Aggiungi",
@@ -1492,7 +1492,7 @@
     "actions": {
       "website": "💰 Sito",
       "call": "👀ž Chiama",
-      "email": "âœ‰ï¸ Email",
+      "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
       "removeFavorite": "Rimuovi dai preferiti",
       "add": "Aggiungi",
@@ -1580,7 +1580,7 @@
     },
     "loading": "Caricamento...",
     "empty": "Nessun DJ/band trovato per i filtri selezionati",
-    "verified": "âœ“ Verificato",
+    "verified": "✓ Verificato",
     "messages": {
       "submitSuccess": "Musica ricevimento inviata! Sarà verificata prima della pubblicazione.",
       "submitError": "Errore nell'invio",
@@ -1626,7 +1626,7 @@
     },
     "loading": "Caricamento...",
     "empty": "Nessun wedding planner trovato per i filtri selezionati",
-    "verified": "âœ“ Verificato",
+    "verified": "✓ Verificato",
     "messages": {
       "submitSuccess": "Wedding planner inviato! Sarà verificato prima della pubblicazione.",
       "submitError": "Errore nell'invio",
@@ -1678,8 +1678,8 @@
       "type": "Tipo:",
       "capacity": "💍¥ Capacità :",
       "people": "persone",
-      "requiresBaptism": "âš ï¸ Richiede Battesimo",
-      "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
+      "requiresBaptism": "⚠️ Richiede il Battesimo",
+      "requiresMarriageCourse": "⚠️ Richiede il corso prematrimoniale",
       "website": "Sito Web"
     },
     "loading": "Caricamento...",
@@ -1691,7 +1691,7 @@
     }
   },
   "ceremonyCeremonyChurch": {
-    "title": "Cerimonia Â· Chiesa",
+    "title": "Cerimonia · Chiesa",
     "buttons": {
       "add": "+ Aggiungi Chiesa",
       "cancel": "Annulla",
@@ -1739,8 +1739,8 @@
       "type": "Tipo:",
       "capacity": "💍¥ Capacità :",
       "people": "persone",
-      "requiresBaptism": "âš ï¸ Richiede Battesimo",
-      "requiresMarriageCourse": "âš ï¸ Richiede Corso Prematrimoniale",
+      "requiresBaptism": "⚠️ Richiede il Battesimo",
+      "requiresMarriageCourse": "⚠️ Richiede il corso prematrimoniale",
       "website": "Sito Web"
     },
     "loading": "Caricamento...",

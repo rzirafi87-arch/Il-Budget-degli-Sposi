@@ -3,6 +3,7 @@
 import PageInfoNote from "@/components/PageInfoNote";
 import { formatCurrency } from "@/lib/locale";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
 type GiftItem = {
@@ -31,6 +32,7 @@ const GIFT_TYPES = [
 ];
 
 export default function ListaNozzePage() {
+  const locale = useLocale();
   const eventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isWedding = eventType === "wedding";
   const [items, setItems] = useState<GiftItem[]>([]);
@@ -98,9 +100,9 @@ export default function ListaNozzePage() {
         <h2 className="font-serif text-3xl">Lista Nozze</h2>
         <div className="flex gap-2">
           {isWedding && (
-            <Link href="/entrate" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Vai a Entrate</Link>
+            <Link href={`/${locale}/entrate`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Vai a Entrate</Link>
           )}
-          <Link href="/dashboard" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</Link>
+          <Link href={`/${locale}/dashboard`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</Link>
         </div>
       </div>
 
@@ -264,6 +266,5 @@ export default function ListaNozzePage() {
     </section>
   );
 }
-
 
 

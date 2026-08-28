@@ -34,6 +34,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     normalizedPath.startsWith("/select-language") ||
     normalizedPath.startsWith("/select-country") ||
     normalizedPath.startsWith("/select-event-type") ||
+    normalizedPath === "/wizard" ||
     normalizedPath === "/auth" ||
     normalizedPath === "/welcome";
 
