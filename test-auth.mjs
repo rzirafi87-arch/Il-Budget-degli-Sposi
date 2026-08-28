@@ -1,8 +1,9 @@
 // Script per testare autenticazione Supabase
 import { createClient } from '@supabase/supabase-js';
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://vsguhivizuneylqhygfk.supabase.co";
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzZ3VoaXZpenVuZXlscWh5Z2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NzgwNjEsImV4cCI6MjA3NjU1NDA2MX0.3F_wg8USagvwmNoLpsJtHVUOqVKoXlJdUKvBybbWKr0";
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+if (!url || !anonKey) throw new Error("Missing Supabase test environment variables");
 
 const supabase = createClient(url, anonKey);
 

@@ -1,4 +1,5 @@
 import { getServiceClient } from "@/lib/supabaseServer";
+import { generatePublicId } from "@/lib/publicId";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -8,10 +9,6 @@ type CreateEventBody = {
   title?: string;
   is_public?: boolean;
 };
-
-function generatePublicId() {
-  return Math.random().toString(36).slice(2, 10);
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -103,6 +100,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }
-
 
 

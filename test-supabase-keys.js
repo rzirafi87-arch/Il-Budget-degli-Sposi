@@ -1,6 +1,7 @@
 // Test delle chiavi Supabase
-const url1 = "https://vsguhivizuneylqhygfk.supabase.co";
-const key1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzZ3VoaXZpenVuZXlscWh5Z2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NzgwNjEsImV4cCI6MjA3NjU1NDA2MX0.3F_wg8USagvwmNoLpsJtHVUOqVKoXlJdUKvBybbWKr0";
+const url1 = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key1 = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+if (!url1 || !key1) throw new Error("Missing Supabase test environment variables");
 
 async function testConnection() {
   console.log("🔍 Testing Supabase connection...\n");

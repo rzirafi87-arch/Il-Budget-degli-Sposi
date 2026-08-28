@@ -1,8 +1,10 @@
+import { requireAdminUser } from "@/lib/apiAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    await requireAdminUser(request);
     const supabase = getServiceClient();
 
     const { error } = await supabase.rpc("app_health_refresh");
@@ -24,6 +26,7 @@ export async function POST() {
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : "Supabase environment variables are not configured";
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    const status = message === "Forbidden" ? 403 : message.includes("JWT") ? 401 : 500;
+    return NextResponse.json({ ok: false, error: message }, { status });
   }
 }

@@ -1,23 +1,47 @@
 import { magicLinkTemplate, sendMail, siteUrl } from "@/lib/mailer";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
+import { generatePublicId } from "@/lib/publicId";
 export const runtime = "nodejs";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function normalizeEmail(value: unknown): string {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
 
 // POST /api/auth/register
 // Body: { primaryEmail, password, partnerEmail?, weddingDate? }
 // Creates owner user, optionally creates partner, creates default event with wedding date
 export async function POST(req: NextRequest) {
   try {
-    const { primaryEmail, password, partnerEmail, weddingDate } = await req.json();
+    const body: unknown = await req.json();
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ ok: false, error: "Invalid request" }, { status: 400 });
+    }
 
-    if (!primaryEmail || !password) {
-      return NextResponse.json({ ok: false, error: "Missing required fields" }, { status: 400 });
+    const primaryEmail = normalizeEmail("primaryEmail" in body ? body.primaryEmail : undefined);
+    const partnerEmail = normalizeEmail("partnerEmail" in body ? body.partnerEmail : undefined);
+    const password = "password" in body && typeof body.password === "string" ? body.password : "";
+    const weddingDate =
+      "weddingDate" in body && typeof body.weddingDate === "string" ? body.weddingDate : null;
+
+    if (!EMAIL_PATTERN.test(primaryEmail) || password.length < 10 || password.length > 128) {
+      return NextResponse.json(
+        { ok: false, error: "Email non valida o password inferiore a 10 caratteri" },
+        { status: 400 },
+      );
+    }
+    if (partnerEmail && (!EMAIL_PATTERN.test(partnerEmail) || partnerEmail === primaryEmail)) {
+      return NextResponse.json({ ok: false, error: "Email partner non valida" }, { status: 400 });
     }
 
     const db = getServiceClient();
 
     // 1) Create owner user (or error if exists)
-    const emailConfirm = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
+    const isProduction =
+      process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
+    const emailConfirm = !isProduction;
     const { data: ownerRes, error: createErr } = await db.auth.admin.createUser({
       email: primaryEmail,
       password,
@@ -29,32 +53,18 @@ export async function POST(req: NextRequest) {
     }
     const ownerId = ownerRes.user.id;
 
-    // 2) Partner opzionale
+    // 2) Partner opzionale: non condividere mai la password del proprietario.
     if (partnerEmail) {
-      const partnerConfirm = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
-      const { error: partnerCreateErr } = await db.auth.admin.createUser({
-        email: partnerEmail,
-        password,
-        email_confirm: partnerConfirm,
+      const { error: inviteErr } = await db.auth.admin.inviteUserByEmail(partnerEmail, {
+        redirectTo: siteUrl(),
       });
-      if (partnerCreateErr) {
-        console.error("REGISTER create partner error:", partnerCreateErr);
-        // fallback: prova a inviare un invito (imposta password al click)
-        const { error: inviteErr } = await db.auth.admin.inviteUserByEmail(partnerEmail);
-        if (inviteErr) {
-          console.error("REGISTER invite partner error:", inviteErr);
-        }
-      } else if (!partnerConfirm) {
-        // In produzione: invia comunque un invito di conferma via email
-        const { error: inviteErr } = await db.auth.admin.inviteUserByEmail(partnerEmail);
-        if (inviteErr) {
-          console.error("REGISTER invite partner after create error:", inviteErr);
-        }
+      if (inviteErr) {
+        console.error("REGISTER invite partner error:", inviteErr);
       }
     }
 
     // 3) Create event for the couple
-    const publicId = Math.random().toString(36).slice(2, 10);
+    const publicId = generatePublicId();
     const { data: ev, error: e2 } = await db
       .from("events")
       .insert({
@@ -71,6 +81,9 @@ export async function POST(req: NextRequest) {
 
     if (e2 || !ev?.id) {
       console.error("REGISTER create event error:", e2);
+      await db.auth.admin.deleteUser(ownerId).catch((cleanupError) => {
+        console.error("REGISTER owner cleanup error:", cleanupError);
+      });
       return NextResponse.json({ ok: false, error: e2?.message || "Cannot create event" }, { status: 500 });
     }
 

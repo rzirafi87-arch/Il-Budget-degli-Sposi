@@ -1,4 +1,5 @@
 import { getServiceClient } from "@/lib/supabaseServer";
+import { generatePublicId } from "@/lib/publicId";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: false, error: "Event type not found" }, { status: 404 });
       }
 
-      const publicId = Math.random().toString(36).slice(2, 10);
+      const publicId = generatePublicId();
       const eventName =
         normalizedEventType === "baptism" ? "Battesimo" :
         normalizedEventType === "eighteenth" ? "Il mio Diciottesimo" :

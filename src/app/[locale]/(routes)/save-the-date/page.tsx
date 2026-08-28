@@ -128,9 +128,18 @@ export default function PartecipazionePage() {
   async function handleGeneratePDF() {
     setGenerating(true);
     try {
+      const { data } = await supabase.auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) {
+        alert("Accedi per generare il PDF");
+        return;
+      }
       const res = await fetch("/api/generate-wedding-pdf", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
         body: JSON.stringify(config),
       });
       if (res.ok) {

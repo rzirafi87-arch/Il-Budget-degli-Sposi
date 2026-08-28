@@ -2,6 +2,7 @@
 
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { generatePublicId } from "@/lib/publicId";
 
 /**
  * Server Action: Garantisce che l'utente autenticato abbia un evento di default.
@@ -53,7 +54,7 @@ export async function ensureDefaultEvent(): Promise<string> {
   }
 
   // Altrimenti, crea un nuovo evento di default
-  const public_id = Math.random().toString(36).slice(2, 10);
+  const public_id = generatePublicId();
   
   const { data: newEvent, error: insertError } = await supabase
     .from("events")

@@ -8,7 +8,7 @@ jest.mock("@/lib/supabaseServer", () => ({
   }),
 }));
 
-import { requireUser } from "@/lib/apiAuth";
+import { requireAdminUser, requireUser } from "@/lib/apiAuth";
 
 function request(authorization?: string) {
   return {
@@ -49,5 +49,38 @@ describe("requireUser", () => {
       "Invalid JWT"
     );
     expect(mockGetUser).toHaveBeenCalledWith("invalid-jwt");
+  });
+});
+
+describe("requireAdminUser", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("accepts an admin role only from verified app metadata", async () => {
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: "admin-user", app_metadata: { role: "admin" } } },
+      error: null,
+    });
+
+    await expect(requireAdminUser(request("Bearer valid-jwt"))).resolves.toEqual({
+      userId: "admin-user",
+      role: "admin",
+    });
+  });
+
+  it("rejects authenticated users without the admin app role", async () => {
+    mockGetUser.mockResolvedValue({
+      data: {
+        user: {
+          id: "regular-user",
+          app_metadata: {},
+          user_metadata: { role: "admin" },
+        },
+      },
+      error: null,
+    });
+
+    await expect(requireAdminUser(request("Bearer valid-jwt"))).rejects.toThrow("Forbidden");
   });
 });

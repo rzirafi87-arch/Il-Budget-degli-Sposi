@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 
 type Row = {
   id: number;
@@ -45,7 +46,13 @@ export default function HealthPage() {
     setLoading(true);
     setErr(null);
     try {
-      const res = await fetch("/api/health/refresh", { method: "POST" });
+      const { data } = await getBrowserClient().auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) throw new Error("Authentication required");
+      const res = await fetch("/api/health/refresh", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
       const payload = await res.json();
       if (!payload.ok) {
         throw new Error(payload.error || "Unable to recompute health data");

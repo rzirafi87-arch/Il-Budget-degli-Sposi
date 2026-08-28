@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useEffect, useState } from "react";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 
 type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 
@@ -37,9 +38,18 @@ export default function ChatPage() {
     setLoading(true);
     setInput("");
     try {
+      const { data: sessionData } = await getBrowserClient().auth.getSession();
+      const jwt = sessionData.session?.access_token;
+      if (!jwt) {
+        setError("Accedi per utilizzare l’assistente AI.");
+        return;
+      }
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
         body: JSON.stringify({ messages: newMessages }),
       });
       const data = await res.json();
