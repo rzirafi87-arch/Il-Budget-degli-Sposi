@@ -9,7 +9,7 @@
 
 ### 1.2 Revoca la Key Esposta
 1. Nel menu laterale → **APIs & Services** → **Credentials**
-2. Trova la key: `AIzaSyCn_d4D8Y174q4NF4Z373iCTFp0JWClwSA`
+2. Individua la chiave configurata nel progetto Google Cloud (non copiarla nella documentazione).
 3. Clicca sui **3 puntini** (...) a destra
 4. Clicca **"Delete"** o **"Revoke"**
 5. Conferma la cancellazione
@@ -146,7 +146,7 @@ git push origin main
 1. Apri il file `.env.local` nel progetto
 2. Trova la riga:
    ```env
-   GOOGLE_PLACES_API_KEY=AIzaSyCn_d4D8Y174q4NF4Z373iCTFp0JWClwSA
+   GOOGLE_PLACES_API_KEY=<configure-locally-never-commit>
    ```
 3. Sostituisci con la nuova key:
    ```env

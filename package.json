@@ -48,6 +48,7 @@
     "autocommit": "node scripts/autocommit-once.mjs",
     "check:utf8": "node scripts/check-utf8.mjs",
     "check:utf8:strict": "node scripts/check-utf8.mjs --strict",
+    "check:secrets": "node scripts/check-secrets.mjs",
     "dev:ac": "npm run autocommit && next dev",
     "autocommit:watch": "node scripts/autocommit-watch.mjs",
     "assets:carousels": "node scripts/generate-event-carousels.mjs",
@@ -59,7 +60,7 @@
     "seed:i18n": "ts-node scripts/seed_i18n.ts",
     "seed:more": "ts-node scripts/seed_more_events.ts",
     "config:validate": "node scripts/validate-config-encoding.mjs",
-    "validate": "npm run check:utf8:strict && npm run config:validate",
+    "validate": "npm run check:utf8:strict && npm run check:secrets && npm run config:validate",
     "prebuild": "npm run validate",
     "test": "jest",
     "test:e2e": "playwright test"
@@ -70,7 +71,6 @@
   "dependencies": {
     "@remotion/player": "^4.0.366",
     "@stripe/stripe-js": "^8.1.0",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.76.1",
     "clsx": "^2.1.1",

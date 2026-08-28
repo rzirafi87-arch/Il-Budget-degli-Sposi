@@ -1,6 +1,6 @@
 "use client";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type CountryCode, type EventType, type Locale } from "@/lib/i18n";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type Prefs = { locale: Locale; country?: CountryCode; eventType?: EventType };
@@ -13,7 +13,7 @@ type Ctx = Prefs & {
 const Ctx = createContext<Ctx | null>(null);
 
 export function LocaleProvider({ children, initial }: { children: React.ReactNode; initial?: Partial<Prefs>; }) {
-  const sb = useMemo(() => createClientComponentClient(), []);
+  const sb = useMemo(() => getBrowserClient(), []);
   const [locale, setLocale] = useState<Locale>((initial?.locale as Locale) || DEFAULT_LOCALE);
   const [country, setCountry] = useState<CountryCode | undefined>(initial?.country);
   const [eventType, setEventType] = useState<EventType | undefined>(initial?.eventType);

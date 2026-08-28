@@ -7,7 +7,7 @@
 **Problema:**
 ```typescript
 // ❌ VULNERABILITÀ: API key esposta nel codice sorgente
-const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY || "AIzaSyCn_d4D8Y174q4NF4Z373iCTFp0JWClwSA";
+const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 ```
 
 **Rischio:**

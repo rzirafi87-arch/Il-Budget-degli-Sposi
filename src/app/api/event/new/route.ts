@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { generatePublicId } from "@/lib/publicId";
 
 export async function POST(_req: NextRequest) {
   try {
@@ -18,7 +19,7 @@ export async function POST(_req: NextRequest) {
     const userId = authData.user.id;
 
     // 2) Crea evento con service client
-    const publicId = Math.random().toString(36).slice(2, 10);
+    const publicId = generatePublicId();
 
     const { data: evt, error: evtErr } = await db
       .from("events")
@@ -92,4 +93,3 @@ export async function POST(_req: NextRequest) {
 export async function GET(req: NextRequest) {
   return POST(req);
 }
-

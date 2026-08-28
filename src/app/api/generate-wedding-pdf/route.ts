@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { requireUser } from "@/lib/apiAuth";
 import { NextRequest, NextResponse } from 'next/server';
 export const runtime = "nodejs";
 import { getServiceClient } from '@/lib/supabaseServer';
@@ -8,6 +8,7 @@ import { getServiceClient } from '@/lib/supabaseServer';
 
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = await requireUser(request);
     const supabase = getServiceClient();
     const body = await request.json();
 
@@ -15,8 +16,9 @@ export async function POST(request: NextRequest) {
     const { data: eventData } = await supabase
       .from('events')
       .select('id')
+      .eq('owner_id', userId)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (!eventData) {
       return NextResponse.json({ error: 'No event found' }, { status: 404 });
@@ -31,8 +33,10 @@ export async function POST(request: NextRequest) {
       data: body 
     });
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Unexpected error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Unexpected error";
+    const status = message === "Missing JWT" || message === "Invalid JWT" ? 401 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }

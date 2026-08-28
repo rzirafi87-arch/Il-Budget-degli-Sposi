@@ -29,15 +29,15 @@ Nella sezione "Environment Variables" di Vercel, aggiungi TUTTE queste variabili
 #### **Variabili Pubbliche** (visibili nel browser)
 ```
 NEXT_PUBLIC_SUPABASE_URL = https://vsguhivizuneylqhygfk.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzZ3VoaXZpenVuZXlscWh5Z2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NzgwNjEsImV4cCI6MjA3NjU1NDA2MX0.3F_wg8USagvwmNoLpsJtHVUOqVKoXlJdUKvBybbWKr0
+NEXT_PUBLIC_SUPABASE_ANON_KEY = <configure-in-vercel>
 NEXT_PUBLIC_APP_NAME = Il Budget degli Sposi
 NEXT_PUBLIC_ENVIRONMENT = production
 ```
 
 #### **Variabili Private** (solo server-side)
 ```
-SUPABASE_SERVICE_ROLE = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzZ3VoaXZpenVuZXlscWh5Z2ZrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDk3ODA2MSwiZXhwIjoyMDc2NTU0MDYxfQ.WiIJ9wdsrx2i7MXgGDKC-Hdpnx3EUyNm3UyPgycEEeI
-GOOGLE_PLACES_API_KEY = AIzaSyCn_d4D8Y174q4NF4Z373iCTFp0JWClwSA
+SUPABASE_SERVICE_ROLE = <configure-in-vercel-never-commit>
+GOOGLE_PLACES_API_KEY = <configure-in-vercel-never-commit>
 ```
 
 ⚠️ **IMPORTANTE**: Assicurati che ogni variabile sia disponibile per:
