@@ -133,7 +133,13 @@ Procedura futura di recupero:
 
 ## Funzioni e trigger
 
-Le 21 funzioni `public` ricevono un `search_path` fissato a `public, pg_temp`. Le RPC che scrivono o fanno manutenzione sono revocate a `PUBLIC`, `anon` e `authenticated` e concesse esplicitamente a `service_role`. Le funzioni `SECURITY DEFINER` sono:
+Le 21 funzioni `public` ricevono un `search_path` fissato ai soli schemi
+fidati `public, extensions, pg_temp`. Le RPC che scrivono o fanno manutenzione
+sono revocate a `PUBLIC`, `anon` e `authenticated` e concesse
+esplicitamente a `service_role`. La RPC legacy
+`regenerate_event_data(uuid)`, che citava una tabella inesistente, delega ora
+alla rigenerazione timeline valida e preserva le categorie. Le funzioni
+`SECURITY DEFINER` sono:
 
 - `populate_event_categories()` e `populate_user_timeline()`: trigger post-insert evento;
 - `set_owner_id()`: trigger pre-insert evento;

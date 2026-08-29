@@ -289,8 +289,27 @@ begin
     from pg_proc p
     where p.pronamespace = 'public'::regnamespace
   loop
-    execute format('alter function %s set search_path = public, pg_temp', fn.signature);
+    execute format('alter function %s set search_path = public, extensions, pg_temp', fn.signature);
   end loop;
+end
+$$;
+
+-- The legacy implementation referenced event_category_selection, a relation
+-- that does not exist in the production schema. Keep the server-only RPC
+-- callable but make its behavior non-destructive and delegate to the valid,
+-- audited timeline regeneration routine. Existing categories are preserved.
+create or replace function public.regenerate_event_data(p_event_id uuid)
+returns text
+language plpgsql
+security definer
+set search_path = public, extensions, pg_temp
+as $$
+begin
+  if not exists (select 1 from public.events where id = p_event_id) then
+    return 'Evento non trovato';
+  end if;
+
+  return public.regenerate_event_timeline(p_event_id);
 end
 $$;
 

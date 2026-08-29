@@ -55,7 +55,7 @@ begin
   select count(*) into actual
   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
   where n.nspname = 'public'
-    and coalesce(array_to_string(p.proconfig, ','), '') !~ 'search_path=public, pg_temp';
+    and coalesce(array_to_string(p.proconfig, ','), '') !~ 'search_path=public, extensions, pg_temp';
   if actual <> 0 then
     raise exception 'Function hardening mismatch: % public functions lack pinned search_path', actual;
   end if;
@@ -84,4 +84,3 @@ begin
   end if;
 end
 $$;
-
