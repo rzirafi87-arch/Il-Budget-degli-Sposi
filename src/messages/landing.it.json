@@ -1,0 +1,58 @@
+{
+  "landing": {
+    "seo": {
+      "title": "Il Budget degli Sposi | Organizza matrimonio, budget e invitati",
+      "description": "Organizza il matrimonio in un unico spazio: budget, invitati, fornitori, scadenze e documenti sempre sotto controllo."
+    },
+    "nav": { "label": "Navigazione principale", "skip": "Vai al contenuto", "features": "Funzionalità", "how": "Come funziona", "benefits": "Perché usarlo", "openMenu": "Apri il menu" },
+    "actions": { "login": "Accedi", "start": "Inizia gratuitamente", "discover": "Scopri come funziona" },
+    "hero": {
+      "eyebrow": "Il tuo spazio per organizzare le nozze",
+      "title": "Il tuo matrimonio.", "highlight": "Tutto sotto controllo.",
+      "description": "Budget, invitati, fornitori, attività e documenti in un unico spazio ordinato, pensato per accompagnarvi fino al grande giorno.",
+      "proofs": ["Utilizzabile da smartphone", "Dati modificabili in ogni momento", "Nessuna installazione richiesta"]
+    },
+    "preview": { "label": "Anteprima illustrativa della Dashboard", "app": "Dashboard matrimonio", "eyebrow": "Il vostro spazio", "title": "Buongiorno, futuri sposi", "budget": "Budget pianificato", "guests": "Invitati confermati", "tasks": "Attività completate" },
+    "features": {
+      "eyebrow": "Tutto in un unico posto", "title": "Gli strumenti essenziali, senza confusione", "description": "Ogni area risponde a un bisogno concreto dell'organizzazione e resta collegata al vostro progetto.",
+      "items": [
+        { "title": "Budget", "description": "Tieni sotto controllo importi previsti, spese e pagamenti." },
+        { "title": "Invitati", "description": "Organizza la lista, le conferme e la disposizione ai tavoli." },
+        { "title": "Fornitori", "description": "Raccogli contatti, informazioni e attività legate ai fornitori." },
+        { "title": "Location", "description": "Valuta e conserva le informazioni sulle location che ti interessano." },
+        { "title": "Cerimonia", "description": "Organizza le informazioni utili per la chiesa e la cerimonia." },
+        { "title": "Timeline", "description": "Segui scadenze e attività lungo tutto il percorso." },
+        { "title": "Checklist", "description": "Trasforma le cose da fare in passi chiari e gestibili." },
+        { "title": "Documenti", "description": "Conserva in ordine file, preventivi e riferimenti importanti." }
+      ]
+    },
+    "how": {
+      "eyebrow": "Tre passaggi", "title": "Inizia senza complicazioni", "description": "Una configurazione guidata prepara il tuo spazio e ti porta direttamente agli strumenti che servono.",
+      "steps": [
+        { "title": "Crea il tuo progetto", "description": "Accedi o registrati e inserisci le prime informazioni sul matrimonio." },
+        { "title": "Organizza ciò che conta", "description": "Imposta budget, invitati, attività, fornitori e documenti." },
+        { "title": "Segui i progressi", "description": "Ritrova tutto nella Dashboard e aggiorna le informazioni quando vuoi." }
+      ]
+    },
+    "benefits": {
+      "eyebrow": "Più ordine, meno dispersione", "title": "Una visione chiara delle decisioni da prendere", "description": "L'app riunisce informazioni che spesso finiscono tra fogli, chat e appunti separati, rendendole più facili da consultare e aggiornare.",
+      "items": [
+        { "title": "Costi più leggibili", "description": "Confronta quanto hai pianificato con quanto hai già speso." },
+        { "title": "Organizzazione condivisa", "description": "Mantieni le informazioni importanti nello stesso spazio di lavoro." },
+        { "title": "Un percorso guidato", "description": "Dashboard, timeline e checklist aiutano a non perdere di vista i prossimi passi." }
+      ]
+    },
+    "faq": {
+      "title": "Domande frequenti", "description": "Le informazioni essenziali prima di iniziare.",
+      "items": [
+        { "question": "Cos'è Il Budget degli Sposi?", "answer": "È un'applicazione web per organizzare budget, invitati, attività, fornitori e documenti legati al matrimonio." },
+        { "question": "Devo installare qualcosa?", "answer": "No. Puoi utilizzarla direttamente dal browser su computer, tablet e smartphone." },
+        { "question": "Posso modificare i dati dopo averli inseriti?", "answer": "Sì. Le informazioni del progetto possono essere aggiornate durante tutta l'organizzazione." },
+        { "question": "Posso gestire budget e invitati nello stesso posto?", "answer": "Sì. Budget, invitati e le altre aree disponibili fanno parte dello stesso spazio di lavoro." },
+        { "question": "Come vengono gestiti i miei dati?", "answer": "L'accesso alle aree personali richiede autenticazione. Per dettagli su trattamento e diritti consulta la Privacy Policy." }
+      ]
+    },
+    "final": { "title": "Pronto a organizzare il vostro grande giorno?", "description": "Crea il tuo spazio e riunisci in un unico posto tutto ciò che serve per procedere con più chiarezza." },
+    "footer": { "description": "Uno spazio digitale semplice e ordinato per accompagnare l'organizzazione del matrimonio.", "product": "Prodotto", "legal": "Informazioni", "privacy": "Privacy Policy", "terms": "Termini di servizio", "cookies": "Cookie Policy", "contacts": "Contatti", "rights": "Tutti i diritti riservati." }
+  }
+}

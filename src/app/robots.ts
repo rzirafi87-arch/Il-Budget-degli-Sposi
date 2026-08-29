@@ -1,10 +1,7 @@
+import { BRAND_SITE_URL } from "@/config/brand";
 import type { MetadataRoute } from "next";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
-    ? "https://il-budget-degli-sposi-kbg1.vercel.app"
-    : "http://localhost:3000");
+const SITE_URL = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || BRAND_SITE_URL;
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -13,7 +10,9 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: [
           "/",
-          "/welcome",
+          "/it",
+          "/en",
+          "/mx",
           "/chi-siamo",
           "/come-funziona",
           "/contatti",

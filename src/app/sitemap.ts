@@ -1,14 +1,11 @@
+import { BRAND_SITE_URL } from "@/config/brand";
+import { locales } from "@/i18n/config";
 import type { MetadataRoute } from "next";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
-    ? "https://il-budget-degli-sposi-kbg1.vercel.app"
-    : "http://localhost:3000");
+const SITE_URL = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || BRAND_SITE_URL;
 
 const pages: string[] = [
-  "/",
-  "/welcome",
+  "",
   "/chi-siamo",
   "/come-funziona",
   "/contatti",
@@ -33,10 +30,10 @@ const pages: string[] = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastMod = new Date();
-  return pages.map((path) => ({
-    url: `${SITE_URL}${path}`,
+  return locales.flatMap((locale) => pages.map((path) => ({
+    url: `${SITE_URL}/${locale}${path}`,
     lastModified: lastMod,
-    changeFrequency: path === "/" ? "weekly" : "monthly",
-    priority: path === "/" ? 1 : 0.7,
-  }));
+    changeFrequency: path === "" ? "weekly" as const : "monthly" as const,
+    priority: path === "" ? 1 : 0.7,
+  })));
 }
