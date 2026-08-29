@@ -2436,7 +2436,7 @@ alter table public.wedding_cards enable row level security;
 alter table public.wedding_planners enable row level security;
 
 -- 90: analytics_events.Users can view own supplier analytics
-create policy "Users can view own supplier analytics" on public.analytics_events as permissive for select to  using (((supplier_id IN ( SELECT suppliers.id
+create policy "Users can view own supplier analytics" on public.analytics_events as permissive for select to public using (((supplier_id IN ( SELECT suppliers.id
    FROM suppliers
   WHERE (suppliers.user_id = auth.uid()))) OR (location_id IN ( SELECT locations.id
    FROM locations
@@ -2451,31 +2451,31 @@ create policy "Allow authenticated users to insert atelier" on public.atelier as
 create policy "Allow authenticated users to update atelier" on public.atelier as permissive for update to authenticated using (true) with check (true);
 
 -- 90: atelier.Allow public read access to atelier
-create policy "Allow public read access to atelier" on public.atelier as permissive for select to  using (true);
+create policy "Allow public read access to atelier" on public.atelier as permissive for select to public using (true);
 
 -- 90: budget_ideas.budget_ideas_read_all
-create policy budget_ideas_read_all on public.budget_ideas as permissive for select to  using (true);
+create policy budget_ideas_read_all on public.budget_ideas as permissive for select to public using (true);
 
 -- 90: budget_items.public read budget_items
-create policy "public read budget_items" on public.budget_items as permissive for select to  using (true);
+create policy "public read budget_items" on public.budget_items as permissive for select to public using (true);
 
 -- 90: categories.categories_delete_own
-create policy categories_delete_own on public.categories as permissive for delete to  using ((EXISTS ( SELECT 1
+create policy categories_delete_own on public.categories as permissive for delete to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = categories.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: categories.categories_insert_self
-create policy categories_insert_self on public.categories as permissive for insert to  with check ((EXISTS ( SELECT 1
+create policy categories_insert_self on public.categories as permissive for insert to public with check ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = categories.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: categories.categories_select_own
-create policy categories_select_own on public.categories as permissive for select to  using ((EXISTS ( SELECT 1
+create policy categories_select_own on public.categories as permissive for select to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = categories.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: categories.categories_update_own
-create policy categories_update_own on public.categories as permissive for update to  using ((EXISTS ( SELECT 1
+create policy categories_update_own on public.categories as permissive for update to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = categories.event_id) AND (events.owner_id = auth.uid())))));
 
@@ -2483,28 +2483,28 @@ create policy categories_update_own on public.categories as permissive for updat
 create policy "Public can read category translations" on public.category_translations as permissive for select to anon, authenticated using (true);
 
 -- 90: checklist_modules.public read checklist_modules
-create policy "public read checklist_modules" on public.checklist_modules as permissive for select to  using (true);
+create policy "public read checklist_modules" on public.checklist_modules as permissive for select to public using (true);
 
 -- 90: churches.churches_insert_auth
-create policy churches_insert_auth on public.churches as permissive for insert to  with check ((auth.uid() IS NOT NULL));
+create policy churches_insert_auth on public.churches as permissive for insert to public with check ((auth.uid() IS NOT NULL));
 
 -- 90: churches.churches_select_all
-create policy churches_select_all on public.churches as permissive for select to  using (true);
+create policy churches_select_all on public.churches as permissive for select to public using (true);
 
 -- 90: churches.churches_update_own
-create policy churches_update_own on public.churches as permissive for update to  using (((user_id = auth.uid()) AND (verified = false)));
+create policy churches_update_own on public.churches as permissive for update to public using (((user_id = auth.uid()) AND (verified = false)));
 
 -- 90: event_timeline_translations.Public can read event timeline tran
 create policy "Public can read event timeline translations" on public.event_timeline_translations as permissive for select to anon, authenticated using (true);
 
 -- 90: event_timelines.Anyone can view event timelines
-create policy "Anyone can view event timelines" on public.event_timelines as permissive for select to  using (true);
+create policy "Anyone can view event timelines" on public.event_timelines as permissive for select to public using (true);
 
 -- 90: event_type_categories.Anyone can view event type categories
-create policy "Anyone can view event type categories" on public.event_type_categories as permissive for select to  using (true);
+create policy "Anyone can view event type categories" on public.event_type_categories as permissive for select to public using (true);
 
 -- 90: event_type_subcategories.Anyone can view event type subcategori
-create policy "Anyone can view event type subcategories" on public.event_type_subcategories as permissive for select to  using (true);
+create policy "Anyone can view event type subcategories" on public.event_type_subcategories as permissive for select to public using (true);
 
 -- 90: event_type_translations.Public can read event type translations
 create policy "Public can read event type translations" on public.event_type_translations as permissive for select to anon, authenticated using (true);
@@ -2513,37 +2513,37 @@ create policy "Public can read event type translations" on public.event_type_tra
 create policy "Public can read event type variants" on public.event_type_variants as permissive for select to anon, authenticated using (true);
 
 -- 90: event_types.Anyone can view event types
-create policy "Anyone can view event types" on public.event_types as permissive for select to  using (true);
+create policy "Anyone can view event types" on public.event_types as permissive for select to public using (true);
 
 -- 90: events.events_delete_own
-create policy events_delete_own on public.events as permissive for delete to  using ((owner_id = auth.uid()));
+create policy events_delete_own on public.events as permissive for delete to public using ((owner_id = auth.uid()));
 
 -- 90: events.events_insert_self
-create policy events_insert_self on public.events as permissive for insert to  with check ((owner_id = auth.uid()));
+create policy events_insert_self on public.events as permissive for insert to public with check ((owner_id = auth.uid()));
 
 -- 90: events.events_select_own
-create policy events_select_own on public.events as permissive for select to  using ((owner_id = auth.uid()));
+create policy events_select_own on public.events as permissive for select to public using ((owner_id = auth.uid()));
 
 -- 90: events.events_update_own
-create policy events_update_own on public.events as permissive for update to  using ((owner_id = auth.uid()));
+create policy events_update_own on public.events as permissive for update to public using ((owner_id = auth.uid()));
 
 -- 90: expenses.expenses_delete_own
-create policy expenses_delete_own on public.expenses as permissive for delete to  using ((EXISTS ( SELECT 1
+create policy expenses_delete_own on public.expenses as permissive for delete to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = expenses.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: expenses.expenses_insert_self
-create policy expenses_insert_self on public.expenses as permissive for insert to  with check ((EXISTS ( SELECT 1
+create policy expenses_insert_self on public.expenses as permissive for insert to public with check ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = expenses.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: expenses.expenses_select_own
-create policy expenses_select_own on public.expenses as permissive for select to  using ((EXISTS ( SELECT 1
+create policy expenses_select_own on public.expenses as permissive for select to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = expenses.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: expenses.expenses_update_own
-create policy expenses_update_own on public.expenses as permissive for update to  using ((EXISTS ( SELECT 1
+create policy expenses_update_own on public.expenses as permissive for update to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = expenses.event_id) AND (events.owner_id = auth.uid())))));
 
@@ -2558,14 +2558,14 @@ create policy "Owners can manage family groups" on public.family_groups as permi
 create policy "Public can read countries" on public.geo_countries as permissive for select to anon, authenticated using (true);
 
 -- 90: guests.Users can manage their own guests
-create policy "Users can manage their own guests" on public.guests as permissive for all to  using ((EXISTS ( SELECT 1
+create policy "Users can manage their own guests" on public.guests as permissive for all to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = guests.event_id) AND (events.owner_id = auth.uid()))))) with check ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = guests.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: guests.Users can view their own guests
-create policy "Users can view their own guests" on public.guests as permissive for select to  using ((EXISTS ( SELECT 1
+create policy "Users can view their own guests" on public.guests as permissive for select to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = guests.event_id) AND (events.owner_id = auth.uid())))));
 
@@ -2573,45 +2573,45 @@ create policy "Users can view their own guests" on public.guests as permissive f
 create policy "Public can read locales" on public.i18n_locales as permissive for select to anon, authenticated using (true);
 
 -- 90: incomes.incomes_delete_own
-create policy incomes_delete_own on public.incomes as permissive for delete to  using ((EXISTS ( SELECT 1
+create policy incomes_delete_own on public.incomes as permissive for delete to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = incomes.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: incomes.incomes_insert_self
-create policy incomes_insert_self on public.incomes as permissive for insert to  with check ((EXISTS ( SELECT 1
+create policy incomes_insert_self on public.incomes as permissive for insert to public with check ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = incomes.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: incomes.incomes_select_own
-create policy incomes_select_own on public.incomes as permissive for select to  using ((EXISTS ( SELECT 1
+create policy incomes_select_own on public.incomes as permissive for select to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = incomes.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: incomes.incomes_update_own
-create policy incomes_update_own on public.incomes as permissive for update to  using ((EXISTS ( SELECT 1
+create policy incomes_update_own on public.incomes as permissive for update to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = incomes.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: locations.locations_insert_auth
-create policy locations_insert_auth on public.locations as permissive for insert to  with check ((auth.uid() IS NOT NULL));
+create policy locations_insert_auth on public.locations as permissive for insert to public with check ((auth.uid() IS NOT NULL));
 
 -- 90: locations.locations_select_all
-create policy locations_select_all on public.locations as permissive for select to  using (true);
+create policy locations_select_all on public.locations as permissive for select to public using (true);
 
 -- 90: locations.locations_update_own
-create policy locations_update_own on public.locations as permissive for update to  using (((user_id = auth.uid()) AND (verified = false)));
+create policy locations_update_own on public.locations as permissive for update to public using (((user_id = auth.uid()) AND (verified = false)));
 
 -- 90: musica_cerimonia.Anyone can view approved ceremony musicians
-create policy "Anyone can view approved ceremony musicians" on public.musica_cerimonia as permissive for select to  using ((status = 'approved'::text));
+create policy "Anyone can view approved ceremony musicians" on public.musica_cerimonia as permissive for select to public using ((status = 'approved'::text));
 
 -- 90: musica_cerimonia.Users can submit ceremony musicians
-create policy "Users can submit ceremony musicians" on public.musica_cerimonia as permissive for insert to  with check (true);
+create policy "Users can submit ceremony musicians" on public.musica_cerimonia as permissive for insert to public with check (true);
 
 -- 90: musica_ricevimento.Anyone can view approved reception musicians
-create policy "Anyone can view approved reception musicians" on public.musica_ricevimento as permissive for select to  using ((status = 'approved'::text));
+create policy "Anyone can view approved reception musicians" on public.musica_ricevimento as permissive for select to public using ((status = 'approved'::text));
 
 -- 90: musica_ricevimento.Users can submit reception musicians
-create policy "Users can submit reception musicians" on public.musica_ricevimento as permissive for insert to  with check (true);
+create policy "Users can submit reception musicians" on public.musica_ricevimento as permissive for insert to public with check (true);
 
 -- 90: non_invited_recipients.Owners can manage non invited recipients
 create policy "Owners can manage non invited recipients" on public.non_invited_recipients as permissive for all to authenticated using ((EXISTS ( SELECT 1
@@ -2621,7 +2621,7 @@ create policy "Owners can manage non invited recipients" on public.non_invited_r
   WHERE ((events.id = non_invited_recipients.event_id) AND (events.owner_id = ( SELECT auth.uid() AS uid))))));
 
 -- 90: payment_reminders.Users can manage their own payment reminders
-create policy "Users can manage their own payment reminders" on public.payment_reminders as permissive for all to  using ((EXISTS ( SELECT 1
+create policy "Users can manage their own payment reminders" on public.payment_reminders as permissive for all to public using ((EXISTS ( SELECT 1
    FROM (expenses e
      JOIN events ev ON ((ev.id = e.event_id)))
   WHERE ((e.id = payment_reminders.expense_id) AND (ev.owner_id = auth.uid()))))) with check ((EXISTS ( SELECT 1
@@ -2630,7 +2630,7 @@ create policy "Users can manage their own payment reminders" on public.payment_r
   WHERE ((e.id = payment_reminders.expense_id) AND (ev.owner_id = auth.uid())))));
 
 -- 90: payment_reminders.Users can view their own payment reminders
-create policy "Users can view their own payment reminders" on public.payment_reminders as permissive for select to  using ((EXISTS ( SELECT 1
+create policy "Users can view their own payment reminders" on public.payment_reminders as permissive for select to public using ((EXISTS ( SELECT 1
    FROM (expenses e
      JOIN events ev ON ((ev.id = e.event_id)))
   WHERE ((e.id = payment_reminders.expense_id) AND (ev.owner_id = auth.uid())))));
@@ -2639,34 +2639,34 @@ create policy "Users can view their own payment reminders" on public.payment_rem
 create policy "Public can read places" on public.places as permissive for select to anon, authenticated using (true);
 
 -- 90: profiles.profiles_insert_self
-create policy profiles_insert_self on public.profiles as permissive for insert to  with check ((auth.uid() = id));
+create policy profiles_insert_self on public.profiles as permissive for insert to public with check ((auth.uid() = id));
 
 -- 90: profiles.profiles_select_own
-create policy profiles_select_own on public.profiles as permissive for select to  using ((auth.uid() = id));
+create policy profiles_select_own on public.profiles as permissive for select to public using ((auth.uid() = id));
 
 -- 90: profiles.profiles_update_own
-create policy profiles_update_own on public.profiles as permissive for update to  using ((auth.uid() = id));
+create policy profiles_update_own on public.profiles as permissive for update to public using ((auth.uid() = id));
 
 -- 90: subcategories.subcategories_delete_own
-create policy subcategories_delete_own on public.subcategories as permissive for delete to  using ((EXISTS ( SELECT 1
+create policy subcategories_delete_own on public.subcategories as permissive for delete to public using ((EXISTS ( SELECT 1
    FROM (categories c
      JOIN events e ON ((e.id = c.event_id)))
   WHERE ((c.id = subcategories.category_id) AND (e.owner_id = auth.uid())))));
 
 -- 90: subcategories.subcategories_insert_self
-create policy subcategories_insert_self on public.subcategories as permissive for insert to  with check ((EXISTS ( SELECT 1
+create policy subcategories_insert_self on public.subcategories as permissive for insert to public with check ((EXISTS ( SELECT 1
    FROM (categories c
      JOIN events e ON ((e.id = c.event_id)))
   WHERE ((c.id = subcategories.category_id) AND (e.owner_id = auth.uid())))));
 
 -- 90: subcategories.subcategories_select_own
-create policy subcategories_select_own on public.subcategories as permissive for select to  using ((EXISTS ( SELECT 1
+create policy subcategories_select_own on public.subcategories as permissive for select to public using ((EXISTS ( SELECT 1
    FROM (categories c
      JOIN events e ON ((e.id = c.event_id)))
   WHERE ((c.id = subcategories.category_id) AND (e.owner_id = auth.uid())))));
 
 -- 90: subcategories.subcategories_update_own
-create policy subcategories_update_own on public.subcategories as permissive for update to  using ((EXISTS ( SELECT 1
+create policy subcategories_update_own on public.subcategories as permissive for update to public using ((EXISTS ( SELECT 1
    FROM (categories c
      JOIN events e ON ((e.id = c.event_id)))
   WHERE ((c.id = subcategories.category_id) AND (e.owner_id = auth.uid())))));
@@ -2675,10 +2675,10 @@ create policy subcategories_update_own on public.subcategories as permissive for
 create policy "Public can read subcategory translations" on public.subcategory_translations as permissive for select to anon, authenticated using (true);
 
 -- 90: subscription_packages.Allow public read subscription_packages
-create policy "Allow public read subscription_packages" on public.subscription_packages as permissive for select to  using ((is_active = true));
+create policy "Allow public read subscription_packages" on public.subscription_packages as permissive for select to public using ((is_active = true));
 
 -- 90: subscription_transactions.Users can view own transactions via s
-create policy "Users can view own transactions via supplier" on public.subscription_transactions as permissive for select to  using (((supplier_id IN ( SELECT suppliers.id
+create policy "Users can view own transactions via supplier" on public.subscription_transactions as permissive for select to public using (((supplier_id IN ( SELECT suppliers.id
    FROM suppliers
   WHERE (suppliers.user_id = auth.uid()))) OR (location_id IN ( SELECT locations.id
    FROM locations
@@ -2687,13 +2687,13 @@ create policy "Users can view own transactions via supplier" on public.subscript
   WHERE (churches.user_id = auth.uid())))));
 
 -- 90: suppliers.suppliers_insert_auth
-create policy suppliers_insert_auth on public.suppliers as permissive for insert to  with check ((auth.uid() IS NOT NULL));
+create policy suppliers_insert_auth on public.suppliers as permissive for insert to public with check ((auth.uid() IS NOT NULL));
 
 -- 90: suppliers.suppliers_select_all
-create policy suppliers_select_all on public.suppliers as permissive for select to  using (true);
+create policy suppliers_select_all on public.suppliers as permissive for select to public using (true);
 
 -- 90: suppliers.suppliers_update_own
-create policy suppliers_update_own on public.suppliers as permissive for update to  using (((user_id = auth.uid()) AND (verified = false)));
+create policy suppliers_update_own on public.suppliers as permissive for update to public using (((user_id = auth.uid()) AND (verified = false)));
 
 -- 90: table_assignments.Owners can manage table assignments
 create policy "Owners can manage table assignments" on public.table_assignments as permissive for all to authenticated using ((EXISTS ( SELECT 1
@@ -2719,17 +2719,17 @@ create policy "Owners can manage timeline items" on public.timeline_items as per
   WHERE ((events.id = timeline_items.event_id) AND (events.owner_id = ( SELECT auth.uid() AS uid))))));
 
 -- 90: traditions.public read traditions
-create policy "public read traditions" on public.traditions as permissive for select to  using (true);
+create policy "public read traditions" on public.traditions as permissive for select to public using (true);
 
 -- 90: user_event_timeline.Users can manage their own timeline
-create policy "Users can manage their own timeline" on public.user_event_timeline as permissive for all to  using ((EXISTS ( SELECT 1
+create policy "Users can manage their own timeline" on public.user_event_timeline as permissive for all to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = user_event_timeline.event_id) AND (events.owner_id = auth.uid()))))) with check ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = user_event_timeline.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: user_event_timeline.Users can view their own timeline
-create policy "Users can view their own timeline" on public.user_event_timeline as permissive for select to  using ((EXISTS ( SELECT 1
+create policy "Users can view their own timeline" on public.user_event_timeline as permissive for select to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = user_event_timeline.event_id) AND (events.owner_id = auth.uid())))));
 
@@ -2740,30 +2740,30 @@ create policy "Public can read vendor places" on public.vendor_places as permiss
 create policy "Public can read vendors" on public.vendors as permissive for select to anon, authenticated using (true);
 
 -- 90: wedding_cards.wedding_cards_delete_own
-create policy wedding_cards_delete_own on public.wedding_cards as permissive for delete to  using ((EXISTS ( SELECT 1
+create policy wedding_cards_delete_own on public.wedding_cards as permissive for delete to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = wedding_cards.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: wedding_cards.wedding_cards_insert_self
-create policy wedding_cards_insert_self on public.wedding_cards as permissive for insert to  with check ((EXISTS ( SELECT 1
+create policy wedding_cards_insert_self on public.wedding_cards as permissive for insert to public with check ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = wedding_cards.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: wedding_cards.wedding_cards_select_own
-create policy wedding_cards_select_own on public.wedding_cards as permissive for select to  using ((EXISTS ( SELECT 1
+create policy wedding_cards_select_own on public.wedding_cards as permissive for select to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = wedding_cards.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: wedding_cards.wedding_cards_update_own
-create policy wedding_cards_update_own on public.wedding_cards as permissive for update to  using ((EXISTS ( SELECT 1
+create policy wedding_cards_update_own on public.wedding_cards as permissive for update to public using ((EXISTS ( SELECT 1
    FROM events
   WHERE ((events.id = wedding_cards.event_id) AND (events.owner_id = auth.uid())))));
 
 -- 90: wedding_planners.Anyone can view approved wedding planners
-create policy "Anyone can view approved wedding planners" on public.wedding_planners as permissive for select to  using ((status = 'approved'::text));
+create policy "Anyone can view approved wedding planners" on public.wedding_planners as permissive for select to public using ((status = 'approved'::text));
 
 -- 90: wedding_planners.Users can submit wedding planners
-create policy "Users can submit wedding planners" on public.wedding_planners as permissive for insert to  with check (true);
+create policy "Users can submit wedding planners" on public.wedding_planners as permissive for insert to public with check (true);
 
 -- 100: categories.update_categories_updated_at
 CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
