@@ -52,11 +52,19 @@ jobs:
       - name: Run RLS authorization regression tests
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_25_rls.sql
 
+      - name: Lint reconstructed database functions
+        run: |
+          cd .supabase-ci
+          supabase db lint --local --schema public --level warning --fail-on error
+
       - name: Generate post-Branch-25 TypeScript types
         run: |
           mkdir -p generated
           cd .supabase-ci
           supabase gen types typescript --local > ../generated/database.types.ts
+
+      - name: Verify committed database types are current
+        run: diff -u src/types/database.types.ts generated/database.types.ts
 
       - name: Upload generated database types
         uses: actions/upload-artifact@v4
