@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
     .not("supplier", "is", null);
 
   const { count: guestCount } = await db
-    .from("wedding_guests")
+    .from("guests")
     .select("*", { count: "exact", head: true })
     .eq("event_id", ev.id);
 

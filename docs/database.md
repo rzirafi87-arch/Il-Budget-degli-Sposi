@@ -37,6 +37,41 @@ flowchart TD
 
 Prima di introdurre membership occorre decidere ruoli e inviti (`owner`, `editor`, `viewer`) e migrare gli owner esistenti senza sostituire l'attuale ownership.
 
+## ORPHANED LEGACY EVENTS
+
+Production contiene tre eventi legacy i cui account Auth originali sono stati
+cancellati. I log Auth conservano evidenza univoca della relazione storica fra
+ciascun UUID e l'identità registrata nell'evento; nessuna email o altro dato
+personale è riportato nel repository.
+
+| `public_id` | Owner storico mascherato | Stato Branch 25 |
+|---|---|---|
+| `gs6bp72d` | `93518589…` | preservato, non accessibile agli utenti correnti |
+| `inxt751n` | `857bc452…` | preservato, non accessibile agli utenti correnti |
+| `xye8v65y` | `949fc8c8…` | preservato, non accessibile agli utenti correnti |
+
+Questi record non vengono cancellati perché rappresentano dati utente
+recuperabili e non vengono riassegnati perché nessuno degli account Auth
+attualmente attivi è il loro proprietario. Branch 25 mantiene invariati gli
+`owner_id` e rinvia la FK `events.owner_id → auth.users.id`: aggiungerla e
+validarla oggi fallirebbe sui tre record, mentre cancellazione, account fittizi
+o riassegnazione produrrebbero perdita o accesso improprio.
+
+Le policy owner-only confrontano `events.owner_id` con `auth.uid()`: gli
+eventi orfani non sono leggibili o modificabili dagli utenti correnti, non sono
+pubblici e non esiste alcuna RPC di “claim”. Il test RLS usa una fixture
+equivalente, non dati production.
+
+Procedura futura di recupero:
+
+1. l'utente originale crea un nuovo account;
+2. un amministratore verifica la corrispondenza con l'identità storica;
+3. identifica in modo univoco l'evento da recuperare;
+4. aggiorna `owner_id` al nuovo `auth.uid()` tramite procedura amministrativa;
+5. esegue nuovamente i test RLS e verifica l'accesso esclusivo;
+6. dopo la remediation di tutti gli orfani introduce e valida la FK con
+   semantica `ON DELETE RESTRICT` o altra semantica approvata esplicitamente.
+
 ## Mappa delle tabelle
 
 | Tabella | Scopo e ownership | PK | Relazioni principali | Uso applicativo |
@@ -130,7 +165,63 @@ Esiste drift rilevante:
 - il codice fa riferimento a relazioni assenti in production: `appointments`, `budgets`, `contact_messages`, `countries`, `event_members`, `event_share_tokens`, `gift_list`, `languages`, `user_favorites`, `wedding_guests`, `app_health_latest` e `v_country_event_wedding`;
 - alcune route sperimentali usano anche colonne non presenti nello schema effettivo (`type_id`, `title`, `is_public`, `slug` in vari percorsi core).
 
-Di conseguenza una nuova installazione non può ancora essere ricostruita esclusivamente dalle migration versionate. Non applicare `supabase-COMPLETE-SETUP.sql` o `supabase-ALL-PATCHES.sql` a production: contengono definizioni storiche e policy incompatibili con lo stato consolidato.
+Branch 25 risolve il drift per i nuovi ambienti tramite
+`supabase/baseline/production_pre_branch_25.sql`, export schema-only generato
+dai cataloghi PostgreSQL production prima del consolidamento. Contiene
+extension applicative portabili, 44 tabelle, sequence, constraint, FK
+preesistenti, 5 view, 21 funzioni, indici, RLS, 77 policy, 27 trigger e grant
+rilevanti. Non contiene record production, identità Auth o segreti.
+
+La baseline è intenzionalmente fuori da `supabase/migrations`:
+
+- un ambiente nuovo la applica esplicitamente, quindi applica la migration
+  incrementale Branch 25;
+- production, dove gli oggetti esistono già, riceve soltanto la migration
+  incrementale;
+- nessun `repair`, squash, reset remoto o modifica manuale della migration
+  history è necessario.
+
+Non applicare `supabase-COMPLETE-SETUP.sql` o
+`supabase-ALL-PATCHES.sql` a production: sono bootstrap/patch storici
+sovrapposti e non costituiscono la baseline canonica.
+
+## Oggetti applicativi assenti e codice legacy
+
+| Oggetto/colonna | Classificazione | Produzione e decisione Branch 25 |
+|---|---|---|
+| `appointments` | A — route raggiungibile ma persistence non disponibile | La pagina mostra un'agenda fallback; create/update/delete richiedono una migration futura dedicata. Non si crea la tabella implicitamente. |
+| `budgets` | C/D — API sperimentali evento, migration storica mancante | Le route per baby shower, birthday ed engagement non sono il data layer budget production canonico, che usa `events.total_budget`, `expenses`, `incomes`, `budget_items` e `budget_ideas`. |
+| `contact_messages` | C — persistenza opzionale futura | Il form accetta la richiesta in modalità best-effort; nessuna tabella viene inventata nel Branch 25. |
+| `countries` | D — nome legacy sostituito | La route raggiungibile usa ora la tabella production `geo_countries`. |
+| `languages` | D — nome legacy sostituito | La route raggiungibile usa ora `i18n_locales`. |
+| `event_members`, `event_share_tokens` | C — condivisione sperimentale non production | Il modello Branch 25 resta owner-only; le RLS non dipendono da queste tabelle e le route share non sono una funzionalità production supportata. |
+| `gift_list` | C/D — pagina raggiungibile, schema futuro mancante | Il codice usa inoltre colonne evento legacy; richiede una feature migration completa, non una tabella creata per far tacere gli errori. |
+| `user_favorites` | C — relazione privata futura | Da sostituire nei Branch 26+ con relazioni `saved_*` tipizzate e RLS per evento. |
+| `wedding_guests` | D — alias legacy errato | La route production `event/resolve` è stata allineata alla tabella canonica `guests`. |
+| `app_health_latest` | C/D — modulo admin incompleto | View e RPC refresh non esistono; il workflow health contiene ancora un dominio placeholder e non è un controllo production affidabile. |
+| `v_country_event_wedding` | C — schema `app` sperimentale | Le route wedding/traditions mantengono fallback; la view non viene creata nel Branch 25. |
+| `type_id`, `title`, `is_public`, `slug` | B/C — colonne del core storico | Production usa `event_type`/`event_type_id`, `name`, ownership privata e `event_types.code`. Le dashboard/seed legacy che le citano richiedono consolidamento funzionale separato. |
+
+## HOW TO REBUILD THE DATABASE FROM ZERO
+
+Il percorso autorevole e privo di dati production è:
+
+1. installare Supabase CLI 2.116.0 e un runtime Docker compatibile;
+2. inizializzare un progetto Supabase locale vuoto in una directory temporanea;
+3. avviare `supabase start`;
+4. applicare con `psql -v ON_ERROR_STOP=1`
+   `supabase/baseline/production_pre_branch_25.sql`;
+5. applicare
+   `supabase/migrations/20260829110059_consolidate_security_and_indexes.sql`;
+6. eseguire `supabase/tests/branch_25_schema.sql`;
+7. eseguire `supabase/tests/branch_25_rls.sql`;
+8. generare i tipi con `supabase gen types typescript --local`;
+9. arrestare l'ambiente temporaneo con `supabase stop --no-backup`.
+
+Il workflow `.github/workflows/database-rebuild.yml` automatizza esattamente
+questa sequenza in GitHub Actions. La migration storica
+`20260828133459_secure_exposed_tables.sql` non viene riapplicata nel rebuild:
+il suo stato production è già rappresentato dalla baseline PRE-Branch-25.
 
 ## Service role, Auth e Storage
 
@@ -139,6 +230,37 @@ Di conseguenza una nuova installazione non può ancora essere ricostruita esclus
 - Due moduli admin duplicati (`supabase-admin.ts` e `supabaseAdmin.ts`) sono candidati a consolidamento futuro; non vengono rimossi senza migrare gli import.
 - Una password database era versionata in file di configurazione/documentazione. È stata rimossa, ma deve essere ruotata perché resta nella cronologia Git.
 - Non essendoci bucket, policy o chiamate Storage applicative, la gestione documenti non è oggi implementata tramite Supabase Storage.
+
+### Censimento consumer della password database
+
+| Consumer | Classe | Evidenza |
+|---|---|---|
+| Next.js browser/server e API Vercel | A | Usano URL Supabase, publishable/anon key e service role; non aprono connessioni PostgreSQL dirette. |
+| Script `run-sql`, seed, verifica patch, connessione DB e task VS Code | B | Leggono `SUPABASE_DB_URL` o `DATABASE_URL` da ambiente locale non versionato. |
+| Docker Compose locale | B, ma indipendente da production | Usa credenziali locali statiche e non la password Supabase production. |
+| GitHub Actions attuali | A | La CI applicativa usa endpoint fittizi; il rebuild DB usa soltanto credenziali Supabase locali temporanee. |
+| GitHub repository/organization secrets | C | I nomi/valori dei secret non sono enumerabili con gli strumenti disponibili. |
+| Vercel environment variables | C per il censimento completo | La configurazione progetto è accessibile, ma il connettore disponibile non espone l'elenco delle variabili; non è possibile escludere un `DATABASE_URL` amministrativo. |
+| Postazioni amministrative e secret store esterni | C | Non accessibili dal repository o dai connettori. |
+
+### Piano di rotazione programmata
+
+1. Inventariare in Vercel e GitHub i soli nomi delle variabili
+   `SUPABASE_DB_URL`, `DATABASE_URL`, `POSTGRES_URL*`, `PGPASSWORD`.
+2. Inventariare postazioni amministrative, task VS Code e automazioni esterne.
+3. Salvare temporaneamente la nuova password in un password manager
+   amministrativo; non inserirla in Git, chat o log.
+4. Ruotare la password database dal pannello Supabase.
+5. Aggiornare atomicamente ogni consumer diretto classificato B, iniziando dai
+   job non interattivi e terminando con le postazioni locali.
+6. Verificare connessione SQL read-only, migration tooling, CI, login,
+   onboarding e API applicative.
+7. Se un consumer diretto smette di funzionare, ripristinare temporaneamente la
+   password precedente dal pannello Supabase, riallineare tutti i secret store
+   e ripetere la rotazione. Non mantenere due connection string divergenti.
+
+La rotazione resta obbligatoria prima del merge. La storia Git condivisa non
+viene riscritta nel Branch 25.
 
 ## Evoluzione per Branch 26+
 

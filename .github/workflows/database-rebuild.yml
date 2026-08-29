@@ -1,0 +1,72 @@
+name: Database Rebuild
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/database-rebuild.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: database-rebuild-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+      LOCAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.116.0
+
+      - name: Initialize isolated Supabase project
+        run: |
+          mkdir .supabase-ci
+          cd .supabase-ci
+          supabase init
+          supabase start
+
+      - name: Apply canonical pre-Branch-25 baseline
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/baseline/production_pre_branch_25.sql
+
+      - name: Apply Branch 25 consolidation
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260829110059_consolidate_security_and_indexes.sql
+
+      - name: Verify reconstructed schema
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_25_schema.sql
+
+      - name: Run RLS authorization regression tests
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_25_rls.sql
+
+      - name: Generate post-Branch-25 TypeScript types
+        run: |
+          mkdir -p generated
+          cd .supabase-ci
+          supabase gen types typescript --local > ../generated/database.types.ts
+
+      - name: Upload generated database types
+        uses: actions/upload-artifact@v4
+        with:
+          name: branch-25-database-types
+          path: generated/database.types.ts
+          if-no-files-found: error
+
+      - name: Stop isolated Supabase project
+        if: always()
+        run: |
+          cd .supabase-ci
+          supabase stop --no-backup

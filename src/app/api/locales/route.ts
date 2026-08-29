@@ -25,7 +25,17 @@ export async function GET(req: NextRequest) {
   const db = getServiceClient();
   const { error } = await db.auth.getUser(jwt);
   if (error) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  const { data, error: dbErr } = await db.from("languages").select("code, name, native_name, rtl");
+  const { data, error: dbErr } = await db
+    .from("i18n_locales")
+    .select("code, name, direction")
+    .order("code");
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
-  return NextResponse.json({ locales: data });
+  return NextResponse.json({
+    locales: (data || []).map((locale) => ({
+      code: locale.code,
+      name: locale.name,
+      native_name: locale.name,
+      rtl: locale.direction === "rtl",
+    })),
+  });
 }
