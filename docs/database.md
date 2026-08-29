@@ -234,7 +234,7 @@ il suo stato production è già rappresentato dalla baseline PRE-Branch-25.
 - La service role è letta soltanto da variabili server-side e non usa prefissi `NEXT_PUBLIC_`.
 - Le API con service role devono autenticare il JWT e filtrare per owner perché bypassano RLS. I test IDOR coprono le route private principali.
 - Due moduli admin duplicati (`supabase-admin.ts` e `supabaseAdmin.ts`) sono candidati a consolidamento futuro; non vengono rimossi senza migrare gli import.
-- Una password database era versionata in file di configurazione/documentazione. È stata rimossa, ma deve essere ruotata perché resta nella cronologia Git.
+- Una password database era versionata in file di configurazione/documentazione. È stata rimossa dall'HEAD e ruotata il 29 agosto 2026; la cronologia Git condivisa non è stata riscritta.
 - Non essendoci bucket, policy o chiamate Storage applicative, la gestione documenti non è oggi implementata tramite Supabase Storage.
 
 ### Censimento consumer della password database
@@ -265,8 +265,51 @@ il suo stato production è già rappresentato dalla baseline PRE-Branch-25.
    password precedente dal pannello Supabase, riallineare tutti i secret store
    e ripetere la rotazione. Non mantenere due connection string divergenti.
 
-La rotazione resta obbligatoria prima del merge. La storia Git condivisa non
-viene riscritta nel Branch 25.
+La rotazione è stata completata prima dell'applicazione production. I secret
+store GitHub/Vercel e gli eventuali consumer PostgreSQL diretti sono stati
+riallineati e verificati; anon key e service-role key non sono cambiate. La
+storia Git condivisa non viene riscritta nel Branch 25.
+
+## Verifica production Branch 25
+
+La migration `20260829110059_consolidate_security_and_indexes.sql` è stata
+applicata a production il 29 agosto 2026 dopo il rebuild isolato e il controllo
+dei secret. L'organizzazione Supabase è sul piano Free: PITR e backup gestiti
+ripristinabili non sono disponibili. La strategia di recupero adottata per
+questa migration non distruttiva è la baseline canonica PRE-Branch-25, insieme
+ai conteggi e fingerprint logici pre-migration. Nessuna tabella, colonna o riga
+utente è stata eliminata o riscritta.
+
+| Entità | Prima | Dopo | Esito |
+|---|---:|---:|---|
+| `auth.users` | 2 | 2 | invariato |
+| `profiles` | 1 | 2 | backfill intenzionale del profilo Auth mancante |
+| `events` | 10 | 10 | invariato |
+| `guests` | 0 | 0 | invariato |
+| `expenses` | 0 | 0 | invariato |
+| `incomes` | 0 | 0 | invariato |
+| `budget_items` | 0 | 0 | invariato |
+| `budget_ideas` | 0 | 0 | invariato |
+| `timeline_items` | 166 | 166 | invariato |
+| `suppliers` | 326 | 326 | invariato |
+| `locations` | 128 | 128 | invariato |
+| `churches` | 2 | 2 | invariato |
+
+I fingerprint completi delle righe e degli `owner_id` degli eventi legacy
+`gs6bp72d`, `inxt751n` e `xye8v65y` sono rimasti identici. La FK
+`events.owner_id -> auth.users.id` non è stata aggiunta. Test RLS transazionali
+con rollback hanno verificato utenti A/B, anonimo, ownership non trasferibile,
+RPC amministrative server-only e inaccessibilità dei tre eventi legacy per
+entrambi gli utenti Auth correnti.
+
+Advisor dopo la migration:
+
+- security: 100 finding (1 info, 99 warning), da 131 iniziali; zero funzioni con
+  `search_path` mutable e nessuna delle 5 RPC `SECURITY DEFINER` resta esposta;
+- performance: 4 FK senza indice, da 13; restano 117 indici `unused`, 1 indice
+  duplicato e 5 avvisi `auth_rls_initplan`, lasciati intenzionalmente;
+- i 98 avvisi GraphQL residui descrivono visibilità dello schema per grant
+  `anon`/`authenticated`; l'accesso alle righe rimane vincolato dalle policy RLS.
 
 ## Evoluzione per Branch 26+
 
