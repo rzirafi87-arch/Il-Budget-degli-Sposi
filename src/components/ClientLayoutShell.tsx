@@ -32,6 +32,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
   })();
 
   const isSaveTheDate = normalizedPath.startsWith("/save-the-date");
+  const isPublicHome = normalizedPath === "/";
   const isOnboarding =
     normalizedPath.startsWith("/select-language") ||
     normalizedPath.startsWith("/select-country") ||
@@ -90,6 +91,10 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
       }
     } catch {}
   }, [locale]);
+
+  if (isPublicHome) {
+    return <ToastProvider>{children}</ToastProvider>;
+  }
 
   return (
     <ToastProvider>

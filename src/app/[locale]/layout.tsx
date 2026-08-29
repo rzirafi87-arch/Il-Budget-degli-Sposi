@@ -2,7 +2,7 @@
 import { AppSettingsProvider } from "@/app/(providers)/app-settings";
 import ClientLayoutShell from "@/components/ClientLayoutShell";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
-import { JsonLd, LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
+import { OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
 
 import {
   BRAND_DEFAULT_DESCRIPTION,
@@ -86,13 +86,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     },
     description: L.description,
     manifest: "/manifest.webmanifest",
-    icons: {
-      icon: [
-        { url: "/backgrounds/icon-192.png", sizes: "192x192", type: "image/png" },
-        { url: "/backgrounds/icon-512.png", sizes: "512x512", type: "image/png" },
-      ],
-      apple: [{ url: "/backgrounds/icon-192.png" }],
-    },
+    icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }] },
     keywords: [...L.keywords],
     authors: [{ name: BRAND_NAME }],
     creator: BRAND_NAME,
@@ -131,9 +125,6 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
       description: L.ogDescription,
       images: [`${siteUrl}/twitter-image`],
     },
-    verification: {
-      google: "google-site-verification-code-here",
-    },
     alternates: {
       canonical: `/${locale}`,
     },
@@ -167,8 +158,6 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   return (
     <>
         {/* JSON-LD structured data can be rendered in the body; search engines accept it there */}
-        <JsonLd />
-        <LocalBusinessSchema />
         <WebsiteSchema />
         <OrganizationSchema />
         {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
