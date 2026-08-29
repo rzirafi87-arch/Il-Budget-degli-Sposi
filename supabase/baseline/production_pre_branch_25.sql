@@ -1148,7 +1148,7 @@ BEGIN
   
   RETURN (v_assigned_seats < v_total_seats);
 END;
-$function$
+$function$;
 
 
 -- 50: ensure_subcategory(uuid,text)
@@ -1160,7 +1160,7 @@ begin
   insert into public.subcategories (id, category_id, name)
   values (gen_random_uuid(), p_category, p_name)
   on conflict (category_id, lower(name)) do nothing;
-end $function$
+end $function$;
 
 
 -- 50: find_or_create_place(text,text,text,numeric,numeric,text,text,t
@@ -1212,7 +1212,7 @@ BEGIN
   
   RETURN v_place_id;
 END;
-$function$
+$function$;
 
 
 -- 50: get_or_create_category(uuid,text)
@@ -1233,7 +1233,7 @@ begin
   limit 1;
 
   return v_id;
-end $function$
+end $function$;
 
 
 -- 50: get_table_stats(uuid)
@@ -1252,7 +1252,7 @@ BEGIN
   LEFT JOIN table_assignments ta ON ta.table_id = t.id
   WHERE t.event_id = p_event_id;
 END;
-$function$
+$function$;
 
 
 -- 50: get_visible_suppliers(text,text,text,boolean)
@@ -1295,7 +1295,7 @@ BEGIN
     -- Then by name
     s.name ASC;
 END;
-$function$
+$function$;
 
 
 -- 50: increment_analytics_counter(text,uuid,text)
@@ -1330,7 +1330,7 @@ BEGIN
     END IF;
   END IF;
 END;
-$function$
+$function$;
 
 
 -- 50: is_subscription_active(text,timestamp with time zone)
@@ -1351,7 +1351,7 @@ BEGIN
   
   RETURN p_expires_at > TIMEZONE('utc', NOW());
 END;
-$function$
+$function$;
 
 
 -- 50: normalize_phone(text)
@@ -1377,7 +1377,7 @@ BEGIN
   
   RETURN phone_input;
 END;
-$function$
+$function$;
 
 
 -- 50: normalize_url(text)
@@ -1404,7 +1404,7 @@ BEGIN
   
   RETURN url_input;
 END;
-$function$
+$function$;
 
 
 -- 50: populate_event_categories()
@@ -1443,7 +1443,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$function$
+$function$;
 
 
 -- 50: populate_user_timeline()
@@ -1483,7 +1483,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$function$
+$function$;
 
 
 -- 50: regenerate_event_data(uuid)
@@ -1539,7 +1539,7 @@ BEGIN
 
   RETURN format('✅ Rigenerato: %s timeline, %s categorie', timeline_count, category_count);
 END;
-$function$
+$function$;
 
 
 -- 50: regenerate_event_timeline(uuid)
@@ -1576,7 +1576,7 @@ BEGIN
 
   RETURN format('✅ Rigenerato: %s milestone timeline', timeline_count);
 END;
-$function$
+$function$;
 
 
 -- 50: seed_categories(uuid)
@@ -1607,7 +1607,7 @@ BEGIN
     ('Comunicazione & Media'),
     ('Extra & Contingenze')
   ) AS t(name);
-END $function$
+END $function$;
 
 
 -- 50: seed_full_event(uuid)
@@ -1751,7 +1751,7 @@ begin
   v_cat := get_or_create_category(p_event, 'Extra & Contingenze');
   perform ensure_subcategory(v_cat, 'Imprevisti');
   perform ensure_subcategory(v_cat, 'Spese varie');
-end $function$
+end $function$;
 
 
 -- 50: seed_subcategories(uuid,text[])
@@ -1766,7 +1766,7 @@ BEGIN
     INSERT INTO public.subcategories (id, category_id, name)
     VALUES (uuid_generate_v4(), p_category, n);
   END LOOP;
-END $function$
+END $function$;
 
 
 -- 50: set_owner_id()
@@ -1781,7 +1781,7 @@ BEGIN
   END IF;
   RETURN NEW;
 END;
-$function$
+$function$;
 
 
 -- 50: update_updated_at()
@@ -1793,7 +1793,7 @@ BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$function$
+$function$;
 
 
 -- 50: update_updated_at_column()
@@ -1805,7 +1805,7 @@ BEGIN
   NEW.updated_at = now();
   RETURN NEW;
 END;
-$function$
+$function$;
 
 
 -- 50: upsert_vendor(text,text,text,text,text,text,text,numeric,intege
@@ -1864,7 +1864,7 @@ BEGIN
   
   RETURN v_vendor_id;
 END;
-$function$
+$function$;
 
 
 -- 60: high_rated_locations
