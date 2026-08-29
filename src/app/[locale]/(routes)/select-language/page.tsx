@@ -3,6 +3,7 @@ import { LANGS } from "@/lib/loadConfigs";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Globe2 } from "lucide-react";
 
 export default function SelectLanguagePage() {
   const t = useTranslations();
@@ -48,11 +49,14 @@ export default function SelectLanguagePage() {
         backgroundSize: "cover",
       }}
     >
-      <div className="max-w-xl w-full mx-4 p-8 rounded-3xl bg-white/80 backdrop-blur border border-gray-200 shadow-xl">
+      <div className="onboarding-panel max-w-xl">
+        <div className="onboarding-progress" aria-label="Passaggio 1 di 3">
+          <span className="onboarding-progress__step onboarding-progress__step--active" />
+          <span className="onboarding-progress__step" />
+          <span className="onboarding-progress__step" />
+        </div>
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
-          <span aria-hidden="true" className="mr-2">
-            🌐
-          </span>
+          <Globe2 className="mx-auto mb-3 text-primary" size={34} aria-hidden />
           {t("onboarding.selectLanguageTitle", {
             fallback: "Scegli la lingua",
           })}
@@ -66,14 +70,13 @@ export default function SelectLanguagePage() {
           {LANGS.map((lang) => (
             <button
               key={lang.slug}
-              className={`px-6 py-4 rounded-xl font-semibold text-base shadow-sm border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all flex items-center justify-center gap-2 ${
-                selected === lang.slug ? "bg-[#A3B59D] text-white" : ""
-              }`}
+              className="onboarding-choice"
               onClick={() =>
                 lang.available !== false && handleSelect(lang.slug)
               }
               aria-label={lang.label || lang.slug.toUpperCase()}
               disabled={lang.available === false}
+              aria-pressed={selected === lang.slug}
             >
               <span aria-hidden="true" className="mr-2 text-lg">
                 {lang.emoji || "🌐"}

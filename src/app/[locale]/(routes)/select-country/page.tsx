@@ -75,7 +75,12 @@ export default function SelectCountryPage() {
         backgroundSize: "cover",
       }}
     >
-      <div className="max-w-md w-full p-8 rounded-2xl shadow-lg bg-white/90 border border-gray-200">
+      <div className="onboarding-panel max-w-lg">
+        <div className="onboarding-progress" aria-label="Passaggio 2 di 3">
+          <span className="onboarding-progress__step" />
+          <span className="onboarding-progress__step onboarding-progress__step--active" />
+          <span className="onboarding-progress__step" />
+        </div>
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
           <span aria-hidden="true" className="mr-2">🗺️</span>
           {t("onboarding.selectCountryTitle", { fallback: "Scegli il paese" })}
@@ -87,9 +92,10 @@ export default function SelectCountryPage() {
           {COUNTRIES.map((c) => (
             <button
               key={c.code}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 hover:bg-[#A3B59D]/10 text-lg font-semibold transition-all w-full justify-center ${selectedCountry === c.code ? 'ring-2 ring-[#A3B59D]' : ''}`}
+              className="onboarding-choice w-full text-lg"
               onClick={() => c.available !== false && handleSelect(c.code)}
               disabled={c.available === false}
+              aria-pressed={selectedCountry === c.code}
             >
               <span className="text-2xl" aria-hidden="true">{c.emoji}</span>
               <span>{new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of(c.code.toUpperCase()) || c.label}</span>
@@ -108,7 +114,7 @@ export default function SelectCountryPage() {
         )}
         {selectedCountry && (
           <button
-            className="mt-8 w-full bg-[#A3B59D] text-white py-3 px-6 rounded font-semibold hover:bg-[#8da182] transition-colors text-lg"
+            className="app-button app-button--primary app-button--lg mt-8 w-full"
             onClick={() => router.push(`/${locale}/select-event-type`)}
           >
             {t("onboarding.nextBtn", { fallback: "Avanti" })}

@@ -146,7 +146,12 @@ export default function SelectEventTypePage() {
         backgroundSize: "cover",
       }}
     >
-      <div className="max-w-3xl w-full mx-4 p-8 rounded-3xl bg-white/80 backdrop-blur border border-gray-200 shadow-xl">
+      <div className="onboarding-panel max-w-3xl">
+        <div className="onboarding-progress" aria-label="Passaggio 3 di 3">
+          <span className="onboarding-progress__step" />
+          <span className="onboarding-progress__step" />
+          <span className="onboarding-progress__step onboarding-progress__step--active" />
+        </div>
         <div className="mb-6 flex justify-end">
           <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-[#A3B59D]/40 bg-[#F8FBF7] px-4 py-3 text-sm text-gray-700 shadow-sm sm:flex-row sm:items-center sm:gap-3">
             <span className="font-semibold text-center sm:text-left">
@@ -186,7 +191,7 @@ export default function SelectEventTypePage() {
               <button
                 key={ev.slug}
                 disabled={!isAvailable || saving}
-                className={`group relative overflow-hidden rounded-2xl border transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg ${
+                className={`group relative overflow-hidden rounded-2xl border bg-white transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg ${
                   isAvailable
                     ? selected === ev.slug
                       ? "border-primary shadow-lg"
@@ -194,21 +199,22 @@ export default function SelectEventTypePage() {
                     : "border-border/60 opacity-70 cursor-not-allowed"
                 }`}
                 onClick={() => isAvailable && handleSelect(ev.slug)}
+                aria-pressed={selected === ev.slug}
               >
-                <div className="relative h-56 w-full">
-                  <div className="absolute inset-0 flex flex-col justify-between p-5 text-left text-white">
+                <div className="relative min-h-40 w-full bg-linear-to-br from-[#f7f1ec] to-[#e1ece5]">
+                  <div className="absolute inset-0 flex flex-col justify-between p-5 text-left text-fg">
                     <div>
                       <div className="flex items-center gap-2 text-lg font-semibold">
                         <span
                           aria-hidden="true"
-                          className="text-2xl drop-shadow-sm"
+                          className="grid h-11 w-11 place-items-center rounded-xl bg-white text-2xl shadow-soft-sm"
                         >
                           {ev.emoji || "✨"}
                         </span>
                         <span>{ev.label}</span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-white/80">
+                    <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted-fg">
                       <span>
                         {selected === ev.slug
                           ? t("selected", { fallback: "Selezionato" })
