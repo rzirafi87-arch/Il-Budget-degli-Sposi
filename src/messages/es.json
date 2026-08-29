@@ -269,6 +269,41 @@
       "confirmDelete": "¿Estás seguro de que quieres eliminar este ingreso?"
     }
   },
+  "suppliersChurches": {
+    "title": "⛪ Iglesias y lugares de ceremonia",
+    "description": "Busca lugares de culto en el catálogo compartido y guarda tus opciones de forma privada en tu boda.",
+    "filters": { "type": "Tipo", "allTypes": "Todos los tipos" },
+    "form": { "city": "Ciudad" },
+    "card": { "type": "Tipo:", "capacity": "Capacidad:", "people": "personas", "website": "Sitio web" },
+    "loading": "Cargando...",
+    "empty": "No se han encontrado iglesias. Prueba a cambiar los filtros.",
+    "messages": { "authRequired": "Debes iniciar sesión para guardar una iglesia" },
+    "catalog": {
+      "eyebrow": "Ceremonia",
+      "searchLabel": "Buscar en el catálogo",
+      "searchPlaceholder": "Nombre, ciudad, provincia, región o país",
+      "search": "Buscar",
+      "region": "Región",
+      "loadError": "No se puede cargar el catálogo de iglesias",
+      "retry": "Reintentar",
+      "save": "Guardar en la boda",
+      "saved": "Iglesia guardada en tu boda",
+      "saveError": "No se puede actualizar la iglesia guardada",
+      "remove": "Eliminar",
+      "removed": "Iglesia eliminada de los elementos guardados",
+      "removeError": "No se puede eliminar la iglesia",
+      "favorite": "Favorita",
+      "favoriteOn": "Favorita",
+      "select": "Elegir",
+      "selected": "Elección final",
+      "pagination": "Paginación del catálogo de iglesias",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {page} de {totalPages} · {total} resultados",
+      "verification": { "verified": "Verificada", "probable": "Probable", "toCheck": "Por verificar" },
+      "types": { "church": "Iglesia", "cathedral": "Catedral", "basilica": "Basílica", "sanctuary": "Santuario", "chapel": "Capilla", "placeOfWorship": "Lugar de culto" }
+    }
+  },
   "footer": {
     "newsletterTitle": "Mantente informado",
     "newsletterDesc": "Recibe consejos, listas de verificación y ofertas exclusivas para tu boda perfecta!",

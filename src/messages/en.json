@@ -1654,6 +1654,31 @@
       "authRequired": "You must be authenticated to add a church",
       "submitSuccess": "Church added successfully! It will be visible after staff verification.",
       "submitError": "Error adding church"
+    },
+    "catalog": {
+      "eyebrow": "Ceremony",
+      "searchLabel": "Search the catalog",
+      "searchPlaceholder": "Name, city, province, region or country",
+      "search": "Search",
+      "region": "Region",
+      "loadError": "Unable to load the church catalog",
+      "retry": "Try again",
+      "save": "Save to wedding",
+      "saved": "Church saved to your wedding",
+      "saveError": "Unable to update the saved church",
+      "remove": "Remove",
+      "removed": "Church removed from saved items",
+      "removeError": "Unable to remove the church",
+      "favorite": "Favorite",
+      "favoriteOn": "Favorite",
+      "select": "Select",
+      "selected": "Final choice",
+      "pagination": "Church catalog pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {totalPages} · {total} results",
+      "verification": { "verified": "Verified", "probable": "Probable", "toCheck": "To check" },
+      "types": { "church": "Church", "cathedral": "Cathedral", "basilica": "Basilica", "sanctuary": "Sanctuary", "chapel": "Chapel", "placeOfWorship": "Place of worship" }
     }
   },
   "ceremonyCeremonyChurch": {
