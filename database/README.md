@@ -44,8 +44,9 @@ docker ps
 # URL Dashboard
 https://vsguhivizuneylqhygfk.supabase.co
 
-# Connection String (già configurato in .env.local)
-postgresql://postgres:12LuglioRocco!@db.vsguhivizuneylqhygfk.supabase.co:5432/postgres
+# Connection string
+# Configure DATABASE_URL or SUPABASE_DB_URL in an unversioned local environment
+# file or in the deployment secret store. Never commit database credentials.
 ```
 
 ### Script SQL
