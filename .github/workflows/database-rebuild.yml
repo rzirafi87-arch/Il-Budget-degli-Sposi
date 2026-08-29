@@ -62,6 +62,8 @@ jobs:
           mkdir -p generated
           cd .supabase-ci
           supabase gen types typescript --local > ../generated/database.types.ts
+          # Normalize CLI-only trailing blank lines while preserving one POSIX newline.
+          perl -0pi -e 's/\n+\z/\n/' ../generated/database.types.ts
 
       - name: Verify committed database types are current
         run: diff -u src/types/database.types.ts generated/database.types.ts
