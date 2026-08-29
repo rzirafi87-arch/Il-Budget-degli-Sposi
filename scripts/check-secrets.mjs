@@ -10,6 +10,11 @@ const patterns = [
     name: "Supabase service-role JWT",
     regex: /eyJ[0-9A-Za-z_-]+\.[0-9A-Za-z_-]*InNlcnZpY2Vfcm9sZSI[0-9A-Za-z_-]*\.[0-9A-Za-z_-]+/g,
   },
+  {
+    name: "Supabase database password in connection URI",
+    regex:
+      /postgres(?:ql)?:\/\/[^:\s/]+:(?!(?:YOUR_|PASSWORD|\[|<|\$\{))[^@\s]+@(?!(?:db\.xxx|db\.PROJECT-REF))[^/\s]*supabase\.com?/gi,
+  },
 ];
 
 const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" })
