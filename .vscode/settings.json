@@ -3,7 +3,7 @@
   "postgres.connections": [
     {
       "label": "Supabase Cloud (Il Budget degli Sposi)",
-      "connectionString": "postgresql://postgres:12LuglioRocco!@db.vsguhivizuneylqhygfk.supabase.co:5432/postgres?sslmode=require"
+      "connectionString": "${env:SUPABASE_DB_URL}"
     },
     {
       "label": "Local Postgres (Docker - ibds)",
