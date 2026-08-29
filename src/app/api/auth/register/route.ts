@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
         total_budget: 0,
         bride_email: primaryEmail,
         groom_email: partnerEmail || null,
-        wedding_date: weddingDate || null,
+        event_date: weddingDate || null,
       })
       .select("id")
       .single();
