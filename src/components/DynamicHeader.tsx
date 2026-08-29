@@ -6,6 +6,7 @@ import { formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { Heart } from "lucide-react";
 
 const supabase = getBrowserClient();
 
@@ -60,11 +61,11 @@ export default function DynamicHeader() {
   });
 
   return (
-    <div className="bg-linear-to-r from-[#EAD9D4]/30 to-[#A6B5A0]/30 border-b border-[#E8E0D6]">
-      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2 sm:py-3 text-center">
+    <div className="border-b border-border bg-linear-to-r from-[#f4e8e4]/75 to-[#e5eee8]/75">
+      <div className="mx-auto max-w-7xl px-4 py-2 text-center sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm sm:text-base">
-          <span className="font-serif font-bold text-gray-800">
-            {weddingInfo.coupleName} ❤️
+          <span className="inline-flex items-center gap-1.5 font-serif font-bold text-gray-800">
+            {weddingInfo.coupleName} <Heart size={15} fill="currentColor" className="text-[#a66367]" aria-label="insieme" />
           </span>
           <span className="hidden sm:inline text-gray-400" aria-hidden>
             ·

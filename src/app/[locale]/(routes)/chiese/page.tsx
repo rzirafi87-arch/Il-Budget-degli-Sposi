@@ -7,6 +7,9 @@ import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import { AppButton } from "@/components/ui/AppButton";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Church } from "lucide-react";
 
 type Church = {
   id: string;
@@ -155,32 +158,26 @@ export default function ChiesePage() {
   const filteredChurches = churches;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
+    <section>
       <div className="max-w-7xl mx-auto">
+        <PageHeader eyebrow="Cerimonia" title={t("title")} description={t("description")} icon={<Church size={24} aria-hidden />} />
         {/* Carosello immagini */}
         <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
         
-        <div className="mb-4">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">{t("title")}</h1>
-          <p className="text-gray-700 text-sm sm:text-base leading-relaxed max-w-3xl">
-            {t("description")}
-          </p>
-        </div>
-        
         <div className="flex justify-between items-center mb-8">
           <div></div>
-          <button
+          <AppButton
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] transition-colors font-semibold"
+            variant={showAddForm ? "outline" : "primary"}
           >
             {showAddForm ? t("buttons.cancel") : t("buttons.add")}
-          </button>
+          </AppButton>
         </div>
 
         {showAddForm && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="app-card app-card--md mb-8">
             <h2 className="text-2xl font-bold mb-4">{t("form.title")}</h2>
-            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="block text-sm font-semibold mb-1">{t("form.name")}</label>
                 <input
@@ -490,7 +487,6 @@ export default function ChiesePage() {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }
-

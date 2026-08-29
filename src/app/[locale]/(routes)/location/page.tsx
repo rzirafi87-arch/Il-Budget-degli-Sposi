@@ -7,6 +7,8 @@ import { getGeographyLevels } from "@/lib/geographyFilters";
 import { getPageImages } from "@/lib/pageImages";
 import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Landmark } from "lucide-react";
 
 type Location = {
   id: string;
@@ -163,17 +165,11 @@ export default function LocationiPage() {
   }, [fetchLocations, filterValues]);
 
   return (
-  <div className="min-h-screen bg-linear-to-br from-[#A3B59D] via-white to-[#A3B59D] p-8">
+  <section>
       <div className="max-w-7xl mx-auto">
+        <PageHeader eyebrow="Spazi per il ricevimento" title="Location ricevimento" description="Scopri ville, castelli, agriturismi e altri spazi. Filtra per area geografica e tipologia per trovare la location adatta." icon={<Landmark size={24} aria-hidden />} />
         <ImageCarousel images={getPageImages("location", country)} height="280px" />
-        <div className="mb-6">
-          <h1 className="text-4xl font-bold text-gray-800">🏛️ Location Ricevimento</h1>
-          <p className="text-gray-700 text-sm sm:text-base max-w-3xl mt-2">
-            Scopri e proponi ville, castelli, agriturismi e altri spazi dedicati al ricevimento. Filtra per area geografica e
-            tipologia per trovare la location perfetta.
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="app-card app-card--md mb-8 mt-6">
           <h2 className="text-xl font-bold mb-4">Filtri</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {geographyLevels.map((level: { key: string; label: string }, idx: number) => {
@@ -201,7 +197,7 @@ export default function LocationiPage() {
             })}
           </div>
         </div>
-        <form className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <form className="app-card app-card--md mb-8">
           <h2 className="text-xl font-bold mb-4">Aggiungi Location Ricevimento</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -417,6 +413,6 @@ export default function LocationiPage() {
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
