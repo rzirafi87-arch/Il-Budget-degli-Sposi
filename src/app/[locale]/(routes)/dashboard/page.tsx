@@ -7,12 +7,16 @@ import ChecklistSection from "@/components/dashboard/ChecklistSection";
 import LocalizedWeddingSection, { LocalizedWeddingData } from "@/components/dashboard/LocalizedWeddingSection";
 import TraditionsSection from "@/components/dashboard/TraditionsSection";
 import Page from "@/components/layout/Page";
+import { AppButton, AppButtonLink } from "@/components/ui/AppButton";
+import { AppCard } from "@/components/ui/AppCard";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getOnboardingStatus } from "@/lib/onboardingClient";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { buildLocalizedPath } from "@/lib/localizedPath";
-import Link from "next/link";
 import { useLocale } from "next-intl";
+import { FileText, LayoutDashboard, Lightbulb, Plane, RotateCw, Save, Sparkles, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
@@ -258,33 +262,30 @@ export default function DashboardPage() {
 
   if (routeStatus === "error") {
     return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
-        <p className="text-xl font-semibold">Impossibile caricare la Dashboard</p>
-        <p className="text-muted-fg">{routeError}</p>
-        <button className="rounded-xl bg-primary px-5 py-3 font-semibold text-white" onClick={() => window.location.reload()}>
+      <AppCard className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center" padding="lg">
+        <span className="app-page-header__icon"><LayoutDashboard size={24} aria-hidden /></span>
+        <h1 className="text-xl font-semibold">Impossibile caricare la Dashboard</h1>
+        <p className="max-w-md text-muted-fg">{routeError}</p>
+        <AppButton onClick={() => window.location.reload()}>
+          <RotateCw size={18} aria-hidden />
           Riprova
-        </button>
-      </div>
+        </AppButton>
+      </AppCard>
     );
   }
 
   if (!isReady) {
-    return <div className="min-h-[50vh] flex items-center justify-center text-xl">Caricamento…</div>;
+    return <LoadingState label="Caricamento Dashboard" cards={3} />;
   }
 
   return (
     <Page>
-      <header className="mb-4">
-        <h1 className="text-3xl font-bold text-center">Dashboard</h1>
-        {/* breadcrumb centrato */}
-        <nav className="mt-1 flex justify-center text-sm text-muted-foreground">
-          <ol className="flex flex-wrap items-center gap-1">
-            <li>Home</li>
-            <li>›</li>
-            <li className="font-medium">Dashboard</li>
-          </ol>
-        </nav>
-      </header>
+      <PageHeader
+        eyebrow="Il tuo evento"
+        title="Dashboard"
+        description="Budget, attività e prossimi passi: tutto ciò che serve per organizzare con serenità."
+        icon={<LayoutDashboard size={24} aria-hidden />}
+      />
 
       <PageInfoNote
         icon="📊"
@@ -320,88 +321,99 @@ export default function DashboardPage() {
       />
 
       {/* Azioni principali: Salva, PDF, Video */}
-      <div className="mx-auto mt-4 mb-6 grid w-full max-w-md grid-cols-1 gap-3 sm:max-w-none sm:grid-cols-3">
-        <button
+      <section className="mb-8 mt-5" aria-labelledby="dashboard-actions-title">
+        <div className="mb-3 flex items-end justify-between gap-4">
+          <div>
+            <p className="app-eyebrow">Azioni rapide</p>
+            <h2 id="dashboard-actions-title" className="text-xl">Continua l’organizzazione</h2>
+          </div>
+        </div>
+        <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
+        <AppButton
           onClick={handleSaveBudget}
-          disabled={savingBudget}
-          className="rounded-xl p-5 text-center shadow-sm hover:shadow transition bg-[#A3B59D] text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          loading={savingBudget}
+          className="min-h-24 flex-col"
         >
-          <div className="mx-auto mb-2 text-3xl">💾</div>
-          <div className="font-semibold">Salva</div>
-          <div className="text-xs text-muted-foreground">Configurazione</div>
-        </button>
-        <button
-          className="rounded-xl p-5 text-center shadow-sm hover:shadow transition"
-          // TODO: implement PDF generation handler
+          <Save size={22} aria-hidden />
+          <span>Salva configurazione</span>
+        </AppButton>
+        <AppButton
+          variant="outline"
+          className="min-h-24 flex-col"
+          disabled
+          title="Funzione in preparazione"
         >
-          <div className="mx-auto mb-2 text-3xl">📄</div>
-          <div className="font-semibold">Genera</div>
-          <div className="text-xs text-muted-foreground">PDF</div>
-        </button>
-        <button
-          className="rounded-xl p-5 text-center shadow-sm hover:shadow transition"
-          // TODO: implement Video generation handler
+          <FileText size={22} aria-hidden />
+          <span>Genera PDF</span>
+          <span className="text-xs font-normal">Prossimamente</span>
+        </AppButton>
+        <AppButton
+          variant="outline"
+          className="min-h-24 flex-col"
+          disabled
+          title="Funzione in preparazione"
         >
-          <div className="mx-auto mb-2 text-3xl">🎬</div>
-          <div className="font-semibold">Genera</div>
-          <div className="text-xs text-muted-foreground">Video</div>
-        </button>
-      </div>
+          <Video size={22} aria-hidden />
+          <span>Genera video</span>
+          <span className="text-xs font-normal">Prossimamente</span>
+        </AppButton>
+        </div>
+      </section>
 
       <BudgetItemsSection budgetItems={budgetItems} />
 
       {/* Idea di Budget quick access card */}
-      <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <AppCard className="mb-4" padding="md">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-lg text-center sm:text-left">Idea di Budget</h3>
-            <p className="text-sm text-gray-900">Compila le voci e applicale al budget.</p>
+          <div className="flex items-start gap-3 text-center sm:text-left">
+            <span className="app-page-header__icon"><Lightbulb size={22} aria-hidden /></span>
+            <div>
+              <h3 className="font-semibold text-lg">Idea di Budget</h3>
+              <p className="text-sm text-muted-fg">Compila le voci e applicale al budget.</p>
+            </div>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
-            <Link
-              href={`/${locale}/idea-di-budget`}
-              className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white"
-            >
-              💡 Vai a Idea di Budget
-            </Link>
+            <AppButtonLink href={`/${locale}/idea-di-budget`} variant="secondary">Apri le idee</AppButtonLink>
           </div>
         </div>
-      </div>
+      </AppCard>
 
       {/* Budget focus hint (wedding only) */}
       {isWedding && <BudgetFocusHint budget={budgetFocus} />}
 
       {/* Viaggio di Nozze quick access card - solo per Matrimonio */}
       {isWedding && (
-        <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <AppCard className="mb-4" padding="md">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-            <div className="text-center sm:text-left">
-              <h3 className="font-semibold text-lg text-center sm:text-left">Viaggio di Nozze</h3>
-              <p className="text-sm text-gray-900">Consigli e idee per la luna di miele.</p>
+            <div className="flex items-start gap-3 text-center sm:text-left">
+              <span className="app-page-header__icon"><Plane size={22} aria-hidden /></span>
+              <div>
+                <h3 className="font-semibold text-lg">Viaggio di Nozze</h3>
+                <p className="text-sm text-muted-fg">Consigli e idee per la luna di miele.</p>
+              </div>
             </div>
             <div className="mt-4 flex justify-center sm:mt-0">
-              <Link href={`/${locale}/suggerimenti/viaggio-di-nozze`} className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
-                🌍 Apri Viaggio di Nozze
-              </Link>
+              <AppButtonLink href={`/${locale}/suggerimenti/viaggio-di-nozze`} variant="secondary">Esplora il viaggio</AppButtonLink>
             </div>
           </div>
-        </div>
+        </AppCard>
       )}
 
       {/* Suggerimenti & Consigli quick access card */}
-      <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <AppCard className="mb-6" padding="md">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-lg text-center sm:text-left">Suggerimenti <span className="font-extrabold text-2xl align-middle">&</span> Consigli</h3>
-            <p className="text-sm text-gray-900">Idee utili in base alle tue scelte.</p>
+          <div className="flex items-start gap-3 text-center sm:text-left">
+            <span className="app-page-header__icon"><Sparkles size={22} aria-hidden /></span>
+            <div>
+              <h3 className="font-semibold text-lg">Suggerimenti e consigli</h3>
+              <p className="text-sm text-muted-fg">Idee utili in base alle tue scelte.</p>
+            </div>
           </div>
           <div className="mt-4 flex justify-center sm:mt-0">
-            <Link href={`/${locale}/suggerimenti`} className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm whitespace-nowrap break-keep bg-[#A3B59D] text-white">
-              💡 Apri Suggerimenti
-            </Link>
+            <AppButtonLink href={`/${locale}/suggerimenti`} variant="secondary">Scopri i consigli</AppButtonLink>
           </div>
         </div>
-      </div>
+      </AppCard>
 
       <ChecklistSection
         checklist={checklist}

@@ -363,7 +363,7 @@ export default function PageInfoNote({
     : null;
 
   return (
-    <div className="mb-6 p-5 rounded-2xl border-2 border-[#A3B59D]/30 bg-linear-to-br from-[#A3B59D]/5 to-[#A3B59D]/10 shadow-sm">
+    <aside className="app-card app-card--md mb-6 border-l-4 border-l-primary" aria-label={title}>
       <div className="flex items-start gap-3">
         <span className="text-2xl shrink-0">{icon}</span>
         <div className="flex-1">
@@ -449,6 +449,6 @@ export default function PageInfoNote({
           )}
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

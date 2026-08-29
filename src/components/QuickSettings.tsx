@@ -2,6 +2,8 @@
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { AppButton } from "@/components/ui/AppButton";
+import { Settings, X } from "lucide-react";
 
 export default function QuickSettings() {
   const t = useTranslations();
@@ -48,22 +50,26 @@ export default function QuickSettings() {
     <>
       <button
         aria-label="Impostazioni"
-        className="fixed bottom-5 right-5 z-60 rounded-full shadow-lg text-white px-4 h-12 flex items-center gap-2"
-        style={{ background: "var(--color-sage)" }}
+        className="app-button app-button--primary app-button--icon fixed bottom-5 right-5 z-60 rounded-full shadow-soft-lg md:hidden"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls="quick-settings-dialog"
       >
-        <span role="img" aria-label="Impostazioni">⚙️</span> <span className="font-semibold">Impostazioni</span>
+        <Settings size={20} aria-hidden />
       </button>
       {open && (
-        <div className="fixed inset-0 z-59" onClick={() => setOpen(false)} />
+        <button className="fixed inset-0 z-59 h-auto w-auto bg-black/40 backdrop-blur-[2px]" onClick={() => setOpen(false)} aria-label="Chiudi impostazioni" />
       )}
       {open && (
-        <div className="fixed bottom-20 right-5 z-61 w-80 p-4 rounded-2xl bg-white shadow-2xl border border-gray-200 max-h-[80vh] overflow-y-auto">
-          <h3 className="font-semibold mb-3 text-gray-900">Impostazioni</h3>
+        <div id="quick-settings-dialog" className="app-card app-card--md fixed inset-x-4 bottom-4 z-61 max-h-[calc(100vh-2rem)] overflow-y-auto shadow-soft-xl sm:inset-x-auto sm:bottom-20 sm:right-5 sm:w-96" role="dialog" aria-modal="true" aria-labelledby="quick-settings-title">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h3 id="quick-settings-title" className="font-semibold text-xl text-gray-900">Impostazioni</h3>
+            <button type="button" className="app-button app-button--ghost app-button--icon" onClick={() => setOpen(false)} aria-label="Chiudi impostazioni"><X size={20} aria-hidden /></button>
+          </div>
           <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium text-gray-900">Lingua</label>
-              <select className="w-full border rounded px-3 py-2 mt-1" value={lang} onChange={(e) => setLang(e.target.value)}>
+            <div className="app-field">
+              <label className="app-label">Lingua</label>
+              <select className="app-select" value={lang} onChange={(e) => setLang(e.target.value)}>
                 {LANGS.map(l => (
                   <option key={l.slug} value={l.slug} disabled={!l.available}>
                     {l.emoji} {l.label} {!l.available ? "(coming soon)" : ""}
@@ -71,9 +77,9 @@ export default function QuickSettings() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-900">Nazione evento</label>
-              <select className="w-full border rounded px-3 py-2 mt-1" value={country} onChange={(e) => setCountry(e.target.value)}>
+            <div className="app-field">
+              <label className="app-label">Nazione evento</label>
+              <select className="app-select" value={country} onChange={(e) => setCountry(e.target.value)}>
                 {COUNTRIES.map(c => (
                   <option key={c.code} value={c.code} disabled={!c.available}>
                     {c.emoji} {c.label} {!c.available ? "(coming soon)" : ""}
@@ -81,20 +87,19 @@ export default function QuickSettings() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-900">Tipo evento</label>
-              <select className="w-full border rounded px-3 py-2 mt-1" value={eventType} onChange={(e) => setEventType(e.target.value)}>
+            <div className="app-field">
+              <label className="app-label">Tipo evento</label>
+              <select className="app-select" value={eventType} onChange={(e) => setEventType(e.target.value)}>
                 {EVENTS.map(ev => <option key={ev.slug} value={ev.slug}>{ev.emoji} {t(`events.${ev.slug}`, { fallback: ev.label })}</option>)}
               </select>
             </div>
           </div>
-          <div className="flex gap-2 justify-end mt-4">
-            <button className="px-4 py-2 rounded border" onClick={() => setOpen(false)}>Chiudi</button>
-            <button className="px-4 py-2 rounded text-white" style={{ background: "var(--color-sage)" }} onClick={() => applyChanges()}>Applica</button>
+          <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <AppButton variant="outline" onClick={() => setOpen(false)}>Chiudi</AppButton>
+            <AppButton onClick={() => applyChanges()}>Applica modifiche</AppButton>
           </div>
         </div>
       )}
     </>
   );
 }
-

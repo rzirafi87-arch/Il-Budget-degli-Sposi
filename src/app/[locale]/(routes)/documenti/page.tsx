@@ -4,6 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import PageInfoNote from "@/components/PageInfoNote";
 import { formatDate } from "@/lib/locale";
+import { buttonClasses } from "@/components/ui/AppButton";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { CalendarDays, Download, FileArchive, FileText, Inbox, Trash2, UploadCloud } from "lucide-react";
+import { useLocale } from "next-intl";
 
 type Document = {
   id: string;
@@ -27,6 +32,7 @@ const DOCUMENT_CATEGORIES = [
 ];
 
 export default function DocumentiPage() {
+  const locale = useLocale();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [uploading, setUploading] = useState(false);
   const [filter, setFilter] = useState<string>("Tutti");
@@ -71,14 +77,12 @@ export default function DocumentiPage() {
 
   return (
     <section className="space-y-6">
-      <div className="bg-gradient-to-br from-[#FDFBF7] to-[#F5F1EB] rounded-2xl p-6 border border-gray-200">
-        <h1 className="font-serif text-3xl font-bold text-gray-800 mb-2">
-          📄 Documenti & Preventivi
-        </h1>
-        <p className="text-gray-600">
-          Carica e organizza tutti i documenti del matrimonio: preventivi, contratti, ricevute e altro.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Archivio digitale"
+        title="Documenti e preventivi"
+        description="Carica e organizza preventivi, contratti, ricevute e tutti i documenti importanti del tuo evento."
+        icon={<FileArchive size={24} aria-hidden />}
+      />
 
       <PageInfoNote
         icon="📁"
@@ -102,10 +106,10 @@ export default function DocumentiPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
-          href="/documenti/appuntamenti"
-          className="flex items-center gap-4 bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
+          href={`/${locale}/documenti/appuntamenti`}
+          className="app-card app-card--md app-card--interactive flex items-center gap-4"
         >
-          <div className="text-3xl" aria-hidden>📅</div>
+          <span className="app-page-header__icon"><CalendarDays size={23} aria-hidden /></span>
           <div>
             <h2 className="text-lg font-semibold text-gray-800">Agenda Documenti</h2>
             <p className="text-sm text-gray-600">
@@ -116,7 +120,7 @@ export default function DocumentiPage() {
       </div>
 
       {/* Upload Area */}
-      <div className="bg-white rounded-xl p-6 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+      <div className="app-card border-2 border-dashed border-gray-300 p-6 transition-colors hover:border-gray-400">
         <label className="block cursor-pointer">
           <input
             type="file"
@@ -127,7 +131,7 @@ export default function DocumentiPage() {
             disabled={uploading}
           />
           <div className="text-center">
-            <div className="text-5xl mb-3">📁</div>
+            <UploadCloud className="mx-auto mb-3 text-primary" size={42} strokeWidth={1.6} aria-hidden />
             <h3 className="font-bold text-lg text-gray-800 mb-2">
               {uploading ? "Caricamento in corso..." : "Carica Documenti"}
             </h3>
@@ -147,12 +151,11 @@ export default function DocumentiPage() {
           <button
             key={cat}
             onClick={() => setFilter(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`app-button app-button--sm whitespace-nowrap ${
               filter === cat
-                ? "text-white shadow-md"
-                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                ? "app-button--primary"
+                : "app-button--outline"
             }`}
-            style={filter === cat ? { background: "var(--color-sage)" } : {}}
           >
             {cat}
           </button>
@@ -161,27 +164,21 @@ export default function DocumentiPage() {
 
       {/* Lista Documenti */}
       {filteredDocs.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-xl border border-gray-200">
-          <div className="text-6xl mb-4">📭</div>
-          <h3 className="text-xl font-bold text-gray-700 mb-2">
-            {documents.length === 0 ? "Nessun documento caricato" : "Nessun documento in questa categoria"}
-          </h3>
-          <p className="text-gray-500">
-            {documents.length === 0 
-              ? "Inizia a caricare i tuoi preventivi e contratti"
-              : "Prova a cambiare filtro per vedere altri documenti"}
-          </p>
-        </div>
+        <EmptyState
+          icon={<Inbox size={26} />}
+          title={documents.length === 0 ? "Nessun documento caricato" : "Nessun documento in questa categoria"}
+          description={documents.length === 0 ? "Carica il primo preventivo o contratto per costruire il tuo archivio." : "Scegli un’altra categoria per visualizzare i documenti disponibili."}
+        />
       ) : (
         <div className="space-y-3">
           {filteredDocs.map(doc => (
             <div
               key={doc.id}
-              className="bg-white rounded-xl p-5 border border-gray-200 hover:shadow-md transition-shadow"
+              className="app-card app-card--md app-card--interactive"
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "var(--color-beige)" }}>
-                  📄
+                  <FileText size={22} aria-hidden />
                 </div>
                 
                 <div className="flex-1 min-w-0">
@@ -202,17 +199,19 @@ export default function DocumentiPage() {
                       <a
                         href={doc.fileUrl}
                         download
-                        className="p-2 hover:bg-gray-100 rounded-lg transition"
+                        className={buttonClasses({ variant: "ghost", size: "icon" })}
                         title="Scarica"
+                        aria-label={`Scarica ${doc.name}`}
                       >
-                        ⬇️
+                        <Download size={18} aria-hidden />
                       </a>
                       <button
                         onClick={() => deleteDocument(doc.id)}
-                        className="p-2 hover:bg-red-50 rounded-lg transition text-red-500"
+                        className={buttonClasses({ variant: "ghost", size: "icon", className: "text-red-600" })}
                         title="Elimina"
+                        aria-label={`Elimina ${doc.name}`}
                       >
-                        🗑️
+                        <Trash2 size={18} aria-hidden />
                       </button>
                     </div>
                   </div>

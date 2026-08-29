@@ -14,6 +14,8 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { Lightbulb, LogIn, MessageCircle, Settings } from "lucide-react";
+import { buttonClasses } from "@/components/ui/AppButton";
 
 export default function ClientLayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -92,48 +94,58 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
   return (
     <ToastProvider>
       {showHeader ? (
-        <header className="sticky top-0 z-50 bg-bg/95 dark:bg-secondary/95 backdrop-blur-sm shadow-soft border-b border-border">
+        <header className="sticky top-0 z-50 border-b border-border bg-bg/94 shadow-soft-sm backdrop-blur-xl dark:bg-secondary/95">
           <DynamicHeader />
-          <div className="border-b border-border">
-            <div className="max-w-6xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <h1 className="text-lg sm:text-2xl font-serif font-bold text-fg">
+          <div>
+            <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <Link href={`/${locale}/dashboard`} className="group flex min-h-11 min-w-0 items-center gap-3 rounded-xl pr-2 focus-ring-sage">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-lg font-bold text-white shadow-soft-sm" aria-hidden>
+                    B
+                  </span>
+                  <span className="truncate text-lg font-serif font-bold text-fg sm:text-xl">
                   {locale === "es"
                     ? "El Presupuesto de los Novios"
                     : locale === "en"
                     ? "Wedding Budget"
                     : BRAND_NAME}
-                </h1>
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-fg">
+                  </span>
+                </Link>
+                <div className="flex items-center gap-1.5 text-sm text-muted-fg">
                   <TopBarSelector />
                   {!isSaveTheDate && (
                     <>
                       <Link
-                        className="px-3 py-2 rounded-full border border-border bg-bg/60 text-fg hover:bg-muted transition-colors whitespace-nowrap dark:bg-secondary/70 dark:hover:bg-secondary/60"
+                        className={buttonClasses({ variant: "ghost", size: "sm", className: "hidden lg:inline-flex" })}
                         href={`/${locale}/auth`}
                       >
+                        <LogIn size={17} aria-hidden />
                         Accedi
                       </Link>
                       <Link
-                        className="px-3 py-2 rounded-full border border-border bg-bg/60 text-fg hover:bg-muted transition-colors whitespace-nowrap dark:bg-secondary/70 dark:hover:bg-secondary/60"
+                        className={buttonClasses({ variant: "ghost", size: "sm", className: "hidden xl:inline-flex" })}
                         href={`/${locale}/idea-di-budget`}
                       >
+                        <Lightbulb size={17} aria-hidden />
                         Idea di Budget
                       </Link>
                       <button
-                        className="px-3 py-2 rounded-full font-semibold border border-border bg-bg/60 text-fg hover:bg-muted transition-colors whitespace-nowrap dark:bg-secondary/70 dark:hover:bg-secondary/60"
+                        className={buttonClasses({ variant: "outline", size: "icon" })}
                         onClick={() => {
                           window.dispatchEvent(new CustomEvent("open-quick-settings"));
                         }}
+                        aria-label="Apri impostazioni"
+                        title="Impostazioni"
                       >
-                        Impostazioni
+                        <Settings size={19} aria-hidden />
                       </button>
                       <a
-                        className="hidden md:flex bg-success text-white px-3 py-2 rounded-full font-semibold hover:bg-success/80 transition-colors whitespace-nowrap items-center gap-1 shadow-sm"
+                        className={buttonClasses({ variant: "primary", size: "sm", className: "hidden xl:inline-flex" })}
                         href="https://wa.me/393001234567?text=Ciao!%20Vorrei%20informazioni%20su%20Il%20Budget%20degli%20Sposi"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
+                        <MessageCircle size={17} aria-hidden />
                         WhatsApp
                       </a>
                     </>
@@ -151,8 +163,10 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
 
       <main className="min-h-screen bg-bg text-fg">
         <Background />
-        <Breadcrumbs />
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-6">{children}</div>
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+          <Breadcrumbs />
+          {children}
+        </div>
       </main>
 
       <Footer />

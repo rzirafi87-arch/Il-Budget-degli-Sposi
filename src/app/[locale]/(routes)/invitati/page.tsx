@@ -9,6 +9,10 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { AppButton } from "@/components/ui/AppButton";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Plus, Trash2, Users, X } from "lucide-react";
 
 const supabase = getBrowserClient();
 
@@ -300,60 +304,33 @@ export default function InvitatiPage() {
   };
 
   if (loading) {
-    return (
-      <section className="pt-6">
-        <h2 className="font-serif text-3xl mb-6 text-gray-800">Invitati</h2>
-        <p className="text-gray-500">Caricamento...</p>
-      </section>
-    );
+    return <LoadingState label="Caricamento invitati" cards={4} />;
   }
 
   return (
-    <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2 text-gray-800">Gestione Invitati</h2>
-      <p className="text-gray-700 mb-6 text-sm sm:text-base leading-relaxed font-semibold">
-        Organizza la lista degli invitati, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli.
-      </p>
+    <section>
+      <PageHeader
+        eyebrow="Persone e tavoli"
+        title="Gestione invitati"
+        description="Organizza la lista, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli."
+        icon={<Users size={24} aria-hidden />}
+      />
 
       {/* Tabs */}
-      <div className="mb-6 flex flex-wrap gap-2 border-b pb-1" style={{ borderColor: "var(--border-soft)" }}>
+      <div className="mb-6 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Sezioni invitati">
         <button
           onClick={() => setActiveTab("guests")}
-          className={`px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
-            activeTab === "guests" ? "text-white shadow-soft" : "shadow-soft-sm"
-          }`}
-          style={
-            activeTab === "guests"
-              ? {
-                  background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
-                  borderColor: "var(--accent-sage-600)",
-                }
-              : {
-                  background: "var(--surface-elevated)",
-                  borderColor: "var(--border-soft)",
-                  color: "var(--text-secondary)",
-                }
-          }
+          className={`flex-1 rounded-lg px-4 py-2.5 font-semibold transition-colors ${activeTab === "guests" ? "bg-white text-fg shadow-soft-sm" : "text-muted-fg hover:text-fg"}`}
+          role="tab"
+          aria-selected={activeTab === "guests"}
         >
           {t("tabs.guests")}
         </button>
         <button
           onClick={() => setActiveTab("tables")}
-          className={`px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
-            activeTab === "tables" ? "text-white shadow-soft" : "shadow-soft-sm"
-          }`}
-          style={
-            activeTab === "tables"
-              ? {
-                  background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
-                  borderColor: "var(--accent-sage-600)",
-                }
-              : {
-                  background: "var(--surface-elevated)",
-                  borderColor: "var(--border-soft)",
-                  color: "var(--text-secondary)",
-                }
-          }
+          className={`flex-1 rounded-lg px-4 py-2.5 font-semibold transition-colors ${activeTab === "tables" ? "bg-white text-fg shadow-soft-sm" : "text-muted-fg hover:text-fg"}`}
+          role="tab"
+          aria-selected={activeTab === "tables"}
         >
           {t("tabs.tables")}
         </button>
@@ -465,15 +442,15 @@ export default function InvitatiPage() {
       </div>
 
       {/* Gestione Famiglie */}
-      <div className="mb-6 p-6 rounded-2xl border-3 border-purple-600 bg-purple-50/70 shadow-md">
+      <div className="app-card app-card--md mb-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-lg text-gray-900">{t("sections.familyGroups")}</h3>
-          <button
+          <AppButton
             onClick={() => setShowFamilyModal(true)}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-bold shadow-md"
+            size="sm"
           >
-            + Aggiungi Famiglia
-          </button>
+            <Plus size={17} aria-hidden /> Aggiungi famiglia
+          </AppButton>
         </div>
   <p className="text-xs text-gray-600 mb-3">
    Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia.
@@ -527,30 +504,36 @@ export default function InvitatiPage() {
 
       {/* Modal Aggiungi Famiglia */}
       {showFamilyModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="font-bold text-xl mb-4 text-gray-900">Crea Nuovo Gruppo Famiglia</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]" role="presentation">
+          <div className="app-card app-card--lg max-h-[min(90vh,42rem)] w-full max-w-md overflow-y-auto shadow-soft-xl" role="dialog" aria-modal="true" aria-labelledby="family-modal-title">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h3 id="family-modal-title" className="font-bold text-xl text-gray-900">Crea nuovo gruppo famiglia</h3>
+              <button type="button" className="app-button app-button--ghost app-button--icon" onClick={() => { setShowFamilyModal(false); setNewFamilyName(""); }} aria-label="Chiudi finestra">
+                <X size={20} aria-hidden />
+              </button>
+            </div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Nome Famiglia</label>
             <input
               type="text"
-              className="border-2 border-gray-300 rounded-lg px-4 py-2 w-full mb-4"
+              className="app-input mb-4"
               placeholder="es. Famiglia Rossi"
               value={newFamilyName}
               onChange={(e) => setNewFamilyName(e.target.value)}
             />
             <div className="flex gap-3">
-              <button
+              <AppButton
                 onClick={createFamily}
-                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-bold"
+                className="flex-1"
               >
                 Crea Famiglia
-              </button>
-              <button
+              </AppButton>
+              <AppButton
                 onClick={() => { setShowFamilyModal(false); setNewFamilyName(""); }}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
+                variant="outline"
+                className="flex-1"
               >
                 Annulla
-              </button>
+              </AppButton>
             </div>
           </div>
         </div>
@@ -569,17 +552,17 @@ export default function InvitatiPage() {
             >
               ⬇️ Esporta CSV
             </ExportButton>
-            <button
+            <AppButton
               onClick={addGuest}
-              className="px-4 py-2 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] text-sm font-semibold"
+              size="sm"
             >
-              + Aggiungi Invitato
-            </button>
+              <Plus size={17} aria-hidden /> Aggiungi invitato
+            </AppButton>
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <table className="w-full text-xs">
+        <div className="app-table-shell">
+          <table className="app-table text-xs">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
                 <th className="px-3 py-2 text-left font-semibold text-gray-900">Nome</th>
@@ -633,9 +616,6 @@ export default function InvitatiPage() {
                         onChange={(e) => {
                           const familyId = e.target.value || undefined;
                           const family = familyGroups.find(f => f.id === familyId);
-                          console.log("Famiglia selezionata - ID:", familyId, "Nome:", family?.familyName);
-                          console.log("Famiglie disponibili:", familyGroups);
-
                           updateGuestMultiple(guest.id, {
                             familyGroupId: familyId,
                             familyGroupName: family?.familyName
@@ -732,10 +712,11 @@ export default function InvitatiPage() {
                     <td className="px-2 py-2 text-center">
                       <button
                         onClick={() => deleteGuest(guest.id)}
-                        className="text-red-600 hover:text-red-800 font-bold"
+                        className="app-button app-button--ghost app-button--icon text-red-600 hover:text-red-800"
                         title="Elimina"
+                        aria-label={`Elimina ${guest.name || "invitato"}`}
                       >
-                        🗑️
+                        <Trash2 size={17} aria-hidden />
                       </button>
                     </td>
                   </tr>
@@ -896,7 +877,6 @@ export default function InvitatiPage() {
     );
   }
 }
-
 
 
 

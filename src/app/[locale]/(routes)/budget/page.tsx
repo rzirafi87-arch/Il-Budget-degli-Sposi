@@ -7,8 +7,11 @@ import { formatCurrency, getUserLanguage } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { AppButtonLink, buttonClasses } from "@/components/ui/AppButton";
+import { Inbox, Lightbulb, WalletCards } from "lucide-react";
 
 const supabase = getBrowserClient();
 
@@ -120,24 +123,24 @@ export default function BudgetPage() {
   }, [plannedItems, rows]);
 
   return (
-    <section className="pt-6">
+    <section>
       <h3 className="sr-only">{t("budgetPage.approvedExpenses")}</h3>
+
+      <PageHeader
+        eyebrow="Pianificazione economica"
+        title={t("budget")}
+        description={t("budgetPage.description")}
+        icon={<WalletCards size={24} aria-hidden />}
+        actions={
+          <AppButtonLink href={`/${locale}/idea-di-budget`} variant="secondary">
+            <Lightbulb size={18} aria-hidden />
+            {t("budgetPage.ctaIdeaBudget")}
+          </AppButtonLink>
+        }
+      />
 
       {/* Carosello immagini */}
       <ImageCarousel images={getPageImages("budget", country)} height="280px" />
-
-      {/* CTA per Idea di Budget */}
-      <div className="flex justify-end mt-3">
-        <Link
-          href={`/${locale}/idea-di-budget`}
-          className="px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50 relative text-transparent"
-        >
-          <span className="absolute inset-0 flex items-center justify-center text-current pointer-events-none">{t("budgetPage.ctaIdeaBudget")}</span>
-          {t("budgetPage.ctaIdeaBudget")}
-        </Link>
-      </div>
-
-      <p className="text-sm text-gray-900 mb-4">{t("budgetPage.description")}</p>
 
       <div className="flex items-center justify-end mb-4 gap-2">
         <ExportPDFButton
@@ -156,13 +159,14 @@ export default function BudgetPage() {
           filename={`budget-${userEventType}`}
           title={t("budgetPage.totals.title")}
           subtitle={t("budgetPage.description")}
-          className="text-sm border border-gray-300 rounded-full px-4 py-2"
+          className={buttonClasses({ variant: "outline", size: "sm" })}
         >
           Esporta PDF
         </ExportPDFButton>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
+      <div className="app-table-shell">
+        <div className="min-w-[980px]">
         <div className="grid grid-cols-10 gap-0 px-6 py-3 text-sm text-gray-900 hidden">
           <div>{t("budgetPage.table.category")}</div>
           <div>{t("budgetPage.table.subcategory")}</div>
@@ -190,9 +194,21 @@ export default function BudgetPage() {
         </div>
 
         {loading ? (
-          <div className="p-6 text-gray-500 text-sm">{t("budgetPage.loading")}</div>
+          <div className="space-y-3 p-6" role="status">
+            <span className="sr-only">{t("budgetPage.loading")}</span>
+            <div className="app-skeleton h-5 w-full" />
+            <div className="app-skeleton h-5 w-5/6" />
+            <div className="app-skeleton h-5 w-4/6" />
+          </div>
         ) : rows.length === 0 ? (
-          <div className="p-10 text-center text-gray-500">{t("budgetPage.empty")}</div>
+          <div className="min-w-0 p-4 sm:p-6">
+            <EmptyState
+              icon={<Inbox size={26} />}
+              title="Il budget è ancora vuoto"
+              description={t("budgetPage.empty")}
+              action={<AppButtonLink href={`/${locale}/idea-di-budget`}>Crea il primo piano di budget</AppButtonLink>}
+            />
+          </div>
         ) : (
           <ul>
             {rows.map((r, idx) => (
@@ -247,10 +263,11 @@ export default function BudgetPage() {
             ))}
           </ul>
         )}
+        </div>
       </div>
 
       {/* Pianificato vs Effettivo */}
-      <div className="mt-8 bg-white/80 rounded-2xl border border-gray-200 shadow-sm">
+      <div className="app-card mt-8 overflow-hidden">
         <div className="px-6 py-4 flex items-center justify-between flex-wrap gap-4">
           <h3 className="text-lg font-semibold">{t("budgetPage.plannedVsActual.title")}</h3>
           <div className="text-sm text-right">

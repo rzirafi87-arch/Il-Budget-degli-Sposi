@@ -13,6 +13,11 @@ import { getUserCountrySafe } from "@/constants/geo";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useLocale } from "next-intl";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { buttonClasses } from "@/components/ui/AppButton";
+import { CalendarCheck } from "lucide-react";
 
 const supabase = getBrowserClient();
 
@@ -27,6 +32,7 @@ type TimelineTask = {
 };
 
 export default function TimelinePage() {
+  const locale = useLocale();
   const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
   const eventConfig = getEventConfig(eventType);
   const [country] = useState(() => getUserCountrySafe());
@@ -263,31 +269,18 @@ export default function TimelinePage() {
     tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
 
   if (loading) {
-    return (
-      <div className="py-12 text-center text-gray-500">
-        Caricamento timeline...
-      </div>
-    );
+    return <LoadingState label="Caricamento timeline" cards={4} />;
   }
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm text-gray-500">
-            {eventConfig.timelineDescription}
-          </p>
-          <h1 className="font-serif text-3xl font-bold text-gray-800">
-            {eventConfig.emoji} {eventConfig.timelineTitle}
-          </h1>
-        </div>
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
-        >
-          Torna alla dashboard
-        </Link>
-      </div>
+      <PageHeader
+        eyebrow="Piano delle attività"
+        title={eventConfig.timelineTitle}
+        description={eventConfig.timelineDescription}
+        icon={<CalendarCheck size={24} aria-hidden />}
+        actions={<Link href={`/${locale}/dashboard`} className={buttonClasses({ variant: "outline", size: "sm" })}>Torna alla Dashboard</Link>}
+      />
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">

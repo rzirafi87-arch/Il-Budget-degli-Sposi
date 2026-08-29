@@ -6,25 +6,48 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
+import {
+  Building2,
+  CalendarDays,
+  Check,
+  Church,
+  CircleDollarSign,
+  ClipboardList,
+  FileText,
+  Gift,
+  Heart,
+  HeartHandshake,
+  Home,
+  Lightbulb,
+  MapPin,
+  Menu,
+  PiggyBank,
+  ReceiptText,
+  Star,
+  Users,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 
-const TABS_ICONS = {
-  dashboard: "📊",
-  timeline: "🗓️",
-  budget: "💰",
-  ideaBudget: "🧾",
-  weddingThings: "💒",
-  saveTheDate: "💌",
-  guests: "👥",
-  accounting: "📒",
-  suppliers: "🤝",
-  location: "📍",
-  churches: "⛪",
-  documents: "📄",
-  giftList: "🎁",
-  favorites: "⭐",
-  suggestions: "💡",
-  agenda: "📅",
-} as const;
+const TABS_ICONS: Record<string, LucideIcon> = {
+  dashboard: Home,
+  timeline: CalendarDays,
+  budget: PiggyBank,
+  ideaBudget: ReceiptText,
+  weddingThings: ClipboardList,
+  saveTheDate: Heart,
+  guests: Users,
+  accounting: CircleDollarSign,
+  suppliers: HeartHandshake,
+  location: MapPin,
+  churches: Church,
+  documents: FileText,
+  giftList: Gift,
+  favorites: Star,
+  suggestions: Lightbulb,
+  agenda: CalendarDays,
+  retirement: Building2,
+};
 
 export default function NavTabs() {
   const pathname = usePathname();
@@ -130,13 +153,15 @@ export default function NavTabs() {
                weddingTabs;
 
   const currentTab = tabs.find((tab) => normalizedPath.startsWith(tab.path));
+  const CurrentIcon = currentTab?.icon ?? Menu;
 
   return (
-    <nav className="relative">
+    <nav className="relative" aria-label="Navigazione principale">
       {/* Desktop */}
-      <div className="hidden md:flex flex-wrap gap-2 items-center">
+      <div className="hidden md:flex flex-wrap gap-1.5 items-center">
         {tabs.map((tab) => {
           const active = normalizedPath.startsWith(tab.path);
+          const Icon = tab.icon;
           const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
           return (
             <Link
@@ -145,14 +170,14 @@ export default function NavTabs() {
               aria-label={tab.label}
               aria-current={active ? "page" : undefined}
               className={clsx(
-                "px-4 py-2 rounded-full border text-sm transition-all font-semibold flex items-center gap-2 relative focus-ring-sage",
-                active ? "text-white shadow-soft" : "shadow-soft-sm"
+                "min-h-10 px-3.5 py-2 rounded-xl border text-sm transition-colors font-semibold flex items-center gap-2 relative focus-ring-sage",
+                active ? "text-white shadow-soft-sm" : "hover:bg-muted"
               )}
               style={
                 active
                   ? {
-                      background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
-                      borderColor: "var(--accent-sage-600)",
+                      background: "var(--accent-sage-700)",
+                      borderColor: "var(--accent-sage-700)",
                     }
                   : {
                       background: "var(--surface-elevated)",
@@ -162,7 +187,7 @@ export default function NavTabs() {
               }
               title={tab.label}
             >
-              {tab.icon ? <span aria-hidden>{tab.icon}</span> : null}
+              <Icon size={17} strokeWidth={2} aria-hidden />
               <span>{tab.label}</span>
               {hasBadge && (
                 <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold">
@@ -178,40 +203,37 @@ export default function NavTabs() {
       <div className="md:hidden">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="w-full flex items-center justify-between px-4 py-4 text-white rounded-xl shadow-lg active:scale-95 transition-transform border focus-ring-sage"
+          className="w-full flex items-center justify-between px-4 py-3 text-white rounded-xl shadow-soft active:scale-[.99] transition-transform border focus-ring-sage"
           style={{
-            background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
-            borderColor: "var(--accent-sage-600)",
+            background: "var(--accent-sage-700)",
+            borderColor: "var(--accent-sage-700)",
           }}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-nav"
         >
           <span className="font-bold text-base flex items-center gap-2">
-            <span aria-hidden>{currentTab?.icon ? currentTab.icon : ""}</span>
+            <CurrentIcon size={20} aria-hidden />
             <span>{currentTab?.label || "Menu Navigazione"}</span>
           </span>
-          <svg
-            className={clsx("w-6 h-6 transition-transform", mobileMenuOpen && "rotate-180")}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth={3}
-            aria-hidden
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
+          {mobileMenuOpen ? <X size={21} aria-hidden /> : <Menu size={21} aria-hidden />}
         </button>
 
         {mobileMenuOpen && (
           <>
-            <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setMobileMenuOpen(false)} />
+            <button
+              type="button"
+              className="fixed inset-0 z-40 h-auto w-auto bg-black/35 backdrop-blur-[1px]"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Chiudi menu"
+            />
             <div
               id="mobile-nav"
-              className="absolute top-full left-0 right-0 mt-2 bg-white border-2 rounded-xl shadow-2xl z-50 max-h-[60vh] overflow-y-auto"
+              className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-2xl shadow-soft-xl z-50 max-h-[min(65vh,32rem)] overflow-y-auto p-1.5"
               style={{ borderColor: "var(--border-strong)" }}
             >
               {tabs.map((tab) => {
                 const active = normalizedPath.startsWith(tab.path);
+                const Icon = tab.icon;
                 const hasBadge = (tab as { badge?: number }).badge !== undefined && (tab as { badge?: number }).badge! > 0;
                 return (
                   <Link
@@ -221,13 +243,13 @@ export default function NavTabs() {
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMobileMenuOpen(false)}
                     className={clsx(
-                      "block px-5 py-4 text-base font-semibold border-b last:border-b-0 transition-all active:scale-95 focus-ring-sage",
+                      "block px-4 py-3 text-base font-semibold rounded-xl transition-colors active:scale-[.99] focus-ring-sage",
                       active ? "text-white" : ""
                     )}
                     style={
                       active
                         ? {
-                            background: "linear-gradient(135deg, var(--accent-sage-500) 0%, var(--accent-sage-700) 100%)",
+                            background: "var(--accent-sage-700)",
                             borderColor: "transparent",
                           }
                         : {
@@ -238,14 +260,14 @@ export default function NavTabs() {
                     }
                   >
                     <span className="flex items-center gap-3">
-                      {tab.icon ? <span className="text-xl" aria-hidden>{tab.icon}</span> : null}
+                      <Icon size={20} strokeWidth={2} aria-hidden />
                       <span>{tab.label}</span>
                       {hasBadge && (
                         <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold ml-2">
                           {((tab as { badge?: number }).badge || 0) > 99 ? "99+" : (tab as { badge?: number }).badge}
                         </span>
                       )}
-                      {active && <span className="ml-auto" aria-hidden>✓</span>}
+                      {active && <Check className="ml-auto" size={18} aria-hidden />}
                     </span>
                   </Link>
                 );
