@@ -1,42 +1,34 @@
-﻿"use client";
+"use client";
+
 import TopBarSelector from "@/components/TopBarSelector";
-import WeddingTraditionInfo, {
-  WeddingTradition,
-} from "@/components/WeddingTraditionInfo";
+import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { EVENT_CONFIGS } from "@/constants/eventConfigs";
+import {
+  EVENT_TYPE_CAPABILITIES,
+  getEventTypeCapability,
+} from "@/lib/eventTypeCapabilities";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-const DASHBOARD_EVENTS = new Set([
-  "wedding",
-  "baptism",
-  "eighteenth",
-  "graduation",
-  "confirmation",
-  "communion",
-  "anniversary",
-  "birthday",
-  "fifty",
-  "gender-reveal",
-  "retirement",
-  "baby-shower",
-  "engagement-party",
-  "proposal",
-  "corporate",
-  "bar-mitzvah",
-  "quinceanera",
-  "charity-gala",
-]);
+const STATUS_COPY = {
+  it: { ready: "Disponibile", comingSoon: "Coming Soon", description: "Non ancora disponibile" },
+  en: { ready: "Available", comingSoon: "Coming Soon", description: "Not available yet" },
+  es: { ready: "Disponible", comingSoon: "Coming Soon", description: "Aún no disponible" },
+} as const;
 
 export default function SelectEventTypePage() {
   const t = useTranslations("events");
   const router = useRouter();
   const locale = useLocale();
+  const language = locale === "en" ? "en" : locale === "es" ? "es" : "it";
+  const statusCopy = STATUS_COPY[language];
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string>("");
+
   const country =
     typeof window !== "undefined"
       ? localStorage.getItem("country") ||
@@ -52,12 +44,10 @@ export default function SelectEventTypePage() {
       .catch(() => setTradition(null));
   }, [country]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       const cookieLang = document.cookie.match(/(?:^|; )language=([^;]+)/)?.[1];
-      const cookieCountry = document.cookie.match(
-        /(?:^|; )country=([^;]+)/
-      )?.[1];
+      const cookieCountry = document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1];
       const lsLang = localStorage.getItem("language");
       const lsCountry = localStorage.getItem("country");
       if (!(cookieLang || lsLang)) {
@@ -68,34 +58,37 @@ export default function SelectEventTypePage() {
         router.replace(`/${locale}/select-country`);
         return;
       }
-      if (lsLang && !cookieLang)
+      if (lsLang && !cookieLang) {
         document.cookie = `language=${lsLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
-      if (lsCountry && !cookieCountry)
+      }
+      if (lsCountry && !cookieCountry) {
         document.cookie = `country=${lsCountry}; Path=/; Max-Age=15552000; SameSite=Lax`;
+      }
     } catch {
-      // Ignore errors in SSR
+      // Client-only onboarding state; nothing to do during SSR.
     }
   }, [router, locale]);
 
-  const [selected, setSelected] = useState<string>("");
-
-  useEffect(() => {
-    if (!selected) return;
-    try {
-      localStorage.setItem("eventType", selected);
-      document.cookie = `eventType=${selected}; Path=/; Max-Age=15552000; SameSite=Lax`;
-    } catch {
-      // ignore
-    }
-  }, [selected]);
+  const events = useMemo(() => {
+    const configs = EVENT_CONFIGS as Record<string, { name: string; emoji: string }>;
+    return Object.entries(EVENT_TYPE_CAPABILITIES).map(([slug, capability]) => ({
+      slug,
+      label: t(`${slug}.label`, { fallback: configs[slug]?.name || slug }),
+      emoji: configs[slug]?.emoji || "✨",
+      capability,
+    }));
+  }, [t]);
 
   async function handleSelect(code: string) {
-    if (saving) return;
+    const capability = getEventTypeCapability(code);
+    if (saving || capability.availabilityStatus !== "READY") return;
+
     setSaving(true);
     setError(null);
     try {
       localStorage.setItem("eventType", code);
       document.cookie = `eventType=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
+      window.dispatchEvent(new CustomEvent("event-type-changed", { detail: code }));
       setSelected(code);
 
       const { data, error: sessionError } = await getBrowserClient().auth.getSession();
@@ -118,20 +111,12 @@ export default function SelectEventTypePage() {
         throw new Error(payload.error || "Impossibile completare la configurazione");
       }
 
-      const destination = DASHBOARD_EVENTS.has(code) ? "/dashboard" : "/coming-soon";
-      router.replace(`/${locale}${destination}`);
+      router.replace(`/${locale}/dashboard`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Impossibile completare la configurazione");
       setSaving(false);
     }
   }
-
-  const EVENTS = Object.entries(EVENT_CONFIGS).map(([slug, cfg]) => ({
-    slug,
-    label: t(`${slug}.label`, { fallback: cfg.name }),
-    emoji: cfg.emoji,
-    available: true,
-  }));
 
   return (
     <main
@@ -155,86 +140,71 @@ export default function SelectEventTypePage() {
         <div className="mb-6 flex justify-end">
           <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-[#A3B59D]/40 bg-[#F8FBF7] px-4 py-3 text-sm text-gray-700 shadow-sm sm:flex-row sm:items-center sm:gap-3">
             <span className="font-semibold text-center sm:text-left">
-              {t("onboarding.selectLanguageTitle", {
-                fallback: "Scegli la lingua",
-              })}
-              <span aria-hidden className="mx-1 hidden sm:inline">
-                /
-              </span>
+              {t("onboarding.selectLanguageTitle", { fallback: "Scegli la lingua" })}
+              <span aria-hidden className="mx-1 hidden sm:inline">/</span>
               <br className="sm:hidden" />
-              {t("onboarding.selectCountryTitle", {
-                fallback: "Scegli il paese",
-              })}
+              {t("onboarding.selectCountryTitle", { fallback: "Scegli il paese" })}
             </span>
-            <div className="self-center sm:self-auto">
-              <TopBarSelector />
-            </div>
+            <div className="self-center sm:self-auto"><TopBarSelector /></div>
           </div>
         </div>
+
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
-          <span aria-hidden="true" className="mr-2">
-            🎉
-          </span>
-          {t("onboarding.selectEventTypeTitle", {
-            fallback: "Scegli il tipo di evento",
-          })}
+          <span aria-hidden="true" className="mr-2">🎉</span>
+          {t("onboarding.selectEventTypeTitle", { fallback: "Scegli il tipo di evento" })}
         </h1>
-        {tradition && (
-          <div className="mb-6">
-            <WeddingTraditionInfo tradition={tradition} />
-          </div>
-        )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {EVENTS.map((ev) => {
-            const isAvailable = ev.available !== false;
+
+        {tradition && <div className="mb-6"><WeddingTraditionInfo tradition={tradition} /></div>}
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {events.map((event) => {
+            const isReady = event.capability.availabilityStatus === "READY";
+            const isSelected = selected === event.slug;
             return (
               <button
-                key={ev.slug}
-                disabled={!isAvailable || saving}
+                key={event.slug}
+                type="button"
+                disabled={!isReady || saving}
                 className={`group relative overflow-hidden rounded-2xl border bg-white transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg ${
-                  isAvailable
-                    ? selected === ev.slug
+                  isReady
+                    ? isSelected
                       ? "border-primary shadow-lg"
                       : "border-border shadow-sm hover:border-primary"
-                    : "border-border/60 opacity-70 cursor-not-allowed"
+                    : "cursor-not-allowed border-border/60 opacity-75"
                 }`}
-                onClick={() => isAvailable && handleSelect(ev.slug)}
-                aria-pressed={selected === ev.slug}
+                onClick={() => void handleSelect(event.slug)}
+                aria-pressed={isSelected}
+                aria-disabled={!isReady}
               >
-                <div className="relative min-h-40 w-full bg-linear-to-br from-[#f7f1ec] to-[#e1ece5]">
+                <div className="relative min-h-44 w-full bg-linear-to-br from-[#f7f1ec] to-[#e1ece5]">
                   <div className="absolute inset-0 flex flex-col justify-between p-5 text-left text-fg">
                     <div>
-                      <div className="flex items-center gap-2 text-lg font-semibold">
-                        <span
-                          aria-hidden="true"
-                          className="grid h-11 w-11 place-items-center rounded-xl bg-white text-2xl shadow-soft-sm"
-                        >
-                          {ev.emoji || "✨"}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-2 text-lg font-semibold">
+                          <span aria-hidden className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-2xl shadow-soft-sm">
+                            {event.emoji}
+                          </span>
+                          <span>{event.label}</span>
+                        </div>
+                        <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${
+                          isReady ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800"
+                        }`}>
+                          {isReady ? statusCopy.ready : statusCopy.comingSoon}
                         </span>
-                        <span>{ev.label}</span>
                       </div>
+                      {!isReady && <p className="mt-4 text-sm text-muted-fg">{event.capability.description[language]}</p>}
                     </div>
                     <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted-fg">
-                      <span>
-                        {selected === ev.slug
-                          ? t("selected", { fallback: "Selezionato" })
-                          : t("cta.start", { fallback: "Scopri di più" })}
-                      </span>
-                      <span aria-hidden="true" className="text-base">
-                        →
-                      </span>
+                      <span>{isReady ? (isSelected ? t("selected", { fallback: "Selezionato" }) : t("cta.start", { fallback: "Inizia" })) : statusCopy.description}</span>
+                      {isReady && <span aria-hidden="true" className="text-base">→</span>}
                     </div>
                   </div>
                 </div>
-                {!isAvailable && (
-                  <span className="absolute top-3 right-3 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-muted-fg shadow-sm">
-                    {t("comingSoon", { fallback: "In arrivo" })}
-                  </span>
-                )}
               </button>
             );
           })}
         </div>
+
         {saving && <p className="mt-6 text-center font-semibold text-[#7A8A74]">Creazione del tuo evento…</p>}
         {error && <p className="mt-6 text-center font-semibold text-red-600" role="alert">{error}</p>}
       </div>
