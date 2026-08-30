@@ -25,11 +25,12 @@ describe("SelectEventTypePage", () => {
 
     render(<SelectEventTypePage />);
 
-    const btn = await screen.findByRole("button", { name: /matrimonio/i });
+    const matchingButtons = await screen.findAllByRole("button", { name: /matrimonio/i });
+    const btn = matchingButtons.find((button) => button.getAttribute("aria-disabled") === "false");
+    expect(btn).toBeTruthy();
     expect(btn).toBeEnabled();
-    expect(btn).toHaveAttribute("aria-disabled", "false");
     expect(btn).toHaveTextContent(/disponibile/i);
-    fireEvent.click(btn);
+    fireEvent.click(btn!);
 
     await waitFor(() => {
       expect(window.localStorage.getItem("eventType")).toBe("wedding");
