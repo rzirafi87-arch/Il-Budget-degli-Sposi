@@ -70,12 +70,21 @@ jobs:
       - name: Run Branch 27 integration and RLS tests
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_27_rls.sql
 
+      - name: Apply Branch 28 global supplier catalog
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260830200000_global_supplier_catalog.sql
+
+      - name: Verify Branch 28 reconstructed schema
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_28_schema.sql
+
+      - name: Run Branch 28 integration and RLS tests
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_28_rls.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
           supabase db lint --local --schema public --level warning --fail-on error
 
-      - name: Generate post-Branch-27 TypeScript types
+      - name: Generate post-Branch-28 TypeScript types
         run: |
           mkdir -p generated
           cd .supabase-ci
@@ -89,7 +98,7 @@ jobs:
       - name: Upload generated database types
         uses: actions/upload-artifact@v4
         with:
-          name: branch-27-database-types
+          name: branch-28-database-types
           path: generated/database.types.ts
           if-no-files-found: error
 

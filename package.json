@@ -51,6 +51,7 @@
     "locations:import": "node scripts/import-locations.mjs",
     "locations:import:apply": "node scripts/import-locations.mjs --apply",
     "locations:test-import": "node --test scripts/lib/location-import-core.test.mjs",
+    "suppliers:test-import": "node --test scripts/lib/supplier-import-core.test.mjs",
     "autocommit": "node scripts/autocommit-once.mjs",
     "check:utf8": "node scripts/check-utf8.mjs",
     "check:utf8:strict": "node scripts/check-utf8.mjs --strict",
