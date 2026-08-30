@@ -26,13 +26,13 @@ values
   ('26000000-0000-4000-8000-000000000002', '26000000-0000-4000-8000-00000000000b', 'Church event B');
 
 insert into public.churches(
-  id, name, region, province, city, country_code, source, external_id,
+  id, name, place_type, region, province, city, country_code, source, external_id,
   verification_status, confidence_score
 )
 values
-  ('26000000-0000-4000-8000-000000000011', 'Chiesa Prova Uno', 'Test', 'TT', 'Test A', 'zz',
+  ('26000000-0000-4000-8000-000000000011', 'Chiesa Prova Uno', 'church', 'Test', 'TT', 'Test A', 'zz',
    'test', 'church-1', 'VERIFIED', 95),
-  ('26000000-0000-4000-8000-000000000012', 'Chiesa Prova Due', 'Test', 'TT', 'Test B', 'zz',
+  ('26000000-0000-4000-8000-000000000012', 'Chiesa Prova Due', 'church', 'Test', 'TT', 'Test B', 'zz',
    'test', 'church-2', 'TO_CHECK', 20);
 
 set local role anon;
