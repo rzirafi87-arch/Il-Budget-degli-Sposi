@@ -441,9 +441,9 @@ export type Database = {
           source: string
           source_updated_at: string | null
           source_url: string | null
-          subtype: string | null
           subscription_expires_at: string | null
           subscription_tier: string | null
+          subtype: string | null
           updated_at: string | null
           user_id: string | null
           verification_status: string
@@ -495,9 +495,9 @@ export type Database = {
           source: string
           source_updated_at?: string | null
           source_url?: string | null
-          subtype?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          subtype?: string | null
           updated_at?: string | null
           user_id?: string | null
           verification_status?: string
@@ -549,9 +549,9 @@ export type Database = {
           source?: string
           source_updated_at?: string | null
           source_url?: string | null
-          subtype?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          subtype?: string | null
           updated_at?: string | null
           user_id?: string | null
           verification_status?: string
