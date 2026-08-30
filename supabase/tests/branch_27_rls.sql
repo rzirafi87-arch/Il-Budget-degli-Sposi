@@ -29,7 +29,17 @@ do $$ begin
 end $$;
 
 reset role; set local role postgres;
-insert into public.saved_churches(event_id,church_id) select '27000000-0000-4000-8000-000000000001',id from public.churches limit 1;
+insert into public.churches(
+  id,name,place_type,region,province,city,country_code,source,external_id,
+  verification_status,confidence_score
+) values (
+  '27000000-0000-4000-8000-000000000021','Chiesa Test Integrazione','church',
+  'Test','TT','Test A','zz','test','church-location-integration','VERIFIED',95
+);
+insert into public.saved_churches(event_id,church_id) values (
+  '27000000-0000-4000-8000-000000000001',
+  '27000000-0000-4000-8000-000000000021'
+);
 do $$ begin
   if (select count(*) from public.saved_locations where event_id='27000000-0000-4000-8000-000000000001') <> 2 then raise exception 'Location roles failed'; end if;
   if (select count(*) from public.saved_churches where event_id='27000000-0000-4000-8000-000000000001') <> 1 then raise exception 'Church/location integration failed'; end if;
