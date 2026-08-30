@@ -13,13 +13,40 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 
 const STATUS_COPY = {
-  it: { ready: "Disponibile", comingSoon: "Coming Soon", description: "Non ancora disponibile" },
-  en: { ready: "Available", comingSoon: "Coming Soon", description: "Not available yet" },
-  es: { ready: "Disponible", comingSoon: "Coming Soon", description: "Aún no disponible" },
+  it: {
+    ready: "Disponibile",
+    comingSoon: "Coming Soon",
+    description: "Non ancora disponibile",
+    selected: "Selezionato",
+    start: "Inizia",
+    creating: "Creazione del tuo evento…",
+    genericError: "Impossibile completare la configurazione",
+    progress: "Passaggio 3 di 3",
+  },
+  en: {
+    ready: "Available",
+    comingSoon: "Coming Soon",
+    description: "Not available yet",
+    selected: "Selected",
+    start: "Start",
+    creating: "Creating your event…",
+    genericError: "Unable to complete the setup",
+    progress: "Step 3 of 3",
+  },
+  es: {
+    ready: "Disponible",
+    comingSoon: "Coming Soon",
+    description: "Aún no disponible",
+    selected: "Seleccionado",
+    start: "Empezar",
+    creating: "Creando tu evento…",
+    genericError: "No se puede completar la configuración",
+    progress: "Paso 3 de 3",
+  },
 } as const;
 
 export default function SelectEventTypePage() {
-  const t = useTranslations("events");
+  const t = useTranslations();
   const router = useRouter();
   const locale = useLocale();
   const language = locale === "en" ? "en" : locale === "es" ? "es" : "it";
@@ -73,7 +100,7 @@ export default function SelectEventTypePage() {
     const configs = EVENT_CONFIGS as Record<string, { name: string; emoji: string }>;
     return Object.entries(EVENT_TYPE_CAPABILITIES).map(([slug, capability]) => ({
       slug,
-      label: t(`${slug}.label`, { fallback: configs[slug]?.name || slug }),
+      label: t(`events.${slug}`),
       emoji: configs[slug]?.emoji || "✨",
       capability,
     }));
@@ -108,12 +135,12 @@ export default function SelectEventTypePage() {
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || !payload.ok) {
-        throw new Error(payload.error || "Impossibile completare la configurazione");
+        throw new Error(payload.error || statusCopy.genericError);
       }
 
       router.replace(`/${locale}/dashboard`);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Impossibile completare la configurazione");
+      setError(cause instanceof Error ? cause.message : statusCopy.genericError);
       setSaving(false);
     }
   }
@@ -132,7 +159,7 @@ export default function SelectEventTypePage() {
       }}
     >
       <div className="onboarding-panel max-w-3xl">
-        <div className="onboarding-progress" aria-label="Passaggio 3 di 3">
+        <div className="onboarding-progress" aria-label={statusCopy.progress}>
           <span className="onboarding-progress__step" />
           <span className="onboarding-progress__step" />
           <span className="onboarding-progress__step onboarding-progress__step--active" />
@@ -140,10 +167,10 @@ export default function SelectEventTypePage() {
         <div className="mb-6 flex justify-end">
           <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-[#A3B59D]/40 bg-[#F8FBF7] px-4 py-3 text-sm text-gray-700 shadow-sm sm:flex-row sm:items-center sm:gap-3">
             <span className="font-semibold text-center sm:text-left">
-              {t("onboarding.selectLanguageTitle", { fallback: "Scegli la lingua" })}
+              {t("onboarding.selectLanguageTitle")}
               <span aria-hidden className="mx-1 hidden sm:inline">/</span>
               <br className="sm:hidden" />
-              {t("onboarding.selectCountryTitle", { fallback: "Scegli il paese" })}
+              {t("onboarding.selectCountryTitle")}
             </span>
             <div className="self-center sm:self-auto"><TopBarSelector /></div>
           </div>
@@ -151,7 +178,7 @@ export default function SelectEventTypePage() {
 
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
           <span aria-hidden="true" className="mr-2">🎉</span>
-          {t("onboarding.selectEventTypeTitle", { fallback: "Scegli il tipo di evento" })}
+          {t("onboarding.selectEventTypeTitle")}
         </h1>
 
         {tradition && <div className="mb-6"><WeddingTraditionInfo tradition={tradition} /></div>}
@@ -195,7 +222,7 @@ export default function SelectEventTypePage() {
                       {!isReady && <p className="mt-4 text-sm text-muted-fg">{event.capability.description[language]}</p>}
                     </div>
                     <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted-fg">
-                      <span>{isReady ? (isSelected ? t("selected", { fallback: "Selezionato" }) : t("cta.start", { fallback: "Inizia" })) : statusCopy.description}</span>
+                      <span>{isReady ? (isSelected ? statusCopy.selected : statusCopy.start) : statusCopy.description}</span>
                       {isReady && <span aria-hidden="true" className="text-base">→</span>}
                     </div>
                   </div>
@@ -205,7 +232,7 @@ export default function SelectEventTypePage() {
           })}
         </div>
 
-        {saving && <p className="mt-6 text-center font-semibold text-[#7A8A74]">Creazione del tuo evento…</p>}
+        {saving && <p className="mt-6 text-center font-semibold text-[#7A8A74]">{statusCopy.creating}</p>}
         {error && <p className="mt-6 text-center font-semibold text-red-600" role="alert">{error}</p>}
       </div>
     </main>
