@@ -63,7 +63,9 @@ Nessun tipo viene classificato BETA: non esiste un caso in cui l'esperienza parz
 
 ## Capability matrix
 
-La configurazione tipizzata `src/lib/eventTypeCapabilities.ts` è la fonte operativa usata da onboarding, navigazione e route guard. La migration Branch 29 ne registra nel catalogo DB lo stato e le capability per rendere il modello interrogabile e preparare l'estensione futura senza dipendere da label tradotte.
+La configurazione tipizzata `src/lib/eventTypeCapabilities.ts` è la singola fonte operativa per disponibilità, moduli, ceremony mode, budget/timeline template, categorie fornitori e location roles. Onboarding, navigazione e route guard consumano questa stessa matrice; non esistono più fallback separati per tipo evento.
+
+Il database mantiene il catalogo `event_types` e i dati applicativi, senza duplicare colonne di capability che potrebbero divergere dal codice. La migration Branch 29 registra nel catalogo i tipi mancanti e amplia i valori validi di `saved_locations.location_role`, senza modificare `events.event_type` né inventare tassonomie.
 
 ### Matrimonio — READY
 
