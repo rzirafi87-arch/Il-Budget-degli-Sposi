@@ -1180,16 +1180,17 @@ export type Database = {
           accommodation_available: boolean | null
           address: string | null
           address_line: string | null
-          catering_external_allowed: boolean | null
-          catering_internal: boolean | null
           capacity_max: number | null
           capacity_min: number | null
+          catering_external_allowed: boolean | null
+          catering_internal: boolean | null
           city: string
           confidence_score: number
           contact_clicks: number | null
           country: string | null
           country_code: string
           created_at: string
+          currency: string | null
           description: string | null
           email: string | null
           external_id: string | null
@@ -1198,12 +1199,12 @@ export type Database = {
           google_rating: number | null
           google_rating_count: number | null
           id: string
-          inserted_at: string | null
-          is_featured: boolean | null
           indoor_space: boolean | null
+          inserted_at: string | null
           instagram_url: string | null
-          last_verified_at: string | null
+          is_featured: boolean | null
           last_synced_at: string | null
+          last_verified_at: string | null
           last_view_at: string | null
           latitude: number | null
           location_type: string | null
@@ -1225,9 +1226,9 @@ export type Database = {
           source: string
           source_updated_at: string | null
           source_url: string | null
-          subtype: string | null
           subscription_expires_at: string | null
           subscription_tier: string | null
+          subtype: string | null
           updated_at: string | null
           user_id: string | null
           venue_type: string
@@ -1235,23 +1236,23 @@ export type Database = {
           verified: boolean | null
           website: string | null
           website_clicks: number | null
-          currency: string | null
         }
         Insert: {
           accessibility?: boolean | null
           accommodation_available?: boolean | null
           address?: string | null
           address_line?: string | null
-          catering_external_allowed?: boolean | null
-          catering_internal?: boolean | null
           capacity_max?: number | null
           capacity_min?: number | null
+          catering_external_allowed?: boolean | null
+          catering_internal?: boolean | null
           city: string
           confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
           country_code: string
           created_at?: string
+          currency?: string | null
           description?: string | null
           email?: string | null
           external_id?: string | null
@@ -1260,12 +1261,12 @@ export type Database = {
           google_rating?: number | null
           google_rating_count?: number | null
           id?: string
-          inserted_at?: string | null
-          is_featured?: boolean | null
           indoor_space?: boolean | null
+          inserted_at?: string | null
           instagram_url?: string | null
-          last_verified_at?: string | null
+          is_featured?: boolean | null
           last_synced_at?: string | null
+          last_verified_at?: string | null
           last_view_at?: string | null
           latitude?: number | null
           location_type?: string | null
@@ -1287,9 +1288,9 @@ export type Database = {
           source: string
           source_updated_at?: string | null
           source_url?: string | null
-          subtype?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          subtype?: string | null
           updated_at?: string | null
           user_id?: string | null
           venue_type: string
@@ -1297,23 +1298,23 @@ export type Database = {
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
-          currency?: string | null
         }
         Update: {
           accessibility?: boolean | null
           accommodation_available?: boolean | null
           address?: string | null
           address_line?: string | null
-          catering_external_allowed?: boolean | null
-          catering_internal?: boolean | null
           capacity_max?: number | null
           capacity_min?: number | null
+          catering_external_allowed?: boolean | null
+          catering_internal?: boolean | null
           city?: string
           confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
           country_code?: string
           created_at?: string
+          currency?: string | null
           description?: string | null
           email?: string | null
           external_id?: string | null
@@ -1322,12 +1323,12 @@ export type Database = {
           google_rating?: number | null
           google_rating_count?: number | null
           id?: string
-          inserted_at?: string | null
-          is_featured?: boolean | null
           indoor_space?: boolean | null
+          inserted_at?: string | null
           instagram_url?: string | null
-          last_verified_at?: string | null
+          is_featured?: boolean | null
           last_synced_at?: string | null
+          last_verified_at?: string | null
           last_view_at?: string | null
           latitude?: number | null
           location_type?: string | null
@@ -1349,9 +1350,9 @@ export type Database = {
           source?: string
           source_updated_at?: string | null
           source_url?: string | null
-          subtype?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          subtype?: string | null
           updated_at?: string | null
           user_id?: string | null
           venue_type?: string
@@ -1359,7 +1360,6 @@ export type Database = {
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
-          currency?: string | null
         }
         Relationships: []
       }
