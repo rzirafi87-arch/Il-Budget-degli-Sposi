@@ -4,6 +4,9 @@
 begin;
 set local role postgres;
 
+insert into public.i18n_locales(code, name, direction)
+values ('it', 'Italiano', 'ltr') on conflict (code) do nothing;
+
 insert into public.geo_countries(code, default_locale)
 values ('zz', 'it') on conflict (code) do nothing;
 
