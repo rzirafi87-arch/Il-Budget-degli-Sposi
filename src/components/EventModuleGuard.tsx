@@ -42,19 +42,17 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
     normalizedPath === "/" ||
     UNGUARDED_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix)) ||
     !routeModule;
-  const [resolved, setResolved] = useState(isUnguarded);
+  const [verifiedPath, setVerifiedPath] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
 
     if (isUnguarded || !routeModule) {
-      setResolved(true);
       return () => {
         active = false;
       };
     }
 
-    setResolved(false);
     void (async () => {
       try {
         const status = await getOnboardingStatus();
@@ -84,7 +82,7 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
           return;
         }
 
-        setResolved(true);
+        setVerifiedPath(normalizedPath);
       } catch {
         if (!active) return;
         router.replace(`/${locale}/auth`);
@@ -94,9 +92,13 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
     return () => {
       active = false;
     };
-  }, [isUnguarded, locale, routeModule, router]);
+  }, [isUnguarded, locale, normalizedPath, routeModule, router]);
 
-  if (!resolved) {
+  if (isUnguarded || !routeModule) {
+    return <>{children}</>;
+  }
+
+  if (verifiedPath !== normalizedPath) {
     return <LoadingState label="Verifica disponibilità modulo" cards={2} />;
   }
 
