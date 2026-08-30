@@ -45,12 +45,14 @@ export async function POST(req: NextRequest) {
 
     const existingEvent = events?.[0];
     if (existingEvent?.id) {
+      const existingEventType = normalizeEventType(existingEvent.event_type);
+      const existingCapability = getEventTypeCapability(existingEventType);
       return NextResponse.json(
         {
           ok: true,
           eventId: existingEvent.id,
-          eventType: normalizeEventType(existingEvent.event_type),
-          legacy: capability.availabilityStatus !== "READY",
+          eventType: existingEventType,
+          legacy: existingCapability.availabilityStatus !== "READY",
         },
         { status: 200 }
       );
