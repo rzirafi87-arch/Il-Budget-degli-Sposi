@@ -177,5 +177,9 @@ revoke all on table public.saved_locations from anon;
 grant select, insert, update, delete on table public.saved_locations to authenticated;
 grant all on table public.saved_locations to service_role;
 
+alter table public.sync_jobs drop constraint if exists sync_jobs_source_check;
+alter table public.sync_jobs add constraint sync_jobs_source_check
+  check (source in ('google', 'osm', 'wikidata', 'official_site'));
+
 comment on table public.locations is 'Shared catalog of wedding venues. Event-private planning data belongs in saved_locations.';
 comment on table public.saved_locations is 'Owner-only relationship between an event and a global venue, including its event-specific role.';
