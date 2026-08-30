@@ -16,7 +16,7 @@ import { getOnboardingStatus } from "@/lib/onboardingClient";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import { useLocale } from "next-intl";
-import { FileText, LayoutDashboard, Lightbulb, Plane, RotateCw, Save, Sparkles, Video } from "lucide-react";
+import { Church, FileText, Landmark, LayoutDashboard, Lightbulb, Plane, RotateCw, Save, Sparkles, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
@@ -25,6 +25,7 @@ import { useEffect, useMemo, useState } from "react";
 type BudgetItem = { name: string; amount?: number };
 type ChecklistModule = { module_name: string; is_required: boolean };
 type Tradition = { name: string; description: string };
+type PlanningSelections = { church: { churches: { name: string } | null } | null; locations: Array<{ location_role: string; locations: { name: string } | null }> };
 
 
 export const dynamic = "force-dynamic";
@@ -47,6 +48,7 @@ export default function DashboardPage() {
   const [routeError, setRouteError] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [clientPrefs, setClientPrefs] = useState({ language: "", country: "", eventType: "" });
+  const [planningSelections, setPlanningSelections] = useState<PlanningSelections>({ church: null, locations: [] });
 
   const userLang = clientPrefs.language;
   const userCountry = clientPrefs.country;
@@ -125,6 +127,14 @@ export default function DashboardPage() {
       try {
         const headers: Record<string, string> = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
         const country = userCountry || "it";
+
+        if (isWedding && accessToken) {
+          try {
+            const res = await fetch("/api/my/planning-selections", { headers, cache: "no-store" });
+            const json = await res.json();
+            if (active && res.ok) setPlanningSelections({ church: json.church || null, locations: json.locations || [] });
+          } catch { /* The catalog cards remain useful as navigation fallback. */ }
+        }
 
         // Budget Items
         try {
@@ -319,6 +329,11 @@ export default function DashboardPage() {
         setGroomBudget={setGroomBudget}
         setWeddingDate={setWeddingDate}
       />
+
+      {isWedding && <section className="mb-8 grid gap-4 md:grid-cols-2" aria-label="Scelte cerimonia e ricevimento">
+        <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Church size={21} aria-hidden /></span><div className="flex-1"><p className="app-eyebrow">Cerimonia</p><h2 className="text-lg">{planningSelections.church?.churches?.name || "Chiesa ancora da scegliere"}</h2><AppButtonLink href={`/${locale}/chiese`} variant="secondary" className="mt-3">Apri Chiese</AppButtonLink></div></div></AppCard>
+        <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Landmark size={21} aria-hidden /></span><div className="flex-1"><p className="app-eyebrow">Ricevimento</p><h2 className="text-lg">{planningSelections.locations.find((item) => item.location_role === "reception")?.locations?.name || "Location ancora da scegliere"}</h2><AppButtonLink href={`/${locale}/location`} variant="secondary" className="mt-3">Apri Location</AppButtonLink></div></div></AppCard>
+      </section>}
 
       {/* Azioni principali: Salva, PDF, Video */}
       <section className="mb-8 mt-5" aria-labelledby="dashboard-actions-title">

@@ -94,7 +94,8 @@ Procedura futura di recupero:
 | `user_event_timeline` | Istanze private da template timeline | UUID `id` | evento CASCADE; template SET NULL | timeline localizzata |
 | `payment_reminders` | Promemoria di pagamento privati | UUID `id` | expense CASCADE | pagamenti |
 | `suppliers` | Catalogo fornitore misto globale/contributo utente | UUID `id` | `user_id → auth.users` SET NULL; Google ID unique | catalogo/abbonamenti |
-| `locations` | Catalogo location misto globale/contributo utente | UUID `id` | `user_id → auth.users` SET NULL; Google ID unique | catalogo/abbonamenti |
+| `locations` | Catalogo globale location; colonne legacy preservate | UUID `id` | `user_id → auth.users` SET NULL; source ID unique | lettura pubblica, scrittura server-only |
+| `saved_locations` | Stato privato evento ↔ location, distinto per ruolo | UUID `id` | evento CASCADE; location RESTRICT; unique evento/location/ruolo | owner-only Branch 27 |
 | `churches` | Catalogo globale chiese e luoghi di culto; colonne legacy preservate | UUID `id` | `user_id → auth.users` SET NULL; country RESTRICT; source ID unique | lettura pubblica, scrittura server-only |
 | `saved_churches` | Stato privato evento ↔ chiesa globale | UUID `id` | evento CASCADE; chiesa RESTRICT; unique evento/chiesa | owner-only Branch 26 |
 | `atelier` | Catalogo globale atelier | UUID `id` | nessuna ownership | elenco pubblico |
@@ -319,15 +320,19 @@ Il Branch 26 ha attuato la separazione `churches` / `saved_churches`. Vedi
 ricerca, decisione PostGIS e dataset pilota. Le righe legacy sono preservate e le
 scritture client sul catalogo globale sono state rimosse.
 
+Il Branch 27 applica il confine globale/privato a `locations` / `saved_locations`
+e preserva `places` / `vendor_places` come modello geografico del catalogo vendor.
+Vedi `docs/adr/003-global-location-catalog.md` per ruoli, collegamenti e rinvii.
+
 Separare sempre catalogo pubblico e stato privato:
 
 | Globale | Relazione privata wedding | Provenance minima |
 |---|---|---|
 | `suppliers` | `saved_suppliers` | `source`, `source_url`, `external_id`, `verified_at`, `updated_at`, `confidence` |
-| `venues` (non riusare automaticamente `locations`) | `saved_venues` | stessi campi |
+| `locations` | `saved_locations` | stessi campi, più `location_role` |
 | `churches` | `saved_churches` | stessi campi |
 
-Le relazioni private devono contenere `event_id`, stato pipeline, preferito, contattato, note, preventivo/costo e scelta finale, con unique `(event_id, global_entity_id)` e RLS membership-aware. Non inserire note personali nelle entità globali.
+Le relazioni private devono contenere `event_id`, stato pipeline, preferito, contattato, note, preventivo/costo e scelta finale, con unique coerente con i ruoli business. Fino all'introduzione della membership, Branch 26/27 applicano RLS owner-only tramite `events.owner_id`. Non inserire note personali nelle entità globali.
 
 Strategia futura:
 

@@ -1,0 +1,35 @@
+{
+  "dataset": "Provincia di Agrigento — pilot location ufficiali",
+  "license_note": "Fatti pubblici verificati sui siti ufficiali delle strutture; nessun prezzo inventato e nessun dato personale importato.",
+  "records": [
+    {
+      "name": "Villa Athena Resort", "venue_type": "resort", "address_line": "Via Passeggiata Archeologica 33", "postal_code": "92100",
+      "city": "Agrigento", "province": "AG", "region": "Sicilia", "country_code": "it", "phone": "+39 0922 596288",
+      "website": "https://www.hotelvillaathena.it/", "source": "official_site", "source_url": "https://www.hotelvillaathena.it/matrimoni-agrigento.html",
+      "external_id": "official-villa-athena-agrigento", "accommodation_available": true, "catering_internal": true, "outdoor_space": true,
+      "indoor_space": true, "capacity_max": 350, "last_verified_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "name": "Hotel Villa Romana", "venue_type": "hotel", "city": "Porto Empedocle", "province": "AG", "region": "Sicilia", "country_code": "it",
+      "website": "https://www.hotelvillaromana.com/", "source": "official_site", "source_url": "https://www.hotelvillaromana.com/en/events-venue-near-agrigento-sicily/weddings",
+      "external_id": "official-hotel-villa-romana-porto-empedocle", "accommodation_available": true, "indoor_space": true,
+      "outdoor_space": true, "last_verified_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "name": "Castello Chiaramonte", "venue_type": "castle", "city": "Siculiana", "province": "AG", "region": "Sicilia", "country_code": "it",
+      "website": "https://www.castellochiaramonte.it/", "source": "official_site", "source_url": "https://www.castellochiaramonte.it/",
+      "external_id": "official-castello-chiaramonte-siculiana", "catering_internal": true, "parking": true, "outdoor_space": true,
+      "indoor_space": true, "capacity_min": 40, "capacity_max": 1000, "last_verified_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "name": "Parco Chiaramontano", "venue_type": "estate", "city": "Siculiana", "province": "AG", "region": "Sicilia", "country_code": "it",
+      "website": "https://www.parcochiaramontano.it/", "source": "official_site", "source_url": "https://www.parcochiaramontano.it/",
+      "external_id": "official-parco-chiaramontano-siculiana", "outdoor_space": true, "last_verified_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "name": "Relais Villa Giuliana", "venue_type": "villa", "city": "Licata", "province": "AG", "region": "Sicilia", "country_code": "it",
+      "website": "https://www.villagiulianarelais.it/", "source": "official_site", "source_url": "https://www.villagiulianarelais.it/en/weddings-events.html",
+      "external_id": "official-relais-villa-giuliana-licata", "accommodation_available": true, "last_verified_at": "2026-08-30T00:00:00Z"
+    }
+  ]
+}

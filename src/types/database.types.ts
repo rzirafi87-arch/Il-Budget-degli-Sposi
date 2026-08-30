@@ -1176,100 +1176,190 @@ export type Database = {
       }
       locations: {
         Row: {
+          accessibility: boolean | null
+          accommodation_available: boolean | null
           address: string | null
+          address_line: string | null
+          catering_external_allowed: boolean | null
+          catering_internal: boolean | null
           capacity_max: number | null
           capacity_min: number | null
           city: string
+          confidence_score: number
           contact_clicks: number | null
           country: string | null
+          country_code: string
+          created_at: string
           description: string | null
           email: string | null
+          external_id: string | null
+          facebook_url: string | null
           google_place_id: string | null
           google_rating: number | null
           google_rating_count: number | null
           id: string
           inserted_at: string | null
           is_featured: boolean | null
+          indoor_space: boolean | null
+          instagram_url: string | null
+          last_verified_at: string | null
           last_synced_at: string | null
           last_view_at: string | null
+          latitude: number | null
           location_type: string | null
+          longitude: number | null
           name: string
+          normalized_address: string | null
+          normalized_name: string
+          outdoor_space: boolean | null
+          parking: boolean | null
           phone: string | null
+          postal_code: string | null
           price_range: string | null
+          price_range_max: number | null
+          price_range_min: number | null
+          price_verified_at: string | null
           profile_views: number | null
           province: string
           region: string
+          source: string
+          source_updated_at: string | null
+          source_url: string | null
+          subtype: string | null
           subscription_expires_at: string | null
           subscription_tier: string | null
           updated_at: string | null
           user_id: string | null
+          venue_type: string
+          verification_status: string
           verified: boolean | null
           website: string | null
           website_clicks: number | null
+          currency: string | null
         }
         Insert: {
+          accessibility?: boolean | null
+          accommodation_available?: boolean | null
           address?: string | null
+          address_line?: string | null
+          catering_external_allowed?: boolean | null
+          catering_internal?: boolean | null
           capacity_max?: number | null
           capacity_min?: number | null
           city: string
+          confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
+          country_code: string
+          created_at?: string
           description?: string | null
           email?: string | null
+          external_id?: string | null
+          facebook_url?: string | null
           google_place_id?: string | null
           google_rating?: number | null
           google_rating_count?: number | null
           id?: string
           inserted_at?: string | null
           is_featured?: boolean | null
+          indoor_space?: boolean | null
+          instagram_url?: string | null
+          last_verified_at?: string | null
           last_synced_at?: string | null
           last_view_at?: string | null
+          latitude?: number | null
           location_type?: string | null
+          longitude?: number | null
           name: string
+          normalized_address?: string | null
+          normalized_name: string
+          outdoor_space?: boolean | null
+          parking?: boolean | null
           phone?: string | null
+          postal_code?: string | null
           price_range?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          price_verified_at?: string | null
           profile_views?: number | null
           province: string
           region: string
+          source: string
+          source_updated_at?: string | null
+          source_url?: string | null
+          subtype?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
           updated_at?: string | null
           user_id?: string | null
+          venue_type: string
+          verification_status?: string
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
+          currency?: string | null
         }
         Update: {
+          accessibility?: boolean | null
+          accommodation_available?: boolean | null
           address?: string | null
+          address_line?: string | null
+          catering_external_allowed?: boolean | null
+          catering_internal?: boolean | null
           capacity_max?: number | null
           capacity_min?: number | null
           city?: string
+          confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
+          country_code?: string
+          created_at?: string
           description?: string | null
           email?: string | null
+          external_id?: string | null
+          facebook_url?: string | null
           google_place_id?: string | null
           google_rating?: number | null
           google_rating_count?: number | null
           id?: string
           inserted_at?: string | null
           is_featured?: boolean | null
+          indoor_space?: boolean | null
+          instagram_url?: string | null
+          last_verified_at?: string | null
           last_synced_at?: string | null
           last_view_at?: string | null
+          latitude?: number | null
           location_type?: string | null
+          longitude?: number | null
           name?: string
+          normalized_address?: string | null
+          normalized_name?: string
+          outdoor_space?: boolean | null
+          parking?: boolean | null
           phone?: string | null
+          postal_code?: string | null
           price_range?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          price_verified_at?: string | null
           profile_views?: number | null
           province?: string
           region?: string
+          source?: string
+          source_updated_at?: string | null
+          source_url?: string | null
+          subtype?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
           updated_at?: string | null
           user_id?: string | null
+          venue_type?: string
+          verification_status?: string
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
+          currency?: string | null
         }
         Relationships: []
       }
@@ -1621,6 +1711,91 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_locations: {
+        Row: {
+          agreed_cost: number | null
+          contact_notes: string | null
+          contacted: boolean
+          created_at: string
+          event_id: string
+          favorite: boolean
+          id: string
+          location_id: string
+          location_role: string
+          personal_notes: string | null
+          quote_amount: number | null
+          quote_currency: string | null
+          quote_received_at: string | null
+          selected: boolean
+          shortlisted: boolean
+          status: string
+          updated_at: string
+          visited: boolean
+        }
+        Insert: {
+          agreed_cost?: number | null
+          contact_notes?: string | null
+          contacted?: boolean
+          created_at?: string
+          event_id: string
+          favorite?: boolean
+          id?: string
+          location_id: string
+          location_role?: string
+          personal_notes?: string | null
+          quote_amount?: number | null
+          quote_currency?: string | null
+          quote_received_at?: string | null
+          selected?: boolean
+          shortlisted?: boolean
+          status?: string
+          updated_at?: string
+          visited?: boolean
+        }
+        Update: {
+          agreed_cost?: number | null
+          contact_notes?: string | null
+          contacted?: boolean
+          created_at?: string
+          event_id?: string
+          favorite?: boolean
+          id?: string
+          location_id?: string
+          location_role?: string
+          personal_notes?: string | null
+          quote_amount?: number | null
+          quote_currency?: string | null
+          quote_received_at?: string | null
+          selected?: boolean
+          shortlisted?: boolean
+          status?: string
+          updated_at?: string
+          visited?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_locations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "high_rated_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
         ]

@@ -15,5 +15,15 @@
   "suggestions": "Sugerencias y Consejos",
   "choose_language": "Elige el idioma",
   "choose_country": "Elige el país",
-  "choose_event": "Elige el tipo de evento"
+  "choose_event": "Elige el tipo de evento",
+  "locationsCatalog": {
+    "eyebrow": "Espacios para la recepción", "title": "Lugares", "description": "Busca, compara y guarda lugares para tu evento.",
+    "search": "Nombre o lugar", "city": "Ciudad", "type": "Tipo", "verification": "Verificación", "all": "Todos", "searchButton": "Buscar",
+    "verified": "Verificado", "probable": "Probable", "toCheck": "Por verificar", "loading": "Cargando lugares…", "empty": "No se encontraron lugares.",
+    "loadError": "No se pudo cargar el catálogo.", "authRequired": "Inicia sesión para guardar un lugar.", "saveError": "No se pudo guardar el lugar.",
+    "saved": "Lugar guardado.", "removed": "Lugar eliminado.", "removeError": "No se pudo eliminar el lugar.", "save": "Guardar", "favorite": "Favorito",
+    "select": "Elegir", "selected": "Seleccionado", "remove": "Eliminar", "website": "Sitio web", "accommodation": "Alojamiento disponible", "parking": "Aparcamiento",
+    "upTo": "Hasta {count} personas", "pagination": "Páginas de lugares", "previous": "Anterior", "next": "Siguiente", "page": "Página {page} de {total}",
+    "types": { "villa": "Villa", "castle": "Castillo", "hotel": "Hotel", "resort": "Resort", "restaurant": "Restaurante", "reception_hall": "Salón de recepciones", "agriturismo": "Agroturismo", "masseria": "Masseria", "baglio": "Baglio", "estate": "Finca", "beach": "Playa", "panoramic": "Lugar panorámico", "other": "Otro" }
+  }
 }
