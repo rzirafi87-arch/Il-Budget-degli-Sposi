@@ -23,6 +23,18 @@ const UNGUARDED_PREFIXES = [
   "/coming-soon",
 ];
 
+// Historical standalone pages for event types that Branch 29 classifies as
+// COMING_SOON. Keeping the files avoids destructive cleanup, but direct URLs
+// must not expose them as if those products were READY.
+const COMING_SOON_EVENT_ROUTE_PREFIXES = [
+  "/baby-shower",
+  "/birthday",
+  "/cresima",
+  "/engagement-party",
+  "/laurea",
+  "/pensione",
+] as const;
+
 function normalizePathname(pathname: string | null): string {
   if (!pathname) return "/";
   const segments = pathname.split("/").filter(Boolean);
@@ -38,14 +50,25 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
   const locale = useLocale();
   const normalizedPath = useMemo(() => normalizePathname(pathname), [pathname]);
   const routeModule = useMemo(() => moduleForPath(normalizedPath), [normalizedPath]);
+  const isLegacyComingSoonRoute = COMING_SOON_EVENT_ROUTE_PREFIXES.some(
+    (prefix) => normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`)
+  );
   const isUnguarded =
-    normalizedPath === "/" ||
-    UNGUARDED_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix)) ||
-    !routeModule;
+    !isLegacyComingSoonRoute &&
+    (normalizedPath === "/" ||
+      UNGUARDED_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix)) ||
+      !routeModule);
   const [verifiedPath, setVerifiedPath] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    if (isLegacyComingSoonRoute) {
+      router.replace(`/${locale}/coming-soon`);
+      return () => {
+        active = false;
+      };
+    }
 
     if (isUnguarded || !routeModule) {
       return () => {
@@ -92,13 +115,13 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
     return () => {
       active = false;
     };
-  }, [isUnguarded, locale, normalizedPath, routeModule, router]);
+  }, [isLegacyComingSoonRoute, isUnguarded, locale, normalizedPath, routeModule, router]);
 
-  if (isUnguarded || !routeModule) {
+  if (isUnguarded) {
     return <>{children}</>;
   }
 
-  if (verifiedPath !== normalizedPath) {
+  if (isLegacyComingSoonRoute || !routeModule || verifiedPath !== normalizedPath) {
     return <LoadingState label="Verifica disponibilità modulo" cards={2} />;
   }
 
