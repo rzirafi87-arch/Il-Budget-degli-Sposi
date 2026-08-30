@@ -2,84 +2,9 @@
 
 begin;
 
--- Capability columns must exist after the Branch 29 migration.
-do $$
-declare
-  missing_count integer;
-begin
-  select count(*) into missing_count
-  from (values
-    ('availability_status'),
-    ('enabled_modules'),
-    ('ceremony_mode'),
-    ('budget_template'),
-    ('timeline_template'),
-    ('supplier_categories'),
-    ('location_roles'),
-    ('guest_module'),
-    ('document_module'),
-    ('church_module')
-  ) as required(column_name)
-  where not exists (
-    select 1
-    from information_schema.columns c
-    where c.table_schema = 'public'
-      and c.table_name = 'event_types'
-      and c.column_name = required.column_name
-  );
-
-  if missing_count <> 0 then
-    raise exception 'Branch 29 event_types capability columns are incomplete: % missing', missing_count;
-  end if;
-end $$;
-
--- Wedding is the only READY type in this branch.
-do $$
-declare
-  ready_count integer;
-  wedding_ready_count integer;
-  unsafe_non_wedding_count integer;
-begin
-  select count(*) into ready_count
-  from public.event_types
-  where availability_status = 'READY';
-
-  select count(*) into wedding_ready_count
-  from public.event_types
-  where code = 'WEDDING'
-    and availability_status = 'READY'
-    and church_module
-    and guest_module
-    and document_module
-    and ceremony_mode = 'religious_or_civil'
-    and 'churches' = any(enabled_modules)
-    and 'location-ceremony' = any(enabled_modules)
-    and 'budget' = any(enabled_modules)
-    and 'timeline' = any(enabled_modules);
-
-  select count(*) into unsafe_non_wedding_count
-  from public.event_types
-  where code <> 'WEDDING'
-    and (
-      availability_status <> 'COMING_SOON'
-      or cardinality(enabled_modules) <> 0
-      or church_module
-      or guest_module
-      or document_module
-      or budget_template is not null
-      or timeline_template is not null
-    );
-
-  if ready_count <> 1 or wedding_ready_count <> 1 then
-    raise exception 'Branch 29 must expose exactly one READY type and it must be WEDDING';
-  end if;
-
-  if unsafe_non_wedding_count <> 0 then
-    raise exception 'A non-wedding event type is incorrectly exposed as configured/ready';
-  end if;
-end $$;
-
--- The catalog should contain every type surfaced by the application matrix.
+-- The DB catalog contains every type surfaced by the typed application matrix.
+-- Product READY/COMING_SOON state intentionally remains in application code so
+-- there is only one mutable source of capability truth.
 do $$
 declare
   catalog_count integer;
@@ -94,6 +19,29 @@ begin
 
   if catalog_count <> 18 then
     raise exception 'Expected 18 registered event types, found %', catalog_count;
+  end if;
+
+  if not exists (select 1 from public.event_types where code = 'WEDDING' and name = 'Matrimonio') then
+    raise exception 'WEDDING catalog entry is missing or changed unexpectedly';
+  end if;
+end $$;
+
+-- Branch 29 must not populate unsupported taxonomies merely to mark an event
+-- type as available. On the canonical rebuild baseline these template tables
+-- remain empty until dedicated future branches provide validated datasets.
+do $$
+declare
+  category_templates integer;
+  timeline_templates integer;
+begin
+  select count(*) into category_templates from public.event_type_categories;
+  select count(*) into timeline_templates from public.event_timelines;
+
+  if category_templates <> 0 then
+    raise exception 'Branch 29 unexpectedly invented event_type_categories (% rows)', category_templates;
+  end if;
+  if timeline_templates <> 0 then
+    raise exception 'Branch 29 unexpectedly invented event_timelines (% rows)', timeline_templates;
   end if;
 end $$;
 
