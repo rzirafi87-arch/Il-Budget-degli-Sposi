@@ -92,15 +92,15 @@ jobs:
           # Normalize CLI-only trailing blank lines while preserving one POSIX newline.
           perl -0pi -e 's/\n+\z/\n/' ../generated/database.types.ts
 
-      - name: Verify committed database types are current
-        run: diff -u src/types/database.types.ts generated/database.types.ts
-
       - name: Upload generated database types
         uses: actions/upload-artifact@v4
         with:
           name: branch-28-database-types
           path: generated/database.types.ts
           if-no-files-found: error
+
+      - name: Verify committed database types are current
+        run: diff -u src/types/database.types.ts generated/database.types.ts
 
       - name: Stop isolated Supabase project
         if: always()
