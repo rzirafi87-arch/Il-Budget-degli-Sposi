@@ -1,492 +1,255 @@
-﻿"use client";
+"use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
-import { GEO, getUserCountrySafe } from "@/constants/geo";
-import { getGeographyLevels } from "@/lib/geographyFilters";
-import { getPageImages } from "@/lib/pageImages";
-import clsx from "clsx";
-import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useToast } from "@/components/ToastProvider";
 import { AppButton } from "@/components/ui/AppButton";
+import { AppCard } from "@/components/ui/AppCard";
+import { LoadingState } from "@/components/ui/LoadingState";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Church } from "lucide-react";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getOnboardingStatus } from "@/lib/onboardingClient";
+import { getPageImages } from "@/lib/pageImages";
+import { Church as ChurchIcon, ExternalLink, Heart, MapPin, Phone, Search, Star } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 
+type VerificationStatus = "VERIFIED" | "PROBABLE" | "TO_CHECK";
 type Church = {
   id: string;
   name: string;
-  region: string;
-  province: string;
+  place_type: string;
+  denomination: string | null;
+  religion: string | null;
+  subtype: string | null;
+  address_line: string | null;
+  postal_code: string | null;
   city: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-  description?: string;
-  church_type?: string;
-  capacity?: number;
-  requires_baptism: boolean;
-  requires_marriage_course: boolean;
-  verified: boolean;
+  province: string;
+  region: string;
+  country_code: string;
+  latitude: number | null;
+  longitude: number | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  wedding_ceremony_available: boolean | null;
+  capacity: number | null;
+  accessibility: string | null;
+  parking: string | null;
+  verification_status: VerificationStatus;
+  last_verified_at: string | null;
 };
+type SavedChurch = {
+  id: string;
+  church_id: string;
+  status: string;
+  favorite: boolean;
+  contacted: boolean;
+  selected: boolean;
+};
+type Pagination = { page: number; limit: number; total: number; totalPages: number };
 
-function useGeographyOptions() {
-  const country = getUserCountrySafe();
-  const levels = getGeographyLevels(country);
-  return { country, levels };
+function placeTypeKey(placeType: string) {
+  const keys = new Set(["church", "cathedral", "basilica", "sanctuary", "chapel"]);
+  return keys.has(placeType) ? placeType : "placeOfWorship";
 }
-
-const CHURCH_TYPES = [
-  "Cattolica",
-  "Ortodossa",
-  "Protestante",
-  "Evangelica",
-  "Anglicana",
-  "Sinagoga",
-  "Moschea",
-  "Altro"
-];
 
 export default function ChiesePage() {
   const t = useTranslations("suppliersChurches");
-  const { country, levels } = useGeographyOptions();
+  const { showToast } = useToast();
+  const country = getUserCountrySafe().toLowerCase();
   const [churches, setChurches] = useState<Church[]>([]);
+  const [saved, setSaved] = useState<Record<string, SavedChurch>>({});
+  const [token, setToken] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
+  const [region, setRegion] = useState("");
+  const [city, setCity] = useState("");
+  const [type, setType] = useState("");
+  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 12, total: 0, totalPages: 1 });
   const [loading, setLoading] = useState(true);
-  const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: string }>({});
-  const [selectedType, setSelectedType] = useState("");
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState<{
-    name: string;
-    city: string;
-    address: string;
-    phone: string;
-    email: string;
-    website: string;
-    description: string;
-    church_type: string;
-    capacity: string;
-    requires_baptism: boolean;
-    requires_marriage_course: boolean;
-    [key: string]: string | boolean;
-  }>({
-    name: "",
-    ...Object.fromEntries(levels.map(l => [l.key, ""])),
-    city: "",
-    address: "",
-    phone: "",
-    email: "",
-    website: "",
-    description: "",
-    church_type: "",
-    capacity: "",
-    requires_baptism: false,
-    requires_marriage_course: false,
-  });
+  const [pending, setPending] = useState<Record<string, boolean>>({});
+  const [error, setError] = useState<string | null>(null);
+
+  const loadSaved = useCallback(async (accessToken: string) => {
+    const response = await fetch("/api/my/churches", { headers: { Authorization: `Bearer ${accessToken}` }, cache: "no-store" });
+    if (!response.ok) return;
+    const payload = (await response.json()) as { savedChurches?: SavedChurch[] };
+    const map: Record<string, SavedChurch> = {};
+    payload.savedChurches?.forEach((item) => { map[item.church_id] = item; });
+    setSaved(map);
+  }, []);
+
+  useEffect(() => {
+    getOnboardingStatus().then((status) => {
+      if (status.kind === "complete") {
+        setToken(status.accessToken);
+        void loadSaved(status.accessToken);
+      }
+    }).catch(() => undefined);
+  }, [loadSaved]);
 
   const loadChurches = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const params = new URLSearchParams({ country, page: String(pagination.page), limit: String(pagination.limit) });
+    if (submittedQuery) params.set("q", submittedQuery);
+    if (region) params.set("region", region);
+    if (city) params.set("city", city);
+    if (type) params.set("type", type);
     try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      Object.entries(selectedFilters).forEach(([key, value]) => {
-        if (value) params.append(key, value);
-      });
-      if (selectedType) params.append("type", selectedType);
-      try { if (country) params.append("country", country); } catch {}
-
-      const res = await fetch(`/api/churches?${params.toString()}`);
-      const data = await res.json();
-      setChurches(data.churches || []);
-    } catch (e) {
-      console.error(e);
+      const response = await fetch(`/api/churches?${params}`, { cache: "no-store" });
+      const payload = (await response.json()) as { churches?: Church[]; pagination?: Pagination; error?: string };
+      if (!response.ok) throw new Error(payload.error || t("catalog.loadError"));
+      setChurches(payload.churches || []);
+      if (payload.pagination) setPagination(payload.pagination);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t("catalog.loadError"));
     } finally {
       setLoading(false);
     }
-  }, [selectedFilters, selectedType, country]);
+  }, [city, country, pagination.limit, pagination.page, region, submittedQuery, t, type]);
 
-  useEffect(() => {
-    loadChurches();
-  }, [loadChurches]);
+  useEffect(() => { void loadChurches(); }, [loadChurches]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function submitSearch(event: FormEvent) {
+    event.preventDefault();
+    setPagination((current) => ({ ...current, page: 1 }));
+    setSubmittedQuery(query.trim());
+  }
 
-    const jwt = localStorage.getItem("sb_jwt");
-    if (!jwt) {
-      alert(t("messages.authRequired"));
-      return;
-    }
-
+  async function saveChurch(church: Church) {
+    if (!token) { showToast(t("messages.authRequired"), "info"); return; }
+    setPending((current) => ({ ...current, [church.id]: true }));
     try {
-      const res = await fetch("/api/churches", {
+      const response = await fetch("/api/my/churches", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          country,
-          capacity: formData.capacity ? parseInt(formData.capacity) : null,
-        }),
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ church_id: church.id }),
       });
-
-      if (!res.ok) {
-        throw new Error(t("messages.submitError"));
-      }
-
-      alert(t("messages.submitSuccess"));
-      setShowAddForm(false);
-      setFormData({
-        name: "",
-        ...Object.fromEntries(levels.map(l => [l.key, ""])),
-        city: "",
-        address: "",
-        phone: "",
-        email: "",
-        website: "",
-        description: "",
-        church_type: "",
-        capacity: "",
-        requires_baptism: false,
-        requires_marriage_course: false,
-      });
-      loadChurches();
-    } catch (e) {
-      alert((e as Error).message || t("messages.submitError"));
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || t("catalog.saveError"));
+      setSaved((current) => ({ ...current, [church.id]: payload.savedChurch as SavedChurch }));
+      showToast(t("catalog.saved"), "success");
+    } catch (cause) {
+      showToast(cause instanceof Error ? cause.message : t("catalog.saveError"), "error");
+    } finally {
+      setPending((current) => ({ ...current, [church.id]: false }));
     }
   }
 
-  const filteredChurches = churches;
+  async function updateSaved(church: Church, updates: Partial<SavedChurch>) {
+    const item = saved[church.id];
+    if (!item || !token) return;
+    setPending((current) => ({ ...current, [church.id]: true }));
+    try {
+      const response = await fetch("/api/my/churches", {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ id: item.id, ...updates }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || t("catalog.saveError"));
+      setSaved((current) => ({ ...current, [church.id]: payload.savedChurch as SavedChurch }));
+    } catch (cause) {
+      showToast(cause instanceof Error ? cause.message : t("catalog.saveError"), "error");
+    } finally {
+      setPending((current) => ({ ...current, [church.id]: false }));
+    }
+  }
+
+  async function removeSaved(church: Church) {
+    const item = saved[church.id];
+    if (!item || !token) return;
+    setPending((current) => ({ ...current, [church.id]: true }));
+    try {
+      const response = await fetch(`/api/my/churches?id=${encodeURIComponent(item.id)}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      if (!response.ok) throw new Error(t("catalog.removeError"));
+      setSaved((current) => { const next = { ...current }; delete next[church.id]; return next; });
+      showToast(t("catalog.removed"), "info");
+    } catch (cause) {
+      showToast(cause instanceof Error ? cause.message : t("catalog.removeError"), "error");
+    } finally {
+      setPending((current) => ({ ...current, [church.id]: false }));
+    }
+  }
+
+  const locationOptions = useMemo(() => Array.from(new Set(churches.map((church) => church.region).filter(Boolean))).sort(), [churches]);
 
   return (
-    <section>
-      <div className="max-w-7xl mx-auto">
-        <PageHeader eyebrow="Cerimonia" title={t("title")} description={t("description")} icon={<Church size={24} aria-hidden />} />
-        {/* Carosello immagini */}
-        <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
-        
-        <div className="flex justify-between items-center mb-8">
-          <div></div>
-          <AppButton
-            onClick={() => setShowAddForm(!showAddForm)}
-            variant={showAddForm ? "outline" : "primary"}
-          >
-            {showAddForm ? t("buttons.cancel") : t("buttons.add")}
-          </AppButton>
+    <section className="space-y-6">
+      <PageHeader eyebrow={t("catalog.eyebrow")} title={t("title")} description={t("description")} icon={<ChurchIcon size={24} aria-hidden />} />
+      <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
+
+      <AppCard padding="md">
+        <form onSubmit={submitSearch} className="grid gap-4 md:grid-cols-[2fr_1fr_1fr_1fr_auto]">
+          <label className="space-y-1 text-sm font-semibold">
+            <span>{t("catalog.searchLabel")}</span>
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("catalog.searchPlaceholder")} className="w-full rounded-lg border border-gray-300 px-3 py-2" />
+          </label>
+          <label className="space-y-1 text-sm font-semibold">
+            <span>{t("catalog.region")}</span>
+            <input list="church-regions" value={region} onChange={(event) => { setRegion(event.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" />
+            <datalist id="church-regions">{locationOptions.map((option) => <option key={option} value={option} />)}</datalist>
+          </label>
+          <label className="space-y-1 text-sm font-semibold">
+            <span>{t("form.city")}</span>
+            <input value={city} onChange={(event) => { setCity(event.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" />
+          </label>
+          <label className="space-y-1 text-sm font-semibold">
+            <span>{t("filters.type")}</span>
+            <select value={type} onChange={(event) => { setType(event.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2">
+              <option value="">{t("filters.allTypes")}</option>
+              <option value="church">{t("catalog.types.church")}</option>
+              <option value="cathedral">{t("catalog.types.cathedral")}</option>
+              <option value="basilica">{t("catalog.types.basilica")}</option>
+              <option value="sanctuary">{t("catalog.types.sanctuary")}</option>
+              <option value="chapel">{t("catalog.types.chapel")}</option>
+              <option value="place_of_worship">{t("catalog.types.placeOfWorship")}</option>
+            </select>
+          </label>
+          <AppButton type="submit" className="self-end"><Search size={17} aria-hidden />{t("catalog.search")}</AppButton>
+        </form>
+      </AppCard>
+
+      {loading ? <LoadingState label={t("loading")} cards={6} /> : error ? (
+        <AppCard><p role="alert" className="text-red-700">{error}</p><AppButton className="mt-4" onClick={() => void loadChurches()}>{t("catalog.retry")}</AppButton></AppCard>
+      ) : churches.length === 0 ? <AppCard><p className="text-gray-600">{t("empty")}</p></AppCard> : (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {churches.map((church) => {
+            const savedItem = saved[church.id];
+            const badge = church.verification_status === "VERIFIED" ? t("catalog.verification.verified") : church.verification_status === "PROBABLE" ? t("catalog.verification.probable") : t("catalog.verification.toCheck");
+            return (
+              <AppCard key={church.id} interactive className="flex h-full flex-col gap-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div><p className="text-xs font-semibold uppercase tracking-wide text-[#66745f]">{t(`catalog.types.${placeTypeKey(church.place_type)}` as "catalog.types.church")}</p><h2 className="text-xl font-bold text-gray-900">{church.name}</h2></div>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${church.verification_status === "VERIFIED" ? "bg-green-100 text-green-800" : church.verification_status === "PROBABLE" ? "bg-amber-100 text-amber-800" : "bg-gray-100 text-gray-700"}`}>{badge}</span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-700">
+                  <p className="flex gap-2"><MapPin size={17} className="shrink-0" aria-hidden /><span>{[church.address_line, church.postal_code, church.city, church.province, church.region, church.country_code.toUpperCase()].filter(Boolean).join(", ")}</span></p>
+                  {church.denomination ? <p>{t("card.type")} {church.denomination}</p> : null}
+                  {church.capacity ? <p>{t("card.capacity")} {church.capacity} {t("card.people")}</p> : null}
+                  {church.phone ? <a className="flex items-center gap-2 text-[#586852] hover:underline" href={`tel:${church.phone}`}><Phone size={16} aria-hidden />{church.phone}</a> : null}
+                  {church.website ? <a className="inline-flex items-center gap-2 text-[#586852] hover:underline" href={church.website} target="_blank" rel="noreferrer">{t("card.website")}<ExternalLink size={15} aria-hidden /></a> : null}
+                </div>
+                <div className="mt-auto flex flex-wrap gap-2 border-t border-gray-100 pt-4">
+                  {!savedItem ? <AppButton onClick={() => void saveChurch(church)} loading={pending[church.id]}>{t("catalog.save")}</AppButton> : <>
+                    <AppButton variant="outline" onClick={() => void updateSaved(church, { favorite: !savedItem.favorite })} loading={pending[church.id]}><Heart size={16} fill={savedItem.favorite ? "currentColor" : "none"} aria-hidden />{savedItem.favorite ? t("catalog.favoriteOn") : t("catalog.favorite")}</AppButton>
+                    <AppButton variant={savedItem.selected ? "primary" : "outline"} onClick={() => void updateSaved(church, { selected: !savedItem.selected, status: savedItem.selected ? "considering" : "selected" })} loading={pending[church.id]}><Star size={16} fill={savedItem.selected ? "currentColor" : "none"} aria-hidden />{savedItem.selected ? t("catalog.selected") : t("catalog.select")}</AppButton>
+                    <AppButton variant="ghost" onClick={() => void removeSaved(church)} loading={pending[church.id]}>{t("catalog.remove")}</AppButton>
+                  </>}
+                </div>
+              </AppCard>
+            );
+          })}
         </div>
+      )}
 
-        {showAddForm && (
-          <div className="app-card app-card--md mb-8">
-            <h2 className="text-2xl font-bold mb-4">{t("form.title")}</h2>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.name")}</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.type")}</label>
-                <select
-                  required
-                  value={formData.church_type}
-                  onChange={(e) => setFormData({ ...formData, church_type: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                >
-                  <option value="">{t("form.select")}</option>
-                  {CHURCH_TYPES.map(ct => (
-                    <option key={ct} value={ct.toLowerCase()}>{t(`types.${ct.toLowerCase()}`)}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Geography levels dynamic fields */}
-              {levels.map((level, idx) => {
-                // Opzioni dinamiche per ogni livello
-                const cc = country.toLowerCase();
-                let options: string[] = [];
-                if (level.key === "region" || level.key === "state") {
-                  options = (GEO[cc]?.regions ?? []).map((r: { name: string; provinces?: string[] }) => r.name);
-                }
-                if (level.key === "province" && formData.region) {
-                  const regionObj = (GEO[cc]?.regions ?? []).find((r: { name: string; provinces?: string[] }) => r.name === formData.region);
-                  options = regionObj?.provinces ?? [];
-                }
-                const isDisabled = idx > 0 && !formData[levels[idx - 1].key];
-                return (
-                  <div key={level.key}>
-                    <label className="block text-sm font-semibold mb-1">{level.label} *</label>
-                    <select
-                      required
-                      value={(formData[level.key] as string) || ""}
-                      onChange={e => setFormData({ ...formData, [level.key]: e.target.value })}
-                      className="w-full border rounded px-3 py-2"
-                      disabled={isDisabled}
-                    >
-                      <option value="">{t("filters.all")}</option>
-                      {options.map((opt: string) => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              })}
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.city")}</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.address")}</label>
-                <input
-                  type="text"
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.phone")}</label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.email")}</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.website")}</label>
-                <input
-                  type="url"
-                  value={formData.website}
-                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("form.capacity")}</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.capacity}
-                  onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label className="block text-sm font-semibold mb-1">{t("form.description")}</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full border rounded px-3 py-2 h-24"
-                  placeholder={t("form.descriptionPlaceholder")}
-                />
-              </div>
-
-              <div className="col-span-2 space-y-2">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.requires_baptism}
-                    onChange={(e) => setFormData({ ...formData, requires_baptism: e.target.checked })}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-sm font-semibold">{t("form.requiresBaptism")}</span>
-                </label>
-
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.requires_marriage_course}
-                    onChange={(e) => setFormData({ ...formData, requires_marriage_course: e.target.checked })}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-sm font-semibold">{t("form.requiresMarriageCourse")}</span>
-                </label>
-              </div>
-
-              <div className="col-span-2">
-                <button
-                  type="submit"
-                  className="w-full bg-[#A3B59D] text-white py-3 rounded-lg hover:bg-[#8fa085] font-semibold"
-                >
-                  {t("buttons.submit")}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* Filtri dinamici */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">{t("filters.title")}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {levels.map((level, idx) => {
-              const cc = country.toLowerCase();
-              let options: string[] = [];
-              if (level.key === "region" || level.key === "state") {
-                options = (GEO[cc]?.regions ?? []).map((r: { name: string; provinces?: string[] }) => r.name);
-              }
-              if (level.key === "province" && selectedFilters.region) {
-                const regionObj = (GEO[cc]?.regions ?? []).find((r: { name: string; provinces?: string[] }) => r.name === selectedFilters.region);
-                options = regionObj?.provinces ?? [];
-              }
-              const isDisabled = idx > 0 && !selectedFilters[levels[idx - 1].key];
-              return (
-                <div key={level.key}>
-                  <label className="block text-sm font-semibold mb-2">{level.label}</label>
-                  <select
-                    value={selectedFilters[level.key] || ""}
-                    onChange={e => setSelectedFilters({ ...selectedFilters, [level.key]: e.target.value })}
-                    className="w-full border rounded px-3 py-2"
-                    disabled={isDisabled}
-                  >
-                    <option value="">{t("filters.all")}</option>
-                    {options.map((opt: string) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
-              );
-            })}
-            <div>
-              <label className="block text-sm font-semibold mb-2">{t("filters.type")}</label>
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full border rounded px-3 py-2"
-              >
-                <option value="">{t("filters.allTypes")}</option>
-                {CHURCH_TYPES.map(ct => (
-                  <option key={ct} value={ct.toLowerCase()}>{t(`types.${ct.toLowerCase()}`)}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Lista Chiese */}
-        {loading ? (
-          <div className="text-center py-12">{t("loading")}</div>
-        ) : filteredChurches.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            {t("empty")}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredChurches.map((church) => (
-              <div
-                key={church.id}
-                className={clsx(
-                  "bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow",
-                  church.verified && "border-2 border-green-500"
-                )}
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-xl font-bold text-gray-800">{church.name}</h3>
-                  {church.verified && (
-                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
-                      {t("card.verified")}
-                    </span>
-                  )}
-                </div>
-
-                {church.church_type && (
-                  <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">{t("card.type")}</span> {t(`types.${church.church_type}`)}
-                  </p>
-                )}
-
-                <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-semibold">📍</span> {church.city}, {church.province} ({church.region})
-                </p>
-
-                {church.address && (
-                  <p className="text-sm text-gray-600 mb-2">{church.address}</p>
-                )}
-
-                {church.capacity && (
-                  <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">{t("card.capacity")}</span> {church.capacity} {t("card.people")}
-                  </p>
-                )}
-
-                {(church.requires_baptism || church.requires_marriage_course) && (
-                  <div className="mb-3 space-y-1">
-                    {church.requires_baptism && (
-                      <p className="text-xs text-orange-600">{t("card.requiresBaptism")}</p>
-                    )}
-                    {church.requires_marriage_course && (
-                      <p className="text-xs text-orange-600">{t("card.requiresMarriageCourse")}</p>
-                    )}
-                  </div>
-                )}
-
-                {church.description && (
-                  <p className="text-sm text-gray-700 mb-3 italic">{church.description}</p>
-                )}
-
-                <div className="border-t pt-3 space-y-1">
-                  {church.phone && (
-                    <p className="text-sm">
-                      <span className="font-semibold">📞</span>{" "}
-                      <a href={`tel:${church.phone}`} className="text-blue-600 hover:underline">
-                        {church.phone}
-                      </a>
-                    </p>
-                  )}
-                  {church.email && (
-                    <p className="text-sm">
-                      <span className="font-semibold">✉️</span>{" "}
-                      <a href={`mailto:${church.email}`} className="text-blue-600 hover:underline">
-                        {church.email}
-                      </a>
-                    </p>
-                  )}
-                  {church.website && (
-                    <p className="text-sm">
-                      <span className="font-semibold">🌐</span>{" "}
-                      <a
-                        href={church.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        {t("card.website")}
-                      </a>
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {!loading && !error && pagination.total > 0 ? <nav className="flex items-center justify-between" aria-label={t("catalog.pagination")}>
+        <AppButton variant="outline" disabled={pagination.page <= 1} onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}>{t("catalog.previous")}</AppButton>
+        <p className="text-sm text-gray-600">{t("catalog.page", { page: pagination.page, totalPages: pagination.totalPages, total: pagination.total })}</p>
+        <AppButton variant="outline" disabled={pagination.page >= pagination.totalPages} onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}>{t("catalog.next")}</AppButton>
+      </nav> : null}
     </section>
   );
 }

@@ -95,7 +95,8 @@ Procedura futura di recupero:
 | `payment_reminders` | Promemoria di pagamento privati | UUID `id` | expense CASCADE | pagamenti |
 | `suppliers` | Catalogo fornitore misto globale/contributo utente | UUID `id` | `user_id → auth.users` SET NULL; Google ID unique | catalogo/abbonamenti |
 | `locations` | Catalogo location misto globale/contributo utente | UUID `id` | `user_id → auth.users` SET NULL; Google ID unique | catalogo/abbonamenti |
-| `churches` | Catalogo chiese misto globale/contributo utente | UUID `id` | `user_id → auth.users` SET NULL; Google ID unique | catalogo/abbonamenti |
+| `churches` | Catalogo globale chiese e luoghi di culto; colonne legacy preservate | UUID `id` | `user_id → auth.users` SET NULL; country RESTRICT; source ID unique | lettura pubblica, scrittura server-only |
+| `saved_churches` | Stato privato evento ↔ chiesa globale | UUID `id` | evento CASCADE; chiesa RESTRICT; unique evento/chiesa | owner-only Branch 26 |
 | `atelier` | Catalogo globale atelier | UUID `id` | nessuna ownership | elenco pubblico |
 | `wedding_planners` | Proposte catalogo moderate | UUID `id` | `submitted_by → auth.users` | elenco pubblico/invio |
 | `musica_cerimonia` | Proposte musicisti moderate | UUID `id` | `submitted_by → auth.users` | elenco pubblico/invio |
@@ -312,6 +313,11 @@ Advisor dopo la migration:
   `anon`/`authenticated`; l'accesso alle righe rimane vincolato dalle policy RLS.
 
 ## Evoluzione per Branch 26+
+
+Il Branch 26 ha attuato la separazione `churches` / `saved_churches`. Vedi
+`docs/adr/002-global-church-catalog.md` per modello, provenance, RLS, dedupe,
+ricerca, decisione PostGIS e dataset pilota. Le righe legacy sono preservate e le
+scritture client sul catalogo globale sono state rimosse.
 
 Separare sempre catalogo pubblico e stato privato:
 

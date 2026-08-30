@@ -1688,6 +1688,31 @@
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
       "submitSuccess": "Chiesa aggiunta con successo! Sarà visibi→dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
+    },
+    "catalog": {
+      "eyebrow": "Cerimonia",
+      "searchLabel": "Cerca nel catalogo",
+      "searchPlaceholder": "Nome, città, provincia, regione o nazione",
+      "search": "Cerca",
+      "region": "Regione",
+      "loadError": "Impossibile caricare il catalogo delle chiese",
+      "retry": "Riprova",
+      "save": "Salva nel matrimonio",
+      "saved": "Chiesa salvata nel matrimonio",
+      "saveError": "Impossibile aggiornare la chiesa salvata",
+      "remove": "Rimuovi",
+      "removed": "Chiesa rimossa dai salvati",
+      "removeError": "Impossibile rimuovere la chiesa",
+      "favorite": "Preferita",
+      "favoriteOn": "Preferita",
+      "select": "Scegli",
+      "selected": "Scelta finale",
+      "pagination": "Paginazione catalogo chiese",
+      "previous": "Precedente",
+      "next": "Successiva",
+      "page": "Pagina {page} di {totalPages} · {total} risultati",
+      "verification": { "verified": "Verificata", "probable": "Probabile", "toCheck": "Da verificare" },
+      "types": { "church": "Chiesa", "cathedral": "Cattedrale", "basilica": "Basilica", "sanctuary": "Santuario", "chapel": "Cappella", "placeOfWorship": "Luogo di culto" }
     }
   },
   "ceremonyCeremonyChurch": {

@@ -1,156 +1,73 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { getFallbackChurches } from "@/data/fallbackContent";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
+
 export const runtime = "nodejs";
+const DEFAULT_PAGE_SIZE = 12;
+const MAX_PAGE_SIZE = 24;
+
+function positiveInteger(value: string | null, fallback: number, max: number) {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1) return fallback;
+  return Math.min(parsed, max);
+}
+
+function normalizedSearch(value: string | null) {
+  return (value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 100);
+}
+
+function safeFilter(value: string | null, maxLength = 100) {
+  const clean = value?.trim().slice(0, maxLength) || null;
+  return clean && /^[\p{L}\p{N} .,'’()/-]+$/u.test(clean) ? clean : null;
+}
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const region = searchParams.get("region");
-    const province = searchParams.get("province");
-    const churchType = searchParams.get("type");
-    const country = searchParams.get("country");
+    const page = positiveInteger(searchParams.get("page"), 1, 10_000);
+    const limit = positiveInteger(searchParams.get("limit"), DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+    const offset = (page - 1) * limit;
+    const q = normalizedSearch(searchParams.get("q"));
+    const country = searchParams.get("country")?.trim().toLowerCase() || null;
+    const region = safeFilter(searchParams.get("region"));
+    const province = safeFilter(searchParams.get("province"));
+    const city = safeFilter(searchParams.get("city"));
+    const placeType = safeFilter(searchParams.get("type"), 50)?.toLowerCase() || null;
+
+    if (country && !/^[a-z]{2}$/.test(country)) {
+      return NextResponse.json({ error: "Invalid country code" }, { status: 400 });
+    }
 
     const db = getServiceClient();
-    
-    let query = db
-      .from("churches")
-      .select("*")
-      .order("verified", { ascending: false })
-      .order("name", { ascending: true });
+    let query = db.from("churches").select(
+      "id,name,place_type,denomination,religion,subtype,address_line,postal_code,city,province,region,country_code,latitude,longitude,phone,email,website,wedding_ceremony_available,capacity,accessibility,parking,verification_status,last_verified_at",
+      { count: "exact" },
+    ).order("confidence_score", { ascending: false }).order("name", { ascending: true });
 
-    if (region) {
-      query = query.eq("region", region);
-    }
-    if (province) {
-      query = query.eq("province", province);
-    }
-    if (churchType) {
-      query = query.eq("church_type", churchType);
-    }
+    if (country) query = query.eq("country_code", country);
+    if (region) query = query.eq("region", region);
+    if (province) query = query.eq("province", province);
+    if (city) query = query.eq("city", city);
+    if (placeType) query = query.eq("place_type", placeType);
+    if (q) query = query.or(`normalized_name.ilike.%${q}%,city.ilike.%${q}%,province.ilike.%${q}%,region.ilike.%${q}%,country_code.eq.${q}`);
 
-    let data, error;
-    if (country) {
-      ({ data, error } = await query.eq("country", country));
-      if (error && /column .*country.* does not exist/i.test(error.message)) {
-        ({ data, error } = await db
-          .from("churches")
-          .select("*")
-          .order("verified", { ascending: false })
-          .order("name", { ascending: true })
-          .match({ region: region || undefined, province: province || undefined, church_type: churchType || undefined }));
-        if (country && country !== "it") {
-          data = [];
-          error = null as any;
-        }
-      }
-    } else {
-      ({ data, error } = await query);
-    }
-
-    const normalizedCountry = country?.toLowerCase() ?? "";
-
+    const { data, error, count } = await query.range(offset, offset + limit - 1);
     if (error) {
       console.error("CHURCHES GET error:", error);
-      const fallback = getFallbackChurches(normalizedCountry, {
-        region,
-        province,
-        churchType,
-      });
-      if (fallback.length > 0) {
-        return NextResponse.json({ churches: fallback });
-      }
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "Unable to load church catalog" }, { status: 500 });
     }
 
-    if (!data || data.length === 0) {
-      const fallback = getFallbackChurches(normalizedCountry, {
-        region,
-        province,
-        churchType,
-      });
-      if (fallback.length > 0) {
-        return NextResponse.json({ churches: fallback });
-      }
-    }
-
-    return NextResponse.json({ churches: data || [] });
-  } catch (e: unknown) {
-    const error = e as Error;
+    const total = count || 0;
+    return NextResponse.json({ churches: data || [], pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) } });
+  } catch (error) {
     console.error("CHURCHES GET uncaught:", error);
-    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
+    return NextResponse.json({ error: "Unexpected catalog error" }, { status: 500 });
   }
 }
 
-export async function POST(req: NextRequest) {
-  try {
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
-
-    if (!jwt) {
-      return NextResponse.json({ error: "Autenticazione richiesta" }, { status: 401 });
-    }
-
-    const body = await req.json();
-    const db = getServiceClient();
-    
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
-    }
-
-    const userId = userData.user.id;
-
-    // Try insert with optional country; if the column doesn't exist, retry without it
-    let insertError;
-    ({ error: insertError } = await db.from("churches").insert({
-      name: body.name,
-      region: body.region,
-      province: body.province,
-      city: body.city,
-      address: body.address,
-      phone: body.phone,
-      email: body.email,
-      website: body.website,
-      description: body.description,
-      church_type: body.church_type,
-      capacity: body.capacity,
-      requires_baptism: body.requires_baptism,
-      requires_marriage_course: body.requires_marriage_course,
-      verified: false,
-      user_id: userId,
-      ...(body.country ? { country: body.country } : {}),
-    } as any));
-    if (insertError && /column .*country.* does not exist/i.test(insertError.message)) {
-      ({ error: insertError } = await db.from("churches").insert({
-        name: body.name,
-        region: body.region,
-        province: body.province,
-        city: body.city,
-        address: body.address,
-        phone: body.phone,
-        email: body.email,
-        website: body.website,
-        description: body.description,
-        church_type: body.church_type,
-        capacity: body.capacity,
-        requires_baptism: body.requires_baptism,
-        requires_marriage_course: body.requires_marriage_course,
-        verified: false,
-        user_id: userId,
-      }));
-    }
-
-    if (insertError) {
-      console.error("CHURCHES POST error:", insertError);
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ ok: true });
-  } catch (e: unknown) {
-    const error = e as Error;
-    console.error("CHURCHES POST uncaught:", error);
-    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
-  }
+export async function POST() {
+  return NextResponse.json(
+    { error: "Direct catalog submissions are disabled; a moderated suggestion workflow is planned." },
+    { status: 405, headers: { Allow: "GET" } },
+  );
 }

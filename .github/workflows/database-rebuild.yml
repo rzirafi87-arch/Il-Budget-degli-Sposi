@@ -46,18 +46,27 @@ jobs:
       - name: Apply Branch 25 consolidation
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260829110059_consolidate_security_and_indexes.sql
 
-      - name: Verify reconstructed schema
+      - name: Verify Branch 25 reconstructed schema
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_25_schema.sql
 
-      - name: Run RLS authorization regression tests
+      - name: Run Branch 25 RLS authorization regression tests
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_25_rls.sql
+
+      - name: Apply Branch 26 global church catalog
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260829190000_global_church_catalog.sql
+
+      - name: Verify Branch 26 reconstructed schema
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_26_schema.sql
+
+      - name: Run Branch 26 catalog and RLS tests
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_26_rls.sql
 
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
           supabase db lint --local --schema public --level warning --fail-on error
 
-      - name: Generate post-Branch-25 TypeScript types
+      - name: Generate post-Branch-26 TypeScript types
         run: |
           mkdir -p generated
           cd .supabase-ci
@@ -71,7 +80,7 @@ jobs:
       - name: Upload generated database types
         uses: actions/upload-artifact@v4
         with:
-          name: branch-25-database-types
+          name: branch-26-database-types
           path: generated/database.types.ts
           if-no-files-found: error
 

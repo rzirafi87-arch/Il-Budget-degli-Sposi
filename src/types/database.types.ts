@@ -399,14 +399,21 @@ export type Database = {
       }
       churches: {
         Row: {
+          accessibility: string | null
           address: string | null
+          address_line: string | null
           capacity: number | null
           church_type: string | null
           city: string
+          confidence_score: number
           contact_clicks: number | null
           country: string | null
+          country_code: string
+          created_at: string
+          denomination: string | null
           description: string | null
           email: string | null
+          external_id: string | null
           google_place_id: string | null
           google_rating: number | null
           google_rating_count: number | null
@@ -414,31 +421,53 @@ export type Database = {
           inserted_at: string | null
           is_featured: boolean | null
           last_synced_at: string | null
+          last_verified_at: string | null
           last_view_at: string | null
+          latitude: number | null
+          longitude: number | null
           name: string
+          normalized_address: string | null
+          normalized_name: string
+          parking: string | null
           phone: string | null
+          place_type: string
+          postal_code: string | null
           profile_views: number | null
           province: string
           region: string
+          religion: string | null
           requires_baptism: boolean | null
           requires_marriage_course: boolean | null
+          source: string
+          source_updated_at: string | null
+          source_url: string | null
           subscription_expires_at: string | null
           subscription_tier: string | null
+          subtype: string | null
           updated_at: string | null
           user_id: string | null
+          verification_status: string
           verified: boolean | null
           website: string | null
           website_clicks: number | null
+          wedding_ceremony_available: boolean | null
         }
         Insert: {
+          accessibility?: string | null
           address?: string | null
+          address_line?: string | null
           capacity?: number | null
           church_type?: string | null
           city: string
+          confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
+          country_code: string
+          created_at?: string
+          denomination?: string | null
           description?: string | null
           email?: string | null
+          external_id?: string | null
           google_place_id?: string | null
           google_rating?: number | null
           google_rating_count?: number | null
@@ -446,31 +475,53 @@ export type Database = {
           inserted_at?: string | null
           is_featured?: boolean | null
           last_synced_at?: string | null
+          last_verified_at?: string | null
           last_view_at?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name: string
+          normalized_address?: string | null
+          normalized_name: string
+          parking?: string | null
           phone?: string | null
+          place_type: string
+          postal_code?: string | null
           profile_views?: number | null
           province: string
           region: string
+          religion?: string | null
           requires_baptism?: boolean | null
           requires_marriage_course?: boolean | null
+          source: string
+          source_updated_at?: string | null
+          source_url?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          subtype?: string | null
           updated_at?: string | null
           user_id?: string | null
+          verification_status?: string
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
+          wedding_ceremony_available?: boolean | null
         }
         Update: {
+          accessibility?: string | null
           address?: string | null
+          address_line?: string | null
           capacity?: number | null
           church_type?: string | null
           city?: string
+          confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
+          country_code?: string
+          created_at?: string
+          denomination?: string | null
           description?: string | null
           email?: string | null
+          external_id?: string | null
           google_place_id?: string | null
           google_rating?: number | null
           google_rating_count?: number | null
@@ -478,23 +529,46 @@ export type Database = {
           inserted_at?: string | null
           is_featured?: boolean | null
           last_synced_at?: string | null
+          last_verified_at?: string | null
           last_view_at?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string
+          normalized_address?: string | null
+          normalized_name?: string
+          parking?: string | null
           phone?: string | null
+          place_type?: string
+          postal_code?: string | null
           profile_views?: number | null
           province?: string
           region?: string
+          religion?: string | null
           requires_baptism?: boolean | null
           requires_marriage_course?: boolean | null
+          source?: string
+          source_updated_at?: string | null
+          source_url?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          subtype?: string | null
           updated_at?: string | null
           user_id?: string | null
+          verification_status?: string
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
+          wedding_ceremony_available?: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "churches_country_code_geo_countries_fkey"
+            columns: ["country_code"]
+            isOneToOne: false
+            referencedRelation: "geo_countries"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       event_timeline_translations: {
         Row: {
@@ -1491,6 +1565,66 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_churches: {
+        Row: {
+          church_id: string
+          contacted: boolean
+          created_at: string
+          event_id: string
+          favorite: boolean
+          id: string
+          personal_contact_notes: string | null
+          personal_notes: string | null
+          quoted_price: number | null
+          selected: boolean
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          church_id: string
+          contacted?: boolean
+          created_at?: string
+          event_id: string
+          favorite?: boolean
+          id?: string
+          personal_contact_notes?: string | null
+          personal_notes?: string | null
+          quoted_price?: number | null
+          selected?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          church_id?: string
+          contacted?: boolean
+          created_at?: string
+          event_id?: string
+          favorite?: boolean
+          id?: string
+          personal_contact_notes?: string | null
+          personal_notes?: string | null
+          quoted_price?: number | null
+          selected?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_churches_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_churches_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subcategories: {
         Row: {
           category_id: string
@@ -1793,9 +1927,15 @@ export type Database = {
         Row: {
           completed_at: string | null
           created_at: string | null
+          duplicate_candidates: number
           error_message: string | null
+          errors_count: number
           id: string
           province: string | null
+          records_inserted: number
+          records_read: number
+          records_skipped: number
+          records_updated: number
           region: string | null
           results_count: number | null
           source: string
@@ -1806,9 +1946,15 @@ export type Database = {
         Insert: {
           completed_at?: string | null
           created_at?: string | null
+          duplicate_candidates?: number
           error_message?: string | null
+          errors_count?: number
           id?: string
           province?: string | null
+          records_inserted?: number
+          records_read?: number
+          records_skipped?: number
+          records_updated?: number
           region?: string | null
           results_count?: number | null
           source: string
@@ -1819,9 +1965,15 @@ export type Database = {
         Update: {
           completed_at?: string | null
           created_at?: string | null
+          duplicate_candidates?: number
           error_message?: string | null
+          errors_count?: number
           id?: string
           province?: string | null
+          records_inserted?: number
+          records_read?: number
+          records_skipped?: number
+          records_updated?: number
           region?: string | null
           results_count?: number | null
           source?: string
@@ -2497,6 +2649,7 @@ export type Database = {
         Args: { p_expires_at: string; p_subscription_tier: string }
         Returns: boolean
       }
+      normalize_catalog_text: { Args: { value: string }; Returns: string }
       normalize_phone: { Args: { phone_input: string }; Returns: string }
       normalize_url: { Args: { url_input: string }; Returns: string }
       regenerate_event_data: { Args: { p_event_id: string }; Returns: string }
