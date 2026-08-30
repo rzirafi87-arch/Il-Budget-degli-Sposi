@@ -1,7 +1,6 @@
 ﻿import "@testing-library/jest-dom";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
-// Mock next/navigation router to avoid real navigation in jsdom
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
 jest.mock("next/navigation", () => ({
@@ -11,7 +10,6 @@ jest.mock("@/lib/supabaseBrowser", () => ({
   getBrowserClient: () => ({ auth: { getSession: async () => ({ data: { session: { access_token: "token" } }, error: null }) } }),
 }));
 
-// Simple fetch mock for the traditions preview
 beforeAll(() => {
   // @ts-expect-error - Mocking global fetch for testing
   global.fetch = jest.fn((input) =>
@@ -19,7 +17,6 @@ beforeAll(() => {
   );
 });
 
-// Import the component as default, but wrap it in a mock router context to avoid Next.js App Router issues
 import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
 import { RouterContext } from "next/dist/shared/lib/router-context.shared-runtime";
 import { createMockRouter } from "@/__mocks__/nextRouterMock";
@@ -29,10 +26,10 @@ describe("SelectEventTypePage - Cresima", () => {
     window.localStorage.clear();
     document.cookie = "";
     mockPush.mockClear();
+    mockReplace.mockClear();
   });
 
-  it("mostra Cresima e salva la scelta, reindirizzando alla Dashboard", async () => {
-    // Imposta lingua e paese per evitare redirect iniziali
+  it("mostra Cresima come Coming Soon e non consente la creazione", () => {
     window.localStorage.setItem("language", "it");
     window.localStorage.setItem("country", "it");
 
@@ -43,10 +40,13 @@ describe("SelectEventTypePage - Cresima", () => {
     );
 
     const btn = screen.getByRole("button", { name: /cresima/i });
-    fireEvent.click(btn);
+    expect(btn).toBeDisabled();
+    expect(btn).toHaveAttribute("aria-disabled", "true");
+    expect(btn).toHaveTextContent(/coming soon/i);
 
-    expect(window.localStorage.getItem("eventType")).toBe("confirmation");
-    expect(document.cookie).toMatch(/eventType=confirmation/);
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/dashboard"));
+    fireEvent.click(btn);
+    expect(window.localStorage.getItem("eventType")).toBeNull();
+    expect(document.cookie).not.toMatch(/eventType=confirmation/);
+    expect(mockReplace).not.toHaveBeenCalledWith("/it/dashboard");
   });
 });
