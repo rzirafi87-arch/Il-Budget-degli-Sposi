@@ -1,418 +1,139 @@
-﻿"use client";
+"use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
-import { GB_HIERARCHY } from "@/constants/gbHierarchy";
-import { GEO, getUserCountrySafe } from "@/constants/geo";
-import { getGeographyLevels } from "@/lib/geographyFilters";
-import { getPageImages } from "@/lib/pageImages";
-import clsx from "clsx";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useToast } from "@/components/ToastProvider";
+import { AppButton } from "@/components/ui/AppButton";
+import { AppCard } from "@/components/ui/AppCard";
+import { LoadingState } from "@/components/ui/LoadingState";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Landmark } from "lucide-react";
+import { getUserCountrySafe } from "@/constants/geo";
+import { getOnboardingStatus } from "@/lib/onboardingClient";
+import { getPageImages } from "@/lib/pageImages";
+import { Building2, Car, ExternalLink, Heart, Hotel, MapPin, Search, Star, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 
+type VerificationStatus = "VERIFIED" | "PROBABLE" | "TO_CHECK";
 type Location = {
-  id: string;
-  name: string;
-  region: string;
-  province: string;
-  city: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-  description?: string;
-  price_range?: string;
-  capacity_min?: number;
-  capacity_max?: number;
-  location_type?: string;
-  verified: boolean;
+  id: string; name: string; venue_type: string; subtype: string | null; address_line: string | null;
+  postal_code: string | null; city: string; province: string; region: string; country_code: string;
+  phone: string | null; email: string | null; website: string | null; capacity_min: number | null;
+  capacity_max: number | null; accommodation_available: boolean | null; catering_internal: boolean | null;
+  catering_external_allowed: boolean | null; parking: boolean | null; accessibility: boolean | null;
+  outdoor_space: boolean | null; indoor_space: boolean | null; verification_status: VerificationStatus;
 };
+type SavedLocation = { id: string; location_id: string; location_role: string; status: string; favorite: boolean; selected: boolean };
+type Pagination = { page: number; limit: number; total: number; totalPages: number };
 
-const LOCATION_TYPES = [
-  "Villa",
-  "Castello",
-  "Agriturismo",
-  "Masseria",
-  "Ristorante",
-  "Hotel",
-  "Resort",
-  "Tenuta",
-  "Giardino",
-  "Spiaggia",
-  "Altro"
-];
+const VENUE_TYPES = ["villa", "castle", "hotel", "resort", "restaurant", "reception_hall", "agriturismo", "masseria", "baglio", "estate", "beach", "panoramic", "other"];
 
-export default function LocationiPage() {
-  // TODO: Sostituire con logica reale per capire se l'utente è il fornitore
-  const isSupplierView = false;
+export default function LocationsPage() {
+  const t = useTranslations("locationsCatalog");
+  const { showToast } = useToast();
+  const country = getUserCountrySafe().toLowerCase();
   const [locations, setLocations] = useState<Location[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [saved, setSaved] = useState<Record<string, SavedLocation>>({});
+  const [token, setToken] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
+  const [city, setCity] = useState("");
+  const [type, setType] = useState("");
+  const [verification, setVerification] = useState("");
+  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 12, total: 0, totalPages: 1 });
+  const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
-  const [country] = useState<string>(getUserCountrySafe());
-  const [filterValues, setFilterValues] = useState<Record<string, string>>({});
 
-  const geographyLevels = useMemo(() => getGeographyLevels(country), [country]);
-
-  // Utility per ottenere le opzioni per ogni livello geografico (generica)
-  function getOptionsForLevel(levelKey: string): string[] {
-    const cc = country.toLowerCase();
-    // UK: nation > region > county
-    if (cc === "gb") {
-      if (levelKey === "nation") return Object.keys(GB_HIERARCHY);
-      if (levelKey === "region" && filterValues.nation) {
-        const nation = GB_HIERARCHY[filterValues.nation];
-        return nation ? Object.keys(nation.regions) : [];
-      }
-      if (levelKey === "county" && filterValues.nation && filterValues.region) {
-        const nation = GB_HIERARCHY[filterValues.nation];
-        return nation?.regions?.[filterValues.region] || [];
-      }
-    }
-    // Common: region/state
-    if ((levelKey === "region" || levelKey === "state") && GEO[cc]) {
-      return (GEO[cc]?.regions ?? []).map((r: { name: string; provinces?: string[] }) => r.name);
-    }
-    // Province under selected region
-    if (levelKey === "province" && filterValues.region && GEO[cc]) {
-      const regionObj = (GEO[cc]?.regions ?? []).find((r: { name: string; provinces?: string[] }) => r.name === filterValues.region);
-      return regionObj?.provinces ?? [];
-    }
-    // Fallback: empty
-    if (levelKey === "type") return LOCATION_TYPES;
-    return [];
-  }
-
-  // Form dinamico per tutti i livelli geografici
-  const [formData, setFormData] = useState(() => {
-    const initial: Record<string, string> = {
-      name: "",
-      city: "",
-      address: "",
-      phone: "",
-      email: "",
-      website: "",
-      description: "",
-      price_range: "",
-      capacity_min: "",
-      capacity_max: "",
-      location_type: "",
-    };
-    geographyLevels.forEach(lvl => { initial[lvl.key] = ""; });
-    return initial;
-  });
-
-  const handleFilterChange = useCallback(
-    (key: string, value: string) => {
-      setFilterValues((prev) => {
-        const next = { ...prev, [key]: value };
-        const levelIndex = geographyLevels.findIndex((level) => level.key === key);
-        if (levelIndex >= 0) {
-          for (let i = levelIndex + 1; i < geographyLevels.length; i += 1) {
-            delete next[geographyLevels[i].key];
-          }
-        }
-        if (value === "") {
-          delete next[key];
-        }
-        return next;
-      });
-    },
-    [geographyLevels]
-  );
-
-  const fetchLocations = useCallback(
-    async (currentFilters: Record<string, string>, signal?: AbortSignal) => {
-      setLoading(true);
-      setError(null);
-      const params = new URLSearchParams();
-      const normalizedCountry = (country || "").toLowerCase();
-      if (normalizedCountry) {
-        params.set("country", normalizedCountry);
-      }
-      const region = currentFilters.region?.trim();
-      const province = currentFilters.province?.trim();
-      const locationType = currentFilters.type?.trim().toLowerCase();
-      if (region) params.set("region", region);
-      if (province) params.set("province", province);
-      if (locationType) params.set("type", locationType);
-
-      try {
-        const response = await fetch(`/api/locations?${params.toString()}`, { signal });
-        if (!response.ok) {
-          throw new Error("Impossibile recuperare le location");
-        }
-        const json = await response.json();
-        if (signal?.aborted) return;
-        setLocations(Array.isArray(json?.locations) ? (json.locations as Location[]) : []);
-      } catch (err) {
-        if (signal?.aborted) return;
-        console.error("Errore nel caricamento delle location", err);
-        setError("Non è stato possibile caricare le location. Riprova più tardi.");
-        setLocations([]);
-      } finally {
-        if (!signal?.aborted) {
-          setLoading(false);
-        }
-      }
-    },
-    [country]
-  );
+  const loadSaved = useCallback(async (accessToken: string) => {
+    const response = await fetch("/api/my/locations", { headers: { Authorization: `Bearer ${accessToken}` }, cache: "no-store" });
+    if (!response.ok) return;
+    const payload = (await response.json()) as { savedLocations?: SavedLocation[] };
+    const map: Record<string, SavedLocation> = {};
+    payload.savedLocations?.filter((item) => item.location_role === "reception").forEach((item) => { map[item.location_id] = item; });
+    setSaved(map);
+  }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    fetchLocations(filterValues, controller.signal);
-    return () => controller.abort();
-  }, [fetchLocations, filterValues]);
+    getOnboardingStatus().then((status) => {
+      if (status.kind === "complete") { setToken(status.accessToken); void loadSaved(status.accessToken); }
+    }).catch(() => undefined);
+  }, [loadSaved]);
 
-  return (
-  <section>
-      <div className="max-w-7xl mx-auto">
-        <PageHeader eyebrow="Spazi per il ricevimento" title="Location ricevimento" description="Scopri ville, castelli, agriturismi e altri spazi. Filtra per area geografica e tipologia per trovare la location adatta." icon={<Landmark size={24} aria-hidden />} />
-        <ImageCarousel images={getPageImages("location", country)} height="280px" />
-        <div className="app-card app-card--md mb-8 mt-6">
-          <h2 className="text-xl font-bold mb-4">Filtri</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {geographyLevels.map((level: { key: string; label: string }, idx: number) => {
-              const options = getOptionsForLevel(level.key);
-              const isDisabled = idx > 0 && !filterValues[geographyLevels[idx - 1].key];
-              return (
-                <div key={level.key}>
-                  <label className="block text-sm font-semibold mb-2">{level.label}</label>
-                  <select
-                    value={filterValues[level.key] || ""}
-                    onChange={(e) => handleFilterChange(level.key, e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                    disabled={isDisabled}
-                  >
-                    <option value="">Tutte</option>
-                    {options.map((opt: string) => {
-                      const optionValue = level.key === "type" ? opt.toLowerCase() : opt;
-                      return (
-                        <option key={opt} value={optionValue}>{opt}</option>
-                      );
-                    })}
-                  </select>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <form className="app-card app-card--md mb-8">
-          <h2 className="text-xl font-bold mb-4">Aggiungi Location Ricevimento</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold mb-1">Tipo Location *</label>
-              <select
-                required
-                value={formData.location_type}
-                onChange={(e) => setFormData({ ...formData, location_type: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              >
-                <option value="">Seleziona...</option>
-                {LOCATION_TYPES.map((t: string) => (
-                  <option key={t} value={t.toLowerCase()}>{t}</option>
-                ))}
-              </select>
-            </div>
-            {/* Geography levels dynamic fields */}
-            {geographyLevels.map((level, idx) => {
-              const options = getOptionsForLevel(level.key);
-              const isDisabled = idx > 0 && !formData[geographyLevels[idx - 1].key];
-              return (
-                <div key={level.key}>
-                  <label className="block text-sm font-semibold mb-1">{level.label} *</label>
-                  <select
-                    required
-                    value={formData[level.key] || ""}
-                    onChange={e => setFormData({ ...formData, [level.key]: e.target.value })}
-                    className="w-full border rounded px-3 py-2"
-                    disabled={isDisabled}
-                  >
-                    <option value="">Seleziona...</option>
-                    {options.map((opt: string) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
-              );
-            })}
-            <div>
-              <label className="block text-sm font-semibold mb-1">Città *</label>
-              <input
-                type="text"
-                required
-                value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Indirizzo</label>
-              <input
-                type="text"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Telefono</label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Email</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Sito Web</label>
-              <input
-                type="url"
-                value={formData.website}
-                onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Fascia di Prezzo</label>
-              <input
-                type="text"
-                placeholder="es. €€€, 50-100€ a persona"
-                value={formData.price_range}
-                onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Capacità Minima (persone)</label>
-              <input
-                type="number"
-                min="0"
-                value={formData.capacity_min}
-                onChange={(e) => setFormData({ ...formData, capacity_min: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Capacità Massima (persone)</label>
-              <input
-                type="number"
-                min="0"
-                value={formData.capacity_max}
-                onChange={(e) => setFormData({ ...formData, capacity_max: e.target.value })}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-semibold mb-1">Descrizione</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full border rounded px-3 py-2 h-24"
-                placeholder="Descrivi la location, i servizi offerti, particolarità..."
-              />
-            </div>
-            <div className="col-span-2">
-              <button
-                type="submit"
-                className="w-full bg-[#A3B59D] text-white py-3 rounded-lg hover:bg-[#8fa085] font-semibold"
-              >
-                Aggiungi Location Ricevimento
-              </button>
-            </div>
-          </div>
-        </form>
-        <div>
-          {loading ? (
-            <div className="text-center py-12">Caricamento...</div>
-          ) : error ? (
-            <div className="text-center py-12 text-red-600">{error}</div>
-          ) : locations.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              Nessuna location trovata. Prova a cambiare i filtri o aggiungi la prima!
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {locations.map((location: Location) => (
-                <div
-                  key={location.id}
-                  className={clsx(
-                    "bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow",
-                    location.verified && "border-2 border-green-500"
-                  )}
-                >
-                  <div className="flex justify-between items-start mb-3 gap-2">
-                    <h3 className="text-xl font-bold text-gray-800">{location.name}</h3>
-                    {/* Badge Preferiti */}
-                    <button
-                      className="bg-white border border-[#A3B59D] text-[#A3B59D] text-xs px-2 py-1 rounded hover:bg-[#A3B59D] hover:text-white transition-colors font-semibold ml-2"
-                      title="Aggiungi ai preferiti"
-                      // onClick={() => handleFavorite(location.id)}
-                    >
-                      Preferiti
-                    </button>
-                    {/* Badge Verificato solo se fornitore loggato e location verificata */}
-                    {location.verified && isSupplierView && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
-                        Verificato
-                      </span>
-                    )}
-                  </div>
-                  {location.location_type && (
-                    <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">Tipo:</span> {location.location_type.charAt(0).toUpperCase() + location.location_type.slice(1)}
-                    </p>
-                  )}
-                  <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-semibold">📍</span> {location.city}, {location.province} ({location.region})
-                  </p>
-                  {location.address && (
-                    <p className="text-sm text-gray-600 mb-2">{location.address}</p>
-                  )}
-                  {(location.capacity_min || location.capacity_max) && (
-                    <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">👥 Capacità:</span>{" "}
-                      {location.capacity_min && location.capacity_max
-                        ? `${location.capacity_min}-${location.capacity_max} persone`
-                        : location.capacity_min
-                        ? `da ${location.capacity_min} persone`
-                        : `fino a ${location.capacity_max} persone`}
-                    </p>
-                  )}
-                  {location.price_range && (
-                    <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">💶 Prezzo:</span> {location.price_range}
-                    </p>
-                  )}
-                  {location.description && (
-                    <p className="text-sm text-gray-600 mb-2">{location.description}</p>
-                  )}
-                  {location.website && (
-                    <a
-                      href={location.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#A3B59D] underline text-sm"
-                    >
-                      Sito web
-                    </a>
-                  )}
-                  {/* ...altri dettagli... */}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
+  const loadLocations = useCallback(async () => {
+    setLoading(true); setError(null);
+    const params = new URLSearchParams({ country, page: String(pagination.page), limit: String(pagination.limit) });
+    if (submittedQuery) params.set("q", submittedQuery);
+    if (city) params.set("city", city);
+    if (type) params.set("type", type);
+    if (verification) params.set("verification", verification);
+    try {
+      const response = await fetch(`/api/locations?${params}`, { cache: "no-store" });
+      const payload = (await response.json()) as { locations?: Location[]; pagination?: Pagination; error?: string };
+      if (!response.ok) throw new Error(payload.error || t("loadError"));
+      setLocations(payload.locations || []);
+      if (payload.pagination) setPagination(payload.pagination);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : t("loadError")); }
+    finally { setLoading(false); }
+  }, [city, country, pagination.limit, pagination.page, submittedQuery, t, type, verification]);
+
+  useEffect(() => { void loadLocations(); }, [loadLocations]);
+
+  async function saveLocation(location: Location) {
+    if (!token) { showToast(t("authRequired"), "info"); return; }
+    setPending((p) => ({ ...p, [location.id]: true }));
+    try {
+      const response = await fetch("/api/my/locations", { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ location_id: location.id, location_role: "reception" }) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || t("saveError"));
+      setSaved((current) => ({ ...current, [location.id]: payload.savedLocation as SavedLocation }));
+      showToast(t("saved"), "success");
+    } catch (cause) { showToast(cause instanceof Error ? cause.message : t("saveError"), "error"); }
+    finally { setPending((p) => ({ ...p, [location.id]: false })); }
+  }
+
+  async function updateSaved(location: Location, updates: Partial<SavedLocation>) {
+    const item = saved[location.id]; if (!item || !token) return;
+    setPending((p) => ({ ...p, [location.id]: true }));
+    try {
+      const response = await fetch("/api/my/locations", { method: "PATCH", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ id: item.id, ...updates }) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || t("saveError"));
+      setSaved((current) => ({ ...current, [location.id]: payload.savedLocation as SavedLocation }));
+    } catch (cause) { showToast(cause instanceof Error ? cause.message : t("saveError"), "error"); }
+    finally { setPending((p) => ({ ...p, [location.id]: false })); }
+  }
+
+  async function removeSaved(location: Location) {
+    const item = saved[location.id]; if (!item || !token) return;
+    setPending((p) => ({ ...p, [location.id]: true }));
+    try {
+      const response = await fetch(`/api/my/locations?id=${item.id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      if (!response.ok) throw new Error(t("removeError"));
+      setSaved((current) => { const next = { ...current }; delete next[location.id]; return next; });
+      showToast(t("removed"), "info");
+    } catch (cause) { showToast(cause instanceof Error ? cause.message : t("removeError"), "error"); }
+    finally { setPending((p) => ({ ...p, [location.id]: false })); }
+  }
+
+  function submitSearch(event: FormEvent) { event.preventDefault(); setPagination((p) => ({ ...p, page: 1 })); setSubmittedQuery(query.trim()); }
+
+  return <section className="space-y-6">
+    <PageHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} icon={<Building2 size={24} aria-hidden />} />
+    <ImageCarousel images={getPageImages("location", country)} height="280px" />
+    <AppCard padding="md"><form onSubmit={submitSearch} className="grid gap-4 md:grid-cols-[2fr_1fr_1fr_1fr_auto]">
+      <label className="space-y-1 text-sm font-semibold"><span>{t("search")}</span><input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
+      <label className="space-y-1 text-sm font-semibold"><span>{t("city")}</span><input value={city} onChange={(e) => { setCity(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
+      <label className="space-y-1 text-sm font-semibold"><span>{t("type")}</span><select value={type} onChange={(e) => { setType(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2"><option value="">{t("all")}</option>{VENUE_TYPES.map((value) => <option key={value} value={value}>{t(`types.${value}`)}</option>)}</select></label>
+      <label className="space-y-1 text-sm font-semibold"><span>{t("verification")}</span><select value={verification} onChange={(e) => { setVerification(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2"><option value="">{t("all")}</option><option value="VERIFIED">{t("verified")}</option><option value="PROBABLE">{t("probable")}</option><option value="TO_CHECK">{t("toCheck")}</option></select></label>
+      <AppButton type="submit" className="self-end"><Search size={17} aria-hidden />{t("searchButton")}</AppButton>
+    </form></AppCard>
+    {loading ? <LoadingState label={t("loading")} cards={6} /> : error ? <AppCard><p role="alert" className="text-red-700">{error}</p></AppCard> : locations.length === 0 ? <AppCard><p>{t("empty")}</p></AppCard> : <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{locations.map((location) => {
+      const item = saved[location.id];
+      return <AppCard key={location.id} interactive className="flex h-full flex-col gap-4"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-wide text-[#66745f]">{t(`types.${VENUE_TYPES.includes(location.venue_type) ? location.venue_type : "other"}`)}</p><h2 className="text-xl font-bold">{location.name}</h2></div><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold">{t(location.verification_status === "VERIFIED" ? "verified" : location.verification_status === "PROBABLE" ? "probable" : "toCheck")}</span></div>
+        <div className="space-y-2 text-sm text-gray-700"><p className="flex gap-2"><MapPin size={17} aria-hidden /><span>{[location.address_line, location.postal_code, location.city, location.province, location.region].filter(Boolean).join(", ")}</span></p>{location.capacity_max ? <p className="flex gap-2"><Users size={17} aria-hidden />{t("upTo", { count: location.capacity_max })}</p> : null}{location.accommodation_available ? <p className="flex gap-2"><Hotel size={17} aria-hidden />{t("accommodation")}</p> : null}{location.parking ? <p className="flex gap-2"><Car size={17} aria-hidden />{t("parking")}</p> : null}{location.website ? <a href={location.website} target="_blank" rel="noreferrer" className="inline-flex gap-2 text-[#586852] hover:underline">{t("website")}<ExternalLink size={15} aria-hidden /></a> : null}</div>
+        <div className="mt-auto flex flex-wrap gap-2 border-t border-gray-100 pt-4">{!item ? <AppButton onClick={() => void saveLocation(location)} loading={pending[location.id]}>{t("save")}</AppButton> : <><AppButton variant="outline" onClick={() => void updateSaved(location, { favorite: !item.favorite })} loading={pending[location.id]}><Heart size={16} fill={item.favorite ? "currentColor" : "none"} aria-hidden />{t("favorite")}</AppButton><AppButton variant={item.selected ? "primary" : "outline"} onClick={() => void updateSaved(location, { selected: !item.selected, status: item.selected ? "considering" : "selected" })} loading={pending[location.id]}><Star size={16} fill={item.selected ? "currentColor" : "none"} aria-hidden />{item.selected ? t("selected") : t("select")}</AppButton><AppButton variant="ghost" onClick={() => void removeSaved(location)}>{t("remove")}</AppButton></>}</div>
+      </AppCard>;
+    })}</div>}
+    {!loading && !error && pagination.total > 0 ? <nav className="flex items-center justify-between" aria-label={t("pagination")}><AppButton variant="outline" disabled={pagination.page <= 1} onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}>{t("previous")}</AppButton><p className="text-sm text-gray-600">{t("page", { page: pagination.page, total: pagination.totalPages })}</p><AppButton variant="outline" disabled={pagination.page >= pagination.totalPages} onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}>{t("next")}</AppButton></nav> : null}
+  </section>;
 }

@@ -15,5 +15,15 @@
   "documents": "Documents",
   "giftList": "Gift List",
   "favorites": "Favorites",
-  "suggestions": "Suggestions & Tips"
+  "suggestions": "Suggestions & Tips",
+  "locationsCatalog": {
+    "eyebrow": "Reception venues", "title": "Venues", "description": "Search, compare and save venues for your event.",
+    "search": "Name or place", "city": "City", "type": "Type", "verification": "Verification", "all": "All", "searchButton": "Search",
+    "verified": "Verified", "probable": "Probable", "toCheck": "To check", "loading": "Loading venues…", "empty": "No venues found.",
+    "loadError": "Unable to load the catalog.", "authRequired": "Sign in to save a venue.", "saveError": "Unable to save the venue.",
+    "saved": "Venue saved.", "removed": "Venue removed.", "removeError": "Unable to remove the venue.", "save": "Save", "favorite": "Favorite",
+    "select": "Select", "selected": "Selected", "remove": "Remove", "website": "Website", "accommodation": "Accommodation available", "parking": "Parking",
+    "upTo": "Up to {count} guests", "pagination": "Venue pages", "previous": "Previous", "next": "Next", "page": "Page {page} of {total}",
+    "types": { "villa": "Villa", "castle": "Castle", "hotel": "Hotel", "resort": "Resort", "restaurant": "Restaurant", "reception_hall": "Reception hall", "agriturismo": "Farm stay", "masseria": "Masseria", "baglio": "Baglio", "estate": "Estate", "beach": "Beach", "panoramic": "Scenic venue", "other": "Other" }
+  }
 }

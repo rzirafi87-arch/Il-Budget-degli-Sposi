@@ -1663,7 +1663,7 @@
       "region": "Region",
       "loadError": "Unable to load the church catalog",
       "retry": "Try again",
-      "save": "Save to wedding",
+      "save": "Add Church",
       "saved": "Church saved to your wedding",
       "saveError": "Unable to update the saved church",
       "remove": "Remove",

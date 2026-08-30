@@ -8,6 +8,8 @@ jest.mock("next/server", () => ({
   },
 }));
 
+export {};
+
 const calls: Array<[string, ...unknown[]]> = [];
 
 function catalogQuery() {
