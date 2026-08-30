@@ -23,7 +23,7 @@ if (!apply) {
   const client = new pg.Client({ connectionString: process.env.DATABASE_URL }); await client.connect();
   try {
     await client.query("begin");
-    const job = await client.query("insert into public.sync_jobs(source,type,region,province,status,started_at,records_read) values ('branch_27_pilot','location','Sicilia','AG','running',now(),$1) returning id", [summary.read]);
+    const job = await client.query("insert into public.sync_jobs(source,type,region,province,status,started_at,records_read) values ('official_site','location','Sicilia','AG','running',now(),$1) returning id", [summary.read]);
     for (const record of records) {
       const existing = await client.query("select id from public.locations where source=$1 and external_id=$2", [record.source, record.external_id]);
       if (!existing.rowCount) {
