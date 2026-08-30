@@ -229,6 +229,7 @@ export type Database = {
           event_id: string | null
           id: number
           name: string
+          saved_supplier_id: string | null
           tradition_id: number | null
           vendor_id: string | null
         }
@@ -238,6 +239,7 @@ export type Database = {
           event_id?: string | null
           id?: number
           name: string
+          saved_supplier_id?: string | null
           tradition_id?: number | null
           vendor_id?: string | null
         }
@@ -247,6 +249,7 @@ export type Database = {
           event_id?: string | null
           id?: number
           name?: string
+          saved_supplier_id?: string | null
           tradition_id?: number | null
           vendor_id?: string | null
         }
@@ -256,6 +259,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_items_saved_supplier_id_fkey"
+            columns: ["saved_supplier_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
             referencedColumns: ["id"]
           },
           {
@@ -911,6 +921,7 @@ export type Database = {
           id: string
           inserted_at: string | null
           payment_installments: Json | null
+          saved_supplier_id: string | null
           spend_type: string | null
           status: string | null
           subcategory: string | null
@@ -928,6 +939,7 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           payment_installments?: Json | null
+          saved_supplier_id?: string | null
           spend_type?: string | null
           status?: string | null
           subcategory?: string | null
@@ -945,6 +957,7 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           payment_installments?: Json | null
+          saved_supplier_id?: string | null
           spend_type?: string | null
           status?: string | null
           subcategory?: string | null
@@ -958,6 +971,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_saved_supplier_id_fkey"
+            columns: ["saved_supplier_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
             referencedColumns: ["id"]
           },
           {
@@ -1800,6 +1820,78 @@ export type Database = {
           },
         ]
       }
+      saved_suppliers: {
+        Row: {
+          agreed_amount: number | null
+          balance_amount: number | null
+          contact_notes: string | null
+          contract_signed: boolean
+          created_at: string
+          currency: string | null
+          deposit_amount: number | null
+          deposit_paid: boolean
+          event_id: string
+          favorite: boolean
+          id: string
+          personal_notes: string | null
+          quote_amount: number | null
+          status: string
+          supplier_id: string
+          updated_at: string
+        }
+        Insert: {
+          agreed_amount?: number | null
+          balance_amount?: number | null
+          contact_notes?: string | null
+          contract_signed?: boolean
+          created_at?: string
+          currency?: string | null
+          deposit_amount?: number | null
+          deposit_paid?: boolean
+          event_id: string
+          favorite?: boolean
+          id?: string
+          personal_notes?: string | null
+          quote_amount?: number | null
+          status?: string
+          supplier_id: string
+          updated_at?: string
+        }
+        Update: {
+          agreed_amount?: number | null
+          balance_amount?: number | null
+          contact_notes?: string | null
+          contract_signed?: boolean
+          created_at?: string
+          currency?: string | null
+          deposit_amount?: number | null
+          deposit_paid?: boolean
+          event_id?: string
+          favorite?: boolean
+          id?: string
+          personal_notes?: string | null
+          quote_amount?: number | null
+          status?: string
+          supplier_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_suppliers_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_suppliers_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subcategories: {
         Row: {
           category_id: string
@@ -2008,90 +2100,223 @@ export type Database = {
           },
         ]
       }
+      supplier_locations: {
+        Row: {
+          created_at: string
+          location_id: string
+          relationship_type: string
+          source: string
+          source_url: string | null
+          supplier_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          location_id: string
+          relationship_type: string
+          source: string
+          source_url?: string | null
+          supplier_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          location_id?: string
+          relationship_type?: string
+          source?: string
+          source_url?: string | null
+          supplier_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "high_rated_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_locations_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           address: string | null
+          address_line: string | null
           category: string | null
           city: string
+          confidence_score: number
           contact_clicks: number | null
           country: string | null
+          country_code: string
+          created_at: string
+          currency: string | null
           description: string | null
           email: string | null
+          external_id: string | null
+          facebook_url: string | null
           google_place_id: string | null
           google_rating: number | null
           google_rating_count: number | null
           id: string
           inserted_at: string | null
+          instagram_url: string | null
           is_featured: boolean | null
           last_synced_at: string | null
+          last_verified_at: string | null
           last_view_at: string | null
+          latitude: number | null
+          legal_name: string | null
+          longitude: number | null
           name: string
+          normalized_name: string
           phone: string | null
+          postal_code: string | null
+          price_range_max: number | null
+          price_range_min: number | null
           profile_views: number | null
           province: string
           region: string
+          regions_served: string[] | null
+          service_area: string | null
+          source: string
+          source_updated_at: string | null
+          source_url: string | null
+          starting_price: number | null
+          state: string | null
+          subcategory: string | null
           subscription_expires_at: string | null
           subscription_tier: string | null
+          tiktok_url: string | null
+          travel_available: boolean | null
           updated_at: string | null
           user_id: string | null
+          verification_status: string
           verified: boolean | null
           website: string | null
           website_clicks: number | null
         }
         Insert: {
           address?: string | null
+          address_line?: string | null
           category?: string | null
           city: string
+          confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
+          country_code: string
+          created_at?: string
+          currency?: string | null
           description?: string | null
           email?: string | null
+          external_id?: string | null
+          facebook_url?: string | null
           google_place_id?: string | null
           google_rating?: number | null
           google_rating_count?: number | null
           id?: string
           inserted_at?: string | null
+          instagram_url?: string | null
           is_featured?: boolean | null
           last_synced_at?: string | null
+          last_verified_at?: string | null
           last_view_at?: string | null
+          latitude?: number | null
+          legal_name?: string | null
+          longitude?: number | null
           name: string
+          normalized_name: string
           phone?: string | null
+          postal_code?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
           profile_views?: number | null
           province: string
           region: string
+          regions_served?: string[] | null
+          service_area?: string | null
+          source: string
+          source_updated_at?: string | null
+          source_url?: string | null
+          starting_price?: number | null
+          state?: string | null
+          subcategory?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          tiktok_url?: string | null
+          travel_available?: boolean | null
           updated_at?: string | null
           user_id?: string | null
+          verification_status?: string
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
         }
         Update: {
           address?: string | null
+          address_line?: string | null
           category?: string | null
           city?: string
+          confidence_score?: number
           contact_clicks?: number | null
           country?: string | null
+          country_code?: string
+          created_at?: string
+          currency?: string | null
           description?: string | null
           email?: string | null
+          external_id?: string | null
+          facebook_url?: string | null
           google_place_id?: string | null
           google_rating?: number | null
           google_rating_count?: number | null
           id?: string
           inserted_at?: string | null
+          instagram_url?: string | null
           is_featured?: boolean | null
           last_synced_at?: string | null
+          last_verified_at?: string | null
           last_view_at?: string | null
+          latitude?: number | null
+          legal_name?: string | null
+          longitude?: number | null
           name?: string
+          normalized_name?: string
           phone?: string | null
+          postal_code?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
           profile_views?: number | null
           province?: string
           region?: string
+          regions_served?: string[] | null
+          service_area?: string | null
+          source?: string
+          source_updated_at?: string | null
+          source_url?: string | null
+          starting_price?: number | null
+          state?: string | null
+          subcategory?: string | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
+          tiktok_url?: string | null
+          travel_available?: boolean | null
           updated_at?: string | null
           user_id?: string | null
+          verification_status?: string
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
@@ -2253,6 +2478,7 @@ export type Database = {
           id: string
           inserted_at: string | null
           phase: string | null
+          saved_supplier_id: string | null
           title: string
           updated_at: string | null
         }
@@ -2267,6 +2493,7 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
+          saved_supplier_id?: string | null
           title: string
           updated_at?: string | null
         }
@@ -2281,6 +2508,7 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
+          saved_supplier_id?: string | null
           title?: string
           updated_at?: string | null
         }
@@ -2290,6 +2518,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timeline_items_saved_supplier_id_fkey"
+            columns: ["saved_supplier_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
             referencedColumns: ["id"]
           },
         ]
