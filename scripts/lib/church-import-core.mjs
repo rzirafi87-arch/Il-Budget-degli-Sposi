@@ -1,4 +1,4 @@
-import { confidenceFor, deterministicExternalId, normalizePhone, normalizeText, normalizeUrl, validateCatalogIdentity, verificationFor } from "./catalog-import-core.mjs";
+import { confidenceFor, deterministicExternalId, normalizeAddressFields, normalizeDisplayText, normalizeEmail, normalizePhone, normalizeSlug, normalizeText, normalizeUrl, validateCatalogIdentity, validationIssue, verificationFor } from "./catalog-import-core.mjs";
 export { deterministicExternalId, normalizeText } from "./catalog-import-core.mjs";
 
 export function normalizeChurch(raw) {
@@ -7,23 +7,17 @@ export function normalizeChurch(raw) {
   const sourceUrl = normalizeUrl(raw.source_url);
   const website = normalizeUrl(raw.website);
   const record = {
-    name: typeof raw.name === "string" ? raw.name.trim() : "",
+    name: normalizeDisplayText(raw.name) || "",
     normalized_name: normalizeText(raw.name),
+    slug: normalizeSlug(raw.slug || raw.name),
     place_type: String(raw.place_type || "place_of_worship").trim().toLowerCase(),
     denomination: raw.denomination || null,
     religion: raw.religion || null,
     subtype: raw.subtype || null,
-    address_line: raw.address_line?.trim() || null,
-    normalized_address: normalizeText(raw.address_line),
-    postal_code: raw.postal_code?.trim() || null,
-    city: raw.city?.trim() || "",
-    province: raw.province?.trim() || "",
-    region: raw.region?.trim() || "",
+    ...normalizeAddressFields(raw),
     country_code: countryCode,
-    latitude: raw.latitude ?? null,
-    longitude: raw.longitude ?? null,
     phone: normalizePhone(raw.phone),
-    email: raw.email?.trim().toLowerCase() || null,
+    email: normalizeEmail(raw.email),
     website,
     wedding_ceremony_available: raw.wedding_ceremony_available ?? null,
     capacity: raw.capacity ?? null,
@@ -50,6 +44,6 @@ export function normalizeChurch(raw) {
 
 export function validateChurch(record) {
   const errors = validateCatalogIdentity(record);
-  if (record.capacity != null && (!Number.isInteger(record.capacity) || record.capacity < 0)) errors.push("invalid capacity");
+  if (record.capacity != null && (!Number.isInteger(record.capacity) || record.capacity < 0)) errors.push(validationIssue("invalid capacity"));
   return errors;
 }

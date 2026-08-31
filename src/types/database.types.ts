@@ -291,6 +291,51 @@ export type Database = {
           },
         ]
       }
+      catalog_provenance: {
+        Row: {
+          entity_id: string | null
+          entity_type: string
+          external_id: string
+          external_key: string | null
+          id: string
+          imported_at: string
+          last_seen_at: string
+          metadata: Json
+          raw_fingerprint: string
+          source_name: string
+          source_type: string
+          source_url: string | null
+        }
+        Insert: {
+          entity_id?: string | null
+          entity_type: string
+          external_id: string
+          external_key?: string | null
+          id?: string
+          imported_at?: string
+          last_seen_at?: string
+          metadata?: Json
+          raw_fingerprint: string
+          source_name: string
+          source_type: string
+          source_url?: string | null
+        }
+        Update: {
+          entity_id?: string | null
+          entity_type?: string
+          external_id?: string
+          external_key?: string | null
+          id?: string
+          imported_at?: string
+          last_seen_at?: string
+          metadata?: Json
+          raw_fingerprint?: string
+          source_name?: string
+          source_type?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           display_order: number | null

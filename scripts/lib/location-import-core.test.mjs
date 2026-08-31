@@ -15,5 +15,5 @@ test("same chain name in another city gets a different deterministic identity", 
 
 test("invalid capacity range is rejected", () => {
   const record = normalizeLocation({ name: "Test", city: "Agrigento", province: "AG", region: "Sicilia", country_code: "it", source: "legacy", capacity_min: 200, capacity_max: 100 });
-  assert.ok(validateLocation(record).includes("invalid capacity range"));
+  assert.ok(validateLocation(record).some(({ code }) => code === "invalid capacity range"));
 });
