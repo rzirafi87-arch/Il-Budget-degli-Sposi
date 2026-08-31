@@ -1,12 +1,10 @@
-import { confidenceFor, deterministicExternalId, normalizePhone, normalizeText, normalizeUrl, validateCatalogIdentity, verificationFor } from "./catalog-import-core.mjs";
+import { confidenceFor, deterministicExternalId, normalizeAddressFields, normalizeDisplayText, normalizeEmail, normalizePhone, normalizeSlug, normalizeText, normalizeUrl, validateCatalogIdentity, validationIssue, verificationFor } from "./catalog-import-core.mjs";
 
 export function normalizeLocation(raw) {
   const record = {
-    name: typeof raw.name === "string" ? raw.name.trim() : "",
+    name: normalizeDisplayText(raw.name) || "", slug: normalizeSlug(raw.slug || raw.name),
     normalized_name: normalizeText(raw.name), venue_type: String(raw.venue_type || "other").trim().toLowerCase(), subtype: raw.subtype || null,
-    address_line: raw.address_line?.trim() || null, normalized_address: normalizeText(raw.address_line), postal_code: raw.postal_code?.trim() || null,
-    city: raw.city?.trim() || "", province: raw.province?.trim() || "", region: raw.region?.trim() || "", country_code: String(raw.country_code || "").trim().toLowerCase(),
-    latitude: raw.latitude ?? null, longitude: raw.longitude ?? null, phone: normalizePhone(raw.phone), email: raw.email?.trim().toLowerCase() || null,
+    ...normalizeAddressFields(raw), phone: normalizePhone(raw.phone), email: normalizeEmail(raw.email),
     website: normalizeUrl(raw.website), instagram_url: normalizeUrl(raw.instagram_url), facebook_url: normalizeUrl(raw.facebook_url),
     accommodation_available: raw.accommodation_available ?? null, catering_internal: raw.catering_internal ?? null,
     catering_external_allowed: raw.catering_external_allowed ?? null, parking: raw.parking ?? null, accessibility: raw.accessibility ?? null,
@@ -21,8 +19,8 @@ export function normalizeLocation(raw) {
 
 export function validateLocation(record) {
   const errors = validateCatalogIdentity(record);
-  if (record.capacity_min != null && (!Number.isInteger(record.capacity_min) || record.capacity_min < 0)) errors.push("invalid minimum capacity");
-  if (record.capacity_max != null && (!Number.isInteger(record.capacity_max) || record.capacity_max < 0)) errors.push("invalid maximum capacity");
-  if (record.capacity_min != null && record.capacity_max != null && record.capacity_min > record.capacity_max) errors.push("invalid capacity range");
+  if (record.capacity_min != null && (!Number.isInteger(record.capacity_min) || record.capacity_min < 0)) errors.push(validationIssue("invalid minimum capacity"));
+  if (record.capacity_max != null && (!Number.isInteger(record.capacity_max) || record.capacity_max < 0)) errors.push(validationIssue("invalid maximum capacity"));
+  if (record.capacity_min != null && record.capacity_max != null && record.capacity_min > record.capacity_max) errors.push(validationIssue("invalid capacity range"));
   return errors;
 }

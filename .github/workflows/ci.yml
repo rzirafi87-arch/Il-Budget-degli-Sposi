@@ -34,8 +34,8 @@ jobs:
         run: npm run check:utf8:strict
       - name: Validate config encoding
         run: npm run config:validate
-      - name: Validate Branch 26 church import pipeline
-        run: npm run churches:test-import && npm run churches:import
+      - name: Validate common catalog import pipeline
+        run: npm run catalog:test && npm run churches:import && npm run locations:import && npm run catalog:import -- --entity=supplier --file=scripts/datasets/suppliers-agrigento-pilot.json
       - name: Lint
         run: npm run lint
       - name: Typecheck

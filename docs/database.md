@@ -344,6 +344,8 @@ Strategia futura:
 
 ## Workflow migration
 
+Branch 30 consolidates the three catalog import paths in a shared pipeline and adds only the server-only `catalog_provenance` table. The canonical/private split and legacy vendor roles are documented in [branch-30-common-data-pipeline.md](branch-30-common-data-pipeline.md).
+
 1. Creare una migration timestampata in `supabase/migrations`.
 2. Eseguire preflight su record incompatibili e backup disponibile.
 3. Applicare a un branch Supabase senza dati o a un ambiente locale equivalente.
