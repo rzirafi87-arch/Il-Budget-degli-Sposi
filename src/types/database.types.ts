@@ -3161,6 +3161,11 @@ export type Database = {
       normalize_catalog_text: { Args: { value: string }; Returns: string }
       normalize_phone: { Args: { phone_input: string }; Returns: string }
       normalize_url: { Args: { url_input: string }; Returns: string }
+      regenerate_event_data: { Args: { p_event_id: string }; Returns: string }
+      regenerate_event_timeline: {
+        Args: { p_event_id: string }
+        Returns: string
+      }
       search_global_catalog: {
         Args: {
           p_category?: string
@@ -3196,11 +3201,6 @@ export type Database = {
           total_count: number
           verification_status: string
         }[]
-      }
-      regenerate_event_data: { Args: { p_event_id: string }; Returns: string }
-      regenerate_event_timeline: {
-        Args: { p_event_id: string }
-        Returns: string
       }
       seed_categories: { Args: { p_event: string }; Returns: undefined }
       seed_full_event: { Args: { p_event: string }; Returns: undefined }
