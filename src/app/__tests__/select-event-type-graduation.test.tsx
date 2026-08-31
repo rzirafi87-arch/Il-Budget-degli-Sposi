@@ -33,12 +33,13 @@ describe("SelectEventTypePage - Laurea", () => {
 
     render(<SelectEventTypePage />);
 
-    const btn = screen.getByRole("button", { name: /laurea/i });
+    const btn = screen.getByText("events.graduation").closest("button");
+    expect(btn).toBeTruthy();
     expect(btn).toBeDisabled();
     expect(btn).toHaveAttribute("aria-disabled", "true");
     expect(btn).toHaveTextContent(/coming soon/i);
 
-    fireEvent.click(btn);
+    fireEvent.click(btn!);
     expect(window.localStorage.getItem("eventType")).toBeNull();
     expect(document.cookie).not.toMatch(/eventType=graduation/);
     expect(mockReplace).not.toHaveBeenCalledWith("/it/dashboard");

@@ -25,8 +25,7 @@ describe("SelectEventTypePage", () => {
 
     render(<SelectEventTypePage />);
 
-    const matchingButtons = await screen.findAllByRole("button", { name: /matrimonio/i });
-    const btn = matchingButtons.find((button) => button.getAttribute("aria-disabled") === "false");
+    const btn = (await screen.findByText("events.wedding")).closest("button");
     expect(btn).toBeTruthy();
     expect(btn).toBeEnabled();
     expect(btn).toHaveTextContent(/disponibile/i);
