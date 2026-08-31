@@ -103,12 +103,18 @@ jobs:
       - name: Verify Branch 31 schema and RLS
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_31_schema.sql && psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_31_rls.sql
 
+      - name: Apply Branch 32 global catalog search
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260831233000_global_catalog_search_geo.sql
+
+      - name: Verify Branch 32 search and RLS
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_32_schema.sql && psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_32_rls.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
           supabase db lint --local --schema public --level warning --fail-on error
 
-      - name: Generate post-Branch-31 TypeScript types
+      - name: Generate post-Branch-32 TypeScript types
         run: |
           mkdir -p generated
           cd .supabase-ci
@@ -118,7 +124,7 @@ jobs:
       - name: Upload generated database types
         uses: actions/upload-artifact@v4
         with:
-          name: branch-31-database-types
+          name: branch-32-database-types
           path: generated/database.types.ts
           if-no-files-found: error
 
