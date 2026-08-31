@@ -1,4 +1,4 @@
-+-- Branch 30: common catalog ingestion provenance. Additive and server-only.
+-- Branch 30: common catalog ingestion provenance. Additive and server-only.
 create table public.catalog_provenance (
   id uuid primary key default gen_random_uuid(),
   entity_type text not null,
