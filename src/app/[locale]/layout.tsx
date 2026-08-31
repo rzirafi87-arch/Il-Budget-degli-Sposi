@@ -1,9 +1,8 @@
-
 import { AppSettingsProvider } from "@/app/(providers)/app-settings";
 import ClientLayoutShell from "@/components/ClientLayoutShell";
+import EventModuleGuard from "@/components/EventModuleGuard";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import { OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
-
 import {
   BRAND_DEFAULT_DESCRIPTION,
   BRAND_DEFAULT_DESCRIPTION_EN,
@@ -12,7 +11,6 @@ import {
   BRAND_NAME,
   BRAND_SITE_URL,
 } from "@/config/brand";
-
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
@@ -74,20 +72,19 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     },
   } as const;
 
-  const L = i18n[(locale === "en" ? "en" : "it")];
-
+  const current = i18n[locale === "en" ? "en" : "it"];
   const siteUrl = process.env.SITE_URL || BRAND_SITE_URL;
 
   return {
     applicationName: BRAND_NAME,
     title: {
-      default: L.title,
+      default: current.title,
       template: `%s | ${BRAND_NAME}`,
     },
-    description: L.description,
+    description: current.description,
     manifest: "/manifest.webmanifest",
     icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }] },
-    keywords: [...L.keywords],
+    keywords: [...current.keywords],
     authors: [{ name: BRAND_NAME }],
     creator: BRAND_NAME,
     publisher: BRAND_NAME,
@@ -107,8 +104,8 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
       type: "website",
       url: siteUrl,
       siteName: BRAND_NAME,
-      title: L.title,
-      description: L.ogDescription,
+      title: current.title,
+      description: current.ogDescription,
       images: [
         {
           url: `${siteUrl}/opengraph-image`,
@@ -121,8 +118,8 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     },
     twitter: {
       card: "summary_large_image",
-      title: L.title,
-      description: L.ogDescription,
+      title: current.title,
+      description: current.ogDescription,
       images: [`${siteUrl}/twitter-image`],
     },
     alternates: {
@@ -157,16 +154,17 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   return (
     <>
-        {/* JSON-LD structured data can be rendered in the body; search engines accept it there */}
-        <WebsiteSchema />
-        <OrganizationSchema />
-        {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
+      <WebsiteSchema />
+      <OrganizationSchema />
+      {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
 
-        <AppSettingsProvider initialLocale={locale}>
-          <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
-            <ClientLayoutShell>{children}</ClientLayoutShell>
-          </NextIntlClientProvider>
-        </AppSettingsProvider>
+      <AppSettingsProvider initialLocale={locale}>
+        <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
+          <ClientLayoutShell>
+            <EventModuleGuard>{children}</EventModuleGuard>
+          </ClientLayoutShell>
+        </NextIntlClientProvider>
+      </AppSettingsProvider>
     </>
   );
 }

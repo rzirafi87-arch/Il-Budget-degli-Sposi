@@ -1,17 +1,15 @@
-﻿import '@testing-library/jest-dom';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+﻿import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
 
-// Mock next/navigation router to avoid real navigation in jsdom
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush, replace: mockReplace }),
 }));
 jest.mock("@/lib/supabaseBrowser", () => ({
   getBrowserClient: () => ({ auth: { getSession: async () => ({ data: { session: { access_token: "token" } }, error: null }) } }),
 }));
 
-// Simple fetch mock for the traditions preview
 beforeAll(() => {
   // @ts-expect-error - Mocking global fetch for testing
   global.fetch = jest.fn((input) =>
@@ -19,27 +17,31 @@ beforeAll(() => {
   );
 });
 
-import SelectEventTypePage from '../[locale]/(routes)/select-event-type/page';
+import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
 
-describe('SelectEventTypePage - Laurea', () => {
+describe("SelectEventTypePage - Laurea", () => {
   beforeEach(() => {
     window.localStorage.clear();
-    document.cookie = '';
+    document.cookie = "";
     mockPush.mockClear();
+    mockReplace.mockClear();
   });
 
-  it('mostra Laurea e salva la scelta, reindirizzando alla Dashboard', async () => {
-    // Imposta lingua e paese per evitare redirect iniziali
-    window.localStorage.setItem('language', 'it');
-    window.localStorage.setItem('country', 'it');
+  it("mostra Laurea come Coming Soon e non consente la creazione", () => {
+    window.localStorage.setItem("language", "it");
+    window.localStorage.setItem("country", "it");
 
     render(<SelectEventTypePage />);
 
-    const btn = screen.getByRole('button', { name: /laurea/i });
-    fireEvent.click(btn);
+    const btn = screen.getByText("events.graduation").closest("button");
+    expect(btn).toBeTruthy();
+    expect(btn).toBeDisabled();
+    expect(btn).toHaveAttribute("aria-disabled", "true");
+    expect(btn).toHaveTextContent(/coming soon/i);
 
-    expect(window.localStorage.getItem('eventType')).toBe('graduation');
-    expect(document.cookie).toMatch(/eventType=graduation/);
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/it/dashboard'));
+    fireEvent.click(btn!);
+    expect(window.localStorage.getItem("eventType")).toBeNull();
+    expect(document.cookie).not.toMatch(/eventType=graduation/);
+    expect(mockReplace).not.toHaveBeenCalledWith("/it/dashboard");
   });
 });

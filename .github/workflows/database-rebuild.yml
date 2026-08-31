@@ -79,23 +79,31 @@ jobs:
       - name: Run Branch 28 integration and RLS tests
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_28_rls.sql
 
+      - name: Apply Branch 29 event type capabilities
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260831001000_event_type_capabilities.sql
+
+      - name: Verify Branch 29 reconstructed schema
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_29_schema.sql
+
+      - name: Run Branch 29 RLS regression tests
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_29_rls.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
           supabase db lint --local --schema public --level warning --fail-on error
 
-      - name: Generate post-Branch-28 TypeScript types
+      - name: Generate post-Branch-29 TypeScript types
         run: |
           mkdir -p generated
           cd .supabase-ci
           supabase gen types typescript --local > ../generated/database.types.ts
-          # Normalize CLI-only trailing blank lines while preserving one POSIX newline.
           perl -0pi -e 's/\n+\z/\n/' ../generated/database.types.ts
 
       - name: Upload generated database types
         uses: actions/upload-artifact@v4
         with:
-          name: branch-28-database-types
+          name: branch-29-database-types
           path: generated/database.types.ts
           if-no-files-found: error
 
