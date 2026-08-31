@@ -297,13 +297,16 @@ export type Database = {
           entity_type: string
           external_id: string
           external_key: string | null
+          freshness_status: string
           id: string
           imported_at: string
           last_seen_at: string
           metadata: Json
+          missed_observations: number
           raw_fingerprint: string
           source_name: string
           source_type: string
+          source_updated_at: string | null
           source_url: string | null
         }
         Insert: {
@@ -311,13 +314,16 @@ export type Database = {
           entity_type: string
           external_id: string
           external_key?: string | null
+          freshness_status?: string
           id?: string
           imported_at?: string
           last_seen_at?: string
           metadata?: Json
+          missed_observations?: number
           raw_fingerprint: string
           source_name: string
           source_type: string
+          source_updated_at?: string | null
           source_url?: string | null
         }
         Update: {
@@ -325,14 +331,62 @@ export type Database = {
           entity_type?: string
           external_id?: string
           external_key?: string | null
+          freshness_status?: string
           id?: string
           imported_at?: string
           last_seen_at?: string
           metadata?: Json
+          missed_observations?: number
           raw_fingerprint?: string
           source_name?: string
           source_type?: string
+          source_updated_at?: string | null
           source_url?: string | null
+        }
+        Relationships: []
+      }
+      catalog_review_queue: {
+        Row: {
+          candidate_entity_id: string | null
+          conflict_level: string
+          created_at: string
+          entity_type: string
+          id: string
+          incoming_fingerprint: string
+          match_score: number
+          payload: Json
+          reasons: Json
+          reviewed_at: string | null
+          source: string
+          status: string
+        }
+        Insert: {
+          candidate_entity_id?: string | null
+          conflict_level: string
+          created_at?: string
+          entity_type: string
+          id?: string
+          incoming_fingerprint: string
+          match_score: number
+          payload?: Json
+          reasons?: Json
+          reviewed_at?: string | null
+          source: string
+          status?: string
+        }
+        Update: {
+          candidate_entity_id?: string | null
+          conflict_level?: string
+          created_at?: string
+          entity_type?: string
+          id?: string
+          incoming_fingerprint?: string
+          match_score?: number
+          payload?: Json
+          reasons?: Json
+          reviewed_at?: string | null
+          source?: string
+          status?: string
         }
         Relationships: []
       }
