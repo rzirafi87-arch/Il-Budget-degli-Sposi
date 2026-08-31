@@ -2,6 +2,7 @@ import { normalizeChurch, validateChurch } from "./church-import-core.mjs";
 import { normalizeLocation, validateLocation } from "./location-import-core.mjs";
 import { normalizeSupplier, validateSupplier } from "./supplier-import-core.mjs";
 import { blockingIssues, CATALOG_ENTITY_TYPES, rawFingerprint } from "./catalog-import-core.mjs";
+import { advancedConfidence, evaluateCatalogMatch, mergePreview } from "./catalog-reliability.mjs";
 
 const ADAPTERS = {
   church: { table: "churches", normalize: normalizeChurch, validate: validateChurch },
@@ -10,7 +11,7 @@ const ADAPTERS = {
 };
 
 export function createImportReport(input = 0) {
-  return { input, normalized: 0, valid: 0, invalid: 0, inserted: 0, updated: 0, duplicates: 0, review: 0, rejected: 0, errors: [], records: [] };
+  return { input, normalized: 0, valid: 0, invalid: 0, new: 0, exactMatch: 0, highConfidenceMatch: 0, possibleMatch: 0, conflicts: 0, staleCandidates: 0, inserted: 0, updated: 0, unchanged: 0, duplicates: 0, review: 0, reviewQueued: 0, rejected: 0, errors: [], records: [] };
 }
 
 export function mergeWithoutDataLoss(existing, incoming) {
@@ -47,16 +48,26 @@ export async function runCatalogIngestion({ entityType, source, records, reposit
       if (inputKeys.has(inputKey)) { report.duplicates += 1; report.rejected += 1; detail.stage = "REJECTED"; detail.action = "duplicate-input"; report.records.push(detail); continue; }
       inputKeys.add(inputKey);
 
-      const duplicate = await repository.findDuplicate(entityType, normalized);
-      if (duplicate.kind === "ambiguous") { report.duplicates += 1; report.review += 1; detail.stage = "READY_FOR_REVIEW"; detail.action = "review"; detail.candidateIds = duplicate.records.map(({ id }) => id); report.records.push(detail); continue; }
-      const existing = duplicate.record || null; const action = existing ? "update" : "insert";
-      detail.stage = normalized.verification_status === "VERIFIED" ? "VERIFIED" : "DUPLICATE_CHECKED"; detail.action = action;
-      if (existing) report.duplicates += 1;
-      if (!dryRun) {
-        const saved = await repository.upsert(entityType, mergeWithoutDataLoss(existing || {}, normalized));
-        await repository.recordProvenance({ entity_type: entityType, entity_id: saved.id, external_key: normalized.external_id, source_type: source.type, source_name: source.name, source_url: normalized.source_url, external_id: normalized.external_id, imported_at: now.toISOString(), last_seen_at: now.toISOString(), raw_fingerprint: rawFingerprint(raw), metadata: source.metadata || {} });
+      const candidates = await repository.findCandidates(entityType, normalized);
+      const evaluated = candidates.map((candidate) => ({ candidate, match: evaluateCatalogMatch(entityType, normalized, candidate) })).sort((a, b) => b.match.score - a.match.score);
+      const best = evaluated[0] || null; const exact = best?.match.signals.some(({ code }) => code === "SOURCE_EXTERNAL_ID");
+      if (best?.match.outcome === "POSSIBLE_MATCH") {
+        report.duplicates += 1; report.possibleMatch += 1; report.review += 1; if (best.match.conflictLevel !== "NON_CONFLICTING") report.conflicts += 1;
+        detail.stage = "READY_FOR_REVIEW"; detail.action = best.match.conflictLevel === "NON_CONFLICTING" ? "POSSIBLE_MATCH" : "CONFLICT"; detail.candidateIds = evaluated.filter(({ match }) => match.outcome !== "NO_MATCH").map(({ candidate }) => candidate.id); detail.match = best.match;
+        if (!dryRun) { await repository.queueReview({ entity_type: entityType, candidate_entity_id: best.candidate.id, source: source.name, incoming_fingerprint: rawFingerprint(raw), match_score: best.match.score, conflict_level: best.match.conflictLevel, reasons: { signals: best.match.signals, conflicts: best.match.conflicts }, payload: { external_id: normalized.external_id, name: normalized.name, city: normalized.city }, created_at: now.toISOString() }); report.reviewQueued += 1; }
+        report.records.push(detail); continue;
       }
-      if (action === "insert") report.inserted += 1; else report.updated += 1;
+      const existing = best?.match.outcome === "MATCH" ? best.candidate : null; const action = existing ? (exact ? "EXACT_MATCH" : "HIGH_CONFIDENCE_MATCH") : "NEW";
+      detail.stage = normalized.verification_status === "VERIFIED" ? "VERIFIED" : "DUPLICATE_CHECKED"; detail.action = action; detail.match = best?.match || null;
+      if (existing) { report.duplicates += 1; if (exact) report.exactMatch += 1; else report.highConfidenceMatch += 1; } else report.new += 1;
+      const merged = mergeWithoutDataLoss(existing || {}, normalized); const confidence = advancedConfidence(merged, { conflictLevel: best?.match.conflictLevel, supportingSources: evaluated.filter(({ match }) => match.outcome === "MATCH").length });
+      merged.confidence_score = confidence.score; if (merged.verification_status === "VERIFIED" && normalized.verification_status !== "VERIFIED") merged.verification_status = "VERIFIED";
+      detail.confidence = confidence; detail.mergePreview = mergePreview(existing, normalized, merged);
+      if (!dryRun) {
+        const saved = await repository.upsert(entityType, merged);
+        await repository.recordProvenance({ entity_type: entityType, entity_id: saved.id, external_key: normalized.external_id, source_type: source.type, source_name: source.name, source_url: normalized.source_url, external_id: normalized.external_id, imported_at: now.toISOString(), last_seen_at: now.toISOString(), source_updated_at: normalized.source_updated_at, raw_fingerprint: rawFingerprint(raw), metadata: { ...(source.metadata || {}), field_sources: Object.fromEntries(Object.keys(normalized).filter((key) => normalized[key] != null && normalized[key] !== "").map((key) => [key, source.name])) } });
+      }
+      if (!existing) report.inserted += 1; else if (detail.mergePreview.fieldsChanged.length) report.updated += 1; else report.unchanged += 1;
       report.records.push(detail);
     } catch (error) { report.errors.push({ index, message: error instanceof Error ? error.message : String(error) }); report.rejected += 1; }
   }
@@ -64,18 +75,13 @@ export async function runCatalogIngestion({ entityType, source, records, reposit
 }
 
 export function formatImportReport(report) {
-  return `${report.entityType} ${report.mode}: input=${report.input}, normalized=${report.normalized}, valid=${report.valid}, invalid=${report.invalid}, inserted=${report.inserted}, updated=${report.updated}, duplicates=${report.duplicates}, review=${report.review}, rejected=${report.rejected}, errors=${report.errors.length}`;
+  return `${report.entityType} ${report.mode}: input=${report.input}, valid=${report.valid}, invalid=${report.invalid}, new=${report.new}, exact=${report.exactMatch}, high=${report.highConfidenceMatch}, possible=${report.possibleMatch}, conflicts=${report.conflicts}, stale=${report.staleCandidates}, inserted=${report.inserted}, updated=${report.updated}, unchanged=${report.unchanged}, rejected=${report.rejected}, review=${report.reviewQueued}, errors=${report.errors.length}`;
 }
 
 export class MemoryCatalogRepository {
   constructor(seed = {}) { this.rows = Object.fromEntries(CATALOG_ENTITY_TYPES.map((type) => [type, structuredClone(seed[type] || [])])); this.provenance = []; this.writes = 0; }
-  async findDuplicate(type, record) {
-    const rows = this.rows[type];
-    const strong = rows.find((row) => (row.source === record.source && row.external_id === record.external_id) || (record.phone && row.phone === record.phone) || (record.website && row.website === record.website) || (row.normalized_name === record.normalized_name && row.normalized_address && row.normalized_address === record.normalized_address && row.city?.toLowerCase() === record.city?.toLowerCase()));
-    if (strong) return { kind: "strong", record: strong };
-    const ambiguous = rows.filter((row) => row.normalized_name === record.normalized_name && row.city?.toLowerCase() === record.city?.toLowerCase());
-    return ambiguous.length ? { kind: "ambiguous", records: ambiguous } : { kind: "none", records: [] };
-  }
+  async findCandidates(type, record) { return this.rows[type].filter((row) => (row.source === record.source && row.external_id === record.external_id) || (record.phone && row.phone === record.phone) || (record.website && row.website === record.website) || row.normalized_name === record.normalized_name || (record.normalized_address && row.normalized_address === record.normalized_address) || (record.postal_code && row.postal_code === record.postal_code && row.city?.toLowerCase() === record.city?.toLowerCase())); }
   async upsert(type, record) { this.writes += 1; const rows = this.rows[type]; const index = rows.findIndex((row) => row.id === record.id || (row.source === record.source && row.external_id === record.external_id)); const saved = { ...record, id: record.id || `${type}-${rows.length + 1}` }; if (index >= 0) rows[index] = saved; else rows.push(saved); return saved; }
   async recordProvenance(record) { this.writes += 1; const index = this.provenance.findIndex((row) => row.entity_type === record.entity_type && row.source_type === record.source_type && row.source_name === record.source_name && row.external_id === record.external_id); if (index >= 0) this.provenance[index] = { ...this.provenance[index], ...record, imported_at: this.provenance[index].imported_at }; else this.provenance.push(record); }
+  async queueReview(record) { this.writes += 1; this.reviews ||= []; if (!this.reviews.some((row) => row.entity_type === record.entity_type && row.incoming_fingerprint === record.incoming_fingerprint && row.candidate_entity_id === record.candidate_entity_id)) this.reviews.push(record); }
 }

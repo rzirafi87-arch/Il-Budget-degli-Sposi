@@ -346,6 +346,8 @@ Strategia futura:
 
 Branch 30 consolidates the three catalog import paths in a shared pipeline and adds only the server-only `catalog_provenance` table. The canonical/private split and legacy vendor roles are documented in [branch-30-common-data-pipeline.md](branch-30-common-data-pipeline.md).
 
+Branch 31 extends that same pipeline with deterministic multi-signal matching, conflict evidence, merge preview, freshness metadata and the server-only `catalog_review_queue`. Thresholds and non-destructive boundaries are documented in [branch-31-data-reliability-dedup.md](branch-31-data-reliability-dedup.md).
+
 1. Creare una migration timestampata in `supabase/migrations`.
 2. Eseguire preflight su record incompatibili e backup disponibile.
 3. Applicare a un branch Supabase senza dati o a un ambiente locale equivalente.
