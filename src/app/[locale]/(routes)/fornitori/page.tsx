@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 
 type Saved = { id:string; supplier_id:string; status:string; favorite:boolean };
 type Pagination = { page:number; pageSize:number; total:number; totalPages:number };
-const categories = ["wedding_planner","catering","photographer","videomaker","florist","dj","band","ceremony_music","reception_music","entertainment","decor","lighting","pastry","wedding_cake","favors","invitations","graphic_design","atelier","bride_attire","groom_attire","makeup","hairdresser","car","transfer","rental","babysitting","honeymoon","other"];
+const categories = ["Beauty & Benessere","Catering","Location & Catering","Sposa","Foto & Video","Fiori & Decor","Gioiellerie","Inviti & Stationery","Trasporti","Sposo","Musica & Intrattenimento","Viaggio di nozze","Ricevimento Location","Bomboniere & Regali","Fiorai","Musica Ricevimento","Fotografi","fiori"];
 
 export default function SuppliersPage() {
   const t = useTranslations("catalogSearch");
