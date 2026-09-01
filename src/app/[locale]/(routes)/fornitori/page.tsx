@@ -26,9 +26,9 @@ export default function SuppliersPage() {
   const [pagination,setPagination]=useState<Pagination>({page:1,pageSize:12,total:0,totalPages:1});
   const [loading,setLoading]=useState(true), [selectedId,setSelectedId]=useState<string|null>(null), [mapMode,setMapMode]=useState(false);
 
-  async function load(next=page, currentPosition=position) {
+  async function load(next=page, currentPosition=position, requestedSort=sort) {
     setLoading(true);
-    const p=new URLSearchParams({entityType:"supplier",page:String(next),pageSize:"12",sort:currentPosition&&sort==="NEAREST"?"NEAREST":sort});
+    const p=new URLSearchParams({entityType:"supplier",page:String(next),pageSize:"12",sort:currentPosition&&requestedSort==="NEAREST"?"NEAREST":requestedSort});
     if(q)p.set("q",q); if(category)p.set("category",category); if(verification)p.set("verification",verification);
     if(city)p.set("city",city); if(province)p.set("province",province); if(region)p.set("region",region);
     if(currentPosition){p.set("latitude",String(currentPosition.latitude));p.set("longitude",String(currentPosition.longitude));p.set("radius",radius);}
@@ -50,7 +50,7 @@ export default function SuppliersPage() {
   } void initial(); },[]);
 
   function submit(e:FormEvent){e.preventDefault();void load(1);}
-  function located(next:CurrentPosition){setPosition(next);setSort("NEAREST");void load(1,next);}
+  function located(next:CurrentPosition){setPosition(next);setSort("NEAREST");void load(1,next,"NEAREST");}
   const savedBy=(id:string)=>saved.find(s=>s.supplier_id===id);
   async function toggle(id:string){const current=savedBy(id);const {data}=await getBrowserClient().auth.getSession();const token=data.session?.access_token;if(!token)return;const r=await fetch(current?`/api/my/suppliers?id=${current.id}`:"/api/my/suppliers",{method:current?"DELETE":"POST",headers:{"content-type":"application/json",authorization:`Bearer ${token}`},body:current?undefined:JSON.stringify({supplier_id:id})});if(r.ok){if(current)setSaved(v=>v.filter(s=>s.id!==current.id));else{const j=await r.json();setSaved(v=>[...v,j.savedSupplier]);}}}
 

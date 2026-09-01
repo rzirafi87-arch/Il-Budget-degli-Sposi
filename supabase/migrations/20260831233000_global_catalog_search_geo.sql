@@ -56,7 +56,7 @@ as $$
       public.normalize_catalog_text(concat_ws(' ', l.name, l.city, l.province, l.region, l.country_code, l.venue_type))
     from public.locations l where p_entity_type = 'location'
     union all
-    select s.id, 'supplier', s.name, coalesce(s.subcategory, s.category), s.city,
+    select s.id, 'supplier', s.name, s.category, s.city,
       s.province, s.region, s.country_code, s.latitude, s.longitude,
       s.verification_status, s.confidence_score, s.normalized_name,
       jsonb_build_object('subcategory',s.subcategory,'address_line',s.address_line,'postal_code',s.postal_code,'phone',s.phone,'email',s.email,'website',s.website,'instagram_url',s.instagram_url,'facebook_url',s.facebook_url,'service_area',s.service_area,'regions_served',s.regions_served,'travel_available',s.travel_available,'starting_price',s.starting_price,'price_range_min',s.price_range_min,'price_range_max',s.price_range_max,'currency',s.currency,'last_verified_at',s.last_verified_at),

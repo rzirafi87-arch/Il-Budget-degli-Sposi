@@ -69,7 +69,7 @@ export function parseCatalogSearch(searchParams: URLSearchParams, forcedEntity?:
 }
 
 export async function searchCatalog(request: CatalogSearchRequest) {
-  const { data, error } = await getServiceClient().rpc("search_global_catalog", {
+  const rpcArgs = {
     p_entity_type: request.entityType, p_query: request.query ?? null,
     p_category: request.category ?? null, p_city: request.city ?? null,
     p_province: request.province ?? null, p_region: request.region ?? null,
@@ -77,10 +77,19 @@ export async function searchCatalog(request: CatalogSearchRequest) {
     p_latitude: request.latitude ?? null, p_longitude: request.longitude ?? null,
     p_radius_km: request.radiusKm ?? null, p_sort: request.sort,
     p_offset: (request.page - 1) * request.pageSize, p_limit: request.pageSize,
-  });
+  };
+  const client = getServiceClient();
+  const { data, error } = await client.rpc("search_global_catalog", rpcArgs);
   if (error) throw error;
   const rows = (data || []) as Array<Record<string, unknown>>;
-  const total = Number(rows[0]?.total_count || 0);
+  let total = Number(rows[0]?.total_count || 0);
+  if (rows.length === 0 && request.page > 1) {
+    const { data: countData, error: countError } = await client.rpc("search_global_catalog", {
+      ...rpcArgs, p_offset: 0, p_limit: 1,
+    });
+    if (countError) throw countError;
+    total = Number((countData as Array<Record<string, unknown>> | null)?.[0]?.total_count || 0);
+  }
   const results: CatalogSearchResult[] = rows.map((row) => ({
     id: String(row.id), entityType: row.entity_type as CatalogEntityType, name: String(row.name),
     category: row.category as string | null, city: row.city as string | null,
