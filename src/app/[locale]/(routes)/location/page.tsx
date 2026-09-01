@@ -1,6 +1,8 @@
 "use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
+import { CatalogMap } from "@/components/catalog/CatalogMap";
+import { CurrentPosition, NearMeButton } from "@/components/catalog/NearMeButton";
 import { useToast } from "@/components/ToastProvider";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppCard } from "@/components/ui/AppCard";
@@ -9,6 +11,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getOnboardingStatus } from "@/lib/onboardingClient";
 import { getPageImages } from "@/lib/pageImages";
+import type { CatalogSearchResult } from "@/lib/catalogSearch";
 import { Building2, Car, ExternalLink, Heart, Hotel, MapPin, Search, Star, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { FormEvent, useCallback, useEffect, useState } from "react";
@@ -21,6 +24,7 @@ type Location = {
   capacity_max: number | null; accommodation_available: boolean | null; catering_internal: boolean | null;
   catering_external_allowed: boolean | null; parking: boolean | null; accessibility: boolean | null;
   outdoor_space: boolean | null; indoor_space: boolean | null; verification_status: VerificationStatus;
+  latitude: number | null; longitude: number | null; distance_km?: number | null;
 };
 type SavedLocation = { id: string; location_id: string; location_role: string; status: string; favorite: boolean; selected: boolean };
 type Pagination = { page: number; limit: number; total: number; totalPages: number };
@@ -29,6 +33,7 @@ const VENUE_TYPES = ["villa", "castle", "hotel", "resort", "restaurant", "recept
 
 export default function LocationsPage() {
   const t = useTranslations("locationsCatalog");
+  const geo = useTranslations("catalogSearch");
   const { showToast } = useToast();
   const country = getUserCountrySafe().toLowerCase();
   const [locations, setLocations] = useState<Location[]>([]);
@@ -43,6 +48,8 @@ export default function LocationsPage() {
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
+  const [position, setPosition] = useState<CurrentPosition | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const loadSaved = useCallback(async (accessToken: string) => {
     const response = await fetch("/api/my/locations", { headers: { Authorization: `Bearer ${accessToken}` }, cache: "no-store" });
@@ -66,6 +73,7 @@ export default function LocationsPage() {
     if (city) params.set("city", city);
     if (type) params.set("type", type);
     if (verification) params.set("verification", verification);
+    if (position) { params.set("latitude", String(position.latitude)); params.set("longitude", String(position.longitude)); params.set("radius", "100"); params.set("sort", "NEAREST"); }
     try {
       const response = await fetch(`/api/locations?${params}`, { cache: "no-store" });
       const payload = (await response.json()) as { locations?: Location[]; pagination?: Pagination; error?: string };
@@ -74,7 +82,7 @@ export default function LocationsPage() {
       if (payload.pagination) setPagination(payload.pagination);
     } catch (cause) { setError(cause instanceof Error ? cause.message : t("loadError")); }
     finally { setLoading(false); }
-  }, [city, country, pagination.limit, pagination.page, submittedQuery, t, type, verification]);
+  }, [city, country, pagination.limit, pagination.page, position, submittedQuery, t, type, verification]);
 
   useEffect(() => { void loadLocations(); }, [loadLocations]);
 
@@ -126,10 +134,12 @@ export default function LocationsPage() {
       <label className="space-y-1 text-sm font-semibold"><span>{t("type")}</span><select value={type} onChange={(e) => { setType(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2"><option value="">{t("all")}</option>{VENUE_TYPES.map((value) => <option key={value} value={value}>{t(`types.${value}`)}</option>)}</select></label>
       <label className="space-y-1 text-sm font-semibold"><span>{t("verification")}</span><select value={verification} onChange={(e) => { setVerification(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2"><option value="">{t("all")}</option><option value="VERIFIED">{t("verified")}</option><option value="PROBABLE">{t("probable")}</option><option value="TO_CHECK">{t("toCheck")}</option></select></label>
       <AppButton type="submit" className="self-end"><Search size={17} aria-hidden />{t("searchButton")}</AppButton>
+      <div className="md:col-span-5"><NearMeButton onPosition={(next) => { setPosition(next); setPagination((p) => ({ ...p, page: 1 })); }} label={geo("nearMe")} unavailableLabel={geo("positionUnavailable")} /></div>
     </form></AppCard>
+    <CatalogMap results={locations.map((item): CatalogSearchResult => ({ id:item.id,entityType:"location",name:item.name,category:item.venue_type,city:item.city,province:item.province,region:item.region,country:item.country_code,latitude:item.latitude,longitude:item.longitude,distanceKm:item.distance_km ?? null,verificationStatus:item.verification_status,confidenceScore:0,relevanceScore:0 }))} selectedId={selectedId} onSelect={setSelectedId} />
     {loading ? <LoadingState label={t("loading")} cards={6} /> : error ? <AppCard><p role="alert" className="text-red-700">{error}</p></AppCard> : locations.length === 0 ? <AppCard><p>{t("empty")}</p></AppCard> : <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{locations.map((location) => {
       const item = saved[location.id];
-      return <AppCard key={location.id} interactive className="flex h-full flex-col gap-4"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-wide text-[#66745f]">{t(`types.${VENUE_TYPES.includes(location.venue_type) ? location.venue_type : "other"}`)}</p><h2 className="text-xl font-bold">{location.name}</h2></div><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold">{t(location.verification_status === "VERIFIED" ? "verified" : location.verification_status === "PROBABLE" ? "probable" : "toCheck")}</span></div>
+      return <AppCard key={location.id} interactive onClick={() => setSelectedId(location.id)} className={`flex h-full flex-col gap-4 ${selectedId === location.id ? "ring-2 ring-[#8d3f63]" : ""}`}><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-wide text-[#66745f]">{t(`types.${VENUE_TYPES.includes(location.venue_type) ? location.venue_type : "other"}`)}</p><h2 className="text-xl font-bold">{location.name}</h2></div><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold">{t(location.verification_status === "VERIFIED" ? "verified" : location.verification_status === "PROBABLE" ? "probable" : "toCheck")}</span></div>
         <div className="space-y-2 text-sm text-gray-700"><p className="flex gap-2"><MapPin size={17} aria-hidden /><span>{[location.address_line, location.postal_code, location.city, location.province, location.region].filter(Boolean).join(", ")}</span></p>{location.capacity_max ? <p className="flex gap-2"><Users size={17} aria-hidden />{t("upTo", { count: location.capacity_max })}</p> : null}{location.accommodation_available ? <p className="flex gap-2"><Hotel size={17} aria-hidden />{t("accommodation")}</p> : null}{location.parking ? <p className="flex gap-2"><Car size={17} aria-hidden />{t("parking")}</p> : null}{location.website ? <a href={location.website} target="_blank" rel="noreferrer" className="inline-flex gap-2 text-[#586852] hover:underline">{t("website")}<ExternalLink size={15} aria-hidden /></a> : null}</div>
         <div className="mt-auto flex flex-wrap gap-2 border-t border-gray-100 pt-4">{!item ? <AppButton onClick={() => void saveLocation(location)} loading={pending[location.id]}>{t("save")}</AppButton> : <><AppButton variant="outline" onClick={() => void updateSaved(location, { favorite: !item.favorite })} loading={pending[location.id]}><Heart size={16} fill={item.favorite ? "currentColor" : "none"} aria-hidden />{t("favorite")}</AppButton><AppButton variant={item.selected ? "primary" : "outline"} onClick={() => void updateSaved(location, { selected: !item.selected, status: item.selected ? "considering" : "selected" })} loading={pending[location.id]}><Star size={16} fill={item.selected ? "currentColor" : "none"} aria-hidden />{item.selected ? t("selected") : t("select")}</AppButton><AppButton variant="ghost" onClick={() => void removeSaved(location)}>{t("remove")}</AppButton></>}</div>
       </AppCard>;

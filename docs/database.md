@@ -339,6 +339,10 @@ Strategia futura:
 - deduplicazione: unique parziale su `(source, external_id)`, normalizzazione nome/indirizzo e revisione manuale dei match ambigui;
 - geospaziale: lat/lng validati, PostGIS `geography(Point, 4326)` e GiST quando iniziano query di distanza reali;
 - ricerca: colonne normalizzate, `unaccent`, `pg_trgm` per fuzzy matching e GIN full-text per nome/categoria/città;
+
+### Branch 32 — ricerca globale e distanza
+
+La funzione server-only `search_global_catalog` fornisce una query comune per chiese, location e fornitori, con filtri amministrativi combinabili, ranking trasparente, paginazione e distanza Haversine opzionale. Non modifica entità canonical e resta distinta dal matching del Branch 31. PostGIS, trigrammi e full-text non sono stati attivati: al momento dell'audit nessuno dei 456 record aveva coordinate e il volume non giustificava nuove estensioni. Vedi `docs/branch-32-global-search-geo.md`.
 - indici: aggiungerli dalle query reali, inclusi `(country, region, city)` e chiavi di relazione privata;
 - membership: tabella evento-membro come fonte unica di autorizzazione, senza rimuovere `owner_id` durante la prima migrazione.
 

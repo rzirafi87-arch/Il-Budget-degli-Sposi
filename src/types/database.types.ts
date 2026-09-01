@@ -3166,6 +3166,42 @@ export type Database = {
         Args: { p_event_id: string }
         Returns: string
       }
+      search_global_catalog: {
+        Args: {
+          p_category?: string
+          p_city?: string
+          p_country?: string
+          p_entity_type: string
+          p_latitude?: number
+          p_limit?: number
+          p_longitude?: number
+          p_offset?: number
+          p_province?: string
+          p_query?: string
+          p_radius_km?: number
+          p_region?: string
+          p_sort?: string
+          p_verification_status?: string
+        }
+        Returns: {
+          category: string
+          city: string
+          confidence_score: number
+          country: string
+          details: Json
+          distance_km: number
+          entity_type: string
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          province: string
+          region: string
+          relevance_score: number
+          total_count: number
+          verification_status: string
+        }[]
+      }
       seed_categories: { Args: { p_event: string }; Returns: undefined }
       seed_full_event: { Args: { p_event: string }; Returns: undefined }
       seed_subcategories: {

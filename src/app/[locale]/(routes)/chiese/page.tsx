@@ -1,6 +1,8 @@
 "use client";
 
 import ImageCarousel from "@/components/ImageCarousel";
+import { CatalogMap } from "@/components/catalog/CatalogMap";
+import { CurrentPosition, NearMeButton } from "@/components/catalog/NearMeButton";
 import { useToast } from "@/components/ToastProvider";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppCard } from "@/components/ui/AppCard";
@@ -9,6 +11,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getOnboardingStatus } from "@/lib/onboardingClient";
 import { getPageImages } from "@/lib/pageImages";
+import type { CatalogSearchResult } from "@/lib/catalogSearch";
 import { Church as ChurchIcon, ExternalLink, Heart, MapPin, Phone, Search, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
@@ -38,6 +41,7 @@ type Church = {
   parking: string | null;
   verification_status: VerificationStatus;
   last_verified_at: string | null;
+  distance_km?: number | null;
 };
 type SavedChurch = {
   id: string;
@@ -56,6 +60,7 @@ function placeTypeKey(placeType: string) {
 
 export default function ChiesePage() {
   const t = useTranslations("suppliersChurches");
+  const geo = useTranslations("catalogSearch");
   const { showToast } = useToast();
   const country = getUserCountrySafe().toLowerCase();
   const [churches, setChurches] = useState<Church[]>([]);
@@ -70,6 +75,8 @@ export default function ChiesePage() {
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
+  const [position, setPosition] = useState<CurrentPosition | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const loadSaved = useCallback(async (accessToken: string) => {
     const response = await fetch("/api/my/churches", { headers: { Authorization: `Bearer ${accessToken}` }, cache: "no-store" });
@@ -97,6 +104,7 @@ export default function ChiesePage() {
     if (region) params.set("region", region);
     if (city) params.set("city", city);
     if (type) params.set("type", type);
+    if (position) { params.set("latitude", String(position.latitude)); params.set("longitude", String(position.longitude)); params.set("radius", "100"); params.set("sort", "NEAREST"); }
     try {
       const response = await fetch(`/api/churches?${params}`, { cache: "no-store" });
       const payload = (await response.json()) as { churches?: Church[]; pagination?: Pagination; error?: string };
@@ -108,7 +116,7 @@ export default function ChiesePage() {
     } finally {
       setLoading(false);
     }
-  }, [city, country, pagination.limit, pagination.page, region, submittedQuery, t, type]);
+  }, [city, country, pagination.limit, pagination.page, position, region, submittedQuery, t, type]);
 
   useEffect(() => { void loadChurches(); }, [loadChurches]);
 
@@ -209,8 +217,11 @@ export default function ChiesePage() {
             </select>
           </label>
           <AppButton type="submit" className="self-end"><Search size={17} aria-hidden />{t("catalog.search")}</AppButton>
+          <div className="md:col-span-5"><NearMeButton onPosition={(next) => { setPosition(next); setPagination((p) => ({ ...p, page: 1 })); }} label={geo("nearMe")} unavailableLabel={geo("positionUnavailable")} /></div>
         </form>
       </AppCard>
+
+      <CatalogMap results={churches.map((item): CatalogSearchResult => ({ id:item.id,entityType:"church",name:item.name,category:item.place_type,city:item.city,province:item.province,region:item.region,country:item.country_code,latitude:item.latitude,longitude:item.longitude,distanceKm:item.distance_km ?? null,verificationStatus:item.verification_status,confidenceScore:0,relevanceScore:0 }))} selectedId={selectedId} onSelect={setSelectedId} />
 
       {loading ? <LoadingState label={t("loading")} cards={6} /> : error ? (
         <AppCard><p role="alert" className="text-red-700">{error}</p><AppButton className="mt-4" onClick={() => void loadChurches()}>{t("catalog.retry")}</AppButton></AppCard>
@@ -220,7 +231,7 @@ export default function ChiesePage() {
             const savedItem = saved[church.id];
             const badge = church.verification_status === "VERIFIED" ? t("catalog.verification.verified") : church.verification_status === "PROBABLE" ? t("catalog.verification.probable") : t("catalog.verification.toCheck");
             return (
-              <AppCard key={church.id} interactive className="flex h-full flex-col gap-4">
+              <AppCard key={church.id} interactive onClick={() => setSelectedId(church.id)} className={`flex h-full flex-col gap-4 ${selectedId === church.id ? "ring-2 ring-[#8d3f63]" : ""}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div><p className="text-xs font-semibold uppercase tracking-wide text-[#66745f]">{t(`catalog.types.${placeTypeKey(church.place_type)}` as "catalog.types.church")}</p><h2 className="text-xl font-bold text-gray-900">{church.name}</h2></div>
                   <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${church.verification_status === "VERIFIED" ? "bg-green-100 text-green-800" : church.verification_status === "PROBABLE" ? "bg-amber-100 text-amber-800" : "bg-gray-100 text-gray-700"}`}>{badge}</span>
