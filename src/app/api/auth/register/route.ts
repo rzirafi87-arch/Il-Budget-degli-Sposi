@@ -1,4 +1,6 @@
-import { magicLinkTemplate, sendMail, siteUrl } from "@/lib/mailer";
+import { confirmationTemplate, sendMail, siteUrl } from "@/lib/mailer";
+import { checkAuthRateLimit } from "@/lib/authRateLimit";
+import { rateLimitResponse } from "@/lib/publicApiGuard";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { generatePublicId } from "@/lib/publicId";
@@ -15,6 +17,8 @@ function normalizeEmail(value: unknown): string {
 // Creates owner user, optionally creates partner, creates default event with wedding date
 export async function POST(req: NextRequest) {
   try {
+    const limit = checkAuthRateLimit(req, "register");
+    if (!limit.allowed) return rateLimitResponse(limit.resetAt);
     const body: unknown = await req.json();
     if (!body || typeof body !== "object") {
       return NextResponse.json({ ok: false, error: "Invalid request" }, { status: 400 });
@@ -42,18 +46,18 @@ export async function POST(req: NextRequest) {
 
     const db = getServiceClient();
 
-    // 1) Create owner user (or error if exists)
-    const isProduction =
-      process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
-    const emailConfirm = !isProduction;
-    const { data: ownerRes, error: createErr } = await db.auth.admin.createUser({
+    // Generate a real signup-confirmation link. This creates an unconfirmed user
+    // without sending Supabase's generic email because delivery is branded below.
+    const callback = `${siteUrl()}/auth/callback?next=/it/dashboard`;
+    const { data: ownerRes, error: createErr } = await db.auth.admin.generateLink({
+      type: "signup",
       email: primaryEmail,
       password,
-      email_confirm: emailConfirm,
+      options: { redirectTo: callback },
     });
-    if (createErr || !ownerRes.user) {
-      console.error("REGISTER create owner error:", createErr);
-      return NextResponse.json({ ok: false, error: createErr?.message || "Cannot create owner" }, { status: 400 });
+    if (createErr || !ownerRes.user || !ownerRes.properties?.action_link) {
+      console.error("REGISTER create owner error code:", createErr?.code || "missing_signup_link");
+      return NextResponse.json({ ok: true, confirmationRequired: true });
     }
     const ownerId = ownerRes.user.id;
 
@@ -99,43 +103,18 @@ export async function POST(req: NextRequest) {
       // Not fatal for registration, continue
     }
 
-    // 5) Invia magic link via Resend (sia al primario, sia al partner se presente)
+    // 5) Send confirmation to owner. Partner invitation remains a distinct flow.
     try {
-      const redirectUrl = siteUrl();
-      const ownerLinkRes = await db.auth.admin.generateLink({
-        type: "magiclink",
-        email: primaryEmail,
-        options: { redirectTo: redirectUrl },
-      });
-      const ownerLink = ownerLinkRes?.data?.properties?.action_link;
-      if (ownerLink) {
-        await sendMail(primaryEmail, "Il tuo link di accesso", magicLinkTemplate(ownerLink));
-      }
+      await sendMail(primaryEmail, "Conferma il tuo account – Il Budget degli Sposi", confirmationTemplate(ownerRes.properties.action_link));
     } catch (mlErr) {
       console.error("REGISTER send owner magic link error:", mlErr);
     }
 
-    if (partnerEmail) {
-      try {
-        const redirectUrl = siteUrl();
-        const partnerLinkRes = await db.auth.admin.generateLink({
-          type: "magiclink",
-          email: partnerEmail,
-          options: { redirectTo: redirectUrl },
-        });
-        const partnerLink = partnerLinkRes?.data?.properties?.action_link;
-        if (partnerLink) {
-          await sendMail(partnerEmail, "Invito e link di accesso", magicLinkTemplate(partnerLink));
-        }
-      } catch (mlpErr) {
-        console.error("REGISTER send partner magic link error:", mlpErr);
-      }
-    }
-
-    return NextResponse.json({ ok: true, eventId: ev.id });
+    return NextResponse.json({ ok: true, confirmationRequired: true, eventId: ev.id });
   } catch (e: unknown) {
     console.error("REGISTER Uncaught:", e);
     const err = (e && typeof e === "object" && "message" in e) ? (e as Error) : new Error(String(e));
-    return NextResponse.json({ ok: false, error: err.message || "Unexpected" }, { status: 500 });
+    console.error("REGISTER unexpected error type:", err.name);
+    return NextResponse.json({ ok: false, error: "Registrazione non disponibile. Riprova." }, { status: 500 });
   }
 }

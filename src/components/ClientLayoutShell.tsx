@@ -14,8 +14,9 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { Lightbulb, LogIn, MessageCircle, Settings } from "lucide-react";
+import { Lightbulb, MessageCircle, Settings } from "lucide-react";
 import { buttonClasses } from "@/components/ui/AppButton";
+import UserMenu from "@/components/UserMenu";
 
 export default function ClientLayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -120,13 +121,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                   <TopBarSelector />
                   {!isSaveTheDate && (
                     <>
-                      <Link
-                        className={buttonClasses({ variant: "ghost", size: "sm", className: "hidden lg:inline-flex" })}
-                        href={`/${locale}/auth`}
-                      >
-                        <LogIn size={17} aria-hidden />
-                        Accedi
-                      </Link>
+                      <UserMenu />
                       <Link
                         className={buttonClasses({ variant: "ghost", size: "sm", className: "hidden xl:inline-flex" })}
                         href={`/${locale}/idea-di-budget`}

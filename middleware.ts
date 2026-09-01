@@ -9,6 +9,7 @@ export function middleware(req: NextRequest) {
   // escludi asset e API
   if (
     pathname.startsWith("/api") ||
+    pathname.startsWith("/auth/callback") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.match(/\.(.*)$/)
@@ -27,5 +28,4 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 export const config = { matcher: ["/((?!_next|favicon.ico|api).*)"] };
-
 

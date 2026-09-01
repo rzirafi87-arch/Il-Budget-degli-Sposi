@@ -56,3 +56,12 @@ export function magicLinkTemplate(link: string) {
   </div>`;
 }
 
+export function confirmationTemplate(link: string) {
+  const brand = process.env.NEXT_PUBLIC_APP_NAME || BRAND_NAME;
+  return `<div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;line-height:1.5;color:#111"><h2>Conferma il tuo account su ${brand}</h2><p>Per completare la registrazione, conferma il tuo indirizzo email.</p><p><a href="${link}" style="display:inline-block;background:#7d5960;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Conferma email</a></p><p style="font-size:12px;color:#666">Se non hai creato questo account, ignora l’email.</p></div>`;
+}
+
+export function recoveryTemplate(link: string) {
+  const brand = process.env.NEXT_PUBLIC_APP_NAME || BRAND_NAME;
+  return `<div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;line-height:1.5;color:#111"><h2>Reimposta la password di ${brand}</h2><p><a href="${link}" style="display:inline-block;background:#7d5960;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Scegli una nuova password</a></p><p style="font-size:12px;color:#666">Se non hai richiesto il reset, ignora l’email.</p></div>`;
+}
