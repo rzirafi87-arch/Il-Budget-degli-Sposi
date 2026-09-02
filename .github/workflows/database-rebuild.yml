@@ -115,8 +115,11 @@ jobs:
       - name: Verify Branch 33 query indexes and policy consolidation
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_33_schema.sql
 
+      - name: Apply Branch 36 event-scoped appointments
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260902112923_branch_36_event_scoped_appointments.sql
+
       - name: Verify Branch 36 authoritative event isolation prerequisites
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_36_event_context.sql
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_36_event_context.sql && psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_36_rls.sql
 
       - name: Lint reconstructed database functions
         run: |

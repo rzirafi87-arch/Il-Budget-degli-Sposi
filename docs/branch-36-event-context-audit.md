@@ -4,7 +4,7 @@
 
 `app-current-event` is the single browser persistence hint. It contains only an event UUID, is HTTP-only, SameSite=Lax, Secure in production and is never trusted for authorization. `resolveCurrentEvent` loads the authenticated owner's events and accepts the hint only when the selected row belongs to that owner. RLS remains the authorization boundary.
 
-No profile column or database migration is required. This avoids duplicate preference state. Multi-tab changes are signalled through a timestamp in localStorage; the authoritative value remains the validated cookie.
+No profile column is required. One additive migration canonically creates or strengthens `appointments.event_id`, because the reconstructed baseline exposed that Documenti/Appuntamenti existed only in a legacy patch outside the migration chain. Multi-tab changes are signalled through a timestamp in localStorage; the authoritative value remains the validated cookie.
 
 Fallbacks:
 
@@ -41,7 +41,7 @@ Fallbacks:
 | GLOBAL INTENTIONAL | churches, locations, suppliers, event_types and localized preset/catalog views |
 | LEGACY AMBIGUOUS | standalone Coming-Soon dashboard schemas using historical `user_id`/`owner`; inaccessible as READY modules and preserved without destructive conversion |
 
-Existing event-scoped tables already have usable `event_id` relationships and owner-through-event RLS from Branches 25–33. No additive schema change is necessary for authoritative selection, so there is no backfill, no arbitrary assignment and no production data mutation.
+Existing event-scoped tables have usable `event_id` relationships and owner-through-event RLS from Branches 25–33. Branch 36 adds the missing canonical appointments table/relationship and strict owner-through-event policies. Existing ambiguous appointment rows are preserved with a nullable `event_id`; there is no backfill and no arbitrary assignment.
 
 ## Runtime behaviour
 

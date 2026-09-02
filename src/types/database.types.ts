@@ -105,6 +105,53 @@ export type Database = {
           },
         ]
       }
+      appointments: {
+        Row: {
+          appointment_date: string
+          event_id: string
+          id: string
+          inserted_at: string
+          location: string | null
+          notes: string | null
+          reminder_48h_sent: boolean
+          reminder_7d_sent: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_date: string
+          event_id: string
+          id?: string
+          inserted_at?: string
+          location?: string | null
+          notes?: string | null
+          reminder_48h_sent?: boolean
+          reminder_7d_sent?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_date?: string
+          event_id?: string
+          id?: string
+          inserted_at?: string
+          location?: string | null
+          notes?: string | null
+          reminder_48h_sent?: boolean
+          reminder_7d_sent?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       atelier: {
         Row: {
           address: string | null
