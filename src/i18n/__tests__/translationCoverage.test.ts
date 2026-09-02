@@ -74,4 +74,3 @@ describe("translation coverage policy", () => {
     }
   });
 });
-
