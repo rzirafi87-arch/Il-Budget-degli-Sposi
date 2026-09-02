@@ -78,7 +78,8 @@ export default function DashboardPage() {
           engagement: "engagement-party",
         };
         const eventType = eventTypeAliases[status.event.event_type || ""] || status.event.event_type || storedEventType || "wedding";
-        const language = status.event.language || storedLanguage || locale || "it";
+        // UI locale is authoritative for presentation. Event/invitation language is separate event data.
+        const language = locale || storedLanguage || "it";
         const country = status.event.country || storedCountry || "it";
 
         localStorage.setItem("language", language);
