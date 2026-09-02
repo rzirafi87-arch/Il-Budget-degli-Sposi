@@ -1,8 +1,21 @@
 import { BRAND_SITE_URL } from "@/config/brand";
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
+
+const themeBootstrapScript = `(() => {
+  try {
+    const stored = localStorage.getItem('app-theme');
+    const preference = stored === 'dark' || stored === 'system' ? stored : 'light';
+    const resolved = preference === 'system' && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : preference === 'dark' ? 'dark' : 'light';
+    const root = document.documentElement;
+    root.dataset.theme = resolved;
+    root.classList.toggle('dark', resolved === 'dark');
+    root.style.colorScheme = resolved;
+  } catch {}
+})();`;
 
 // Load global fonts once at the app root and expose CSS variables
 const playfair = Playfair_Display({
@@ -25,12 +38,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="it" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="it" data-theme="light" suppressHydrationWarning className={`${playfair.variable} ${inter.variable}`}>
       <head>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
+        <Script id="theme-bootstrap" strategy="beforeInteractive">
+          {themeBootstrapScript}
+        </Script>
       </head>
 
       <body

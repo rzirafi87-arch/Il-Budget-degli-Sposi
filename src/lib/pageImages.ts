@@ -1,8 +1,3 @@
-import {
-  COUNTRY_CAROUSEL_IMAGES,
-  type CarouselCategory,
-} from "@/data/countryCarousels";
-
 type PageImageConfig = {
   default: string[];
 };
@@ -143,27 +138,6 @@ const PAGE_IMAGE_CONFIG: Record<string, PageImageConfig> = {
   },
 };
 
-const KEY_TO_CATEGORIES: Record<string, CarouselCategory[]> = {
-  budget: ["details", "vendors"],
-  spese: ["details", "vendors"],
-  entrate: ["details", "vendors"],
-  fornitori: ["vendors"],
-  fotografi: ["photography", "vendors"],
-  fiorai: ["flowers", "vendors"],
-  atelier: ["fashion", "vendors"],
-  catering: ["catering", "venues"],
-  beauty: ["beauty", "fashion"],
-  gioiellerie: ["jewelry", "fashion"],
-  location: ["venues"],
-  chiese: ["churches", "venues"],
-  invitati: ["guests", "details"],
-  "save-the-date": ["stationery", "details"],
-  "musica-cerimonia": ["music", "vendors"],
-  "musica-ricevimento": ["music", "vendors"],
-  "wedding-planner": ["vendors"],
-  "cose-matrimonio": ["details", "vendors"],
-};
-
 export const PAGE_IMAGES: Record<string, string[]> = Object.fromEntries(
   Object.entries(PAGE_IMAGE_CONFIG).map(([key, value]) => [key, value.default]),
 );
@@ -175,18 +149,6 @@ export const DEFAULT_IMAGES = [
 ];
 
 export function getPageImages(pageKey: string, country?: string): string[] {
-  const countryCode = country?.toLowerCase();
-  if (countryCode) {
-    const categories = KEY_TO_CATEGORIES[pageKey] ?? [];
-    const registry = COUNTRY_CAROUSEL_IMAGES[countryCode];
-
-    for (const category of categories) {
-      const localized = registry?.[category];
-      if (localized && localized.length > 0) {
-        return localized;
-      }
-    }
-  }
-
+  void country;
   return PAGE_IMAGE_CONFIG[pageKey]?.default ?? DEFAULT_IMAGES;
 }

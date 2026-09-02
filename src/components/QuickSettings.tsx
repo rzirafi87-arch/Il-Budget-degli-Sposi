@@ -5,6 +5,7 @@ import { COUNTRIES, LANGS } from "@/lib/loadConfigs";
 import { getEventTypeCapability, normalizeEventType } from "@/lib/eventTypeCapabilities";
 import { Settings, X } from "lucide-react";
 import React from "react";
+import { useTheme, type ThemePreference } from "@/components/ThemeProvider";
 
 const COPY = {
   it: {
@@ -12,6 +13,10 @@ const COPY = {
     language: "Lingua",
     country: "Nazione evento",
     eventType: "Tipo evento",
+    theme: "Tema",
+    light: "Chiaro",
+    dark: "Scuro",
+    system: "Sistema",
     locked: "Il tipo evento non può essere cambiato dopo la creazione: il cambio richiede una migrazione sicura dei dati.",
     close: "Chiudi",
     apply: "Applica modifiche",
@@ -22,6 +27,10 @@ const COPY = {
     language: "Language",
     country: "Event country",
     eventType: "Event type",
+    theme: "Theme",
+    light: "Light",
+    dark: "Dark",
+    system: "System",
     locked: "The event type cannot be changed after creation: changing it requires a safe data migration.",
     close: "Close",
     apply: "Apply changes",
@@ -32,6 +41,10 @@ const COPY = {
     language: "Idioma",
     country: "País del evento",
     eventType: "Tipo de evento",
+    theme: "Tema",
+    light: "Claro",
+    dark: "Oscuro",
+    system: "Sistema",
     locked: "El tipo de evento no puede cambiarse después de crearlo: el cambio requiere una migración segura de los datos.",
     close: "Cerrar",
     apply: "Aplicar cambios",
@@ -40,6 +53,7 @@ const COPY = {
 } as const;
 
 export default function QuickSettings() {
+  const { preference, setPreference } = useTheme();
   const [open, setOpen] = React.useState(false);
   const [lang, setLang] = React.useState<string>("it");
   const [country, setCountry] = React.useState<string>("it");
@@ -119,6 +133,23 @@ export default function QuickSettings() {
           </div>
 
           <div className="space-y-3">
+            <fieldset className="app-field">
+              <legend className="app-label">{copy.theme}</legend>
+              <div className="grid grid-cols-3 gap-2">
+                {(["light", "dark", "system"] as ThemePreference[]).map((theme) => (
+                  <button
+                    key={theme}
+                    type="button"
+                    className="onboarding-choice min-h-11 px-2 py-2 text-center text-sm"
+                    aria-pressed={preference === theme}
+                    onClick={() => setPreference(theme)}
+                  >
+                    {copy[theme]}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
             <div className="app-field">
               <label className="app-label">{copy.language}</label>
               <select className="app-select" value={lang} onChange={(event) => setLang(event.target.value)}>
