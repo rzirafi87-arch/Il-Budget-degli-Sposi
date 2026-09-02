@@ -26,7 +26,7 @@ export default async function PublicLanding({ locale }: { locale: Locale }) {
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
     browserRequirements: "Requires JavaScript and a modern web browser",
-    inLanguage: locale === "en" ? "en" : locale === "mx" ? "es-MX" : "it-IT",
+    inLanguage: "it-IT",
     featureList: [0, 1, 5, 7].map((index) => t(`features.items.${index}.title`)),
   };
 
