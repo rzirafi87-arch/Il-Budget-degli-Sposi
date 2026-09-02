@@ -21,4 +21,11 @@ describe('SelectLanguagePage', () => {
     fireEvent.click(btn);
     expect(window.localStorage.getItem('language')).toBe('it');
   });
+
+  it('mostra EN/ES Coming Soon senza renderle selezionabili', () => {
+    render(<SelectLanguagePage />);
+    expect(screen.getByRole('button', { name: 'English' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Español' })).toBeDisabled();
+    expect(screen.getAllByText('In arrivo').length).toBeGreaterThanOrEqual(2);
+  });
 });
