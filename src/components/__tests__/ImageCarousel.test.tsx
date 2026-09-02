@@ -1,11 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import ImageCarousel from "../ImageCarousel";
+import ImageCarousel, { resolveCarouselLanguage } from "../ImageCarousel";
 
 const images = ["/carousels/invitati/01.svg", "/carousels/invitati/02.svg", "/carousels/invitati/03.svg"];
 
 describe("ImageCarousel", () => {
   beforeEach(() => {
     Object.defineProperty(window, "matchMedia", { configurable: true, value: jest.fn(() => ({ matches: true, addEventListener: jest.fn(), removeEventListener: jest.fn() })) });
+  });
+
+  it("uses Spanish carousel copy for the Mexican locale", () => {
+    expect(resolveCarouselLanguage("mx")).toBe("es");
   });
 
   it("renders the real slide count and descriptive alt text", () => {
