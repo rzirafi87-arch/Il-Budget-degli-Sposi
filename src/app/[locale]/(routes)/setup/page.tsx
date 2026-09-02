@@ -3,12 +3,13 @@ import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { EVENT_CONFIGS } from "@/constants/eventConfigs";
+import { isSelectableLocale, visibleLanguages } from "@/i18n/languageCapabilities";
 
-const LANGUAGES = [
-  { value: "it", label: "Italiano" },
-  { value: "en", label: "English" },
-  { value: "es", label: "Español" },
-];
+const LANGUAGES = visibleLanguages.map((language) => ({
+  value: language.locale,
+  label: language.nativeLabel,
+  selectable: language.selectable,
+}));
 
 const COUNTRIES = [
   { value: "it", label: "Italia" },
@@ -42,13 +43,14 @@ export default function SetupPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSelectableLocale(language)) return;
     // Persisti in cookie con chiavi che il resto dell’app già legge
-    setCookie("preferred_locale", language);
+    setCookie("language", language);
     setCookie("country_code", country);
     setCookie("event_type", event);
 
     // (opzionale) fallback anche su localStorage per UX client-only:
-    localStorage.setItem("preferred_locale", language);
+    localStorage.setItem("language", language);
     localStorage.setItem("country_code", country);
     localStorage.setItem("event_type", event);
 
@@ -76,8 +78,8 @@ export default function SetupPage() {
             required
           >
             {LANGUAGES.map((l) => (
-              <option key={l.value} value={l.value}>
-                {l.label}
+              <option key={l.value} value={l.value} disabled={!l.selectable}>
+                {l.label}{!l.selectable ? " (In arrivo)" : ""}
               </option>
             ))}
           </select>
