@@ -11,6 +11,7 @@ function usePathname() {
   return nextUsePathname();
 }
 import React from "react";
+import { isSelectableLocale } from "@/i18n/languageCapabilities";
 
 const EVENT_EMOJIS: Record<string, string> = {
   wedding: "💍",
@@ -109,7 +110,8 @@ export default function TopBarSelector() {
     try {
       const c = (name: string) =>
         document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]+)"))?.[1];
-      const ln = localStorage.getItem("language") || c("language") || "it";
+      const candidateLanguage = localStorage.getItem("language") || c("language") || locale;
+      const ln = isSelectableLocale(candidateLanguage) ? candidateLanguage : locale;
       let ct = localStorage.getItem("country") || c("country") || "it";
       if (ct === "uk") {
         ct = "gb";
@@ -125,9 +127,10 @@ export default function TopBarSelector() {
     } catch {
       // Ignore errors in SSR
     }
-  }, []);
+  }, [locale]);
 
   function handleLangChange(newLang: string) {
+    if (!isSelectableLocale(newLang)) return;
     localStorage.setItem("language", newLang);
     document.cookie = `language=${newLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
     setLang(newLang);
@@ -199,8 +202,8 @@ export default function TopBarSelector() {
                   onChange={(e) => handleLangChange(e.target.value)}
                 >
                   {LANGS.map((l) => (
-                    <option key={l.slug} value={l.slug}>
-                      {getLanguageFlag(l.slug, l.locale)} {l.label}
+                    <option key={l.slug} value={l.slug} disabled={!l.available}>
+                      🌐 {l.label}{!l.available ? ` · ${t("comingSoon", { fallback: "In arrivo" })}` : ""}
                     </option>
                   ))}
                 </select>

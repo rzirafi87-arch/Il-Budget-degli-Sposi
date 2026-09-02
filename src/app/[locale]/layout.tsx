@@ -125,6 +125,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     },
     alternates: {
       canonical: `/${locale}`,
+      languages: { it: "/it", "x-default": "/it" },
     },
     metadataBase: new URL(siteUrl),
   } satisfies Metadata;

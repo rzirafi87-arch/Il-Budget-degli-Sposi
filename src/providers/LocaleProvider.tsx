@@ -2,6 +2,7 @@
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type CountryCode, type EventType, type Locale } from "@/lib/i18n";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { isSelectableLocale } from "@/i18n/languageCapabilities";
 
 type Prefs = { locale: Locale; country?: CountryCode; eventType?: EventType };
 type Ctx = Prefs & {
@@ -20,9 +21,11 @@ export function LocaleProvider({ children, initial }: { children: React.ReactNod
 
   // persist in cookie/localStorage
   useEffect(() => {
-    document.cookie = `locale=${locale};path=/;max-age=31536000`;
+    if (!isSelectableLocale(locale)) return;
+    document.cookie = `language=${locale};path=/;max-age=31536000;SameSite=Lax`;
     try {
-      localStorage.setItem("prefs", JSON.stringify({ locale, country, eventType }));
+      localStorage.setItem("language", locale);
+      localStorage.setItem("prefs", JSON.stringify({ country, eventType }));
     } catch {}
   }, [locale, country, eventType]);
 
@@ -31,13 +34,18 @@ export function LocaleProvider({ children, initial }: { children: React.ReactNod
     (async () => {
       const { data: { user } } = await sb.auth.getUser();
       if (!user) return;
-      await sb.from("profiles").update({
-        preferred_locale: locale,
-        country_code: country ?? null,
-        last_event_type: eventType ?? null,
-      }).eq("id", user.id);
+      if (!isSelectableLocale(locale)) return;
+      await sb.from("profiles").update({ preferred_locale: locale }).eq("id", user.id);
     })();
-  }, [sb, locale, country, eventType]);
+  }, [sb, locale]);
+
+  useEffect(() => {
+    if (!country) return;
+    void (async () => {
+      const { data: { user } } = await sb.auth.getUser();
+      if (user) await sb.from("profiles").update({ country_code: country }).eq("id", user.id);
+    })();
+  }, [sb, country]);
 
   const value = useMemo<Ctx>(() => ({ locale, country, eventType, setLocale, setCountry, setEventType }), [locale, country, eventType]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

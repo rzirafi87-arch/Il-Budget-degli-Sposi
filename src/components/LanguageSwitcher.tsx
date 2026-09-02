@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { localeNames, locales } from "@/i18n/config";
+import { visibleLanguages } from "@/i18n/languageCapabilities";
 import { useMemo } from "react";
 
 export default function LanguageSwitcher() {
@@ -18,7 +18,7 @@ export default function LanguageSwitcher() {
 
   const changeLang = (locale: string) => {
     const segments = [...pathSegments];
-    if (segments.length === 0 || !locales.includes(segments[0] as (typeof locales)[number])) {
+    if (segments.length === 0 || !visibleLanguages.some((language) => language.locale === segments[0])) {
       segments.unshift(locale);
     } else {
       segments[0] = locale;
@@ -28,13 +28,17 @@ export default function LanguageSwitcher() {
 
   return (
     <div className="flex flex-wrap gap-2">
-      {locales.map((lng) => (
+      {visibleLanguages.map((language) => (
         <button
-          key={lng}
-          onClick={() => changeLang(lng)}
+          key={language.locale}
+          type="button"
+          onClick={() => language.selectable && changeLang(language.locale)}
+          disabled={!language.selectable}
+          aria-disabled={!language.selectable}
           className="px-2 py-1 text-xs sm:text-sm rounded-full border border-gray-300 bg-white hover:bg-gray-50 transition-colors"
         >
-          {localeNames[lng]}
+          {language.nativeLabel}
+          {!language.selectable ? " · In arrivo" : ""}
         </button>
       ))}
     </div>

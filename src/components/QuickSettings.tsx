@@ -6,6 +6,7 @@ import { getEventTypeCapability, normalizeEventType } from "@/lib/eventTypeCapab
 import { Settings, X } from "lucide-react";
 import React from "react";
 import { useTheme, type ThemePreference } from "@/components/ThemeProvider";
+import { isSelectableLocale } from "@/i18n/languageCapabilities";
 
 const COPY = {
   it: {
@@ -66,7 +67,8 @@ export default function QuickSettings() {
   React.useEffect(() => {
     const cookie = (name: string) =>
       document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]+)"))?.[1];
-    const storedLanguage = localStorage.getItem("language") || cookie("language") || "it";
+    const candidateLanguage = localStorage.getItem("language") || cookie("language") || "it";
+    const storedLanguage = isSelectableLocale(candidateLanguage) ? candidateLanguage : "it";
     let storedCountry = localStorage.getItem("country") || cookie("country") || "it";
     if (storedCountry === "uk") {
       storedCountry = "gb";
@@ -91,6 +93,7 @@ export default function QuickSettings() {
   }
 
   function applyChanges() {
+    if (!isSelectableLocale(lang)) return;
     persist("language", lang);
     persist("country", country);
     const currentLocale = document.documentElement?.lang || "it";

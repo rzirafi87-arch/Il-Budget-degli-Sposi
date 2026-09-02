@@ -1,7 +1,5 @@
+import { defaultLocale, getLanguageCapability, isPublicLocale } from "@/i18n/languageCapabilities";
 import { NextRequest, NextResponse } from "next/server";
-
-const SUPPORTED_LOCALES = ["it", "en"];
-const DEFAULT_LOCALE = "it";
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -16,10 +14,20 @@ export function middleware(req: NextRequest) {
   ) return NextResponse.next();
 
   // se path è / o non contiene locale → riscrivi con locale da cookie o default
-  const hasLocale = SUPPORTED_LOCALES.some((l) => pathname.startsWith(`/${l}`));
-  if (!hasLocale) {
-    const cookieLocale = req.cookies.get("locale")?.value;
-    const locale = SUPPORTED_LOCALES.includes(cookieLocale || "") ? cookieLocale! : DEFAULT_LOCALE;
+  const segments = pathname.split("/").filter(Boolean);
+  const requestedLocale = segments[0];
+  if (isPublicLocale(requestedLocale)) return NextResponse.next();
+
+  const knownUnavailableLocale = getLanguageCapability(requestedLocale);
+  if (knownUnavailableLocale) {
+    const url = req.nextUrl.clone();
+    url.pathname = `/${defaultLocale}/${segments.slice(1).join("/")}`.replace(/\/$/, "") || `/${defaultLocale}`;
+    return NextResponse.redirect(url);
+  }
+
+  if (!requestedLocale || !isPublicLocale(requestedLocale)) {
+    const cookieLocale = req.cookies.get("language")?.value;
+    const locale = isPublicLocale(cookieLocale) ? cookieLocale! : defaultLocale;
     const url = req.nextUrl.clone();
     url.pathname = `/${locale}${pathname}`;
     return NextResponse.redirect(url);
@@ -28,4 +36,3 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 export const config = { matcher: ["/((?!_next|favicon.ico|api).*)"] };
-

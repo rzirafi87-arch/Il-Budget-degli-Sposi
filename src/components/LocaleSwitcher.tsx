@@ -10,7 +10,7 @@ export default function LocaleSwitcher() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [locales, setLocales] = useState<{ code: string; name: string; native_name: string; rtl?: boolean }[]>([]);
+  const [locales, setLocales] = useState<{ code: string; name: string; native_name: string; rtl?: boolean; selectable: boolean; status: string }[]>([]);
   const [countries, setCountries] = useState<{ code: string; name: string; native_name: string; region?: string }[]>([]);
   const [events, setEvents] = useState<{ code: string; name: string; description?: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +42,7 @@ export default function LocaleSwitcher() {
   }, []);
 
   function switchLocale(next: Locale) {
+    if (!locales.some((candidate) => candidate.code === next && candidate.selectable)) return;
     if (next === locale) return;
     const segments = pathname.split("/");
     segments[1] = next;
@@ -56,8 +57,8 @@ export default function LocaleSwitcher() {
     <div className="flex flex-wrap gap-2 items-center">
       <select value={locale} onChange={(e) => switchLocale(e.target.value as Locale)} className="border rounded-lg px-3 py-2">
         {locales.map((l) => (
-          <option key={l.code} value={l.code} dir={l.rtl ? "rtl" : undefined}>
-            {l.native_name || l.name || l.code.toUpperCase()}
+          <option key={l.code} value={l.code} dir={l.rtl ? "rtl" : undefined} disabled={!l.selectable}>
+            {l.native_name || l.name || l.code.toUpperCase()}{!l.selectable ? " (In arrivo)" : ""}
           </option>
         ))}
       </select>

@@ -26,7 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: t("description"),
     alternates: {
       canonical: url,
-      languages: Object.fromEntries(locales.map((item) => [item, `${BRAND_SITE_URL}/${item}`])),
+      languages: {
+        ...Object.fromEntries(locales.map((item) => [item, `${BRAND_SITE_URL}/${item}`])),
+        "x-default": `${BRAND_SITE_URL}/${defaultLocale}`,
+      },
     },
     openGraph: {
       type: "website",
@@ -34,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: BRAND_NAME,
       title: t("title"),
       description: t("description"),
-      locale: locale === "en" ? "en_US" : locale === "mx" ? "es_MX" : "it_IT",
+      locale: "it_IT",
       images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: BRAND_NAME }],
     },
     twitter: {
