@@ -1,5 +1,6 @@
 import { AppSettingsProvider } from "@/app/(providers)/app-settings";
 import ClientLayoutShell from "@/components/ClientLayoutShell";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import EventModuleGuard from "@/components/EventModuleGuard";
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import { OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
@@ -158,13 +159,15 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       <OrganizationSchema />
       {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
 
-      <AppSettingsProvider initialLocale={locale}>
-        <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
-          <ClientLayoutShell>
-            <EventModuleGuard>{children}</EventModuleGuard>
-          </ClientLayoutShell>
-        </NextIntlClientProvider>
-      </AppSettingsProvider>
+      <ThemeProvider>
+        <AppSettingsProvider initialLocale={locale}>
+          <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
+            <ClientLayoutShell>
+              <EventModuleGuard>{children}</EventModuleGuard>
+            </ClientLayoutShell>
+          </NextIntlClientProvider>
+        </AppSettingsProvider>
+      </ThemeProvider>
     </>
   );
 }
