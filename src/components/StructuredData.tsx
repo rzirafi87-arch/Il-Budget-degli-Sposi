@@ -43,7 +43,7 @@ export function WebsiteSchema() {
     "@type": "WebSite",
     "name": BRAND_NAME,
     "url": SITE_URL,
-    "inLanguage": ["it-IT", "en", "es-MX"]
+    "inLanguage": ["it-IT"]
   };
 
   return (
