@@ -14,9 +14,15 @@ const COPY = {
 
 function imageSection(src: string) { return src.split("/").filter(Boolean).at(-2) || "default"; }
 
+export function resolveCarouselLanguage(locale: string): keyof typeof COPY {
+  if (locale === "en") return "en";
+  if (locale === "es" || locale === "mx") return "es";
+  return "it";
+}
+
 export default function ImageCarousel({ images, height = "300px", mobileHeight = "200px", autoPlayInterval = 5000 }: ImageCarouselProps) {
   const locale = useLocale();
-  const copy = COPY[locale === "en" ? "en" : locale === "es" ? "es" : "it"];
+  const copy = COPY[resolveCarouselLanguage(locale)];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [failedImages, setFailedImages] = useState<Set<string>>(() => new Set());
   const [isPaused, setIsPaused] = useState(false);
