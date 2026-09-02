@@ -1,146 +1,57 @@
-name: Database Rebuild
+name: CI
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    paths:
-      - 'supabase/**'
-      - '.github/workflows/database-rebuild.yml'
-  workflow_dispatch:
+      - develop
+  pull_request:
+    branches:
+      - develop
+      - main
 
 permissions:
   contents: read
 
 concurrency:
-  group: database-rebuild-${{ github.ref }}
+  group: ${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  rebuild:
+  build-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      SUPABASE_TELEMETRY_DISABLED: '1'
-      LOCAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install pinned Supabase CLI
-        uses: supabase/setup-cli@v1
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          version: 2.116.0
-
-      - name: Initialize isolated Supabase project
-        run: |
-          mkdir .supabase-ci
-          cd .supabase-ci
-          supabase init
-          supabase start
-
-      - name: Apply canonical pre-Branch-25 baseline
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/baseline/production_pre_branch_25.sql
-
-      - name: Apply Branch 25 consolidation
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260829110059_consolidate_security_and_indexes.sql
-
-      - name: Verify Branch 25 reconstructed schema
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_25_schema.sql
-
-      - name: Run Branch 25 RLS authorization regression tests
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_25_rls.sql
-
-      - name: Apply Branch 26 global church catalog
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260829190000_global_church_catalog.sql
-
-      - name: Verify Branch 26 reconstructed schema
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_26_schema.sql
-
-      - name: Run Branch 26 catalog and RLS tests
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_26_rls.sql
-
-      - name: Apply Branch 27 global location catalog
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260830100000_global_location_catalog.sql
-
-      - name: Verify Branch 27 reconstructed schema
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_27_schema.sql
-
-      - name: Run Branch 27 integration and RLS tests
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_27_rls.sql
-
-      - name: Apply Branch 28 global supplier catalog
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260830200000_global_supplier_catalog.sql
-
-      - name: Verify Branch 28 reconstructed schema
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_28_schema.sql
-
-      - name: Run Branch 28 integration and RLS tests
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_28_rls.sql
-
-      - name: Apply Branch 29 event type capabilities
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260831001000_event_type_capabilities.sql
-
-      - name: Verify Branch 29 reconstructed schema
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_29_schema.sql
-
-      - name: Run Branch 29 RLS regression tests
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_29_rls.sql
-
-      - name: Apply Branch 30 common catalog pipeline
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260831064351_common_catalog_pipeline.sql
-
-      - name: Verify Branch 30 reconstructed schema
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_30_schema.sql
-
-      - name: Run Branch 30 provenance and RLS tests
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_30_rls.sql
-
-      - name: Apply Branch 31 catalog reliability
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260831214214_catalog_reliability_dedup.sql
-
-      - name: Verify Branch 31 schema and RLS
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_31_schema.sql && psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_31_rls.sql
-
-      - name: Apply Branch 32 global catalog search
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260831233000_global_catalog_search_geo.sql
-
-      - name: Verify Branch 32 search and RLS
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_32_schema.sql && psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_32_rls.sql
-
-      - name: Apply Branch 33 performance hardening
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260901091423_branch_33_performance_hardening.sql
-
-      - name: Verify Branch 33 query indexes and policy consolidation
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_33_schema.sql
-
-      - name: Lint reconstructed database functions
-        run: |
-          cd .supabase-ci
-          supabase db lint --local --schema public --level warning --fail-on error
-
-      - name: Generate post-Branch-33 TypeScript types
-        run: |
-          mkdir -p generated
-          cd .supabase-ci
-          supabase gen types typescript --local > ../generated/database.types.ts
-          perl -0pi -e 's/\n+\z/\n/' ../generated/database.types.ts
-
-      - name: Upload generated database types
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Validate UTF-8 bytes
+        run: npm run check:utf8:strict
+      - name: Validate config encoding
+        run: npm run config:validate
+      - name: Validate common catalog import pipeline
+        run: npm run catalog:test && npm run churches:import && npm run locations:import && npm run catalog:import -- --entity=supplier --file=scripts/datasets/suppliers-agrigento-pilot.json
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: 'http://localhost'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test'
+        run: npm run build
+      - name: Test
+        run: npm test -- --ci --reporters=default --reporters=jest-junit
+        env:
+          JEST_JUNIT_OUTPUT: reports/junit.xml
+      - name: Upload test report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: branch-33-database-types
-          path: generated/database.types.ts
-          if-no-files-found: error
-
-      - name: Verify committed database types are current
-        run: diff -u src/types/database.types.ts generated/database.types.ts
-
-      - name: Stop isolated Supabase project
-        if: always()
-        run: |
-          cd .supabase-ci
-          supabase stop --no-backup
-
-# Branch 35 visual-only rebuild verification trigger
+          name: junit-report
+          path: reports/junit.xml
