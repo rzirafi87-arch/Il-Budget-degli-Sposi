@@ -1,6 +1,7 @@
 import { getEventTypeCapability, normalizeEventType } from "@/lib/eventTypeCapabilities";
 import { generatePublicId } from "@/lib/publicId";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { CURRENT_EVENT_COOKIE, resolveCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -29,33 +30,22 @@ export async function POST(req: NextRequest) {
     const language = (body.language || url.searchParams.get("language") || "").toString();
     const userId = userData.user.id;
 
-    // Legacy-safe behaviour: never rewrite or delete an existing event, even if its
-    // type is now classified COMING_SOON. The route simply returns the existing id.
-    const { data: events, error: existingError } = await db
-      .from("events")
-      .select("id, event_type")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1);
-
-    if (existingError) {
-      console.error("ENSURE-DEFAULT – Query events error:", existingError);
-      return NextResponse.json({ ok: false, error: existingError.message }, { status: 500 });
-    }
-
-    const existingEvent = events?.[0];
-    if (existingEvent?.id) {
-      const existingEventType = normalizeEventType(existingEvent.event_type);
-      const existingCapability = getEventTypeCapability(existingEventType);
+    const resolution = await resolveCurrentEvent(req, userId);
+    if (resolution.status === "RESOLVED") {
+      const existingEventType = resolution.currentEvent.eventType;
+      const existingCapability = resolution.currentEvent.capability;
       return NextResponse.json(
         {
           ok: true,
-          eventId: existingEvent.id,
+          eventId: resolution.currentEvent.eventId,
           eventType: existingEventType,
           legacy: existingCapability.availabilityStatus !== "READY",
         },
         { status: 200 }
       );
+    }
+    if (resolution.status === "SELECTION_REQUIRED") {
+      return NextResponse.json({ ok: false, code: "EVENT_SELECTION_REQUIRED", events: resolution.events }, { status: 409 });
     }
 
     // Product rule: a type that is not genuinely ready cannot create a new event.
@@ -98,7 +88,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({ ok: true, eventId: createdEvent.id, eventType: eventTypeSlug }, { status: 200 });
+    const response = NextResponse.json({ ok: true, eventId: createdEvent.id, eventType: eventTypeSlug }, { status: 200 });
+    response.cookies.set(CURRENT_EVENT_COOKIE, createdEvent.id, {
+      httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 31536000,
+    });
+    return response;
   } catch (error: unknown) {
     console.error("ENSURE-DEFAULT – Uncaught:", error);
     return NextResponse.json({ ok: false, error: String(error) || "Unexpected" }, { status: 500 });

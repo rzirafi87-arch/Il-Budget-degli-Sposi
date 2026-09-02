@@ -17,6 +17,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Lightbulb, MessageCircle, Settings } from "lucide-react";
 import { buttonClasses } from "@/components/ui/AppButton";
 import UserMenu from "@/components/UserMenu";
+import CurrentEventSelector from "@/components/CurrentEventSelector";
 
 export default function ClientLayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -118,6 +119,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                   </span>
                 </Link>
                 <div className="flex items-center gap-1.5 text-sm text-muted-fg">
+                  <CurrentEventSelector />
                   <TopBarSelector />
                   {!isSaveTheDate && (
                     <>

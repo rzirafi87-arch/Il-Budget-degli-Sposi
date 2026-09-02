@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { requireUser } from "@/lib/apiAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -44,11 +45,11 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = getServiceClient();
 
+    const current = await requireServerCurrentEvent(userId);
     const { data: eventData, error: eventError } = await supabase
       .from("events")
       .select("id, wedding_date")
-      .eq("owner_id", userId)
-      .limit(1)
+      .eq("id", current.eventId)
       .maybeSingle();
 
     if (eventError) {
@@ -109,21 +110,7 @@ export async function POST(request: NextRequest) {
     const rawBody = (await request.json()) as Record<string, unknown>;
     const card = sanitizeCard(rawBody);
 
-    const { data: eventData, error: eventError } = await supabase
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .limit(1)
-      .maybeSingle();
-
-    if (eventError) {
-      console.error("Error fetching owned event for wedding card:", eventError);
-      return NextResponse.json({ error: "Unable to save wedding card" }, { status: 500 });
-    }
-
-    if (!eventData) {
-      return NextResponse.json({ error: "No event found" }, { status: 404 });
-    }
+    const eventData = { id: (await requireServerCurrentEvent(userId)).eventId };
 
     if (card.wedding_date) {
       const { error: updateError } = await supabase

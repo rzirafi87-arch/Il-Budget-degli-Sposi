@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireCurrentEvent } from "@/lib/currentEvent";
 
 export const runtime = "nodejs";
 
@@ -28,12 +29,11 @@ export async function PATCH(req: NextRequest) {
   const body = (await req.json().catch(() => ({}))) as UpdateBody;
 
   // Find user's event
+  const current = await requireCurrentEvent(req, userData.user.id);
   const { data: ev } = await db
     .from("events")
     .select("id, name, currency, total_budget")
-    .eq("owner_id", userData.user.id)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
+    .eq("id", current.eventId)
     .maybeSingle();
   if (!ev) return NextResponse.json({ error: "No event" }, { status: 404 });
 
@@ -67,4 +67,3 @@ export async function PATCH(req: NextRequest) {
 
   return NextResponse.json({ ok: true });
 }
-

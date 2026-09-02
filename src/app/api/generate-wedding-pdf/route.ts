@@ -1,7 +1,7 @@
 import { requireUser } from "@/lib/apiAuth";
 import { NextRequest, NextResponse } from 'next/server';
 export const runtime = "nodejs";
-import { getServiceClient } from '@/lib/supabaseServer';
+import { requireServerCurrentEvent } from '@/lib/currentEvent';
 
 // Per generare il PDF useremo una libreria esterna da chiamare lato client
 // Questo endpoint restituisce i dati necessari per la generazione
@@ -9,20 +9,9 @@ import { getServiceClient } from '@/lib/supabaseServer';
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await requireUser(request);
-    const supabase = getServiceClient();
     const body = await request.json();
 
-    // Get current user's event
-    const { data: eventData } = await supabase
-      .from('events')
-      .select('id')
-      .eq('owner_id', userId)
-      .limit(1)
-      .maybeSingle();
-
-    if (!eventData) {
-      return NextResponse.json({ error: 'No event found' }, { status: 404 });
-    }
+    await requireServerCurrentEvent(userId);
 
     // In futuro qui potremmo generare il PDF server-side con una libreria come PDFKit
     // Per ora restituiamo i dati per la generazione client-side

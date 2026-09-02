@@ -10,6 +10,7 @@ export type EventSummary = {
 export type OnboardingStatus =
   | { kind: "anonymous" }
   | { kind: "needs-onboarding"; accessToken: string }
+  | { kind: "needs-event-selection"; accessToken: string }
   | { kind: "complete"; accessToken: string; event: EventSummary };
 
 export async function getOnboardingStatus(): Promise<OnboardingStatus> {
@@ -32,7 +33,8 @@ export async function getOnboardingStatus(): Promise<OnboardingStatus> {
     throw new Error("Impossibile verificare il progetto dell'utente");
   }
 
-  const payload = (await response.json()) as { event?: EventSummary | null };
+  const payload = (await response.json()) as { event?: EventSummary | null; status?: string };
+  if (payload.status === "SELECTION_REQUIRED") return { kind: "needs-event-selection", accessToken };
   if (!payload.event) return { kind: "needs-onboarding", accessToken };
 
   return { kind: "complete", accessToken, event: payload.event };

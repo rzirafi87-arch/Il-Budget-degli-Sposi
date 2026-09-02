@@ -1,5 +1,6 @@
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
+import { resolveCurrentEvent } from "@/lib/currentEvent";
 
 export const runtime = "nodejs";
 
@@ -18,13 +19,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ event: null }, { status: 200 });
   }
 
-  // Trova il primo evento creato dall'utente (logica coerente con altre API del repo)
+  const resolution = await resolveCurrentEvent(req, userData.user.id);
+  if (resolution.status !== "RESOLVED") {
+    return NextResponse.json({ event: null, status: resolution.status, events: resolution.events });
+  }
   const { data: ev, error: evErr } = await db
     .from("events")
     .select("id, name, currency, total_budget, inserted_at, language, country, event_type")
-    .eq("owner_id", userData.user.id)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
+    .eq("id", resolution.currentEvent.eventId)
     .maybeSingle();
 
   if (evErr || !ev) {

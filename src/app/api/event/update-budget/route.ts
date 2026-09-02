@@ -1,4 +1,5 @@
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -28,17 +29,8 @@ export async function POST(req: NextRequest) {
     }
     const userId = userData.user.id;
 
-    // Update latest/first event owned by user
-    const { data: ev, error: e1 } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-    if (e1 || !ev?.id) {
-      return NextResponse.json({ error: e1?.message || "Event not found" }, { status: 404 });
-    }
+    // Update the authoritative current event owned by the user
+    const ev = { id: (await requireCurrentEvent(req, userId)).eventId };
 
     const updateObj: Record<string, unknown> = { total_budget: total };
     if (bride !== null) updateObj.bride_initial_budget = bride;
@@ -59,4 +51,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }
-

@@ -2,6 +2,7 @@
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 
 // POST /api/idea-di-budget/apply
 // Body: { country?: string, rows?: Array<{ category?: string; subcategory?: string; spendType?: string; idea_amount?: number; amount?: number; name?: string; }> }
@@ -20,15 +21,7 @@ export async function POST(req: NextRequest) {
   const country = (body?.country || req.nextUrl.searchParams.get("country") || "it").toLowerCase();
   let rows: any[] = Array.isArray(body?.rows) ? body.rows : Array.isArray(body) ? body : [];
 
-  // Find user's event
-  const { data: ev, error: evErr } = await db
-    .from("events")
-    .select("id")
-    .eq("owner_id", userData.user.id)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
-    .single();
-  if (evErr || !ev?.id) return NextResponse.json({ error: "No event found" }, { status: 404 });
+  const ev = { id: (await requireServerCurrentEvent(userData.user.id)).eventId };
 
   // If no rows provided, pull planned expenses from Idea di Budget
   if (rows.length === 0) {

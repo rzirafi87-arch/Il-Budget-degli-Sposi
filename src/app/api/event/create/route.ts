@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { CURRENT_EVENT_COOKIE, resolveCurrentEvent } from "@/lib/currentEvent";
 
 export const runtime = "nodejs";
 
@@ -25,16 +26,12 @@ export async function POST(req: NextRequest) {
   const { data: userData, error: authError } = await db.auth.getUser(jwt);
   if (authError || !userData?.user?.id) return NextResponse.json({ error: "Invalid JWT" }, { status: 401 });
 
-  // If user already has an event, return it (idempotent create)
-  const { data: existing } = await db
-    .from("events")
-    .select("id, name, currency, total_budget")
-    .eq("owner_id", userData.user.id)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-  if (existing) {
-    return NextResponse.json({ ok: true, event: existing });
+  const resolution = await resolveCurrentEvent(req, userData.user.id);
+  if (resolution.status === "RESOLVED") {
+    return NextResponse.json({ ok: true, event: resolution.currentEvent });
+  }
+  if (resolution.status === "SELECTION_REQUIRED") {
+    return NextResponse.json({ ok: false, error: "EVENT_SELECTION_REQUIRED", events: resolution.events }, { status: 409 });
   }
 
   const body = (await req.json().catch(() => ({}))) as CreateBody;
@@ -59,6 +56,9 @@ export async function POST(req: NextRequest) {
     await db.from("wedding_cards").insert(wc).select("event_id").maybeSingle();
   }
 
-  return NextResponse.json({ ok: true, event: inserted });
+  const response = NextResponse.json({ ok: true, event: inserted });
+  response.cookies.set(CURRENT_EVENT_COOKIE, inserted.id, {
+    httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 31536000,
+  });
+  return response;
 }
-

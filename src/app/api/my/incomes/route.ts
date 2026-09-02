@@ -1,6 +1,7 @@
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -52,20 +53,7 @@ export async function GET(req: NextRequest) {
     const db = getServiceClient();
     const { userId } = await requireUser(req);
 
-    // Prendi il primo evento dell'utente
-    const { data: ev } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-
-    if (!ev?.id) {
-      return NextResponse.json({ incomes: [] });
-    }
-
-    const eventId = ev.id;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     // Carica tutte le entrate
     const { data: incomes, error } = await db
@@ -106,20 +94,7 @@ export async function POST(req: NextRequest) {
 
     const db = getServiceClient();
 
-    // Prendi il primo evento dell'utente
-    const { data: ev } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-
-    if (!ev?.id) {
-      return NextResponse.json({ error: "Nessun evento trovato" }, { status: 404 });
-    }
-
-    const eventId = ev.id;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     // Inserisci l'entrata
     const { data: created, error: insertError } = await db.from("incomes").insert({
