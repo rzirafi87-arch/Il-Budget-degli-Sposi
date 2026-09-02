@@ -115,6 +115,9 @@ jobs:
       - name: Verify Branch 33 query indexes and policy consolidation
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_33_schema.sql
 
+      - name: Verify Branch 36 authoritative event isolation prerequisites
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_36_event_context.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
