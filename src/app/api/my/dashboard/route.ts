@@ -4,6 +4,7 @@ import {
 } from "@/constants/budgetCategories";
 import type { EventType } from "@/constants/eventConfigs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -137,15 +138,13 @@ export async function GET(req: NextRequest) {
 
     const userId = userData.user.id;
 
-    // Prendi il primo evento dell'utente
+    const currentEvent = await requireServerCurrentEvent(userId);
     const { data: ev, error: e1 } = await db
       .from("events")
       .select(
         "id, event_type, total_budget, bride_initial_budget, groom_initial_budget, wedding_date",
       )
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
+      .eq("id", currentEvent.eventId)
       .single();
 
     if (e1 || !ev?.id) {
@@ -236,20 +235,7 @@ export async function POST(req: NextRequest) {
 
     const userId = userData.user.id;
 
-    // Prendi il primo evento dell'utente
-    const { data: ev, error: e1 } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-
-    if (e1 || !ev?.id) {
-      return NextResponse.json({ error: "Nessun evento trovato" }, { status: 404 });
-    }
-
-    const eventId = ev.id;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     // 1. Aggiorna il budget totale e la data matrimonio nell'evento
     await db

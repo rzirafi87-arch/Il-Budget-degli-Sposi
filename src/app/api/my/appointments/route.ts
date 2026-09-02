@@ -1,5 +1,6 @@
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -135,19 +136,8 @@ export async function GET(req: NextRequest) {
     const db = getServiceClient();
     const { userId } = await requireUser(req);
 
-    // Find user's first event
-    const { data: ev } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-
-    if (!ev?.id) {
-      const appointments = await buildWeddingAgenda(db);
-      return NextResponse.json({ appointments });
-    }
+    // Resolve the authoritative current event
+    const ev = { id: (await requireServerCurrentEvent(userId)).eventId };
 
     const { data, error } = await db
       .from("appointments")
@@ -188,16 +178,8 @@ export async function POST(req: NextRequest) {
 
     const db = getServiceClient();
 
-    // Find user's first event
-    const { data: ev } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-
-    if (!ev?.id) return NextResponse.json({ error: "Nessun evento trovato" }, { status: 404 });
+    // Resolve the authoritative current event
+    const ev = { id: (await requireServerCurrentEvent(userId)).eventId };
 
     const { error } = await db.from("appointments").insert({
       event_id: ev.id,

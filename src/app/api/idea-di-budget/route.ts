@@ -1,5 +1,6 @@
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET: restituisce le idee di budget salvate (come spese "planned" da Idea di Budget)
@@ -16,15 +17,7 @@ export async function GET(req: NextRequest) {
   const { data: userData, error } = await db.auth.getUser(jwt);
   if (error || !userData?.user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-  // Recupera l'evento dell'utente
-  const { data: eventData, error: evErr } = await db
-    .from("events")
-    .select("id")
-    .eq("owner_id", userData.user.id)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
-    .single();
-  if (evErr || !eventData) return NextResponse.json({ error: "No event found" }, { status: 404 });
+  const eventData = { id: (await requireServerCurrentEvent(userData.user.id)).eventId };
 
   // Recupera spese "planned" salvate dall'Idea di Budget (flag from_dashboard)
   const { data: rows, error: qErr } = await db
@@ -96,16 +89,7 @@ export async function POST(req: NextRequest) {
     notes?: string;
   }> = Array.isArray(body) ? body : Array.isArray(body?.rows) ? body.rows : [];
 
-  // Recupera l'evento dell'utente
-  const { data: ev, error: evErr } = await db
-    .from("events")
-    .select("id")
-    .eq("owner_id", userData.user.id)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
-    .single();
-  if (evErr || !ev?.id) return NextResponse.json({ error: "No event found" }, { status: 404 });
-  const eventId = ev.id as string;
+  const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;
 
   // Elimina le spese "planned" create dall'Idea per questo evento
   const { error: delErr } = await db

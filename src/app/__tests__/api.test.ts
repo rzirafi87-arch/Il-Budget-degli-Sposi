@@ -85,7 +85,7 @@ describe('API routes', () => {
   it('POST /api/budget-items inserts for authenticated user', async () => {
     const fromMock = (table: string) => {
       if (table === 'events') {
-        return createQuery({ id: 'evt-1' });
+        return createQuery([{ id: 'evt-1', owner_id: 'u1', name: 'Wedding', event_type: 'wedding', language: 'it', country: 'IT', inserted_at: '2026-01-01', wedding_date: null, event_date: null }]);
       }
       if (table === 'budget_items') {
         const query = createQuery([] as unknown[]);

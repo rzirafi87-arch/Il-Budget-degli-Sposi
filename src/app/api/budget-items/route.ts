@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 
 export const runtime = "nodejs";
 
@@ -19,18 +20,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
     }
 
-    // Ricava l'evento dell'utente (primo per inserimento cronologico)
-    const { data: ev } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userData.user.id)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-
-    if (!ev?.id) {
-      return NextResponse.json({ items: [] });
-    }
+    const ev = { id: (await requireServerCurrentEvent(userData.user.id)).eventId };
 
     let userQuery = db
       .from("budget_items")
@@ -72,18 +62,7 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
-  // Trova l'evento dell'utente
-  const { data: ev } = await db
-    .from("events")
-    .select("id")
-    .eq("owner_id", userData.user.id)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
-    .single();
-
-  if (!ev?.id) {
-    return NextResponse.json({ error: "Nessun evento disponibile" }, { status: 404 });
-  }
+  const ev = { id: (await requireServerCurrentEvent(userData.user.id)).eventId };
 
   // Inserisci forzando l'event_id all'evento dell'utente
   const insert = Array.isArray(body) ? body : [body];

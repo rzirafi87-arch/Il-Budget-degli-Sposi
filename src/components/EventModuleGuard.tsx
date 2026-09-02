@@ -12,6 +12,7 @@ import { locales } from "@/i18n/config";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import CurrentEventSelector from "@/components/CurrentEventSelector";
 
 const UNGUARDED_PREFIXES = [
   "/auth",
@@ -59,6 +60,7 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
       UNGUARDED_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix)) ||
       !routeModule);
   const [verifiedPath, setVerifiedPath] = useState<string | null>(null);
+  const [selectionRequired, setSelectionRequired] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -87,6 +89,10 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
         }
         if (status.kind === "needs-onboarding") {
           router.replace(`/${locale}/wizard`);
+          return;
+        }
+        if (status.kind === "needs-event-selection") {
+          setSelectionRequired(true);
           return;
         }
 
@@ -119,6 +125,15 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
 
   if (isUnguarded) {
     return <>{children}</>;
+  }
+
+  if (selectionRequired) {
+    const copy = locale === "en"
+      ? "Choose the event you want to work on."
+      : locale === "es"
+        ? "Elige el evento en el que quieres trabajar."
+        : "Scegli l’evento su cui vuoi lavorare.";
+    return <section className="mx-auto my-10 max-w-lg rounded-2xl border border-border bg-card p-6 text-center shadow-soft"><h1 className="font-serif text-2xl font-bold text-fg">{copy}</h1><div className="mx-auto mt-5 max-w-xs"><CurrentEventSelector /></div></section>;
   }
 
   if (isLegacyComingSoonRoute || !routeModule || verifiedPath !== normalizedPath) {

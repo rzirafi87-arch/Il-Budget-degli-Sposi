@@ -1,5 +1,6 @@
 import { getBaptismTemplate } from "@/data/templates/baptism";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -44,16 +45,16 @@ export async function GET(req: NextRequest) {
   const userId = userData.user.id;
 
   try {
-    // Get user's baptism event (assuming one event per user)
-    const { data: events, error: eventsError } = await db
+    const current = await requireCurrentEvent(req, userId);
+    const { data: event, error: eventsError } = await db
       .from("events")
       .select("id, type_id, title, total_budget, event_date")
-      .eq("owner_id", userId)
-      .limit(1);
+      .eq("id", current.eventId)
+      .single();
 
     if (eventsError) throw eventsError;
 
-    if (!events || events.length === 0) {
+    if (!event) {
       // No event yet - return empty template
       const url = new URL(req.url);
       const country = url.searchParams.get("country") || "it";
@@ -77,7 +78,6 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const event = events[0];
     const eventId = event.id;
 
     // Get categories for this event type
@@ -161,20 +161,19 @@ export async function POST(req: NextRequest) {
   const { rows, totalBudget, eventDate } = body;
 
   try {
-    // Get user's event
-    const { data: events, error: eventsError } = await db
+    const current = await requireCurrentEvent(req, userId);
+    const { data: event, error: eventsError } = await db
       .from("events")
       .select("id, type_id")
-      .eq("owner_id", userId)
-      .limit(1);
+      .eq("id", current.eventId)
+      .single();
 
     if (eventsError) throw eventsError;
 
-    if (!events || events.length === 0) {
+    if (!event) {
       return NextResponse.json({ error: "Nessun evento trovato" }, { status: 404 });
     }
 
-    const event = events[0];
     const eventId = event.id;
 
     // Update event budget and date

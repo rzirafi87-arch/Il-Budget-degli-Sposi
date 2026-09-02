@@ -1,18 +1,11 @@
 import { getServiceClient } from "@/lib/supabaseServer";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
-async function currentEventId(db: SupabaseClient, userId: string) {
-  const { data: ev, error } = await db
-    .from("events")
-    .select("id")
-    .eq("owner_id", userId)
-    .order("inserted_at", { ascending: true })
-    .limit(1)
-    .single();
-  if (error) throw error;
-  return ev?.id as string;
+async function currentEventId(_db: SupabaseClient, userId: string) {
+  return (await requireServerCurrentEvent(userId)).eventId;
 }
 
 export async function GET(req: NextRequest) {
@@ -56,4 +49,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
   }
 }
-

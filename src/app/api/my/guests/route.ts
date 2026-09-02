@@ -1,6 +1,7 @@
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -50,24 +51,9 @@ export async function GET(req: NextRequest) {
     const db = getServiceClient();
     const { userId } = await requireUser(req);
 
-    // Ottieni l'evento dell'utente
-    const { data: events, error: eventError } = await db
-      .from("events")
-      .select("id, default_rsvp_deadline")
-      .eq("owner_id", userId)
-      .limit(1);
-
-    if (eventError || !events || events.length === 0) {
-      return NextResponse.json({
-        guests: [],
-        familyGroups: [],
-        nonInvitedRecipients: [],
-        defaultRsvpDeadline: "",
-      });
-    }
-
-    const eventId = events[0].id;
-    const defaultRsvpDeadline = events[0].default_rsvp_deadline || "";
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
+    const { data: event } = await db.from("events").select("default_rsvp_deadline").eq("id", eventId).single();
+    const defaultRsvpDeadline = event?.default_rsvp_deadline || "";
 
     // Carica i gruppi famiglia
     const { data: familyGroupsData } = await db
@@ -119,35 +105,7 @@ export async function POST(req: NextRequest) {
     const db = getServiceClient();
     const { userId } = await requireUser(req);
 
-    // Ottieni l'evento dell'utente (o crealo se non esiste)
-    const { data: events, error: eventError } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .limit(1);
-
-    if (eventError) {
-      return NextResponse.json({ error: "Database error" }, { status: 500 });
-    }
-
-    let eventId: string;
-
-    if (!events || events.length === 0) {
-      // Crea un evento se non esiste
-      const { data: newEvent, error: createError } = await db
-        .from("events")
-        .insert({ owner_id: userId, name: "Il nostro matrimonio" })
-        .select("id")
-        .single();
-
-      if (createError || !newEvent) {
-        return NextResponse.json({ error: "Could not create event" }, { status: 500 });
-      }
-
-      eventId = newEvent.id;
-    } else {
-      eventId = events[0].id;
-    }
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     const body = await req.json();
     const { guests, familyGroups, nonInvitedRecipients, defaultRsvpDeadline } = body;

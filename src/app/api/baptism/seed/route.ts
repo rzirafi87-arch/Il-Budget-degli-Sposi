@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { createBaptismSeed } from "@/data/templates/baptism";
+import { requireCurrentEvent } from "@/lib/currentEvent";
 
-// POST: Seeds baptism categories/subcategories for the user's first event
+// POST: Seeds baptism categories/subcategories for the authoritative current event
 export async function POST(req: NextRequest) {
   try {
     const db = getServiceClient();
@@ -14,15 +15,7 @@ export async function POST(req: NextRequest) {
     const { data: authData, error: authErr } = await db.auth.getUser(jwt);
     if (authErr || !authData?.user) return NextResponse.json({ error: "Token non valido" }, { status: 401 });
 
-    // Resolve current user's first event (oldest)
-    const { data: ev, error: evErr } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", authData.user.id)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-    if (evErr || !ev?.id) return NextResponse.json({ error: "Evento non trovato" }, { status: 404 });
+    const ev = { id: (await requireCurrentEvent(req, authData.user.id)).eventId };
 
     const url = new URL(req.url);
     const country = url.searchParams.get('country') || undefined;

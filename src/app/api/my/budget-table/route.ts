@@ -1,6 +1,7 @@
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -121,24 +122,7 @@ export async function GET(req: NextRequest) {
     const db = getServiceClient();
     const { userId } = await requireUser(req);
 
-    // 1) prendi il PRIMO evento dell'utente (evento attivo di default)
-    const { data: ev, error: e1 } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-
-    if (e1 || !ev?.id) {
-      return NextResponse.json({
-        rows: [],
-        totals: { total: 0, common: 0, bride: 0, groom: 0 },
-        eventId: null,
-      });
-    }
-
-    const eventId = ev.id as string;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     // 2) join categorie/sottocategorie + somme spese (se non ci sono, viene tutto null → gestiamo a 0)
     const { data: subs, error: e2 } = await db

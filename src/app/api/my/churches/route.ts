@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/apiAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -7,11 +8,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-
 const STATUSES = new Set(["considering", "contacted", "shortlisted", "selected", "discarded"]);
 
 async function ownedEventId(userId: string) {
-  const db = getServiceClient();
-  const { data, error } = await db.from("events").select("id").eq("owner_id", userId)
-    .order("inserted_at", { ascending: true }).limit(1).maybeSingle();
-  if (error) throw error;
-  return data?.id || null;
+  return (await requireServerCurrentEvent(userId)).eventId;
 }
 
 export async function GET(req: NextRequest) {

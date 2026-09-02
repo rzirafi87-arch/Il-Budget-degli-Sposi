@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 type DbTimelineItem = {
@@ -46,21 +47,7 @@ export async function GET(req: NextRequest) {
     const db = getServiceClient();
     const { userId } = await requireUser(req);
 
-    // Un solo evento per utente: prendi il più vecchio (creato per primo)
-    const { data: ev, error: evErr } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-    if (evErr) {
-      logger.error("TIMELINE GET events error", { error: evErr.message });
-      return NextResponse.json({ items: [] });
-    }
-    if (!ev?.id) return NextResponse.json({ items: [] });
-
-    const eventId = ev.id;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     const { data, error } = await db
       .from("timeline_items")
@@ -90,18 +77,7 @@ export async function POST(req: NextRequest) {
     const db = getServiceClient();
     const body = await req.json();
 
-    // Risolve event_id
-    const { data: ev } = await db
-      .from("events")
-      .select("id")
-      .eq("owner_id", userId)
-      .order("inserted_at", { ascending: true })
-      .limit(1)
-      .single();
-    if (!ev?.id) {
-      return NextResponse.json({ error: "Nessun evento trovato" }, { status: 404 });
-    }
-    const eventId = ev.id;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     // Supporta singolo item o bulk array
     const items = Array.isArray(body) ? (body as TimelineInsertInput[]) : [body as TimelineInsertInput];

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 
 export const runtime = "nodejs";
 
@@ -26,20 +27,7 @@ export async function GET(req: NextRequest) {
   }
   const userId = userData.user.id;
 
-  // Ottieni event_id dell'utente
-  const { data: events } = await db
-    .from("events")
-    .select("id")
-    .or(`user_id.eq.${userId},partner_user_id.eq.${userId}`)
-    .limit(1);
-  
-  if (!events || events.length === 0) {
-    return NextResponse.json({
-      tables: [],
-      availableGuests: [],
-    });
-  }
-  const eventId = events[0].id;
+  const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
   // Carica tavoli con le assegnazioni
   const { data: tablesData } = await db
@@ -120,17 +108,7 @@ export async function POST(req: NextRequest) {
   const db = getServiceClient();
   const { userId } = await requireUser(req);
 
-  // Ottieni event_id
-  const { data: events } = await db
-    .from("events")
-    .select("id")
-    .or(`user_id.eq.${userId},partner_user_id.eq.${userId}`)
-    .limit(1);
-
-  if (!events || events.length === 0) {
-    return NextResponse.json({ error: "Event not found" }, { status: 404 });
-  }
-  const eventId = events[0].id;
+  const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
   const { tables } = await req.json();
 
