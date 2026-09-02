@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'supabase/**'
+      - 'src/i18n/**'
+      - 'middleware.ts'
       - '.github/workflows/database-rebuild.yml'
   workflow_dispatch:
 
