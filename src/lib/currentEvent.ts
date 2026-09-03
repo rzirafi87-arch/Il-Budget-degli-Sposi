@@ -38,18 +38,21 @@ type EventRow = {
   language: string | null;
   country: string | null;
   inserted_at: string | null;
-  wedding_date?: string | null;
-  event_date?: string | null;
 };
 
-function summarize(row: EventRow): OwnedEventSummary {
+type WeddingCardDateRow = {
+  event_id: string;
+  wedding_date: string | null;
+};
+
+function summarize(row: EventRow, date: string | null): OwnedEventSummary {
   const eventType = normalizeEventType(row.event_type);
   return {
     id: row.id,
     ownerId: row.owner_id,
     name: row.name,
     eventType,
-    date: row.wedding_date || row.event_date || null,
+    date,
     locale: row.language,
     country: row.country,
     capability: getEventTypeCapability(eventType),
@@ -57,14 +60,30 @@ function summarize(row: EventRow): OwnedEventSummary {
 }
 
 export async function listOwnedEvents(userId: string): Promise<OwnedEventSummary[]> {
-  const { data, error } = await getServiceClient()
+  const db = getServiceClient();
+  const { data, error } = await db
     .from("events")
-    .select("id,owner_id,name,event_type,language,country,inserted_at,wedding_date,event_date")
+    .select("id,owner_id,name,event_type,language,country,inserted_at")
     .eq("owner_id", userId)
     .order("inserted_at", { ascending: true })
     .order("id", { ascending: true });
   if (error) throw error;
-  return ((data || []) as EventRow[]).map(summarize);
+
+  const rows = (data || []) as EventRow[];
+  if (rows.length === 0) return [];
+
+  const eventIds = rows.map((row) => row.id);
+  const { data: cards, error: cardsError } = await db
+    .from("wedding_cards")
+    .select("event_id,wedding_date")
+    .in("event_id", eventIds);
+  if (cardsError) throw cardsError;
+
+  const datesByEventId = new Map(
+    ((cards || []) as WeddingCardDateRow[]).map((card) => [card.event_id, card.wedding_date]),
+  );
+
+  return rows.map((row) => summarize(row, datesByEventId.get(row.id) || null));
 }
 
 export async function resolveCurrentEvent(
