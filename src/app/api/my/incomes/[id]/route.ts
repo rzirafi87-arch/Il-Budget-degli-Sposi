@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
@@ -11,35 +12,21 @@ export async function DELETE(
   try {
     const { userId } = await requireUser(req);
     const db = getServiceClient();
-
     const { id } = await params;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     const { data: income, error: incomeError } = await db
       .from("incomes")
-      .select("event_id")
+      .select("id")
       .eq("id", id)
+      .eq("event_id", eventId)
       .maybeSingle();
 
     if (incomeError) {
       logger.error("INCOMES DELETE lookup error", { error: incomeError });
       return NextResponse.json({ error: incomeError.message }, { status: 500 });
     }
-    if (!income?.event_id) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    }
-
-    const { data: ownedEvent, error: eventError } = await db
-      .from("events")
-      .select("id")
-      .eq("id", income.event_id)
-      .eq("owner_id", userId)
-      .maybeSingle();
-
-    if (eventError) {
-      logger.error("INCOMES DELETE ownership error", { error: eventError });
-      return NextResponse.json({ error: eventError.message }, { status: 500 });
-    }
-    if (!ownedEvent) {
+    if (!income) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
@@ -47,7 +34,7 @@ export async function DELETE(
       .from("incomes")
       .delete()
       .eq("id", id)
-      .eq("event_id", ownedEvent.id);
+      .eq("event_id", eventId);
 
     if (deleteError) {
       logger.error("INCOMES DELETE error", { error: deleteError });
