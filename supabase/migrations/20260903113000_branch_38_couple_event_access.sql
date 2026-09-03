@@ -21,7 +21,7 @@ as $$
   );
 $$;
 
-revoke all on function public.can_access_event(uuid) from public;
+revoke execute on function public.can_access_event(uuid) from public, anon;
 grant execute on function public.can_access_event(uuid) to authenticated, service_role;
 
 -- The owner remains the only account allowed to create/delete an event.
