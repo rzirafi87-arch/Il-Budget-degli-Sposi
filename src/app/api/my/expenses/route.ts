@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
   try {
     const jwt = getBearer(req);
     if (!jwt) {
-      // Dati demo per utenti non autenticati
       return NextResponse.json({
         expenses: [
           {
@@ -58,10 +57,8 @@ export async function GET(req: NextRequest) {
 
     const db = getServiceClient();
     const { userId } = await requireUser(req);
-
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
-    // Carica tutte le spese con join a categorie/sottocategorie
     const { data: expensesData, error } = await db
       .from("expenses")
       .select(`
@@ -75,12 +72,12 @@ export async function GET(req: NextRequest) {
         expense_date,
         notes,
         from_dashboard,
-        subcategory:subcategories!inner(
+        subcategory:subcategories(
           name,
-          category:categories!inner(name, event_id)
+          category:categories(name, event_id)
         )
       `)
-      .eq("subcategory.category.event_id", eventId)
+      .eq("event_id", eventId)
       .order("expense_date", { ascending: false });
 
     if (error) {
@@ -120,7 +117,6 @@ export async function POST(req: NextRequest) {
 
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
-    // Trova o crea categoria
     let { data: cat } = await db
       .from("categories")
       .select("id")
@@ -143,7 +139,6 @@ export async function POST(req: NextRequest) {
 
     const categoryId = cat.id;
 
-    // Trova o crea sottocategoria
     let { data: sub } = await db
       .from("subcategories")
       .select("id")
@@ -164,13 +159,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Impossibile creare sottocategoria" }, { status: 500 });
     }
 
-    const subcategoryId = sub.id;
-
-    // Inserisci la spesa
     const { data: created, error: insertError } = await db.from("expenses").insert({
-      subcategory_id: subcategoryId,
+      event_id: eventId,
+      category: expense.category,
+      subcategory: expense.subcategory,
+      subcategory_id: sub.id,
       supplier: expense.supplier,
       description: expense.description,
+      amount: expense.amount,
       committed_amount: expense.amount,
       paid_amount: expense.status === "approved" ? expense.amount : 0,
       spend_type: expense.spendType,
