@@ -15,6 +15,7 @@ const eventA = {
   language: "it",
   country: "IT",
   inserted_at: "2026-01-01T00:00:00Z",
+  event_date: "2026-09-16",
 };
 const eventB = {
   id: "b0000000-0000-4000-8000-000000000001",
@@ -24,19 +25,38 @@ const eventB = {
   language: "it",
   country: "IT",
   inserted_at: "2026-02-01T00:00:00Z",
+  event_date: "2026-10-01",
 };
 
-function arrange(rows: typeof eventA[]) {
+function arrange(rows: typeof eventA[], email?: string) {
   const query = {
     select: jest.fn(),
     eq: jest.fn(),
+    or: jest.fn(),
     order: jest.fn(),
   } as unknown as Record<string, jest.Mock> & PromiseLike<{ data: typeof rows; error: null }>;
   query.select.mockReturnValue(query);
   query.eq.mockReturnValue(query);
+  query.or.mockReturnValue(query);
   query.order.mockReturnValue(query);
   query.then = (resolve) => Promise.resolve({ data: rows, error: null }).then(resolve);
-  mockedClient.mockReturnValue({ from: jest.fn(() => query) } as never);
+
+  const client = {
+    from: jest.fn(() => query),
+    ...(email
+      ? {
+          auth: {
+            admin: {
+              getUserById: jest.fn(async () => ({
+                data: { user: { email } },
+                error: null,
+              })),
+            },
+          },
+        }
+      : {}),
+  };
+  mockedClient.mockReturnValue(client as never);
   return query;
 }
 
@@ -47,16 +67,19 @@ function request(cookie?: string): NextRequest {
 describe("authoritative current event resolver", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("returns NO_EVENT for an owner with zero events", async () => {
+  it("returns NO_EVENT for an account with zero accessible events", async () => {
     arrange([]);
     expect((await resolveCurrentEvent(request(), owner)).status).toBe("NO_EVENT");
   });
 
-  it("automatically resolves exactly one owned event", async () => {
+  it("automatically resolves exactly one accessible event", async () => {
     arrange([eventA]);
     const result = await resolveCurrentEvent(request(), owner);
     expect(result.status).toBe("RESOLVED");
-    if (result.status === "RESOLVED") expect(result.currentEvent.source).toBe("single-event-fallback");
+    if (result.status === "RESOLVED") {
+      expect(result.currentEvent.source).toBe("single-event-fallback");
+      expect(result.currentEvent.date).toBe("2026-09-16");
+    }
   });
 
   it("requires selection for two events without a hint", async () => {
@@ -77,19 +100,19 @@ describe("authoritative current event resolver", () => {
     expect(result).toMatchObject({ status: "SELECTION_REQUIRED", staleSelection: true });
   });
 
-  it("does not accept another owner's event", async () => {
+  it("does not accept an inaccessible event", async () => {
     arrange([eventA, eventB]);
     const result = await resolveCurrentEvent(request("20000000-0000-4000-8000-000000000002"), other);
     expect(result.status).toBe("SELECTION_REQUIRED");
   });
 
-  it("recovers a deleted selection only when one event remains", async () => {
+  it("recovers a stale selection when exactly one accessible event remains", async () => {
     arrange([eventA]);
     const result = await resolveCurrentEvent(request(eventB.id), owner);
     expect(result).toMatchObject({ status: "RESOLVED", staleSelection: true });
   });
 
-  it("switches A to B through an explicit owner-validated selection", async () => {
+  it("switches A to B through an explicit validated selection", async () => {
     arrange([eventA, eventB]);
     const before = await resolveCurrentEvent(request(eventA.id), owner);
     const after = await resolveCurrentEvent(request(eventA.id), owner, { explicitEventId: eventB.id });
@@ -110,10 +133,18 @@ describe("authoritative current event resolver", () => {
     expect(result.status === "RESOLVED" && result.currentEvent.capability.availabilityStatus).toBe("READY");
   });
 
-  it("queries only canonical event columns belonging to the authenticated owner", async () => {
+  it("queries canonical event columns by owner when account email is unavailable", async () => {
     const query = arrange([eventA]);
     await resolveCurrentEvent(request(), owner);
-    expect(query.select).toHaveBeenCalledWith("id,owner_id,name,event_type,language,country,inserted_at");
+    expect(query.select).toHaveBeenCalledWith("id,owner_id,name,event_type,language,country,inserted_at,event_date");
     expect(query.eq).toHaveBeenCalledWith("owner_id", owner);
+  });
+
+  it("includes owner, bride and groom email access for an authenticated partner", async () => {
+    const query = arrange([eventA], "partner@example.com");
+    await resolveCurrentEvent(request(), other);
+    expect(query.or).toHaveBeenCalledWith(
+      `owner_id.eq.${other},bride_email.eq.partner@example.com,groom_email.eq.partner@example.com`,
+    );
   });
 });
