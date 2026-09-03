@@ -12,7 +12,6 @@ import { locales } from "@/i18n/config";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import CurrentEventSelector from "@/components/CurrentEventSelector";
 
 const UNGUARDED_PREFIXES = [
   "/auth",
@@ -24,9 +23,6 @@ const UNGUARDED_PREFIXES = [
   "/coming-soon",
 ];
 
-// Historical standalone pages for event types that Branch 29 classifies as
-// COMING_SOON. Keeping the files avoids destructive cleanup, but direct URLs
-// must not expose them as if those products were READY.
 const COMING_SOON_EVENT_ROUTE_PREFIXES = [
   "/baby-shower",
   "/birthday",
@@ -129,11 +125,23 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
 
   if (selectionRequired) {
     const copy = locale === "en"
-      ? "Choose the event you want to work on."
+      ? "Select the event from Settings to continue."
       : locale === "es"
-        ? "Elige el evento en el que quieres trabajar."
-        : "Scegli l’evento su cui vuoi lavorare.";
-    return <section className="mx-auto my-10 max-w-lg rounded-2xl border border-border bg-card p-6 text-center shadow-soft"><h1 className="font-serif text-2xl font-bold text-fg">{copy}</h1><div className="mx-auto mt-5 max-w-xs"><CurrentEventSelector /></div></section>;
+        ? "Selecciona el evento desde Ajustes para continuar."
+        : "Seleziona l’evento dalle Impostazioni per continuare.";
+    const button = locale === "en" ? "Open Settings" : locale === "es" ? "Abrir Ajustes" : "Apri Impostazioni";
+    return (
+      <section className="mx-auto my-10 max-w-lg rounded-2xl border border-border bg-card p-6 text-center shadow-soft">
+        <p className="text-fg">{copy}</p>
+        <button
+          type="button"
+          className="app-button app-button--primary mt-5"
+          onClick={() => window.dispatchEvent(new CustomEvent("open-quick-settings"))}
+        >
+          {button}
+        </button>
+      </section>
+    );
   }
 
   if (isLegacyComingSoonRoute || !routeModule || verifiedPath !== normalizedPath) {
