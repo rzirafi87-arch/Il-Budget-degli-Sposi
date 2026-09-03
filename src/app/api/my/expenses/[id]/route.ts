@@ -1,10 +1,11 @@
 import { requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic"; // Evita cache indesiderata su route mutate
+export const dynamic = "force-dynamic";
 
 export async function PATCH(
   req: NextRequest,
@@ -12,68 +13,37 @@ export async function PATCH(
 ) {
   try {
     const { userId } = await requireUser(req);
-
     const body = await req.json();
     const { status } = body as { status: "approved" | "rejected" };
-
     const db = getServiceClient();
-
     const { id: expenseId } = await context.params;
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
-    const { data: expense, error: expenseError } = await db
+    const { data: ownedExpense, error: lookupError } = await db
       .from("expenses")
-      .select("event_id")
+      .select("id,committed_amount")
       .eq("id", expenseId)
+      .eq("event_id", eventId)
       .maybeSingle();
 
-    if (expenseError) {
-      logger.error("EXPENSE PATCH lookup error", { error: expenseError });
-      return NextResponse.json({ error: expenseError.message }, { status: 500 });
+    if (lookupError) {
+      logger.error("EXPENSE PATCH lookup error", { error: lookupError });
+      return NextResponse.json({ error: lookupError.message }, { status: 500 });
     }
-    if (!expense?.event_id) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    }
-
-    const { data: ownedEvent, error: eventError } = await db
-      .from("events")
-      .select("id")
-      .eq("id", expense.event_id)
-      .eq("owner_id", userId)
-      .maybeSingle();
-
-    if (eventError) {
-      logger.error("EXPENSE PATCH ownership error", { error: eventError });
-      return NextResponse.json({ error: eventError.message }, { status: 500 });
-    }
-    if (!ownedEvent) {
+    if (!ownedExpense) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
     const updateData: { status: string; paid_amount?: number } = { status };
     if (status === "approved") {
-      const { data: ownedExpense, error: ownedExpenseError } = await db
-        .from("expenses")
-        .select("committed_amount")
-        .eq("id", expenseId)
-        .eq("event_id", ownedEvent.id)
-        .maybeSingle();
-
-      if (ownedExpenseError) {
-        logger.error("EXPENSE PATCH amount lookup error", { error: ownedExpenseError });
-        return NextResponse.json({ error: ownedExpenseError.message }, { status: 500 });
-      }
-      if (!ownedExpense) {
-        return NextResponse.json({ error: "Not found" }, { status: 404 });
-      }
-
-      updateData.paid_amount = ownedExpense.committed_amount;
+      updateData.paid_amount = ownedExpense.committed_amount || 0;
     }
 
     const { error } = await db
       .from("expenses")
       .update(updateData)
       .eq("id", expenseId)
-      .eq("event_id", ownedEvent.id);
+      .eq("event_id", eventId);
 
     if (error) {
       logger.error("EXPENSE PATCH error", { error });
