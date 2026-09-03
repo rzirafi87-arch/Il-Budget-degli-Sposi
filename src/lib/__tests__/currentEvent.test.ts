@@ -110,9 +110,10 @@ describe("authoritative current event resolver", () => {
     expect(result.status === "RESOLVED" && result.currentEvent.capability.availabilityStatus).toBe("READY");
   });
 
-  it("queries only events belonging to the authenticated owner", async () => {
+  it("queries only canonical event columns belonging to the authenticated owner", async () => {
     const query = arrange([eventA]);
     await resolveCurrentEvent(request(), owner);
+    expect(query.select).toHaveBeenCalledWith("id,owner_id,name,event_type,language,country,inserted_at");
     expect(query.eq).toHaveBeenCalledWith("owner_id", owner);
   });
 });

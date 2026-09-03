@@ -130,20 +130,16 @@ export async function GET(req: NextRequest) {
 
     const db = getServiceClient();
 
-    // Verifica token
     const { data: userData, error: authError } = await db.auth.getUser(jwt);
     if (authError || !userData?.user) {
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
     }
 
     const userId = userData.user.id;
-
     const currentEvent = await requireServerCurrentEvent(userId);
     const { data: ev, error: e1 } = await db
       .from("events")
-      .select(
-        "id, event_type, total_budget, bride_initial_budget, groom_initial_budget, wedding_date",
-      )
+      .select("id, event_type, total_budget, bride_initial_budget, groom_initial_budget")
       .eq("id", currentEvent.eventId)
       .single();
 
@@ -160,12 +156,16 @@ export async function GET(req: NextRequest) {
     const totalBudget = ev.total_budget || 0;
     const brideBudget = ev.bride_initial_budget || 0;
     const groomBudget = ev.groom_initial_budget || 0;
-    const weddingDate = ev.wedding_date || "";
+    const { data: weddingCard } = await db
+      .from("wedding_cards")
+      .select("wedding_date")
+      .eq("event_id", eventId)
+      .maybeSingle();
+    const weddingDate = weddingCard?.wedding_date || "";
 
     const categoriesMap = getCategoriesForEvent(eventType);
     const baseRows = generateAllRows(categoriesMap);
 
-    // Carica tutte le spese con categoria e sottocategoria
     const { data: expenses, error: e2 } = await db
       .from("expenses")
       .select(`
@@ -227,32 +227,39 @@ export async function POST(req: NextRequest) {
 
     const db = getServiceClient();
 
-    // Verifica token
     const { data: userData, error: authError } = await db.auth.getUser(jwt);
     if (authError || !userData?.user) {
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
     }
 
     const userId = userData.user.id;
-
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
-    // 1. Aggiorna il budget totale e la data matrimonio nell'evento
-    await db
+    const { error: eventUpdateError } = await db
       .from("events")
       .update({
         total_budget: totalBudget,
         bride_initial_budget: brideBudget ?? null,
         groom_initial_budget: groomBudget ?? null,
-        wedding_date: weddingDate ?? null,
       })
       .eq("id", eventId);
+    if (eventUpdateError) {
+      return NextResponse.json({ error: eventUpdateError.message }, { status: 500 });
+    }
 
-    // 2. Per ogni riga, crea/aggiorna categoria, sottocategoria e spesa
+    if (weddingDate !== undefined) {
+      const { error: dateUpdateError } = await db
+        .from("wedding_cards")
+        .update({ wedding_date: weddingDate || null })
+        .eq("event_id", eventId);
+      if (dateUpdateError) {
+        return NextResponse.json({ error: dateUpdateError.message }, { status: 500 });
+      }
+    }
+
     for (const row of rows) {
       if (!row.category || !row.subcategory) continue;
 
-      // Trova o crea categoria
       let { data: cat } = await db
         .from("categories")
         .select("id")
@@ -272,7 +279,6 @@ export async function POST(req: NextRequest) {
       if (!cat?.id) continue;
       const categoryId = cat.id;
 
-      // Trova o crea sottocategoria
       let { data: sub } = await db
         .from("subcategories")
         .select("id")
@@ -292,7 +298,6 @@ export async function POST(req: NextRequest) {
       if (!sub?.id) continue;
       const subcategoryId = sub.id;
 
-      // Se la riga ha un ID, aggiorna, altrimenti inserisci
       if (row.id && !row.id.startsWith("demo-")) {
         await db
           .from("expenses")

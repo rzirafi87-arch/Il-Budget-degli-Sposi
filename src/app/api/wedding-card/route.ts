@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     const current = await requireServerCurrentEvent(userId);
     const { data: eventData, error: eventError } = await supabase
       .from("events")
-      .select("id, wedding_date")
+      .select("id")
       .eq("id", current.eventId)
       .maybeSingle();
 
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
     const finalConfig = config || {
       bride_name: "",
       groom_name: "",
-      wedding_date: eventData.wedding_date || "",
+      wedding_date: "",
       church_name: "",
       church_address: "",
       location_name: "",
@@ -111,19 +111,6 @@ export async function POST(request: NextRequest) {
     const card = sanitizeCard(rawBody);
 
     const eventData = { id: (await requireServerCurrentEvent(userId)).eventId };
-
-    if (card.wedding_date) {
-      const { error: updateError } = await supabase
-        .from("events")
-        .update({ wedding_date: card.wedding_date })
-        .eq("id", eventData.id)
-        .eq("owner_id", userId);
-
-      if (updateError) {
-        console.error("Error updating owned event date:", updateError);
-        return NextResponse.json({ error: "Unable to save wedding card" }, { status: 500 });
-      }
-    }
 
     const { data, error } = await supabase
       .from("wedding_cards")

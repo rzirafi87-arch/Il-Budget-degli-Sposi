@@ -38,8 +38,6 @@ type EventRow = {
   language: string | null;
   country: string | null;
   inserted_at: string | null;
-  wedding_date?: string | null;
-  event_date?: string | null;
 };
 
 function summarize(row: EventRow): OwnedEventSummary {
@@ -49,7 +47,7 @@ function summarize(row: EventRow): OwnedEventSummary {
     ownerId: row.owner_id,
     name: row.name,
     eventType,
-    date: row.wedding_date || row.event_date || null,
+    date: null,
     locale: row.language,
     country: row.country,
     capability: getEventTypeCapability(eventType),
@@ -59,7 +57,7 @@ function summarize(row: EventRow): OwnedEventSummary {
 export async function listOwnedEvents(userId: string): Promise<OwnedEventSummary[]> {
   const { data, error } = await getServiceClient()
     .from("events")
-    .select("id,owner_id,name,event_type,language,country,inserted_at,wedding_date,event_date")
+    .select("id,owner_id,name,event_type,language,country,inserted_at")
     .eq("owner_id", userId)
     .order("inserted_at", { ascending: true })
     .order("id", { ascending: true });
