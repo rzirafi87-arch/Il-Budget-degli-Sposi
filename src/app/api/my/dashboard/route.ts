@@ -139,7 +139,7 @@ export async function GET(req: NextRequest) {
     const currentEvent = await requireServerCurrentEvent(userId);
     const { data: ev, error: e1 } = await db
       .from("events")
-      .select("id, event_type, total_budget, bride_initial_budget, groom_initial_budget")
+      .select("id, event_type, total_budget, bride_initial_budget, groom_initial_budget, event_date")
       .eq("id", currentEvent.eventId)
       .single();
 
@@ -156,12 +156,7 @@ export async function GET(req: NextRequest) {
     const totalBudget = ev.total_budget || 0;
     const brideBudget = ev.bride_initial_budget || 0;
     const groomBudget = ev.groom_initial_budget || 0;
-    const { data: weddingCard } = await db
-      .from("wedding_cards")
-      .select("wedding_date")
-      .eq("event_id", eventId)
-      .maybeSingle();
-    const weddingDate = weddingCard?.wedding_date || "";
+    const weddingDate = ev.event_date || "";
 
     const categoriesMap = getCategoriesForEvent(eventType);
     const baseRows = generateAllRows(categoriesMap);
@@ -183,7 +178,7 @@ export async function GET(req: NextRequest) {
           category:categories!inner(name, event_id)
         )
       `)
-      .eq("subcategory.category.event_id", eventId)
+      .eq("event_id", eventId)
       .order("inserted_at", { ascending: true });
 
     if (e2) {
@@ -241,20 +236,11 @@ export async function POST(req: NextRequest) {
         total_budget: totalBudget,
         bride_initial_budget: brideBudget ?? null,
         groom_initial_budget: groomBudget ?? null,
+        ...(weddingDate !== undefined ? { event_date: weddingDate || null } : {}),
       })
       .eq("id", eventId);
     if (eventUpdateError) {
       return NextResponse.json({ error: eventUpdateError.message }, { status: 500 });
-    }
-
-    if (weddingDate !== undefined) {
-      const { error: dateUpdateError } = await db
-        .from("wedding_cards")
-        .update({ wedding_date: weddingDate || null })
-        .eq("event_id", eventId);
-      if (dateUpdateError) {
-        return NextResponse.json({ error: dateUpdateError.message }, { status: 500 });
-      }
     }
 
     for (const row of rows) {
@@ -304,6 +290,7 @@ export async function POST(req: NextRequest) {
           .update({
             supplier: row.supplier,
             committed_amount: row.amount,
+            amount: row.amount,
             spend_type: row.spendType,
             notes: row.notes,
             payment_method: row.paymentMethod || null,
@@ -312,11 +299,16 @@ export async function POST(req: NextRequest) {
             payment_notes: row.paymentNotes || null,
             status: "planned",
           })
-          .eq("id", row.id);
+          .eq("id", row.id)
+          .eq("event_id", eventId);
       } else {
         await db.from("expenses").insert({
+          event_id: eventId,
           subcategory_id: subcategoryId,
+          category: row.category,
+          subcategory: row.subcategory,
           supplier: row.supplier,
+          amount: row.amount,
           committed_amount: row.amount,
           spend_type: row.spendType,
           notes: row.notes,
@@ -326,6 +318,7 @@ export async function POST(req: NextRequest) {
           payment_notes: row.paymentNotes || null,
           status: "planned",
           paid_amount: 0,
+          from_dashboard: true,
         });
       }
     }

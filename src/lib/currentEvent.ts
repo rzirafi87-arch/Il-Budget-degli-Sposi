@@ -38,6 +38,7 @@ type EventRow = {
   language: string | null;
   country: string | null;
   inserted_at: string | null;
+  event_date: string | null;
 };
 
 function summarize(row: EventRow): OwnedEventSummary {
@@ -47,18 +48,41 @@ function summarize(row: EventRow): OwnedEventSummary {
     ownerId: row.owner_id,
     name: row.name,
     eventType,
-    date: null,
+    date: row.event_date || null,
     locale: row.language,
     country: row.country,
     capability: getEventTypeCapability(eventType),
   };
 }
 
+async function authenticatedEmail(userId: string): Promise<string | null> {
+  try {
+    const db = getServiceClient();
+    const admin = db.auth?.admin;
+    if (!admin?.getUserById) return null;
+    const { data, error } = await admin.getUserById(userId);
+    if (error) return null;
+    return data?.user?.email?.trim().toLowerCase() || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function listOwnedEvents(userId: string): Promise<OwnedEventSummary[]> {
-  const { data, error } = await getServiceClient()
+  const db = getServiceClient();
+  const email = await authenticatedEmail(userId);
+  let query = db
     .from("events")
-    .select("id,owner_id,name,event_type,language,country,inserted_at")
-    .eq("owner_id", userId)
+    .select("id,owner_id,name,event_type,language,country,inserted_at,event_date");
+
+  // Registration stores the two spouses in bride_email/groom_email. Treat those
+  // addresses as access to the same couple project instead of creating a second,
+  // disconnected event for the invited partner.
+  query = email
+    ? query.or(`owner_id.eq.${userId},bride_email.eq.${email},groom_email.eq.${email}`)
+    : query.eq("owner_id", userId);
+
+  const { data, error } = await query
     .order("inserted_at", { ascending: true })
     .order("id", { ascending: true });
   if (error) throw error;
@@ -114,7 +138,6 @@ export async function requireServerCurrentEvent(userId: string): Promise<Current
     cookieStore = await cookies();
   } catch {
     // Direct route-unit tests do not create Next's request async storage.
-    // Runtime route handlers always have it; the safe fallback has no selection hint.
   }
   const requestLike = {
     cookies: { get: (name: string) => cookieStore?.get(name) },
