@@ -2,14 +2,14 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 const replace = jest.fn();
-const getOnboardingStatus = jest.fn();
+const mockGetOnboardingStatus = jest.fn();
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn(), replace }),
 }));
 
 jest.mock("@/lib/onboardingClient", () => ({
-  getOnboardingStatus: () => getOnboardingStatus(),
+  getOnboardingStatus: () => mockGetOnboardingStatus(),
 }));
 
 beforeAll(() => {
@@ -23,8 +23,8 @@ import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
 describe("SelectEventTypePage", () => {
   beforeEach(() => {
     replace.mockClear();
-    getOnboardingStatus.mockReset();
-    getOnboardingStatus.mockResolvedValue({ kind: "needs-onboarding", accessToken: "token" });
+    mockGetOnboardingStatus.mockReset();
+    mockGetOnboardingStatus.mockResolvedValue({ kind: "needs-onboarding", accessToken: "token" });
     window.localStorage.clear();
     (document as unknown as { cookie: string }).cookie = "";
   });
@@ -48,7 +48,7 @@ describe("SelectEventTypePage", () => {
   });
 
   it("non mostra la wizard a un utente con matrimonio già configurato", async () => {
-    getOnboardingStatus.mockResolvedValue({
+    mockGetOnboardingStatus.mockResolvedValue({
       kind: "complete",
       accessToken: "token",
       event: { id: "event-a", event_type: "wedding" },
@@ -61,7 +61,7 @@ describe("SelectEventTypePage", () => {
   });
 
   it("rimanda la selezione multi-evento alle Impostazioni", async () => {
-    getOnboardingStatus.mockResolvedValue({
+    mockGetOnboardingStatus.mockResolvedValue({
       kind: "needs-event-selection",
       accessToken: "token",
     });
