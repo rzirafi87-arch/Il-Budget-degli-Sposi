@@ -84,7 +84,7 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
           return;
         }
         if (status.kind === "needs-onboarding") {
-          router.replace(`/${locale}/wizard`);
+          router.replace(`/${locale}/select-event-type`);
           return;
         }
         if (status.kind === "needs-event-selection") {
