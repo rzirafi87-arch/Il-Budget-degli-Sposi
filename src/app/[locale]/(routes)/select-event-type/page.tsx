@@ -1,6 +1,6 @@
 "use client";
 
-import TopBarSelector from "@/components/TopBarSelector";
+import { LoadingState } from "@/components/ui/LoadingState";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { EVENT_CONFIGS } from "@/constants/eventConfigs";
 import {
@@ -8,6 +8,7 @@ import {
   getEventTypeCapability,
 } from "@/lib/eventTypeCapabilities";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { getOnboardingStatus } from "@/lib/onboardingClient";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -55,6 +56,7 @@ export default function SelectEventTypePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string>("");
+  const [accessChecked, setAccessChecked] = useState(false);
 
   const country =
     typeof window !== "undefined"
@@ -62,6 +64,27 @@ export default function SelectEventTypePage() {
         document.cookie.match(/(?:^|; )country=([^;]+)/)?.[1] ||
         "it"
       : "it";
+
+  useEffect(() => {
+    let active = true;
+    void getOnboardingStatus()
+      .then((status) => {
+        if (!active) return;
+        if (status.kind === "anonymous") {
+          router.replace(`/${locale}/auth`);
+          return;
+        }
+        if (status.kind === "complete" || status.kind === "needs-event-selection") {
+          router.replace(`/${locale}/dashboard`);
+          return;
+        }
+        setAccessChecked(true);
+      })
+      .catch(() => router.replace(`/${locale}/auth`));
+    return () => {
+      active = false;
+    };
+  }, [locale, router]);
 
   useEffect(() => {
     if (!country) return;
@@ -145,6 +168,8 @@ export default function SelectEventTypePage() {
     }
   }
 
+  if (!accessChecked) return <LoadingState label="Verifica configurazione evento" cards={2} />;
+
   return (
     <main
       className="min-h-screen flex items-center justify-center"
@@ -164,18 +189,6 @@ export default function SelectEventTypePage() {
           <span className="onboarding-progress__step" />
           <span className="onboarding-progress__step onboarding-progress__step--active" />
         </div>
-        <div className="mb-6 flex justify-end">
-          <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-[#A3B59D]/40 bg-[#F8FBF7] px-4 py-3 text-sm text-gray-700 shadow-sm sm:flex-row sm:items-center sm:gap-3">
-            <span className="font-semibold text-center sm:text-left">
-              {t("onboarding.selectLanguageTitle")}
-              <span aria-hidden className="mx-1 hidden sm:inline">/</span>
-              <br className="sm:hidden" />
-              {t("onboarding.selectCountryTitle")}
-            </span>
-            <div className="self-center sm:self-auto"><TopBarSelector /></div>
-          </div>
-        </div>
-
         <h1 className="text-3xl font-serif font-bold text-center mb-6">
           <span aria-hidden="true" className="mr-2">🎉</span>
           {t("onboarding.selectEventTypeTitle")}
