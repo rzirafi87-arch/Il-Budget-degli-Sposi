@@ -9,6 +9,9 @@ jest.mock("next/navigation", () => ({
 jest.mock("@/lib/supabaseBrowser", () => ({
   getBrowserClient: () => ({ auth: { getSession: async () => ({ data: { session: { access_token: "token" } }, error: null }) } }),
 }));
+jest.mock("@/lib/onboardingClient", () => ({
+  getOnboardingStatus: async () => ({ kind: "needs-onboarding", accessToken: "token" }),
+}));
 
 beforeAll(() => {
   // @ts-expect-error - Mocking global fetch for testing
@@ -29,7 +32,7 @@ describe("SelectEventTypePage - Cresima", () => {
     mockReplace.mockClear();
   });
 
-  it("mostra Cresima come Coming Soon e non consente la creazione", () => {
+  it("mostra Cresima come Coming Soon e non consente la creazione", async () => {
     window.localStorage.setItem("language", "it");
     window.localStorage.setItem("country", "it");
 
@@ -39,7 +42,7 @@ describe("SelectEventTypePage - Cresima", () => {
       </RouterContext.Provider>
     );
 
-    const btn = screen.getByText("events.confirmation").closest("button");
+    const btn = (await screen.findByText("events.confirmation")).closest("button");
     expect(btn).toBeTruthy();
     expect(btn).toBeDisabled();
     expect(btn).toHaveAttribute("aria-disabled", "true");
