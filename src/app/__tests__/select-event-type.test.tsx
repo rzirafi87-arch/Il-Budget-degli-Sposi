@@ -5,7 +5,7 @@ const mockReplace = jest.fn();
 const mockGetOnboardingStatus = jest.fn();
 
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn(), replace }),
+  useRouter: () => ({ push: jest.fn(), replace: mockReplace }),
 }));
 
 jest.mock("@/lib/onboardingClient", () => ({
