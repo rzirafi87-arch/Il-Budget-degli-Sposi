@@ -8,7 +8,6 @@ import Footer from "@/components/Footer";
 import NavTabs from "@/components/NavTabs";
 import QuickSettings from "@/components/QuickSettings";
 import { ToastProvider } from "@/components/ToastProvider";
-import TopBarSelector from "@/components/TopBarSelector";
 import { locales } from "@/i18n/config";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -115,7 +114,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                   </span>
                 </Link>
                 <div className="flex items-center gap-1.5 text-sm text-muted-fg">
-                  <TopBarSelector />
                   {!isSaveTheDate && (
                     <>
                       <UserMenu />
