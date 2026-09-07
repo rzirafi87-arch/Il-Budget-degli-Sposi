@@ -1,7 +1,7 @@
 ﻿import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-const replace = jest.fn();
+const mockReplace = jest.fn();
 const mockGetOnboardingStatus = jest.fn();
 
 jest.mock("next/navigation", () => ({
@@ -22,7 +22,7 @@ import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
 
 describe("SelectEventTypePage", () => {
   beforeEach(() => {
-    replace.mockClear();
+    mockReplace.mockClear();
     mockGetOnboardingStatus.mockReset();
     mockGetOnboardingStatus.mockResolvedValue({ kind: "needs-onboarding", accessToken: "token" });
     window.localStorage.clear();
@@ -56,7 +56,7 @@ describe("SelectEventTypePage", () => {
 
     render(<SelectEventTypePage />);
 
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/it/dashboard"));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/dashboard"));
     expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
   });
 
@@ -68,7 +68,7 @@ describe("SelectEventTypePage", () => {
 
     render(<SelectEventTypePage />);
 
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/it/dashboard"));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/dashboard"));
     expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
   });
 });
