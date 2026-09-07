@@ -37,6 +37,12 @@ describe("approved application flow regressions", () => {
     expect(currentEvent).not.toMatch(/from\("events"\)[\s\S]{0,300}wedding_date/);
   });
 
+  it("renders the legacy appointments route without requiring a missing locale provider", () => {
+    const appointments = read("src/app/it/documenti/appuntamenti/AppuntamentiClient.tsx");
+    expect(appointments).not.toContain('from "next-intl"');
+    expect(appointments).not.toContain("useTranslations()");
+  });
+
   it("requires event_id for expense creation", () => {
     const expenses = read("src/app/api/my/expenses/route.ts");
     expect(expenses).toMatch(/from\("expenses"\)\.insert\(\{[\s\S]{0,160}event_id:\s*eventId/);
