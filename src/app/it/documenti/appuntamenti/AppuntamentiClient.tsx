@@ -1,6 +1,5 @@
 "use client";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 
 
@@ -21,7 +20,7 @@ type Props = {
 };
 
 export default function AppuntamentiClient({ initialAppointments }: Props) {
-  const t = useTranslations();
+  const t = (_key: string, values?: { default?: string }) => values?.default ?? _key;
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments || []);
   const [form, setForm] = useState<Appointment>({ title: "", date: new Date().toISOString().slice(0, 10) });
   const [loading, setLoading] = useState(false);
