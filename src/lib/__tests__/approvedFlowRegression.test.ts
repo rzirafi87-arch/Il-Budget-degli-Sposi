@@ -41,6 +41,9 @@ describe("approved application flow regressions", () => {
     const appointments = read("src/app/it/documenti/appuntamenti/AppuntamentiClient.tsx");
     expect(appointments).not.toContain('from "next-intl"');
     expect(appointments).not.toContain("useTranslations()");
+    expect(appointments).toContain("getOnboardingStatus()");
+    expect(appointments).toContain('window.location.replace("/it/auth")');
+    expect(appointments).toContain('status.kind === "needs-event-selection"');
   });
 
   it("requires event_id for expense creation", () => {
