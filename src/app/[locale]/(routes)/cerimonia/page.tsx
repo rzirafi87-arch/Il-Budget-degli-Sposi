@@ -6,5 +6,5 @@ export default async function LegacyCerimoniaPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect(`/${locale}/chiese`);
+  redirect(`/${locale}/cerimonia/chiesa`);
 }
