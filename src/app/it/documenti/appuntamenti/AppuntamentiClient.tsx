@@ -1,6 +1,7 @@
 "use client";
+import { getOnboardingStatus } from "@/lib/onboardingClient";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 // Modello appuntamento
@@ -21,14 +22,41 @@ type Props = {
 
 export default function AppuntamentiClient({ initialAppointments }: Props) {
   const t = (_key: string, values?: { default?: string }) => values?.default ?? _key;
+  const [accessReady, setAccessReady] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments || []);
   const [form, setForm] = useState<Appointment>({ title: "", date: new Date().toISOString().slice(0, 10) });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  // Solo se vuoi ricaricare dopo mutazioni:
-  // useEffect(() => { loadAppointments(); }, []);
+  useEffect(() => {
+    let active = true;
+    void getOnboardingStatus()
+      .then((status) => {
+        if (!active) return;
+        if (status.kind === "anonymous") {
+          window.location.replace("/it/auth");
+          return;
+        }
+        if (status.kind === "needs-onboarding") {
+          window.location.replace("/it/select-event-type");
+          return;
+        }
+        if (status.kind === "needs-event-selection") {
+          window.location.replace("/it/dashboard");
+          return;
+        }
+        if (status.event.event_type !== "wedding") {
+          window.location.replace("/it/coming-soon?legacy=1");
+          return;
+        }
+        setAccessReady(true);
+      })
+      .catch(() => window.location.replace("/it/auth"));
+    return () => {
+      active = false;
+    };
+  }, []);
 
   async function loadAppointments() {
     setLoading(true);
@@ -91,6 +119,10 @@ export default function AppuntamentiClient({ initialAppointments }: Props) {
     if (!jwt) return;
     await fetch(`/api/my/appointments/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${jwt}` } });
     await loadAppointments();
+  }
+
+  if (!accessReady) {
+    return <main className="max-w-2xl mx-auto px-4 py-8">Verifica accesso…</main>;
   }
 
   return (
