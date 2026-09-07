@@ -1,5 +1,6 @@
 "use client";
 
+import CurrentEventSelector from "@/components/CurrentEventSelector";
 import { AppButton } from "@/components/ui/AppButton";
 import { COUNTRIES, LANGS } from "@/lib/loadConfigs";
 import { getEventTypeCapability, normalizeEventType } from "@/lib/eventTypeCapabilities";
@@ -13,6 +14,7 @@ const COPY = {
     settings: "Impostazioni",
     language: "Lingua",
     country: "Nazione evento",
+    currentEvent: "Matrimonio corrente",
     eventType: "Tipo evento",
     theme: "Tema",
     light: "Chiaro",
@@ -27,6 +29,7 @@ const COPY = {
     settings: "Settings",
     language: "Language",
     country: "Event country",
+    currentEvent: "Current wedding",
     eventType: "Event type",
     theme: "Theme",
     light: "Light",
@@ -41,6 +44,7 @@ const COPY = {
     settings: "Ajustes",
     language: "Idioma",
     country: "País del evento",
+    currentEvent: "Boda actual",
     eventType: "Tipo de evento",
     theme: "Tema",
     light: "Claro",
@@ -173,6 +177,11 @@ export default function QuickSettings() {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="app-field">
+              <p className="app-label">{copy.currentEvent}</p>
+              <CurrentEventSelector />
             </div>
 
             <div className="app-field">
