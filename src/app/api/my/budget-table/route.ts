@@ -5,133 +5,38 @@ import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
-/**
- * Ritorna:
- *  - rows: righe tabella (categoria, sottocategoria, tipo, budget, impegnato, pagato, residuo)
- *  - totals: { total, common, bride, groom }
- *
- * Se l'utente non ha spese o categorie, restituisce array vuoto e totali a zero (come nello screenshot).
- */
 export async function GET(req: NextRequest) {
   try {
     const jwt = getBearer(req);
 
     if (!jwt) {
-      // Restituisci dati di esempio per utenti non autenticati
       return NextResponse.json({
         rows: [
-          {
-            category: "Cerimonia",
-            subcategory: "Location cerimonia",
-            spend_type: "common",
-            budget: 3000,
-            committed: 1500,
-            paid: 1500,
-            residual: 1500,
-            fromDashboard: true,
-            difference: -1500,
-          },
-          {
-            category: "Cerimonia",
-            subcategory: "Fiori e decorazioni",
-            spend_type: "bride",
-            budget: 1500,
-            committed: 800,
-            paid: 0,
-            residual: 1500,
-            fromDashboard: false,
-            difference: -1500,
-          },
-          {
-            category: "Ricevimento",
-            subcategory: "Catering",
-            spend_type: "common",
-            budget: 8000,
-            committed: 4000,
-            paid: 2000,
-            residual: 6000,
-            fromDashboard: true,
-            difference: -6000,
-          },
-          {
-            category: "Ricevimento",
-            subcategory: "Torta nuziale",
-            spend_type: "bride",
-            budget: 500,
-            committed: 500,
-            paid: 500,
-            residual: 0,
-            fromDashboard: true,
-            difference: 0,
-          },
-          {
-            category: "Abbigliamento",
-            subcategory: "Abito sposa",
-            spend_type: "bride",
-            budget: 2500,
-            committed: 2500,
-            paid: 1000,
-            residual: 1500,
-            fromDashboard: true,
-            difference: -1500,
-          },
-          {
-            category: "Abbigliamento",
-            subcategory: "Abito sposo",
-            spend_type: "groom",
-            budget: 800,
-            committed: 800,
-            paid: 800,
-            residual: 0,
-            fromDashboard: true,
-            difference: 0,
-          },
-          {
-            category: "Fotografia",
-            subcategory: "Fotografo",
-            spend_type: "common",
-            budget: 2000,
-            committed: 1000,
-            paid: 500,
-            residual: 1500,
-            fromDashboard: true,
-            difference: -1500,
-          },
-          {
-            category: "Intrattenimento",
-            subcategory: "Musica dal vivo",
-            spend_type: "common",
-            budget: 1200,
-            committed: 0,
-            paid: 0,
-            residual: 1200,
-            fromDashboard: false,
-            difference: -1200,
-          },
+          { category: "Cerimonia", subcategory: "Location cerimonia", spend_type: "common", budget: 3000, committed: 1500, paid: 1500, residual: 1500, fromDashboard: true, difference: -1500 },
+          { category: "Cerimonia", subcategory: "Fiori e decorazioni", spend_type: "bride", budget: 1500, committed: 800, paid: 0, residual: 1500, fromDashboard: false, difference: -1500 },
+          { category: "Ricevimento", subcategory: "Catering", spend_type: "common", budget: 8000, committed: 4000, paid: 2000, residual: 6000, fromDashboard: true, difference: -6000 },
+          { category: "Ricevimento", subcategory: "Torta nuziale", spend_type: "bride", budget: 500, committed: 500, paid: 500, residual: 0, fromDashboard: true, difference: 0 },
+          { category: "Abbigliamento", subcategory: "Abito sposa", spend_type: "bride", budget: 2500, committed: 2500, paid: 1000, residual: 1500, fromDashboard: true, difference: -1500 },
+          { category: "Abbigliamento", subcategory: "Abito sposo", spend_type: "groom", budget: 800, committed: 800, paid: 800, residual: 0, fromDashboard: true, difference: 0 },
+          { category: "Fotografia", subcategory: "Fotografo", spend_type: "common", budget: 2000, committed: 1000, paid: 500, residual: 1500, fromDashboard: true, difference: -1500 },
+          { category: "Intrattenimento", subcategory: "Musica dal vivo", spend_type: "common", budget: 1200, committed: 0, paid: 0, residual: 1200, fromDashboard: false, difference: -1200 },
         ],
-        totals: {
-          total: 19500,
-          common: 14200,
-          bride: 4500,
-          groom: 800,
-        },
+        totals: { total: 19500, common: 14200, bride: 4500, groom: 800 },
         eventId: "demo",
       });
     }
 
     const db = getServiceClient();
     const { userId } = await requireUser(req);
-
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
-    // 2) join categorie/sottocategorie + somme spese (se non ci sono, viene tutto null → gestiamo a 0)
     const { data: subs, error: e2 } = await db
       .from("subcategories")
       .select(`
         id,
         name,
         category:categories!inner(id, name, event_id),
-        expenses(status, committed_amount, paid_amount, spend_type)
+        expenses(status, committed_amount, paid_amount, spend_type, from_dashboard)
       `)
       .eq("category.event_id", eventId)
       .order("name");
@@ -146,7 +51,6 @@ export async function GET(req: NextRequest) {
       }, { status: 200 });
     }
 
-    // 3) costruisci righe e totali
     type Row = {
       category: string;
       subcategory: string;
@@ -156,7 +60,7 @@ export async function GET(req: NextRequest) {
       paid: number;
       residual: number;
       fromDashboard: boolean;
-      difference: number; // differenza tra budget pianificato e speso reale
+      difference: number;
     };
 
     const rows: Row[] = [];
@@ -167,61 +71,35 @@ export async function GET(req: NextRequest) {
       const catName = s.category?.name || "";
       const subName = s.name;
       const expenses = s.expenses || [];
-
-      // somma i campi per sottocategoria (se non esistono spese, 0)
       let budget = 0, committed = 0, paid = 0, residual = 0;
       let spendType = "common" as "common" | "bride" | "groom";
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expenses.forEach((e: any) => {
-        // "budget": usiamo committed_amount per i planned/committed (è la colonna già in schema)
         const expenseSpendType = (e.spend_type as "common" | "bride" | "groom") || "common";
         budget += Number(e.committed_amount || 0);
         committed += Number(e.status === "committed" ? e.committed_amount || 0 : 0);
-        paid     += Number(e.paid_amount || 0);
-        // prendi l'ultimo tipo (o il primo non-common se c'è)
+        paid += Number(e.paid_amount || 0);
         if (expenseSpendType !== "common") spendType = expenseSpendType;
       });
       residual = Math.max(0, budget - paid);
 
-      // Verifica se almeno una spesa era from_dashboard
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hasFromDashboard = expenses.some((e: any) => e.from_dashboard);
-      const difference = paid - budget; // negativo = sotto budget, positivo = sopra budget
+      const hasFromDashboard = expenses.some((e: any) => Boolean(e.from_dashboard));
+      const difference = paid - budget;
 
-      rows.push({
-        category: catName,
-        subcategory: subName,
-        spend_type: spendType,
-        budget,
-        committed,
-        paid,
-        residual,
-        fromDashboard: hasFromDashboard,
-        difference,
-      });
+      rows.push({ category: catName, subcategory: subName, spend_type: spendType, budget, committed, paid, residual, fromDashboard: hasFromDashboard, difference });
 
       if (spendType === "bride") totalBride += budget;
       else if (spendType === "groom") totalGroom += budget;
       else totalCommon += budget;
     });
 
-    const totals = {
-      total: totalCommon + totalBride + totalGroom,
-      common: totalCommon,
-      bride: totalBride,
-      groom: totalGroom,
-    };
-
+    const totals = { total: totalCommon + totalBride + totalGroom, common: totalCommon, bride: totalBride, groom: totalGroom };
     return NextResponse.json({ rows, totals, eventId }, { status: 200 });
   } catch (e: unknown) {
     const err = e instanceof Error ? e : new Error(String(e));
     logger.error("BUDGET-TABLE Uncaught", { message: err.message });
-    return NextResponse.json({
-      rows: [],
-      totals: { total: 0, common: 0, bride: 0, groom: 0 },
-      eventId: null,
-      error: err.message || "Unexpected",
-    }, { status: 500 });
+    return NextResponse.json({ rows: [], totals: { total: 0, common: 0, bride: 0, groom: 0 }, eventId: null, error: err.message || "Unexpected" }, { status: 500 });
   }
 }

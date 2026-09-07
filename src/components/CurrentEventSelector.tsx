@@ -55,8 +55,11 @@ export default function CurrentEventSelector() {
   }, []);
 
   if (!payload) return null;
-  if (payload.events.length === 0) return <span className="hidden text-xs text-muted-fg md:inline">{t.none}</span>;
-  if (payload.events.length === 1 && payload.status === "RESOLVED") return null;
+  if (payload.events.length === 0) return <p className="text-sm text-muted-fg">{t.none}</p>;
+  if (payload.events.length === 1 && payload.status === "RESOLVED") {
+    const only = payload.events[0];
+    return <p className="text-sm font-semibold text-fg">{only.name || only.eventType}{only.date ? ` · ${only.date.slice(0, 10)}` : ""}</p>;
+  }
 
   const value = payload.currentEvent?.eventId || "";
   return (

@@ -20,6 +20,22 @@ jest.mock("@/lib/apiAuth", () => ({
   requireUser: (req: { headers: Headers }) => mockRequireUser(req),
 }));
 
+const mockResolveCurrentEvent = jest.fn(
+  async (_req: unknown, userId: string, options?: { explicitEventId?: string }) => {
+    const event = events.find(
+      (candidate) => candidate.id === options?.explicitEventId && candidate.owner_id === userId,
+    );
+    return event
+      ? { status: "RESOLVED", currentEvent: { eventId: event.id }, events: [event], staleSelection: false }
+      : { status: "NO_EVENT", currentEvent: null, events: [], staleSelection: false };
+  },
+);
+
+jest.mock("@/lib/currentEvent", () => ({
+  resolveCurrentEvent: (req: unknown, userId: string, options?: { explicitEventId?: string }) =>
+    mockResolveCurrentEvent(req, userId, options),
+}));
+
 jest.mock("@/data/templates/babyshower", () => ({
   __esModule: true,
   default: {
@@ -160,6 +176,7 @@ const routes = [
     name: "generic seed",
     load: () => import("./seed/[eventId]/route"),
     seedKinds: ["rpc"],
+    resolverBacked: true,
   },
   {
     name: "baby shower seed",
@@ -230,42 +247,57 @@ describe("seed route authentication and event ownership", () => {
     expect(operations).toEqual([]);
   });
 
-  it.each(routes)("returns 404 for an unknown event without seeding: $name", async ({ load }) => {
+  it.each(routes)("returns 404 for an unknown event without seeding: $name", async ({ load, resolverBacked }) => {
     const route = await load();
     const response = await route.POST(request("token-a"), context("missing"));
 
     expect(response.status).toBe(404);
-    expectOwnershipCheck("missing", "user-a");
-    expect(operations).toHaveLength(1);
+    if (resolverBacked) expect(operations).toHaveLength(0);
+    else {
+      expectOwnershipCheck("missing", "user-a");
+      expect(operations).toHaveLength(1);
+    }
   });
 
-  it.each(routes)("returns 404 for user B's event requested by user A without seeding: $name", async ({ load }) => {
+  it.each(routes)("returns 404 for user B's event requested by user A without seeding: $name", async ({ load, resolverBacked }) => {
     const route = await load();
     const response = await route.POST(request("token-a"), context("event-b"));
 
     expect(response.status).toBe(404);
-    expectOwnershipCheck("event-b", "user-a");
-    expect(operations).toHaveLength(1);
+    if (resolverBacked) expect(operations).toHaveLength(0);
+    else {
+      expectOwnershipCheck("event-b", "user-a");
+      expect(operations).toHaveLength(1);
+    }
   });
 
-  it.each(routes)("allows the owner and seeds only after ownership verification: $name", async ({ load, seedKinds }) => {
+  it.each(routes)("allows the owner and seeds only after ownership verification: $name", async ({ load, seedKinds, resolverBacked }) => {
     const route = await load();
     const response = await route.POST(request("token-a"), context("event-a"));
 
     expect(response.status).toBe(200);
-    expectOwnershipCheck("event-a", "user-a");
-    expect(operations.slice(1).every(({ kind }) => seedKinds.includes(kind))).toBe(true);
-    expect(operations.length).toBeGreaterThan(1);
+    if (resolverBacked) {
+      expect(mockResolveCurrentEvent).toHaveBeenCalledWith(expect.anything(), "user-a", { explicitEventId: "event-a" });
+      expect(operations.every(({ kind }) => seedKinds.includes(kind))).toBe(true);
+      expect(operations.length).toBeGreaterThan(0);
+    } else {
+      expectOwnershipCheck("event-a", "user-a");
+      expect(operations.slice(1).every(({ kind }) => seedKinds.includes(kind))).toBe(true);
+      expect(operations.length).toBeGreaterThan(1);
+    }
   });
 
-  it("passes the verified event id to seed_full_event", async () => {
-    verifiedEventId = "canonical-event-a";
+  it("passes only the resolver-validated event id to seed_full_event", async () => {
     const route = await import("./seed/[eventId]/route");
     await route.POST(request("token-a"), context("event-a"));
 
+    expect(mockResolveCurrentEvent).toHaveBeenCalledWith(
+      expect.anything(),
+      "user-a",
+      { explicitEventId: "event-a" },
+    );
     expect(operations).toEqual([
-      expect.objectContaining({ kind: "select", table: "events" }),
-      { kind: "rpc", fn: "seed_full_event", args: { p_event: "canonical-event-a" } },
+      { kind: "rpc", fn: "seed_full_event", args: { p_event: "event-a" } },
     ]);
   });
 

@@ -3,23 +3,17 @@ import { getServiceClient } from "@/lib/supabaseServer";
 import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
-// GET: restituisce le idee di budget salvate (come spese "planned" da Idea di Budget)
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
 
-  if (!jwt) {
-    // Demo: righe vuote per UI
-    return NextResponse.json({ data: [] });
-  }
+  if (!jwt) return NextResponse.json({ data: [] });
 
   const db = getServiceClient();
   const { data: userData, error } = await db.auth.getUser(jwt);
   if (error || !userData?.user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-  const eventData = { id: (await requireServerCurrentEvent(userData.user.id)).eventId };
-
-  // Recupera spese "planned" salvate dall'Idea di Budget (flag from_dashboard)
+  const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;
   const { data: rows, error: qErr } = await db
     .from("expenses")
     .select(`
@@ -35,7 +29,7 @@ export async function GET(req: NextRequest) {
         category:categories!inner(name, event_id)
       )
     `)
-    .eq("subcategory.category.event_id", eventData.id)
+    .eq("event_id", eventId)
     .eq("status", "planned")
     .eq("from_dashboard", true)
     .order("inserted_at", { ascending: true });
@@ -49,10 +43,7 @@ export async function GET(req: NextRequest) {
       notes: string | null;
       committed_amount: number | null;
       spend_type: string | null;
-      subcategory: {
-        name: string;
-        category: { name: string };
-      };
+      subcategory: { name: string; category: { name: string } };
     };
     return {
       id: expense.id,
@@ -68,7 +59,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ data });
 }
 
-// POST: salva/aggiorna idee di budget come spese "planned" (from_dashboard=true)
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
@@ -91,27 +81,21 @@ export async function POST(req: NextRequest) {
 
   const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;
 
-  // Elimina le spese "planned" create dall'Idea per questo evento
   const { error: delErr } = await db
     .from("expenses")
     .delete()
+    .eq("event_id", eventId)
     .eq("status", "planned")
-    .eq("from_dashboard", true)
-    .in(
-      "subcategory_id",
-      (
-        await db
-          .from("subcategories")
-          .select("id, category:categories!inner(event_id)")
-          .eq("category.event_id", eventId)
-      ).data?.map((r: { id: string }) => r.id) || []
-    );
+    .eq("from_dashboard", true);
   if (delErr) return NextResponse.json({ error: delErr.message }, { status: 500 });
 
-  // Prepara mapping categorie/sottocategorie e inserimenti
   const toInsert: Array<{
+    event_id: string;
+    category: string;
+    subcategory: string;
     subcategory_id: string;
     supplier: string | null;
+    amount: number;
     committed_amount: number;
     paid_amount: number;
     spend_type: string;
@@ -119,20 +103,20 @@ export async function POST(req: NextRequest) {
     status: string;
     from_dashboard: boolean;
   }> = [];
+
   for (const r of inputRows) {
     const categoryName = (r.category || "").trim();
     const subcategoryName = (r.subcategory || "").trim();
     const amount = Number(r.idea_amount ?? r.amount ?? 0) || 0;
-    const spendType = (r.spendType || "common") as string;
+    const spendType = r.spendType || "common";
     if (!categoryName || !subcategoryName) continue;
 
-    // Trova o crea categoria
     let { data: cat } = await db
       .from("categories")
       .select("id")
       .eq("event_id", eventId)
       .eq("name", categoryName)
-      .single();
+      .maybeSingle();
     if (!cat) {
       const { data: newCat } = await db
         .from("categories")
@@ -143,13 +127,12 @@ export async function POST(req: NextRequest) {
     }
     if (!cat?.id) continue;
 
-    // Trova o crea sottocategoria
     let { data: sub } = await db
       .from("subcategories")
       .select("id")
       .eq("category_id", cat.id)
       .eq("name", subcategoryName)
-      .single();
+      .maybeSingle();
     if (!sub) {
       const { data: newSub } = await db
         .from("subcategories")
@@ -161,8 +144,12 @@ export async function POST(req: NextRequest) {
     if (!sub?.id) continue;
 
     toInsert.push({
+      event_id: eventId,
+      category: categoryName,
+      subcategory: subcategoryName,
       subcategory_id: sub.id,
       supplier: r.supplier || null,
+      amount,
       committed_amount: amount,
       paid_amount: 0,
       spend_type: spendType,

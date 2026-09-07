@@ -11,6 +11,22 @@ jest.mock("@/lib/apiAuth", () => ({
   requireUser: jest.fn(async () => ({ userId: "user-a" })),
 }));
 
+jest.mock("@/lib/currentEvent", () => ({
+  requireServerCurrentEvent: jest.fn(async () => ({
+    eventId: "event-a",
+    id: "event-a",
+    ownerId: "user-a",
+    name: "Matrimonio A",
+    eventType: "wedding",
+    date: null,
+    locale: "it",
+    country: "IT",
+    capability: { availabilityStatus: "READY", enabledModules: [] },
+    source: "single-event-fallback",
+    valid: true,
+  })),
+}));
+
 type Table = "expenses" | "incomes" | "appointments" | "events";
 type Operation = "select" | "update" | "delete";
 type Filter = { column: string; value: unknown };
@@ -188,11 +204,10 @@ describe("IDOR protection for resource routes", () => {
 
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ error: "Not found" });
-    expectFilters(findQuery("events", "select", "id"), [
-      ["id", "event-b"],
-      ["owner_id", "user-a"],
+    expectFilters(findQuery("expenses", "select", "id,committed_amount"), [
+      ["id", "expense-b"],
+      ["event_id", "event-a"],
     ]);
-    expect(findQuery("expenses", "select", "committed_amount")).toBeUndefined();
     expect(findQuery("expenses", "update")).toBeUndefined();
     const otherUsersExpense = rows.expenses.find((row) => row.id === "expense-b");
     expect(otherUsersExpense?.status).toBe("pending");
@@ -208,9 +223,9 @@ describe("IDOR protection for resource routes", () => {
 
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ error: "Not found" });
-    expectFilters(findQuery("events", "select", "id"), [
-      ["id", "event-b"],
-      ["owner_id", "user-a"],
+    expectFilters(findQuery("incomes", "select", "id"), [
+      ["id", "income-b"],
+      ["event_id", "event-a"],
     ]);
     expect(findQuery("incomes", "delete")).toBeUndefined();
     expect(rows.incomes.some((row) => row.id === "income-b")).toBe(true);
@@ -225,9 +240,9 @@ describe("IDOR protection for resource routes", () => {
 
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ error: "Not found" });
-    expectFilters(findQuery("events", "select", "id"), [
-      ["id", "event-b"],
-      ["owner_id", "user-a"],
+    expectFilters(findQuery("appointments", "select", "id"), [
+      ["id", "appointment-b"],
+      ["event_id", "event-a"],
     ]);
     expect(findQuery("appointments", "delete")).toBeUndefined();
     expect(rows.appointments.some((row) => row.id === "appointment-b")).toBe(true);
@@ -269,7 +284,7 @@ describe("IDOR protection for resource routes", () => {
     expect(rows).toEqual(initialRows);
   });
 
-  it("allows the owner to update an expense after ownership is verified", async () => {
+  it("allows the current-event user to update an expense after event scoping is verified", async () => {
     const route = await import("./expenses/[id]/route");
     const response = await route.PATCH(
       {
@@ -281,18 +296,10 @@ describe("IDOR protection for resource routes", () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ ok: true });
-    const ownershipIndex = queryLog.findIndex(
-      (record) => record.table === "events" && record.columns === "id"
-    );
     const amountIndex = queryLog.findIndex(
-      (record) => record.table === "expenses" && record.columns === "committed_amount"
+      (record) => record.table === "expenses" && record.columns === "id,committed_amount"
     );
-    expect(ownershipIndex).toBeGreaterThanOrEqual(0);
-    expect(amountIndex).toBeGreaterThan(ownershipIndex);
-    expectFilters(queryLog[ownershipIndex], [
-      ["id", "event-a"],
-      ["owner_id", "user-a"],
-    ]);
+    expect(amountIndex).toBeGreaterThanOrEqual(0);
     expectFilters(queryLog[amountIndex], [
       ["id", "expense-a"],
       ["event_id", "event-a"],
@@ -307,7 +314,7 @@ describe("IDOR protection for resource routes", () => {
     });
   });
 
-  it("allows the owner to delete an income using the verified event ID", async () => {
+  it("allows the current-event user to delete an income using the verified event ID", async () => {
     const route = await import("./incomes/[id]/route");
     const response = await route.DELETE(
       { headers: new Headers({ authorization: "Bearer token-a" }) } as unknown as import("next/server").NextRequest,
@@ -316,9 +323,9 @@ describe("IDOR protection for resource routes", () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ ok: true });
-    expectFilters(findQuery("events", "select", "id"), [
-      ["id", "event-a"],
-      ["owner_id", "user-a"],
+    expectFilters(findQuery("incomes", "select", "id"), [
+      ["id", "income-a"],
+      ["event_id", "event-a"],
     ]);
     expectFilters(findQuery("incomes", "delete"), [
       ["id", "income-a"],
@@ -327,7 +334,7 @@ describe("IDOR protection for resource routes", () => {
     expect(rows.incomes.some((row) => row.id === "income-a")).toBe(false);
   });
 
-  it("allows the owner to delete an appointment using the verified event ID", async () => {
+  it("allows the current-event user to delete an appointment using the verified event ID", async () => {
     const route = await import("./appointments/[id]/route");
     const response = await route.DELETE(
       { headers: new Headers({ authorization: "Bearer token-a" }) } as unknown as import("next/server").NextRequest,
@@ -336,9 +343,9 @@ describe("IDOR protection for resource routes", () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ ok: true });
-    expectFilters(findQuery("events", "select", "id"), [
-      ["id", "event-a"],
-      ["owner_id", "user-a"],
+    expectFilters(findQuery("appointments", "select", "id"), [
+      ["id", "appointment-a"],
+      ["event_id", "event-a"],
     ]);
     expectFilters(findQuery("appointments", "delete"), [
       ["id", "appointment-a"],

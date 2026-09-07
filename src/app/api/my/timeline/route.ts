@@ -41,19 +41,15 @@ type TimelinePatch = Partial<{
 export async function GET(req: NextRequest) {
   try {
     const jwt = getBearer(req);
-    // Demo-first: se non autenticato, restituisce lista vuota e lascia alla UI i template locali
     if (!jwt) return NextResponse.json({ items: [] });
 
     const db = getServiceClient();
     const { userId } = await requireUser(req);
-
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
     const { data, error } = await db
       .from("timeline_items")
-      .select(
-        "id, title, description, category, completed, display_order, phase, days_before"
-      )
+      .select("id, title, description, category, completed, display_order, phase, days_before")
       .eq("event_id", eventId)
       .order("display_order", { ascending: true })
       .order("days_before", { ascending: true, nullsFirst: false });
@@ -76,13 +72,9 @@ export async function POST(req: NextRequest) {
     const { userId } = await requireUser(req);
     const db = getServiceClient();
     const body = await req.json();
-
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
-
-    // Supporta singolo item o bulk array
     const items = Array.isArray(body) ? (body as TimelineInsertInput[]) : [body as TimelineInsertInput];
 
-    // Normalizza campi
     const toInsert = items.map((it: TimelineInsertInput, idx: number) => ({
       event_id: eventId,
       title: String(it.title || ""),
@@ -95,10 +87,7 @@ export async function POST(req: NextRequest) {
         it.days_before ?? (typeof it.monthsBefore === "number" ? Math.round(it.monthsBefore * 30) : null),
     }));
 
-    const { data, error } = await db
-      .from("timeline_items")
-      .insert(toInsert)
-      .select();
+    const { data, error } = await db.from("timeline_items").insert(toInsert).select();
     if (error) {
       logger.error("TIMELINE POST error", { error: error.message });
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -120,21 +109,14 @@ export async function PUT(req: NextRequest) {
     const { id, ...patch } = body as PatchBody;
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-    // Autorizzazione: verifica che l'item appartenga all'evento dell'utente
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
     const { data: row } = await db
       .from("timeline_items")
       .select("id, event_id")
       .eq("id", id)
-      .single();
-    if (!row?.event_id) return NextResponse.json({ error: "Item non trovato" }, { status: 404 });
-
-    const { data: ev } = await db
-      .from("events")
-      .select("id")
-      .eq("id", row.event_id)
-      .eq("owner_id", userId)
-      .single();
-    if (!ev) return NextResponse.json({ error: "Non autorizzato" }, { status: 403 });
+      .eq("event_id", eventId)
+      .maybeSingle();
+    if (!row) return NextResponse.json({ error: "Item non trovato" }, { status: 404 });
 
     const update: Record<string, unknown> = {};
     if (typeof patch.title === "string") update.title = patch.title;
@@ -150,6 +132,7 @@ export async function PUT(req: NextRequest) {
       .from("timeline_items")
       .update(update)
       .eq("id", id)
+      .eq("event_id", eventId)
       .select()
       .single();
     if (error) {
@@ -172,25 +155,20 @@ export async function DELETE(req: NextRequest) {
     const id = searchParams.get("id");
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
+    const eventId = (await requireServerCurrentEvent(userId)).eventId;
     const { data: row } = await db
       .from("timeline_items")
-      .select("id, event_id")
-      .eq("id", id)
-      .single();
-    if (!row?.event_id) return NextResponse.json({ error: "Item non trovato" }, { status: 404 });
-
-    const { data: ev } = await db
-      .from("events")
       .select("id")
-      .eq("id", row.event_id)
-      .eq("owner_id", userId)
-      .single();
-    if (!ev) return NextResponse.json({ error: "Non autorizzato" }, { status: 403 });
+      .eq("id", id)
+      .eq("event_id", eventId)
+      .maybeSingle();
+    if (!row) return NextResponse.json({ error: "Item non trovato" }, { status: 404 });
 
     const { error } = await db
       .from("timeline_items")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .eq("event_id", eventId);
     if (error) {
       logger.error("TIMELINE DELETE error", { error: error.message });
       return NextResponse.json({ error: error.message }, { status: 500 });

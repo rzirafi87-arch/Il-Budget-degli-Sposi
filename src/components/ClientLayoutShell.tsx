@@ -8,7 +8,6 @@ import Footer from "@/components/Footer";
 import NavTabs from "@/components/NavTabs";
 import QuickSettings from "@/components/QuickSettings";
 import { ToastProvider } from "@/components/ToastProvider";
-import TopBarSelector from "@/components/TopBarSelector";
 import { locales } from "@/i18n/config";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -17,7 +16,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Lightbulb, MessageCircle, Settings } from "lucide-react";
 import { buttonClasses } from "@/components/ui/AppButton";
 import UserMenu from "@/components/UserMenu";
-import CurrentEventSelector from "@/components/CurrentEventSelector";
 
 export default function ClientLayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -43,11 +41,9 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     normalizedPath === "/auth" ||
     normalizedPath === "/welcome";
 
-  // Evita letture non deterministiche in fase SSR: inizializza neutro.
   const [eventType, setEventType] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Calcolato solo dopo mount per evitare mismatch tra SSR e client.
   const showHeader = mounted && !isOnboarding && (
     eventType === "wedding" ||
     eventType === "baptism" ||
@@ -59,7 +55,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
   );
 
   useEffect(() => {
-    // Recupera valori client-only dopo mount.
     const timer = window.setTimeout(() => {
       try {
         const cookieEvt = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
@@ -119,8 +114,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                   </span>
                 </Link>
                 <div className="flex items-center gap-1.5 text-sm text-muted-fg">
-                  <CurrentEventSelector />
-                  <TopBarSelector />
                   {!isSaveTheDate && (
                     <>
                       <UserMenu />
@@ -159,7 +152,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
           </div>
         </header>
       ) : (
-        // Placeholder per mantenere coerenza altezza (evita jump layout post-idratazione)
         <div aria-hidden className="h-0" />
       )}
 

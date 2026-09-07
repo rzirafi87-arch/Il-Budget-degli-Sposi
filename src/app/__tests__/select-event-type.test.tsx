@@ -1,8 +1,15 @@
 ﻿import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
+const mockReplace = jest.fn();
+const mockGetOnboardingStatus = jest.fn();
+
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+  useRouter: () => ({ push: jest.fn(), replace: mockReplace }),
+}));
+
+jest.mock("@/lib/onboardingClient", () => ({
+  getOnboardingStatus: () => mockGetOnboardingStatus(),
 }));
 
 beforeAll(() => {
@@ -15,11 +22,14 @@ import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
 
 describe("SelectEventTypePage", () => {
   beforeEach(() => {
+    mockReplace.mockClear();
+    mockGetOnboardingStatus.mockReset();
+    mockGetOnboardingStatus.mockResolvedValue({ kind: "needs-onboarding", accessToken: "token" });
     window.localStorage.clear();
     (document as unknown as { cookie: string }).cookie = "";
   });
 
-  it("mantiene Matrimonio READY e salva la scelta", async () => {
+  it("mantiene Matrimonio READY solo nel recupero per un account senza evento", async () => {
     window.localStorage.setItem("language", "it");
     window.localStorage.setItem("country", "it");
 
@@ -35,5 +45,30 @@ describe("SelectEventTypePage", () => {
       expect(window.localStorage.getItem("eventType")).toBe("wedding");
       expect(document.cookie).toMatch(/eventType=wedding/);
     });
+  });
+
+  it("non mostra la wizard a un utente con matrimonio già configurato", async () => {
+    mockGetOnboardingStatus.mockResolvedValue({
+      kind: "complete",
+      accessToken: "token",
+      event: { id: "event-a", event_type: "wedding" },
+    });
+
+    render(<SelectEventTypePage />);
+
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/dashboard"));
+    expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
+  });
+
+  it("rimanda la selezione multi-evento alle Impostazioni", async () => {
+    mockGetOnboardingStatus.mockResolvedValue({
+      kind: "needs-event-selection",
+      accessToken: "token",
+    });
+
+    render(<SelectEventTypePage />);
+
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/dashboard"));
+    expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
   });
 });

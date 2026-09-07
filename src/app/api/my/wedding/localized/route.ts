@@ -1,12 +1,12 @@
 export const runtime = "nodejs";
-import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { getBearer, requireUser } from "@/lib/apiAuth";
-import { requireCurrentEvent } from "@/lib/currentEvent";
+import { currentEventErrorResponse, requireCurrentEvent } from "@/lib/currentEvent";
 
-// GET /api/my/wedding/localized?country=IT&event=matrimonio
-// Returns the localized presets for a wedding in a given country from app.v_country_event_wedding
-// Demo-friendly: no auth required for GET. Auth is only required for mutations elsewhere.
+// Compatibility endpoint for optional localized wedding presets.
+// The historical app.v_country_event_wedding view is not part of the canonical
+// rebuilt schema. Return an explicit unavailable contract instead of querying a
+// nonexistent/unexposed schema and leaking a database error to the client.
 export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
@@ -23,27 +23,15 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const db = getServiceClient();
-    const { data, error } = await db
-      .schema("app")
-      .from("v_country_event_wedding")
-      .select("*")
-      .eq("iso2", country)
-      .eq("event_slug", event)
-      .limit(1);
-
-    if (error) {
-      console.error("localized GET – DB error:", error);
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "LOCALIZED_PRESET_UNAVAILABLE", country, event },
+      { status: 404 },
+    );
+  } catch (error: unknown) {
+    const contextError = currentEventErrorResponse(error);
+    if (contextError) {
+      return NextResponse.json({ ok: false, error: contextError.error }, { status: contextError.status });
     }
-
-    const row = data?.[0];
-    if (!row) {
-      return NextResponse.json({ ok: false, error: "Nessun dato disponibile per il paese/evento richiesto" }, { status: 404 });
-    }
-
-    return NextResponse.json({ ok: true, country, event, data: row });
-  } catch (e: unknown) {
-    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "LOCALIZED_PRESET_FAILED" }, { status: 500 });
   }
 }

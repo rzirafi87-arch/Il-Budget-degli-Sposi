@@ -81,7 +81,7 @@ export default function NavTabs() {
     { module: "accounting", path: "/contabilita", label: () => t("accounting"), icon: CircleDollarSign },
     { module: "suppliers", path: "/fornitori", label: () => t("suppliers"), icon: HeartHandshake },
     { module: "location-reception", path: "/location", label: () => t("locationReception", { default: "Location Ricevimento" }), icon: MapPin },
-    { module: "location-ceremony", path: "/cerimonia", label: () => t("locationCeremony", { default: "Location Cerimonia" }), icon: MapPin },
+    { module: "location-ceremony", path: "/cerimonia/chiesa", label: () => t("locationCeremony", { default: "Location Cerimonia" }), icon: MapPin },
     { module: "churches", path: "/chiese", label: () => t("churches", { default: "Chiese" }), icon: Church },
     { module: "documents", path: "/documenti", label: () => t("documents"), icon: FileText },
     { module: "favorites", path: "/preferiti", label: () => t("favorites", { default: "Preferiti" }), icon: Star },
