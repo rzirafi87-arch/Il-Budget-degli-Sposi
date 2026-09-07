@@ -9,6 +9,9 @@ jest.mock("next/navigation", () => ({
 jest.mock("@/lib/supabaseBrowser", () => ({
   getBrowserClient: () => ({ auth: { getSession: async () => ({ data: { session: { access_token: "token" } }, error: null }) } }),
 }));
+jest.mock("@/lib/onboardingClient", () => ({
+  getOnboardingStatus: async () => ({ kind: "needs-onboarding", accessToken: "token" }),
+}));
 
 beforeAll(() => {
   // @ts-expect-error - Mocking global fetch for testing
@@ -32,13 +35,13 @@ describe("SelectEventTypePage - Comunione", () => {
     mockReplace.mockClear();
   });
 
-  it("mostra Comunione come Coming Soon e non consente la creazione", () => {
+  it("mostra Comunione come Coming Soon e non consente la creazione", async () => {
     window.localStorage.setItem("language", "it");
     window.localStorage.setItem("country", "it");
 
     render(<SelectEventTypePage />);
 
-    const btn = screen.getByText("events.communion").closest("button");
+    const btn = (await screen.findByText("events.communion")).closest("button");
     expect(btn).toBeTruthy();
     expect(btn).toBeDisabled();
     expect(btn).toHaveAttribute("aria-disabled", "true");
