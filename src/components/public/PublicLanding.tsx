@@ -1,4 +1,4 @@
-import { BRAND_NAME, BRAND_SITE_URL } from "@/config/brand";
+import { BRAND_NAME, getSiteUrl } from "@/config/brand";
 import { localeNames, locales, type Locale } from "@/i18n/config";
 import {
   ArrowRight, CalendarCheck, Check, ChevronRight, ClipboardCheck, FileText,
@@ -17,11 +17,12 @@ type Translator = Awaited<ReturnType<typeof getTranslations>>;
 export default async function PublicLanding({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "landing" });
   const authHref = `/${locale}/auth`;
+  const siteUrl = getSiteUrl();
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: BRAND_NAME,
-    url: `${BRAND_SITE_URL}/${locale}`,
+    url: `${siteUrl}/${locale}`,
     description: t("seo.description"),
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
