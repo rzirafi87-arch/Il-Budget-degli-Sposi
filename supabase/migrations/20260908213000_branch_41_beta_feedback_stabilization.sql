@@ -167,3 +167,18 @@ alter table public.expenses
   add column if not exists is_enabled boolean not null default true;
 comment on column public.expenses.is_enabled is
   'Whether an Idea di Budget row is included in totals and Apply to Budget.';
+
+create or replace function public.get_wedding_budget_focus(p_country text, p_event text)
+returns jsonb
+language sql
+stable
+security invoker
+set search_path = app, public
+as $$
+  select budget_focus_pct
+  from app.v_country_event_wedding
+  where iso2 = upper(p_country) and event_slug = p_event
+  limit 1
+$$;
+revoke all on function public.get_wedding_budget_focus(text,text) from public,anon,authenticated;
+grant execute on function public.get_wedding_budget_focus(text,text) to service_role;
