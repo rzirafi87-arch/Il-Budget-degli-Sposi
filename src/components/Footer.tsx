@@ -1,5 +1,6 @@
 "use client";
 
+import CookiePreferencesButton from "@/components/CookiePreferencesButton";
 import { BRAND_NAME } from "@/config/brand";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
@@ -139,6 +140,7 @@ export default function Footer() {
               <li><Link href={`/${locale}/privacy-policy`} className="hover:text-white transition-colors">{t("privacyPolicy", { default: "Privacy Policy" })}</Link></li>
               <li><Link href={`/${locale}/termini-servizio`} className="hover:text-white transition-colors">{t("termsOfService", { default: "Termini di Servizio" })}</Link></li>
               <li><Link href={`/${locale}/cookie-policy`} className="hover:text-white transition-colors">{t("cookiePolicy", { default: "Cookie Policy" })}</Link></li>
+              <li><CookiePreferencesButton className="hover:text-white transition-colors" /></li>
             </ul>
           </div>
         </div>
