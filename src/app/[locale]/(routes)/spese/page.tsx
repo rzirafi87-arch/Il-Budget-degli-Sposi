@@ -1,5 +1,6 @@
-import { WEDDING_BUDGET_CATEGORIES } from "@/constants/budgetCategories";
 ﻿"use client";
+
+import { WEDDING_BUDGET_CATEGORIES } from "@/constants/budgetCategories";
 
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
