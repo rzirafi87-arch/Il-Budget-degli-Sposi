@@ -1,8 +1,8 @@
-import { BRAND_SITE_URL } from "@/config/brand";
+import { getSiteUrl } from "@/config/brand";
 import { locales } from "@/i18n/config";
 import type { MetadataRoute } from "next";
 
-const SITE_URL = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || BRAND_SITE_URL;
+const SITE_URL = getSiteUrl();
 
 const pages: string[] = [
   "",
@@ -23,9 +23,6 @@ const pages: string[] = [
   "/privacy-policy",
   "/cookie-policy",
   "/termini-servizio",
-  "/save-the-date",
-  "/musica-cerimonia",
-  "/musica-ricevimento",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
