@@ -1,4 +1,4 @@
-import { BRAND_SITE_URL } from "@/config/brand";
+import { getSiteUrl } from "@/config/brand";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
@@ -33,7 +33,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL || BRAND_SITE_URL),
+  metadataBase: new URL(getSiteUrl()),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

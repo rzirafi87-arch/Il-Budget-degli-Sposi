@@ -11,3 +11,13 @@ export const BRAND_DEFAULT_DESCRIPTION =
 export const BRAND_DEFAULT_TITLE_EN = `${BRAND_NAME} - Plan Your Event`;
 export const BRAND_DEFAULT_DESCRIPTION_EN =
   "Plan your event with Il Budget degli Sposi: manage budget, find suppliers, venues and churches. Free tools to plan every occasion.";
+
+export function getSiteUrl(): string {
+  const configured =
+    process.env.SITE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (!configured) return BRAND_SITE_URL;
+  const withProtocol = /^https?:\/\//i.test(configured) ? configured : `https://${configured}`;
+  return withProtocol.replace(/\/$/, "");
+}

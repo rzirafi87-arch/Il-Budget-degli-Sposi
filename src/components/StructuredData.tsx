@@ -1,8 +1,8 @@
 import Script from 'next/script';
-import { BRAND_NAME, BRAND_SITE_URL } from '@/config/brand';
+import { BRAND_NAME, getSiteUrl } from '@/config/brand';
 
 export function JsonLd() {
-  const SITE_URL = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || BRAND_SITE_URL;
+  const SITE_URL = getSiteUrl();
 
   const schema = {
     "@context": "https://schema.org",
@@ -36,7 +36,7 @@ export function JsonLd() {
 }
 
 export function WebsiteSchema() {
-  const SITE_URL = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || BRAND_SITE_URL;
+  const SITE_URL = getSiteUrl();
 
   const schema = {
     "@context": "https://schema.org",
@@ -56,7 +56,7 @@ export function WebsiteSchema() {
 }
 
 export function OrganizationSchema() {
-  const SITE_URL = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || BRAND_SITE_URL;
+  const SITE_URL = getSiteUrl();
 
   const schema = {
     "@context": "https://schema.org",

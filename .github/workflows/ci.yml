@@ -34,6 +34,8 @@ jobs:
         run: npm run check:utf8:strict
       - name: Validate config encoding
         run: npm run config:validate
+      - name: Validate repository secrets
+        run: npm run check:secrets
       - name: Validate common catalog import pipeline
         run: npm run catalog:test && npm run churches:import && npm run locations:import && npm run catalog:import -- --entity=supplier --file=scripts/datasets/suppliers-agrigento-pilot.json
       - name: Lint

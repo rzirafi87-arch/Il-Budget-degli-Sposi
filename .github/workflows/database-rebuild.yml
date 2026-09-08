@@ -138,7 +138,7 @@ jobs:
           cd .supabase-ci
           supabase db lint --local --schema public --level warning --fail-on error
 
-      - name: Generate post-Branch-33 TypeScript types
+      - name: Generate current TypeScript types
         run: |
           mkdir -p generated
           cd .supabase-ci
@@ -148,7 +148,7 @@ jobs:
       - name: Upload generated database types
         uses: actions/upload-artifact@v4
         with:
-          name: branch-33-database-types
+          name: current-database-types
           path: generated/database.types.ts
           if-no-files-found: error
 
