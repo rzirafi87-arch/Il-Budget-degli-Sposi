@@ -2,7 +2,7 @@ import { AppSettingsProvider } from "@/app/(providers)/app-settings";
 import ClientLayoutShell from "@/components/ClientLayoutShell";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import EventModuleGuard from "@/components/EventModuleGuard";
-import { GoogleAnalytics } from "@/components/GoogleTracking";
+import ConsentAwareAnalytics from "@/components/ConsentAwareAnalytics";
 import { OrganizationSchema, WebsiteSchema } from "@/components/StructuredData";
 import {
   BRAND_DEFAULT_DESCRIPTION,
@@ -158,7 +158,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     <>
       <WebsiteSchema />
       <OrganizationSchema />
-      {process.env.NEXT_PUBLIC_GA_ID ? <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} /> : null}
+      <ConsentAwareAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
 
       <ThemeProvider>
         <AppSettingsProvider initialLocale={locale}>

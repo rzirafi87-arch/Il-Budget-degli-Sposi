@@ -1,23 +1,5 @@
-self.addEventListener('install', () => {
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  event.respondWith(
-    caches.open('budget-sposi-v1').then(cache =>
-      cache.match(event.request).then(response =>
-        response || fetch(event.request).then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-            cache.put(event.request, networkResponse.clone());
-          }
-          return networkResponse;
-        })
-      )
-    )
-  );
-});
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
+// Authenticated application responses are intentionally never cached.
+// Offline behavior is not promised for this release candidate.
+self.addEventListener("fetch", () => {});
