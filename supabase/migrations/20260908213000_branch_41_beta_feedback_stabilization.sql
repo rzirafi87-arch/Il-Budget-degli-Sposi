@@ -168,20 +168,35 @@ alter table public.expenses
 comment on column public.expenses.is_enabled is
   'Whether an Idea di Budget row is included in totals and Apply to Budget.';
 
-create or replace function public.get_wedding_budget_focus(p_country text, p_event text)
-returns jsonb
-language plpgsql
-stable
-security invoker
-set search_path = app, public, pg_temp
-as $$
-declare result jsonb;
+do $migration$
 begin
-  if to_regclass('app.v_country_event_wedding') is null then return null; end if;
-  execute 'select budget_focus_pct from app.v_country_event_wedding where iso2=$1 and event_slug=$2 limit 1'
-    into result using upper(p_country), p_event;
-  return result;
+  if to_regclass('app.v_country_event_wedding') is not null then
+    execute $function$
+      create or replace function public.get_wedding_budget_focus(p_country text, p_event text)
+      returns jsonb
+      language sql
+      stable
+      security invoker
+      set search_path = app, public, pg_temp
+      as $body$
+        select budget_focus_pct
+        from app.v_country_event_wedding
+        where iso2 = upper(p_country) and event_slug = p_event
+        limit 1
+      $body$
+    $function$;
+  else
+    execute $function$
+      create or replace function public.get_wedding_budget_focus(p_country text, p_event text)
+      returns jsonb
+      language sql
+      stable
+      security invoker
+      set search_path = public, pg_temp
+      as $body$ select null::jsonb $body$
+    $function$;
+  end if;
 end
-$$;
+$migration$;
 revoke all on function public.get_wedding_budget_focus(text,text) from public,anon,authenticated;
-grant execute on function public.get_wedding_budget_focus(text,text) to service_role;
+grant execute on function public.get_wedding_budget_focus(text,text) to service_role;;
