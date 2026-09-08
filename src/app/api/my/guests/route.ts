@@ -5,98 +5,52 @@ import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
-type MenuPreference = "carne" | "pesce" | "baby" | "animazione" | "vegetariano" | "posto_tavolo";
-
-type Guest = {
-  id?: string;
-  name: string;
-  guestType: "bride" | "groom" | "common";
-  isMainContact: boolean;
-  excludeFromFamilyTable: boolean;
-  invitationDate: string;
-  rsvpDeadline: string;
-  rsvpReceived: boolean;
-  attending: boolean;
-  menuPreferences: MenuPreference[];
-  receivesBomboniera: boolean;
-  notes: string;
-};
-
-type NonInvitedRecipient = {
-  id?: string;
-  name: string;
-  receivesBomboniera: boolean;
-  receivesConfetti: boolean;
-  notes: string;
-};
+function fail(message: string, status = 500) {
+  return NextResponse.json({ error: message }, { status });
+}
 
 export async function GET(req: NextRequest) {
   try {
     const jwt = getBearer(req);
-
     if (!jwt) {
-      // Dati demo per utenti non autenticati
-      return NextResponse.json({
-        guests: [],
-        familyGroups: [
-          { id: "demo-fam-1", familyName: "Famiglia Rossi", mainContactGuestId: null, notes: "" },
-          { id: "demo-fam-2", familyName: "Famiglia Bianchi", mainContactGuestId: null, notes: "" },
-          { id: "demo-fam-3", familyName: "Famiglia Verdi", mainContactGuestId: null, notes: "" },
-        ],
-        nonInvitedRecipients: [],
-        defaultRsvpDeadline: "",
-      });
+      return NextResponse.json({ guests: [], familyGroups: [], nonInvitedRecipients: [], defaultRsvpDeadline: "" });
     }
-
     const db = getServiceClient();
     const { userId } = await requireUser(req);
-
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
-    const { data: event } = await db.from("events").select("default_rsvp_deadline").eq("id", eventId).single();
-    const defaultRsvpDeadline = event?.default_rsvp_deadline || "";
-
-    // Carica i gruppi famiglia
-    const { data: familyGroupsData } = await db
-      .from("family_groups")
-      .select("*")
-      .eq("event_id", eventId)
-      .order("created_at", { ascending: true });
-
-    // Carica gli invitati con informazioni famiglia
-    const { data: guestsData } = await db
-      .from("guests")
-      .select(`
-        *,
-        family_groups (
-          family_name
-        )
-      `)
-      .eq("event_id", eventId)
-      .order("created_at", { ascending: true });
-
-    // Mappa i dati per includere familyGroupName
-    const mappedGuests = (guestsData || []).map((g: Record<string, unknown>) => ({
-      ...g,
-      familyGroupName: (g.family_groups as { family_name?: string })?.family_name,
-    }));
-
-    // Carica i non invitati
-    const { data: nonInvitedData } = await db
-      .from("non_invited_recipients")
-      .select("*")
-      .eq("event_id", eventId)
-      .order("created_at", { ascending: true });
+    const [eventResult, familiesResult, guestsResult, recipientsResult] = await Promise.all([
+      db.from("events").select("default_rsvp_deadline").eq("id", eventId).single(),
+      db.from("family_groups").select("*").eq("event_id", eventId).order("created_at", { ascending: true }),
+      db.from("guests").select("*").eq("event_id", eventId).order("created_at", { ascending: true }),
+      db.from("non_invited_recipients").select("*").eq("event_id", eventId).order("created_at", { ascending: true }),
+    ]);
+    const firstError = eventResult.error || familiesResult.error || guestsResult.error || recipientsResult.error;
+    if (firstError) throw firstError;
 
     return NextResponse.json({
-      guests: mappedGuests,
-      familyGroups: familyGroupsData || [],
-      nonInvitedRecipients: nonInvitedData || [],
-      defaultRsvpDeadline,
+      guests: (guestsResult.data || []).map((g: Record<string, unknown>) => ({
+        id: g.id, name: g.name, guestType: g.guest_type, isMainContact: Boolean(g.is_main_contact),
+        familyGroupId: g.family_group_id || undefined,
+        excludeFromFamilyTable: Boolean(g.exclude_from_family_table),
+        invitationDate: g.invitation_date || "", rsvpDeadline: g.rsvp_deadline || "",
+        rsvpReceived: Boolean(g.rsvp_received), attending: Boolean(g.attending),
+        menuPreferences: g.menu_preferences || [], receivesBomboniera: Boolean(g.receives_bomboniera),
+        allergiesIntolerances: g.allergies_intolerances || "", notes: g.notes || "",
+      })),
+      familyGroups: (familiesResult.data || []).map((f: Record<string, unknown>) => ({
+        id: f.id, familyName: f.family_name, mainContactGuestId: f.main_contact_guest_id || undefined,
+        notes: f.notes || "",
+      })),
+      nonInvitedRecipients: (recipientsResult.data || []).map((r: Record<string, unknown>) => ({
+        id: r.id, name: r.name, receivesBomboniera: Boolean(r.receives_bomboniera),
+        receivesConfetti: Boolean(r.receives_confetti), notes: r.notes || "",
+      })),
+      defaultRsvpDeadline: eventResult.data?.default_rsvp_deadline || "",
     });
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Internal error";
-    logger.error("GET /api/my/guests error", { message: errorMsg });
-    return NextResponse.json({ error: errorMsg }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Internal error";
+    logger.error("GET /api/my/guests error", { message });
+    return fail(message);
   }
 }
 
@@ -104,88 +58,30 @@ export async function POST(req: NextRequest) {
   try {
     const db = getServiceClient();
     const { userId } = await requireUser(req);
-
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
-
     const body = await req.json();
-    const { guests, familyGroups, nonInvitedRecipients, defaultRsvpDeadline } = body;
-
-    // Aggiorna la deadline RSVP nell'evento
-    await db
-      .from("events")
-      .update({ default_rsvp_deadline: defaultRsvpDeadline || null })
-      .eq("id", eventId);
-
-    // Salva i gruppi famiglia
-    if (familyGroups && Array.isArray(familyGroups)) {
-      // Elimina tutti i gruppi famiglia esistenti per questo evento
-      await db.from("family_groups").delete().eq("event_id", eventId);
-
-      // Inserisci i nuovi gruppi famiglia
-      const familyGroupsToInsert = familyGroups
-        .filter((f: { familyName?: string }) => f.familyName?.trim())
-        .map((f: { familyName?: string; mainContactGuestId?: string; notes?: string }) => ({
-          event_id: eventId,
-          family_name: f.familyName,
-          main_contact_guest_id: f.mainContactGuestId || null,
-          notes: f.notes || "",
-        }));
-
-      if (familyGroupsToInsert.length > 0) {
-        await db.from("family_groups").insert(familyGroupsToInsert);
-      }
+    if (!Array.isArray(body?.guests) || !Array.isArray(body?.familyGroups) || !Array.isArray(body?.nonInvitedRecipients)) {
+      return fail("Payload invitati non valido", 400);
     }
-
-    // Salva gli invitati
-    if (guests && Array.isArray(guests)) {
-      // Elimina tutti gli invitati esistenti per questo evento
-      await db.from("guests").delete().eq("event_id", eventId);
-
-      // Inserisci i nuovi invitati
-      const guestsToInsert = guests.map((g: Guest & { familyGroupId?: string }) => ({
-        event_id: eventId,
-        name: g.name,
-        guest_type: g.guestType,
-        is_main_contact: g.isMainContact,
-        family_group_id: g.familyGroupId || null,
-          exclude_from_family_table: g.excludeFromFamilyTable || false,
-        invitation_date: g.invitationDate || null,
-        rsvp_deadline: g.rsvpDeadline || null,
-        rsvp_received: g.rsvpReceived,
-        attending: g.attending,
-        menu_preferences: g.menuPreferences,
-        receives_bomboniera: g.receivesBomboniera,
-        notes: g.notes || "",
-      }));
-
-      if (guestsToInsert.length > 0) {
-        await db.from("guests").insert(guestsToInsert);
-      }
+    if (body.guests.length > 2000 || body.familyGroups.length > 1000 || body.nonInvitedRecipients.length > 2000) {
+      return fail("Payload invitati troppo grande", 413);
     }
-
-    // Salva i non invitati
-    if (nonInvitedRecipients && Array.isArray(nonInvitedRecipients)) {
-      // Elimina tutti i non invitati esistenti per questo evento
-      await db.from("non_invited_recipients").delete().eq("event_id", eventId);
-
-      // Inserisci i nuovi non invitati
-      const recipientsToInsert = nonInvitedRecipients.map((r: NonInvitedRecipient) => ({
-        event_id: eventId,
-        name: r.name,
-        receives_bomboniera: r.receivesBomboniera,
-        receives_confetti: r.receivesConfetti,
-        notes: r.notes || "",
-      }));
-
-      if (recipientsToInsert.length > 0) {
-        await db.from("non_invited_recipients").insert(recipientsToInsert);
-      }
+    const { data, error } = await db.rpc("save_event_guest_snapshot", {
+      p_event_id: eventId,
+      p_user_id: userId,
+      p_default_rsvp_deadline: body.defaultRsvpDeadline || null,
+      p_family_groups: body.familyGroups,
+      p_guests: body.guests,
+      p_non_invited: body.nonInvitedRecipients,
+    });
+    if (error) {
+      logger.error("POST /api/my/guests transaction failed", { code: error.code, message: error.message, eventId });
+      return fail("Salvataggio non riuscito: nessun dato è stato modificato");
     }
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json(data || { success: true });
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Internal error";
-    logger.error("POST /api/my/guests error", { message: errorMsg });
-    return NextResponse.json({ error: errorMsg }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Internal error";
+    logger.error("POST /api/my/guests error", { message });
+    return fail(message);
   }
 }

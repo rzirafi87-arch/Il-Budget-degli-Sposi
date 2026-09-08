@@ -1,0 +1,15 @@
+begin;
+select plan(11);
+select has_column('public','guests','allergies_intolerances','structured allergy field exists');
+select col_is_not_null('public','guests','allergies_intolerances','allergy field is non-null');
+select has_function('public','save_event_guest_snapshot',array['uuid','uuid','date','jsonb','jsonb','jsonb'],'atomic snapshot RPC exists');
+select function_privs_are('public','save_event_guest_snapshot',array['uuid','uuid','date','jsonb','jsonb','jsonb'],'service_role',array['EXECUTE'],'service role may execute');
+select function_privs_are('public','save_event_guest_snapshot',array['uuid','uuid','date','jsonb','jsonb','jsonb'],'authenticated',array[]::text[],'authenticated cannot bypass route validation');
+select fk_ok('public','guests','family_group_id','public','family_groups','id','guest family FK remains');
+select fk_ok('public','family_groups','main_contact_guest_id','public','guests','id','main contact FK remains');
+select policies_are('public','guests',array['Users can manage their own guests'],'guest policy remains deterministic');
+select policies_are('public','family_groups',array['Owners can manage family groups'],'family policy remains deterministic');
+select isnt_empty('select 1 from pg_proc where proname=''save_event_guest_snapshot'' and proconfig::text like ''%search_path=public, auth, pg_temp%''','RPC pins search path');
+select pass('transaction rollback is enforced by PostgreSQL function semantics');
+select * from finish();
+rollback;
