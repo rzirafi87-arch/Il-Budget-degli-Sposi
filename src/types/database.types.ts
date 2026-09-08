@@ -34,6 +34,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          cancelled_at: string | null
+          completed_at: string | null
+          requested_at: string
+          scheduled_for: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          requested_at?: string
+          scheduled_for: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
           church_id: string | null
@@ -1060,13 +1087,20 @@ export type Database = {
         Row: {
           amount: number | null
           category: string | null
+          committed_amount: number | null
           description: string | null
           event_id: string
           expense_date: string | null
           from_dashboard: boolean | null
           id: string
           inserted_at: string | null
+          notes: string | null
+          paid_amount: number | null
+          payment_date: string | null
           payment_installments: Json | null
+          payment_method: string | null
+          payment_notes: string | null
+          payment_status: string | null
           saved_supplier_id: string | null
           spend_type: string | null
           status: string | null
@@ -1078,13 +1112,20 @@ export type Database = {
         Insert: {
           amount?: number | null
           category?: string | null
+          committed_amount?: number | null
           description?: string | null
           event_id: string
           expense_date?: string | null
           from_dashboard?: boolean | null
           id?: string
           inserted_at?: string | null
+          notes?: string | null
+          paid_amount?: number | null
+          payment_date?: string | null
           payment_installments?: Json | null
+          payment_method?: string | null
+          payment_notes?: string | null
+          payment_status?: string | null
           saved_supplier_id?: string | null
           spend_type?: string | null
           status?: string | null
@@ -1096,13 +1137,20 @@ export type Database = {
         Update: {
           amount?: number | null
           category?: string | null
+          committed_amount?: number | null
           description?: string | null
           event_id?: string
           expense_date?: string | null
           from_dashboard?: boolean | null
           id?: string
           inserted_at?: string | null
+          notes?: string | null
+          paid_amount?: number | null
+          payment_date?: string | null
           payment_installments?: Json | null
+          payment_method?: string | null
+          payment_notes?: string | null
+          payment_status?: string | null
           saved_supplier_id?: string | null
           spend_type?: string | null
           status?: string | null
@@ -1818,6 +1866,24 @@ export type Database = {
           last_event_type?: string | null
           preferred_locale?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      rate_limit_buckets: {
+        Row: {
+          key: string
+          request_count: number
+          window_started_at: string
+        }
+        Insert: {
+          key: string
+          request_count?: number
+          window_started_at?: string
+        }
+        Update: {
+          key?: string
+          request_count?: number
+          window_started_at?: string
         }
         Relationships: []
       }
@@ -3133,9 +3199,18 @@ export type Database = {
       }
     }
     Functions: {
+      can_access_event: { Args: { p_event_id: string }; Returns: boolean }
       check_table_availability: {
         Args: { p_table_id: string }
         Returns: boolean
+      }
+      consume_rate_limit: {
+        Args: { p_key: string; p_limit: number; p_window_seconds: number }
+        Returns: {
+          allowed: boolean
+          remaining: number
+          reset_at: string
+        }[]
       }
       ensure_subcategory: {
         Args: { p_category: string; p_name: string }
