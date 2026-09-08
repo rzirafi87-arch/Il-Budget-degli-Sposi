@@ -33,7 +33,7 @@ describe("Branch 40 public launch enablement", () => {
     for (const required of [
       "EXTERNAL ACTION REQUIRED",
       "onboarding@resend.dev",
-      "restore into an isolated recovery project",
+      "Restore into an isolated recovery project",
       "No real account is used in tests",
       "CSP report-only inventory",
     ]) expect(runbook).toContain(required);
