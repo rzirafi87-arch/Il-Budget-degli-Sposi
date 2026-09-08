@@ -174,7 +174,7 @@ language plpgsql
 stable
 security invoker
 set search_path = app, public, pg_temp
-as $
+as $$
 declare result jsonb;
 begin
   if to_regclass('app.v_country_event_wedding') is null then return null; end if;
@@ -182,6 +182,6 @@ begin
     into result using upper(p_country), p_event;
   return result;
 end
-$;
+$$;
 revoke all on function public.get_wedding_budget_focus(text,text) from public,anon,authenticated;
 grant execute on function public.get_wedding_budget_focus(text,text) to service_role;
