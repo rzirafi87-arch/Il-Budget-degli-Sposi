@@ -10,7 +10,7 @@ import {
   BRAND_DEFAULT_TITLE,
   BRAND_DEFAULT_TITLE_EN,
   BRAND_NAME,
-  BRAND_SITE_URL,
+  getSiteUrl,
 } from "@/config/brand";
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
 import type { Metadata, Viewport } from "next";
@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
   } as const;
 
   const current = i18n[locale === "en" ? "en" : "it"];
-  const siteUrl = process.env.SITE_URL || BRAND_SITE_URL;
+  const siteUrl = getSiteUrl();
 
   return {
     applicationName: BRAND_NAME,
