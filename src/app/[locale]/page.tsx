@@ -1,6 +1,6 @@
 import LandingAuthRedirect from "@/components/public/LandingAuthRedirect";
 import PublicLanding from "@/components/public/PublicLanding";
-import { BRAND_NAME, BRAND_SITE_URL } from "@/config/brand";
+import { BRAND_NAME, getSiteUrl } from "@/config/brand";
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -19,7 +19,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = resolveLocale(rawLocale);
   const t = await getTranslations({ locale, namespace: "landing.seo" });
-  const url = `${BRAND_SITE_URL}/${locale}`;
+  const siteUrl = getSiteUrl();
+  const url = `${siteUrl}/${locale}`;
 
   return {
     title: t("title"),
@@ -27,8 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: url,
       languages: {
-        ...Object.fromEntries(locales.map((item) => [item, `${BRAND_SITE_URL}/${item}`])),
-        "x-default": `${BRAND_SITE_URL}/${defaultLocale}`,
+        ...Object.fromEntries(locales.map((item) => [item, `${siteUrl}/${item}`])),
+        "x-default": `${siteUrl}/${defaultLocale}`,
       },
     },
     openGraph: {
