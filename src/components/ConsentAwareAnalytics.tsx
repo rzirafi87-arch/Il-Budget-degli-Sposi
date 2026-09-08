@@ -1,6 +1,7 @@
 "use client";
 
 import { GoogleAnalytics } from "@/components/GoogleTracking";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const COOKIE = "analytics_consent";
@@ -11,7 +12,10 @@ function readConsent() {
 
 export default function ConsentAwareAnalytics({ gaId }: { gaId?: string }) {
   const [consent, setConsent] = useState<string | null>(null);
-  useEffect(() => setConsent(readConsent()), []);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setConsent(readConsent()), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   if (!gaId) return null;
   if (consent === "granted") return <GoogleAnalytics gaId={gaId} />;
   if (consent === "denied") return null;
@@ -21,7 +25,7 @@ export default function ConsentAwareAnalytics({ gaId }: { gaId?: string }) {
       <div className="mt-3 flex flex-wrap gap-2">
         <button className="app-button app-button-primary" onClick={() => { document.cookie = `${COOKIE}=granted; Path=/; Max-Age=31536000; SameSite=Lax; Secure`; setConsent("granted"); }}>Accetta statistiche</button>
         <button className="app-button app-button-ghost" onClick={() => { document.cookie = `${COOKIE}=denied; Path=/; Max-Age=31536000; SameSite=Lax; Secure`; setConsent("denied"); }}>Solo necessari</button>
-        <a className="app-button app-button-ghost" href="/it/cookie-policy">Cookie Policy</a>
+        <Link className="app-button app-button-ghost" href="/it/cookie-policy">Cookie Policy</Link>
       </div>
     </aside>
   );
