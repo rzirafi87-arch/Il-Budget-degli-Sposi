@@ -3,7 +3,9 @@ import { CURRENT_EVENT_COOKIE, resolveCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+// PostgreSQL's uuid type accepts the full UUID-shaped domain. Legacy seeded
+// events can therefore be valid database UUIDs without RFC version/variant bits.
+const UUID = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 
 export async function GET(req: NextRequest) {
   try {
