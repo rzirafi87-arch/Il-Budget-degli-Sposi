@@ -16,6 +16,7 @@ export type BudgetIdeaRow = {
   subcategory: string;
   spendType: string;
   amount: number;
+  enabled: boolean;
   supplier?: string;
   notes?: string;
 };
@@ -47,6 +48,7 @@ function buildDefaultRows(config: EventConfiguration): BudgetIdeaRow[] {
         subcategory,
         spendType: config.defaultSpendType,
         amount: 0,
+        enabled: true,
         supplier: "",
         notes: "",
       });
@@ -193,6 +195,7 @@ export default function IdeaDiBudgetPage() {
             const supplier =
               typeof entry.supplier === "string" ? entry.supplier : "";
             const notes = typeof entry.notes === "string" ? entry.notes : "";
+            const enabled = entry.enabled !== false;
 
             const existing = aggregated.get(key);
             if (existing) {
@@ -213,6 +216,7 @@ export default function IdeaDiBudgetPage() {
                 amount,
                 supplier,
                 notes,
+                enabled,
               });
             }
           });
@@ -255,13 +259,14 @@ export default function IdeaDiBudgetPage() {
 
   const plannedBySpendType = useMemo(() => {
     return rows.reduce<Record<string, number>>((acc, row) => {
+      if (!row.enabled) return acc;
       acc[row.spendType] = (acc[row.spendType] || 0) + toNumber(row.amount);
       return acc;
     }, {});
   }, [rows]);
 
   const plannedTotal = useMemo(
-    () => rows.reduce((sum, row) => sum + toNumber(row.amount), 0),
+    () => rows.reduce((sum, row) => sum + (row.enabled ? toNumber(row.amount) : 0), 0),
     [rows],
   );
 
@@ -313,6 +318,7 @@ export default function IdeaDiBudgetPage() {
         idea_amount: toNumber(row.amount),
         supplier: row.supplier,
         notes: row.notes,
+        enabled: row.enabled,
       }));
 
       const res = await fetch("/api/idea-di-budget", {
@@ -366,7 +372,7 @@ export default function IdeaDiBudgetPage() {
         {
           method: "POST",
           headers,
-          body: JSON.stringify({ country, rows }),
+          body: JSON.stringify({ country, rows: rows.filter((row) => row.enabled) }),
         },
       );
       if (!res.ok) throw new Error(`Apply failed (${res.status})`);
@@ -392,7 +398,7 @@ export default function IdeaDiBudgetPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
+    <div className="mx-auto max-w-6xl px-3 py-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 className="font-serif text-3xl font-bold">{t("title")}</h1>
         <div className="flex flex-wrap gap-3">
@@ -540,10 +546,11 @@ export default function IdeaDiBudgetPage() {
         </div>
       </div>
 
-      <div className="mt-8 overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="mt-8 hidden overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm md:block">
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">
+              <th className="p-3">Inclusa</th>
               <th className="p-3">{t("table.category")}</th>
               <th className="p-3">{t("table.subcategory")}</th>
               <th className="p-3">{t("table.amountCurrency", { currency })}</th>
@@ -556,8 +563,9 @@ export default function IdeaDiBudgetPage() {
             {rows.map((row, index) => (
               <tr
                 key={`${row.category}-${row.subcategory}-${index}`}
-                className="border-b border-gray-100 hover:bg-gray-50"
+                className={`border-b border-gray-100 hover:bg-gray-50 ${row.enabled ? "" : "opacity-50"}`}
               >
+                <td className="p-3 text-center"><input type="checkbox" checked={row.enabled} onChange={(event) => handleRowChange(index, "enabled", event.target.checked)} aria-label={`Includi ${row.subcategory}`} /></td>
                 <td className="p-3 font-medium text-gray-800">{row.category}</td>
                 <td className="p-3 text-gray-700">{row.subcategory}</td>
                 <td className="p-3">
@@ -610,6 +618,36 @@ export default function IdeaDiBudgetPage() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-8 space-y-3 md:hidden">
+        {rows.map((row, index) => (
+          <article key={`mobile-${row.category}-${row.subcategory}-${index}`} className={`rounded-xl border bg-white p-4 shadow-sm ${row.enabled ? "border-gray-200" : "border-gray-100 opacity-60"}`}>
+            <label className="flex min-h-11 items-center gap-3 font-semibold text-gray-900">
+              <input type="checkbox" checked={row.enabled} onChange={(event) => handleRowChange(index, "enabled", event.target.checked)} className="h-5 w-5" />
+              <span>{row.subcategory}</span>
+            </label>
+            <p className="mb-3 text-xs text-gray-500">{row.category}</p>
+            <label className="block text-sm font-semibold text-gray-700">
+              {t("table.amountCurrency", { currency })}
+              <input type="number" inputMode="decimal" min={0} value={row.amount} onChange={(event) => handleRowChange(index, "amount", toNumber(event.target.value))} className="mt-1 min-h-12 w-full rounded-lg border border-gray-300 px-3 text-base" />
+            </label>
+            <label className="mt-3 block text-sm font-semibold text-gray-700">
+              {eventConfig.spendTypeLabel}
+              <select value={row.spendType} onChange={(event) => handleRowChange(index, "spendType", event.target.value)} className="mt-1 min-h-12 w-full rounded-lg border border-gray-300 px-3 text-base">
+                {spendTypeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+            <label className="mt-3 block text-sm font-semibold text-gray-700">
+              {t("table.supplier")}
+              <input type="text" value={row.supplier || ""} onChange={(event) => handleRowChange(index, "supplier", event.target.value)} className="mt-1 min-h-12 w-full rounded-lg border border-gray-300 px-3 text-base" />
+            </label>
+            <label className="mt-3 block text-sm font-semibold text-gray-700">
+              {t("table.notes")}
+              <textarea value={row.notes || ""} onChange={(event) => handleRowChange(index, "notes", event.target.value)} rows={2} className="mt-1 w-full rounded-lg border border-gray-300 p-3 text-base" />
+            </label>
+          </article>
+        ))}
       </div>
     </div>
   );

@@ -162,3 +162,8 @@ $$;
 
 revoke all on function public.save_event_guest_snapshot(uuid,uuid,date,jsonb,jsonb,jsonb) from public,anon,authenticated;
 grant execute on function public.save_event_guest_snapshot(uuid,uuid,date,jsonb,jsonb,jsonb) to service_role;
+
+alter table public.expenses
+  add column if not exists is_enabled boolean not null default true;
+comment on column public.expenses.is_enabled is
+  'Whether an Idea di Budget row is included in totals and Apply to Budget.';

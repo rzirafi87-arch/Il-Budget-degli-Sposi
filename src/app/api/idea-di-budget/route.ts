@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
       spend_type,
       status,
       from_dashboard,
+      is_enabled,
       subcategory:subcategories!inner(
         name,
         category:categories!inner(name, event_id)
@@ -41,6 +42,7 @@ export async function GET(req: NextRequest) {
       id: string;
       supplier: string | null;
       notes: string | null;
+      is_enabled: boolean | null;
       committed_amount: number | null;
       spend_type: string | null;
       subcategory: { name: string; category: { name: string } };
@@ -53,6 +55,7 @@ export async function GET(req: NextRequest) {
       idea_amount: Number(expense.committed_amount || 0),
       supplier: expense.supplier || "",
       notes: expense.notes || "",
+      enabled: expense.is_enabled !== false,
     };
   });
 
@@ -77,6 +80,7 @@ export async function POST(req: NextRequest) {
     spendType?: string;
     supplier?: string;
     notes?: string;
+    enabled?: boolean;
   }> = Array.isArray(body) ? body : Array.isArray(body?.rows) ? body.rows : [];
 
   const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;
@@ -102,6 +106,7 @@ export async function POST(req: NextRequest) {
     notes: string | null;
     status: string;
     from_dashboard: boolean;
+    is_enabled: boolean;
   }> = [];
 
   for (const r of inputRows) {
@@ -156,6 +161,7 @@ export async function POST(req: NextRequest) {
       notes: r.notes || null,
       status: "planned",
       from_dashboard: true,
+      is_enabled: r.enabled !== false,
     });
   }
 

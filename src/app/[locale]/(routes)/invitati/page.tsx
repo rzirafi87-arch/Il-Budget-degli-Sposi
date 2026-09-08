@@ -32,6 +32,7 @@ type Guest = {
   attending: boolean;
   menuPreferences: MenuPreference[];
   receivesBomboniera: boolean;
+  allergiesIntolerances: string;
   notes: string;
 };
 
@@ -130,6 +131,7 @@ export default function InvitatiPage() {
         attending: false,
         menuPreferences: [],
         receivesBomboniera: false,
+        allergiesIntolerances: "",
         notes: "",
       },
     ]);
@@ -152,7 +154,7 @@ export default function InvitatiPage() {
 
   const createFamily = async () => {
     if (!newFamilyName.trim()) {
-      setMessage("? Inserisci un nome per la famiglia");
+      setMessage("❌ Inserisci un nome per la famiglia");
       return;
     }
     const newFamily: FamilyGroup = {
@@ -164,14 +166,14 @@ export default function InvitatiPage() {
     setFamilyGroups(updatedFamilies);
     setNewFamilyName("");
     setShowFamilyModal(false);
-    setMessage("? Famiglia creata! Salvataggio in corso...");
+    setMessage("✅ Famiglia creata! Salvataggio in corso...");
 
     // Salva automaticamente la nuova famiglia
     try {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        setMessage("? Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
+        setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
         return;
       }
 
@@ -186,16 +188,16 @@ export default function InvitatiPage() {
 
       if (!res.ok) {
         const json = await res.json();
-        setMessage(`? Errore salvataggio famiglia: ${json.error || "Impossibile salvare"}`);
+        setMessage(`❌ Errore salvataggio famiglia: ${json.error || "Impossibile salvare"}`);
       } else {
-        setMessage("? Famiglia creata e salvata! Ora puoi assegnare gli invitati.");
+        setMessage("✅ Famiglia creata e salvata! Ora puoi assegnare gli invitati.");
         setTimeout(() => setMessage(null), 3000);
         // Ricarica i dati per ottenere l'ID reale dal database
         await loadData();
       }
     } catch (err) {
       console.error("Errore salvataggio famiglia:", err);
-      setMessage("? Errore di rete durante il salvataggio della famiglia");
+      setMessage("❌ Errore di rete durante il salvataggio della famiglia");
     }
   };
 
@@ -257,7 +259,7 @@ export default function InvitatiPage() {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        setMessage("? Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
+        setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
         setSaving(false);
         return;
       }
@@ -273,14 +275,15 @@ export default function InvitatiPage() {
 
       if (!res.ok) {
         const json = await res.json();
-        setMessage(`? Errore: ${json.error || "Impossibile salvare"}`);
+        setMessage(`❌ Errore: ${json.error || "Impossibile salvare"}`);
       } else {
-        setMessage("? Invitati salvati con successo!");
+        await loadData();
+        setMessage("✅ Invitati salvati con successo!");
         setTimeout(() => setMessage(null), 3000);
       }
     } catch (err) {
       console.error("Errore salvataggio:", err);
-  setMessage("? Errore di rete");
+  setMessage("❌ Errore di rete");
     } finally {
       setSaving(false);
     }
@@ -293,6 +296,7 @@ export default function InvitatiPage() {
     common: guests.filter((g) => g.guestType === "common" && g.attending).length,
   };
   const totalBomboniere = guests.filter((g) => g.attending && g.receivesBomboniera).length;
+  const totalAllergies = guests.filter((g) => g.attending && g.allergiesIntolerances.trim()).length;
 
   const menuCounts = {
     carne: guests.filter((g) => g.attending && g.menuPreferences.includes("carne")).length,
@@ -439,6 +443,12 @@ export default function InvitatiPage() {
             <span className="font-bold text-purple-600">{totalBomboniere}</span>
           </div>
         </div>
+        <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-800 font-semibold">Allergie / intolleranze segnalate:</span>
+            <span className="font-bold text-amber-700">{totalAllergies}</span>
+          </div>
+        </div>
       </div>
 
       {/* Gestione Famiglie */}
@@ -575,6 +585,7 @@ export default function InvitatiPage() {
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Partecipa</th>
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">Preferenze menu</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Bomboniera</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">Allergie / Intolleranze</th>
                 <th className="px-3 py-2 text-left font-semibold text-gray-900">Note</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">Azioni</th>
               </tr>
@@ -582,7 +593,7 @@ export default function InvitatiPage() {
             <tbody>
               {guests.length === 0 ? (
                 <tr>
-                    <td colSpan={12} className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan={13} className="px-6 py-8 text-center text-gray-500">
                     Nessun invitato ancora. Clicca su &quot;Aggiungi Invitato&quot; per iniziare.
                   </td>
                 </tr>
@@ -698,6 +709,15 @@ export default function InvitatiPage() {
                         checked={guest.receivesBomboniera}
                         onChange={(e) => updateGuest(guest.id, "receivesBomboniera", e.target.checked)}
                         className="w-4 h-4"
+                      />
+                    </td>
+                    <td className="px-3 py-2">
+                      <input
+                        type="text"
+                        className="min-w-40 border border-gray-200 rounded px-2 py-2 w-full text-xs"
+                        value={guest.allergiesIntolerances}
+                        onChange={(e) => updateGuest(guest.id, "allergiesIntolerances", e.target.value)}
+                        placeholder="Es. glutine, lattosio..."
                       />
                     </td>
                     <td className="px-3 py-2">
