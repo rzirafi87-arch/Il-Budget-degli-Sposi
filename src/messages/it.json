@@ -81,7 +81,7 @@
         "tip4": "Filtra per categoria o tipo di spesa per analizzare dove stai spendendo di più"
       },
       "eventTypeSpecific": {
-        "wedding": "Per il matrimonio, puoi dividere le spese tra sposa, sposo e comuni. Questo aiuta a capire il contributo di ciascuno e a gestire →finanze in modo trasparente.",
+        "wedding": "Per il matrimonio, puoi dividere le spese tra sposa, sposo e comuni. Questo aiuta a capire il contributo di ciascuno e a gestire le finanze in modo trasparente.",
         "baptism": "Per il battesimo, tutte le spese sono automaticamente impostate come 'comuni' - non è necessario specificare chi paga.",
         "eighteenth": "Per il diciottesimo, tutte le spese sono comuni. Pianifica location, catering, intrattenimento e ricordi per rendere indimenticabilequesta festa!",
         "confirmation": "Per la cresima, tutte le spese sono comuni. Organizza cerimonia, ricevimento, bomboniere e ricordi per celebrare questo momento specialedi crescita spirituale.",
@@ -539,7 +539,7 @@
         "desc": "Accedi al nostro database di fornitori verificati in tutta Italia: location ricevimento, location cerimonia, fotografi, wedding planner, musicisti e molto altro."
       },
       "5": {
-        "title": "💍¥ Gestisci gli Invitati",
+        "title": "Gestisci gli Invitati",
         "desc": "Crea e gestisci la lista invitati, organizza per famiglie, monitora le conferme e calcola i costi per persona."
       },
       "6": {
@@ -671,7 +671,7 @@
         },
         "browser": {
           "title": "4.2 Tramite Browser",
-          "p1": "Puoi gestire i cookie attraverso →impostazioni del tuo browser:",
+          "p1": "Puoi gestire i cookie attraverso le impostazioni del tuo browser:",
           "chrome": "Impostazioni → Privacy e sicurezza → Cookie",
           "firefox": "Opzioni → Privacy e sicurezza → Cookie e dati dei siti web",
           "safari": "Preferenze → Privacy → Gestisci dati siti web",
@@ -1147,7 +1147,7 @@
     },
     "labels": {
       "type": "Tipo:",
-      "capacity": "💍¥ Capacità :",
+      "capacity": "Capacità:",
       "website": "Sito Web"
     },
     "capacity": {
@@ -1192,7 +1192,7 @@
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una location",
       "addError": "Errore durante l'aggiunta",
-      "addSuccess": "Location aggiunta con successo! Sarà visibiledopo la verifica dello staff."
+      "addSuccess": "Location aggiunta con successo! Sarà visibile dopo la verifica dello staff."
     }
   },
   "suppliersPhotographers": {
@@ -1658,7 +1658,7 @@
       "website": "Sito Web",
       "capacity": "Capacità (persone)",
       "description": "Descrizione",
-      "descriptionPlaceholder": "Descrivi la chiesa, →caratteristiche architettoniche, servizi...",
+      "descriptionPlaceholder": "Descrivi la chiesa, le caratteristiche architettoniche, servizi...",
       "requiresBaptism": "Richiede Battesimo",
       "requiresMarriageCourse": "Richiede Corso Prematrimoniale",
       "select": "Seleziona..."
@@ -1676,7 +1676,7 @@
     "card": {
       "verified": "Verificato",
       "type": "Tipo:",
-      "capacity": "💍¥ Capacità :",
+      "capacity": "Capacità:",
       "people": "persone",
       "requiresBaptism": "⚠️ Richiede il Battesimo",
       "requiresMarriageCourse": "⚠️ Richiede il corso prematrimoniale",
@@ -1686,7 +1686,7 @@
     "empty": "Nessuna chiesa trovata. Prova a cambiare i filtri o aggiungi la prima!",
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibiledopo la verifica dello staff.",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     },
     "catalog": {
@@ -1773,7 +1773,7 @@
     "card": {
       "verified": "Verificato",
       "type": "Tipo:",
-      "capacity": "💍¥ Capacità :",
+      "capacity": "Capacità:",
       "people": "persone",
       "requiresBaptism": "⚠️ Richiede il Battesimo",
       "requiresMarriageCourse": "⚠️ Richiede il corso prematrimoniale",
@@ -1783,7 +1783,7 @@
     "empty": "Nessuna chiesa trovata con questi filtri.",
     "messages": {
       "authRequired": "Devi essere autenticato per aggiungere una chiesa",
-      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibiledopo la verifica dello staff.",
+      "submitSuccess": "Chiesa aggiunta con successo! Sarà visibile dopo la verifica dello staff.",
       "submitError": "Errore durante l'aggiunta"
     }
   },
