@@ -123,6 +123,16 @@ jobs:
       - name: Verify Branch 36 authoritative event isolation prerequisites
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_36_event_context.sql && psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_36_rls.sql
 
+      - name: Apply Branch 38 production schema alignment
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260903111500_branch_38_expense_runtime_alignment.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260903113000_branch_38_couple_event_access.sql
+
+      - name: Apply and verify Branch 39 production readiness
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260908090000_branch_39_production_readiness.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_39_production_readiness.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci

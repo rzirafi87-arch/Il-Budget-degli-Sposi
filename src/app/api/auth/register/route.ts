@@ -17,7 +17,7 @@ function normalizeEmail(value: unknown): string {
 // Creates owner user, optionally creates partner, creates default event with wedding date
 export async function POST(req: NextRequest) {
   try {
-    const limit = checkAuthRateLimit(req, "register");
+    const limit = await checkAuthRateLimit(req, "register", 10);
     if (!limit.allowed) return rateLimitResponse(limit.resetAt);
     const body: unknown = await req.json();
     if (!body || typeof body !== "object") {
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     // Generate a real signup-confirmation link. This creates an unconfirmed user
     // without sending Supabase's generic email because delivery is branded below.
-    const callback = `${siteUrl()}/auth/callback?next=/it/dashboard`;
+    const callback = `${siteUrl(req)}/auth/callback?next=/it/dashboard`;
     const { data: ownerRes, error: createErr } = await db.auth.admin.generateLink({
       type: "signup",
       email: primaryEmail,
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     // 2) Partner opzionale: non condividere mai la password del proprietario.
     if (partnerEmail) {
       const { error: inviteErr } = await db.auth.admin.inviteUserByEmail(partnerEmail, {
-        redirectTo: siteUrl(),
+        redirectTo: siteUrl(req),
       });
       if (inviteErr) {
         console.error("REGISTER invite partner error:", inviteErr);

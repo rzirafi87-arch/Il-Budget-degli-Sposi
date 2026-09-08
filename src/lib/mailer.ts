@@ -29,13 +29,18 @@ export async function sendMail(to: string, subject: string, html: string) {
   return data;
 }
 
-export function siteUrl() {
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
-      ? BRAND_SITE_URL
-      : "http://localhost:3000")
-  );
+export function siteUrl(request?: Request) {
+  const configured = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) return configured.replace(/\/$/, "");
+  if (request) {
+    const forwardedHost = request.headers.get("x-forwarded-host");
+    const host = forwardedHost || request.headers.get("host");
+    if (host) {
+      const protocol = request.headers.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
+      return `${protocol}://${host}`;
+    }
+  }
+  return process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? BRAND_SITE_URL : "http://localhost:3000";
 }
 
 export function magicLinkTemplate(link: string) {

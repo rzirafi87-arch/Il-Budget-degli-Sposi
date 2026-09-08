@@ -1,0 +1,13 @@
+begin;
+select plan(9);
+select has_table('public', 'rate_limit_buckets');
+select has_function('public', 'consume_rate_limit', array['text','integer','integer']);
+select has_table('public', 'account_deletion_requests');
+select col_is_pk('public', 'account_deletion_requests', 'user_id');
+select col_not_null('public', 'account_deletion_requests', 'scheduled_for');
+select is((select relrowsecurity from pg_class where oid='public.account_deletion_requests'::regclass), true, 'account deletion requests use RLS');
+select is((select relrowsecurity from pg_class where oid='public.rate_limit_buckets'::regclass), true, 'rate limit buckets use RLS');
+select is((select has_table_privilege('authenticated','public.rate_limit_buckets','SELECT')), false, 'authenticated cannot read rate limit buckets');
+select is((select has_function_privilege('authenticated','public.consume_rate_limit(text,integer,integer)','EXECUTE')), false, 'authenticated cannot execute limiter');
+select * from finish();
+rollback;
