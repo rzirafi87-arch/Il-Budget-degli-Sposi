@@ -32,6 +32,13 @@ describe("private module event-context integration", () => {
     expect(source).toContain("EVENT_COMING_SOON");
   });
 
+  it("accepts legacy PostgreSQL UUID values when selecting the current event", () => {
+    const source = fs.readFileSync(path.join(root, "src/app/api/my/current-event/route.ts"), "utf8");
+    expect(source).toContain("(?:[0-9a-f]{4}-){3}");
+    expect(source).not.toContain("[1-5][0-9a-f]{3}");
+    expect(source).not.toContain("[89ab][0-9a-f]{3}");
+  });
+
   it("does not retain a normal owner_id to first-event resolver", () => {
     const apiRoot = path.join(root, "src/app/api");
     const files: string[] = [];
