@@ -22,7 +22,7 @@
   "retirement": "Pensione",
   "budgetPage": {
     "approvedExpenses": "Spese approvate",
-    "ctaIdeaBudget": "💍¡ Vai a Idea di Budget",
+    "ctaIdeaBudget": "Vai a Idea di Budget",
     "description": "Visualizzazione delle spese approvate dalla sezione 'Spese', ordinate alfabeticamente per categoria e sottocategoria.",
     "totals": {
       "title": "Totale spese approvate",
@@ -49,10 +49,10 @@
       "gift": "Regalo"
     },
     "paymentMethod": {
-      "common": "💍° Comune",
-      "bride": "💍° Sposa",
+      "common": "Comune",
+      "bride": "Sposa",
       "groom": "🤵 Sposo",
-      "gift": "🎁 Regalo"
+      "gift": "Regalo"
     },
     "loading": "Caricamento...",
     "empty": "Nessuna spesa approvata. Vai alla sezione 'Spese' per approvare le tue spese.",
@@ -88,7 +88,7 @@
         "communion": "Per la comunione, tutte le spese sono considerate comuni, senza divisione tra genitori.",
         "birthday": "Per il compleanno, dividi le spese tra l'organizzatore principalee quellecondivise con altri.",
         "graduation": "Per la laurea, traccia tutte le spese legate all'evento: location, catering, inviti, decorazioni e ricordi.",
-        "anniversary": "Per l'anniversario di matrimonio, gestisci insieme le spese per la celebrazione. Che sia 25° (argento), 50° (oro) o un anniversario più intimo, ogni dettaglio conta per rendere specialequesto momento di rinnovo dell'amore."
+        "anniversary": "Per l'anniversario di matrimonio, gestisci insieme le spese per la celebrazione. Che sia 25° (argento), 50° (oro) o un anniversario più intimo, ogni dettaglio conta per rendere speciale questo momento di rinnovo dell'amore."
       }
     },
     "title": "Spese",
@@ -231,12 +231,12 @@
     "empty": "Nessuna entrata registrata",
     "badges": {
       "type": {
-        "busta": "💍µ Busta",
-        "bonifico": "🏠¦ Bonifico",
-        "regalo": "🎁 Regalo"
+        "busta": "Busta",
+        "bonifico": "Bonifico",
+        "regalo": "Regalo"
       },
       "source": {
-        "bride": "💍° Sposa",
+        "bride": "Sposa",
         "groom": "🤵 Sposo",
         "common": "💍‘ Comune"
       }
@@ -278,7 +278,7 @@
       "title1": "Organizza il tuo",
       "title2Highlighted": "matrimonio",
       "title3": "in modo semplice",
-      "title4": "e senza stress 💍",
+      "title4": "e senza stress 💍",
       "subtitle": "L'unica app che unisce budget, fornitori e serenità — senza pubblicità né caos.",
       "ctaPrimary": "🎉 Inizia ora — È gratis",
       "ctaSecondary": "👀 Guarda la demo",
@@ -362,13 +362,13 @@
         "note": "Non serve carta di credito. Crea il tuo evento in 2 minuti."
       },
       "budget": {
-        "title": "💍° Budget",
+        "title": "Budget",
         "seeDetails": "Vedi dettagli",
         "planned": "Previsto",
         "spent": "Speso",
         "progress": {
           "low": "Ottimo inizio! Continua così 🌟",
-          "mid": "Stai andando alla grande! 💍ª",
+          "mid": "Stai andando alla grande!",
           "high": "Quasi tutto definito, bravissimi! 🎉",
           "full": "Budget raggiunto! 🎊"
         }
@@ -400,12 +400,12 @@
         }
       },
       "nextSteps": {
-        "title": "👀 Prossimi Passi Consigliati",
+        "title": "Prossimi Passi Consigliati",
         "defBudget": "Definisci il budget totale",
         "chooseVenue": "Scegli la location del ricevimento",
         "bookPhoto": "Prenota il fotografo",
         "guestList": "Inizia la lista invitati",
-        "hint": "💍¡ Segui questi passi per una pianificazione serena e senza stress"
+        "hint": "Segui questi passi per una pianificazione serena e senza stress"
       }
     }
   },
@@ -458,7 +458,7 @@
     }
   },
   "suppliersUi": {
-    "title": "🏠¢ Fornitori",
+    "title": "Fornitori",
     "lead": "Esplora e gestisci i fornitori per ogni aspetto del tuo matrimonio. Trova professionisti nella tua zona, confronta preventivi e salva i tuoi preferiti.",
     "suggestions": {
       "inCountry": "Consigliati in {country}:",
@@ -477,7 +477,7 @@
       "reset": "Mostra tutte le categorie"
     },
     "tip": {
-      "title": "💍¡ Suggerimento",
+      "title": "Suggerimento",
       "body": "Per ogni categoria potrai cercare fornitori nella tua zona, filtrare per prezzo e servizi, confrontare preventivi e salvare i tuoi preferiti. Ogni fornitore può essere aggiunto direttamente alle spese del tuo budget."
     },
     "categories": {
@@ -523,11 +523,11 @@
     "title": "👀– Come Funziona",
     "steps": {
       "1": {
-        "title": "👀 Registrati Gratuitamente",
+        "title": "Registrati Gratuitamente",
         "desc": "Crea il tuo account in pochi secondi. Nessun costo nascosto, nessuna carta di credito richiesta. Inizia subito a pianificare il tuo matrimonio!"
       },
       "2": {
-        "title": "💍° Imposta il Tuo Budget",
+        "title": "Imposta il Tuo Budget",
         "desc": "Definisci il budget iniziale per sposa e sposo. Il sistema calcola automaticamente il totale e ti aiuta a monitorare le spese in tempo reale."
       },
       "3": {
@@ -535,7 +535,7 @@
         "desc": "Organizza le spese in oltre 20 categorie: abiti, location, catering, fotografi, fioristi e molto altro."
       },
       "4": {
-        "title": "💡 Trova Fornitori",
+        "title": "Trova Fornitori",
         "desc": "Accedi al nostro database di fornitori verificati in tutta Italia: location ricevimento, location cerimonia, fotografi, wedding planner, musicisti e molto altro."
       },
       "5": {
@@ -543,7 +543,7 @@
         "desc": "Crea e gestisci la lista invitati, organizza per famiglie, monitora le conferme e calcola i costi per persona."
       },
       "6": {
-        "title": "💍¾ Salva e Monitora",
+        "title": "Salva e Monitora",
         "desc": "Salva i progressi in qualsiasi momento. Visualizza grafici e statistiche, controlla il budget residuo e mantieni tutto sotto controllo fino al grande giorno."
       }
     },
@@ -554,7 +554,7 @@
     }
   },
   "about": {
-    "title": "💍°🤵 Chi Siamo",
+    "title": "Chi Siamo",
     "intro": "Siamo la piattaforma italiana numero uno per la gestione del budget matrimoniale. Nata dall'esperienza diretta di coppie che hanno vissuto le sfide dell'organizzazione di un matrimonio, la nostra missione è rendere questo processo più semplice, trasparente e piacevole.",
     "mission": {
       "title": "La Nostra Missione",
@@ -637,7 +637,7 @@
           "p1": "Questi cookie sono essenziali per il funzionamento del sito e non possono essere disattivati. Non richiedono il tuo consenso ai sensi della normativa vigente."
         },
         "prefs": {
-          "title": "2.2 Cookie di Preferenze 🎁¨",
+          "title": "2.2 Cookie di Preferenze",
           "p1": "Ricordano le tue scelte (lingua, tema, visualizzazione) per migliorare l'esperienza."
         },
         "analytics": {
@@ -646,7 +646,7 @@
           "note": "Nota: Attualmente non utilizziamo cookie analitici di terze parti (come GoogleAnalytics). Monitoriamo solo metriche server-side anonime."
         },
         "marketing": {
-          "title": "2.4 Cookie di Marketing 👀¢",
+          "title": "2.4 Cookie di Marketing",
           "p1": "Utilizzati per mostrare pubblicità pertinenti. Richiedono il tuo consenso esplicito.",
           "status": "Stato attuale: Non utilizziamo cookie di marketing o remarketing. Se in futuro implementeremo pubblicità , richiederemo il tuo consenso preventivo."
         }
@@ -1201,7 +1201,7 @@
       "suppliers": "Fornitori",
       "photographers": "Fotografi"
     },
-    "title": "👀¸ Fotografi",
+    "title": "Fotografi",
     "description": "Trova i migliori fotografi e videomaker per il tuo matrimonio. Filtra per regione e provincia, confronta prezzi e visita i loro portfolio.",
     "buttons": {
       "backToSuppliers": "← Tutti i Fornitori"
@@ -1221,7 +1221,7 @@
       "count": "{count, plural, =0 {Nessun fotografo trovato} one {# fotografo trovato} other {# fotografi trovati}}"
     },
     "viewMode": {
-      "grid": "💡² Griglia",
+      "grid": "Griglia",
       "list": "👀 Lista"
     },
     "loading": "Caricamento...",
@@ -1230,8 +1230,8 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "💰 Sito",
-      "websiteLink": "💰 Sito web",
+      "website": "Sito",
+      "websiteLink": "Sito web",
       "call": "👀ž Chiama",
       "email": "✉️ Email",
       "addToFavorites": "Aggiungi ai preferiti",
@@ -1254,7 +1254,7 @@
       "cancel": "Annulla"
     },
     "tabs": {
-      "bride": "💍° Atelier Sposa",
+      "bride": "Atelier Sposa",
       "groom": "🤵 Atelier Sposo"
     },
     "filters": {
@@ -1315,7 +1315,7 @@
       "addError": "Errore{error, select, other {: {error}} }"
     },
     "tips": {
-      "title": "💍¡ Suggerimenti per la scelta",
+      "title": "Suggerimenti per la scelta",
       "tip1": "Prenota l'appuntamento con almeno 8-12 mesi di anticipo",
       "tip2": "Porta con te scarpe con il tacco che indosserai il giorno del matrimonio",
       "tip3": "Considera almeno 2-3 prove per aggiustamenti e ritocchi",
@@ -1329,7 +1329,7 @@
       "suppliers": "Fornitori",
       "florists": "Fiorai"
     },
-    "title": "💍 Fiorai",
+    "title": "Fiorai",
     "description": "Allestimenti floreali, bouquet, centrotavola e decorazioni per la cerimonia e il ricevimento.",
     "buttons": {
       "backToSuppliers": "← Tutti i Fornitori"
@@ -1346,7 +1346,7 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "💡² Griglia",
+      "grid": "Griglia",
       "list": "👀 Lista"
     },
     "results": {
@@ -1358,7 +1358,7 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "💰 Sito",
+      "website": "Sito",
       "call": "👀ž Chiama",
       "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
@@ -1390,7 +1390,7 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "💡² Griglia",
+      "grid": "Griglia",
       "list": "👀 Lista"
     },
     "results": {
@@ -1402,7 +1402,7 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "💰 Sito",
+      "website": "Sito",
       "call": "👀ž Chiama",
       "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
@@ -1434,7 +1434,7 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "💡² Griglia",
+      "grid": "Griglia",
       "list": "👀 Lista"
     },
     "results": {
@@ -1446,7 +1446,7 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "💰 Sito",
+      "website": "Sito",
       "call": "👀ž Chiama",
       "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
@@ -1461,7 +1461,7 @@
       "suppliers": "Fornitori",
       "jewelry": "Gioiellerie"
     },
-    "title": "💍 Gioiellerie",
+    "title": "💍 Gioiellerie",
     "description": "Fedi nuziali, anelli di fidanzamento e gioielli per sposa e invitati.",
     "buttons": {
       "backToSuppliers": "← Tutti i Fornitori"
@@ -1478,7 +1478,7 @@
       "resetButton": "Resetta"
     },
     "viewMode": {
-      "grid": "💡² Griglia",
+      "grid": "Griglia",
       "list": "👀 Lista"
     },
     "results": {
@@ -1490,7 +1490,7 @@
       "description": "Prova a modificare i filtri"
     },
     "actions": {
-      "website": "💰 Sito",
+      "website": "Sito",
       "call": "👀ž Chiama",
       "email": "✉️ Email",
       "addFavorite": "Aggiungi ai preferiti",
