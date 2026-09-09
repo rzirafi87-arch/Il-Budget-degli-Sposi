@@ -85,90 +85,22 @@ export async function POST(req: NextRequest) {
 
   const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;
 
-  const { error: delErr } = await db
-    .from("expenses")
-    .delete()
-    .eq("event_id", eventId)
-    .eq("status", "planned")
-    .eq("from_dashboard", true);
-  if (delErr) return NextResponse.json({ error: delErr.message }, { status: 500 });
-
-  const toInsert: Array<{
-    event_id: string;
-    category: string;
-    subcategory: string;
-    subcategory_id: string;
-    supplier: string | null;
-    amount: number;
-    committed_amount: number;
-    paid_amount: number;
-    spend_type: string;
-    notes: string | null;
-    status: string;
-    from_dashboard: boolean;
-    is_enabled: boolean;
-  }> = [];
-
-  for (const r of inputRows) {
-    const categoryName = (r.category || "").trim();
-    const subcategoryName = (r.subcategory || "").trim();
-    const amount = Number(r.idea_amount ?? r.amount ?? 0) || 0;
-    const spendType = r.spendType || "common";
-    if (!categoryName || !subcategoryName) continue;
-
-    let { data: cat } = await db
-      .from("categories")
-      .select("id")
-      .eq("event_id", eventId)
-      .eq("name", categoryName)
-      .maybeSingle();
-    if (!cat) {
-      const { data: newCat } = await db
-        .from("categories")
-        .insert({ event_id: eventId, name: categoryName })
-        .select("id")
-        .single();
-      cat = newCat;
-    }
-    if (!cat?.id) continue;
-
-    let { data: sub } = await db
-      .from("subcategories")
-      .select("id")
-      .eq("category_id", cat.id)
-      .eq("name", subcategoryName)
-      .maybeSingle();
-    if (!sub) {
-      const { data: newSub } = await db
-        .from("subcategories")
-        .insert({ category_id: cat.id, name: subcategoryName })
-        .select("id")
-        .single();
-      sub = newSub;
-    }
-    if (!sub?.id) continue;
-
-    toInsert.push({
-      event_id: eventId,
-      category: categoryName,
-      subcategory: subcategoryName,
-      subcategory_id: sub.id,
-      supplier: r.supplier || null,
-      amount,
-      committed_amount: amount,
-      paid_amount: 0,
-      spend_type: spendType,
-      notes: r.notes || null,
-      status: "planned",
-      from_dashboard: true,
-      is_enabled: r.enabled !== false,
+  const { data, error: snapshotError } = await db.rpc("save_budget_idea_snapshot", {
+    p_event_id: eventId,
+    p_user_id: userData.user.id,
+    p_rows: inputRows,
+  });
+  if (snapshotError) {
+    console.error("IDEA_BUDGET snapshot failed", {
+      code: snapshotError.code,
+      message: snapshotError.message,
+      eventId,
     });
+    return NextResponse.json(
+      { error: "Salvataggio non riuscito: nessun dato è stato modificato" },
+      { status: 500 },
+    );
   }
 
-  if (toInsert.length > 0) {
-    const { error: insErr } = await db.from("expenses").insert(toInsert);
-    if (insErr) return NextResponse.json({ error: insErr.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ success: true, inserted: toInsert.length });
+  return NextResponse.json(data || { success: true, inserted: 0 });
 }
