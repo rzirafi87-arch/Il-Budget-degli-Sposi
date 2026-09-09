@@ -8,6 +8,7 @@ describe("Branch 41 authenticated mobile header", () => {
   it("keeps the mobile brand and authenticated actions inside the viewport", () => {
     expect(shell).toContain("hidden truncate text-lg");
     expect(shell).toContain("flex min-w-0 shrink-0 items-center");
+    expect(shell.match(/hidden xl:contents/g)).toHaveLength(2);
     expect(userMenu).toContain('className="truncate"');
     expect(userMenu).toContain('className: "max-w-40 sm:max-w-60"');
   });

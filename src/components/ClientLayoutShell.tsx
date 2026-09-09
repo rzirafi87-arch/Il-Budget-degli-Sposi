@@ -117,13 +117,15 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                   {!isSaveTheDate && (
                     <>
                       <UserMenu />
-                      <Link
-                        className={buttonClasses({ variant: "ghost", size: "sm", className: "hidden xl:inline-flex" })}
-                        href={`/${locale}/idea-di-budget`}
-                      >
-                        <Lightbulb size={17} aria-hidden />
-                        Idea di Budget
-                      </Link>
+                      <span className="hidden xl:contents">
+                        <Link
+                          className={buttonClasses({ variant: "ghost", size: "sm" })}
+                          href={`/${locale}/idea-di-budget`}
+                        >
+                          <Lightbulb size={17} aria-hidden />
+                          Idea di Budget
+                        </Link>
+                      </span>
                       <button
                         className={buttonClasses({ variant: "outline", size: "icon" })}
                         onClick={() => {
@@ -134,15 +136,17 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                       >
                         <Settings size={19} aria-hidden />
                       </button>
-                      <a
-                        className={buttonClasses({ variant: "primary", size: "sm", className: "hidden xl:inline-flex" })}
-                        href="https://wa.me/393001234567?text=Ciao!%20Vorrei%20informazioni%20su%20Il%20Budget%20degli%20Sposi"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <MessageCircle size={17} aria-hidden />
-                        WhatsApp
-                      </a>
+                      <span className="hidden xl:contents">
+                        <a
+                          className={buttonClasses({ variant: "primary", size: "sm" })}
+                          href="https://wa.me/393001234567?text=Ciao!%20Vorrei%20informazioni%20su%20Il%20Budget%20degli%20Sposi"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <MessageCircle size={17} aria-hidden />
+                          WhatsApp
+                        </a>
+                      </span>
                     </>
                   )}
                 </div>
