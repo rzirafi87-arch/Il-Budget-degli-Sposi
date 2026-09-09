@@ -105,7 +105,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-lg font-bold text-white shadow-soft-sm" aria-hidden>
                     B
                   </span>
-                  <span className="truncate text-lg font-serif font-bold text-fg sm:text-xl">
+                  <span className="hidden truncate text-lg font-serif font-bold text-fg sm:inline sm:text-xl">
                   {locale === "es"
                     ? "El Presupuesto de los Novios"
                     : locale === "en"
@@ -113,7 +113,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                     : BRAND_NAME}
                   </span>
                 </Link>
-                <div className="flex items-center gap-1.5 text-sm text-muted-fg">
+                <div className="flex min-w-0 shrink-0 items-center gap-1.5 text-sm text-muted-fg">
                   {!isSaveTheDate && (
                     <>
                       <UserMenu />
