@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
       .select(`
         committed_amount,
         spend_type,
+        is_enabled,
         subcategory:subcategories!inner(
           name,
           category:categories!inner(name, event_id)
@@ -44,6 +45,7 @@ export async function POST(req: NextRequest) {
       subcategory: e.subcategory?.name,
       idea_amount: e.committed_amount,
       spendType: e.spend_type || "common",
+      enabled: e.is_enabled !== false,
     }));
   }
 
@@ -57,7 +59,7 @@ export async function POST(req: NextRequest) {
       const name = r.name || [category, sub].filter(Boolean).join(" - ") || "Voce di budget";
       return { name, amount, spend_type: st };
     })
-    .filter((it) => it.amount > 0);
+    .filter((it, index) => it.amount > 0 && rows[index]?.enabled !== false);
 
   // Replace current budget_items for this event+country created from ideas (we simply wipe all and reinsert for country)
   // If your schema needs a discriminator, consider adding a "source" column; here we filter by country and event only.

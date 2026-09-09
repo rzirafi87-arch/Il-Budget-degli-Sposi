@@ -69,10 +69,11 @@
     "seed:i18n": "ts-node scripts/seed_i18n.ts",
     "seed:more": "ts-node scripts/seed_more_events.ts",
     "config:validate": "node scripts/validate-config-encoding.mjs",
-    "validate": "npm run check:utf8:strict && npm run check:secrets && npm run config:validate",
+    "validate": "npm run check:utf8:strict && npm run check:mojibake && npm run check:secrets && npm run config:validate",
     "prebuild": "npm run validate",
     "test": "jest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:mojibake": "node scripts/check-mojibake.mjs"
   },
   "engines": {
     "node": ">=18.17.0"

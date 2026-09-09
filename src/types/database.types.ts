@@ -304,6 +304,7 @@ export type Database = {
           id: number
           name: string
           saved_supplier_id: string | null
+          spend_type: string
           tradition_id: number | null
           vendor_id: string | null
         }
@@ -314,6 +315,7 @@ export type Database = {
           id?: number
           name: string
           saved_supplier_id?: string | null
+          spend_type?: string
           tradition_id?: number | null
           vendor_id?: string | null
         }
@@ -324,6 +326,7 @@ export type Database = {
           id?: number
           name?: string
           saved_supplier_id?: string | null
+          spend_type?: string
           tradition_id?: number | null
           vendor_id?: string | null
         }
@@ -1094,6 +1097,7 @@ export type Database = {
           from_dashboard: boolean | null
           id: string
           inserted_at: string | null
+          is_enabled: boolean
           notes: string | null
           paid_amount: number | null
           payment_date: string | null
@@ -1119,6 +1123,7 @@ export type Database = {
           from_dashboard?: boolean | null
           id?: string
           inserted_at?: string | null
+          is_enabled?: boolean
           notes?: string | null
           paid_amount?: number | null
           payment_date?: string | null
@@ -1144,6 +1149,7 @@ export type Database = {
           from_dashboard?: boolean | null
           id?: string
           inserted_at?: string | null
+          is_enabled?: boolean
           notes?: string | null
           paid_amount?: number | null
           payment_date?: string | null
@@ -1253,6 +1259,7 @@ export type Database = {
       }
       guests: {
         Row: {
+          allergies_intolerances: string
           attending: boolean | null
           created_at: string | null
           event_id: string
@@ -1271,6 +1278,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          allergies_intolerances?: string
           attending?: boolean | null
           created_at?: string | null
           event_id: string
@@ -1289,6 +1297,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          allergies_intolerances?: string
           attending?: boolean | null
           created_at?: string | null
           event_id?: string
@@ -2816,6 +2825,39 @@ export type Database = {
           },
         ]
       }
+      user_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          notes: string | null
+          rating: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          notes?: string | null
+          rating?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          notes?: string | null
+          rating?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       vendor_places: {
         Row: {
           created_at: string | null
@@ -3268,6 +3310,10 @@ export type Database = {
           website: string
         }[]
       }
+      get_wedding_budget_focus: {
+        Args: { p_country: string; p_event: string }
+        Returns: Json
+      }
       increment_analytics_counter: {
         Args: {
           p_counter_type: string
@@ -3287,6 +3333,21 @@ export type Database = {
       regenerate_event_timeline: {
         Args: { p_event_id: string }
         Returns: string
+      }
+      save_budget_idea_snapshot: {
+        Args: { p_event_id: string; p_rows: Json; p_user_id: string }
+        Returns: Json
+      }
+      save_event_guest_snapshot: {
+        Args: {
+          p_default_rsvp_deadline: string
+          p_event_id: string
+          p_family_groups: Json
+          p_guests: Json
+          p_non_invited: Json
+          p_user_id: string
+        }
+        Returns: Json
       }
       search_global_catalog: {
         Args: {
