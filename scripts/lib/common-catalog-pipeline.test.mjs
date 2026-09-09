@@ -11,7 +11,7 @@ const base = { name: "  Villa Èlite  ", address_line: " Via Roma 1 ", city: "Ag
 
 test("normalizes church, location and supplier with the common identity fields", () => {
   for (const record of [normalizeChurch(base), normalizeLocation(base), normalizeSupplier({ ...base, category: "photographer" })]) {
-    assert.equal(record.normalized_name, "villa elite"); assert.equal(record.slug, "villa-elite"); assert.equal(record.country_code, "it"); assert.equal(record.source_url, "https://example.test/item");
+    assert.equal(record.normalized_name, "villa elite"); assert.equal(record.slug, "villa-elite"); assert.equal(record.country_code, "IT"); assert.equal(record.source_url, "https://example.test/item");
   }
 });
 test("normalization is idempotent and Unicode-safe", () => { const once = normalizeChurch({ ...base, name: "Sant’Àgata\u00a0  Città" }); const twice = normalizeChurch(once); assert.deepEqual(twice, once); assert.equal(normalizeText("Città"), "citta"); });
