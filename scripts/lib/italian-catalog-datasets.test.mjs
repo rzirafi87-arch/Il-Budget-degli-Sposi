@@ -6,7 +6,7 @@ const read = (name) => JSON.parse(fs.readFileSync(new URL(`../datasets/${name}`,
 const regions = new Set(["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]);
 
 function assertTraceable(record) {
-  assert.equal(record.country_code, "it");
+  assert.equal(record.country_code, "IT");
   assert.match(record.external_id, /^Q\d+$/);
   assert.equal(record.source, "wikidata");
   assert.equal(record.source_url, `http://www.wikidata.org/entity/${record.external_id}`);
