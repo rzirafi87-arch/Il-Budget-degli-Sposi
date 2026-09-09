@@ -4,6 +4,7 @@ import path from "node:path";
 describe("Branch 41 guest snapshot contract", () => {
   const route = fs.readFileSync(path.join(process.cwd(), "src/app/api/my/guests/route.ts"), "utf8");
   const migration = fs.readFileSync(path.join(process.cwd(), "supabase/migrations/20260908213000_branch_41_beta_feedback_stabilization.sql"), "utf8");
+  const permissionFix = fs.readFileSync(path.join(process.cwd(), "supabase/migrations/20260909035000_branch_41_guest_snapshot_permissions.sql"), "utf8");
 
   it("uses one transactional RPC and never delete/reinsert chains in the route", () => {
     expect(route).toContain('db.rpc("save_event_guest_snapshot"');
@@ -38,5 +39,11 @@ describe("Branch 41 guest snapshot contract", () => {
   it("maps structured allergies in both read and write paths", () => {
     expect(route).toContain("allergiesIntolerances: g.allergies_intolerances");
     expect(migration).toContain("allergies_intolerances=excluded.allergies_intolerances");
+  });
+
+  it("can read auth.users as the backend while remaining service-role-only", () => {
+    expect(permissionFix).toContain("security definer");
+    expect(permissionFix).toContain("from public, anon, authenticated");
+    expect(permissionFix).toContain("to service_role");
   });
 });

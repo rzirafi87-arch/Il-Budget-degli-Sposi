@@ -3,7 +3,7 @@ create extension if not exists pgtap with schema extensions;
 begin;
 set local role postgres;
 set local search_path = extensions, public, pg_catalog;
-select plan(18);
+select plan(20);
 
 insert into auth.users(id,instance_id,aud,role,email,encrypted_password,email_confirmed_at,created_at,updated_at) values
 ('41000000-0000-4000-8000-00000000000a','00000000-0000-0000-0000-000000000000','authenticated','authenticated','branch41-a@example.invalid','',now(),now(),now()),
@@ -17,6 +17,17 @@ insert into public.events(id,owner_id,name,event_type,bride_email,groom_email) v
 select has_column('public','guests','allergies_intolerances','structured allergy field exists');
 select has_column('public','expenses','is_enabled','optional budget flag exists');
 select has_function('public','save_event_guest_snapshot',array['uuid','uuid','date','jsonb','jsonb','jsonb'],'atomic snapshot RPC exists');
+select is(
+  (select prosecdef from pg_proc where oid = 'public.save_event_guest_snapshot(uuid,uuid,date,jsonb,jsonb,jsonb)'::regprocedure),
+  true,
+  'snapshot can read auth.users when invoked by the backend role'
+);
+select ok(
+  has_function_privilege('service_role', 'public.save_event_guest_snapshot(uuid,uuid,date,jsonb,jsonb,jsonb)', 'EXECUTE')
+  and not has_function_privilege('authenticated', 'public.save_event_guest_snapshot(uuid,uuid,date,jsonb,jsonb,jsonb)', 'EXECUTE')
+  and not has_function_privilege('anon', 'public.save_event_guest_snapshot(uuid,uuid,date,jsonb,jsonb,jsonb)', 'EXECUTE'),
+  'snapshot execution remains restricted to service_role'
+);
 
 select lives_ok($q$select public.save_event_guest_snapshot(
  '41000000-0000-4000-8000-000000000001','41000000-0000-4000-8000-00000000000a','2027-05-01',
