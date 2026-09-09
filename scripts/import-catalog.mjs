@@ -8,8 +8,8 @@ const entityType = String(options.entity || ""); const file = String(options.fil
 if (!entityType || !file) throw new Error("Usage: node scripts/import-catalog.mjs --entity=church|location|supplier --file=dataset.json [--apply]");
 const payload = JSON.parse(await fs.readFile(file, "utf8")); const allRecords = Array.isArray(payload) ? payload : payload.records;
 if (!Array.isArray(allRecords)) throw new Error("Dataset must be an array or contain a records array");
-const offset = Number(options.offset || 0); const requestedLimit = options.limit == null ? allRecords.length : Number(options.limit);
-if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(requestedLimit) || requestedLimit < 1 || requestedLimit > 500) throw new Error("--offset must be >= 0 and --limit must be between 1 and 500");
+const offset = Number(options.offset || 0); const hasExplicitLimit = options.limit != null; const requestedLimit = hasExplicitLimit ? Number(options.limit) : allRecords.length;
+if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(requestedLimit) || requestedLimit < 0 || (hasExplicitLimit && (requestedLimit < 1 || requestedLimit > 500))) throw new Error("--offset must be >= 0 and an explicit --limit must be between 1 and 500");
 const records = allRecords.slice(offset, offset + requestedLimit);
 const source = { type: String(options["source-type"] || payload.source_type || records[0]?.source || "admin_import"), name: String(options["source-name"] || payload.dataset || file), url: options["source-url"] || null, metadata: { license_note: payload.license_note || null } };
 const databasePreview = dryRun && options["database-preview"] === true;
