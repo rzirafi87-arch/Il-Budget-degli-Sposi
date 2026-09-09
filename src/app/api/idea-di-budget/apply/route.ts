@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
       .select(`
         committed_amount,
         spend_type,
+        is_enabled,
         subcategory:subcategories!inner(
           name,
           category:categories!inner(name, event_id)
@@ -44,6 +45,7 @@ export async function POST(req: NextRequest) {
       subcategory: e.subcategory?.name,
       idea_amount: e.committed_amount,
       spendType: e.spend_type || "common",
+      enabled: e.is_enabled !== false,
     }));
   }
 

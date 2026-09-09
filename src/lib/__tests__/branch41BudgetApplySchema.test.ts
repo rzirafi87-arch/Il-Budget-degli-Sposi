@@ -17,7 +17,8 @@ describe("Branch 41 Idea di Budget apply schema", () => {
   });
 
   it("continues to exclude optional rows before insertion", () => {
+    expect(applyRoute).toContain("is_enabled,");
+    expect(applyRoute).toContain("enabled: e.is_enabled !== false");
     expect(applyRoute).toContain("rows[index]?.enabled !== false");
   });
 });
-
