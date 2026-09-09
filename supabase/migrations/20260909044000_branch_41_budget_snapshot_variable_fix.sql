@@ -1,4 +1,4 @@
--- Branch 41: save the complete Idea di Budget snapshot atomically.
+-- Branch 41: remove PL/pgSQL variable/column ambiguity in the atomic budget snapshot RPC.
 create or replace function public.save_budget_idea_snapshot(
   p_event_id uuid,
   p_user_id uuid,
