@@ -304,6 +304,7 @@ export type Database = {
           id: number
           name: string
           saved_supplier_id: string | null
+          spend_type: string
           tradition_id: number | null
           vendor_id: string | null
         }
@@ -314,6 +315,7 @@ export type Database = {
           id?: number
           name: string
           saved_supplier_id?: string | null
+          spend_type?: string
           tradition_id?: number | null
           vendor_id?: string | null
         }
@@ -324,6 +326,7 @@ export type Database = {
           id?: number
           name?: string
           saved_supplier_id?: string | null
+          spend_type?: string
           tradition_id?: number | null
           vendor_id?: string | null
         }
