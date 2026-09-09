@@ -151,7 +151,10 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_budget_snapshot.sql
 
       - name: Verify Branch 42 catalog datasets
-        run: node --test scripts/lib/italian-catalog-datasets.test.mjs
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260909144000_branch_42_catalog_country_codes.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_42_catalog_country_codes.sql
+          node --test scripts/lib/italian-catalog-datasets.test.mjs
 
       - name: Lint reconstructed database functions
         run: |
