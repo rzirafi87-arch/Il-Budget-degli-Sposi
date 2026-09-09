@@ -3,7 +3,7 @@ export { deterministicExternalId, normalizeText } from "./catalog-import-core.mj
 
 export function normalizeChurch(raw) {
   const source = String(raw.source || "").trim().toLowerCase();
-  const countryCode = String(raw.country_code || "").trim().toLowerCase();
+  const countryCode = String(raw.country_code || "").trim().toUpperCase();
   const sourceUrl = normalizeUrl(raw.source_url);
   const website = normalizeUrl(raw.website);
   const record = {
