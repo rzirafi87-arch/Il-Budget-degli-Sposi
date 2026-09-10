@@ -11,7 +11,7 @@ const base = { name: "  Villa Èlite  ", address_line: " Via Roma 1 ", city: "Ag
 
 test("normalizes church, location and supplier with the common identity fields", () => {
   for (const record of [normalizeChurch(base), normalizeLocation(base), normalizeSupplier({ ...base, category: "photographer" })]) {
-    assert.equal(record.normalized_name, "villa elite"); assert.equal(record.slug, "villa-elite"); assert.equal(record.country_code, "it"); assert.equal(record.source_url, "https://example.test/item");
+    assert.equal(record.normalized_name, "villa elite"); assert.equal(record.slug, "villa-elite"); assert.equal(record.country_code, "IT"); assert.equal(record.source_url, "https://example.test/item");
   }
 });
 test("normalization is idempotent and Unicode-safe", () => { const once = normalizeChurch({ ...base, name: "Sant’Àgata\u00a0  Città" }); const twice = normalizeChurch(once); assert.deepEqual(twice, once); assert.equal(normalizeText("Città"), "citta"); });
@@ -19,6 +19,14 @@ test("URL canonicalization is deterministic and rejects unsafe schemes", () => {
 test("raw provenance fingerprint is stable across object key order", () => { assert.equal(rawFingerprint({ a: 1, b: 2 }), rawFingerprint({ b: 2, a: 1 })); });
 test("malformed records are rejected with blocking and warning validation", async () => { const report = await runCatalogIngestion({ entityType: "church", source, records: [{ name: "", country_code: "Italy" }], repository: new MemoryCatalogRepository() }); assert.equal(report.invalid, 1); assert.equal(report.rejected, 1); assert.ok(report.records[0].issues.some((issue) => issue.severity === "blocking")); });
 test("strong source identity is idempotent and records provenance", async () => { const repository = new MemoryCatalogRepository(); const first = await runCatalogIngestion({ entityType: "location", source, records: [base], repository, dryRun: false }); const second = await runCatalogIngestion({ entityType: "location", source, records: [base], repository, dryRun: false }); assert.equal(first.inserted, 1); assert.equal(second.unchanged, 1); assert.equal(repository.rows.location.length, 1); assert.equal(repository.provenance.length, 1); });
+
+test("record-level source evidence is retained in provenance metadata", async () => {
+  const repository = new MemoryCatalogRepository();
+  const provenance_metadata = { osm_element_type: "node", osm_tags: { amenity: "events_venue" }, verification_url: "https://example.org/events" };
+  await runCatalogIngestion({ entityType: "location", source: { ...source, metadata: { license_note: "ODbL 1.0" } }, records: [{ ...base, provenance_metadata }], repository, dryRun: false });
+  assert.deepEqual(repository.provenance[0].metadata.source_record, provenance_metadata);
+  assert.equal(repository.provenance[0].metadata.license_note, "ODbL 1.0");
+});
 test("strong phone duplicate links safely across sources", async () => { const existing = normalizeChurch({ ...base, id: "church-1", phone: "+39 0922 123456" }); const repository = new MemoryCatalogRepository({ church: [existing] }); const report = await runCatalogIngestion({ entityType: "church", source: { type: "admin_import", name: "Admin" }, records: [{ ...base, source: "admin_import", external_id: "other", phone: "+39 0922 123456" }], repository }); assert.equal(report.updated, 1); assert.equal(report.duplicates, 1); });
 test("weak same-name candidate is routed to review, not merged", async () => { const existing = normalizeLocation({ ...base, id: "location-1", address_line: "Via Uno 1", external_id: "old" }); const repository = new MemoryCatalogRepository({ location: [existing] }); const report = await runCatalogIngestion({ entityType: "location", source, records: [{ ...base, address_line: "Via Due 2", external_id: "new" }], repository }); assert.equal(report.review, 1); assert.equal(report.updated, 0); });
 test("different identity is not a duplicate", async () => { const repository = new MemoryCatalogRepository({ supplier: [normalizeSupplier({ ...base, id: "s1", category: "photographer" })] }); const report = await runCatalogIngestion({ entityType: "supplier", source, records: [{ ...base, name: "Fiori Blu", address_line: "Via Palma 8", city: "Licata", category: "florist", external_id: "s2" }], repository }); assert.equal(report.inserted, 1); assert.equal(report.duplicates, 0); });

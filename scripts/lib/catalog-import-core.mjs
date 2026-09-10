@@ -36,7 +36,7 @@ export function normalizeUrl(value) {
 export function normalizeAddressFields(raw) {
   const addressLine = normalizeDisplayText(raw.address_line ?? raw.address);
   const coordinate = (value) => value == null || value === "" ? null : Number.isFinite(Number(value)) ? Number(value) : null;
-  return { address_line: addressLine, normalized_address: normalizeText(addressLine), postal_code: normalizeDisplayText(raw.postal_code), city: normalizeDisplayText(raw.city) || "", province: normalizeDisplayText(raw.province) || "", region: normalizeDisplayText(raw.region) || "", country_code: emptyToNull(raw.country_code ?? raw.country)?.toLowerCase() || "", latitude: coordinate(raw.latitude), longitude: coordinate(raw.longitude) };
+  return { address_line: addressLine, normalized_address: normalizeText(addressLine), postal_code: normalizeDisplayText(raw.postal_code), city: normalizeDisplayText(raw.city) || "", province: normalizeDisplayText(raw.province) || "", region: normalizeDisplayText(raw.region) || "", country_code: emptyToNull(raw.country_code ?? raw.country)?.toUpperCase() || "", latitude: coordinate(raw.latitude), longitude: coordinate(raw.longitude) };
 }
 
 export function deterministicExternalId(record) {
@@ -69,7 +69,7 @@ export function validateCatalogIdentity(record) {
   const issues = []; const add = (code, severity = "blocking") => issues.push({ code, severity });
   if (!record.name) add("missing name"); if (!record.normalized_name) add("name cannot be normalized"); if (!record.city) add("missing city");
   if (!record.province) add("missing province", "warning"); if (!record.region) add("missing region", "warning");
-  if (!/^[a-z]{2}$/.test(record.country_code)) add("invalid country code"); if (!record.source) add("missing source"); if (!record.external_id) add("missing external id");
+  if (!/^[A-Z]{2}$/.test(record.country_code)) add("invalid country code"); if (!record.source) add("missing source"); if (!record.external_id) add("missing external id");
   if ((record.latitude == null) !== (record.longitude == null)) add("incomplete coordinates"); if (record.latitude != null && (record.latitude < -90 || record.latitude > 90)) add("latitude out of range"); if (record.longitude != null && (record.longitude < -180 || record.longitude > 180)) add("longitude out of range");
   if (record.phone && record.phone.replace(/\D/g, "").length < 6) add("invalid phone", "warning"); if (record.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(record.email)) add("invalid email", "warning");
   return issues;

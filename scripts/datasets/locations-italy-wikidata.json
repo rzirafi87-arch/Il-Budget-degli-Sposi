@@ -1,0 +1,63 @@
+{
+  "dataset": "wikidata-italian-wedding-relevant-event-venues-2026-09-09",
+  "source_type": "wikidata",
+  "license_note": "Wikidata data is available under CC0 1.0. Records are instances of event-venue subclasses and are additionally restricted to wedding-relevant venue labels; source item URL retained per record.",
+  "records": [
+    {
+      "name": "Limonaia di Villa Strozzi",
+      "venue_type": "villa",
+      "city": "Firenze",
+      "province": "città metropolitana di Firenze",
+      "region": "Toscana",
+      "country_code": "IT",
+      "latitude": 43.77073611,
+      "longitude": 11.22823333,
+      "source": "wikidata",
+      "source_url": "http://www.wikidata.org/entity/Q3832515",
+      "external_id": "Q3832515",
+      "last_verified_at": "2026-09-09T00:00:00Z"
+    },
+    {
+      "name": "Palace Hotel",
+      "venue_type": "hotel",
+      "city": "Varese",
+      "province": "provincia di Varese",
+      "region": "Lombardia",
+      "country_code": "IT",
+      "latitude": 45.8221,
+      "longitude": 8.80961,
+      "source": "wikidata",
+      "source_url": "http://www.wikidata.org/entity/Q3889278",
+      "external_id": "Q3889278",
+      "last_verified_at": "2026-09-09T00:00:00Z"
+    },
+    {
+      "name": "Palazzo Grande",
+      "venue_type": "historic_residence",
+      "city": "Livorno",
+      "province": "provincia di Livorno",
+      "region": "Toscana",
+      "country_code": "IT",
+      "latitude": 43.551215,
+      "longitude": 10.308791,
+      "source": "wikidata",
+      "source_url": "http://www.wikidata.org/entity/Q3890250",
+      "external_id": "Q3890250",
+      "last_verified_at": "2026-09-09T00:00:00Z"
+    },
+    {
+      "name": "Palazzo Lenzi",
+      "venue_type": "historic_residence",
+      "city": "Firenze",
+      "province": "città metropolitana di Firenze",
+      "region": "Toscana",
+      "country_code": "IT",
+      "latitude": 43.772475,
+      "longitude": 11.24528333,
+      "source": "wikidata",
+      "source_url": "http://www.wikidata.org/entity/Q3890335",
+      "external_id": "Q3890335",
+      "last_verified_at": "2026-09-09T00:00:00Z"
+    }
+  ]
+}

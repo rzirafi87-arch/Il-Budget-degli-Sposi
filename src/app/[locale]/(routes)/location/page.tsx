@@ -42,6 +42,8 @@ export default function LocationsPage() {
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [region, setRegion] = useState("");
   const [type, setType] = useState("");
   const [verification, setVerification] = useState("");
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 12, total: 0, totalPages: 1 });
@@ -71,6 +73,8 @@ export default function LocationsPage() {
     const params = new URLSearchParams({ country, page: String(pagination.page), limit: String(pagination.limit) });
     if (submittedQuery) params.set("q", submittedQuery);
     if (city) params.set("city", city);
+    if (province) params.set("province", province);
+    if (region) params.set("region", region);
     if (type) params.set("type", type);
     if (verification) params.set("verification", verification);
     if (position) { params.set("latitude", String(position.latitude)); params.set("longitude", String(position.longitude)); params.set("radius", "100"); params.set("sort", "NEAREST"); }
@@ -82,7 +86,7 @@ export default function LocationsPage() {
       if (payload.pagination) setPagination(payload.pagination);
     } catch (cause) { setError(cause instanceof Error ? cause.message : t("loadError")); }
     finally { setLoading(false); }
-  }, [city, country, pagination.limit, pagination.page, position, submittedQuery, t, type, verification]);
+  }, [city, country, pagination.limit, pagination.page, position, province, region, submittedQuery, t, type, verification]);
 
   useEffect(() => { void loadLocations(); }, [loadLocations]);
 
@@ -128,13 +132,15 @@ export default function LocationsPage() {
   return <section className="space-y-6">
     <PageHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} icon={<Building2 size={24} aria-hidden />} />
     <ImageCarousel images={getPageImages("location", country)} height="280px" />
-    <AppCard padding="md"><form onSubmit={submitSearch} className="grid gap-4 md:grid-cols-[2fr_1fr_1fr_1fr_auto]">
+    <AppCard padding="md"><form onSubmit={submitSearch} className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
       <label className="space-y-1 text-sm font-semibold"><span>{t("search")}</span><input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
       <label className="space-y-1 text-sm font-semibold"><span>{t("city")}</span><input value={city} onChange={(e) => { setCity(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
+      <label className="space-y-1 text-sm font-semibold"><span>{geo("province")}</span><input value={province} onChange={(e) => { setProvince(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
+      <label className="space-y-1 text-sm font-semibold"><span>{geo("region")}</span><input value={region} onChange={(e) => { setRegion(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
       <label className="space-y-1 text-sm font-semibold"><span>{t("type")}</span><select value={type} onChange={(e) => { setType(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2"><option value="">{t("all")}</option>{VENUE_TYPES.map((value) => <option key={value} value={value}>{t(`types.${value}`)}</option>)}</select></label>
       <label className="space-y-1 text-sm font-semibold"><span>{t("verification")}</span><select value={verification} onChange={(e) => { setVerification(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2"><option value="">{t("all")}</option><option value="VERIFIED">{t("verified")}</option><option value="PROBABLE">{t("probable")}</option><option value="TO_CHECK">{t("toCheck")}</option></select></label>
       <AppButton type="submit" className="self-end"><Search size={17} aria-hidden />{t("searchButton")}</AppButton>
-      <div className="md:col-span-5"><NearMeButton onPosition={(next) => { setPosition(next); setPagination((p) => ({ ...p, page: 1 })); }} label={geo("nearMe")} unavailableLabel={geo("positionUnavailable")} /></div>
+      <div className="md:col-span-2 xl:col-span-4"><NearMeButton onPosition={(next) => { setPosition(next); setPagination((p) => ({ ...p, page: 1 })); }} label={geo("nearMe")} unavailableLabel={geo("positionUnavailable")} /></div>
     </form></AppCard>
     <CatalogMap results={locations.map((item): CatalogSearchResult => ({ id:item.id,entityType:"location",name:item.name,category:item.venue_type,city:item.city,province:item.province,region:item.region,country:item.country_code,latitude:item.latitude,longitude:item.longitude,distanceKm:item.distance_km ?? null,verificationStatus:item.verification_status,confidenceScore:0,relevanceScore:0 }))} selectedId={selectedId} onSelect={setSelectedId} />
     {loading ? <LoadingState label={t("loading")} cards={6} /> : error ? <AppCard><p role="alert" className="text-red-700">{error}</p></AppCard> : locations.length === 0 ? <AppCard><p>{t("empty")}</p></AppCard> : <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{locations.map((location) => {

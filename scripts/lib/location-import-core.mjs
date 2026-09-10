@@ -4,7 +4,7 @@ export function normalizeLocation(raw) {
   const record = {
     name: normalizeDisplayText(raw.name) || "", slug: normalizeSlug(raw.slug || raw.name),
     normalized_name: normalizeText(raw.name), venue_type: String(raw.venue_type || "other").trim().toLowerCase(), subtype: raw.subtype || null,
-    ...normalizeAddressFields(raw), phone: normalizePhone(raw.phone), email: normalizeEmail(raw.email),
+    ...normalizeAddressFields(raw), country_code: String(raw.country_code || raw.country || "").trim().toUpperCase(), phone: normalizePhone(raw.phone), email: normalizeEmail(raw.email),
     website: normalizeUrl(raw.website), instagram_url: normalizeUrl(raw.instagram_url), facebook_url: normalizeUrl(raw.facebook_url),
     accommodation_available: raw.accommodation_available ?? null, catering_internal: raw.catering_internal ?? null,
     catering_external_allowed: raw.catering_external_allowed ?? null, parking: raw.parking ?? null, accessibility: raw.accessibility ?? null,
