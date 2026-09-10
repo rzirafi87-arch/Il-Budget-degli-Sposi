@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
       is_enabled,
       subcategory:subcategories!inner(
         name,
+        is_custom,
         category:categories!inner(name, event_id)
       )
     `)
@@ -45,7 +46,7 @@ export async function GET(req: NextRequest) {
       is_enabled: boolean | null;
       committed_amount: number | null;
       spend_type: string | null;
-      subcategory: { name: string; category: { name: string } };
+      subcategory: { name: string; is_custom: boolean | null; category: { name: string } };
     };
     return {
       id: expense.id,
@@ -56,6 +57,7 @@ export async function GET(req: NextRequest) {
       supplier: expense.supplier || "",
       notes: expense.notes || "",
       enabled: expense.is_enabled !== false,
+      custom: expense.subcategory?.is_custom === true,
     };
   });
 
@@ -81,6 +83,7 @@ export async function POST(req: NextRequest) {
     supplier?: string;
     notes?: string;
     enabled?: boolean;
+    custom?: boolean;
   }> = Array.isArray(body) ? body : Array.isArray(body?.rows) ? body.rows : [];
 
   const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;

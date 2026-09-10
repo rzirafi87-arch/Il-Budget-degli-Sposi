@@ -1,654 +1,109 @@
-﻿"use client";
+"use client";
 
-import type { EventConfiguration } from "@/constants/eventConfigs";
-import {
-    DEFAULT_EVENT_TYPE,
-    getEventConfig,
-    resolveEventType,
-} from "@/constants/eventConfigs";
+import { DEFAULT_EVENT_TYPE, getEventConfig, resolveEventType } from "@/constants/eventConfigs";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
+import { budgetTotals, matchesBudgetSearch } from "@/lib/budgetIdea";
 import { useEffect, useMemo, useState } from "react";
 
-export type BudgetIdeaRow = {
-  id?: string;
-  category: string;
-  subcategory: string;
-  spendType: string;
-  amount: number;
-  enabled: boolean;
-  supplier?: string;
-  notes?: string;
-};
+export type BudgetIdeaRow = { id?: string; category: string; subcategory: string; spendType: string; amount: number; enabled: boolean; supplier?: string; notes?: string; custom?: boolean };
+const money = (value: number, currency: string) => new Intl.NumberFormat("it-IT", { style: "currency", currency }).format(value || 0);
+const number = (value: unknown) => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
 
-type ContributorBudgets = Record<string, number>;
-
-type SpendTypeOption = {
-  value: string;
-  label: string;
-};
-
-const supabase = getBrowserClient();
-
-function toNumber(value: unknown): number {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+function defaults(eventType: string): BudgetIdeaRow[] {
+  const config = getEventConfig(eventType);
+  return Object.entries(config.budgetCategories).flatMap(([category, entries]) => entries.map((subcategory) => ({ category, subcategory, spendType: config.defaultSpendType, amount: 0, enabled: false, supplier: "", notes: "", custom: false })));
 }
 
-function formatAmount(value: number, currency: string) {
-  return `${currency} ${toNumber(value).toLocaleString("it-IT")}`;
-}
-
-function buildDefaultRows(config: EventConfiguration): BudgetIdeaRow[] {
-  const rows: BudgetIdeaRow[] = [];
-  Object.entries(config.budgetCategories).forEach(([category, subcategories]) => {
-    subcategories.forEach((subcategory) => {
-      rows.push({
-        category,
-        subcategory,
-        spendType: config.defaultSpendType,
-        amount: 0,
-        enabled: true,
-        supplier: "",
-        notes: "",
-      });
-    });
+export default function BudgetIdeaPage() {
+  const [eventType] = useState(() => {
+    if (typeof window === "undefined") return DEFAULT_EVENT_TYPE;
+    const cookieType = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
+    return resolveEventType(localStorage.getItem("eventType") || cookieType || DEFAULT_EVENT_TYPE);
   });
-  return rows;
-}
-
-export default function IdeaDiBudgetPage() {
-  const t = useTranslations("budgetIdea");
-  const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
-  const eventConfig = getEventConfig(eventType);
-
-  const [rows, setRows] = useState<BudgetIdeaRow[]>(() =>
-    buildDefaultRows(eventConfig),
-  );
+  const config = getEventConfig(eventType);
+  const [rows, setRows] = useState<BudgetIdeaRow[]>([]);
+  const [open, setOpen] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState("");
+  const [currency] = useState(() => typeof window === "undefined" ? "EUR" : localStorage.getItem("budgetIdea.currency") || "EUR");
+  const [contingencyPct, setContingencyPct] = useState(() => typeof window === "undefined" ? 0 : number(localStorage.getItem("budgetIdea.contingencyPct")));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [contributorBudgets, setContributorBudgets] = useState<ContributorBudgets>(
-    {},
-  );
-  const [eventDate, setEventDate] = useState("");
-  const [currency, setCurrency] = useState(
-    () =>
-      (typeof window !== "undefined" &&
-        localStorage.getItem("budgetIdea.currency")) ||
-      "EUR",
-  );
-  const [contingencyPct, setContingencyPct] = useState<number>(() => {
-    if (typeof window === "undefined") return 0;
-    const stored = Number(localStorage.getItem("budgetIdea.contingencyPct") || 0);
-    return Number.isFinite(stored) ? stored : 0;
-  });
-  const [compactView, setCompactView] = useState<boolean>(
-    () =>
-      typeof window !== "undefined" &&
-      localStorage.getItem("budgetIdea.compactView") === "1",
-  );
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const cookieMatch = document.cookie.match(/(?:^|; )eventType=([^;]+)/)?.[1];
-    const stored = window.localStorage.getItem("eventType");
-    const resolved = resolveEventType(stored || cookieMatch || DEFAULT_EVENT_TYPE);
-    setEventType(resolved);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const nextBudgets: ContributorBudgets = {};
-    eventConfig.contributors.forEach(({ value }) => {
-      const stored = Number(
-        localStorage.getItem(`budgetIdea.budget.${eventType}.${value}`) || 0,
-      );
-      nextBudgets[value] = Number.isFinite(stored) ? stored : 0;
-    });
-    setContributorBudgets(nextBudgets);
-    const storedDate =
-      localStorage.getItem(`budgetIdea.eventDate.${eventType}`) || "";
-    setEventDate(storedDate);
-  }, [eventConfig.contributors, eventType]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem("budgetIdea.currency", currency);
-    localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
-    localStorage.setItem("budgetIdea.compactView", compactView ? "1" : "0");
-
-    eventConfig.contributors.forEach(({ value }) => {
-      const amount = contributorBudgets[value] || 0;
-      localStorage.setItem(
-        `budgetIdea.budget.${eventType}.${value}`,
-        String(amount),
-      );
-    });
-    localStorage.setItem(`budgetIdea.eventDate.${eventType}`, eventDate);
-
-    if (eventConfig.contributors[0]) {
-      const first = eventConfig.contributors[0].value;
-      localStorage.setItem(
-        "brideBudget",
-        String(contributorBudgets[first] || 0),
-      );
-    }
-    if (eventConfig.contributors[1]) {
-      const second = eventConfig.contributors[1].value;
-      localStorage.setItem(
-        "groomBudget",
-        String(contributorBudgets[second] || 0),
-      );
-    }
-    localStorage.setItem("weddingDate", eventDate);
-  }, [
-    compactView,
-    contingencyPct,
-    contributorBudgets,
-    currency,
-    eventConfig.contributors,
-    eventDate,
-    eventType,
-  ]);
-
-  useEffect(() => {
-    let disposed = false;
-    async function loadRows() {
+    let active = true;
+    void (async () => {
       setLoading(true);
-      try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const jwt = sessionData.session?.access_token;
-        const headers: HeadersInit = {};
-        if (jwt) headers.Authorization = `Bearer ${jwt}`;
-
-        const res = await fetch("/api/idea-di-budget", { headers });
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        const json = await res.json();
-        if (disposed) return;
-
-        // Se ci sono dati reali, mostra quelli. Altrimenti, mostra sempre righe demo.
-        if (Array.isArray(json?.data) && json.data.length > 0) {
-          const aggregated = new Map<string, BudgetIdeaRow>();
-          json.data.forEach((entry: Record<string, unknown>) => {
-            const relation = entry.categories;
-            let categoryFromRelation = "";
-            if (relation && typeof relation === "object" && "name" in relation) {
-              const maybeName = (relation as { name?: unknown }).name;
-              if (typeof maybeName === "string") {
-                categoryFromRelation = maybeName;
-              }
-            }
-            const category = String(categoryFromRelation || entry.category || "");
-            const subcategory = String(entry.subcategory || "");
-            if (!category || !subcategory) return;
-            const key = `${category}|||${subcategory}`;
-            const spendTypeRaw = String(
-              entry.spendType ??
-                entry.spend_type ??
-                eventConfig.defaultSpendType,
-            );
-            const spendType =
-              spendTypeRaw === "common"
-                ? eventConfig.defaultSpendType
-                : spendTypeRaw;
-            const amount = toNumber(entry.idea_amount ?? entry.amount);
-            const supplier =
-              typeof entry.supplier === "string" ? entry.supplier : "";
-            const notes = typeof entry.notes === "string" ? entry.notes : "";
-            const enabled = entry.enabled !== false;
-
-            const existing = aggregated.get(key);
-            if (existing) {
-              existing.amount += amount;
-              if (!existing.supplier && supplier) existing.supplier = supplier;
-              if (!existing.notes && notes) existing.notes = notes;
-              if (
-                existing.spendType === eventConfig.defaultSpendType &&
-                spendType !== eventConfig.defaultSpendType
-              ) {
-                existing.spendType = spendType;
-              }
-            } else {
-              aggregated.set(key, {
-                category,
-                subcategory,
-                spendType,
-                amount,
-                supplier,
-                notes,
-                enabled,
-              });
-            }
-          });
-          setRows(Array.from(aggregated.values()));
-        } else {
-          // Mostra SEMPRE righe demo anche se non autenticato/tester
-          setRows(buildDefaultRows(eventConfig));
-        }
-      } catch (error) {
-        // Mostra SEMPRE righe demo anche in caso di errore
-        console.error(t("messages.loadError"), error);
-        if (!disposed) {
-          setRows(buildDefaultRows(eventConfig));
-        }
-      } finally {
-        if (!disposed) setLoading(false);
-      }
-    }
-    loadRows();
-    return () => {
-      disposed = true;
-    };
-  }, [eventConfig, eventType, t]);
-
-  const spendTypeOptions = useMemo<SpendTypeOption[]>(() => {
-    const base = eventConfig.spendTypes;
-    const extras = Array.from(
-      new Set(
-        rows
-          .map((row) => row.spendType)
-          .filter((value) => value && !base.some((opt) => opt.value === value)),
-      ),
-    ).map((value) => ({ value, label: value }));
-    return [...base, ...extras];
-  }, [eventConfig.spendTypes, rows]);
-
-  const spendTypeLabelMap = useMemo(() => {
-    return new Map(eventConfig.spendTypes.map((opt) => [opt.value, opt.label]));
-  }, [eventConfig.spendTypes]);
-
-  const plannedBySpendType = useMemo(() => {
-    return rows.reduce<Record<string, number>>((acc, row) => {
-      if (!row.enabled) return acc;
-      acc[row.spendType] = (acc[row.spendType] || 0) + toNumber(row.amount);
-      return acc;
-    }, {});
-  }, [rows]);
-
-  const plannedTotal = useMemo(
-    () => rows.reduce((sum, row) => sum + (row.enabled ? toNumber(row.amount) : 0), 0),
-    [rows],
-  );
-
-  const totalBudget = useMemo(
-    () =>
-      eventConfig.contributors.reduce(
-        (sum, contributor) => sum + (contributorBudgets[contributor.value] || 0),
-        0,
-      ),
-    [contributorBudgets, eventConfig.contributors],
-  );
-
-  const extraSpendItems = useMemo(() => {
-    const validKeys = new Set(
-      eventConfig.contributors.map((contributor) => contributor.value),
-    );
-    return Object.entries(plannedBySpendType).filter(
-      ([value]) => !validKeys.has(value),
-    );
-  }, [eventConfig.contributors, plannedBySpendType]);
-
-  function handleRowChange<K extends keyof BudgetIdeaRow>(
-    index: number,
-    field: K,
-    value: BudgetIdeaRow[K],
-  ) {
-    setRows((prev) =>
-      prev.map((row, idx) => (idx === index ? { ...row, [field]: value } : row)),
-    );
-  }
-
-  function handleBudgetChange(key: string, value: number) {
-    const safeValue = Number.isFinite(value) ? value : 0;
-    setContributorBudgets((prev) => ({ ...prev, [key]: safeValue }));
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const jwt = sessionData.session?.access_token;
-      const headers: HeadersInit = { "Content-Type": "application/json" };
-      if (jwt) headers.Authorization = `Bearer ${jwt}`;
-
-      const payload = rows.map((row) => ({
-        category: row.category,
-        subcategory: row.subcategory,
-        spendType: row.spendType,
-        idea_amount: toNumber(row.amount),
-        supplier: row.supplier,
-        notes: row.notes,
-        enabled: row.enabled,
-      }));
-
-      const res = await fetch("/api/idea-di-budget", {
-        method: "POST",
-        headers,
-        body: JSON.stringify(payload),
+      const base = defaults(eventType);
+      const { data } = await getBrowserClient().auth.getSession();
+      const response = await fetch("/api/idea-di-budget", { headers: data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {} });
+      const json = response.ok ? await response.json() : { data: [] };
+      if (!active) return;
+      const saved = Array.isArray(json.data) ? json.data as Array<Record<string, unknown>> : [];
+      const byKey = new Map(base.map((row) => [`${row.category}\u0000${row.subcategory}`, row]));
+      saved.forEach((entry) => {
+        const row: BudgetIdeaRow = { id: String(entry.id || "") || undefined, category: String(entry.category || ""), subcategory: String(entry.subcategory || ""), spendType: String(entry.spendType || config.defaultSpendType), amount: number(entry.idea_amount), enabled: entry.enabled !== false, supplier: String(entry.supplier || ""), notes: String(entry.notes || ""), custom: entry.custom === true };
+        if (row.category && row.subcategory) byKey.set(`${row.category}\u0000${row.subcategory}`, row);
       });
-      if (!res.ok) throw new Error(`Save failed (${res.status})`);
+      setRows([...byKey.values()]); setLoading(false);
+    })();
+    return () => { active = false; };
+  }, [eventType, config.defaultSpendType]);
 
-      const firstContributor = eventConfig.contributors[0]?.value;
-      const secondContributor = eventConfig.contributors[1]?.value;
-      const firstBudget = firstContributor
-        ? contributorBudgets[firstContributor] || 0
-        : 0;
-      const secondBudget = secondContributor
-        ? contributorBudgets[secondContributor] || 0
-        : 0;
+  const categories = useMemo(() => [...new Set(rows.map((row) => row.category))], [rows]);
+  const normalizedQuery = query.trim();
+  const visible = (category: string) => rows.map((row, index) => ({ row, index })).filter(({ row }) => row.category === category && (!normalizedQuery || matchesBudgetSearch(row.category, row.subcategory, normalizedQuery)));
+  const searchedCategories = normalizedQuery ? categories.filter((category) => visible(category).length) : categories;
+  const totals = useMemo(() => budgetTotals(rows, contingencyPct), [rows, contingencyPct]);
+  const categoryTotal = (category: string) => rows.reduce((sum, row) => sum + (row.category === category && row.enabled ? row.amount : 0), 0);
+  const change = (index: number, patch: Partial<BudgetIdeaRow>) => setRows((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, ...patch } : row));
 
-      await fetch("/api/my/dashboard", {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          totalBudget,
-          brideBudget: firstBudget,
-          groomBudget: secondBudget,
-          weddingDate: eventDate || null,
-          rows: [],
-        }),
-      });
-    } catch (error) {
-      console.error(t("messages.saveError"), error);
-      alert(t("messages.saveError"));
-    } finally {
-      setSaving(false);
-    }
+  function addCustom(category: string) {
+    const label = window.prompt("Nome della nuova voce");
+    if (!label?.trim()) return;
+    setRows((current) => [...current, { category, subcategory: label.trim(), spendType: config.defaultSpendType, amount: 0, enabled: true, custom: true, supplier: "", notes: "" }]);
+    setOpen((current) => new Set(current).add(category));
   }
 
-  async function handleApplyToBudget() {
-    setSaving(true);
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const jwt = sessionData.session?.access_token;
-      const headers: HeadersInit = { "Content-Type": "application/json" };
-      if (jwt) headers.Authorization = `Bearer ${jwt}`;
-      const country =
-        (typeof window !== "undefined" && localStorage.getItem("country")) ||
-        "it";
-
-      const res = await fetch(
-        `/api/idea-di-budget/apply?country=${encodeURIComponent(country)}`,
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({ country, rows: rows.filter((row) => row.enabled) }),
-        },
-      );
-      if (!res.ok) throw new Error(`Apply failed (${res.status})`);
-      const json = await res.json();
-      alert(t("messages.applyDone", { count: json?.inserted ?? 0 }));
-    } catch (error) {
-      console.error(t("messages.applyError"), error);
-      alert(t("messages.applyError"));
-    } finally {
-      setSaving(false);
-    }
+  async function request(path: string, body: unknown) {
+    const { data } = await getBrowserClient().auth.getSession();
+    return fetch(path, { method: "POST", headers: { "Content-Type": "application/json", ...(data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {}) }, body: JSON.stringify(body) });
+  }
+  async function save() {
+    setSaving(true); setMessage(""); localStorage.setItem("budgetIdea.currency", currency); localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
+    const response = await request("/api/idea-di-budget", rows);
+    setMessage(response.ok ? "Idea di budget salvata." : "Salvataggio non riuscito."); setSaving(false);
+  }
+  async function apply() {
+    setSaving(true); setMessage("");
+    const response = await request("/api/idea-di-budget/apply", { country: (localStorage.getItem("country") || "it"), rows });
+    const json = await response.json().catch(() => ({}));
+    setMessage(response.ok ? `${json.inserted || 0} voci applicate al Budget.` : "Applicazione al Budget non riuscita."); setSaving(false);
   }
 
-  const contingencyAmount = (plannedTotal * contingencyPct) / 100;
-  const totalWithContingency = plannedTotal + contingencyAmount;
-
-  if (loading) {
-    return (
-      <div className="py-12 text-center text-gray-500">
-        {t("loading")}
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-auto max-w-6xl px-3 py-5 sm:p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <h1 className="font-serif text-3xl font-bold">{t("title")}</h1>
-        <div className="flex flex-wrap gap-3">
-          <button
-            className="rounded-full bg-[#2563eb] px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-[#1d4ed8]"
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? t("buttons.saving") : t("buttons.save")}
-          </button>
-          <button
-            className="rounded-full border border-[#2563eb] px-5 py-2 text-sm font-semibold text-[#2563eb] transition hover:bg-[#2563eb] hover:text-white"
-            onClick={handleApplyToBudget}
-            disabled={saving}
-          >
-            {t("buttons.apply")}
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-5">
-        <div className="grid gap-4 sm:grid-cols-4">
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-semibold text-gray-700">{t("form.eventDate")}</label>
-            <input
-              type="date"
-              value={eventDate}
-              onChange={(event) => setEventDate(event.target.value)}
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
-            />
-            <p className="mt-1 text-xs text-gray-500">{t("form.syncedNote")}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700">{t("form.currency")}</label>
-            <input
-              type="text"
-              value={currency}
-              onChange={(event) =>
-                setCurrency(event.target.value.trim().toUpperCase().slice(0, 4))
-              }
-              maxLength={4}
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm uppercase"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700">{t("form.contingency")}</label>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              value={contingencyPct}
-              onChange={(event) =>
-                setContingencyPct(Math.max(0, Number(event.target.value) || 0))
-              }
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 sm:col-span-2">
-            <input
-              type="checkbox"
-              checked={compactView}
-              onChange={(event) => setCompactView(event.target.checked)}
-              className="h-4 w-4"
-            />
-            {t("form.compact")}
-          </label>
-        </div>
-        <div className="mt-4 grid gap-3 text-sm text-gray-700 sm:grid-cols-3">
-          <div>
-            <strong>{t("summary.plannedTotal")}</strong>{" "}
-            {formatAmount(plannedTotal, currency)}
-          </div>
-          <div>
-            <strong>{t("summary.contingency")}</strong>{" "}
-            {formatAmount(contingencyAmount, currency)} ({contingencyPct}
-            %)
-          </div>
-          <div>
-            <strong>{t("summary.totalWithContingency")}</strong>{" "}
-            {formatAmount(totalWithContingency, currency)}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {eventConfig.contributors.map((contributor) => {
-          const planned = plannedBySpendType[contributor.value] || 0;
-          const available = contributorBudgets[contributor.value] || 0;
-          const residue = Math.max(available - planned, 0);
-          return (
-            <div
-              key={contributor.value}
-              className={`rounded-xl border border-gray-200 bg-white p-4 shadow-sm ${contributor.cardClass}`}
-            >
-              <h4 className="font-semibold text-gray-800">
-                {contributor.label}
-              </h4>
-              <div className="mt-2 text-sm text-gray-600">{t("panel.available")} {formatAmount(available, currency)}</div>
-              <div className="text-sm text-gray-600">{t("panel.planned")} {formatAmount(planned, currency)}</div>
-              <div className="text-sm font-semibold text-emerald-600">{t("panel.residual")} {formatAmount(residue, currency)}</div>
-              <div className="mt-3">
-                <label className="block text-xs font-semibold text-gray-600">{t("panel.budget")}</label>
-                <input
-                  type="number"
-                  value={available}
-                  min={0}
-                  onChange={(event) =>
-                    handleBudgetChange(
-                      contributor.value,
-                      Number(event.target.value),
-                    )
-                  }
-                  className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
-                />
-              </div>
-            </div>
-          );
-        })}
-        <div className="rounded-xl border border-gray-300 bg-white p-4 shadow-sm">
-          <h4 className="font-semibold text-gray-800">
-            {eventConfig.totalBudgetLabel}
-          </h4>
-          <div className="mt-2 text-sm text-gray-600">
-            {t("totalCard.available")} {formatAmount(totalBudget, currency)}
-          </div>
-          <div className="text-sm text-gray-600">
-            {t("totalCard.planned")} {formatAmount(plannedTotal, currency)}
-          </div>
-          <div className="text-sm font-semibold text-emerald-600">
-            {t("totalCard.residual")} {formatAmount(Math.max(totalBudget - plannedTotal, 0), currency)}
-          </div>
-          {extraSpendItems.length > 0 && (
-            <div className="mt-3 text-xs text-gray-500">
-              <p className="font-semibold">{t("totalCard.extraContributions")}</p>
-              <ul className="mt-1 space-y-1">
-                {extraSpendItems.map(([value, amount]) => (
-                  <li key={value}>
-                    {spendTypeLabelMap.get(value) || value}:{" "}
-                    {formatAmount(amount, currency)}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-8 hidden overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm md:block">
-        <table className="min-w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">
-              <th className="p-3">Inclusa</th>
-              <th className="p-3">{t("table.category")}</th>
-              <th className="p-3">{t("table.subcategory")}</th>
-              <th className="p-3">{t("table.amountCurrency", { currency })}</th>
-              <th className="p-3">{eventConfig.spendTypeLabel}</th>
-              <th className="p-3">{t("table.supplier")}</th>
-              <th className="p-3">{t("table.notes")}</th>
-            </tr>
-          </thead>
-          <tbody className={compactView ? "text-sm" : "text-base"}>
-            {rows.map((row, index) => (
-              <tr
-                key={`${row.category}-${row.subcategory}-${index}`}
-                className={`border-b border-gray-100 hover:bg-gray-50 ${row.enabled ? "" : "opacity-50"}`}
-              >
-                <td className="p-3 text-center"><input type="checkbox" checked={row.enabled} onChange={(event) => handleRowChange(index, "enabled", event.target.checked)} aria-label={`Includi ${row.subcategory}`} /></td>
-                <td className="p-3 font-medium text-gray-800">{row.category}</td>
-                <td className="p-3 text-gray-700">{row.subcategory}</td>
-                <td className="p-3">
-                  <input
-                    type="number"
-                    min={0}
-                    value={row.amount}
-                    onChange={(event) =>
-                      handleRowChange(index, "amount", toNumber(event.target.value))
-                    }
-                    className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
-                  />
-                </td>
-                <td className="p-3">
-                  <select
-                    value={row.spendType}
-                    onChange={(event) =>
-                      handleRowChange(index, "spendType", event.target.value)
-                    }
-                    className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
-                  >
-                    {spendTypeOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="p-3">
-                  <input
-                    type="text"
-                    value={row.supplier || ""}
-                    onChange={(event) =>
-                      handleRowChange(index, "supplier", event.target.value)
-                    }
-                    className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
-                  />
-                </td>
-                <td className="p-3">
-                  <textarea
-                    value={row.notes || ""}
-                    onChange={(event) =>
-                      handleRowChange(index, "notes", event.target.value)
-                    }
-                    rows={compactView ? 2 : 3}
-                    className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="mt-8 space-y-3 md:hidden">
-        {rows.map((row, index) => (
-          <article key={`mobile-${row.category}-${row.subcategory}-${index}`} className={`rounded-xl border bg-white p-4 shadow-sm ${row.enabled ? "border-gray-200" : "border-gray-100 opacity-60"}`}>
-            <label className="flex min-h-11 items-center gap-3 font-semibold text-gray-900">
-              <input type="checkbox" checked={row.enabled} onChange={(event) => handleRowChange(index, "enabled", event.target.checked)} className="h-5 w-5" />
-              <span>{row.subcategory}</span>
-            </label>
-            <p className="mb-3 text-xs text-gray-500">{row.category}</p>
-            <label className="block text-sm font-semibold text-gray-700">
-              {t("table.amountCurrency", { currency })}
-              <input type="number" inputMode="decimal" min={0} value={row.amount} onChange={(event) => handleRowChange(index, "amount", toNumber(event.target.value))} className="mt-1 min-h-12 w-full rounded-lg border border-gray-300 px-3 text-base" />
-            </label>
-            <label className="mt-3 block text-sm font-semibold text-gray-700">
-              {eventConfig.spendTypeLabel}
-              <select value={row.spendType} onChange={(event) => handleRowChange(index, "spendType", event.target.value)} className="mt-1 min-h-12 w-full rounded-lg border border-gray-300 px-3 text-base">
-                {spendTypeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
-            </label>
-            <label className="mt-3 block text-sm font-semibold text-gray-700">
-              {t("table.supplier")}
-              <input type="text" value={row.supplier || ""} onChange={(event) => handleRowChange(index, "supplier", event.target.value)} className="mt-1 min-h-12 w-full rounded-lg border border-gray-300 px-3 text-base" />
-            </label>
-            <label className="mt-3 block text-sm font-semibold text-gray-700">
-              {t("table.notes")}
-              <textarea value={row.notes || ""} onChange={(event) => handleRowChange(index, "notes", event.target.value)} rows={2} className="mt-1 w-full rounded-lg border border-gray-300 p-3 text-base" />
-            </label>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
+  if (loading) return <p className="p-6 text-gray-600">Caricamento idea di budget…</p>;
+  return <main className="mx-auto max-w-5xl space-y-6 px-3 py-5 sm:p-6">
+    <header><h1 className="font-serif text-3xl font-bold">Idea di budget</h1><p className="mt-2 text-gray-600">Scegli solo le voci che servono al vostro matrimonio. Le altre non incidono sui totali.</p></header>
+    <section className="grid gap-4 rounded-xl border bg-white p-4 sm:grid-cols-3">
+      <label className="font-semibold sm:col-span-2">Cerca una voce<input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Es. make, foto, corsage, autista" className="mt-2 min-h-12 w-full rounded-lg border px-3" /></label>
+      <label className="font-semibold">Imprevisti (%)<input type="number" inputMode="decimal" min="0" max="100" value={contingencyPct} onChange={(e) => setContingencyPct(number(e.target.value))} className="mt-2 min-h-12 w-full rounded-lg border px-3" /></label>
+    </section>
+    <section className="space-y-3">
+      {searchedCategories.map((category) => {
+        const expanded = normalizedQuery.length > 0 || open.has(category);
+        return <article key={category} className="overflow-hidden rounded-xl border bg-white">
+          <button type="button" aria-expanded={expanded} onClick={() => setOpen((current) => { const next = new Set(current); if (next.has(category)) next.delete(category); else next.add(category); return next; })} className="flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3 text-left"><span className="font-bold">{category}</span><span className="whitespace-nowrap font-semibold text-rose-700">{money(categoryTotal(category), currency)} <span aria-hidden>⌄</span></span></button>
+          {expanded && <div className="space-y-3 border-t bg-gray-50 p-3 sm:p-4">
+            {visible(category).map(({ row, index }) => <div key={`${row.subcategory}-${index}`} className={`rounded-xl border bg-white p-3 ${row.enabled ? "border-rose-200" : "border-gray-200"}`}>
+              <div className="flex items-start gap-3"><input id={`enabled-${index}`} type="checkbox" checked={row.enabled} onChange={(e) => change(index, { enabled: e.target.checked })} className="mt-1 h-5 w-5 shrink-0" /><label htmlFor={`enabled-${index}`} className="min-w-0 flex-1 font-semibold">{row.custom ? <input aria-label="Nome voce personalizzata" value={row.subcategory} onChange={(e) => change(index, { subcategory: e.target.value })} className="w-full rounded border px-2 py-1" /> : row.subcategory}</label>{row.custom && <button type="button" aria-label={`Elimina ${row.subcategory}`} onClick={() => setRows((current) => current.filter((_, i) => i !== index))} className="rounded px-2 py-1 text-sm font-semibold text-red-700">Elimina</button>}</div>
+              {row.enabled && <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-3"><label className="text-sm font-semibold">Importo ({currency})<input type="number" inputMode="decimal" min="0" value={row.amount} onChange={(e) => change(index, { amount: number(e.target.value) })} className="mt-1 min-h-12 w-full rounded-lg border px-3 text-base" /></label><label className="text-sm font-semibold">Tipo spesa<select value={row.spendType} onChange={(e) => change(index, { spendType: e.target.value })} className="mt-1 min-h-12 w-full rounded-lg border px-3">{config.spendTypes.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label><label className="text-sm font-semibold">Note<input value={row.notes || ""} onChange={(e) => change(index, { notes: e.target.value })} className="mt-1 min-h-12 w-full rounded-lg border px-3" /></label></div>}
+            </div>)}
+            <button type="button" onClick={() => addCustom(category)} className="min-h-11 rounded-full border border-rose-700 px-4 font-semibold text-rose-800">+ Aggiungi voce personalizzata</button>
+          </div>}
+        </article>;
+      })}
+      {!searchedCategories.length && <p className="rounded-xl border bg-white p-5">Nessuna voce trovata.</p>}
+    </section>
+    <section className="sticky bottom-3 grid gap-3 rounded-xl border bg-white/95 p-4 shadow-lg sm:grid-cols-[1fr_auto_auto] sm:items-center"><div><p><strong>Totale pianificato:</strong> {money(totals.planned, currency)}</p><p className="text-sm text-gray-600">Imprevisti: {money(totals.contingency, currency)} · Totale con imprevisti: <strong>{money(totals.total, currency)}</strong></p><p role="status" className="mt-1 text-sm text-emerald-700">{message}</p></div><button type="button" disabled={saving} onClick={save} className="min-h-12 rounded-full border border-rose-700 px-5 font-semibold text-rose-800 disabled:opacity-60">Salva</button><button type="button" disabled={saving} onClick={apply} className="min-h-12 rounded-full bg-rose-700 px-5 font-semibold text-white disabled:opacity-60">Applica al Budget</button></section>
+  </main>;
 }

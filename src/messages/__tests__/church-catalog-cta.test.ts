@@ -1,8 +1,8 @@
 import itMessages from "../it.json";
 
 describe("church catalog ceremony CTA", () => {
-  it("keeps the Location Cerimonia add-church action visible in Italian", () => {
-    expect(itMessages.locationCeremony).toBe("Location Cerimonia");
+  it("uses neutral ceremony navigation while preserving the catalog action", () => {
+    expect(itMessages.locationCeremony).toBe("Cerimonia");
     expect(itMessages.suppliersChurches.catalog.save).toBe("Aggiungi Chiesa");
   });
 });

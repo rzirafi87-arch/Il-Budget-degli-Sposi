@@ -2122,6 +2122,7 @@ export type Database = {
           estimated_cost: number | null
           id: string
           inserted_at: string | null
+          is_custom: boolean
           name: string | null
           notes: string | null
           sort: number
@@ -2135,6 +2136,7 @@ export type Database = {
           estimated_cost?: number | null
           id?: string
           inserted_at?: string | null
+          is_custom?: boolean
           name?: string | null
           notes?: string | null
           sort?: number
@@ -2148,6 +2150,7 @@ export type Database = {
           estimated_cost?: number | null
           id?: string
           inserted_at?: string | null
+          is_custom?: boolean
           name?: string | null
           notes?: string | null
           sort?: number
@@ -2966,17 +2969,23 @@ export type Database = {
           account_holder: string | null
           background_image: string | null
           bank_name: string | null
-          bride_name: string
+          bride_name: string | null
+          ceremony_officiant: string | null
+          ceremony_place_address: string | null
+          ceremony_place_kind: string | null
+          ceremony_place_name: string | null
           ceremony_time: string | null
+          ceremony_type: string | null
           church_address: string | null
           church_id: string | null
           church_name: string | null
           color_scheme: string | null
           custom_message: string | null
+          denomination: string | null
           dress_code: string | null
           event_id: string
           font_family: string | null
-          groom_name: string
+          groom_name: string | null
           iban: string | null
           id: string
           inserted_at: string | null
@@ -2986,26 +2995,33 @@ export type Database = {
           location_name: string | null
           pdf_url: string | null
           reception_time: string | null
+          religion: string | null
           rsvp_info: string | null
           template_style: string | null
           updated_at: string | null
-          wedding_date: string
+          wedding_date: string | null
         }
         Insert: {
           account_holder?: string | null
           background_image?: string | null
           bank_name?: string | null
-          bride_name: string
+          bride_name?: string | null
+          ceremony_officiant?: string | null
+          ceremony_place_address?: string | null
+          ceremony_place_kind?: string | null
+          ceremony_place_name?: string | null
           ceremony_time?: string | null
+          ceremony_type?: string | null
           church_address?: string | null
           church_id?: string | null
           church_name?: string | null
           color_scheme?: string | null
           custom_message?: string | null
+          denomination?: string | null
           dress_code?: string | null
           event_id: string
           font_family?: string | null
-          groom_name: string
+          groom_name?: string | null
           iban?: string | null
           id?: string
           inserted_at?: string | null
@@ -3015,26 +3031,33 @@ export type Database = {
           location_name?: string | null
           pdf_url?: string | null
           reception_time?: string | null
+          religion?: string | null
           rsvp_info?: string | null
           template_style?: string | null
           updated_at?: string | null
-          wedding_date: string
+          wedding_date?: string | null
         }
         Update: {
           account_holder?: string | null
           background_image?: string | null
           bank_name?: string | null
-          bride_name?: string
+          bride_name?: string | null
+          ceremony_officiant?: string | null
+          ceremony_place_address?: string | null
+          ceremony_place_kind?: string | null
+          ceremony_place_name?: string | null
           ceremony_time?: string | null
+          ceremony_type?: string | null
           church_address?: string | null
           church_id?: string | null
           church_name?: string | null
           color_scheme?: string | null
           custom_message?: string | null
+          denomination?: string | null
           dress_code?: string | null
           event_id?: string
           font_family?: string | null
-          groom_name?: string
+          groom_name?: string | null
           iban?: string | null
           id?: string
           inserted_at?: string | null
@@ -3044,10 +3067,11 @@ export type Database = {
           location_name?: string | null
           pdf_url?: string | null
           reception_time?: string | null
+          religion?: string | null
           rsvp_info?: string | null
           template_style?: string | null
           updated_at?: string | null
-          wedding_date?: string
+          wedding_date?: string | null
         }
         Relationships: [
           {
