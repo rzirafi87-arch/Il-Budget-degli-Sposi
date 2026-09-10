@@ -28,7 +28,9 @@ describe("approved application flow regressions", () => {
 
   it("keeps the ceremony parent route available and canonical", () => {
     const ceremony = read("src/app/[locale]/(routes)/cerimonia/page.tsx");
-    expect(ceremony).toContain('redirect(`/${locale}/cerimonia/chiesa`)');
+    const legacy = read("src/app/[locale]/(routes)/cerimonia/chiesa/page.tsx");
+    expect(ceremony).toContain('fetch("/api/ceremony"');
+    expect(legacy).toContain('redirect(`/${locale}/cerimonia`)');
   });
 
   it("never queries wedding_date from events", () => {

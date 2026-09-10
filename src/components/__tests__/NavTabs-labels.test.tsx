@@ -3,13 +3,13 @@ import { render, screen } from "@testing-library/react";
 import NavTabs from "../NavTabs";
 
 describe("NavTabs label rendering", () => {
-  it("shows Location Ricevimento and Location Cerimonia in italian", () => {
+  it("shows Location Ricevimento and the neutral Ceremony label in italian", () => {
     render(
       <IntlProvider
         locale="it"
         messages={{
           locationReception: "Location Ricevimento",
-          locationCeremony: "Location Cerimonia",
+          locationCeremony: "Cerimonia",
           dashboard: "Dashboard",
           budget: "Budget",
           fornitori: "Fornitori",
@@ -35,6 +35,6 @@ describe("NavTabs label rendering", () => {
   </IntlProvider>
     );
     expect(screen.getByText("Location Ricevimento")).not.toBeNull();
-    expect(screen.getByText("Location Cerimonia")).not.toBeNull();
+    expect(screen.getByText("Cerimonia")).not.toBeNull();
   });
 });

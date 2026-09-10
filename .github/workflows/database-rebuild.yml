@@ -157,6 +157,12 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_42_catalog_country_codes.sql
           node --test scripts/lib/italian-catalog-datasets.test.mjs scripts/lib/wikidata-place-reconciliation.test.mjs
 
+      - name: Apply and verify Branch 43 wedding UX
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260910140052_branch_43_wedding_ux_ceremony_flexibility.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260910203000_branch_43_budget_item_origin.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_43_ceremony_budget.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
