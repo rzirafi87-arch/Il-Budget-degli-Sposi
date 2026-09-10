@@ -36,7 +36,17 @@ export default function CeremonyPage() {
       const token = data.session?.access_token;
       const response = await fetch("/api/ceremony", { headers: token ? { Authorization: `Bearer ${token}` } : {} });
       const json = await response.json();
-      if (active && json.ceremony) setForm({ ...empty, ...json.ceremony });
+      if (active && json.ceremony) {
+        const ceremony = json.ceremony;
+        setForm({
+          ...empty,
+          ...ceremony,
+          ceremony_type: ceremony.ceremony_type || (ceremony.church_id ? "religious" : "undecided"),
+          ceremony_place_kind: ceremony.ceremony_place_kind || (ceremony.church_id ? "Chiesa" : ""),
+          ceremony_place_name: ceremony.ceremony_place_name || ceremony.church_name || ceremony.location_name || "",
+          ceremony_place_address: ceremony.ceremony_place_address || ceremony.church_address || ceremony.location_address || "",
+        });
+      }
       if (active) setLoading(false);
     })();
     return () => { active = false; };

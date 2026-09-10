@@ -6,7 +6,7 @@ import { requireServerCurrentEvent } from "@/lib/currentEvent";
 
 // POST /api/idea-di-budget/apply
 // Body: { country?: string, rows?: Array<{ category?: string; subcategory?: string; spendType?: string; idea_amount?: number; amount?: number; name?: string; }> }
-// Effect: replaces user's budget_items for the given event and country with provided rows (amount > 0).
+// Effect: replaces only budget_items generated from ideas for the given event and country.
 // If rows are not provided, it pulls planned expenses saved from Idea di Budget (status='planned' AND from_dashboard=true).
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
@@ -61,9 +61,8 @@ export async function POST(req: NextRequest) {
     })
     .filter((it, index) => it.amount > 0 && rows[index]?.enabled !== false);
 
-  // Replace current budget_items for this event+country created from ideas (we simply wipe all and reinsert for country)
-  // If your schema needs a discriminator, consider adding a "source" column; here we filter by country and event only.
-  const del = await db.from("budget_items").delete().eq("event_id", ev.id).eq("country_code", country);
+  // Manual budget rows are preserved. Repeating Apply produces the same generated snapshot.
+  const del = await db.from("budget_items").delete().eq("event_id", ev.id).eq("country_code", country).eq("source", "budget_idea");
   if (del.error) return NextResponse.json({ error: del.error.message }, { status: 500 });
 
   if (items.length === 0) return NextResponse.json({ success: true, inserted: 0 });
@@ -74,6 +73,7 @@ export async function POST(req: NextRequest) {
     name: it.name,
     amount: it.amount,
     spend_type: it.spend_type,
+    source: "budget_idea",
   }));
 
   const { error: insErr, data } = await db.from("budget_items").insert(payload).select();
