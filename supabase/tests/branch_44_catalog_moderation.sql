@@ -7,5 +7,6 @@ do $$ begin
   if not exists(select 1 from pg_policies where schemaname='public' and tablename='catalog_review_queue' and policyname='catalog_review_queue_own_select') then raise exception 'own select policy missing'; end if;
   if not exists(select 1 from pg_policies where schemaname='public' and tablename='catalog_review_queue' and policyname='catalog_review_queue_admin_select') then raise exception 'admin select policy missing'; end if;
   if not exists(select 1 from pg_constraint where conname='catalog_review_queue_approved_link_check') then raise exception 'approved/canonical invariant missing'; end if;
+  if has_table_privilege('authenticated','public.catalog_review_queue','UPDATE') then raise exception 'authenticated has table-wide moderation update access'; end if;
 end $$;
 rollback;
