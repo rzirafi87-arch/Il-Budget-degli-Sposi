@@ -2,6 +2,7 @@
 
 import ImageCarousel from "@/components/ImageCarousel";
 import { CatalogMap } from "@/components/catalog/CatalogMap";
+import ContributionPanel from "@/components/catalog/ContributionPanel";
 import { CurrentPosition, NearMeButton } from "@/components/catalog/NearMeButton";
 import { useToast } from "@/components/ToastProvider";
 import { AppButton } from "@/components/ui/AppButton";
@@ -188,6 +189,7 @@ export default function ChiesePage() {
     <section className="space-y-6">
       <PageHeader eyebrow={t("catalog.eyebrow")} title={t("title")} description={t("description")} icon={<ChurchIcon size={24} aria-hidden />} />
       <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
+      <ContributionPanel entityType="church" initialData={{ city, region }} />
 
       <AppCard padding="md">
         <form onSubmit={submitSearch} className="grid gap-4 md:grid-cols-[2fr_1fr_1fr_1fr_auto]">

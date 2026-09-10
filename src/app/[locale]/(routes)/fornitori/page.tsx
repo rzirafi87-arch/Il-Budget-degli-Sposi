@@ -1,6 +1,7 @@
 "use client";
 
 import { CatalogMap } from "@/components/catalog/CatalogMap";
+import ContributionPanel from "@/components/catalog/ContributionPanel";
 import { CurrentPosition, NearMeButton } from "@/components/catalog/NearMeButton";
 import { AppButton } from "@/components/ui/AppButton";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -55,6 +56,7 @@ export default function SuppliersPage() {
   async function toggle(id:string){const current=savedBy(id);const {data}=await getBrowserClient().auth.getSession();const token=data.session?.access_token;if(!token)return;const r=await fetch(current?`/api/my/suppliers?id=${current.id}`:"/api/my/suppliers",{method:current?"DELETE":"POST",headers:{"content-type":"application/json",authorization:`Bearer ${token}`},body:current?undefined:JSON.stringify({supplier_id:id})});if(r.ok){if(current)setSaved(v=>v.filter(s=>s.id!==current.id));else{const j=await r.json();setSaved(v=>[...v,j.savedSupplier]);}}}
 
   return <section className="space-y-6"><PageHeader eyebrow="Catalogo globale verificabile" title="Fornitori" description="Cerca professionisti per nome, categoria e area geografica." icon={<Store size={24} aria-hidden/>}/>
+    <ContributionPanel entityType="supplier" initialData={{ city, province, region }} />
     <form onSubmit={submit} className="app-card app-card--md grid gap-3 lg:grid-cols-4">
       <label className="lg:col-span-2"><span className="sr-only">Cerca</span><input className="app-input w-full" value={q} onChange={e=>setQ(e.target.value)} placeholder="Nome, città, provincia, regione o categoria"/></label>
       <select className="app-select" value={category} onChange={e=>setCategory(e.target.value)} aria-label="Categoria"><option value="">Tutte le categorie</option>{categories.map(c=><option key={c} value={c}>{c.replaceAll("_"," ")}</option>)}</select>

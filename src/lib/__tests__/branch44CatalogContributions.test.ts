@@ -1,0 +1,10 @@
+import fs from "node:fs";import path from "node:path";
+import { contributionFingerprint,parseContribution } from "@/lib/catalogContributions";
+const valid={name:"Villa Aurora",type:"villa",city:"Canicattì",province:"Agrigento",region:"Sicilia",country:"IT"};
+describe("Branch 44 catalog contributions",()=>{
+ it("validates every supported entity family",()=>{expect(parseContribution("location",valid).country).toBe("it");expect(parseContribution("church",{...valid,type:"mosque"}).type).toBe("mosque");expect(parseContribution("supplier",{...valid,type:"photographer"}).type).toBe("photographer");});
+ it("requires a custom supplier type only for Altro",()=>{expect(()=>parseContribution("supplier",{...valid,type:"other"})).toThrow("CUSTOM_TYPE_REQUIRED");expect(parseContribution("supplier",{...valid,type:"other",custom_type:"Calligrafo"}).custom_type).toBe("Calligrafo");});
+ it("creates stable privacy-safe fingerprints",()=>{expect(contributionFingerprint("location",valid)).toMatch(/^[a-f0-9]{64}$/);expect(contributionFingerprint("location",valid)).toBe(contributionFingerprint("location",{...valid,name:"VILLA AURORA"}));});
+ it("keeps moderation atomic, server-authorized and provenance-aware",()=>{const sql=fs.readFileSync(path.join(process.cwd(),"supabase/migrations/20260911090000_branch_44_community_catalog_moderation.sql"),"utf8");expect(sql).toContain("security definer");expect(sql).toContain("FOR UPDATE");expect(sql).toContain("'user_submission'");expect(sql).toContain("catalog_review_queue_approved_link_check");expect(sql).toContain("grant execute on function public.moderate_catalog_submission");expect(sql).not.toMatch(/email\s*=\s*['\"]/i);});
+ it("exposes owner RLS and no delete permission",()=>{const sql=fs.readFileSync(path.join(process.cwd(),"supabase/migrations/20260911090000_branch_44_community_catalog_moderation.sql"),"utf8");expect(sql).toContain("submitted_by=(select auth.uid())");expect(sql).not.toContain("for delete to authenticated");});
+});
