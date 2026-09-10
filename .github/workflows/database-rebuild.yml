@@ -8,6 +8,7 @@ on:
       - 'supabase/**'
       - 'scripts/datasets/churches-italy-wikidata.json'
       - 'scripts/datasets/locations-italy-wikidata.json'
+      - 'scripts/datasets/locations-italy-openstreetmap.json'
       - 'scripts/lib/italian-catalog-datasets.test.mjs'
       - 'scripts/import-catalog.mjs'
       - 'src/i18n/**'

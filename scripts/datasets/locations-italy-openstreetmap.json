@@ -1,0 +1,123 @@
+{
+  "dataset": "openstreetmap-italian-wedding-event-venues-curated-2026-09-10",
+  "source_type": "openstreetmap",
+  "license_note": "OpenStreetMap data is available under ODbL 1.0. OpenStreetMap and contributor attribution is required; source element URLs and IDs are retained. This is a manually curated extract, not an indiscriminate restaurant or hotel import. Official venue websites are used only as punctual evidence of wedding, reception, or event relevance.",
+  "license_url": "https://www.openstreetmap.org/copyright",
+  "records": [
+    {
+      "name": "Villa Giocolano", "venue_type": "villa", "address_line": "Strada statale Sud Occidentale Sicula", "postal_code": "93012", "city": "Gela", "province": "Caltanissetta", "region": "Sicilia", "country_code": "IT", "latitude": 37.0691664, "longitude": 14.3322649,
+      "website": "http://villagiocolano.it", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/655328750", "external_id": "way/655328750", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "http://villagiocolano.it", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Villa Aries", "venue_type": "villa", "address_line": "Via Torre di Manfria, 23", "postal_code": "93012", "city": "Gela", "province": "Caltanissetta", "region": "Sicilia", "country_code": "IT", "latitude": 37.1016554, "longitude": 14.1388281,
+      "phone": "+39 340 813 1319", "email": "villaries.eventi@gmail.com", "website": "https://www.villaries.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/1236092113", "external_id": "way/1236092113", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "tourism": "apartment" }, "verification_url": "https://www.villaries.it/", "verification_basis": "Official venue website explicitly identifies events; OSM supplies the stable identity and real coordinates" }
+    },
+    {
+      "name": "Agriturismo Baglio Pollicarini", "venue_type": "baglio", "address_line": "Regia Trazzera Enna-Piazza Armerina-Mirabella Imbaccari", "postal_code": "94100", "city": "Enna", "province": "Enna", "region": "Sicilia", "country_code": "IT", "latitude": 37.5113726, "longitude": 14.3215102,
+      "phone": "+39 0935 541982", "website": "https://www.bagliopollicarini.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/11002421103", "external_id": "node/11002421103", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "tourism": "guest_house" }, "verification_url": "https://www.bagliopollicarini.it/", "verification_basis": "Official venue website explicitly offers weddings and receptions; OSM supplies the stable identity and real coordinates" }
+    },
+    {
+      "name": "Il Sogno di Altea", "venue_type": "reception_hall", "address_line": "Traversa Sinerchia", "postal_code": "96100", "city": "Siracusa", "province": "Siracusa", "region": "Sicilia", "country_code": "IT", "latitude": 37.087116, "longitude": 15.2171293,
+      "website": "https://www.ilsognodialtea.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/7177825448", "external_id": "node/7177825448", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.ilsognodialtea.com/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Tenuta San Marco", "venue_type": "estate", "address_line": "Strada provinciale Aguglia-San Marco", "postal_code": "96017", "city": "Noto", "province": "Siracusa", "region": "Sicilia", "country_code": "IT", "latitude": 36.9965119, "longitude": 14.9894848,
+      "website": "https://www.tenutasanmarco.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/9764868046", "external_id": "node/9764868046", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.tenutasanmarco.com/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Dimora Savarino", "venue_type": "historic_residence", "address_line": "Contrada Lettiera", "postal_code": "96018", "city": "Pachino", "province": "Siracusa", "region": "Sicilia", "country_code": "IT", "latitude": 36.7338757, "longitude": 15.1115078,
+      "website": "https://www.dimorasavarino.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/1435706515", "external_id": "way/1435706515", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.dimorasavarino.it/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Tenuta Querce Grosse", "venue_type": "estate", "address_line": "Contrada Santa Lucia", "postal_code": "66023", "city": "Francavilla al Mare", "province": "Chieti", "region": "Abruzzo", "country_code": "IT", "latitude": 42.3975152, "longitude": 14.2789547,
+      "website": "https://tenutaquercegrosse.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/10576310433", "external_id": "node/10576310433", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://tenutaquercegrosse.com/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Villa Floridia", "venue_type": "villa", "address_line": "Via Canale, 34", "postal_code": "66010", "city": "Torrevecchia Teatina", "province": "Chieti", "region": "Abruzzo", "country_code": "IT", "latitude": 42.3980385, "longitude": 14.2414738,
+      "website": "https://www.villafloridia.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/10586681498", "external_id": "node/10586681498", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.villafloridia.com/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Villa Fiorentina Banqueting", "venue_type": "reception_hall", "address_line": "Via Serra, 8", "postal_code": "85050", "city": "Baragiano", "province": "Potenza", "region": "Basilicata", "country_code": "IT", "latitude": 40.6751455, "longitude": 15.596168,
+      "website": "https://www.villafiorentina-banqueting.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/1028751626", "external_id": "way/1028751626", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.villafiorentina-banqueting.it/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "La Duchessa Ricevimenti", "venue_type": "reception_hall", "address_line": "Strada Provinciale 234 Riva Destra Crati", "postal_code": "87040", "city": "Zumpano", "province": "Cosenza", "region": "Calabria", "country_code": "IT", "latitude": 39.3356734, "longitude": 16.2594955,
+      "website": "https://laduchessaricevimenti.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/1189964757", "external_id": "way/1189964757", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://laduchessaricevimenti.it/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Casale 1890 Tenuta Tramontana", "venue_type": "estate", "address_line": "Strada Provinciale 7 Gallico Marina-Gambarie", "postal_code": "89135", "city": "Reggio di Calabria", "province": "Reggio Calabria", "region": "Calabria", "country_code": "IT", "latitude": 38.1803031, "longitude": 15.6787665,
+      "website": "https://www.casale1890.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/13378917773", "external_id": "node/13378917773", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.casale1890.com/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Villa Bonomo", "venue_type": "villa", "address_line": "Via Bonomea, 263", "postal_code": "34136", "city": "Trieste", "province": "Trieste", "region": "Friuli-Venezia Giulia", "country_code": "IT", "latitude": 45.6798146, "longitude": 13.7730716,
+      "website": "https://villabonomo.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/983883012", "external_id": "way/983883012", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://villabonomo.it/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Salone delle Feste", "venue_type": "reception_hall", "address_line": "Piazza Indipendenza", "postal_code": "17052", "city": "Borghetto Santo Spirito", "province": "Savona", "region": "Liguria", "country_code": "IT", "latitude": 44.1103604, "longitude": 8.2412485,
+      "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/201961382", "external_id": "way/201961382", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_basis": "OSM explicitly classifies this named non-auditorium structure as an events venue" }
+    },
+    {
+      "name": "Villa Gazzani", "venue_type": "villa", "address_line": "Via Cavallino, 86", "postal_code": "62012", "city": "Civitanova Marche", "province": "Macerata", "region": "Marche", "country_code": "IT", "latitude": 43.2953106, "longitude": 13.6593412,
+      "website": "https://www.gazzani.net/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/12716444334", "external_id": "node/12716444334", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.gazzani.net/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Villa Poggio Verde", "venue_type": "villa", "address_line": "Strada Provinciale 189 Svarchi, 29", "postal_code": "63824", "city": "Altidona", "province": "Fermo", "region": "Marche", "country_code": "IT", "latitude": 43.1017736, "longitude": 13.8085788,
+      "website": "https://www.villapoggioverde.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/13043824876", "external_id": "node/13043824876", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.villapoggioverde.com/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Parco delle Stelle", "venue_type": "reception_hall", "address_line": "Strada Statale 157 della Valle del Biferno", "postal_code": "86031", "city": "Castelmauro", "province": "Campobasso", "region": "Molise", "country_code": "IT", "latitude": 41.8393415, "longitude": 14.7194963,
+      "website": "https://www.parcodellestelle.net/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/664457631", "external_id": "way/664457631", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "restaurant" }, "verification_url": "https://www.parcodellestelle.net/", "verification_basis": "Official venue website explicitly offers weddings and reception halls; OSM supplies the stable identity and real coordinates" }
+    },
+    {
+      "name": "Villa Livia", "venue_type": "villa", "address_line": "Strada Statale 709 Tangenziale di Termoli", "postal_code": "86039", "city": "Termoli", "province": "Campobasso", "region": "Molise", "country_code": "IT", "latitude": 42.0109156, "longitude": 14.918786,
+      "website": "https://www.villalivia.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/68498806", "external_id": "way/68498806", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "restaurant" }, "verification_url": "https://www.villalivia.it/", "verification_basis": "Official venue website explicitly offers weddings, ceremonies, receptions, and events; OSM supplies the stable identity and real coordinates" }
+    },
+    {
+      "name": "Convento San Giuseppe", "venue_type": "historic_residence", "address_line": "Via Paracelso", "postal_code": "09131", "city": "Cagliari", "province": "Cagliari", "region": "Sardegna", "country_code": "IT", "latitude": 39.2394976, "longitude": 9.1327822,
+      "website": "https://www.conventosangiuseppe.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/277186138", "external_id": "way/277186138", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.comune.cagliari.it/portale/page/it/sposarsi_o_unirsi_civilmente_a_cagliari", "verification_basis": "OSM events venue tag; the Municipality of Cagliari identifies the venue as a civil-wedding location" }
+    },
+    {
+      "name": "Villa Taxis", "venue_type": "villa", "address_line": "Via dell'Albera, 52", "postal_code": "38121", "city": "Trento", "province": "Trento", "region": "Trentino-Alto Adige", "country_code": "IT", "latitude": 46.0923448, "longitude": 11.1339264,
+      "website": "https://www.villataxis.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/131861854", "external_id": "way/131861854", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.villataxis.it/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Stanglerhof", "venue_type": "agriturismo", "address_line": "Via H. Mumelter, 42", "postal_code": "39050", "city": "Fiè allo Sciliar", "province": "Bolzano", "region": "Trentino-Alto Adige", "country_code": "IT", "latitude": 46.5314254, "longitude": 11.5252899,
+      "website": "https://www.stanglerhof.bz.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/way/327820704", "external_id": "way/327820704", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "way", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.stanglerhof.bz.it/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Colcaprile", "venue_type": "estate", "address_line": "Strada Regionale 444 del Subasio", "postal_code": "06081", "city": "Assisi", "province": "Perugia", "region": "Umbria", "country_code": "IT", "latitude": 43.0865159, "longitude": 12.6304313,
+      "website": "https://www.colcaprile.com/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/12729747623", "external_id": "node/12729747623", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "amenity": "events_venue" }, "verification_url": "https://www.colcaprile.com/", "verification_basis": "OSM events venue tag and official venue website" }
+    },
+    {
+      "name": "Grand Hotel Billia", "venue_type": "hotel", "address_line": "Viale Piemonte", "postal_code": "11024", "city": "Saint-Vincent", "province": "Aosta", "region": "Valle d'Aosta", "country_code": "IT", "latitude": 45.7525387, "longitude": 7.6406033,
+      "website": "https://www.billia.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/2037948349", "external_id": "node/2037948349", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "tourism": "hotel" }, "verification_url": "https://www.billia.it/", "verification_basis": "Official hotel website explicitly offers weddings and event rooms; OSM supplies the stable identity and real coordinates" }
+    },
+    {
+      "name": "Hotel Napoleon", "venue_type": "hotel", "address_line": "Strada Statale 26", "postal_code": "11027", "city": "Montjovet", "province": "Aosta", "region": "Valle d'Aosta", "country_code": "IT", "latitude": 45.714982, "longitude": 7.6713121,
+      "phone": "+39 0166 579111", "website": "https://www.napoleonvda.it/", "source": "openstreetmap", "source_url": "https://www.openstreetmap.org/node/3856989656", "external_id": "node/3856989656", "last_verified_at": "2026-09-10T00:00:00Z",
+      "provenance_metadata": { "osm_element_type": "node", "osm_tags": { "tourism": "hotel" }, "verification_url": "https://www.napoleonvda.it/", "verification_basis": "Official hotel website explicitly offers weddings, banquets, and parties; OSM supplies the stable identity and real coordinates" }
+    }
+  ]
+}
