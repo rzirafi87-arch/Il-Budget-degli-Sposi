@@ -3310,19 +3310,6 @@ export type Database = {
           reset_at: string
         }[]
       }
-      is_catalog_admin: { Args: never; Returns: boolean }
-      moderate_catalog_submission: {
-        Args: {
-          p_action: string
-          p_canonical_record_id?: string
-          p_moderation_note?: string
-          p_payload?: Json
-          p_reviewer_id?: string
-          p_submission_id: string
-          p_user_message?: string
-        }
-        Returns: string
-      }
       ensure_subcategory: {
         Args: { p_category: string; p_name: string }
         Returns: undefined
@@ -3391,9 +3378,22 @@ export type Database = {
         }
         Returns: undefined
       }
+      is_catalog_admin: { Args: never; Returns: boolean }
       is_subscription_active: {
         Args: { p_expires_at: string; p_subscription_tier: string }
         Returns: boolean
+      }
+      moderate_catalog_submission: {
+        Args: {
+          p_action: string
+          p_canonical_record_id?: string
+          p_moderation_note?: string
+          p_payload?: Json
+          p_reviewer_id?: string
+          p_submission_id: string
+          p_user_message?: string
+        }
+        Returns: string
       }
       normalize_catalog_text: { Args: { value: string }; Returns: string }
       normalize_phone: { Args: { phone_input: string }; Returns: string }
