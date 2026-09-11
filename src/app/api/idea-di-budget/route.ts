@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
   const db = getServiceClient();
   const { data: userData, error } = await db.auth.getUser(jwt);
-  if (error || !userData?.user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  if (error || !userData?.user) return NextResponse.json({ error: "NOT_AUTHENTICATED" }, { status: 401 });
 
   const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;
   const { data: rows, error: qErr } = await db
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     .eq("taxonomy_status", "active")
     .order("inserted_at", { ascending: true });
 
-  if (qErr) return NextResponse.json({ error: qErr.message }, { status: 500 });
+  if (qErr) return NextResponse.json({ error: "BUDGET_IDEA_LOAD_FAILED", code: qErr.code || null }, { status: 500 });
 
   const data = (rows || []).map((e: unknown) => {
     const expense = e as {
@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
       is_enabled: boolean | null;
       committed_amount: number | null;
       spend_type: string | null;
+      canonical_key?: string | null;
       subcategory: { name: string; is_custom: boolean | null; category: { name: string } };
     };
     return {
@@ -60,7 +61,7 @@ export async function GET(req: NextRequest) {
       notes: expense.notes || "",
       enabled: expense.is_enabled !== false,
       custom: expense.subcategory?.is_custom === true,
-      canonicalKey: (expense as { canonical_key?: string | null }).canonical_key || undefined,
+      canonicalKey: expense.canonical_key || undefined,
     };
   });
 
@@ -70,11 +71,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
-  if (!jwt) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  if (!jwt) return NextResponse.json({ error: "NOT_AUTHENTICATED" }, { status: 401 });
 
   const db = getServiceClient();
   const { data: userData, error } = await db.auth.getUser(jwt);
-  if (error || !userData?.user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  if (error || !userData?.user) return NextResponse.json({ error: "NOT_AUTHENTICATED" }, { status: 401 });
 
   const body = await req.json();
   const inputRows: Array<{
@@ -104,7 +105,7 @@ export async function POST(req: NextRequest) {
       eventId,
     });
     return NextResponse.json(
-      { error: "Salvataggio non riuscito: nessun dato è stato modificato" },
+      { error: "BUDGET_IDEA_SAVE_FAILED", code: snapshotError.code || null },
       { status: 500 },
     );
   }
