@@ -9,8 +9,8 @@ describe("wedding authoritative taxonomy",()=>{
   }
  });
  it("models Wedding Bag as itemized flat-compatible subgroup",()=>{
-  expect(WEDDING_BUDGET_CATEGORIES["Cerimonia/Chiesa Location"]).not.toContain("Wedding bag");
-  expect(WEDDING_BUDGET_CATEGORIES["Cerimonia/Chiesa Location"]).not.toContain("Riso / Petali");
+  expect(WEDDING_BUDGET_CATEGORIES.Cerimonia).not.toContain("Wedding bag");
+  expect(WEDDING_BUDGET_CATEGORIES.Cerimonia).not.toContain("Riso / Petali");
   expect(WEDDING_BUDGET_CATEGORIES["Wedding Bag"]).toHaveLength(9);
  });
  it("keeps Lista nozze out of travel costs",()=>expect(WEDDING_BUDGET_CATEGORIES["Viaggio di nozze"]).not.toContain("Lista nozze"));

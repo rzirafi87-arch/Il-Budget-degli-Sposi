@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
       status,
       from_dashboard,
       is_enabled,
+      canonical_key,
       subcategory:subcategories!inner(
         name,
         is_custom,
@@ -34,6 +35,7 @@ export async function GET(req: NextRequest) {
     .eq("event_id", eventId)
     .eq("status", "planned")
     .eq("from_dashboard", true)
+    .eq("taxonomy_status", "active")
     .order("inserted_at", { ascending: true });
 
   if (qErr) return NextResponse.json({ error: qErr.message }, { status: 500 });
@@ -58,6 +60,7 @@ export async function GET(req: NextRequest) {
       notes: expense.notes || "",
       enabled: expense.is_enabled !== false,
       custom: expense.subcategory?.is_custom === true,
+      canonicalKey: (expense as { canonical_key?: string | null }).canonical_key || undefined,
     };
   });
 
@@ -84,6 +87,7 @@ export async function POST(req: NextRequest) {
     notes?: string;
     enabled?: boolean;
     custom?: boolean;
+    canonicalKey?: string;
   }> = Array.isArray(body) ? body : Array.isArray(body?.rows) ? body.rows : [];
 
   const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;

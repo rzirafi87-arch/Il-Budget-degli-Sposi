@@ -299,6 +299,7 @@ export type Database = {
       budget_items: {
         Row: {
           amount: number | null
+          canonical_key: string | null
           country_code: string
           event_id: string | null
           id: number
@@ -311,6 +312,7 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
+          canonical_key?: string | null
           country_code: string
           event_id?: string | null
           id?: number
@@ -323,6 +325,7 @@ export type Database = {
         }
         Update: {
           amount?: number | null
+          canonical_key?: string | null
           country_code?: string
           event_id?: string | null
           id?: number
@@ -1121,6 +1124,7 @@ export type Database = {
       expenses: {
         Row: {
           amount: number | null
+          canonical_key: string | null
           category: string | null
           committed_amount: number | null
           description: string | null
@@ -1143,10 +1147,12 @@ export type Database = {
           subcategory: string | null
           subcategory_id: string | null
           supplier: string | null
+          taxonomy_status: string
           updated_at: string | null
         }
         Insert: {
           amount?: number | null
+          canonical_key?: string | null
           category?: string | null
           committed_amount?: number | null
           description?: string | null
@@ -1169,10 +1175,12 @@ export type Database = {
           subcategory?: string | null
           subcategory_id?: string | null
           supplier?: string | null
+          taxonomy_status?: string
           updated_at?: string | null
         }
         Update: {
           amount?: number | null
+          canonical_key?: string | null
           category?: string | null
           committed_amount?: number | null
           description?: string | null
@@ -1195,6 +1203,7 @@ export type Database = {
           subcategory?: string | null
           subcategory_id?: string | null
           supplier?: string | null
+          taxonomy_status?: string
           updated_at?: string | null
         }
         Relationships: [
@@ -2147,6 +2156,7 @@ export type Database = {
       }
       subcategories: {
         Row: {
+          canonical_key: string | null
           category_id: string
           default_budget: number | null
           description: string | null
@@ -2161,6 +2171,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          canonical_key?: string | null
           category_id: string
           default_budget?: number | null
           description?: string | null
@@ -2175,6 +2186,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          canonical_key?: string | null
           category_id?: string
           default_budget?: number | null
           description?: string | null

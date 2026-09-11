@@ -5,6 +5,7 @@ import {
 import type { EventType } from "@/constants/eventConfigs";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { requireServerCurrentEvent } from "@/lib/currentEvent";
+import { findWeddingBudgetItem } from "@/constants/budgetCategories";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -21,6 +22,7 @@ type SpendRow = {
   paymentDate?: string;
   paymentStatus?: string;
   paymentNotes?: string;
+  canonicalKey?: string;
 };
 
 const DEFAULT_EVENT_TYPE: EventType = "wedding";
@@ -60,7 +62,7 @@ function mergeExpenses(
 ): SpendRow[] {
   const rowsByKey = new Map(
     baseRows.map((row) => [
-      `${row.category}|||${row.subcategory}`,
+      row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}|||${row.subcategory}`,
       { ...row },
     ]),
   );
@@ -77,6 +79,7 @@ function mergeExpenses(
         payment_date?: string | null;
         payment_status?: string | null;
         payment_notes?: string | null;
+        canonical_key?: string | null;
         subcategory: {
           name: string;
           category: { name: string; event_id: string };
@@ -87,7 +90,7 @@ function mergeExpenses(
       const subcategoryName = expense.subcategory?.name || "";
       if (!categoryName || !subcategoryName) continue;
 
-      const key = `${categoryName}|||${subcategoryName}`;
+      const key = expense.canonical_key ? `canonical:${expense.canonical_key}` : `${categoryName}|||${subcategoryName}`;
       const updated: SpendRow = {
         id: expense.id,
         category: categoryName,
@@ -102,10 +105,12 @@ function mergeExpenses(
         paymentDate: expense.payment_date || undefined,
         paymentStatus: expense.payment_status || undefined,
         paymentNotes: expense.payment_notes || undefined,
+        canonicalKey: expense.canonical_key || undefined,
       };
 
       if (rowsByKey.has(key)) {
-        rowsByKey.set(key, { ...rowsByKey.get(key)!, ...updated });
+        const base = rowsByKey.get(key)!;
+        rowsByKey.set(key, { ...updated, category: base.category, subcategory: base.subcategory, canonicalKey: base.canonicalKey });
       } else {
         rowsByKey.set(key, updated);
       }
@@ -159,7 +164,7 @@ export async function GET(req: NextRequest) {
     const weddingDate = ev.event_date || "";
 
     const categoriesMap = getCategoriesForEvent(eventType);
-    const baseRows = generateAllRows(categoriesMap);
+    const baseRows = generateAllRows(categoriesMap).map((row) => ({ ...row, canonicalKey: eventType === "wedding" ? findWeddingBudgetItem(row.category, row.subcategory)?.key : undefined }));
 
     const { data: expenses, error: e2 } = await db
       .from("expenses")
@@ -173,12 +178,14 @@ export async function GET(req: NextRequest) {
         payment_date,
         payment_status,
         payment_notes,
+        canonical_key,
         subcategory:subcategories!inner(
           name,
           category:categories!inner(name, event_id)
         )
       `)
       .eq("event_id", eventId)
+      .eq("taxonomy_status", "active")
       .order("inserted_at", { ascending: true });
 
     if (e2) {
@@ -229,6 +236,8 @@ export async function POST(req: NextRequest) {
 
     const userId = userData.user.id;
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
+    const { data: eventRecord } = await db.from("events").select("event_type").eq("id", eventId).single();
+    const eventType = eventRecord?.event_type || DEFAULT_EVENT_TYPE;
 
     const { error: eventUpdateError } = await db
       .from("events")
@@ -243,8 +252,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: eventUpdateError.message }, { status: 500 });
     }
 
+    const seenCanonical = new Set<string>();
     for (const row of rows) {
       if (!row.category || !row.subcategory) continue;
+      const canonical = eventType === "wedding" ? findWeddingBudgetItem(row.category, row.canonicalKey || row.subcategory) : undefined;
+      if (canonical && seenCanonical.has(canonical.key)) continue;
+      if (canonical) seenCanonical.add(canonical.key);
 
       let { data: cat } = await db
         .from("categories")
@@ -298,6 +311,7 @@ export async function POST(req: NextRequest) {
             payment_status: row.paymentStatus || null,
             payment_notes: row.paymentNotes || null,
             status: "planned",
+            canonical_key: canonical?.key || null,
           })
           .eq("id", row.id)
           .eq("event_id", eventId);
@@ -319,6 +333,7 @@ export async function POST(req: NextRequest) {
           status: "planned",
           paid_amount: 0,
           from_dashboard: true,
+          canonical_key: canonical?.key || null,
         });
       }
     }

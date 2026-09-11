@@ -22,6 +22,7 @@
     "event planning"
   ],
   "scripts": {
+    "taxonomy:wedding": "node scripts/report-wedding-taxonomy.mjs",
     "dev": "next dev",
     "build": "next build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
