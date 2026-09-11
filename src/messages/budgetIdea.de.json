@@ -7,10 +7,10 @@
     "contingencyPct": "Reserve (%)",
     "custom": {"add": "+ Eigene Position hinzufügen", "prompt": "Name der neuen Position", "nameAria": "Name der eigenen Position", "delete": "Löschen", "deleteAria": "{name} löschen"},
     "fields": {"amount": "Betrag ({currency})", "spendType": "Ausgabenart", "notes": "Notizen"},
-    "spendTypes": {"common": "Gemeinsam", "bride": "Braut", "groom": "Bräutigam", "gift": "Geschenk"},
+    "spendTypes": {"common": "Standesamt", "municipality": "Standesamt", "bride": "Braut", "groom": "Bräutigam", "gift": "Geschenk"},
     "weddingBagIncluded": "Bereits in der Wedding Bag enthalten · wird nur einmal gezählt",
     "summary": {"planned": "Geplante Summe:", "contingency": "Reserve: {amount}", "withContingency": "Gesamtsumme inkl. Reserve: {amount}"},
     "actions": {"save": "Speichern", "apply": "Auf Budget anwenden", "saving": "Wird gespeichert…"},
-    "messages": {"saved": "Budgetidee gespeichert.", "saveError": "Die Budgetidee konnte nicht gespeichert werden.", "applied": "{count} Positionen wurden auf das Budget angewendet.", "applyError": "Die Positionen konnten nicht auf das Budget angewendet werden.", "loadError": "Die Budgetidee konnte nicht geladen werden."}
+    "messages": {"saved": "Budgetidee gespeichert.", "saveError": "Die Budgetidee konnte nicht gespeichert werden.", "applied": "{count, plural, =0 {Es wurden keine Positionen auf das Budget angewendet.} one {# Position wurde auf das Budget angewendet.} other {# Positionen wurden auf das Budget angewendet.}}", "applyError": "Die Positionen konnten nicht auf das Budget angewendet werden.", "loadError": "Die Budgetidee konnte nicht geladen werden."}
   }
 }
