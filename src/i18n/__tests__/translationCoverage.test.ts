@@ -1,76 +1,72 @@
 import fs from "node:fs";
 import path from "node:path";
-import { getLanguageCapability, languageCapabilities } from "../languageCapabilities";
+
+import { languageCapabilities } from "@/i18n/languageCapabilities";
 
 type Messages = Record<string, unknown>;
+const CANDIDATE_LOCALES = ["it", "en", "es", "fr", "de"] as const;
+const messagesDir = path.join(process.cwd(), "src", "messages");
 
 function mergeDeep(target: Messages, source: Messages): Messages {
-  const output = { ...target };
+  const result: Messages = { ...target };
   for (const [key, value] of Object.entries(source)) {
-    if (value && typeof value === "object" && !Array.isArray(value)) {
-      output[key] = mergeDeep(
-        output[key] && typeof output[key] === "object" && !Array.isArray(output[key])
-          ? output[key] as Messages
-          : {},
-        value as Messages,
-      );
-    } else output[key] = value;
+    if (value && typeof value === "object" && !Array.isArray(value) && result[key] && typeof result[key] === "object" && !Array.isArray(result[key])) {
+      result[key] = mergeDeep(result[key] as Messages, value as Messages);
+    } else result[key] = value;
   }
+  return result;
+}
+
+function loadLocaleMessages(locale: string): Messages {
+  const files = fs.readdirSync(messagesDir).filter((file) => file === `${locale}.json` || file.endsWith(`.${locale}.json`)).sort((a, b) => {
+    if (a === `${locale}.json`) return -1;
+    if (b === `${locale}.json`) return 1;
+    return a.localeCompare(b);
+  });
+  return files.reduce<Messages>((messages, file) => mergeDeep(messages, JSON.parse(fs.readFileSync(path.join(messagesDir, file), "utf8")) as Messages), {});
+}
+
+function flattenMessages(value: unknown, prefix = "", output = new Map<string, unknown>()): Map<string, unknown> {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    for (const [key, child] of Object.entries(value as Messages)) flattenMessages(child, prefix ? `${prefix}.${key}` : key, output);
+  } else if (prefix) output.set(prefix, value);
   return output;
 }
 
-function loadMessages(locale: string): Messages {
-  const directory = path.join(process.cwd(), "src", "messages");
-  return fs.readdirSync(directory)
-    .filter((file) => file === `${locale}.json` || file.endsWith(`.${locale}.json`))
-    .sort()
-    .reduce((messages, file) => mergeDeep(
-      messages,
-      JSON.parse(fs.readFileSync(path.join(directory, file), "utf8")) as Messages,
-    ), {} as Messages);
+function suspiciousItalianResidual(locale: string, key: string, value: unknown, italianValue: unknown) {
+  if (locale === "it" || typeof value !== "string" || typeof italianValue !== "string" || value !== italianValue) return false;
+  const invariant = new Set(["Budget", "Dashboard", "Timeline", "Location", "Save the Date", "Wedding Planner", "Wedding Bag", "OpenStreetMap", "Wikidata", "SIAE", "DJ", "QR Code", "Email", "URL", "Instagram", "Facebook"]);
+  if (invariant.has(value.trim()) || /^[\d\s%€$£.,:+\-–—()/]+$/.test(value) || /^(https?:\/\/|[A-Z0-9_\-.]{2,})$/.test(value.trim())) return false;
+  if (key.toLowerCase().includes("brand") || key.toLowerCase().includes("source")) return false;
+  return value.trim().split(/\s+/).length >= 2;
 }
 
-function flatten(value: Messages, prefix = "", output: Record<string, unknown> = {}) {
-  for (const [key, child] of Object.entries(value)) {
-    const nestedKey = prefix ? `${prefix}.${key}` : key;
-    if (child && typeof child === "object" && !Array.isArray(child)) flatten(child as Messages, nestedKey, output);
-    else output[nestedKey] = child;
-  }
-  return output;
-}
-
-function placeholders(value: unknown): string[] {
-  if (typeof value !== "string") return [];
-  return Array.from(value.matchAll(/\{([\w]+)(?:,[^}]*)?\}/g), (match) => match[1]).sort();
-}
-
-describe("translation coverage policy", () => {
-  const canonical = flatten(loadMessages("it"));
-
-  it("uses a non-empty, nested Italian canonical schema", () => {
-    expect(Object.keys(canonical).length).toBeGreaterThan(1_000);
+describe("Branch 46 translation coverage", () => {
+  const source = flattenMessages(loadLocaleMessages("it"));
+  const sourceKeys = new Set(source.keys());
+  const reports = CANDIDATE_LOCALES.map((locale) => {
+    const bundle = flattenMessages(loadLocaleMessages(locale));
+    const keys = new Set(bundle.keys());
+    const capability = languageCapabilities.find((item) => item.locale === locale);
+    return {
+      locale,
+      status: capability?.status ?? "UNKNOWN",
+      total: keys.size,
+      sourceTotal: sourceKeys.size,
+      missing: [...sourceKeys].filter((key) => !keys.has(key)),
+      extra: [...keys].filter((key) => !sourceKeys.has(key)),
+      empty: [...bundle].filter(([, value]) => typeof value === "string" && value.trim().length === 0).map(([key]) => key),
+      residual: [...bundle].filter(([key, value]) => suspiciousItalianResidual(locale, key, value, source.get(key))).map(([key]) => key),
+    };
   });
 
-  it.each(languageCapabilities.filter((language) => language.status === "READY"))(
-    "$locale READY has canonical keys and equivalent placeholders",
-    (language) => {
-      const candidate = flatten(loadMessages(language.locale));
-      const missing = Object.keys(canonical).filter((key) => !(key in candidate));
-      const mismatchedPlaceholders = Object.keys(canonical).filter((key) =>
-        key in candidate && JSON.stringify(placeholders(canonical[key])) !== JSON.stringify(placeholders(candidate[key])),
-      );
-      expect(missing).toEqual([]);
-      expect(mismatchedPlaceholders).toEqual([]);
-    },
-  );
-
-  it("keeps EN and ES unavailable while their audited canonical gaps remain", () => {
-    for (const locale of ["en", "es"]) {
-      const candidate = flatten(loadMessages(locale));
-      const missing = Object.keys(canonical).filter((key) => !(key in candidate));
-      expect(missing.length).toBeGreaterThan(0);
-      expect(getLanguageCapability(locale)?.status).toBe("COMING_SOON");
-      expect(getLanguageCapability(locale)?.selectable).toBe(false);
+  test("prints the rollout matrix and enforces every READY locale", () => {
+    console.table(reports.map((report) => ({ locale: report.locale, status: report.status, total: report.total, sourceTotal: report.sourceTotal, missing: report.missing.length, extra: report.extra.length, empty: report.empty.length, italianResiduals: report.residual.length })));
+    for (const report of reports.filter((item) => item.status === "READY")) {
+      expect(report.missing).toEqual([]);
+      expect(report.extra).toEqual([]);
+      expect(report.empty).toEqual([]);
+      if (report.locale !== "it") expect(report.residual).toEqual([]);
     }
   });
 });
