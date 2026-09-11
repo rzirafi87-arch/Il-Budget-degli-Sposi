@@ -121,7 +121,7 @@ export default function BudgetIdeaPage() {
       setLoading(true);
       setMessage("");
       const { data } = await getBrowserClient().auth.getSession();
-      const authHeaders = data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {};
+      const authHeaders: Record<string, string> = data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {};
       const fallbackType = browserEventType();
 
       const eventResponse = await fetch("/api/event/resolve", { headers: authHeaders });
