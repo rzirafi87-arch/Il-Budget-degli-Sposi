@@ -73,6 +73,8 @@ describe("translation coverage policy", () => {
 
   it("prints the rollout audit matrix", () => {
     console.table(reports.map((report) => ({ locale: report.locale, status: report.status, total: report.total, sourceTotal: report.sourceTotal, missing: report.missing.length, extra: report.extra.length, empty: report.empty.length, placeholderMismatch: report.placeholderMismatch.length, italianResiduals: report.residual.length })));
+    const english = reports.find((report) => report.locale === "en");
+    console.log("[i18n-audit:en]", JSON.stringify({ missing: english?.missing, extra: english?.extra, empty: english?.empty, placeholderMismatch: english?.placeholderMismatch, italianResiduals: english?.residual }, null, 2));
   });
 
   it.each(languageCapabilities.filter((language) => language.status === "READY"))(
