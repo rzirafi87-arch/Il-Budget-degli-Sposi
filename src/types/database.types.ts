@@ -3499,6 +3499,7 @@ export type Database = {
         }
         Returns: string
       }
+      wedding_budget_slug: { Args: { value: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
