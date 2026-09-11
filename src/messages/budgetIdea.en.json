@@ -1,0 +1,16 @@
+{
+  "budgetIdea": {
+    "title": "Budget idea",
+    "description": "Choose only the items you need for your wedding. Disabled items are not included in the totals.",
+    "loading": "Loading your budget idea…",
+    "search": {"label": "Search budget items", "placeholder": "e.g. make-up, photographer, corsage, driver", "empty": "No budget items found."},
+    "contingencyPct": "Contingency (%)",
+    "custom": {"add": "+ Add custom item", "prompt": "Name of the new item", "nameAria": "Custom item name", "delete": "Delete", "deleteAria": "Delete {name}"},
+    "fields": {"amount": "Amount ({currency})", "spendType": "Expense type", "notes": "Notes"},
+    "spendTypes": {"common": "Shared", "bride": "Bride", "groom": "Groom", "gift": "Gift"},
+    "weddingBagIncluded": "Already included in the Wedding Bag · it will only be counted once",
+    "summary": {"planned": "Planned total:", "contingency": "Contingency: {amount}", "withContingency": "Total including contingency: {amount}"},
+    "actions": {"save": "Save", "apply": "Apply to Budget", "saving": "Saving…"},
+    "messages": {"saved": "Budget idea saved.", "saveError": "Could not save your budget idea.", "applied": "{count} items applied to your Budget.", "applyError": "Could not apply the items to your Budget.", "loadError": "Could not load your budget idea."}
+  }
+}
