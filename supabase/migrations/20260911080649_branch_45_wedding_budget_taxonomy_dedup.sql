@@ -1,4 +1,4 @@
--- Branch 45: stable identities for standard wedding budget items.
+-- Branch 45: stable identities for standard wedding budget items (authoritative runtime taxonomy).
 alter table public.subcategories add column if not exists canonical_key text;
 alter table public.expenses add column if not exists canonical_key text;
 alter table public.expenses add column if not exists taxonomy_status text not null default 'active';
