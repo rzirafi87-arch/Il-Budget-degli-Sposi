@@ -59,9 +59,15 @@ export async function POST(req: NextRequest) {
       const category = r.category || "";
       const sub = r.subcategory || "";
       const st = (r.spendType || r.spend_type || "common") as string;
-      const name = r.name || [category, sub].filter(Boolean).join(" - ") || "budget-item";
+      const customName = r.name || sub || "budget-item";
+      const canonicalName = r.name || [category, sub].filter(Boolean).join(" - ") || "budget-item";
       const canonical = r.custom === true ? undefined : findWeddingBudgetItem(category, r.canonicalKey || sub);
-      return { name: canonical?.label || name, amount, spend_type: st, canonical_key: canonical?.key || null };
+      return {
+        name: r.custom === true ? customName : (canonical?.label || canonicalName),
+        amount,
+        spend_type: st,
+        canonical_key: canonical?.key || null,
+      };
     })
     .filter((it, index) => it.amount > 0 && rows[index]?.enabled !== false);
   const uniqueItems = deduplicateCanonicalBudgetItems(items);
