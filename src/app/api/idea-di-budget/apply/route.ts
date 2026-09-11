@@ -3,6 +3,8 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { requireServerCurrentEvent } from "@/lib/currentEvent";
+import { findWeddingBudgetItem } from "@/constants/budgetCategories";
+import { deduplicateCanonicalBudgetItems } from "@/lib/budgetCanonical";
 
 // POST /api/idea-di-budget/apply
 // Body: { country?: string, rows?: Array<{ category?: string; subcategory?: string; spendType?: string; idea_amount?: number; amount?: number; name?: string; }> }
@@ -31,6 +33,7 @@ export async function POST(req: NextRequest) {
         committed_amount,
         spend_type,
         is_enabled,
+        canonical_key,
         subcategory:subcategories!inner(
           name,
           category:categories!inner(name, event_id)
@@ -38,7 +41,8 @@ export async function POST(req: NextRequest) {
       `)
       .eq("subcategory.category.event_id", ev.id)
       .eq("status", "planned")
-      .eq("from_dashboard", true);
+      .eq("from_dashboard", true)
+      .eq("taxonomy_status", "active");
     if (qErr) return NextResponse.json({ error: qErr.message }, { status: 500 });
     rows = (planned || []).map((e: any) => ({
       category: e.subcategory?.category?.name,
@@ -46,6 +50,7 @@ export async function POST(req: NextRequest) {
       idea_amount: e.committed_amount,
       spendType: e.spend_type || "common",
       enabled: e.is_enabled !== false,
+      canonicalKey: e.canonical_key || undefined,
     }));
   }
 
@@ -57,23 +62,26 @@ export async function POST(req: NextRequest) {
       const sub = r.subcategory || "";
       const st = (r.spendType || r.spend_type || "common") as string;
       const name = r.name || [category, sub].filter(Boolean).join(" - ") || "Voce di budget";
-      return { name, amount, spend_type: st };
+      const canonical = r.custom === true ? undefined : findWeddingBudgetItem(category, r.canonicalKey || sub);
+      return { name: canonical?.label || name, amount, spend_type: st, canonical_key: canonical?.key || null };
     })
     .filter((it, index) => it.amount > 0 && rows[index]?.enabled !== false);
+  const uniqueItems = deduplicateCanonicalBudgetItems(items);
 
   // Manual budget rows are preserved. Repeating Apply produces the same generated snapshot.
   const del = await db.from("budget_items").delete().eq("event_id", ev.id).eq("country_code", country).eq("source", "budget_idea");
   if (del.error) return NextResponse.json({ error: del.error.message }, { status: 500 });
 
-  if (items.length === 0) return NextResponse.json({ success: true, inserted: 0 });
+  if (uniqueItems.length === 0) return NextResponse.json({ success: true, inserted: 0 });
 
-  const payload = items.map((it) => ({
+  const payload = uniqueItems.map((it) => ({
     event_id: ev.id,
     country_code: country,
     name: it.name,
     amount: it.amount,
     spend_type: it.spend_type,
     source: "budget_idea",
+    canonical_key: it.canonical_key,
   }));
 
   const { error: insErr, data } = await db.from("budget_items").insert(payload).select();

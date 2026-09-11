@@ -8,6 +8,16 @@ import { getGraduationTemplate } from "@/data/templates/graduation";
 
 export type BudgetCategoryMap = Record<string, string[]>;
 
+export type WeddingBudgetItem = {
+  key: string;
+  label: string;
+  category: string;
+  aliases: readonly string[];
+  contexts: readonly string[];
+  package?: "wedding_bag";
+  distinctCollision?: string;
+};
+
 type TemplateCategory = { name: string; subs: string[] };
 
 function templateToMap(template: TemplateCategory[]): BudgetCategoryMap {
@@ -17,7 +27,7 @@ function templateToMap(template: TemplateCategory[]): BudgetCategoryMap {
   }, {});
 }
 
-export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
+const WEDDING_BUDGET_CATEGORY_DEFINITIONS: BudgetCategoryMap = {
   "Abiti & Accessori (altri)": [
     "Abiti ospiti / Genitori",
     "Accessori damigelle",
@@ -26,12 +36,9 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
     "Anello fidanzamento",
     "Accessori vari",
   ],
-  "Cerimonia/Chiesa Location": [
+  Cerimonia: [
     "Chiesa / Comune",
-    "Musiche",
-    "Libretti Messa",
     "Fiori cerimonia",
-    "Ventagli",
     "Pulizia chiesa",
     "Cesto doni",
     "Documenti e pratiche",
@@ -67,7 +74,6 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
     "Allestimenti",
     "Candele",
     "Tableau",
-    "Segnaposto",
     "Noleggi vasi e strutture",
     "Forfait fioraio",
     "Corsage",
@@ -89,7 +95,6 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
     "Timeline / programma della giornata",
     "Menu",
     "Segnaposto",
-    "Libretti Messa",
     "Timbri / Cliche",
     "Francobolli / Spedizioni",
     "Calligrafia",
@@ -210,6 +215,77 @@ export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = {
   ],
   "Extra & Contingenze": ["Imprevisti", "Spese varie"],
 };
+
+const normalizeTaxonomyText = (value: string) => value
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .toLowerCase()
+  .replace(/[’']/g, "")
+  .replace(/[^a-z0-9]+/g, ".")
+  .replace(/^\.|\.$/g, "");
+
+const itemId = (category: string, label: string) => `${category}\u0000${label}`;
+const SPECIAL_ITEMS: Record<string, Partial<WeddingBudgetItem>> = {
+  [itemId("Wedding Bag", "Libretto della messa o del rito")]: {
+    key: "wedding.ceremony.booklet",
+    label: "Libretto della cerimonia",
+    aliases: ["Libretto Messa", "Libretti Messa", "Libretto della messa", "Libretto della messa o del rito", "Libretti cerimonia"],
+    contexts: ["Wedding Bag", "Cerimonia", "Inviti & Stationery"],
+    package: "wedding_bag",
+  },
+  [itemId("Wedding Bag", "Ventaglio")]: {
+    key: "wedding.guest-comfort.fan",
+    aliases: ["Ventagli"],
+    contexts: ["Wedding Bag", "Cerimonia", "Comfort ospiti"],
+    package: "wedding_bag",
+  },
+  [itemId("Inviti & Stationery", "Segnaposto")]: {
+    key: "wedding.stationery.place-card",
+    aliases: ["Segnaposti", "Tableau / segnaposto"],
+    contexts: ["Inviti & Stationery", "Fiori & Decor"],
+  },
+};
+
+const DISTINCT_LABEL_COLLISIONS: Record<string, string> = {
+  Prove: "Prove separate per gli abiti della sposa e dello sposo.",
+  "Ristorante / Cena": "Eventi distinti: addio al nubilato e addio al celibato.",
+  "Attivita / Esperienze": "Eventi distinti: addio al nubilato e addio al celibato.",
+  "Gadget / T-shirt": "Eventi distinti: addio al nubilato e addio al celibato.",
+  "Decorazioni / Palloncini": "Eventi distinti: addio al nubilato e addio al celibato.",
+  Trasporti: "Eventi distinti: matrimonio, addio al nubilato e addio al celibato.",
+  Alloggio: "Eventi distinti: addio al nubilato e addio al celibato.",
+};
+
+/** Runtime source of truth for the wedding accounting taxonomy. */
+export const WEDDING_BUDGET_TAXONOMY: readonly WeddingBudgetItem[] = Object.entries(WEDDING_BUDGET_CATEGORY_DEFINITIONS)
+  .flatMap(([category, labels]) => labels.map((originalLabel) => {
+    const special = SPECIAL_ITEMS[itemId(category, originalLabel)] || {};
+    const label = special.label || originalLabel;
+    return {
+      key: special.key || `wedding.${normalizeTaxonomyText(category)}.${normalizeTaxonomyText(label)}`,
+      label,
+      category,
+      aliases: special.aliases || [],
+      contexts: special.contexts || [category],
+      package: special.package || (category === "Wedding Bag" ? "wedding_bag" : undefined),
+      distinctCollision: DISTINCT_LABEL_COLLISIONS[label],
+    } satisfies WeddingBudgetItem;
+  }));
+
+export const WEDDING_BUDGET_CATEGORIES: BudgetCategoryMap = WEDDING_BUDGET_TAXONOMY.reduce<BudgetCategoryMap>((map, item) => {
+  (map[item.category] ||= []).push(item.label);
+  return map;
+}, {});
+
+export const WEDDING_BUDGET_ITEM_BY_KEY = new Map(WEDDING_BUDGET_TAXONOMY.map((item) => [item.key, item]));
+
+export function findWeddingBudgetItem(category: string, label: string) {
+  const normalized = normalizeTaxonomyText(label);
+  return WEDDING_BUDGET_TAXONOMY.find((item) => item.key === label || (
+    (item.category === category || item.contexts.includes(category))
+    && [item.label, ...item.aliases].some((candidate) => normalizeTaxonomyText(candidate) === normalized)
+  ));
+}
 
 export const BAPTISM_BUDGET_CATEGORIES = templateToMap(
   getBaptismTemplate("it")

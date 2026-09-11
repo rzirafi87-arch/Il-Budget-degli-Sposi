@@ -169,6 +169,11 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260911100000_branch_44_submission_column_permissions.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_44_catalog_moderation.sql
 
+      - name: Apply and verify Branch 45 wedding budget taxonomy
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260911080649_branch_45_wedding_budget_taxonomy_dedup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_45_wedding_budget_taxonomy.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci

@@ -1,16 +1,18 @@
 "use client";
 
 import { DEFAULT_EVENT_TYPE, getEventConfig, resolveEventType } from "@/constants/eventConfigs";
+import { WEDDING_BUDGET_TAXONOMY, findWeddingBudgetItem } from "@/constants/budgetCategories";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { budgetTotals, matchesBudgetSearch } from "@/lib/budgetIdea";
 import { useEffect, useMemo, useState } from "react";
 
-export type BudgetIdeaRow = { id?: string; category: string; subcategory: string; spendType: string; amount: number; enabled: boolean; supplier?: string; notes?: string; custom?: boolean };
+export type BudgetIdeaRow = { id?: string; canonicalKey?: string; category: string; subcategory: string; aliases?: readonly string[]; contexts?: readonly string[]; package?: "wedding_bag"; spendType: string; amount: number; enabled: boolean; supplier?: string; notes?: string; custom?: boolean };
 const money = (value: number, currency: string) => new Intl.NumberFormat("it-IT", { style: "currency", currency }).format(value || 0);
 const number = (value: unknown) => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
 
 function defaults(eventType: string): BudgetIdeaRow[] {
   const config = getEventConfig(eventType);
+  if (eventType === "wedding") return WEDDING_BUDGET_TAXONOMY.map((item) => ({ canonicalKey: item.key, category: item.category, subcategory: item.label, aliases: item.aliases, contexts: item.contexts, package: item.package, spendType: config.defaultSpendType, amount: 0, enabled: false, supplier: "", notes: "", custom: false }));
   return Object.entries(config.budgetCategories).flatMap(([category, entries]) => entries.map((subcategory) => ({ category, subcategory, spendType: config.defaultSpendType, amount: 0, enabled: false, supplier: "", notes: "", custom: false })));
 }
 
@@ -40,10 +42,11 @@ export default function BudgetIdeaPage() {
       const json = response.ok ? await response.json() : { data: [] };
       if (!active) return;
       const saved = Array.isArray(json.data) ? json.data as Array<Record<string, unknown>> : [];
-      const byKey = new Map(base.map((row) => [`${row.category}\u0000${row.subcategory}`, row]));
+      const byKey = new Map(base.map((row) => [row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row]));
       saved.forEach((entry) => {
-        const row: BudgetIdeaRow = { id: String(entry.id || "") || undefined, category: String(entry.category || ""), subcategory: String(entry.subcategory || ""), spendType: String(entry.spendType || config.defaultSpendType), amount: number(entry.idea_amount), enabled: entry.enabled !== false, supplier: String(entry.supplier || ""), notes: String(entry.notes || ""), custom: entry.custom === true };
-        if (row.category && row.subcategory) byKey.set(`${row.category}\u0000${row.subcategory}`, row);
+        const canonical = entry.custom === true ? undefined : findWeddingBudgetItem(String(entry.category || ""), String(entry.canonicalKey || entry.subcategory || ""));
+        const row: BudgetIdeaRow = { id: String(entry.id || "") || undefined, canonicalKey: canonical?.key || String(entry.canonicalKey || "") || undefined, category: canonical?.category || String(entry.category || ""), subcategory: canonical?.label || String(entry.subcategory || ""), aliases: canonical?.aliases, contexts: canonical?.contexts, package: canonical?.package, spendType: String(entry.spendType || config.defaultSpendType), amount: number(entry.idea_amount), enabled: entry.enabled !== false, supplier: String(entry.supplier || ""), notes: String(entry.notes || ""), custom: entry.custom === true };
+        if (row.category && row.subcategory) byKey.set(row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row);
       });
       setRows([...byKey.values()]); setLoading(false);
     })();
@@ -52,7 +55,7 @@ export default function BudgetIdeaPage() {
 
   const categories = useMemo(() => [...new Set(rows.map((row) => row.category))], [rows]);
   const normalizedQuery = query.trim();
-  const visible = (category: string) => rows.map((row, index) => ({ row, index })).filter(({ row }) => row.category === category && (!normalizedQuery || matchesBudgetSearch(row.category, row.subcategory, normalizedQuery)));
+  const visible = (category: string) => rows.map((row, index) => ({ row, index })).filter(({ row }) => row.category === category && (!normalizedQuery || matchesBudgetSearch(row.category, row.subcategory, normalizedQuery, row.aliases, row.contexts)));
   const searchedCategories = normalizedQuery ? categories.filter((category) => visible(category).length) : categories;
   const totals = useMemo(() => budgetTotals(rows, contingencyPct), [rows, contingencyPct]);
   const categoryTotal = (category: string) => rows.reduce((sum, row) => sum + (row.category === category && row.enabled ? row.amount : 0), 0);
@@ -94,9 +97,10 @@ export default function BudgetIdeaPage() {
         return <article key={category} className="overflow-hidden rounded-xl border bg-white">
           <button type="button" aria-expanded={expanded} onClick={() => setOpen((current) => { const next = new Set(current); if (next.has(category)) next.delete(category); else next.add(category); return next; })} className="flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3 text-left"><span className="font-bold">{category}</span><span className="whitespace-nowrap font-semibold text-rose-700">{money(categoryTotal(category), currency)} <span aria-hidden>⌄</span></span></button>
           {expanded && <div className="space-y-3 border-t bg-gray-50 p-3 sm:p-4">
-            {visible(category).map(({ row, index }) => <div key={`${row.subcategory}-${index}`} className={`rounded-xl border bg-white p-3 ${row.enabled ? "border-rose-200" : "border-gray-200"}`}>
+            {visible(category).map(({ row, index }) => <div key={row.canonicalKey || `${row.subcategory}-${index}`} className={`rounded-xl border bg-white p-3 ${row.enabled ? "border-rose-200" : "border-gray-200"}`}>
               <div className="flex items-start gap-3"><input id={`enabled-${index}`} type="checkbox" checked={row.enabled} onChange={(e) => change(index, { enabled: e.target.checked })} className="mt-1 h-5 w-5 shrink-0" /><label htmlFor={`enabled-${index}`} className="min-w-0 flex-1 font-semibold">{row.custom ? <input aria-label="Nome voce personalizzata" value={row.subcategory} onChange={(e) => change(index, { subcategory: e.target.value })} className="w-full rounded border px-2 py-1" /> : row.subcategory}</label>{row.custom && <button type="button" aria-label={`Elimina ${row.subcategory}`} onClick={() => setRows((current) => current.filter((_, i) => i !== index))} className="rounded px-2 py-1 text-sm font-semibold text-red-700">Elimina</button>}</div>
               {row.enabled && <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-3"><label className="text-sm font-semibold">Importo ({currency})<input type="number" inputMode="decimal" min="0" value={row.amount} onChange={(e) => change(index, { amount: number(e.target.value) })} className="mt-1 min-h-12 w-full rounded-lg border px-3 text-base" /></label><label className="text-sm font-semibold">Tipo spesa<select value={row.spendType} onChange={(e) => change(index, { spendType: e.target.value })} className="mt-1 min-h-12 w-full rounded-lg border px-3">{config.spendTypes.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label><label className="text-sm font-semibold">Note<input value={row.notes || ""} onChange={(e) => change(index, { notes: e.target.value })} className="mt-1 min-h-12 w-full rounded-lg border px-3" /></label></div>}
+              {row.enabled && row.package === "wedding_bag" ? <p className="mt-2 text-xs font-semibold text-emerald-700">Già presente in Wedding Bag · sarà conteggiata una sola volta</p> : null}
             </div>)}
             <button type="button" onClick={() => addCustom(category)} className="min-h-11 rounded-full border border-rose-700 px-4 font-semibold text-rose-800">+ Aggiungi voce personalizzata</button>
           </div>}
