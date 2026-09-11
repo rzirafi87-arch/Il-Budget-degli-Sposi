@@ -12,7 +12,11 @@ describe("Branch 45 wedding canonical taxonomy", () => {
   });
   it("has one stable canonical key and no unclassified normalized-label collision", () => {
     expect(new Set(WEDDING_BUDGET_TAXONOMY.map((item) => item.key)).size).toBe(WEDDING_BUDGET_TAXONOMY.length);
-    const labels = Map.groupBy(WEDDING_BUDGET_TAXONOMY, (item) => normalized(item.label));
+    const labels = WEDDING_BUDGET_TAXONOMY.reduce((groups, item) => {
+      const key = normalized(item.label);
+      groups.set(key, [...(groups.get(key) || []), item]);
+      return groups;
+    }, new Map<string, typeof WEDDING_BUDGET_TAXONOMY[number][]>());
     for (const collisions of labels.values()) {
       if (collisions.length > 1) expect(collisions.every((item) => item.distinctCollision)).toBe(true);
     }
