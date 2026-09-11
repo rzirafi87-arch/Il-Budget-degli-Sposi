@@ -428,47 +428,76 @@ export type Database = {
       catalog_review_queue: {
         Row: {
           candidate_entity_id: string | null
+          canonical_record_id: string | null
           conflict_level: string
           created_at: string
           entity_type: string
+          event_id: string | null
           id: string
           incoming_fingerprint: string
           match_score: number
+          moderation_note: string | null
           payload: Json
           reasons: Json
           reviewed_at: string | null
+          reviewed_by: string | null
           source: string
           status: string
+          submitted_by: string | null
+          updated_at: string
+          user_message: string | null
         }
         Insert: {
           candidate_entity_id?: string | null
+          canonical_record_id?: string | null
           conflict_level: string
           created_at?: string
           entity_type: string
+          event_id?: string | null
           id?: string
           incoming_fingerprint: string
           match_score: number
+          moderation_note?: string | null
           payload?: Json
           reasons?: Json
           reviewed_at?: string | null
+          reviewed_by?: string | null
           source: string
           status?: string
+          submitted_by?: string | null
+          updated_at?: string
+          user_message?: string | null
         }
         Update: {
           candidate_entity_id?: string | null
+          canonical_record_id?: string | null
           conflict_level?: string
           created_at?: string
           entity_type?: string
+          event_id?: string | null
           id?: string
           incoming_fingerprint?: string
           match_score?: number
+          moderation_note?: string | null
           payload?: Json
           reasons?: Json
           reviewed_at?: string | null
+          reviewed_by?: string | null
           source?: string
           status?: string
+          submitted_by?: string | null
+          updated_at?: string
+          user_message?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "catalog_review_queue_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categories: {
         Row: {
@@ -3349,9 +3378,22 @@ export type Database = {
         }
         Returns: undefined
       }
+      is_catalog_admin: { Args: never; Returns: boolean }
       is_subscription_active: {
         Args: { p_expires_at: string; p_subscription_tier: string }
         Returns: boolean
+      }
+      moderate_catalog_submission: {
+        Args: {
+          p_action: string
+          p_canonical_record_id?: string
+          p_moderation_note?: string
+          p_payload?: Json
+          p_reviewer_id?: string
+          p_submission_id: string
+          p_user_message?: string
+        }
+        Returns: string
       }
       normalize_catalog_text: { Args: { value: string }; Returns: string }
       normalize_phone: { Args: { phone_input: string }; Returns: string }

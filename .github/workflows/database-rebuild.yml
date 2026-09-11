@@ -163,6 +163,12 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260910203000_branch_43_budget_item_origin.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_43_ceremony_budget.sql
 
+      - name: Apply and verify Branch 44 catalog moderation
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260911090000_branch_44_community_catalog_moderation.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260911100000_branch_44_submission_column_permissions.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_44_catalog_moderation.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci

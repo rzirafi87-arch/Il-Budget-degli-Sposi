@@ -2,6 +2,7 @@
 
 import ImageCarousel from "@/components/ImageCarousel";
 import { CatalogMap } from "@/components/catalog/CatalogMap";
+import ContributionPanel from "@/components/catalog/ContributionPanel";
 import { CurrentPosition, NearMeButton } from "@/components/catalog/NearMeButton";
 import { useToast } from "@/components/ToastProvider";
 import { AppButton } from "@/components/ui/AppButton";
@@ -132,6 +133,7 @@ export default function LocationsPage() {
   return <section className="space-y-6">
     <PageHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} icon={<Building2 size={24} aria-hidden />} />
     <ImageCarousel images={getPageImages("location", country)} height="280px" />
+    <ContributionPanel entityType="location" initialData={{ city, province, region }} />
     <AppCard padding="md"><form onSubmit={submitSearch} className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
       <label className="space-y-1 text-sm font-semibold"><span>{t("search")}</span><input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
       <label className="space-y-1 text-sm font-semibold"><span>{t("city")}</span><input value={city} onChange={(e) => { setCity(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>

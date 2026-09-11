@@ -10,16 +10,16 @@ function clientKey(request: HeaderRequest, scope: string) {
   return createHash("sha256").update(`${secret}:${scope}:${ip}`).digest("hex");
 }
 
-export async function checkAuthRateLimit(request: HeaderRequest, scope: string, limit = 10) {
+export async function checkAuthRateLimit(request: HeaderRequest, scope: string, limit = 10, windowSeconds = 60) {
   const db = getServiceClient();
   const { data, error } = await db.rpc("consume_rate_limit", {
     p_key: clientKey(request, scope),
     p_limit: limit,
-    p_window_seconds: 60,
+    p_window_seconds: windowSeconds,
   });
   if (error) {
     console.error("RATE_LIMIT backend unavailable", { scope, code: error.code });
-    return { allowed: false, remaining: 0, resetAt: Date.now() + 60_000 };
+    return { allowed: false, remaining: 0, resetAt: Date.now() + windowSeconds * 1000 };
   }
   const result = Array.isArray(data) ? data[0] : data;
   return {
