@@ -7,10 +7,10 @@
     "contingencyPct": "Imprévus (%)",
     "custom": {"add": "+ Ajouter un poste personnalisé", "prompt": "Nom du nouveau poste", "nameAria": "Nom du poste personnalisé", "delete": "Supprimer", "deleteAria": "Supprimer {name}"},
     "fields": {"amount": "Montant ({currency})", "spendType": "Type de dépense", "notes": "Notes"},
-    "spendTypes": {"common": "Commun", "bride": "Mariée", "groom": "Marié", "gift": "Cadeau"},
+    "spendTypes": {"common": "Mairie", "municipality": "Mairie", "bride": "Mariée", "groom": "Marié", "gift": "Cadeau"},
     "weddingBagIncluded": "Déjà inclus dans la Wedding Bag · ce poste ne sera compté qu’une fois",
     "summary": {"planned": "Total prévu :", "contingency": "Imprévus : {amount}", "withContingency": "Total avec imprévus : {amount}"},
     "actions": {"save": "Enregistrer", "apply": "Appliquer au budget", "saving": "Enregistrement…"},
-    "messages": {"saved": "Idée de budget enregistrée.", "saveError": "Impossible d’enregistrer l’idée de budget.", "applied": "{count} postes appliqués au budget.", "applyError": "Impossible d’appliquer les postes au budget.", "loadError": "Impossible de charger l’idée de budget."}
+    "messages": {"saved": "Idée de budget enregistrée.", "saveError": "Impossible d’enregistrer l’idée de budget.", "applied": "{count, plural, =0 {Aucun poste n’a été appliqué au budget.} one {# poste a été appliqué au budget.} other {# postes ont été appliqués au budget.}}", "applyError": "Impossible d’appliquer les postes au budget.", "loadError": "Impossible de charger l’idée de budget."}
   }
 }
