@@ -45,6 +45,42 @@ function placeholders(value: unknown): string[] {
 function suspiciousItalianResidual(locale: string, key: string, value: unknown, italianValue: unknown) {
   if (locale === "it" || typeof value !== "string" || typeof italianValue !== "string" || value !== italianValue) return false;
   const invariant = new Set(["Budget", "Dashboard", "Timeline", "Location", "Save the Date", "Wedding Planner", "Wedding Bag", "OpenStreetMap", "Wikidata", "SIAE", "DJ", "QR Code", "Email", "URL", "Instagram", "Facebook"]);
+  const invariantKeys = new Set([
+    "catalogSearch.distance",
+    "events.gender-reveal",
+    "events.baby-shower",
+    "events.gender-reveal-party",
+    "events.bar-mitzvah",
+    "events.babyshower",
+    "suppliersPhotographers.actions.email",
+    "suppliersFlorists.actions.email",
+    "suppliersCatering.title",
+    "suppliersCatering.actions.email",
+    "suppliersBeauty.breadcrumb.beauty",
+    "suppliersBeauty.actions.email",
+    "suppliersJewelry.actions.email",
+    "privacyPolicy",
+    "cookiePolicy",
+    "madeInItaly",
+    "gdprCompliant",
+    "landing.footer.privacy",
+    "landing.footer.cookies",
+    "suppliersUi.categories.beauty.label",
+    "about.why.points.madeInItaly.title",
+    "policies.cookie.title",
+    "policies.cookie.common.privacyLabel",
+    "policies.cookie.s5.title",
+    "policies.privacy.title",
+    "policies.privacy.s14.email",
+    "policies.privacy.s15.email",
+    "policies.terms.s14.email",
+    "policies.terms.s14.pec",
+    "footer.privacyPolicy",
+    "footer.cookiePolicy",
+    "footer.madeInItaly",
+    "footer.gdprCompliant",
+  ]);
+  if (invariantKeys.has(key)) return false;
   if (invariant.has(value.trim()) || /^[\d\s%€$£.,:+\-–—()/]+$/.test(value) || /^(https?:\/\/|[A-Z0-9_\-.]{2,})$/.test(value.trim())) return false;
   if (key.toLowerCase().includes("brand") || key.toLowerCase().includes("source")) return false;
   return value.trim().split(/\s+/).length >= 2;
