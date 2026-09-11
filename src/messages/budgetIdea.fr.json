@@ -1,0 +1,16 @@
+{
+  "budgetIdea": {
+    "title": "Idée de budget",
+    "description": "Sélectionnez uniquement les postes utiles pour votre mariage. Les postes désactivés ne sont pas inclus dans les totaux.",
+    "loading": "Chargement de votre idée de budget…",
+    "search": {"label": "Rechercher un poste", "placeholder": "Ex. maquillage, photographe, corsage, chauffeur", "empty": "Aucun poste trouvé."},
+    "contingencyPct": "Imprévus (%)",
+    "custom": {"add": "+ Ajouter un poste personnalisé", "prompt": "Nom du nouveau poste", "nameAria": "Nom du poste personnalisé", "delete": "Supprimer", "deleteAria": "Supprimer {name}"},
+    "fields": {"amount": "Montant ({currency})", "spendType": "Type de dépense", "notes": "Notes"},
+    "spendTypes": {"common": "Commun", "bride": "Mariée", "groom": "Marié", "gift": "Cadeau"},
+    "weddingBagIncluded": "Déjà inclus dans la Wedding Bag · ce poste ne sera compté qu’une fois",
+    "summary": {"planned": "Total prévu :", "contingency": "Imprévus : {amount}", "withContingency": "Total avec imprévus : {amount}"},
+    "actions": {"save": "Enregistrer", "apply": "Appliquer au budget", "saving": "Enregistrement…"},
+    "messages": {"saved": "Idée de budget enregistrée.", "saveError": "Impossible d’enregistrer l’idée de budget.", "applied": "{count} postes appliqués au budget.", "applyError": "Impossible d’appliquer les postes au budget.", "loadError": "Impossible de charger l’idée de budget."}
+  }
+}
