@@ -1,0 +1,16 @@
+{
+  "budgetIdea": {
+    "title": "Idea di budget",
+    "description": "Scegli solo le voci che servono al vostro matrimonio. Le altre non incidono sui totali.",
+    "loading": "Caricamento idea di budget…",
+    "search": {"label": "Cerca una voce", "placeholder": "Es. make-up, foto, corsage, autista", "empty": "Nessuna voce trovata."},
+    "contingencyPct": "Imprevisti (%)",
+    "custom": {"add": "+ Aggiungi voce personalizzata", "prompt": "Nome della nuova voce", "nameAria": "Nome voce personalizzata", "delete": "Elimina", "deleteAria": "Elimina {name}"},
+    "fields": {"amount": "Importo ({currency})", "spendType": "Tipo spesa", "notes": "Note"},
+    "spendTypes": {"common": "Comune", "bride": "Sposa", "groom": "Sposo", "gift": "Regalo"},
+    "weddingBagIncluded": "Già presente in Wedding Bag · sarà conteggiata una sola volta",
+    "summary": {"planned": "Totale pianificato:", "contingency": "Imprevisti: {amount}", "withContingency": "Totale con imprevisti: {amount}"},
+    "actions": {"save": "Salva", "apply": "Applica al Budget", "saving": "Salvataggio…"},
+    "messages": {"saved": "Idea di budget salvata.", "saveError": "Salvataggio non riuscito.", "applied": "{count} voci applicate al Budget.", "applyError": "Applicazione al Budget non riuscita.", "loadError": "Non è stato possibile caricare l’idea di budget."}
+  }
+}
