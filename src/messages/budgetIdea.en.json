@@ -7,10 +7,10 @@
     "contingencyPct": "Contingency (%)",
     "custom": {"add": "+ Add custom item", "prompt": "Name of the new item", "nameAria": "Custom item name", "delete": "Delete", "deleteAria": "Delete {name}"},
     "fields": {"amount": "Amount ({currency})", "spendType": "Expense type", "notes": "Notes"},
-    "spendTypes": {"common": "Shared", "bride": "Bride", "groom": "Groom", "gift": "Gift"},
+    "spendTypes": {"common": "Municipality", "municipality": "Municipality", "bride": "Bride", "groom": "Groom", "gift": "Gift"},
     "weddingBagIncluded": "Already included in the Wedding Bag · it will only be counted once",
     "summary": {"planned": "Planned total:", "contingency": "Contingency: {amount}", "withContingency": "Total including contingency: {amount}"},
     "actions": {"save": "Save", "apply": "Apply to Budget", "saving": "Saving…"},
-    "messages": {"saved": "Budget idea saved.", "saveError": "Could not save your budget idea.", "applied": "{count} items applied to your Budget.", "applyError": "Could not apply the items to your Budget.", "loadError": "Could not load your budget idea."}
+    "messages": {"saved": "Budget idea saved.", "saveError": "Could not save your budget idea.", "applied": "{count, plural, =0 {No items were applied to your Budget.} one {# item applied to your Budget.} other {# items applied to your Budget.}}", "applyError": "Could not apply the items to your Budget.", "loadError": "Could not load your budget idea."}
   }
 }
