@@ -82,8 +82,12 @@
       "eventTypeSpecific": {
         "wedding": "For a wedding, you can split expenses between bride, groom, and common. This helps understand each contribution and manage finances transparently.",
         "baptism": "For a baptism, all expenses are automatically set as 'common' — no need to specify who pays.",
+        "eighteenth": "For an eighteenth birthday, all expenses are shared. Plan the venue, catering, entertainment and keepsakes for an unforgettable celebration!",
+        "confirmation": "For a confirmation, all expenses are shared. Organise the ceremony, reception, favours and keepsakes to celebrate this spiritual milestone.",
+        "communion": "For a first communion, all expenses are treated as shared, with no split between parents.",
         "birthday": "For a birthday, split expenses between the main organizer and any shared costs.",
-        "graduation": "For a graduation, track all event-related expenses: venue, catering, invitations, decorations, and keepsakes."
+        "graduation": "For a graduation, track all event-related expenses: venue, catering, invitations, decorations, and keepsakes.",
+        "anniversary": "For a wedding anniversary, manage the celebration expenses together. Whether it is a silver, golden or more intimate anniversary, every detail helps renew your love."
       }
     },
     "title": "Expenses",
@@ -165,7 +169,8 @@
         "wedding": "During weddings, it's customary to receive envelopes with monetary contributions from guests. Record every envelope received for a complete tracking.",
         "baptism": "For a baptism, record contributions from godparents and family members who want to participate in the expenses.",
         "birthday": "For a birthday, track contributions from friends and relatives who want to help with the organization.",
-        "graduation": "For a graduation, record family contributions and gifts received to celebrate the milestone."
+        "graduation": "For a graduation, record family contributions and gifts received to celebrate the milestone.",
+        "anniversary": "For a wedding anniversary, record contributions from children, grandchildren and relatives who want to join the celebration. Families often organise a surprise party or share the costs."
       }
     },
     "title": "Incomes",
@@ -254,6 +259,7 @@
     "retirement": "Retirement",
     "confirmation": "Confirmation",
     "graduation": "Graduation",
+    "babyshower": "Baby Shower",
     "baby-shower": "Baby Shower",
     "engagement": "Engagement Party",
     "corporate": "Corporate Event",
@@ -283,6 +289,7 @@
       "footnote": "✨ No credit card required • Create your event in 2 minutes"
     },
     "usp": {
+      "title": "Everything you need",
       "budgetUi": {
         "cards": {
           "clarity": {
@@ -1144,16 +1151,37 @@
     },
     "types": {
       "villa": "Villa",
+      "Villa": "Villa",
       "castello": "Castle",
+      "Castello": "Castle",
+      "palazzo": "Palace",
+      "Palazzo": "Palace",
       "agriturismo": "Farmhouse",
+      "Agriturismo": "Farmhouse",
+      "cascina": "Country house",
+      "Cascina": "Country house",
       "masseria": "Masseria",
+      "Masseria": "Masseria",
+      "baglio": "Baglio",
+      "Baglio": "Baglio",
+      "borgo": "Village",
+      "Borgo": "Village",
       "ristorante": "Restaurant",
+      "Ristorante": "Restaurant",
       "hotel": "Hotel",
+      "Hotel": "Hotel",
+      "hotel di lusso": "Luxury hotel",
+      "Hotel di lusso": "Luxury hotel",
       "resort": "Resort",
+      "Resort": "Resort",
       "tenuta": "Estate",
+      "Tenuta": "Estate",
       "giardino": "Garden",
+      "Giardino": "Garden",
       "spiaggia": "Beach",
-      "altro": "Other"
+      "Spiaggia": "Beach",
+      "altro": "Other",
+      "Altro": "Other"
     },
     "messages": {
       "authRequired": "You must be authenticated to add a venue",
@@ -1264,7 +1292,7 @@
     },
     "loading": "Loading ateliers...",
     "results": {
-      "count": "Found {count} atelier{count, plural, one {} other {s}}{region, select, other { in {region}} }"
+      "count": "Found {count} atelier{region, select, other { in {region}} }"
     },
     "labels": {
       "verified": "✓ Verified",
@@ -1755,5 +1783,60 @@
     "language": "Language",
     "country": "Country",
     "event": "Event"
+  },
+  "retirement": "Retirement",
+  "guestsPage": {
+    "title": "Guest Management",
+    "tabs": {
+      "guests": "Guests",
+      "tables": "Tables"
+    },
+    "sections": {
+      "guestsManagement": "Complete Guest Management",
+      "familyGroups": "Family Groups",
+      "nonInvited": "Not Invited (favours only)"
+    }
+  },
+  "footer": {
+    "newsletterTitle": "Stay updated",
+    "newsletterDesc": "Get tips, checklists and exclusive offers for your perfect wedding!",
+    "newsletterFormLabel": "Newsletter subscription",
+    "emailPlaceholder": "Your email...",
+    "emailAriaLabel": "Enter your email",
+    "subscribeBtn": "Subscribe",
+    "thankYouMsg": "Thank you for subscribing! Check your email.",
+    "aboutTitle": "Wedding Budget",
+    "aboutDesc": "The Italian platform for planning your wedding budget. Simple, complete and free.",
+    "toolsTitle": "Tools",
+    "expenses": "Expense Management",
+    "incomes": "Income & Gifts",
+    "guestsList": "Guest List",
+    "suppliersTitle": "Find Suppliers",
+    "locations": "Reception Venues",
+    "churches": "Ceremony Venues",
+    "allSuppliers": "All Suppliers",
+    "infoTitle": "Info & Support",
+    "aboutUs": "About Us",
+    "howItWorks": "How It Works",
+    "contacts": "Contacts",
+    "legalTitle": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy",
+    "securePayments": "Secure Payments",
+    "madeInItaly": "Made in Italy",
+    "gdprCompliant": "GDPR Compliant",
+    "free100": "100% Free",
+    "copyright": "All rights reserved.",
+    "madeWithLove": "Made with love for Italian couples",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contacts"
+  },
+  "locationReception": "Reception Venue",
+  "locationCeremony": "Ceremony Venue",
+  "languages": {
+    "pt": "Portuguese",
+    "id": "Indonesian"
   }
 }
