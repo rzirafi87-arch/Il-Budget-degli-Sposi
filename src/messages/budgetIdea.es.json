@@ -1,16 +1,1 @@
-{
-  "budgetIdea": {
-    "title": "Idea de presupuesto",
-    "description": "Elige solo las partidas que necesites para tu boda. Las partidas desactivadas no se incluyen en los totales.",
-    "loading": "Cargando tu idea de presupuesto…",
-    "search": {"label": "Buscar partidas", "placeholder": "Ej. maquillaje, fotógrafo, corsage, conductor", "empty": "No se han encontrado partidas."},
-    "contingencyPct": "Imprevistos (%)",
-    "custom": {"add": "+ Añadir partida personalizada", "prompt": "Nombre de la nueva partida", "nameAria": "Nombre de la partida personalizada", "delete": "Eliminar", "deleteAria": "Eliminar {name}"},
-    "fields": {"amount": "Importe ({currency})", "spendType": "Tipo de gasto", "notes": "Notas"},
-    "spendTypes": {"common": "Ayuntamiento", "municipality": "Ayuntamiento", "bride": "Novia", "groom": "Novio", "gift": "Regalo"},
-    "weddingBagIncluded": "Ya incluido en la Wedding Bag · se contabilizará una sola vez",
-    "summary": {"planned": "Total planificado:", "contingency": "Imprevistos: {amount}", "withContingency": "Total con imprevistos: {amount}"},
-    "actions": {"save": "Guardar", "apply": "Aplicar al presupuesto", "saving": "Guardando…"},
-    "messages": {"saved": "Idea de presupuesto guardada.", "saveError": "No se ha podido guardar la idea de presupuesto.", "applied": "{count, plural, =0 {No se ha aplicado ninguna partida al presupuesto.} one {Se ha aplicado # partida al presupuesto.} other {Se han aplicado # partidas al presupuesto.}}", "applyError": "No se han podido aplicar las partidas al presupuesto.", "loadError": "No se ha podido cargar la idea de presupuesto."}
-  }
-}
+{}

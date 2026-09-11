@@ -1,13 +1,1 @@
-{
-  "appointments": {
-    "title": "Termine und Fristen",
-    "formTitle": "Terminbezeichnung",
-    "formLocation": "Ort",
-    "formNotes": "Notizen",
-    "addBtn": "Termin hinzufügen",
-    "empty": "Keine Termine hinzugefügt.",
-    "dateLabel": "Datum",
-    "locationLabel": "Ort",
-    "suggested": "Diese Beispielagenda wird automatisch aus dem Hochzeitsevent erstellt – passe sie mit deinen echten Terminen an."
-  }
-}
+{}

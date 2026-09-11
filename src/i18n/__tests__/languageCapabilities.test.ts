@@ -12,7 +12,7 @@ import {
 describe("canonical language capability matrix", () => {
   it("publishes only audited READY locales", () => {
     expect(defaultLocale).toBe("it");
-    expect(publicLocales).toEqual(["it", "en"]);
+    expect(publicLocales).toEqual(["it", "es", "en", "fr", "de"]);
     expect(getLanguageCapability("it")).toMatchObject({
       status: "READY",
       selectable: true,
@@ -21,26 +21,22 @@ describe("canonical language capability matrix", () => {
       authReady: true,
       appReady: true,
     });
-    expect(getLanguageCapability("en")).toMatchObject({
-      status: "READY",
-      selectable: true,
-      publicRouting: true,
-      metadataReady: true,
-      authReady: true,
-      appReady: true,
-      emailReady: true,
-    });
+    for (const locale of ["en", "es", "fr", "de"]) {
+      expect(getLanguageCapability(locale)).toMatchObject({
+        status: "READY",
+        selectable: true,
+        publicRouting: true,
+        metadataReady: true,
+        authReady: true,
+        appReady: true,
+        emailReady: true,
+      });
+    }
   });
 
-  it.each(["es", "fr", "de"])("marks %s as visible Coming Soon and not selectable", (locale) => {
-    expect(getLanguageCapability(locale)).toMatchObject({
-      status: "COMING_SOON",
-      visible: true,
-      selectable: false,
-      publicRouting: false,
-    });
-    expect(isSelectableLocale(locale)).toBe(false);
-    expect(isPublicLocale(locale)).toBe(false);
+  it.each(["en", "es", "fr", "de"])("publishes audited locale %s", (locale) => {
+    expect(isSelectableLocale(locale)).toBe(true);
+    expect(isPublicLocale(locale)).toBe(true);
   });
 
   it("keeps technical and country-specific locales internal", () => {
@@ -53,7 +49,7 @@ describe("canonical language capability matrix", () => {
     expect(LANGS.map((language) => language.slug)).toEqual(
       visibleLanguages.map((language) => language.locale),
     );
-    expect(LANGS.filter((language) => language.available).map((language) => language.slug)).toEqual(["it", "en"]);
+    expect(LANGS.filter((language) => language.available).map((language) => language.slug)).toEqual(["it", "es", "en", "fr", "de"]);
   });
 
   it("contains one capability record for every configured language", () => {

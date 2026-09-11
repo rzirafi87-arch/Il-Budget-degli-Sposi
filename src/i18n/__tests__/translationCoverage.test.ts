@@ -79,6 +79,12 @@ function suspiciousItalianResidual(locale: string, key: string, value: unknown, 
     "footer.cookiePolicy",
     "footer.madeInItaly",
     "footer.gdprCompliant",
+    "communityContributions.form.province",
+    "suppliersAtelier.form.priceRanges.high",
+    "suppliersMusicCeremony.form.province",
+    "suppliersMusicReception.form.province",
+    "suppliersWeddingPlanner.form.province",
+    "ceremonyCeremonyChurch.form.province",
   ]);
   if (invariantKeys.has(key)) return false;
   if (invariant.has(value.trim()) || /^[\d\s%€$£.,:+\-–—()/]+$/.test(value) || /^(https?:\/\/|[A-Z0-9_\-.]{2,})$/.test(value.trim())) return false;

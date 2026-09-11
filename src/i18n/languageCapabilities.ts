@@ -17,8 +17,8 @@ export type LanguageCapability = {
   visible: boolean;
 };
 
-const READY = new Set(["it", "en"]);
-const COMING_SOON = new Set(["es", "fr", "de"]);
+const READY = new Set(["it", "es", "en", "fr", "de"]);
+const COMING_SOON = new Set<string>();
 const CONFIGURED_LANGUAGES = [
   ...languages,
   { slug: "mx", label: "Español (México)", locale: "es-MX", dir: "ltr", emoji: "", available: false },

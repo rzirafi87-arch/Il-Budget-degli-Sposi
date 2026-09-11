@@ -1,8 +1,394 @@
 {
-  "common": "Común",
-  "bride": "Novia",
-  "groom": "Novio",
+  "appointments": {
+    "title": "Citas y plazos",
+    "formTitle": "Título de la cita",
+    "formLocation": "Lugar",
+    "formNotes": "Notas",
+    "addBtn": "Agregar cita",
+    "empty": "No se han agregado citas.",
+    "dateLabel": "Fecha",
+    "locationLabel": "Lugar",
+    "suggested": "Esta agenda de ejemplo se genera automáticamente a partir del evento de boda: personalízala con tus citas reales."
+  },
+  "budgetIdea": {
+    "title": "Idea de presupuesto",
+    "description": "Elige solo las partidas que necesites para tu boda. Las partidas desactivadas no se incluyen en los totales.",
+    "loading": "Cargando tu idea de presupuesto…",
+    "search": {
+      "label": "Buscar partidas",
+      "placeholder": "Ej. maquillaje, fotógrafo, corsage, conductor",
+      "empty": "No se han encontrado partidas."
+    },
+    "contingencyPct": "Imprevistos (%)",
+    "custom": {
+      "add": "+ Añadir partida personalizada",
+      "prompt": "Nombre de la nueva partida",
+      "nameAria": "Nombre de la partida personalizada",
+      "delete": "Eliminar",
+      "deleteAria": "Eliminar {name}"
+    },
+    "fields": {
+      "amount": "Importe ({currency})",
+      "spendType": "Tipo de gasto",
+      "notes": "Notas"
+    },
+    "spendTypes": {
+      "common": "Ayuntamiento",
+      "municipality": "Ayuntamiento",
+      "bride": "Novia",
+      "groom": "Novio",
+      "gift": "Regalo"
+    },
+    "weddingBagIncluded": "Ya incluido en la Wedding Bag · se contabilizará una sola vez",
+    "summary": {
+      "planned": "Total planificado:",
+      "contingency": "Contingencia:",
+      "withContingency": "Total con imprevistos: {amount}",
+      "plannedTotal": "Total previsto:",
+      "totalWithContingency": "Total con contingencia:"
+    },
+    "actions": {
+      "save": "Guardar",
+      "apply": "Aplicar al presupuesto",
+      "saving": "Guardando…"
+    },
+    "messages": {
+      "saved": "Idea de presupuesto guardada.",
+      "saveError": "No se ha podido guardar la idea de presupuesto.",
+      "applied": "{count, plural, =0 {No se ha aplicado ninguna partida al presupuesto.} one {Se ha aplicado # partida al presupuesto.} other {Se han aplicado # partidas al presupuesto.}}",
+      "applyError": "No se han podido aplicar las partidas al presupuesto.",
+      "loadError": "No se ha podido cargar la idea de presupuesto.",
+      "applyDone": "Solicitud completada: elementos {count} creados o actualizados."
+    },
+    "buttons": {
+      "save": "Guardar idea de presupuesto",
+      "saving": "Ahorro...",
+      "apply": "Aplicar al presupuesto"
+    },
+    "form": {
+      "eventDate": "Fecha del evento",
+      "currency": "Divisa",
+      "contingency": "Contingencia (%)",
+      "compact": "Vista compacta (filas más estrechas)",
+      "syncedNote": "Sincronizado con el tablero principal."
+    },
+    "panel": {
+      "available": "Disponible:",
+      "planned": "Planificado:",
+      "residual": "Residual:",
+      "budget": "Presupuesto"
+    },
+    "totalCard": {
+      "available": "Disponible:",
+      "planned": "Planificado:",
+      "residual": "Residual:",
+      "extraContributions": "Otras contribuciones"
+    },
+    "table": {
+      "category": "Categoría",
+      "subcategory": "Subcategoría",
+      "amountCurrency": "Cantidad ({currency})",
+      "spendType": "Tipo de gasto",
+      "supplier": "Proveedor",
+      "notes": "Notas"
+    }
+  },
+  "catalogSearch": {
+    "nearMe": "Cerca de mí",
+    "positionUnavailable": "Ubicación no disponible. Usa ciudad, provincia o región.",
+    "radius": "Radio",
+    "sort": "Ordenar",
+    "relevance": "Relevancia",
+    "nearest": "Más cercanos",
+    "name": "Nombre A–Z",
+    "verifiedFirst": "Verificados primero",
+    "distance": "{distance} km",
+    "distanceUnavailable": "Distancia no disponible",
+    "list": "Lista",
+    "map": "Mapa",
+    "province": "Provincia",
+    "region": "Región",
+    "verification": "Verificación",
+    "all": "Todos"
+  },
+  "ceremonyPage": {
+    "eyebrow": "Ceremonia",
+    "title": "¿Cómo celebraréis la boda?",
+    "description": "Puedes cambiar estos datos en cualquier momento. Ninguna elección es obligatoria.",
+    "typeAriaLabel": "Tipo de ceremonia",
+    "types": {
+      "civil": "Ceremonia civil",
+      "religious": "Ceremonia religiosa",
+      "other": "Otra",
+      "undecided": "Por decidir"
+    },
+    "religion": {
+      "label": "Religión o confesión",
+      "denomination": "Detalle de la confesión (opcional)"
+    },
+    "religions": {
+      "unspecified": "No especificado",
+      "catholic": "Católica",
+      "christian_non_catholic": "Cristiana no católica",
+      "islamic": "Islámica",
+      "jewish": "Judía",
+      "hindu": "Hinduista",
+      "buddhist": "Budista",
+      "other": "Otra religión o confesión"
+    },
+    "place": {
+      "title": "Lugar de la ceremonia",
+      "kind": "Tipo de lugar",
+      "name": "Nombre del lugar",
+      "namePlaceholder": "Introduce un lugar manualmente",
+      "address": "Dirección (opcional)",
+      "privateNote": "El lugar introducido aquí permanece privado y pertenece únicamente a vuestro evento.",
+      "searchWorship": "Buscar lugares de culto",
+      "searchVenues": "Buscar espacios"
+    },
+    "places": {
+      "municipality": "Ayuntamiento / Municipio",
+      "municipal_hall": "Sala municipal",
+      "civil_house": "Sede civil",
+      "ceremony_venue": "Espacio para la ceremonia",
+      "other_civil": "Otra sede civil",
+      "church": "Iglesia",
+      "basilica": "Basílica",
+      "cathedral": "Catedral",
+      "abbey": "Abadía",
+      "sanctuary": "Santuario",
+      "chapel": "Capilla",
+      "mosque": "Mezquita",
+      "synagogue": "Sinagoga",
+      "temple": "Templo",
+      "other_worship": "Otro lugar de culto"
+    },
+    "officiant": "Oficiante (opcional)",
+    "loading": "Cargando ceremonia…",
+    "saving": "Guardando…",
+    "save": "Guardar ceremonia",
+    "messages": {
+      "saved": "Ceremonia guardada.",
+      "saveError": "No se ha podido guardar la ceremonia."
+    }
+  },
+  "communityContributions": {
+    "add": {
+      "church": "Añadir un lugar",
+      "location": "Añadir un espacio",
+      "supplier": "Añadir un proveedor"
+    },
+    "mine": "Mis propuestas",
+    "statuses": {
+      "PENDING": "En revisión",
+      "APPROVED": "Aprobada",
+      "REJECTED": "No aprobada",
+      "NEEDS_CHANGES": "Cambios solicitados"
+    },
+    "form": {
+      "heading": {
+        "church": "Propón un lugar para el catálogo",
+        "location": "Propón un espacio para el catálogo",
+        "supplier": "Propón un proveedor para el catálogo"
+      },
+      "name": "Nombre *",
+      "type": "Tipo *",
+      "select": "Seleccionar",
+      "customType": "Describe el tipo *",
+      "city": "Municipio / Ciudad *",
+      "province": "Provincia *",
+      "region": "Región *",
+      "country": "País *",
+      "address": "Dirección",
+      "postalCode": "Código postal",
+      "website": "Sitio web oficial",
+      "phone": "Teléfono",
+      "email": "Email",
+      "reviewerNotes": "Notas para la revisión",
+      "submit": "Enviar propuesta",
+      "cancel": "Cancelar"
+    },
+    "messages": {
+      "authRequired": "Inicia sesión para enviar una propuesta.",
+      "duplicate": "Puede que ya esté en el catálogo: {name}. Comprueba el resultado antes de continuar.",
+      "rateLimited": "Has enviado demasiadas propuestas en poco tiempo. Inténtalo de nuevo en un minuto.",
+      "submitError": "No se ha podido enviar la propuesta.",
+      "submitted": "Propuesta enviada. La revisaremos antes de publicarla."
+    },
+    "types": {
+      "church": "Iglesia",
+      "basilica": "Basílica",
+      "cathedral": "Catedral",
+      "abbey": "Abadía",
+      "sanctuary": "Santuario",
+      "chapel": "Capilla",
+      "mosque": "Mezquita",
+      "synagogue": "Sinagoga",
+      "temple": "Templo",
+      "place_of_worship": "Otro lugar de culto",
+      "ceremony_place": "Otro lugar de ceremonia",
+      "reception_restaurant": "Restaurante de recepción",
+      "villa": "Villa",
+      "reception_hall": "Salón de recepción",
+      "event_hotel": "hotel para eventos",
+      "resort": "Complejo",
+      "agriturismo": "Estancia en granja",
+      "castle_historic_house": "Castillo / casa histórica",
+      "estate": "Bienes",
+      "masseria": "Masseria",
+      "event_venue": "Lugar del evento",
+      "seaside_venue": "Lugar junto al mar",
+      "photographer": "Fotógrafo",
+      "videomaker": "camarógrafo",
+      "florist": "Florista",
+      "wedding_planner": "Planificador de bodas",
+      "makeup_artist": "Maquillador",
+      "hair_stylist": "peluquero",
+      "music": "Música",
+      "dj": "DJ",
+      "entertainment": "Entretenimiento",
+      "transport": "Transporte",
+      "atelier": "taller nupcial",
+      "favors": "Favores de boda",
+      "catering": "Abastecimiento",
+      "bakery": "pastelería",
+      "rental": "Alquiler / alquiler",
+      "lighting": "Iluminación",
+      "other": "Otro"
+    }
+  },
+  "catalogModeration": {
+    "eyebrow": "Área de administración",
+    "title": "Moderación del catálogo",
+    "description": "Revisa las propuestas antes de publicarlas.",
+    "filters": {
+      "typeAria": "Tipo",
+      "statusAria": "Estado",
+      "allTypes": "Todos los tipos"
+    },
+    "entities": {
+      "church": "Lugares",
+      "location": "Espacios",
+      "supplier": "Proveedores"
+    },
+    "statuses": {
+      "PENDING": "En revisión",
+      "APPROVED": "Aprobadas",
+      "REJECTED": "Rechazadas",
+      "NEEDS_CHANGES": "Cambios solicitados"
+    },
+    "notes": "Notas:",
+    "possibleDuplicate": "Posible duplicado: {id} (puntuación {score})",
+    "prompts": {
+      "canonicalName": "Nombre canónico",
+      "canonicalType": "Tipo canónico",
+      "city": "Municipio / Ciudad",
+      "recordId": "ID del registro existente",
+      "userMessage": "Mensaje visible para el usuario (opcional)"
+    },
+    "confirmApprove": "¿Publicar esta propuesta en el catálogo?",
+    "actions": {
+      "approve": "Aprobar",
+      "editApprove": "Editar y aprobar",
+      "merge": "Aprobar y vincular",
+      "requestChanges": "Solicitar cambios",
+      "reject": "Rechazar"
+    },
+    "errors": {
+      "auth": "Se requiere iniciar sesión.",
+      "adminOnly": "Área reservada a administradores.",
+      "load": "No se puede cargar la cola de revisión.",
+      "action": "No se ha podido completar la operación"
+    },
+    "empty": "No hay propuestas para estos filtros."
+  },
+  "dashboard": "Panel",
+  "newsletterTitle": "Mantente al día",
+  "newsletterDesc": "¡Recibe consejos, listas de verificación y ofertas exclusivas para tu boda perfecta!",
+  "newsletterFormLabel": "Suscripción al boletín",
+  "emailPlaceholder": "Tu correo...",
+  "emailAriaLabel": "Introduce tu correo",
+  "subscribeBtn": "Suscribirse",
+  "thankYouMsg": "¡Gracias por suscribirte! Revisa tu correo.",
+  "aboutTitle": "Presupuesto de Boda",
+  "aboutDesc": "La plataforma italiana para planificar el presupuesto de tu boda. Simple, completa y gratuita.",
+  "toolsTitle": "Herramientas",
+  "expenses": "Gestión de Gastos",
+  "incomes": "Ingresos y Regalos",
+  "guestsList": "Lista de Invitados",
+  "suppliersTitle": "Encuentra Proveedores",
+  "locations": "Lugares de Recepción",
+  "churches": "Lugares de Ceremonia",
+  "allSuppliers": "Todos los Proveedores",
+  "ceremonyMusic": "Música de Ceremonia",
+  "receptionMusic": "Música de Recepción",
+  "weddingPlanner": "Wedding Planner",
+  "infoTitle": "Información y Soporte",
+  "aboutUs": "Quiénes Somos",
+  "howItWorks": {
+    "title": "📖 Cómo funciona",
+    "steps": {
+      "1": {
+        "title": "📝 Regístrate gratis",
+        "desc": "Crea tu cuenta en segundos. Sin cargos ocultos, no se requiere tarjeta de crédito. ¡Empieza a planificar tu boda ahora mismo!"
+      },
+      "2": {
+        "title": "💰 Establece tu presupuesto",
+        "desc": "Definir el presupuesto inicial para los novios. El sistema calcula automáticamente el total y te ayuda a controlar los gastos en tiempo real."
+      },
+      "3": {
+        "title": "📊 Administrar categorías",
+        "desc": "Organice los gastos en más de 20 categorías: vestimenta, lugar, catering, fotógrafos, floristas y más. ¡Todo está listo para usar!"
+      },
+      "4": {
+        "title": "🔍 Buscar proveedores",
+        "desc": "Acceda a nuestra base de datos de proveedores verificados en toda Italia: lugares, iglesias, fotógrafos, organizadores de bodas, músicos y más."
+      },
+      "5": {
+        "title": "👥 Administrar invitados",
+        "desc": "Cree y administre la lista de invitados, agrupe por familias, realice un seguimiento de las confirmaciones de asistencia y calcule el costo por persona."
+      },
+      "6": {
+        "title": "💾 Guardar y realizar un seguimiento",
+        "desc": "Guarda tu progreso en cualquier momento. Vea gráficos y estadísticas, realice un seguimiento del presupuesto restante y mantenga todo bajo control hasta el gran día."
+      }
+    },
+    "cta": {
+      "title": "🎉¿Listo para Empezar?",
+      "subtitle": "¡Empiece a planificar la boda de sus sueños hoy!",
+      "button": "Regístrese gratis ahora"
+    }
+  },
+  "contacts": "Contactos",
+  "legalTitle": "Legal",
+  "privacyPolicy": "Política de Privacidad",
+  "termsOfService": "Términos de Servicio",
+  "cookiePolicy": "Política de Cookies",
+  "securePayments": "Pagos Seguros",
+  "madeInItaly": "Hecho en Italia",
+  "gdprCompliant": "Cumple con GDPR",
+  "free100": "100% Gratis",
+  "copyright": "Todos los derechos reservados.",
+  "madeWithLove": "Hecho con ❤️ para parejas italianas",
+  "timeline": "Línea de tiempo",
+  "budget": "Presupuesto",
+  "weddingThings": "Cosas de boda",
+  "saveTheDate": "Guarde la fecha",
+  "guests": "Huéspedes",
+  "accounting": "Contabilidad",
+  "suppliers": "Proveedores",
+  "location": "Lugares de recepción",
+  "documents": "Documentos",
+  "giftList": "Lista de regalos",
+  "favorites": "Favoritos",
+  "suggestions": "Sugerencias y consejos",
   "ideaBudget": "Idea de Presupuesto",
+  "auth": "Iniciar sesión",
+  "chat": "Chatea con nosotros en WhatsApp",
+  "settings": "Ajustes",
+  "loading": "Cargando...",
+  "comingSoon": "Muy pronto",
+  "retirement": "Jubilación",
   "budgetPage": {
     "approvedExpenses": "Gastos aprobados",
     "ctaIdeaBudget": "💍¡ Ir a Idea de Presupuesto",
@@ -52,44 +438,6 @@
       "empty": "No hay datos para comparar. Usa 'Idea de Presupuesto' para planificar y aprobar gastos en la sección 'Gastos'."
     }
   },
-  "table": {
-    "category": "Categoría",
-    "subcategory": "Subcategoría",
-    "spendType": "Tipo de gasto",
-    "paymentMethod": "Método de pago",
-    "budget": "Presupuesto",
-    "committed": "Comprometido",
-    "paid": "Pagado",
-    "residual": "Residual",
-    "fromQuote": "Del presupuesto",
-    "difference": "Diferencia"
-  },
-  "spendType": {
-    "common": "Común",
-    "bride": "Novia",
-    "groom": "Novio",
-    "gift": "Regalo"
-  },
-  "paymentMethod": {
-    "common": "💰 Común",
-    "bride": "👰 Novia",
-    "groom": "🤵 Novio",
-    "gift": "🎁 Regalo"
-  },
-  "loading": "Cargando...",
-  "empty": "No hay gastos aprobados. Ve a la sección 'Gastos' para aprobar tus gastos.",
-  "plannedVsActual": {
-    "title": "Planificado vs Real",
-    "totalPlanned": "Total planificado",
-    "totalActualApproved": "Total real (aprobado)",
-    "difference": "Diferencia",
-    "over": "+ por encima de lo previsto",
-    "under": "por debajo de lo previsto",
-    "item": "Elemento",
-    "planned": "Planificado",
-    "actual": "Real",
-    "empty": "No hay datos para comparar. Usa 'Idea de Presupuesto' para planificar y aprobar gastos en la sección 'Gastos'."
-  },
   "expensesPage": {
     "info": {
       "lead": "Registra y gestiona todos los gastos de la boda. Puedes introducir presupuestos, confirmarlos como gastos aprobados y hacer un seguimiento de los estados de pago. Filtra por categoría, tipo de gasto (común/novia/novio) y estado.",
@@ -106,6 +454,7 @@
         "baptism": "Para el bautizo, todos los gastos se configuran automáticamente como 'comunes' - no es necesario especificar quién paga.",
         "eighteenth": "Para el cumpleaños de 18, todos los gastos son comunes. ¡Planifica la ubicación, catering, entretenimiento y recuerdos para hacer inolvidable esta fiesta!",
         "confirmation": "Para la confirmación, todos los gastos son comunes. Organiza la ceremonia, recepción, recuerdos y detalles para celebrar este momento especial de crecimiento espiritual.",
+        "communion": "Para una primera comunión, todos los gastos se tratan como compartidos, sin división entre los padres.",
         "birthday": "Para el cumpleaños, divide los gastos entre el organizador principal y los compartidos con otros.",
         "graduation": "Para la graduación, rastrea todos los gastos relacionados con el evento: ubicación, catering, invitaciones, decoraciones y recuerdos.",
         "anniversary": "Para el aniversario de bodas, gestiona juntos los gastos para la celebración. Ya sea el 25º (plata), 50º (oro) o un aniversario más íntimo, cada detalle cuenta para hacer especial este momento de renovación del amor."
@@ -269,15 +618,1365 @@
       "confirmDelete": "¿Estás seguro de que quieres eliminar este ingreso?"
     }
   },
+  "events": {
+    "wedding": "Boda",
+    "baptism": "Bautizo",
+    "eighteenth": "18º cumpleaños",
+    "anniversary": "Aniversario de bodas",
+    "gender-reveal": "Revelación de género",
+    "birthday": "Cumpleaños",
+    "fifty": "50 años",
+    "retirement": "Jubilación",
+    "confirmation": "Confirmación",
+    "graduation": "Graduación",
+    "baby-shower": "Baby Shower",
+    "babyshower": "fiesta de bienvenida al bebé",
+    "engagement": "Fiesta de compromiso",
+    "corporate": "Evento corporativo",
+    "milestone-birthday": "Cumpleaños (hito)",
+    "gender-reveal-party": "Fiesta de revelación de género",
+    "proposal": "Fiesta de propuesta",
+    "communion": "Primera comunión",
+    "bar-mitzvah": "Bar Mitzvah",
+    "quinceanera": "Quinceañera",
+    "charity-gala": "Evento benéfico/Gala",
+    "engagement-party": "Fiesta de compromiso"
+  },
+  "home": {
+    "hero": {
+      "title1": "Planifica tu",
+      "title2Highlighted": "boda",
+      "title3": "simplemente",
+      "title4": "y sin estrés 💍",
+      "subtitle": "La única aplicación que combina <strong>presupuesto, proveedores y tranquilidad</strong><br />, sin anuncios ni caos.",
+      "ctaPrimary": "🎉 Empieza ahora: es gratis",
+      "ctaSecondary": "👀 Mira la demostración",
+      "footnote": "✨ No se requiere tarjeta de crédito • Crea tu evento en 2 minutos"
+    },
+    "usp": {
+      "title": "Todo lo que necesitas",
+      "cards": {
+        "clarity": {
+          "title": "Claridad",
+          "description": "Cada gasto es visible. Cada paso está guiado. Sin confusión, sólo organización."
+        },
+        "control": {
+          "title": "Control",
+          "description": "Presupuesto, proveedores, invitados, cronograma: todo bajo control en un solo lugar."
+        },
+        "inspiration": {
+          "title": "Inspiración",
+          "description": "Diseño refinado, interfaz tranquila y consejos útiles para que todo sea más agradable."
+        }
+      }
+    },
+    "demo": {
+      "title": "Explora las características 💕",
+      "subtitle": "Navegación gratuita sin registro: ¡agregue datos y experimente!",
+      "features": {
+        "budget": {
+          "title": "Presupuesto inteligente",
+          "description": "Seguimiento planificado versus real, dividido por novia/novio/común",
+          "href": "/dashboard"
+        },
+        "timeline": {
+          "title": "Línea de tiempo automática",
+          "description": "Tareas cronológicas desde 12 meses antes del gran día",
+          "href": "/timeline"
+        },
+        "guests": {
+          "title": "Gestión de invitados",
+          "description": "Lista completa, confirmación de asistencia, asignaciones de tablas y recuentos",
+          "href": "/invitati"
+        },
+        "suppliers": {
+          "title": "Directorio de proveedores",
+          "description": "Encuentra lugares, fotógrafos, floristas en tu zona.",
+          "href": "/fornitori"
+        },
+        "favorites": {
+          "title": "Favoritos y documentos",
+          "description": "Guardar proveedores y organizar cotizaciones.",
+          "href": "/preferiti"
+        },
+        "gifts": {
+          "title": "Lista de regalos",
+          "description": "Gestiona los regalos que deseas recibir",
+          "href": "/entrate"
+        }
+      }
+    },
+    "privacy": {
+      "title": "Privacidad y tranquilidad garantizadas",
+      "text": "<strong>Sin anuncios.</strong> Sin correo no deseado.<br />Tus datos siguen siendo tuyos. No vender a terceros.<br />Solo tú y tu boda, sin distracciones."
+    },
+    "finalCta": {
+      "title": "¿Listo para empezar? 🎊",
+      "subtitle": "Únase a parejas que planearon su boda con tranquilidad.",
+      "button": "Crea tu evento ahora"
+    },
+    "floatingMenu": "🏠 Menú principal",
+    "dashboard": {
+      "title": "tu gran dia\ncomienza aquí",
+      "loading": "Cargando...",
+      "countdown": {
+        "today": "¡Es hoy! 🎉",
+        "day": "dia de la boda",
+        "days": "dias para la boda"
+      },
+      "fallback": {
+        "lead": "Planifica tu boda de forma sencilla y tranquila.",
+        "sub": "Gestiona presupuesto, proveedores, invitados y mucho más.",
+        "cta": "Empiece ahora: es gratis",
+        "note": "No se requiere tarjeta de crédito. Crea tu evento en 2 minutos."
+      },
+      "budget": {
+        "title": "💰 Presupuesto",
+        "seeDetails": "Ver detalles",
+        "planned": "Planificado",
+        "spent": "Gastado",
+        "progress": {
+          "low": "¡Gran comienzo! Sigue así 🌟",
+          "mid": "¡Lo estás haciendo genial! 💪",
+          "high": "Casi todo listo, ¡bien hecho! 🎉",
+          "full": "¡Presupuesto alcanzado! 🎊"
+        }
+      },
+      "quick": {
+        "timeline": {
+          "title": "Línea de tiempo",
+          "desc": "Tareas cronológicas"
+        },
+        "budget": {
+          "title": "Presupuesto",
+          "desc": "Gestionar todos los gastos"
+        },
+        "guests": {
+          "title": "Huéspedes",
+          "desc": "Lista y confirmación de asistencia"
+        },
+        "suppliers": {
+          "title": "Proveedores",
+          "desc": "Encuentra los mejores servicios"
+        },
+        "favorites": {
+          "title": "Favoritos",
+          "desc": "Tus elementos guardados"
+        },
+        "docs": {
+          "title": "Documentos",
+          "desc": "Cotizaciones y contratos"
+        }
+      },
+      "nextSteps": {
+        "title": "📝 Próximos pasos recomendados",
+        "defBudget": "Definir presupuesto total",
+        "chooseVenue": "Elige el lugar de la recepción",
+        "bookPhoto": "Reserva el fotógrafo",
+        "guestList": "Iniciar la lista de invitados",
+        "hint": "💡 Sigue estos pasos para una planificación tranquila y sin estrés"
+      }
+    }
+  },
+  "budgetUi": {
+    "items": {
+      "title": "Partidas presupuestarias"
+    },
+    "focus": {
+      "title": "Presupuesto recomendado (porcentajes)",
+      "subtitle": "Distribución sugerida entre artículos principales.",
+      "labels": {
+        "catering": "Abastecimiento",
+        "location": "Ubicación",
+        "attire": "Atuendo",
+        "photo_video": "Foto/vídeo",
+        "decor": "Decoración",
+        "entertainment": "Entretenimiento",
+        "stationery_gifts": "Papelería/Regalos"
+      }
+    },
+    "summary": {
+      "bride": "Presupuesto de novia {currency}",
+      "groom": "Presupuesto del novio {currency}",
+      "total": "Presupuesto total {currency}",
+      "contingency": "Contingencia (%)",
+      "date": {
+        "wedding": "fecha de la boda",
+        "baptism": "fecha de la ceremonia",
+        "eighteenth": "fecha de fiesta",
+        "graduation": "fecha de graduación",
+        "confirmation": "Fecha de confirmación"
+      },
+      "ctaIdea": "Complete la idea de presupuesto"
+    }
+  },
+  "pageInfoNote": {
+    "forYourEvent": "Para tu evento:",
+    "tips": "Consejos:"
+  },
+  "guestsPage": {
+    "title": "Gestión de invitados",
+    "tabs": {
+      "guests": "Huéspedes",
+      "tables": "Mesas"
+    },
+    "sections": {
+      "guestsManagement": "Gestión completa de huéspedes",
+      "familyGroups": "Grupos familiares",
+      "nonInvited": "No invitado (solo favores)"
+    }
+  },
+  "suppliersUi": {
+    "title": "🏢 Proveedores",
+    "lead": "Explora y gestiona proveedores para cada aspecto de tu boda. Encuentre profesionales cerca de usted, compare cotizaciones y guarde sus favoritos.",
+    "suggestions": {
+      "inCountry": "Recomendado en {country}:",
+      "colors": "Colores populares:"
+    },
+    "filter": {
+      "all": "Todo",
+      "filterBy": "Filtrar por {value}"
+    },
+    "search": {
+      "placeholder": "Buscar categoría de proveedor..."
+    },
+    "explore": "Explorar →",
+    "empty": {
+      "title": "No se encontró ninguna categoría para \"{query}\"",
+      "reset": "Mostrar todas las categorías"
+    },
+    "tip": {
+      "title": "💡 Consejo",
+      "body": "Para cada categoría puedes buscar proveedores en tu área, filtrar por precio y servicios, comparar cotizaciones y guardar tus favoritos. Cada proveedor se puede agregar directamente a los gastos de su presupuesto."
+    },
+    "categories": {
+      "atelier": {
+        "label": "Boutiques nupciales",
+        "description": "Vestidos de novia y atuendos de ceremonia."
+      },
+      "fotografi": {
+        "label": "Fotógrafos",
+        "description": "Servicios de fotografía y vídeo."
+      },
+      "fiorai": {
+        "label": "floristas",
+        "description": "Ramos y decoraciones florales."
+      },
+      "catering": {
+        "label": "Abastecimiento",
+        "description": "Servicio de banquetes y comidas."
+      },
+      "beauty": {
+        "label": "Maquillaje y belleza",
+        "description": "Maquillaje, peinado y bienestar."
+      },
+      "gioiellerie": {
+        "label": "Joyería",
+        "description": "Alianzas, anillos y joyas de boda."
+      },
+      "wedding-planner": {
+        "label": "Planificador de bodas",
+        "description": "Organización completa de la boda."
+      },
+      "musica-cerimonia": {
+        "label": "Música de ceremonia",
+        "description": "Músicos para la ceremonia."
+      },
+      "musica-ricevimento": {
+        "label": "Música de recepción",
+        "description": "DJs, bandas y entretenimiento"
+      }
+    }
+  },
+  "about": {
+    "title": "👰🤵 Acerca de nosotros",
+    "intro": "Somos la plataforma número uno de Italia para la gestión del presupuesto de bodas. Nacida de la experiencia directa de parejas que enfrentaron los desafíos de la planificación de bodas, nuestra misión es hacer que el proceso sea más simple, transparente y agradable.",
+    "mission": {
+      "title": "Nuestra Misión",
+      "body": "Ayude a las parejas italianas a planificar la boda de sus sueños sin estrés financiero. Ofrecemos herramientas gratuitas, intuitivas y completas para gestionar todos los aspectos del presupuesto de la boda."
+    },
+    "why": {
+      "title": "¿Por qué elegirnos?",
+      "points": {
+        "free": {
+          "title": "100% Gratis:",
+          "desc": "Todas las herramientas son completamente gratuitas."
+        },
+        "madeInItaly": {
+          "title": "Hecho en Italia:",
+          "desc": "Diseñado específicamente para bodas italianas."
+        },
+        "privacy": {
+          "title": "Privacidad garantizada:",
+          "desc": "Tus datos están protegidos y cumplen con el RGPD"
+        },
+        "database": {
+          "title": "Base de datos de proveedores:",
+          "desc": "Acceso a miles de proveedores en toda Italia"
+        },
+        "support": {
+          "title": "Soporte dedicado:",
+          "desc": "Nuestro equipo está siempre disponible para ayudarte."
+        }
+      }
+    },
+    "contact": {
+      "title": "Contáctenos",
+      "body": "¿Tiene preguntas o sugerencias? ¡Estamos aquí para ti!",
+      "cta": "Chatea con nosotros en WhatsApp"
+    }
+  },
+  "policies": {
+    "lastUpdated": "Última actualización:",
+    "cookie": {
+      "title": "Política de cookies",
+      "common": {
+        "purposeLabel": "Objetivo:",
+        "privacyLabel": "Política de privacidad:"
+      },
+      "table": {
+        "headers": {
+          "name": "Nombre",
+          "purpose": "Objetivo",
+          "duration": "Duración"
+        },
+        "rows": {
+          "session": "Sesión",
+          "30d": "30 dias",
+          "1y": "1 año",
+          "session_token": {
+            "purpose": "Mantiene activa la sesión del usuario."
+          },
+          "auth_token": {
+            "purpose": "Autenticación segura"
+          },
+          "csrf_token": {
+            "purpose": "Protección contra ataques CSRF"
+          },
+          "user_preferences": {
+            "purpose": "Guarda las preferencias de UI/UX"
+          },
+          "cookie_consent": {
+            "purpose": "Recuerda la elección del banner de cookies"
+          }
+        }
+      },
+      "s1": {
+        "title": "1. ¿Qué son las cookies?",
+        "p1": "Las cookies son pequeños archivos de texto que los sitios web almacenan en su dispositivo (ordenador, tableta, teléfono inteligente) cuando los visita. Ayudan a mejorar su experiencia de navegación, recuerdan sus preferencias y brindan funciones esenciales."
+      },
+      "s2": {
+        "title": "2. Tipos de cookies utilizadas",
+        "tech": {
+          "title": "2.1 Cookies técnicas (necesarias) 🔒",
+          "p1": "Estas cookies son esenciales para que el sitio web funcione y no se pueden desactivar. No requieren su consentimiento según la normativa vigente."
+        },
+        "prefs": {
+          "title": "2.2 Cookies de preferencia 🎨",
+          "p1": "Recuerdan sus elecciones (idioma, tema, vista) para mejorar su experiencia."
+        },
+        "analytics": {
+          "title": "2.3 Cookies de análisis 📊",
+          "p1": "Recopilan datos anónimos sobre cómo utiliza el sitio para ayudarnos a mejorarlo. Requieren su consentimiento.",
+          "note": "Nota: Actualmente no utilizamos cookies analíticas de terceros (como Google Analytics). Solo monitoreamos métricas anónimas del lado del servidor."
+        },
+        "marketing": {
+          "title": "2.4 Cookies de marketing 📢",
+          "p1": "Se utiliza para mostrar publicidad relevante. Requieren su consentimiento explícito.",
+          "status": "Estado actual: No utilizamos cookies de marketing ni de remarketing. Si implementamos publicidad en el futuro, solicitaremos su consentimiento previo."
+        }
+      },
+      "s3": {
+        "title": "3. Cookies de terceros",
+        "p1": "Algunas cookies pueden ser instaladas por servicios externos que utilizamos:",
+        "supabase": {
+          "title": "Supabase (alojamiento de bases de datos)",
+          "purpose": "Autenticación y gestión de datos."
+        },
+        "vercel": {
+          "title": "Vercel (alojamiento web)",
+          "purpose": "Entrega y rendimiento de contenido"
+        }
+      },
+      "s4": {
+        "title": "4. Cómo gestionar las cookies",
+        "banner": {
+          "title": "4.1 A través del banner de cookies",
+          "p1": "En su primera visita, puede elegir qué cookies aceptar a través del banner de consentimiento. Puede cambiar sus preferencias en cualquier momento desde la configuración de su cuenta."
+        },
+        "browser": {
+          "title": "4.2 A través del navegador",
+          "p1": "Puedes gestionar las cookies a través de la configuración de tu navegador:",
+          "chrome": "Ajustes → Privacidad y seguridad → Cookies",
+          "firefox": "Opciones → Privacidad y seguridad → Cookies y datos del sitio",
+          "safari": "Preferencias → Privacidad → Administrar datos del sitio web",
+          "edge": "Configuración → Cookies y permisos del sitio"
+        },
+        "warning": "⚠️ Advertencia: Deshabilitar las cookies técnicas puede provocar que algunas funciones del sitio dejen de funcionar correctamente (por ejemplo, es posible que no pueda acceder a su cuenta)."
+      },
+      "s5": {
+        "title": "5. No realizar seguimiento (DNT)",
+        "p1": "Respetamos la señal \"No rastrear\" del navegador. Si está habilitado, no rastreamos su navegación con fines analíticos o publicitarios."
+      },
+      "s6": {
+        "title": "6. Duración de las cookies",
+        "items": {
+          "session": {
+            "title": "Cookies de sesión:",
+            "desc": "Eliminado cuando se cierra el navegador."
+          },
+          "persistent": {
+            "title": "Cookies persistentes:",
+            "desc": "Permanecer durante el período especificado (máximo 1 año)"
+          },
+          "analytics": {
+            "title": "Cookies analíticas:",
+            "desc": "Hasta 24 meses (si se acepta)"
+          }
+        }
+      },
+      "s7": {
+        "title": "7. Actualizaciones de la política de cookies",
+        "p1": "Nos reservamos el derecho de modificar esta Política de Cookies para cumplir con la normativa o cambios en el servicio. La fecha de la última actualización se muestra en la parte superior. Por favor revise esta página periódicamente."
+      },
+      "s8": {
+        "title": "8. Cookies y RGPD",
+        "p1": "De acuerdo con el GDPR (Reglamento UE 2016/679) y la Directiva ePrivacy:",
+        "items": {
+          "i1": "Las cookies técnicas no requieren consentimiento",
+          "i2": "Las cookies de perfil requieren consentimiento previo e informado",
+          "i3": "El consentimiento se puede retirar en cualquier momento.",
+          "i4": "Proporcionamos información clara y completa sobre el uso de cookies"
+        }
+      },
+      "s9": {
+        "title": "9. Contactos",
+        "p1": "Si tiene preguntas sobre la Política de cookies o cómo manejamos sus datos: Correo electrónico: privacidad@ilbudgetdeglisposi.it — Teléfono: +39 XXX XXX XXXX"
+      },
+      "summary": {
+        "title": "📋 Resumen rápido",
+        "tech": {
+          "title": "Cookies técnicas",
+          "value": "✅ Siempre activo"
+        },
+        "prefs": {
+          "title": "Cookies de preferencia",
+          "value": "🔘 Requerir consentimiento"
+        },
+        "marketing": {
+          "title": "Galletas de marketing",
+          "value": "❌ No usado"
+        }
+      }
+    },
+    "privacy": {
+      "title": "política de privacidad",
+      "s1": {
+        "title": "1. Introducción",
+        "p1": "Este aviso explica cómo recopilamos, utilizamos y protegemos sus datos personales cuando utiliza nuestra plataforma."
+      },
+      "s2": {
+        "title": "2. Responsable del tratamiento de datos",
+        "lead": "El Responsable del tratamiento es:",
+        "emailLabel": "Correo electrónico:",
+        "pecLabel": "PEC:"
+      },
+      "s3": {
+        "title": "3. Datos que recopilamos",
+        "p1": "Sólo recogemos los datos necesarios para prestar y mejorar el servicio:",
+        "items": {
+          "reg": {
+            "title": "Datos de registro",
+            "desc": "Nombre, correo electrónico y contraseña para crear la cuenta."
+          },
+          "event": {
+            "title": "Datos del evento",
+            "desc": "Información sobre su evento (fecha, presupuesto, categorías y partidas de gastos/ingresos)."
+          },
+          "nav": {
+            "title": "Datos de navegación",
+            "desc": "Registros técnicos, IP, agente de usuario, configuración de idioma para seguridad y operación."
+          },
+          "guests": {
+            "title": "Huéspedes",
+            "desc": "Nombres y detalles que ingresa para la lista de invitados y la administración de mesas."
+          },
+          "pay": {
+            "title": "Pagos (si los hay)",
+            "desc": "Cualquier información relacionada con métodos de pago o futuras suscripciones."
+          }
+        }
+      },
+      "s4": {
+        "title": "4. Cómo utilizamos tus datos",
+        "p1": "Usamos tus datos para:",
+        "items": {
+          "i1": "Proporcionar y mejorar las características de la plataforma.",
+          "i2": "Gestionar la autenticación y la seguridad",
+          "i3": "Guarde sus preferencias (idioma, vistas, diseño)",
+          "i4": "Responder a las solicitudes de soporte",
+          "i5": "Analizar el uso del servicio de forma agregada y anónima.",
+          "i6": "Cumplir con las obligaciones legales"
+        }
+      },
+      "s5": {
+        "title": "5. Bases jurídicas",
+        "p1": "Procesamos datos de conformidad con el RGPD, basándonos en:",
+        "items": {
+          "contract": {
+            "title": "Contrato",
+            "desc": "Para prestar el servicio solicitado."
+          },
+          "consent": {
+            "title": "Consentir",
+            "desc": "Para funciones opcionales (por ejemplo, boletín informativo)."
+          },
+          "interest": {
+            "title": "Interés legítimo",
+            "desc": "Para seguridad, prevención de abusos y mejora del servicio."
+          },
+          "legal": {
+            "title": "Obligaciones legales",
+            "desc": "Cuando lo exija la ley."
+          }
+        }
+      },
+      "s6": {
+        "title": "6. Retención de datos",
+        "p1": "Conservamos los datos durante el tiempo estrictamente necesario para prestar el servicio y cumplir con las obligaciones legales. Los datos de la cuenta se eliminan dentro de los 30 días posteriores a la solicitud de eliminación, a menos que la ley exija lo contrario."
+      },
+      "s7": {
+        "title": "7. Intercambio de datos",
+        "p1": "Compartimos datos solo con las partes necesarias para proporcionar el servicio:",
+        "items": {
+          "providers": {
+            "title": "Proveedores técnicos",
+            "desc": "Hosting, base de datos, sistemas de correo electrónico y monitoreo de seguridad."
+          },
+          "partners": {
+            "title": "Socios (si los hay)",
+            "desc": "Sólo cuando sea estrictamente necesario y bajo acuerdos de confidencialidad."
+          },
+          "authorities": {
+            "title": "Autoridades",
+            "desc": "Cuando así lo requiera la ley o por orden de las autoridades."
+          }
+        },
+        "note": "No vendemos sus datos personales a terceros."
+      },
+      "s8": {
+        "title": "8. Tus derechos",
+        "p1": "Tienes derecho a:",
+        "items": {
+          "access": {
+            "title": "Acceso",
+            "desc": "Obtener una copia de sus datos personales."
+          },
+          "rect": {
+            "title": "Rectificación",
+            "desc": "Corregir datos inexactos o incompletos."
+          },
+          "erase": {
+            "title": "Borradura",
+            "desc": "Solicitar la supresión de los datos (derecho al olvido)."
+          },
+          "limit": {
+            "title": "Restricción",
+            "desc": "Restringir temporalmente el procesamiento."
+          },
+          "port": {
+            "title": "Portabilidad",
+            "desc": "Reciba datos en un formato estructurado y legible por máquina."
+          },
+          "object": {
+            "title": "Objeción",
+            "desc": "Oponerse al tratamiento basado en el interés legítimo."
+          },
+          "withdraw": {
+            "title": "Retirar el consentimiento",
+            "desc": "Retirar el consentimiento en cualquier momento."
+          }
+        },
+        "contact": "Para ejercer sus derechos, póngase en contacto con nosotros: {strong}"
+      },
+      "s9": {
+        "title": "9. Seguridad de los datos",
+        "p1": "Adoptamos medidas técnicas y organizativas apropiadas para proteger sus datos, incluyendo:",
+        "items": {
+          "i1": "Cifrado en tránsito (HTTPS/TLS)",
+          "i2": "Copias de seguridad periódicas",
+          "i3": "Controles de acceso y autenticación.",
+          "i4": "Monitoreo y registro de seguridad",
+          "i5": "Procedimientos de respuesta a incidentes"
+        }
+      },
+      "s10": {
+        "title": "10. galletas",
+        "p1": "Para obtener más detalles sobre las cookies, consulte nuestro {link}."
+      },
+      "s11": {
+        "title": "11. Transferencias extracomunitarias",
+        "p1": "Si algunos servicios son proporcionados por proveedores fuera del Espacio Económico Europeo, garantizamos las salvaguardias adecuadas (por ejemplo, cláusulas contractuales estándar)."
+      },
+      "s12": {
+        "title": "12. Niños",
+        "p1": "El servicio no está destinado a niños menores de 16 años. No recopilamos datos de niños de forma consciente. Si cree que un menor nos ha proporcionado datos, contáctenos para eliminarlos."
+      },
+      "s13": {
+        "title": "13. Cambios a este aviso",
+        "p1": "Podemos actualizar este aviso periódicamente. Los cambios significativos se indicarán en esta página. Por favor, compruébelo periódicamente."
+      },
+      "s14": {
+        "title": "14. Contactos del responsable de privacidad",
+        "p1": "Para cualquier pregunta o solicitud de privacidad:",
+        "authName": "Responsable de privacidad — Il Budget degli Sposi",
+        "addr": "Dirección: Via Esempio 123, 00100 Roma (RM)",
+        "email": "Correo electrónico: privacidad@ilbudgetdeglisposi.it",
+        "phone": "Teléfono: +39 XXX XXX XXXX"
+      },
+      "s15": {
+        "title": "15. Cómo ejercer tus derechos",
+        "p1": "Puede ejercer sus derechos dirigiéndose por escrito a:",
+        "email": "Correo electrónico: {strong}",
+        "sla": "Responderemos dentro de los 30 días, a menos que se apliquen períodos más largos según el RGPD."
+      }
+    },
+    "terms": {
+      "title": "Términos de servicio",
+      "s1": {
+        "title": "1. Aceptación de Términos",
+        "p1": "Bienvenido a {strong}. Al utilizar esta plataforma, acepta plenamente estos Términos de servicio. Si no acepta estos términos, no utilice el servicio."
+      },
+      "s2": {
+        "title": "2. Descripción del servicio",
+        "p1": "Il Budget degli Sposi es una plataforma en línea gratuita que le permite:",
+        "items": {
+          "i1": "Planifica y gestiona el presupuesto de tu boda",
+          "i2": "Seguimiento de gastos e ingresos",
+          "i3": "Gestionar la lista de invitados",
+          "i4": "Busque y compare proveedores de servicios de bodas",
+          "i5": "Crea invitaciones personalizadas y para guardar la fecha"
+        }
+      },
+      "s3": {
+        "title": "3. Registro y Cuenta",
+        "req": {
+          "title": "3.1 Requisitos",
+          "p1": "Para utilizar el servicio completo, debe:",
+          "i1": "Tener al menos 18 años",
+          "i2": "Proporcionar información veraz y precisa.",
+          "i3": "Mantenga sus credenciales de inicio de sesión confidenciales",
+          "i4": "Aceptar la Política de Privacidad"
+        },
+        "resp": {
+          "title": "3.2 Responsabilidad de la cuenta",
+          "p1": "Usted es responsable de todas las actividades realizadas a través de su cuenta. En caso de acceso no autorizado, deberá informarnos inmediatamente."
+        }
+      },
+      "s4": {
+        "title": "4. Uso del Servicio",
+        "allowed": {
+          "title": "4.1 Usos permitidos",
+          "p1": "Puede utilizar el servicio para:",
+          "i1": "Planifica tu boda personal",
+          "i2": "Comparte datos con tu pareja",
+          "i3": "Consultar información de proveedores"
+        },
+        "forbidden": {
+          "title": "4.2 Usos prohibidos",
+          "p1": "Está prohibido lo siguiente:",
+          "i1": "Utilizar el servicio con fines comerciales sin autorización",
+          "i2": "Copiar, modificar o distribuir contenido protegido por derechos de autor",
+          "i3": "Intentar acceder a las cuentas de otros usuarios",
+          "i4": "Cargar virus, malware o código malicioso",
+          "i5": "Utilice bots, scrapers o herramientas automatizadas",
+          "i6": "Violar las leyes aplicables o los derechos de terceros",
+          "i7": "Publicar contenido ofensivo, difamatorio o ilegal."
+        }
+      },
+      "s5": {
+        "title": "5. Contenido del usuario",
+        "ownership": {
+          "title": "5.1 Propiedad",
+          "p1": "Conservas la propiedad de todo el contenido que subes (fotos, datos, etc.). Usted nos otorga una licencia limitada para almacenar y procesar dicho contenido con el fin de brindar el servicio."
+        },
+        "responsibility": {
+          "title": "5.2 Responsabilidad",
+          "p1": "Eres responsable del contenido que subes. Usted garantiza que tiene derecho a cargar dicho contenido y que no infringe derechos de terceros."
+        }
+      },
+      "s6": {
+        "title": "6. Proveedores de servicios",
+        "p1": "La plataforma incluye una base de datos de proveedores (lugares, fotógrafos, etc.). {strong} para:",
+        "items": {
+          "i1": "La calidad de los servicios ofrecidos por los proveedores.",
+          "i2": "Contratos realizados directamente con proveedores.",
+          "i3": "Disputas o controversias con proveedores",
+          "i4": "Información incorrecta proporcionada por los propios proveedores"
+        },
+        "note": "Recomendamos siempre consultar revisiones, portafolios y contratos antes de contratar cualquier proveedor."
+      },
+      "s7": {
+        "title": "7. Servicio gratuito",
+        "p1": "El servicio básico es completamente gratuito. Nos reservamos el derecho a:",
+        "items": {
+          "i1": "Introducir funciones premium pagas en el futuro",
+          "i2": "Mostrar publicidad relevante",
+          "i3": "Reciba comisiones de proveedores asociados (sin costo adicional para usted)"
+        }
+      },
+      "s8": {
+        "title": "8. Propiedad intelectual",
+        "p1": "Todo el contenido de la plataforma (diseño, logotipo, textos, código) está protegido por derechos de autor y marcas comerciales. No puede copiar, reproducir ni distribuir dicho contenido sin autorización por escrito."
+      },
+      "s9": {
+        "title": "9. Limitación de responsabilidad",
+        "p1": "El servicio se proporciona {quote} sin garantías de ningún tipo. No somos responsables de:",
+        "items": {
+          "i1": "Pérdida de datos por errores técnicos o fuerza mayor",
+          "i2": "Interrupciones del servicio",
+          "i3": "Decisiones tomadas en base a nuestras herramientas",
+          "i4": "Daños indirectos, incidentales o consecuentes"
+        },
+        "note": "{strong}"
+      },
+      "s10": {
+        "title": "10. Cambios en el Servicio",
+        "p1": "Nos reservamos el derecho a:",
+        "items": {
+          "i1": "Modificar, suspender o discontinuar el servicio",
+          "i2": "Agregar o eliminar funciones",
+          "i3": "Cambiar estos Términos de Servicio"
+        },
+        "note": "Los cambios significativos se comunicarán vía correo electrónico con 30 días de antelación."
+      },
+      "s11": {
+        "title": "11. Terminación y eliminación de cuenta",
+        "you": {
+          "title": "11.1 Tu iniciativa",
+          "p1": "Puede eliminar su cuenta en cualquier momento desde la configuración. Los datos se eliminarán en un plazo de 30 días, salvo que existan obligaciones legales de conservación."
+        },
+        "us": {
+          "title": "11.2 Nuestra iniciativa",
+          "p1": "Podemos suspender o eliminar su cuenta si:",
+          "i1": "Usted viola estos Términos de servicio",
+          "i2": "Utiliza el servicio para actividades ilegales.",
+          "i3": "La cuenta permanece inactiva durante más de 24 meses."
+        }
+      },
+      "s12": {
+        "title": "12. Ley aplicable y jurisdicción",
+        "p1": "Estos Términos se rigen por la ley italiana. Para cualquier disputa, el Tribunal de Roma, Italia, tendrá jurisdicción exclusiva."
+      },
+      "s13": {
+        "title": "13. Varios",
+        "severability": {
+          "title": "13.1 Divisibilidad",
+          "p1": "Si alguna cláusula es declarada inválida, las restantes cláusulas siguen siendo válidas y efectivas."
+        },
+        "assignment": {
+          "title": "13.2 Asignación",
+          "p1": "No puede ceder sus derechos bajo estos Términos sin nuestro consentimiento por escrito."
+        },
+        "comms": {
+          "title": "13.3 Comunicaciones",
+          "p1": "Las comunicaciones oficiales se enviarán al correo electrónico registrado en su cuenta."
+        }
+      },
+      "s14": {
+        "title": "14. Contactos",
+        "p1": "Para preguntas sobre los Términos de servicio:",
+        "email": "Correo electrónico: {strong}",
+        "pec": "PEC: {strong}"
+      },
+      "note": "{strong} Al utilizar el servicio, usted declara que ha leído, comprendido y aceptado plenamente estos Términos de servicio y el {link}."
+    }
+  },
+  "suppliersLocations": {
+    "title": "Recepción · Lugares",
+    "buttons": {
+      "add": "+ Agregar lugar",
+      "cancel": "Cancelar"
+    },
+    "form": {
+      "title": "Agregar nuevo lugar",
+      "select": "Seleccionar...",
+      "fields": {
+        "name": "Nombre",
+        "type": "Tipo de lugar",
+        "city": "Ciudad",
+        "address": "DIRECCIÓN",
+        "phone": "Teléfono",
+        "email": "Correo electrónico",
+        "website": "Sitio web",
+        "priceRange": "Gama de precios",
+        "capacityMin": "Capacidad Mínima (personas)",
+        "capacityMax": "Capacidad Máxima (personas)",
+        "description": "Descripción"
+      },
+      "placeholders": {
+        "province": "por ejemplo, Roma, Milán, Nápoles",
+        "priceRange": "por ejemplo, €€€, 50-100 € por persona",
+        "description": "Describe el lugar, servicios ofrecidos, características únicas..."
+      },
+      "submit": "Agregar lugar"
+    },
+    "filters": {
+      "title": "Filtros",
+      "typeLabel": "Tipo de lugar",
+      "allRegion": "Todo",
+      "allProvince": "Todo",
+      "allTypes": "Todo"
+    },
+    "loading": "Cargando...",
+    "empty": "No se encontraron lugares. ¡Intenta cambiar los filtros o agrega el primero!",
+    "badges": {
+      "verified": "Verificado"
+    },
+    "labels": {
+      "type": "Tipo:",
+      "capacity": "👥 Capacidad:",
+      "website": "Sitio web"
+    },
+    "capacity": {
+      "range": "{min}-{max} personas",
+      "from": "de la gente {min}",
+      "upTo": "hasta {max} personas"
+    },
+    "types": {
+      "villa": "Villa",
+      "Villa": "Villa",
+      "castello": "Castillo",
+      "Castello": "Castillo",
+      "palazzo": "Palacio",
+      "Palazzo": "Palacio",
+      "agriturismo": "Cortijo",
+      "Agriturismo": "Cortijo",
+      "cascina": "casa de campo",
+      "Cascina": "casa de campo",
+      "masseria": "Masseria",
+      "Masseria": "Masseria",
+      "baglio": "Baglio",
+      "Baglio": "Baglio",
+      "borgo": "Aldea",
+      "Borgo": "Aldea",
+      "ristorante": "Restaurante",
+      "Ristorante": "Restaurante",
+      "hotel": "Hotel",
+      "Hotel": "Hotel",
+      "hotel di lusso": "hotel de lujo",
+      "Hotel di lusso": "hotel de lujo",
+      "resort": "Complejo",
+      "Resort": "Complejo",
+      "tenuta": "Bienes",
+      "Tenuta": "Bienes",
+      "giardino": "Jardín",
+      "Giardino": "Jardín",
+      "spiaggia": "Playa",
+      "Spiaggia": "Playa",
+      "altro": "Otro",
+      "Altro": "Otro"
+    },
+    "messages": {
+      "authRequired": "Debes estar autenticado para agregar un lugar",
+      "addError": "Error al agregar",
+      "addSuccess": "¡Lugar agregado exitosamente! Será visible después de la verificación del personal."
+    }
+  },
+  "suppliersPhotographers": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "photographers": "Fotógrafos"
+    },
+    "title": "📸 Fotógrafos",
+    "description": "Encuentra los mejores fotógrafos y videógrafos para tu boda. Filtra por región y provincia, compara precios y visita sus portafolios.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores"
+    },
+    "filters": {
+      "title": "Filtrar fotógrafos",
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "p.ej. Milán",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre del estudio o fotógrafo...",
+      "searchButton": "Buscar",
+      "resetButton": "Reiniciar"
+    },
+    "viewMode": {
+      "grid": "🔲 Cuadrícula",
+      "list": "📋 Lista"
+    },
+    "loading": "Cargando...",
+    "empty": {
+      "title": "No se encontraron fotógrafos",
+      "description": "Prueba a cambiar los filtros"
+    },
+    "actions": {
+      "website": "🌐 Sitio web",
+      "websiteLink": "🌐 Sitio web",
+      "call": "📞 Llamar",
+      "email": "✉️ Correo electrónico",
+      "addToFavorites": "Añadir a favoritos",
+      "removeFromFavorites": "Quitar de favoritos",
+      "add": "Agregar",
+      "remove": "Eliminar"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No photographers found} one {# photographer found} other {# photographers found}}"
+    }
+  },
+  "suppliersAtelier": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "atelier": "Taller"
+    },
+    "title": "👗🤵 Taller",
+    "description": "Descubre los talleres más prestigiosos de vestidos y trajes de novia. Encuentra boutiques exclusivas, marcas internacionales y sastres artesanales para tu look perfecto.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores",
+      "add": "+ Añadir taller",
+      "cancel": "Cancelar"
+    },
+    "tabs": {
+      "bride": "👰 Taller de novias",
+      "groom": "🤵 Atelier de novios"
+    },
+    "filters": {
+      "region": "Filtrar por región",
+      "allRegions": "Todas las regiones"
+    },
+    "form": {
+      "title": "Agregar nuevo taller",
+      "select": "Seleccionar...",
+      "fields": {
+        "name": "Nombre",
+        "category": "Categoría",
+        "region": "Región",
+        "province": "Provincia",
+        "city": "Ciudad",
+        "address": "DIRECCIÓN",
+        "phone": "Teléfono",
+        "email": "Correo electrónico",
+        "website": "Sitio web",
+        "priceRange": "Gama de precios",
+        "description": "Descripción",
+        "styles": "Estilos (separados por comas)",
+        "services": "Servicios (separados por comas)"
+      },
+      "categories": {
+        "bride": "Novia",
+        "groom": "Acicalar"
+      },
+      "priceRanges": {
+        "budget": "€ (Presupuesto)",
+        "moderate": "€€ (Moderado)",
+        "high": "€€€ (Alto)",
+        "luxury": "€€€€ (Lujo)"
+      },
+      "placeholders": {
+        "description": "Breve descripción del taller...",
+        "styles": "Clásico, Moderno, Romántico",
+        "services": "Sastrería, Alquiler, Accesorios"
+      },
+      "submit": "Guardar taller"
+    },
+    "loading": "Cargando talleres...",
+    "results": {
+      "count": "Encontrado taller {count}{region, select, other { in {region}} }"
+    },
+    "labels": {
+      "verified": "✓ Verificado",
+      "visitWebsite": "Visitar sitio web",
+      "priceRange": "GAMA DE PRECIOS",
+      "services": "Servicios"
+    },
+    "empty": {
+      "message": "No se encontraron talleres{region, select, other { in {region}} }. ¡Intenta cambiar los filtros o vuelve pronto para ver nuevas incorporaciones! ✨"
+    },
+    "messages": {
+      "authRequired": "Debes estar autenticado para agregar un taller",
+      "addSuccess": "¡Atelier agregado exitosamente!",
+      "addError": "Error{error, select, other {: {error}} }"
+    },
+    "tips": {
+      "title": "💡 Consejos para elegir",
+      "tip1": "Reserva tu cita con al menos 8-12 meses de antelación",
+      "tip2": "Trae los tacones que usarás el día de tu boda",
+      "tip3": "Permita al menos 2-3 accesorios para ajustes y modificaciones.",
+      "tip4": "Consultar plazos de entrega y modificaciones incluidas en el precio.",
+      "tip5": "Para el novio, considera tanto la compra como el alquiler según tu presupuesto."
+    }
+  },
+  "suppliersFlorists": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "florists": "floristas"
+    },
+    "title": "💐 Floristerías",
+    "description": "Arreglos florales, ramos, centros de mesa y adornos para ceremonia y recepción.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores"
+    },
+    "filters": {
+      "title": "Filtrar floristas",
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Milán",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre de la tienda o floristería...",
+      "searchButton": "Buscar",
+      "resetButton": "Reiniciar"
+    },
+    "viewMode": {
+      "grid": "🔲 Cuadrícula",
+      "list": "📋 Lista"
+    },
+    "loading": "Cargando...",
+    "empty": {
+      "title": "No se encontraron floristas",
+      "description": "Intenta ajustar los filtros."
+    },
+    "actions": {
+      "website": "🌐 Sitio web",
+      "call": "📞 Llamar",
+      "email": "✉️ Correo electrónico",
+      "addFavorite": "Añadir a favoritos",
+      "removeFavorite": "Quitar de favoritos",
+      "add": "Agregar",
+      "remove": "Eliminar"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No florists found} one {# florist found} other {# florists found}}"
+    }
+  },
+  "suppliersCatering": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "catering": "Abastecimiento"
+    },
+    "title": "🍽️ Catering y banquetes",
+    "description": "Encuentra los mejores servicios de catering para tu boda. Menús personalizados, buffets gourmet y servicio impecable.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores"
+    },
+    "filters": {
+      "title": "Filtrar servicios de catering",
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Milán",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre del lugar o catering...",
+      "searchButton": "Buscar",
+      "resetButton": "Reiniciar"
+    },
+    "viewMode": {
+      "grid": "🔲 Cuadrícula",
+      "list": "📋 Lista"
+    },
+    "loading": "Cargando...",
+    "empty": {
+      "title": "No se encontraron servicios de catering",
+      "description": "Intenta ajustar los filtros."
+    },
+    "actions": {
+      "website": "🌐 Sitio web",
+      "call": "📞 Llamar",
+      "email": "✉️ Correo electrónico",
+      "addFavorite": "Añadir a favoritos",
+      "removeFavorite": "Quitar de favoritos",
+      "add": "Agregar",
+      "remove": "Eliminar"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No catering services found} one {# catering service found} other {# catering services found}}"
+    }
+  },
+  "suppliersBeauty": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "beauty": "Maquillaje y belleza"
+    },
+    "title": "💄 Maquillaje y Belleza",
+    "description": "Maquilladores, peluqueros y servicios de belleza para tu día especial.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores"
+    },
+    "filters": {
+      "title": "Filtrar profesionales de la belleza",
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Milán",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre del profesional o estudio...",
+      "searchButton": "Buscar",
+      "resetButton": "Reiniciar"
+    },
+    "viewMode": {
+      "grid": "🔲 Cuadrícula",
+      "list": "📋 Lista"
+    },
+    "loading": "Cargando...",
+    "empty": {
+      "title": "No se encontraron profesionales",
+      "description": "Intenta ajustar los filtros."
+    },
+    "actions": {
+      "website": "🌐 Sitio web",
+      "call": "📞 Llamar",
+      "email": "✉️ Correo electrónico",
+      "addFavorite": "Añadir a favoritos",
+      "removeFavorite": "Quitar de favoritos",
+      "add": "Agregar",
+      "remove": "Eliminar"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No professionals found} one {# professional found} other {# professionals found}}"
+    }
+  },
+  "suppliersJewelry": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "jewelry": "Joyas"
+    },
+    "title": "💍 Joyas",
+    "description": "Alianzas, anillos de compromiso y joyería para novias e invitadas.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores"
+    },
+    "filters": {
+      "title": "Filtrar joyerías",
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Milán",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre de la joyería...",
+      "searchButton": "Buscar",
+      "resetButton": "Reiniciar"
+    },
+    "viewMode": {
+      "grid": "🔲 Cuadrícula",
+      "list": "📋 Lista"
+    },
+    "loading": "Cargando...",
+    "empty": {
+      "title": "No se encontraron joyerías",
+      "description": "Intenta ajustar los filtros."
+    },
+    "actions": {
+      "website": "🌐 Sitio web",
+      "call": "📞 Llamar",
+      "email": "✉️ Correo electrónico",
+      "addFavorite": "Añadir a favoritos",
+      "removeFavorite": "Quitar de favoritos",
+      "add": "Agregar",
+      "remove": "Eliminar"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No jewelry shops found} one {# jewelry shop found} other {# jewelry shops found}}"
+    }
+  },
+  "suppliersMusicCeremony": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "musicCeremony": "Música de ceremonia"
+    },
+    "title": "Música de ceremonia",
+    "description": "Encuentre músicos y grupos verificados para su ceremonia de boda. Puedes proponer nuevos artistas que serán verificados antes de la publicación.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores",
+      "propose": "+ Proponer músico/grupo",
+      "cancel": "Cancelar",
+      "submit": "Enviar propuesta"
+    },
+    "filters": {
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Roma"
+    },
+    "form": {
+      "title": "Proponer músico/grupo",
+      "name": "Nombre del artista/grupo *",
+      "region": "Región *",
+      "province": "Provincia *",
+      "city": "Ciudad *",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "website": "Sitio web",
+      "description": "Descripción",
+      "priceRange": "Gama de precios",
+      "musicType": "tipo de musica",
+      "select": "Seleccionar..."
+    },
+    "loading": "Cargando músicos...",
+    "empty": "No se encontraron músicos para los filtros seleccionados.",
+    "messages": {
+      "submitSuccess": "¡Música de ceremonia enviada! Será verificado antes de la publicación.",
+      "submitError": "Error al enviar",
+      "networkError": "error de red"
+    }
+  },
+  "suppliersMusicReception": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "musicReception": "Música de recepción"
+    },
+    "title": "Música de recepción",
+    "description": "Encuentre DJ, bandas y entretenimiento musical verificados para su recepción. Puedes proponer nuevos artistas que serán verificados antes de la publicación.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores",
+      "propose": "+ Proponer DJ/banda",
+      "cancel": "Cancelar",
+      "submit": "Enviar para aprobación"
+    },
+    "filters": {
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Nápoles"
+    },
+    "form": {
+      "title": "Proponer DJ/banda para la recepción.",
+      "name": "Nombre del artista/grupo *",
+      "region": "Región *",
+      "province": "Provincia *",
+      "city": "Ciudad *",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "website": "Sitio web",
+      "description": "Descripción",
+      "priceRange": "Gama de precios",
+      "musicType": "tipo de musica",
+      "select": "Seleccionar...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "P.ej. €€€",
+      "musicTypePlaceholder": "P.ej. DJ, Banda en vivo, Orquesta, Dúo acústico"
+    },
+    "loading": "Cargando...",
+    "empty": "No se encontró ningún DJ/banda para los filtros seleccionados",
+    "verified": "✓ Verificado",
+    "messages": {
+      "submitSuccess": "¡Música de recepción enviada! Será verificado antes de la publicación.",
+      "submitError": "Error al enviar",
+      "networkError": "error de red"
+    }
+  },
+  "suppliersWeddingPlanner": {
+    "breadcrumb": {
+      "home": "🏠 Inicio",
+      "suppliers": "Proveedores",
+      "weddingPlanner": "Planificador de bodas"
+    },
+    "title": "Planificador de bodas",
+    "description": "Encuentre planificadores de bodas verificados para organizar su boda perfecta. Podrás proponer nuevos profesionales que serán verificados antes de la publicación.",
+    "buttons": {
+      "backToSuppliers": "← Todos los proveedores",
+      "propose": "+ Proponer un organizador de bodas",
+      "cancel": "Cancelar",
+      "submit": "Enviar para aprobación"
+    },
+    "filters": {
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Milán"
+    },
+    "form": {
+      "title": "Proponer un nuevo organizador de bodas",
+      "name": "Nombre / Estudio *",
+      "region": "Región *",
+      "province": "Provincia *",
+      "city": "Ciudad *",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "website": "Sitio web",
+      "description": "Descripción",
+      "priceRange": "Gama de precios",
+      "services": "Servicios ofrecidos",
+      "select": "Seleccionar...",
+      "websitePlaceholder": "https://...",
+      "pricePlaceholder": "P.ej. €€-€€€",
+      "servicesPlaceholder": "P.ej. Planificación completa, Planificación parcial, Día de coordinación"
+    },
+    "loading": "Cargando...",
+    "empty": "No se encontró ningún organizador de bodas para los filtros seleccionados.",
+    "verified": "✓ Verificado",
+    "messages": {
+      "submitSuccess": "¡Planificador de bodas enviado! Será verificado antes de la publicación.",
+      "submitError": "Error al enviar",
+      "networkError": "error de red"
+    }
+  },
   "suppliersChurches": {
     "title": "⛪ Iglesias y lugares de ceremonia",
     "description": "Busca lugares de culto en el catálogo compartido y guarda tus opciones de forma privada en tu boda.",
-    "filters": { "type": "Tipo", "allTypes": "Todos los tipos" },
-    "form": { "city": "Ciudad" },
-    "card": { "type": "Tipo:", "capacity": "Capacidad:", "people": "personas", "website": "Sitio web" },
+    "buttons": {
+      "add": "+ Agregar Iglesia",
+      "cancel": "Cancelar",
+      "submit": "Agregar Iglesia"
+    },
+    "filters": {
+      "title": "Filtros",
+      "type": "Tipo",
+      "all": "Todo",
+      "allTypes": "Todos los tipos"
+    },
+    "form": {
+      "title": "Agregar nueva iglesia",
+      "name": "Nombre *",
+      "type": "Tipo de lugar *",
+      "city": "Ciudad",
+      "address": "DIRECCIÓN",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "website": "Sitio web",
+      "capacity": "Capacidad (personas)",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe la iglesia, características arquitectónicas, servicios...",
+      "requiresBaptism": "Requiere bautismo",
+      "requiresMarriageCourse": "Requiere curso previo al matrimonio",
+      "select": "Seleccionar..."
+    },
+    "types": {
+      "cattolica": "católico",
+      "ortodossa": "Ortodoxo",
+      "protestante": "protestante",
+      "evangelica": "Evangélico",
+      "anglicana": "anglicano",
+      "sinagoga": "Sinagoga",
+      "moschea": "Mezquita",
+      "altro": "Otro"
+    },
+    "card": {
+      "verified": "Verificado",
+      "type": "Tipo:",
+      "capacity": "Capacidad:",
+      "people": "personas",
+      "requiresBaptism": "⚠️ Requiere Bautismo",
+      "requiresMarriageCourse": "⚠️Requiere Curso Pre-Matrimonio",
+      "website": "Sitio web"
+    },
     "loading": "Cargando...",
     "empty": "No se han encontrado iglesias. Prueba a cambiar los filtros.",
-    "messages": { "authRequired": "Debes iniciar sesión para guardar una iglesia" },
+    "messages": {
+      "authRequired": "Debes iniciar sesión para guardar una iglesia",
+      "submitSuccess": "¡Iglesia agregada exitosamente! Será visible después de la verificación del personal.",
+      "submitError": "Error al agregar la iglesia"
+    },
     "catalog": {
       "eyebrow": "Ceremonia",
       "searchLabel": "Buscar en el catálogo",
@@ -300,8 +1999,80 @@
       "previous": "Anterior",
       "next": "Siguiente",
       "page": "Página {page} de {totalPages} · {total} resultados",
-      "verification": { "verified": "Verificada", "probable": "Probable", "toCheck": "Por verificar" },
-      "types": { "church": "Iglesia", "cathedral": "Catedral", "basilica": "Basílica", "sanctuary": "Santuario", "chapel": "Capilla", "placeOfWorship": "Lugar de culto" }
+      "verification": {
+        "verified": "Verificada",
+        "probable": "Probable",
+        "toCheck": "Por verificar"
+      },
+      "types": {
+        "church": "Iglesia",
+        "cathedral": "Catedral",
+        "basilica": "Basílica",
+        "sanctuary": "Santuario",
+        "chapel": "Capilla",
+        "placeOfWorship": "Lugar de culto"
+      }
+    }
+  },
+  "ceremonyCeremonyChurch": {
+    "title": "Ceremonia · Iglesia",
+    "buttons": {
+      "add": "+ Agregar Iglesia",
+      "cancel": "Cancelar",
+      "submit": "Agregar Iglesia"
+    },
+    "filters": {
+      "region": "Región",
+      "allRegions": "Todas las regiones",
+      "province": "Provincia",
+      "provincePlaceholder": "P.ej. Roma",
+      "type": "Tipo",
+      "allTypes": "Todos los tipos"
+    },
+    "form": {
+      "title": "Agregar nueva iglesia",
+      "name": "Nombre *",
+      "type": "Tipo de lugar *",
+      "region": "Región *",
+      "province": "Provincia *",
+      "provincePlaceholder": "p.ej. Roma, Milán, Nápoles",
+      "city": "Ciudad *",
+      "address": "DIRECCIÓN",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "website": "Sitio web",
+      "capacity": "Capacidad (personas)",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe la iglesia, características, servicios...",
+      "requiresBaptism": "Requiere bautismo",
+      "requiresMarriageCourse": "Requiere curso previo al matrimonio",
+      "select": "Seleccionar..."
+    },
+    "types": {
+      "cattolica": "católico",
+      "ortodossa": "Ortodoxo",
+      "protestante": "protestante",
+      "evangelica": "Evangélico",
+      "anglicana": "anglicano",
+      "sinagoga": "Sinagoga",
+      "moschea": "Mezquita",
+      "altro": "Otro"
+    },
+    "card": {
+      "verified": "Verificado",
+      "type": "Tipo:",
+      "capacity": "👥 Capacidad:",
+      "people": "gente",
+      "requiresBaptism": "⚠️ Requiere Bautismo",
+      "requiresMarriageCourse": "⚠️Requiere Curso Pre-Matrimonio",
+      "website": "Sitio web"
+    },
+    "loading": "Cargando...",
+    "empty": "No se encontraron iglesias con estos filtros.",
+    "messages": {
+      "authRequired": "Debes estar autenticado para agregar una iglesia.",
+      "submitSuccess": "¡Iglesia agregada exitosamente! Será visible después de la verificación del personal.",
+      "submitError": "Error al agregar la iglesia"
     }
   },
   "footer": {
@@ -312,7 +2083,7 @@
     "emailAriaLabel": "Introduce tu correo electrónico",
     "subscribeBtn": "Suscribirse",
     "thankYouMsg": "¡Gracias por suscribirte! Revisa tu correo electrónico.",
-    "aboutTitle": "Il Budget degli Sposi",
+    "aboutTitle": "El presupuesto de los novios",
     "aboutDesc": "La plataforma italiana para planificar el presupuesto de tu boda. Sencilla, completa y gratuita.",
     "toolsTitle": "Herramientas",
     "expenses": "Gestión de Gastos",
@@ -340,27 +2111,273 @@
     "terms": "Términos",
     "contact": "Contactos"
   },
-  "events": {
-    "wedding": "Boda",
-    "baptism": "Bautizo",
-    "eighteenth": "18º cumpleaños",
-    "anniversary": "Aniversario de bodas",
-    "gender-reveal": "Revelación de género",
-    "birthday": "Cumpleaños",
-    "fifty": "50 años",
-    "retirement": "Jubilación",
-    "confirmation": "Confirmación",
-    "graduation": "Graduación",
-    "baby-shower": "Baby Shower",
-    "engagement": "Fiesta de compromiso",
-    "corporate": "Evento corporativo",
-    "milestone-birthday": "Cumpleaños (hito)",
-    "gender-reveal-party": "Fiesta de revelación de género",
-    "proposal": "Fiesta de propuesta",
-    "communion": "Primera comunión",
-    "bar-mitzvah": "Bar Mitzvah",
-    "quinceanera": "Quinceañera",
-    "charity-gala": "Evento benéfico/Gala",
-    "engagement-party": "Fiesta de compromiso"
+  "locationReception": "Lugar de recepción",
+  "locationCeremony": "Lugar de la ceremonia",
+  "wizard": {
+    "title": "¡Bienvenido!",
+    "step1": "Elige tu idioma",
+    "step2": "Selecciona tu país",
+    "step3": "Elige tu evento",
+    "continue": "Continuar",
+    "back": "Atrás",
+    "goToDashboard": "Ir al panel"
+  },
+  "header": {
+    "language": "Idioma",
+    "country": "País",
+    "event": "Evento"
+  },
+  "landing": {
+    "seo": {
+      "title": "Il Budget degli Sposi | Planifica tu boda, presupuesto e invitados",
+      "description": "Planifica tu boda en un solo lugar: mantén bajo control tu presupuesto, invitados, proveedores, plazos y documentos."
+    },
+    "nav": {
+      "label": "Navegación principal",
+      "skip": "Saltar al contenido",
+      "features": "Características",
+      "how": "como funciona",
+      "benefits": "¿Por qué usarlo?",
+      "openMenu": "abrir menú"
+    },
+    "actions": {
+      "login": "Acceso",
+      "start": "Empieza gratis",
+      "discover": "Mira como funciona"
+    },
+    "hero": {
+      "eyebrow": "Tu espacio para la planificación de bodas",
+      "title": "Tu boda.",
+      "highlight": "Todo bajo control.",
+      "description": "Presupuesto, invitados, proveedores, tareas y documentos en un espacio organizado, diseñado para acompañarte hasta el gran día.",
+      "proofs": [
+        "Utilizzabile da smartphone",
+        "Dati modificabili in ogni momento",
+        "Nessuna installazione richiesta"
+      ]
+    },
+    "preview": {
+      "label": "Vista previa ilustrativa del panel",
+      "app": "Panel de control de bodas",
+      "eyebrow": "Tu espacio de trabajo",
+      "title": "Buenos días futuros novios.",
+      "budget": "Presupuesto planificado",
+      "guests": "Invitados confirmados",
+      "tasks": "Tareas completadas"
+    },
+    "features": {
+      "eyebrow": "Todo en un solo lugar",
+      "title": "Las herramientas esenciales, sin desorden",
+      "description": "Cada área aborda una necesidad práctica de planificación y permanece conectada a su proyecto.",
+      "items": [
+        {
+          "title": "Budget",
+          "description": "Tieni sotto controllo importi previsti, spese e pagamenti."
+        },
+        {
+          "title": "Invitati",
+          "description": "Organizza la lista, le conferme e la disposizione ai tavoli."
+        },
+        {
+          "title": "Fornitori",
+          "description": "Raccogli contatti, informazioni e attività legate ai fornitori."
+        },
+        {
+          "title": "Location",
+          "description": "Valuta e conserva le informazioni sulle location che ti interessano."
+        },
+        {
+          "title": "Cerimonia",
+          "description": "Organizza le informazioni utili per la chiesa e la cerimonia."
+        },
+        {
+          "title": "Timeline",
+          "description": "Segui scadenze e attività lungo tutto il percorso."
+        },
+        {
+          "title": "Checklist",
+          "description": "Trasforma le cose da fare in passi chiari e gestibili."
+        },
+        {
+          "title": "Documenti",
+          "description": "Conserva in ordine file, preventivi e riferimenti importanti."
+        }
+      ]
+    },
+    "how": {
+      "eyebrow": "Tres pasos",
+      "title": "Empieza sin complicaciones",
+      "description": "Una configuración guiada prepara su espacio de trabajo y lo lleva directamente a las herramientas que necesita.",
+      "steps": [
+        {
+          "title": "Crea il tuo progetto",
+          "description": "Accedi o registrati e inserisci le prime informazioni sul matrimonio."
+        },
+        {
+          "title": "Organizza ciò che conta",
+          "description": "Imposta budget, invitati, attività, fornitori e documenti."
+        },
+        {
+          "title": "Segui i progressi",
+          "description": "Ritrova tutto nella Dashboard e aggiorna le informazioni quando vuoi."
+        }
+      ]
+    },
+    "benefits": {
+      "eyebrow": "Más orden, menos fragmentación",
+      "title": "Una visión clara de las decisiones futuras",
+      "description": "La aplicación reúne información que a menudo se encuentra dispersa en hojas, chats y notas, lo que facilita su revisión y actualización.",
+      "items": [
+        {
+          "title": "Costi più leggibili",
+          "description": "Confronta quanto hai pianificato con quanto hai già speso."
+        },
+        {
+          "title": "Organizzazione condivisa",
+          "description": "Mantieni le informazioni importanti nello stesso spazio di lavoro."
+        },
+        {
+          "title": "Un percorso guidato",
+          "description": "Dashboard, timeline e checklist aiutano a non perdere di vista i prossimi passi."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "description": "Lo esencial que debes saber antes de comenzar.",
+      "items": [
+        {
+          "question": "Cos'è Il Budget degli Sposi?",
+          "answer": "È un'applicazione web per organizzare budget, invitati, attività, fornitori e documenti legati al matrimonio."
+        },
+        {
+          "question": "Devo installare qualcosa?",
+          "answer": "No. Puoi utilizzarla direttamente dal browser su computer, tablet e smartphone."
+        },
+        {
+          "question": "Posso modificare i dati dopo averli inseriti?",
+          "answer": "Sì. Le informazioni del progetto possono essere aggiornate durante tutta l'organizzazione."
+        },
+        {
+          "question": "Posso gestire budget e invitati nello stesso posto?",
+          "answer": "Sì. Budget, invitati e le altre aree disponibili fanno parte dello stesso spazio di lavoro."
+        },
+        {
+          "question": "Come vengono gestiti i miei dati?",
+          "answer": "L'accesso alle aree personali richiede autenticazione. Per dettagli su trattamento e diritti consulta la Privacy Policy."
+        }
+      ]
+    },
+    "final": {
+      "title": "¿Listo para planificar tu gran día?",
+      "description": "Crea tu espacio de trabajo y reúne todo lo que necesitas en un solo lugar, con mayor claridad."
+    },
+    "footer": {
+      "description": "Un espacio digital sencillo y organizado para la planificación de su boda.",
+      "product": "Producto",
+      "legal": "Información",
+      "privacy": "política de privacidad",
+      "terms": "Términos de servicio",
+      "cookies": "Política de cookies",
+      "contacts": "Contacto",
+      "rights": "Reservados todos los derechos."
+    }
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Cambiar idioma",
+    "comingSoon": "Próximamente"
+  },
+  "locationsCatalog": {
+    "eyebrow": "Lugares para la recepción de bodas",
+    "title": "Lugares",
+    "description": "Busca, compara y guarda lugares para tu evento.",
+    "search": "Nombre o ubicación",
+    "city": "Ciudad",
+    "type": "Tipo",
+    "verification": "Verificación",
+    "all": "Todo",
+    "searchButton": "Buscar",
+    "verified": "Verificado",
+    "probable": "Probable",
+    "toCheck": "Por verificar",
+    "loading": "Cargando lugares…",
+    "empty": "No se encontraron lugares.",
+    "loadError": "No pudimos cargar el catálogo.",
+    "authRequired": "Inicia sesión para guardar un lugar.",
+    "saveError": "No pudimos salvar el lugar.",
+    "saved": "Lugar guardado.",
+    "removed": "Lugar eliminado.",
+    "removeError": "No pudimos eliminar el lugar.",
+    "save": "Ahorrar",
+    "favorite": "Favorito",
+    "select": "Elegir",
+    "selected": "Seleccionado",
+    "remove": "Eliminar",
+    "website": "Sitio web",
+    "accommodation": "Alojamiento disponible",
+    "parking": "Aparcamiento",
+    "upTo": "Hasta invitados {count}",
+    "pagination": "Páginas del lugar",
+    "previous": "Anterior",
+    "next": "Próximo",
+    "page": "Página {page} de {total}",
+    "types": {
+      "villa": "Villa",
+      "castle": "Castillo",
+      "hotel": "Hotel",
+      "resort": "Complejo",
+      "restaurant": "Restaurante",
+      "reception_hall": "Salón de recepción",
+      "agriturismo": "Estancia en granja",
+      "masseria": "Masseria",
+      "baglio": "Baglio",
+      "estate": "Bienes",
+      "beach": "Lugar de playa",
+      "panoramic": "Lugar escénico",
+      "other": "Otro"
+    }
+  },
+  "onboarding": {
+    "selectLanguageTitle": "Elige el idioma",
+    "selectLanguageDesc": "Selecciona el idioma preferido para la interfaz.",
+    "selectCountryTitle": "¿Dónde se celebrará el evento?",
+    "selectCountryDesc": "Selecciona el país donde se celebrará el evento, independientemente de dónde vivas o del idioma de tu navegador.",
+    "selectEventTypeTitle": "Elige el tipo de evento",
+    "nextBtn": "Siguiente",
+    "creatingEvent": "Creando evento..."
+  },
+  "languages": {
+    "it": "Italiano",
+    "es": "Español",
+    "en": "Inglés",
+    "fr": "Francés",
+    "de": "Alemán",
+    "ru": "Ruso",
+    "zh": "Chino",
+    "ja": "Japonés",
+    "ar": "Árabe",
+    "pt": "Portugués",
+    "id": "Indonesio"
+  },
+  "countries": {
+    "it": "Italia",
+    "mx": "México",
+    "es": "España",
+    "fr": "Francia",
+    "in": "India",
+    "jp": "Japón",
+    "uk": "Reino Unido",
+    "ae": "Emiratos Árabes Unidos",
+    "us": "Estados Unidos"
+  },
+  "traditions": {
+    "title": "Tradiciones de boda · {country}",
+    "ritoLabel": "Rito y símbolos: ",
+    "stileLabel": "Estilo: ",
+    "coloriLabel": "Colores: ",
+    "regaliLabel": "Costumbres y regalos: ",
+    "durataLabel": "Duración/organización: ",
+    "festaLabel": "Fiesta y tradiciones: ",
+    "usanzeLabel": "Otras costumbres: "
   }
 }
