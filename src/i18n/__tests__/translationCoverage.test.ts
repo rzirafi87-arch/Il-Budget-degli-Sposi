@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { getLanguageCapability, languageCapabilities } from "../languageCapabilities";
+import { normalizeMessageSchema } from "../normalizeMessageSchema";
 
 type Messages = Record<string, unknown>;
 const CANDIDATE_LOCALES = ["it", "en", "es", "fr", "de"] as const;
@@ -20,10 +21,11 @@ function mergeDeep(target: Messages, source: Messages): Messages {
 
 function loadMessages(locale: string): Messages {
   const directory = path.join(process.cwd(), "src", "messages");
-  return fs.readdirSync(directory)
+  const messages = fs.readdirSync(directory)
     .filter((file) => file === `${locale}.json` || file.endsWith(`.${locale}.json`))
     .sort()
-    .reduce((messages, file) => mergeDeep(messages, JSON.parse(fs.readFileSync(path.join(directory, file), "utf8")) as Messages), {} as Messages);
+    .reduce((result, file) => mergeDeep(result, JSON.parse(fs.readFileSync(path.join(directory, file), "utf8")) as Messages), {} as Messages);
+  return normalizeMessageSchema(messages);
 }
 
 function flatten(value: Messages, prefix = "", output: Record<string, unknown> = {}) {
@@ -73,8 +75,9 @@ describe("translation coverage policy", () => {
 
   it("prints the rollout audit matrix", () => {
     console.table(reports.map((report) => ({ locale: report.locale, status: report.status, total: report.total, sourceTotal: report.sourceTotal, missing: report.missing.length, extra: report.extra.length, empty: report.empty.length, placeholderMismatch: report.placeholderMismatch.length, italianResiduals: report.residual.length })));
-    const english = reports.find((report) => report.locale === "en");
-    console.log("[i18n-audit:en]", JSON.stringify({ missing: english?.missing, extra: english?.extra, empty: english?.empty, placeholderMismatch: english?.placeholderMismatch, italianResiduals: english?.residual }, null, 2));
+    for (const report of reports.filter((item) => item.locale !== "it")) {
+      console.log(`[i18n-audit:${report.locale}]`, JSON.stringify({ missing: report.missing, extra: report.extra, empty: report.empty, placeholderMismatch: report.placeholderMismatch, italianResiduals: report.residual }, null, 2));
+    }
   });
 
   it.each(languageCapabilities.filter((language) => language.status === "READY"))(
