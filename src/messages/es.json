@@ -2451,6 +2451,27 @@
       "signIn": "Acceder",
       "profile": "Perfil",
       "logout": "Cerrar sesión"
+    },
+    "profile": {
+      "title": "Perfil",
+      "displayName": "Nombre visible",
+      "emailReadOnly": "El cambio de correo no está disponible en este flujo.",
+      "preferredLanguage": "Idioma preferido",
+      "comingSoon": "Próximamente",
+      "saving": "Guardando…",
+      "save": "Guardar perfil",
+      "updated": "Perfil actualizado.",
+      "updateFailed": "No se pudo guardar el perfil.",
+      "deleteTitle": "Eliminar cuenta",
+      "deleteDescription": "La solicitud incluye un periodo de seguridad de 7 días. El evento compartido con tu pareja se protege antes de procesarla.",
+      "confirmEmail": "Confirmar correo",
+      "typeDelete": "Escribe DELETE",
+      "cancelDeletion": "Cancelar solicitud",
+      "requestDeletion": "Solicitar eliminación",
+      "confirmMismatch": "Introduce tu correo y escribe DELETE.",
+      "deletionRecorded": "Solicitud registrada. Tienes 7 días para cancelarla; el evento compartido se comprobará antes de procesarla.",
+      "deletionFailed": "Solicitud no registrada.",
+      "deletionCancelled": "Solicitud cancelada."
     }
   }
 }

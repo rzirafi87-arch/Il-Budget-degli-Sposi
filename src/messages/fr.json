@@ -2451,6 +2451,27 @@
       "signIn": "Se connecter",
       "profile": "Profil",
       "logout": "Se déconnecter"
+    },
+    "profile": {
+      "title": "Profil",
+      "displayName": "Nom affiché",
+      "emailReadOnly": "La modification de l’e-mail n’est pas disponible dans ce parcours.",
+      "preferredLanguage": "Langue préférée",
+      "comingSoon": "Bientôt disponible",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer le profil",
+      "updated": "Profil mis à jour.",
+      "updateFailed": "Le profil n’a pas pu être enregistré.",
+      "deleteTitle": "Supprimer le compte",
+      "deleteDescription": "La demande prévoit un délai de sécurité de 7 jours. L’événement partagé avec votre partenaire est protégé avant traitement.",
+      "confirmEmail": "Confirmer l’e-mail",
+      "typeDelete": "Saisissez DELETE",
+      "cancelDeletion": "Annuler la demande",
+      "requestDeletion": "Demander la suppression",
+      "confirmMismatch": "Saisissez votre e-mail et DELETE.",
+      "deletionRecorded": "Demande enregistrée. Vous avez 7 jours pour l’annuler ; l’événement partagé sera vérifié avant traitement.",
+      "deletionFailed": "Demande non enregistrée.",
+      "deletionCancelled": "Demande annulée."
     }
   }
 }

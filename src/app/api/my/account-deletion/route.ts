@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const { data: auth } = await db.auth.getUser(token);
     const body = await req.json().catch(() => null);
     const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
-    if (body?.confirmation !== "ELIMINA" || !auth.user?.email || email !== auth.user.email.toLowerCase()) {
+    if (body?.confirmation !== "DELETE" || !auth.user?.email || email !== auth.user.email.toLowerCase()) {
       return NextResponse.json({ error: "CONFIRMATION_MISMATCH" }, { status: 400 });
     }
     const scheduledFor = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();

@@ -2451,6 +2451,27 @@
       "signIn": "Anmelden",
       "profile": "Profil",
       "logout": "Abmelden"
+    },
+    "profile": {
+      "title": "Profil",
+      "displayName": "Anzeigename",
+      "emailReadOnly": "Die E-Mail-Adresse kann in diesem Ablauf nicht geändert werden.",
+      "preferredLanguage": "Bevorzugte Sprache",
+      "comingSoon": "Demnächst",
+      "saving": "Wird gespeichert…",
+      "save": "Profil speichern",
+      "updated": "Profil aktualisiert.",
+      "updateFailed": "Das Profil konnte nicht gespeichert werden.",
+      "deleteTitle": "Konto löschen",
+      "deleteDescription": "Die Anfrage hat eine Sicherheitsfrist von 7 Tagen. Das mit deiner Partnerperson geteilte Ereignis wird vor der Verarbeitung geschützt.",
+      "confirmEmail": "E-Mail bestätigen",
+      "typeDelete": "DELETE eingeben",
+      "cancelDeletion": "Anfrage abbrechen",
+      "requestDeletion": "Löschung beantragen",
+      "confirmMismatch": "Gib deine E-Mail-Adresse und DELETE ein.",
+      "deletionRecorded": "Anfrage erfasst. Du kannst sie 7 Tage lang stornieren; das geteilte Ereignis wird vor der Verarbeitung geprüft.",
+      "deletionFailed": "Anfrage wurde nicht erfasst.",
+      "deletionCancelled": "Anfrage abgebrochen."
     }
   }
 }

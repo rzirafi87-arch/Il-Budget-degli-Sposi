@@ -1910,6 +1910,27 @@
       "signIn": "Accedi",
       "profile": "Profilo",
       "logout": "Esci"
+    },
+    "profile": {
+      "title": "Profilo",
+      "displayName": "Nome visualizzato",
+      "emailReadOnly": "Il cambio email non è disponibile in questo flusso.",
+      "preferredLanguage": "Lingua preferita",
+      "comingSoon": "In arrivo",
+      "saving": "Salvataggio…",
+      "save": "Salva profilo",
+      "updated": "Profilo aggiornato.",
+      "updateFailed": "Non è stato possibile salvare il profilo.",
+      "deleteTitle": "Eliminazione account",
+      "deleteDescription": "La richiesta prevede 7 giorni di sicurezza. Prima dell’elaborazione viene protetto l’evento condiviso con il partner.",
+      "confirmEmail": "Conferma email",
+      "typeDelete": "Scrivi DELETE",
+      "cancelDeletion": "Annulla richiesta",
+      "requestDeletion": "Richiedi eliminazione",
+      "confirmMismatch": "Inserisci la tua email e scrivi DELETE.",
+      "deletionRecorded": "Richiesta registrata. Hai 7 giorni per annullarla; l’evento condiviso sarà verificato prima dell’elaborazione.",
+      "deletionFailed": "Richiesta non registrata.",
+      "deletionCancelled": "Richiesta annullata."
     }
   }
 }

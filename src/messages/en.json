@@ -1916,6 +1916,27 @@
       "signIn": "Sign in",
       "profile": "Profile",
       "logout": "Log out"
+    },
+    "profile": {
+      "title": "Profile",
+      "displayName": "Display name",
+      "emailReadOnly": "Email changes are not available in this flow.",
+      "preferredLanguage": "Preferred language",
+      "comingSoon": "Coming soon",
+      "saving": "Saving…",
+      "save": "Save profile",
+      "updated": "Profile updated.",
+      "updateFailed": "The profile could not be saved.",
+      "deleteTitle": "Delete account",
+      "deleteDescription": "The request includes a 7-day safety period. The event shared with your partner is protected before processing.",
+      "confirmEmail": "Confirm email",
+      "typeDelete": "Type DELETE",
+      "cancelDeletion": "Cancel request",
+      "requestDeletion": "Request deletion",
+      "confirmMismatch": "Enter your email and type DELETE.",
+      "deletionRecorded": "Request recorded. You have 7 days to cancel it; the shared event will be checked before processing.",
+      "deletionFailed": "Request not recorded.",
+      "deletionCancelled": "Request cancelled."
     }
   }
 }
