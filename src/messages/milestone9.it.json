@@ -76,6 +76,19 @@
     "availability": {"badge":"Prossimamente","title":"Tipo evento non ancora disponibile","description":"Il flusso dedicato a {event} non è ancora disponibile.","legacyTitle":"Evento precedente preservato","legacyBody":"I dati di questo evento sono stati preservati. Finché il flusso dedicato non sarà completo, l’app limita i moduli non pertinenti.","noDataLoss":"Nessun dato dell’evento viene cancellato o convertito automaticamente."},
     "consent": {"label": "Preferenze cookie", "description": "Usiamo cookie tecnici necessari. Le statistiche opzionali partono soltanto dopo il consenso e puoi cambiare scelta in qualsiasi momento.", "accept": "Accetta statistiche", "necessary": "Solo necessari", "close": "Chiudi"},
     "breadcrumbs": {"home":"Home","dashboard":"Dashboard","timeline":"Timeline","budget":"Budget","guests":"Invitati","tables":"Tavoli","expenses":"Spese","income":"Entrate","vendors":"Fornitori","reception":"Ricevimento","receptionVenue":"Location Ricevimento","ceremony":"Cerimonia","ceremonyVenue":"Location Cerimonia","favorites":"Preferiti","documents":"Documenti","giftList":"Lista Nozze","ceremonyMusic":"Musica Cerimonia","receptionMusic":"Musica Ricevimento","weddingIdeas":"Cose Matrimonio","signIn":"Accesso","contacts":"Contatti"},
+    "chat": {"signIn":"Accedi per utilizzare l’assistente AI.","requestError":"Errore durante la richiesta.","connectionError":"Connessione non disponibile.","checking":"Verifica disponibilità assistente…","unavailable":"Assistente AI non disponibile","configurationRequired":"L’assistente non è configurato in questo ambiente.","title":"Chat con il tuo assistente AI","empty":"Inizia la conversazione…","placeholder":"Scrivi un messaggio…","sending":"Invio…","send":"Invia"},
+    "aiChat": {"invalidAmount":"Inserisci un importo valido","saveError":"Errore salvataggio ({status})","saved":"Budget salvato","unexpectedError":"Errore imprevisto","title":"Chat con Assistente IA","enterBudget":"Inserisci budget","setBudget":"Imposta budget totale","budgetPlaceholder":"Es. 25000","cancel":"Annulla","saving":"Salvo…","save":"Salva"},
+    "accounting": {"description":"Gestisci tutte le transazioni economiche del tuo matrimonio in un unico posto: spese sostenute e entrate ricevute. Tieni traccia di preventivi, pagamenti confermati e contributi."},
+    "supplierPackages": {
+      "paymentSuccess": "Pagamento completato con successo! Il tuo abbonamento è ora attivo.",
+      "paymentCancelled": "Pagamento annullato. Puoi riprovare quando vuoi.",
+      "popular": "POPOLARE", "bestValue": "MIGLIOR VALORE",
+      "paymentsDisabled": "I pagamenti online sono temporaneamente disabilitati. Riprova più tardi o contattaci per acquistare il piano.",
+      "freeAvailable": "Il piano gratuito è sempre disponibile!", "loginRequired": "Devi effettuare il login per acquistare un abbonamento.",
+      "profileRequired": "Devi prima creare un profilo fornitore. Vai a Fornitori e proponi la tua attività.", "purchaseError": "Non è stato possibile avviare l’acquisto. Riprova.",
+      "monthly": "Mensile", "yearly": "Annuale", "loading": "Caricamento…", "comingSoon": "Prossimamente", "processing": "Elaborazione…", "purchase": "Acquista",
+      "maintenance": "I pagamenti Stripe sono momentaneamente in manutenzione. I piani resteranno visibili ma non acquistabili.", "learnMore": "Scopri come funziona"
+    },
     "shared": {
       "close": "Chiudi", "cookiePreferences": "Preferenze cookie", "closeMenu": "Chiudi menu"
     }

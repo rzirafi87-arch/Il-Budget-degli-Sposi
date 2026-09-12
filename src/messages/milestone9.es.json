@@ -76,6 +76,19 @@
     "availability": {"badge":"Próximamente","title":"Tipo de evento aún no disponible","description":"El flujo específico de {event} todavía no está disponible.","legacyTitle":"Evento anterior preservado","legacyBody":"Los datos de este evento se han preservado. Hasta que el flujo específico esté completo, la aplicación limita los módulos que no corresponden.","noDataLoss":"No se elimina ni se convierte automáticamente ningún dato del evento."},
     "consent": {"label": "Preferencias de cookies", "description": "Usamos cookies técnicas necesarias. Las estadísticas opcionales se activan solo con tu consentimiento y puedes cambiar tu elección en cualquier momento.", "accept": "Aceptar estadísticas", "necessary": "Solo necesarias", "close": "Cerrar"},
     "breadcrumbs": {"home":"Inicio","dashboard":"Panel","timeline":"Cronología","budget":"Presupuesto","guests":"Invitados","tables":"Mesas","expenses":"Gastos","income":"Ingresos","vendors":"Proveedores","reception":"Recepción","receptionVenue":"Lugar de recepción","ceremony":"Ceremonia","ceremonyVenue":"Lugar de ceremonia","favorites":"Favoritos","documents":"Documentos","giftList":"Lista de bodas","ceremonyMusic":"Música de ceremonia","receptionMusic":"Música de recepción","weddingIdeas":"Ideas de boda","signIn":"Acceso","contacts":"Contacto"},
+    "chat": {"signIn":"Inicia sesión para usar el asistente de IA.","requestError":"Error durante la solicitud.","connectionError":"Conexión no disponible.","checking":"Comprobando disponibilidad del asistente…","unavailable":"Asistente de IA no disponible","configurationRequired":"El asistente no está configurado en este entorno.","title":"Chat con tu asistente de IA","empty":"Inicia la conversación…","placeholder":"Escribe un mensaje…","sending":"Enviando…","send":"Enviar"},
+    "aiChat": {"invalidAmount":"Introduce un importe válido","saveError":"Error al guardar ({status})","saved":"Presupuesto guardado","unexpectedError":"Error inesperado","title":"Chat con el asistente de IA","enterBudget":"Introducir presupuesto","setBudget":"Establecer presupuesto total","budgetPlaceholder":"Ej. 25000","cancel":"Cancelar","saving":"Guardando…","save":"Guardar"},
+    "accounting": {"description":"Gestiona todas las transacciones de tu boda en un solo lugar: gastos realizados e ingresos recibidos. Controla presupuestos, pagos confirmados y aportaciones."},
+    "supplierPackages": {
+      "paymentSuccess": "¡Pago completado correctamente! Tu suscripción ya está activa.",
+      "paymentCancelled": "Pago cancelado. Puedes intentarlo de nuevo cuando quieras.",
+      "popular": "POPULAR", "bestValue": "MEJOR VALOR",
+      "paymentsDisabled": "Los pagos en línea están temporalmente deshabilitados. Inténtalo más tarde o contáctanos para comprar el plan.",
+      "freeAvailable": "¡El plan gratuito está siempre disponible!", "loginRequired": "Debes iniciar sesión para comprar una suscripción.",
+      "profileRequired": "Primero debes crear un perfil de proveedor. Ve a Proveedores y presenta tu negocio.", "purchaseError": "No se pudo iniciar la compra. Inténtalo de nuevo.",
+      "monthly": "Mensual", "yearly": "Anual", "loading": "Cargando…", "comingSoon": "Próximamente", "processing": "Procesando…", "purchase": "Comprar",
+      "maintenance": "Los pagos con Stripe están temporalmente en mantenimiento. Los planes seguirán visibles, pero no se podrán comprar.", "learnMore": "Descubre cómo funciona"
+    },
     "shared": {
       "close": "Cerrar", "cookiePreferences": "Preferencias de cookies", "closeMenu": "Cerrar menú"
     }

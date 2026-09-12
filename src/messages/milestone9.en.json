@@ -76,6 +76,19 @@
     "availability": {"badge":"Coming soon","title":"Event type not available yet","description":"The dedicated {event} flow is not available yet.","legacyTitle":"Previous event preserved","legacyBody":"This event’s data has been preserved. Until its dedicated workflow is complete, the app limits modules that do not apply.","noDataLoss":"No event data is deleted or automatically converted."},
     "consent": {"label": "Cookie preferences", "description": "We use necessary technical cookies. Optional analytics start only after consent, and you can change your choice at any time.", "accept": "Accept analytics", "necessary": "Necessary only", "close": "Close"},
     "breadcrumbs": {"home":"Home","dashboard":"Dashboard","timeline":"Timeline","budget":"Budget","guests":"Guests","tables":"Tables","expenses":"Expenses","income":"Income","vendors":"Vendors","reception":"Reception","receptionVenue":"Reception venue","ceremony":"Ceremony","ceremonyVenue":"Ceremony venue","favorites":"Favorites","documents":"Documents","giftList":"Gift list","ceremonyMusic":"Ceremony music","receptionMusic":"Reception music","weddingIdeas":"Wedding ideas","signIn":"Sign in","contacts":"Contacts"},
+    "chat": {"signIn":"Sign in to use the AI assistant.","requestError":"An error occurred while processing the request.","connectionError":"Connection unavailable.","checking":"Checking assistant availability…","unavailable":"AI assistant unavailable","configurationRequired":"The assistant is not configured in this environment.","title":"Chat with your AI assistant","empty":"Start the conversation…","placeholder":"Write a message…","sending":"Sending…","send":"Send"},
+    "aiChat": {"invalidAmount":"Enter a valid amount","saveError":"Save error ({status})","saved":"Budget saved","unexpectedError":"Unexpected error","title":"Chat with AI Assistant","enterBudget":"Enter budget","setBudget":"Set total budget","budgetPlaceholder":"E.g. 25000","cancel":"Cancel","saving":"Saving…","save":"Save"},
+    "accounting": {"description":"Manage all your wedding transactions in one place: expenses paid and income received. Track quotes, confirmed payments and contributions."},
+    "supplierPackages": {
+      "paymentSuccess": "Payment completed successfully! Your subscription is now active.",
+      "paymentCancelled": "Payment cancelled. You can try again whenever you like.",
+      "popular": "POPULAR", "bestValue": "BEST VALUE",
+      "paymentsDisabled": "Online payments are temporarily disabled. Try again later or contact us to purchase the plan.",
+      "freeAvailable": "The free plan is always available!", "loginRequired": "You must sign in to purchase a subscription.",
+      "profileRequired": "You must create a supplier profile first. Go to Suppliers and submit your business.", "purchaseError": "The purchase could not be started. Please try again.",
+      "monthly": "Monthly", "yearly": "Yearly", "loading": "Loading…", "comingSoon": "Coming soon", "processing": "Processing…", "purchase": "Purchase",
+      "maintenance": "Stripe payments are temporarily under maintenance. Plans remain visible but cannot be purchased.", "learnMore": "Learn how it works"
+    },
     "shared": {
       "close": "Close", "cookiePreferences": "Cookie preferences", "closeMenu": "Close menu"
     }

@@ -76,6 +76,19 @@
     "availability": {"badge":"Demnächst","title":"Ereignistyp noch nicht verfügbar","description":"Der spezielle Ablauf für {event} ist noch nicht verfügbar.","legacyTitle":"Vorheriges Ereignis beibehalten","legacyBody":"Die Daten dieses Ereignisses wurden beibehalten. Bis der spezielle Ablauf vollständig ist, begrenzt die App nicht passende Module.","noDataLoss":"Ereignisdaten werden weder gelöscht noch automatisch umgewandelt."},
     "consent": {"label": "Cookie-Einstellungen", "description": "Wir verwenden notwendige technische Cookies. Optionale Statistiken starten erst nach Zustimmung; ihr könnt eure Auswahl jederzeit ändern.", "accept": "Statistiken akzeptieren", "necessary": "Nur notwendige", "close": "Schließen"},
     "breadcrumbs": {"home":"Startseite","dashboard":"Dashboard","timeline":"Zeitplan","budget":"Budget","guests":"Gäste","tables":"Tische","expenses":"Ausgaben","income":"Einnahmen","vendors":"Anbieter","reception":"Empfang","receptionVenue":"Empfangsort","ceremony":"Zeremonie","ceremonyVenue":"Zeremonieort","favorites":"Favoriten","documents":"Dokumente","giftList":"Geschenkliste","ceremonyMusic":"Zeremoniemusik","receptionMusic":"Empfangsmusik","weddingIdeas":"Hochzeitsideen","signIn":"Anmelden","contacts":"Kontakt"},
+    "chat": {"signIn":"Melde dich an, um den KI-Assistenten zu verwenden.","requestError":"Fehler bei der Anfrage.","connectionError":"Verbindung nicht verfügbar.","checking":"Verfügbarkeit des Assistenten wird geprüft…","unavailable":"KI-Assistent nicht verfügbar","configurationRequired":"Der Assistent ist in dieser Umgebung nicht konfiguriert.","title":"Chat mit deinem KI-Assistenten","empty":"Starte die Unterhaltung…","placeholder":"Nachricht schreiben…","sending":"Wird gesendet…","send":"Senden"},
+    "aiChat": {"invalidAmount":"Gib einen gültigen Betrag ein","saveError":"Fehler beim Speichern ({status})","saved":"Budget gespeichert","unexpectedError":"Unerwarteter Fehler","title":"Chat mit KI-Assistent","enterBudget":"Budget eingeben","setBudget":"Gesamtbudget festlegen","budgetPlaceholder":"Z. B. 25000","cancel":"Abbrechen","saving":"Wird gespeichert…","save":"Speichern"},
+    "accounting": {"description":"Verwalte alle Hochzeitstransaktionen an einem Ort: Ausgaben und Einnahmen. Behalte Angebote, bestätigte Zahlungen und Beiträge im Blick."},
+    "supplierPackages": {
+      "paymentSuccess": "Zahlung erfolgreich abgeschlossen! Dein Abonnement ist jetzt aktiv.",
+      "paymentCancelled": "Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.",
+      "popular": "BELIEBT", "bestValue": "BESTES ANGEBOT",
+      "paymentsDisabled": "Online-Zahlungen sind vorübergehend deaktiviert. Versuche es später erneut oder kontaktiere uns, um den Tarif zu kaufen.",
+      "freeAvailable": "Der kostenlose Tarif ist immer verfügbar!", "loginRequired": "Du musst dich anmelden, um ein Abonnement zu kaufen.",
+      "profileRequired": "Du musst zuerst ein Anbieterprofil erstellen. Gehe zu Anbieter und stelle dein Unternehmen vor.", "purchaseError": "Der Kauf konnte nicht gestartet werden. Bitte versuche es erneut.",
+      "monthly": "Monatlich", "yearly": "Jährlich", "loading": "Wird geladen…", "comingSoon": "Demnächst", "processing": "Verarbeitung…", "purchase": "Kaufen",
+      "maintenance": "Stripe-Zahlungen werden vorübergehend gewartet. Die Tarife bleiben sichtbar, können aber nicht gekauft werden.", "learnMore": "So funktioniert es"
+    },
     "shared": {
       "close": "Schließen", "cookiePreferences": "Cookie-Einstellungen", "closeMenu": "Menü schließen"
     }
