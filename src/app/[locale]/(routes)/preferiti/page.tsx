@@ -7,7 +7,8 @@ import { CenteredCard } from "@/components/ui/CenteredCard";
 import { formatDate } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 const supabase = getBrowserClient();
 
@@ -28,15 +29,13 @@ type FavoriteWithDetails = Favorite & {
 
 
 export default function FavoritesPage() {
+  const t = useTranslations("milestone8.favorites");
+  const locale = useLocale();
   const [favorites, setFavorites] = useState<FavoriteWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "supplier" | "location" | "church">("all");
 
-  useEffect(() => {
-    loadFavorites();
-  }, []);
-
-  async function loadFavorites() {
+  const loadFavorites = useCallback(async () => {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const jwt = sessionData.session?.access_token;
@@ -55,7 +54,7 @@ export default function FavoritesPage() {
         const enriched = json.favorites.map((fav: Favorite) => ({
           ...fav,
           name: `${fav.item_type} #${fav.item_id.slice(0, 8)}`,
-          city: "Da definire",
+          city: t("unknownCity"),
           category: fav.item_type,
         }));
         setFavorites(enriched);
@@ -65,7 +64,11 @@ export default function FavoritesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [t]);
+
+  useEffect(() => {
+    void loadFavorites();
+  }, [loadFavorites]);
 
   async function removeFavorite(id: string) {
     try {
@@ -87,46 +90,39 @@ export default function FavoritesPage() {
     : favorites.filter(f => f.item_type === filter);
 
   if (loading) {
-    return <div className="py-12 text-center text-gray-500">Caricamento...</div>;
+    return <div className="py-12 text-center text-gray-500">{t("loading")}</div>;
   }
 
   return (
     <Page>
       <header className="mb-4">
-        <h1 className="text-3xl font-bold text-center">I Miei Preferiti</h1>
+        <h1 className="text-3xl font-bold text-center">{t("title")}</h1>
         {/* breadcrumb centrato */}
         <nav className="mt-1 flex justify-center text-sm text-muted-foreground">
           <ol className="flex flex-wrap items-center gap-1">
-            <li>Home</li>
+            <li>{t("home")}</li>
             <li>›</li>
-            <li className="font-medium">Preferiti</li>
+            <li className="font-medium">{t("breadcrumb")}</li>
           </ol>
         </nav>
       </header>
 
       <CenteredCard>
-        <h2 className="mb-1 text-center text-2xl font-extrabold">I Miei Preferiti</h2>
+        <h2 className="mb-1 text-center text-2xl font-extrabold">{t("title")}</h2>
         <p className="text-center text-sm text-muted-foreground">
-          Tutti i fornitori, location e chiese che avete salvato in un unico posto.
+          {t("summary")}
         </p>
       </CenteredCard>
 
       <PageInfoNote
         icon="❤️"
-        title="Raccogli i Tuoi Fornitori Preferiti"
-        description="Qui trovi tutti i fornitori, location e chiese che hai salvato mentre esploravi i database. Puoi aggiungere note personali, valutazioni e confrontarli facilmente. Quando sei pronto, contatta direttamente i preferiti o aggiungili alle spese."
+        title={t("infoTitle")}
+        description={t("infoDescription")}
         tips={[
-          "Salva tutti i fornitori che ti interessano per confrontarli in seguito",
-          "Aggiungi note personali (es. 'Chiamato il 15/01, molto disponibile')",
-          "Usa le stelle per dare una valutazione personale a ciascun fornitore",
-          "Filtra per tipo (fornitori, location, chiese) per organizzare meglio la ricerca",
-          "Rimuovi dai preferiti ciò che hai scartato per mantenere la lista pulita"
+          t("tips.save"), t("tips.notes"), t("tips.rating"), t("tips.filter"), t("tips.remove")
         ]}
         eventTypeSpecific={{
-          wedding: "Per il matrimonio, salva tutti i professionisti che ti colpiscono: fotografi, fioristi, catering, location. Confronta i preferiti prima di decidere e prenotare!",
-          baptism: "Per il battesimo, concentrati su: chiese per la cerimonia, location per il rinfresco, fotografi. Salva 2-3 opzioni per categoria e confrontale.",
-          birthday: "Per il compleanno, salva: location per feste, catering/ristoranti, DJ e animatori. Confronta prezzi e servizi inclusi.",
-          graduation: "Per la laurea, usa i preferiti per: ristoranti/location per il ricevimento, fotografi, servizi di stampa per inviti personalizzati."
+          wedding: t("eventTips.wedding"), baptism: t("eventTips.baptism"), birthday: t("eventTips.birthday"), graduation: t("eventTips.graduation")
         }}
       />
 
@@ -141,7 +137,7 @@ export default function FavoritesPage() {
           }`}
           style={filter === "all" ? { background: "var(--color-sage)" } : {}}
         >
-          Tutti ({favorites.length})
+          {t("filters.all")} ({favorites.length})
         </button>
         <button
           onClick={() => setFilter("supplier")}
@@ -152,7 +148,7 @@ export default function FavoritesPage() {
           }`}
           style={filter === "supplier" ? { background: "var(--color-sage)" } : {}}
         >
-          🏢 Fornitori ({favorites.filter(f => f.item_type === "supplier").length})
+          🏢 {t("filters.suppliers")} ({favorites.filter(f => f.item_type === "supplier").length})
         </button>
         <button
           onClick={() => setFilter("location")}
@@ -163,7 +159,7 @@ export default function FavoritesPage() {
           }`}
           style={filter === "location" ? { background: "var(--color-sage)" } : {}}
         >
-          🏛️ Location ({favorites.filter(f => f.item_type === "location").length})
+          🏛️ {t("filters.locations")} ({favorites.filter(f => f.item_type === "location").length})
         </button>
         <button
           onClick={() => setFilter("church")}
@@ -174,7 +170,7 @@ export default function FavoritesPage() {
           }`}
           style={filter === "church" ? { background: "var(--color-sage)" } : {}}
         >
-          ⛪ Chiese ({favorites.filter(f => f.item_type === "church").length})
+          ⛪ {t("filters.churches")} ({favorites.filter(f => f.item_type === "church").length})
         </button>
       </div>
 
@@ -182,23 +178,23 @@ export default function FavoritesPage() {
       {filteredFavorites.length === 0 ? (
         <div className="p-12 text-center bg-white rounded-xl border-2 border-dashed border-gray-300">
           <div className="text-6xl mb-4">💔</div>
-          <h3 className="text-xl font-bold text-gray-700 mb-2">Nessun preferito ancora</h3>
+          <h3 className="text-xl font-bold text-gray-700 mb-2">{t("emptyTitle")}</h3>
           <p className="text-gray-500 mb-6">
-            Inizia a salvare fornitori, location e chiese che ti piacciono!
+            {t("emptyDescription")}
           </p>
           <div className="flex gap-3 justify-center">
             <Link
-              href="/fornitori"
+              href={`/${locale}/fornitori`}
               className="px-6 py-3 rounded-full text-white font-semibold shadow-md hover:opacity-90 transition"
               style={{ background: "var(--color-sage)" }}
             >
-              Esplora Fornitori
+              {t("exploreSuppliers")}
             </Link>
             <Link
-              href="/ricevimento/location"
+              href={`/${locale}/location`}
               className="px-6 py-3 rounded-full bg-white border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition"
             >
-              Scopri Location
+              {t("discoverLocations")}
             </Link>
           </div>
         </div>
@@ -220,7 +216,8 @@ export default function FavoritesPage() {
                 <button
                   onClick={() => removeFavorite(fav.id)}
                   className="text-red-500 hover:text-red-700 transition"
-                  title="Rimuovi dai preferiti"
+                  title={t("removeFavorite")}
+                  aria-label={t("removeFavorite")}
                 >
                   ❤️
                 </button>
@@ -241,7 +238,7 @@ export default function FavoritesPage() {
               )}
 
               <p className="text-xs text-gray-400">
-                Salvato il {formatDate(new Date(fav.created_at))}
+                {t("savedOn", { date: formatDate(new Date(fav.created_at)) })}
               </p>
             </div>
           ))}

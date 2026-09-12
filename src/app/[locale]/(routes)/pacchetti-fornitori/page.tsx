@@ -6,7 +6,7 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useSearchParams } from "next/navigation";
-import { formatCurrency } from "@/lib/locale";
+import { useLocale, useTranslations } from "next-intl";
 
 type Package = {
   id: string;
@@ -20,6 +20,8 @@ type Package = {
 };
 
 function PacchettiContent() {
+  const t = useTranslations("milestone9.supplierPackages");
+  const locale = useLocale();
   const paymentsEnabled = flags.payments_stripe;
   const searchParams = useSearchParams();
   const [packages, setPackages] = useState<Package[]>([]);
@@ -32,11 +34,11 @@ function PacchettiContent() {
 
     const paymentStatus = searchParams.get("payment");
     if (paymentStatus === "success") {
-      alert("Pagamento completato con successo! Il tuo abbonamento è ora attivo.");
+      alert(t("paymentSuccess"));
     } else if (paymentStatus === "cancelled") {
-      alert("Pagamento annullato. Puoi riprovare quando vuoi.");
+      alert(t("paymentCancelled"));
     }
-  }, [searchParams]);
+  }, [searchParams, t]);
 
   async function loadPackages() {
     try {
@@ -53,7 +55,12 @@ function PacchettiContent() {
 
   function getPrice(pkg: Package) {
     const amount = billingPeriod === "monthly" ? pkg.price_monthly : pkg.price_yearly;
-    return formatCurrency(amount, "EUR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
   }
 
   function getTierColor(tier: string) {
@@ -74,9 +81,9 @@ function PacchettiContent() {
   function getTierBadge(tier: string) {
     switch (tier) {
       case "premium":
-        return "POPOLARE";
+        return t("popular");
       case "premium_plus":
-        return "BEST VALUE";
+        return t("bestValue");
       default:
         return null;
     }
@@ -84,11 +91,11 @@ function PacchettiContent() {
 
   async function handlePurchase(pkg: Package) {
     if (!paymentsEnabled) {
-      alert("I pagamenti online sono temporaneamente disabilitati. Riprova più tardi o contattaci per acquistare il piano.");
+      alert(t("paymentsDisabled"));
       return;
     }
     if (pkg.tier === "free") {
-      alert("Il piano gratuito è sempre disponibile!");
+      alert(t("freeAvailable"));
       return;
     }
 
@@ -100,8 +107,8 @@ function PacchettiContent() {
       const jwt = sessionData.session?.access_token;
 
       if (!jwt) {
-        alert("Devi effettuare il login per acquistare un abbonamento.");
-        window.location.href = "/auth";
+        alert(t("loginRequired"));
+        window.location.href = `/${locale}/auth`;
         return;
       }
 
@@ -111,7 +118,7 @@ function PacchettiContent() {
       const dataProfile = await resProfile.json();
 
       if (!dataProfile.profile) {
-        alert("Devi prima creare un profilo fornitore. Vai a /fornitori e proponi la tua attività.");
+        alert(t("profileRequired"));
         return;
       }
 
@@ -132,17 +139,17 @@ function PacchettiContent() {
       const dataCheckout = await resCheckout.json();
 
       if (!resCheckout.ok) {
-        throw new Error(dataCheckout.error || "Errore creazione checkout");
+        throw new Error(dataCheckout.error || "CHECKOUT_CREATE_FAILED");
       }
 
       if (dataCheckout.url) {
         window.location.href = dataCheckout.url;
       } else {
-        throw new Error("URL checkout non disponibile");
+        throw new Error("CHECKOUT_URL_MISSING");
       }
     } catch (e: any) {
       console.error("Purchase error:", e);
-      alert(`Errore: ${e.message}`);
+      alert(t("purchaseError"));
       setProcessingPayment(null);
     }
   }
@@ -156,18 +163,18 @@ function PacchettiContent() {
             onClick={() => setBillingPeriod("monthly")}
             className={`px-4 py-2 rounded-full border ${billingPeriod === "monthly" ? "bg-[#A3B59D] text-white" : "bg-white"}`}
           >
-            Mensile
+            {t("monthly")}
           </button>
           <button
             onClick={() => setBillingPeriod("yearly")}
             className={`px-4 py-2 rounded-full border ${billingPeriod === "yearly" ? "bg-[#A3B59D] text-white" : "bg-white"}`}
           >
-            Annuale
+            {t("yearly")}
           </button>
         </div>
 
         {loading ? (
-          <div className="text-center">Caricamento...</div>
+          <div className="text-center">{t("loading")}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {packages.sort((a, b) => a.display_order - b.display_order).map((pkg) => (
@@ -191,10 +198,10 @@ function PacchettiContent() {
                   className="w-full px-4 py-2 rounded-lg border bg-white hover:bg-gray-50"
                 >
                   {!paymentsEnabled
-                    ? "Prossimamente"
+                    ? t("comingSoon")
                     : processingPayment === pkg.tier
-                    ? "Elaborazione..."
-                    : "Acquista"}
+                    ? t("processing")
+                    : t("purchase")}
                 </button>
               </div>
             ))}
@@ -204,13 +211,13 @@ function PacchettiContent() {
         <div className="mt-6">
           {!paymentsEnabled && (
             <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-              I pagamenti Stripe sono momentaneamente in manutenzione. I piani resteranno visibili ma non acquistabili.
+              {t("maintenance")}
             </div>
           )}
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          <Link href="/fornitori">Scopri come funziona</Link>
+          <Link href={`/${locale}/fornitori`}>{t("learnMore")}</Link>
         </div>
       </div>
     </section>
@@ -218,8 +225,9 @@ function PacchettiContent() {
 }
 
 export default function PacchettiFornitoriPage() {
+  const t = useTranslations("milestone9.supplierPackages");
   return (
-    <Suspense fallback={<div className="pt-6 text-center">Caricamento...</div>}>
+    <Suspense fallback={<div className="pt-6 text-center">{t("loading")}</div>}>
       <PacchettiContent />
     </Suspense>
   );

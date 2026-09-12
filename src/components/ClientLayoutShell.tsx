@@ -9,7 +9,7 @@ import NavTabs from "@/components/NavTabs";
 import QuickSettings from "@/components/QuickSettings";
 import { ToastProvider } from "@/components/ToastProvider";
 import { locales } from "@/i18n/config";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -20,6 +20,7 @@ import UserMenu from "@/components/UserMenu";
 export default function ClientLayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("runtimeUi.shared");
 
   const normalizedPath = (() => {
     if (!pathname) return "/";
@@ -106,11 +107,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                     B
                   </span>
                   <span className="hidden truncate text-lg font-serif font-bold text-fg sm:inline sm:text-xl">
-                  {locale === "es"
-                    ? "El Presupuesto de los Novios"
-                    : locale === "en"
-                    ? "Wedding Budget"
-                    : BRAND_NAME}
+                  {locale === "it" ? BRAND_NAME : t("brandName")}
                   </span>
                 </Link>
                 <div className="flex min-w-0 shrink-0 items-center gap-1.5 text-sm text-muted-fg">
@@ -123,7 +120,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                           href={`/${locale}/idea-di-budget`}
                         >
                           <Lightbulb size={17} aria-hidden />
-                          Idea di Budget
+                          {t("ideaBudget")}
                         </Link>
                       </span>
                       <button
@@ -131,8 +128,8 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                         onClick={() => {
                           window.dispatchEvent(new CustomEvent("open-quick-settings"));
                         }}
-                        aria-label="Apri impostazioni"
-                        title="Impostazioni"
+                        aria-label={t("openSettings")}
+                        title={t("settings")}
                       >
                         <Settings size={19} aria-hidden />
                       </button>

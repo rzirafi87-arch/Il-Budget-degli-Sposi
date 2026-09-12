@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     const row = data?.[0];
     if (!row) {
-      return NextResponse.json({ ok: false, error: "Nessun dato disponibile" }, { status: 404 });
+      return NextResponse.json({ ok: false, error: "NO_DATA" }, { status: 404 });
     }
 
     return NextResponse.json({ ok: true, country, event, data: { vendor_types: row.vendor_types, main_colors: row.main_colors } });

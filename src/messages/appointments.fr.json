@@ -1,13 +1,1 @@
-{
-  "appointments": {
-    "title": "Rendez-vous et échéances",
-    "formTitle": "Titre du rendez-vous",
-    "formLocation": "Lieu",
-    "formNotes": "Notes",
-    "addBtn": "Ajouter un rendez-vous",
-    "empty": "Aucun rendez-vous ajouté.",
-    "dateLabel": "Date",
-    "locationLabel": "Lieu",
-    "suggested": "Cet agenda d'exemple est généré automatiquement à partir de l'événement mariage : personnalisez-le avec vos rendez-vous réels."
-  }
-}
+{}

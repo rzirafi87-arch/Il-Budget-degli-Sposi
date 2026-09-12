@@ -4,6 +4,7 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type SupplierView = {
   id: string;
@@ -25,6 +26,7 @@ type SupplierView = {
 };
 
 export default function SupplierPublicPage() {
+  const t = useTranslations("milestone8.supplierProfile");
   const params = useParams<{ id: string }>();
   const supplierId = useMemo(() => (Array.isArray(params.id) ? params.id[0] : params.id), [params.id]);
 
@@ -90,8 +92,7 @@ export default function SupplierPublicPage() {
         }),
       });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error || "Errore salvataggio");
+        throw new Error(t("errors.save"));
       }
       setData((prev) => (prev ? { ...prev, description, photo_urls: photos, video_urls: videos, discount_info: discount } : prev));
     } catch (e) {
@@ -111,7 +112,7 @@ export default function SupplierPublicPage() {
       // ensure auth for upload
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData?.session) {
-        alert("Devi essere autenticato per caricare immagini.");
+        alert(t("errors.authUpload"));
         return;
       }
 
@@ -140,8 +141,7 @@ export default function SupplierPublicPage() {
         body: JSON.stringify({ photo_urls: merged }),
       });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error || "Errore salvataggio immagini");
+        throw new Error(t("errors.saveImages"));
       }
       setData((prev) => (prev ? { ...prev, photo_urls: merged } : prev));
     } catch (err) {
@@ -182,8 +182,7 @@ export default function SupplierPublicPage() {
         body: JSON.stringify({ photo_urls: newList }),
       });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error || "Errore rimozione immagine");
+        throw new Error(t("errors.removeImage"));
       }
       setData((prev) => (prev ? { ...prev, photo_urls: newList } : prev));
       setPhotosInput(newList.join("\n"));
@@ -212,23 +211,23 @@ export default function SupplierPublicPage() {
     }
     return (
       <a key={`vid-${idx}`} href={url} target="_blank" rel="noreferrer" className="text-[#A3B59D] underline">
-        Guarda video {idx + 1}
+        {t("watchVideo", { number: idx + 1 })}
       </a>
     );
   }
 
   if (loading) {
-    return <div className="py-10 text-gray-500">Caricamento fornitore…</div>;
+    return <div className="py-10 text-gray-500">{t("loading")}</div>;
   }
   if (!data) {
-    return <div className="py-10 text-red-600">Fornitore non trovato.</div>;
+    return <div className="py-10 text-red-600">{t("notFound")}</div>;
   }
 
   return (
     <section className="pt-6">
       <h1 className="font-serif text-3xl mb-1">{data.name}</h1>
       <p className="text-gray-600 mb-4">
-        {data.category ?? "Fornitore"} · {data.city} ({data.province}) · {data.region}
+        {data.category ?? t("supplier")} · {data.city} ({data.province}) · {data.region}
       </p>
 
       {/* Public details */}
@@ -241,7 +240,7 @@ export default function SupplierPublicPage() {
                 <div key={`img-${i}`} className="relative w-full h-40 group">
                   <Image
                     src={src}
-                    alt={`Foto ${i + 1} di ${data.name}`}
+                    alt={t("photoAlt", { number: i + 1, name: data.name })}
                     fill
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 33vw"
                     className="object-cover rounded-lg border"
@@ -251,9 +250,9 @@ export default function SupplierPublicPage() {
                     <button
                       onClick={() => removePhoto(src)}
                       className="absolute top-2 right-2 px-2 py-1 text-xs rounded bg-red-600 text-white opacity-0 group-hover:opacity-100 transition"
-                      title="Elimina foto"
+                      title={t("deletePhoto")}
                     >
-                      Elimina
+                      {t("delete")}
                     </button>
                   )}
                 </div>
@@ -263,16 +262,16 @@ export default function SupplierPublicPage() {
 
           {/* Descrizione */}
           <div className="mb-6">
-            <h2 className="font-semibold text-lg mb-2">Descrizione</h2>
+            <h2 className="font-semibold text-lg mb-2">{t("description")}</h2>
             <p className="whitespace-pre-wrap text-gray-800 bg-white/60 rounded-xl p-4 border">
-              {description || "Il fornitore non ha ancora aggiunto una descrizione."}
+              {description || t("noDescription")}
             </p>
           </div>
 
           {/* Video */}
           {videos.length > 0 && (
             <div className="mb-6">
-              <h2 className="font-semibold text-lg mb-2">Video</h2>
+              <h2 className="font-semibold text-lg mb-2">{t("video")}</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 {videos.map((v, idx) => renderVideo(v, idx))}
               </div>
@@ -283,14 +282,14 @@ export default function SupplierPublicPage() {
         {/* Sidebar contatti / sconti */}
         <aside className="lg:col-span-1 space-y-4">
           <div className="rounded-xl border p-4 bg-white/70">
-            <h3 className="font-semibold mb-2">Contatti</h3>
+            <h3 className="font-semibold mb-2">{t("contacts")}</h3>
             <ul className="text-sm text-gray-700 space-y-1">
               {data.address && <li>📍 {data.address}</li>}
               {data.phone && <li>📞 {data.phone}</li>}
               {data.email && <li>✉️ {data.email}</li>}
               {data.website && (
                 <li>
-                  🌐 <a href={data.website} className="text-[#A3B59D] underline" target="_blank" rel="noreferrer">Sito web</a>
+                  🌐 <a href={data.website} className="text-[#A3B59D] underline" target="_blank" rel="noreferrer">{t("website")}</a>
                 </li>
               )}
             </ul>
@@ -298,7 +297,7 @@ export default function SupplierPublicPage() {
 
           {(discount || data.discount_info) && (
             <div className="rounded-xl border p-4 bg-[#A3B59D]/10 border-[#A3B59D]/40">
-              <h3 className="font-semibold mb-2">🎁 Sconti e promozioni</h3>
+              <h3 className="font-semibold mb-2">🎁 {t("discounts")}</h3>
               <p className="text-sm text-gray-800 whitespace-pre-wrap">{discount || data.discount_info}</p>
             </div>
           )}
@@ -308,35 +307,35 @@ export default function SupplierPublicPage() {
       {/* Editor per il proprietario */}
       {data.canEdit && (
         <div className="mt-10 p-6 rounded-2xl border-2 border-dashed border-[#A3B59D]/40 bg-white/70">
-          <h2 className="font-semibold text-xl mb-4">Modifica la tua pagina</h2>
+          <h2 className="font-semibold text-xl mb-4">{t("editPage")}</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <label className="block text-sm font-semibold">Descrizione</label>
+              <label className="block text-sm font-semibold">{t("description")}</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={8}
                 className="w-full border rounded-lg p-3"
-                placeholder="Racconta chi sei, cosa offri e perché gli sposi dovrebbero scegliere te."
+                placeholder={t("descriptionPlaceholder")}
               />
 
-              <label className="block text-sm font-semibold">Sconti e promozioni</label>
+              <label className="block text-sm font-semibold">{t("discounts")}</label>
               <textarea
                 value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
                 rows={4}
                 className="w-full border rounded-lg p-3"
-                placeholder="Eventuali sconti o promozioni (es. -10% prenotando entro il 31/12)."
+                placeholder={t("discountPlaceholder")}
               />
             </div>
 
             <div className="space-y-3">
-              <label className="block text-sm font-semibold">Carica foto</label>
+              <label className="block text-sm font-semibold">{t("uploadPhotos")}</label>
               <input type="file" accept="image/*" multiple onChange={onFilesSelected} className="block w-full" />
-              {uploading && <div className="text-sm text-gray-500">Caricamento in corso…</div>}
+              {uploading && <div className="text-sm text-gray-500">{t("uploading")}</div>}
 
-              <label className="block text-sm font-semibold">Foto (uno per riga)</label>
+              <label className="block text-sm font-semibold">{t("photosOnePerLine")}</label>
               <textarea
                 value={photosInput}
                 onChange={(e) => setPhotosInput(e.target.value)}
@@ -345,7 +344,7 @@ export default function SupplierPublicPage() {
                 placeholder="https://.../foto1.jpg\nhttps://.../foto2.jpg"
               />
 
-              <label className="block text-sm font-semibold">Video (uno per riga)</label>
+              <label className="block text-sm font-semibold">{t("videosOnePerLine")}</label>
               <textarea
                 value={videosInput}
                 onChange={(e) => setVideosInput(e.target.value)}
@@ -362,9 +361,9 @@ export default function SupplierPublicPage() {
               disabled={saving}
               className="px-5 py-2 rounded-lg bg-[#A3B59D] text-white font-semibold hover:opacity-90 disabled:opacity-50"
             >
-              {saving ? "Salvataggio…" : "Salva modifiche"}
+              {saving ? t("saving") : t("saveChanges")}
             </button>
-            <p className="text-sm text-gray-500 self-center">Le modifiche sono visibili a tutti.</p>
+            <p className="text-sm text-gray-500 self-center">{t("publicChanges")}</p>
           </div>
         </div>
       )}

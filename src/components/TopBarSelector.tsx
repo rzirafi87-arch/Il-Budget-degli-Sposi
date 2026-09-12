@@ -216,7 +216,7 @@ export default function TopBarSelector() {
               onClick={() => router.push(`/${locale}/select-country`)}
             />
             <Label
-              title="Evento"
+              title={t("runtimeUi.shared.event")}
               value={`${eventLabel}${
                 currentEvent?.available === false
                   ? ` · ${t("comingSoon", { fallback: "In arrivo" })}`

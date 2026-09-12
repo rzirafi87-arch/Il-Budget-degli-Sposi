@@ -1,6 +1,15 @@
 ﻿import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 
+jest.mock('next-intl', () => ({
+  useLocale: () => 'it',
+  useTranslations: () => (key: string) => ({
+    title: 'Budget Cresima',
+    actualTotal: 'Totale effettivo',
+    'comparison.title': 'Pianificato vs Effettivo',
+  }[key] || key),
+}));
+
 // Mock fetch for budget endpoints
 beforeEach(() => {
   // @ts-expect-error - Mocking global fetch for testing
@@ -28,4 +37,3 @@ describe('CresimaBudgetPage', () => {
     });
   });
 });
-

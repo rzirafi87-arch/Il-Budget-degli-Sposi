@@ -1,0 +1,96 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Hochzeitsgeschenkliste",
+      "income": "Zu den Einnahmen",
+      "dashboard": "Zurück zum Dashboard",
+      "weddingOnly": "Die Liste ist nur für Hochzeiten verfügbar. Wähle „Hochzeit“, um sie zu aktivieren.",
+      "added": "Zur Liste hinzugefügt!",
+      "errors": {
+        "generic": "Fehler",
+        "network": "Netzwerkfehler"
+      },
+      "info": {
+        "title": "Erstellt eure moderne Hochzeitsgeschenkliste",
+        "description": "Erstellt eine Liste mit Beiträgen zur Reise, Erlebnissen, einer gemeinsamen Kasse oder traditionellen Geschenken.",
+        "tips": {
+          "honeymoon": "Ermöglicht euren Gästen, zur Hochzeitsreise beizutragen",
+          "cash": "Eine gemeinsame Kasse bietet maximale Flexibilität",
+          "links": "Fügt Links hinzu, um genau zu zeigen, was gekauft werden soll",
+          "purchased": "Markiert erhaltene Geschenke, um Duplikate zu vermeiden",
+          "priority": "Prioritäten zeigen, was ihr euch am meisten wünscht"
+        },
+        "events": {
+          "wedding": "Nehmt Hochzeitsreise, Erlebnisse, Möbel und Technik auf.",
+          "baptism": "Nehmt Ersparnisse, Bücher, Spielzeug und Beiträge für die Zukunft auf.",
+          "birthday": "Passt die Liste an Alter und Interessen an.",
+          "graduation": "Berücksichtigt Studium, Reisen, Berufsausstattung und Erlebnisse."
+        }
+      },
+      "addGift": "Geschenk hinzufügen",
+      "fields": {
+        "type": "Art",
+        "name": "Name",
+        "namePlaceholder": "Z. B. Saugroboter",
+        "price": "Geschätzter Preis (€)",
+        "description": "Beschreibung",
+        "priority": "Priorität",
+        "status": "Status",
+        "notes": "Notizen",
+        "notesPlaceholder": "Optionale Notizen"
+      },
+      "types": {
+        "honeymoon": "Beitrag zur Hochzeitsreise",
+        "cash": "Gemeinsame Kasse",
+        "experiences": "Erlebnisse (Dinner, Spa, Touren)",
+        "furniture": "Möbel",
+        "appliances": "Haushaltsgeräte",
+        "luxury": "Luxusgüter",
+        "charity": "Wohltätigkeit",
+        "vouchers": "Geschenkgutscheine",
+        "smartHome": "Technik & Smart Home",
+        "other": "Sonstiges"
+      },
+      "priorities": {
+        "high": "Hoch",
+        "medium": "Mittel",
+        "low": "Niedrig"
+      },
+      "statuses": {
+        "wanted": "Gewünscht",
+        "purchased": "Gekauft"
+      },
+      "saving": "Wird gespeichert…",
+      "add": "+ Hinzufügen",
+      "loading": "Wird geladen…",
+      "empty": "Keine Einträge"
+    },
+    "currentEvent": {
+      "label": "Aktuelles Ereignis", "choose": "Ereignis auswählen", "none": "Kein Ereignis", "change": "Ereignis wechseln", "soon": "Demnächst"
+    },
+    "errorPage": {
+      "title": "Etwas ist schiefgelaufen", "description": "Diese Seite konnte nicht geladen werden. Bitte versuche es gleich noch einmal.", "retry": "Erneut versuchen"
+    },
+    "onboarding": {"welcome": "Willkommen!", "description": "Legt Sprache, Land und Veranstaltungstyp fest, um euer Erlebnis anzupassen.", "configure": "Sprache, Land und Ereignis festlegen"},
+    "setup": {"title": "Willkommen! Richtet euer Ereignis ein", "language": "Sprache", "country": "Land", "event": "Ereignis", "confirm": "Bestätigen", "comingSoon": "Demnächst", "selectEvent": "Wählt euer Ereignis"},
+    "availability": {"badge":"Demnächst","title":"Ereignistyp noch nicht verfügbar","description":"Der spezielle Ablauf für {event} ist noch nicht verfügbar.","legacyTitle":"Vorheriges Ereignis beibehalten","legacyBody":"Die Daten dieses Ereignisses wurden beibehalten. Bis der spezielle Ablauf vollständig ist, begrenzt die App nicht passende Module.","noDataLoss":"Ereignisdaten werden weder gelöscht noch automatisch umgewandelt."},
+    "consent": {"label": "Cookie-Einstellungen", "description": "Wir verwenden notwendige technische Cookies. Optionale Statistiken starten erst nach Zustimmung; ihr könnt eure Auswahl jederzeit ändern.", "accept": "Statistiken akzeptieren", "necessary": "Nur notwendige", "close": "Schließen"},
+    "breadcrumbs": {"home":"Startseite","dashboard":"Dashboard","timeline":"Zeitplan","budget":"Budget","guests":"Gäste","tables":"Tische","expenses":"Ausgaben","income":"Einnahmen","vendors":"Anbieter","reception":"Empfang","receptionVenue":"Empfangsort","ceremony":"Zeremonie","ceremonyVenue":"Zeremonieort","favorites":"Favoriten","documents":"Dokumente","giftList":"Geschenkliste","ceremonyMusic":"Zeremoniemusik","receptionMusic":"Empfangsmusik","weddingIdeas":"Hochzeitsideen","signIn":"Anmelden","contacts":"Kontakt"},
+    "chat": {"signIn":"Melde dich an, um den KI-Assistenten zu verwenden.","requestError":"Fehler bei der Anfrage.","connectionError":"Verbindung nicht verfügbar.","checking":"Verfügbarkeit des Assistenten wird geprüft…","unavailable":"KI-Assistent nicht verfügbar","configurationRequired":"Der Assistent ist in dieser Umgebung nicht konfiguriert.","title":"Chat mit deinem KI-Assistenten","empty":"Starte die Unterhaltung…","placeholder":"Nachricht schreiben…","sending":"Wird gesendet…","send":"Senden"},
+    "aiChat": {"invalidAmount":"Gib einen gültigen Betrag ein","saveError":"Fehler beim Speichern ({status})","saved":"Budget gespeichert","unexpectedError":"Unerwarteter Fehler","title":"Chat mit KI-Assistent","enterBudget":"Budget eingeben","setBudget":"Gesamtbudget festlegen","budgetPlaceholder":"Z. B. 25000","cancel":"Abbrechen","saving":"Wird gespeichert…","save":"Speichern"},
+    "accounting": {"description":"Verwalte alle Hochzeitstransaktionen an einem Ort: Ausgaben und Einnahmen. Behalte Angebote, bestätigte Zahlungen und Beiträge im Blick."},
+    "supplierPackages": {
+      "paymentSuccess": "Zahlung erfolgreich abgeschlossen! Dein Abonnement ist jetzt aktiv.",
+      "paymentCancelled": "Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.",
+      "popular": "BELIEBT", "bestValue": "BESTES ANGEBOT",
+      "paymentsDisabled": "Online-Zahlungen sind vorübergehend deaktiviert. Versuche es später erneut oder kontaktiere uns, um den Tarif zu kaufen.",
+      "freeAvailable": "Der kostenlose Tarif ist immer verfügbar!", "loginRequired": "Du musst dich anmelden, um ein Abonnement zu kaufen.",
+      "profileRequired": "Du musst zuerst ein Anbieterprofil erstellen. Gehe zu Anbieter und stelle dein Unternehmen vor.", "purchaseError": "Der Kauf konnte nicht gestartet werden. Bitte versuche es erneut.",
+      "monthly": "Monatlich", "yearly": "Jährlich", "loading": "Wird geladen…", "comingSoon": "Demnächst", "processing": "Verarbeitung…", "purchase": "Kaufen",
+      "maintenance": "Stripe-Zahlungen werden vorübergehend gewartet. Die Tarife bleiben sichtbar, können aber nicht gekauft werden.", "learnMore": "So funktioniert es"
+    },
+    "shared": {
+      "close": "Schließen", "cookiePreferences": "Cookie-Einstellungen", "closeMenu": "Menü schließen"
+    }
+  }
+}

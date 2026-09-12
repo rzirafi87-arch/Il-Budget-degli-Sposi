@@ -1,0 +1,44 @@
+{
+  "milestone7": {
+    "timeline": {
+      "loading": "Chargement du calendrier",
+      "eyebrow": "Plan des activités",
+      "back": "Retour au tableau de bord",
+      "progress": "Vous avez terminé {percent}% des tâches.",
+      "saveChecklist": "Enregistrer comme liste personnelle",
+      "yes": "Oui",
+      "no": "Non",
+      "exportCsv": "Exporter en CSV",
+      "exportPdf": "Exporter en PDF",
+      "filter": "Filtrer par catégorie :",
+      "all": "Toutes",
+      "export": {
+        "task": "Tâche",
+        "description": "Description",
+        "category": "Catégorie",
+        "priority": "Priorité",
+        "completed": "Terminée"
+      }
+    },
+    "appointments": {
+      "title": "Rendez-vous et échéances",
+      "mustAuth": "Connectez-vous pour enregistrer les rendez-vous",
+      "validation": "Le titre et la date sont obligatoires.",
+      "error": "Impossible d’enregistrer le rendez-vous",
+      "saved": "Rendez-vous ajouté",
+      "confirmDelete": "Supprimer ce rendez-vous ?",
+      "suggested": "Cet agenda d’exemple est généré automatiquement ; personnalisez-le avec vos vrais rendez-vous.",
+      "formTitle": "Titre du rendez-vous",
+      "dateLabel": "Date",
+      "formLocation": "Lieu",
+      "formNotes": "Notes",
+      "saving": "Enregistrement…",
+      "add": "Ajouter un rendez-vous",
+      "loading": "Chargement…",
+      "empty": "Aucun rendez-vous ajouté.",
+      "locationLabel": "Lieu",
+      "delete": "Supprimer",
+      "deleteNamed": "Supprimer {title}"
+    }
+  }
+}

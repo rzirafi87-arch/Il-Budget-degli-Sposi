@@ -2,10 +2,12 @@
 import AISuggestionsChat from "@/components/AISuggestionsChat";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 const supabase = getBrowserClient();
 
 export default function ChatIAPage() {
+  const t = useTranslations("milestone9.aiChat");
   const [userLang, setUserLang] = React.useState("it");
   const [userCountry, setUserCountry] = React.useState("it");
   const [userEventType, setUserEventType] = React.useState("wedding");
@@ -28,7 +30,7 @@ export default function ChatIAPage() {
     try {
       const n = Number(budget.replace(/[^0-9.,]/g, '').replace(',', '.'));
       if (!isFinite(n) || n < 0) {
-        setMessage("Inserisci un importo valido");
+        setMessage(t("invalidAmount"));
         setSaving(false);
         return;
       }
@@ -41,12 +43,12 @@ export default function ChatIAPage() {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || `Errore salvataggio (${res.status})`);
+        throw new Error(err.error || t("saveError", { status: res.status }));
       }
-      setMessage("Budget salvato");
+      setMessage(t("saved"));
       setShowBudget(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Errore imprevisto";
+      const errorMessage = error instanceof Error ? error.message : t("unexpectedError");
       setMessage(errorMessage);
     } finally {
       setSaving(false);
@@ -55,11 +57,11 @@ export default function ChatIAPage() {
 
   return (
     <section className="pt-6">
-      <h1 className="font-serif text-3xl mb-4">Chat con Assistente IA</h1>
+      <h1 className="font-serif text-3xl mb-4">{t("title")}</h1>
       <AISuggestionsChat userLang={userLang} userCountry={userCountry} userEventType={userEventType} />
       <div className="max-w-xl mx-auto">
         <button className="mt-2 px-4 py-2 rounded-lg text-white" style={{ background: "var(--color-sage)" }} onClick={() => setShowBudget(true)}>
-          Inserisci budget
+          {t("enterBudget")}
         </button>
         {message && <div className="mt-3 text-sm text-gray-700">{message}</div>}
       </div>
@@ -67,18 +69,18 @@ export default function ChatIAPage() {
       {showBudget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="w-[90%] max-w-md bg-white rounded-2xl p-6 shadow-2xl">
-            <h2 className="text-xl font-semibold mb-3">Imposta budget totale</h2>
+            <h2 className="text-xl font-semibold mb-3">{t("setBudget")}</h2>
             <input
               type="text"
               className="w-full border rounded px-3 py-2 mb-4"
-              placeholder="Es. 25000"
+              placeholder={t("budgetPlaceholder")}
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
             />
             <div className="flex gap-2 justify-end">
-              <button className="px-4 py-2 rounded border" onClick={() => setShowBudget(false)} disabled={saving}>Annulla</button>
+              <button className="px-4 py-2 rounded border" onClick={() => setShowBudget(false)} disabled={saving}>{t("cancel")}</button>
               <button className="px-4 py-2 rounded text-white" style={{ background: "var(--color-sage)" }} onClick={saveBudget} disabled={saving}>
-                {saving ? "Salvo..." : "Salva"}
+                {saving ? t("saving") : t("save")}
               </button>
             </div>
           </div>

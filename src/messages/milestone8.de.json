@@ -1,0 +1,133 @@
+{
+  "milestone8": {
+    "map": {
+      "loading": "Karte wird geladen",
+      "results": "Karte der Katalogergebnisse",
+      "dataAttribution": "Kartendaten"
+    },
+    "favoriteActions": {
+      "loadError": "Favoriten konnten nicht geladen werden",
+      "authRequired": "Melden Sie sich an, um Favoriten zu speichern",
+      "removeError": "Favorit konnte nicht entfernt werden",
+      "saveError": "Favorit konnte nicht gespeichert werden",
+      "manageError": "Favoriten konnten nicht aktualisiert werden",
+      "item": "Element",
+      "removed": "{name} aus den Favoriten entfernt",
+      "added": "{name} zu den Favoriten hinzugefügt"
+    },
+    "suppliers": {
+      "eyebrow": "Überprüfbarer globaler Katalog",
+      "title": "Dienstleister",
+      "description": "Suchen Sie Fachleute nach Name, Kategorie und Region.",
+      "search": "Suchen",
+      "searchPlaceholder": "Name, Stadt, Provinz, Region oder Kategorie",
+      "category": "Kategorie",
+      "allCategories": "Alle Kategorien",
+      "city": "Stadt",
+      "loadError": "Dienstleister konnten nicht geladen werden.",
+      "authRequired": "Melden Sie sich an, um einen Dienstleister zu speichern.",
+      "saveError": "Gespeicherte Dienstleister konnten nicht aktualisiert werden.",
+      "loading": "Wird geladen…",
+      "emptyTitle": "Keine Dienstleister gefunden",
+      "emptyDescription": "Ändern Sie die Filter, um die Suche zu erweitern.",
+      "removeSaved": "Aus gespeicherten Einträgen entfernen",
+      "saveSupplier": "Dienstleister speichern",
+      "details": "Details",
+      "pagination": "Seitennavigation",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "page": "Seite {page} von {total}",
+      "verification": {
+        "VERIFIED": "Verifiziert",
+        "PROBABLE": "Wahrscheinlich",
+        "TO_CHECK": "Zu prüfen"
+      },
+      "categories": {
+        "Beauty & Benessere": "Beauty und Wellness",
+        "Catering": "Catering",
+        "Location & Catering": "Locations und Catering",
+        "Sposa": "Braut",
+        "Foto & Video": "Foto und Video",
+        "Fiori & Decor": "Blumen und Dekoration",
+        "Gioiellerie": "Juweliere",
+        "Inviti & Stationery": "Einladungen und Papeterie",
+        "Trasporti": "Transport",
+        "Sposo": "Bräutigam",
+        "Musica & Intrattenimento": "Musik und Unterhaltung",
+        "Viaggio di nozze": "Flitterwochen",
+        "Ricevimento Location": "Empfangslocations",
+        "Bomboniere & Regali": "Gastgeschenke",
+        "Fiorai": "Floristen",
+        "Musica Ricevimento": "Empfangsmusik",
+        "Fotografi": "Fotografen",
+        "fiori": "Blumen"
+      }
+    },
+    "supplierProfile": {
+      "errors": {
+        "save": "Änderungen konnten nicht gespeichert werden",
+        "authUpload": "Sie müssen angemeldet sein, um Bilder hochzuladen.",
+        "saveImages": "Bilder konnten nicht gespeichert werden",
+        "removeImage": "Bild konnte nicht entfernt werden"
+      },
+      "watchVideo": "Video {number} ansehen",
+      "loading": "Dienstleister wird geladen…",
+      "notFound": "Dienstleister nicht gefunden.",
+      "supplier": "Dienstleister",
+      "photoAlt": "Foto {number} von {name}",
+      "deletePhoto": "Foto löschen",
+      "delete": "Löschen",
+      "description": "Beschreibung",
+      "noDescription": "Der Dienstleister hat noch keine Beschreibung hinzugefügt.",
+      "video": "Video",
+      "contacts": "Kontaktdaten",
+      "website": "Website",
+      "discounts": "Rabatte und Angebote",
+      "editPage": "Ihre Seite bearbeiten",
+      "descriptionPlaceholder": "Beschreiben Sie Ihr Angebot und warum Paare Sie wählen sollten.",
+      "discountPlaceholder": "Mögliche Rabatte oder Angebote.",
+      "uploadPhotos": "Fotos hochladen",
+      "uploading": "Wird hochgeladen…",
+      "photosOnePerLine": "Fotos (eines pro Zeile)",
+      "videosOnePerLine": "Videos (eines pro Zeile)",
+      "saving": "Wird gespeichert…",
+      "saveChanges": "Änderungen speichern",
+      "publicChanges": "Die Änderungen sind für alle sichtbar."
+    },
+    "favorites": {
+      "unknownCity": "Ort nicht verfügbar",
+      "loading": "Wird geladen…",
+      "title": "Meine Favoriten",
+      "home": "Startseite",
+      "breadcrumb": "Favoriten",
+      "summary": "Alle gespeicherten Dienstleister, Locations und Kirchen an einem Ort.",
+      "infoTitle": "Favoriten sammeln",
+      "infoDescription": "Hier finden Sie gespeicherte Dienstleister, Locations und Kirchen. Fügen Sie Notizen und Bewertungen hinzu und vergleichen Sie sie.",
+      "tips": {
+        "save": "Speichern Sie Optionen, um sie später zu vergleichen",
+        "notes": "Fügen Sie jedem Favoriten persönliche Notizen hinzu",
+        "rating": "Bewerten Sie Favoriten mit Sternen",
+        "filter": "Filtern Sie nach Typ, um die Suche zu ordnen",
+        "remove": "Entfernen Sie verworfene Optionen"
+      },
+      "eventTips": {
+        "wedding": "Speichern und vergleichen Sie für Ihre Hochzeit Dienstleister vor der Buchung.",
+        "baptism": "Vergleichen Sie für eine Taufe Kirchen, Locations und Fotografen.",
+        "birthday": "Vergleichen Sie für einen Geburtstag Locations, Catering, DJs und Unterhaltung.",
+        "graduation": "Vergleichen Sie für eine Abschlussfeier Locations, Fotografen und Einladungsservices."
+      },
+      "filters": {
+        "all": "Alle",
+        "suppliers": "Dienstleister",
+        "locations": "Locations",
+        "churches": "Kirchen"
+      },
+      "emptyTitle": "Noch keine Favoriten",
+      "emptyDescription": "Speichern Sie Dienstleister, Locations und Kirchen, die Ihnen gefallen.",
+      "exploreSuppliers": "Dienstleister entdecken",
+      "discoverLocations": "Locations entdecken",
+      "removeFavorite": "Aus Favoriten entfernen",
+      "savedOn": "Gespeichert am {date}"
+    }
+  }
+}

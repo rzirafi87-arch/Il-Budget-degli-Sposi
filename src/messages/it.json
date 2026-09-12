@@ -449,13 +449,31 @@
     "title": "Gestione Invitati",
     "tabs": {
       "guests": "Invitati",
-      "tables": "Tavoli"
+      "tables": "Tavoli",
+      "label": "Sezioni invitati"
     },
     "sections": {
       "guestsManagement": "Gestione Completa degli Invitati",
       "familyGroups": "Gruppi Familiari",
       "nonInvited": "Non Invitati (solo bomboniere)"
-    }
+    },
+    "loading": "Caricamento invitati",
+    "header": {"eyebrow":"Persone e tavoli","description":"Organizza la lista, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli."},
+    "messages": {"familyNameRequired":"Inserisci un nome per la famiglia.","familySaving":"Famiglia creata. Salvataggio in corso…","authRequired":"Accedi per salvare.","familySaved":"Famiglia creata e salvata. Ora puoi assegnare gli invitati.","guestsSaved":"Invitati salvati con successo."},
+    "errors": {"FAMILY_SAVE_FAILED":"Impossibile salvare la famiglia.","FAMILY_NETWORK_ERROR":"Errore di rete durante il salvataggio della famiglia.","GUEST_SNAPSHOT_INVALID":"I dati degli invitati non sono validi.","GUEST_SNAPSHOT_TOO_LARGE":"La lista degli invitati è troppo grande.","GUEST_SNAPSHOT_SAVE_FAILED":"Impossibile salvare gli invitati. Nessun dato è stato modificato.","GUEST_NETWORK_ERROR":"Errore di rete durante il salvataggio degli invitati."},
+    "info": {"description":"Crea e gestisci la lista completa degli invitati, le famiglie, le risposte RSVP, le preferenze del menù e i tavoli.","tips":{"families":"Crea gruppi familiari per assegnare i membri allo stesso tavolo.","separate":"Usa Tavolo separato per escludere alcuni membri dall’assegnazione automatica.","rsvp":"Traccia le conferme RSVP per conoscere i partecipanti.","menu":"Registra le preferenze del menù per comunicarle al catering.","nonInvited":"Usa Non invitati per chi riceve solo bomboniera o confetti."},"events":{"wedding":"Gestisci gli invitati della sposa, dello sposo e comuni, organizzandoli per famiglie.","baptism":"Tieni traccia di padrino, madrina, familiari e amici.","birthday":"Organizza gli invitati per gruppi, come famiglia, amici e colleghi.","graduation":"Invita familiari, amici e compagni di studi e tracciane le conferme."}},
+    "rsvpDeadline":"Data massima per la risposta RSVP, uguale per tutti",
+    "summary":{"title":"Riepilogo partecipanti","attendees":"Totale partecipanti","favours":"Bomboniere necessarie","allergies":"Allergie o intolleranze segnalate","total":"Totale"},
+    "guestTypes":{"bride":"Sposa","groom":"Sposo","common":"Comuni"},
+    "menu":{"seat":"Posto tavolo","meat":"Carne","fish":"Pesce","child":"Bambino","entertainment":"Animazione","vegetarian":"Vegetariano","carne":"Carne","pesce":"Pesce","baby":"Menù bambino","animazione":"Animazione","vegetariano":"Vegetariano","posto_tavolo":"Posto tavolo"},
+    "families":{"add":"Aggiungi famiglia","helper":"Crea gruppi famiglia per organizzare gli invitati. Il contatto principale rappresenta tutta la famiglia.","tipLabel":"Suggerimento:","tip":"Usa Tavolo separato per escludere alcuni membri dall’assegnazione automatica.","empty":"Nessuna famiglia creata. Aggiungi una famiglia per iniziare.","name":"Nome famiglia","delete":"Elimina famiglia","deleteNamed":"Elimina la famiglia {name}","contact":"Contatto","unassigned":"Non assegnato","familyTable":"Tavolo famiglia","separateTable":"Tavolo separato","createTitle":"Crea nuovo gruppo famiglia","namePlaceholder":"es. Famiglia Rossi","create":"Crea famiglia","none":"Nessuna","excludeGuest":"Escludi questo invitato dal tavolo famiglia","assignFirst":"Assegna prima l’invitato a una famiglia"},
+    "list":{"title":"Lista invitati","add":"Aggiungi invitato","empty":"Nessun invitato presente. Aggiungi un invitato per iniziare.","namePlaceholder":"Nome completo","allergiesPlaceholder":"Es. glutine, lattosio…","guestFallback":"invitato"},
+    "fieldLabels":{"mainContact":"Imposta {name} come contatto principale","separateTable":"Tavolo separato per {name}","invitationDate":"Data invito per {name}","rsvp":"Risposta ricevuta per {name}","attending":"Partecipazione di {name}","favour":"Bomboniera per {name}","confetti":"Confetti per {name}"},
+    "columns":{"name":"Nome","type":"Tipo","family":"Famiglia","mainContact":"Contatto principale","separate":"Tavolo separato","separateHelp":"Escludi dall’assegnazione automatica al tavolo famiglia","invitationDate":"Data invito","rsvpReceived":"Risposta ricevuta","attending":"Partecipa","menu":"Preferenze menù","favour":"Bomboniera","allergies":"Allergie / Intolleranze","notes":"Note","actions":"Azioni"},
+    "actions":{"exportCsv":"Esporta CSV","closeDialog":"Chiudi finestra","cancel":"Annulla","delete":"Elimina","deleteGuest":"Elimina {name}","deleteRecipient":"Elimina {name}","saving":"Salvataggio…","saveAll":"Salva tutto"},
+    "nonInvited":{"title":"Bomboniere / Confetti per non invitati","add":"Aggiungi persona","confetti":"Confetti","empty":"Nessuna persona non invitata riceve bomboniere o confetti.","personFallback":"persona"},
+    "confirmation":{"title":"Invitati","description":"Prepara la lista degli invitati e tieni traccia di conferme, tavoli e preferenze.","godparents":"Padrino, madrina, famiglia e amici","rsvp":"Conferme di partecipazione (RSVP)","allergies":"Allergie o esigenze particolari","comingSoon":"A breve potrai gestire gli invitati con lo stesso semplice flusso del matrimonio."},
+    "tables":{"loading":"Caricamento tavoli…","summary":"Riepilogo tavoli","totalTables":"Tavoli totali","totalSeats":"Posti totali","assignedSeats":"Posti assegnati","availableSeats":"Posti liberi","description":"Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.","advanced":"La gestione dettagliata della disposizione è disponibile nella pagina Tavoli.","open":"Apri pagina Tavoli","pageTitle":"Disposizione tavoli","back":"Torna agli invitati","autoAssign":"Assegna automaticamente per famiglia","noGuests":"Nessun invitato disponibile da assegnare.","withoutFamily":"Senza famiglia","namedTable":"Tavolo {label}","cousinsTable":"Tavolo cugini","namedFamily":"Famiglia {name}","friends":"Amici","cousins":"Cugini","generated":"Generati {tables} tavoli da {guests} invitati disponibili.","saved":"Tavoli salvati.","seatsPerTable":"Posti per tavolo","recommended":"Consigliato: 8–10","empty":"Usa l’assegnazione automatica per generare una proposta.","table":"Tavolo","tableDetails":"Tipo: {type} · Posti: {seats} · Assegnati: {assigned}","saving":"Salvataggio…","save":"Salva disposizione","errors":{"TABLE_SAVE_FAILED":"Impossibile salvare i tavoli.","TABLE_NETWORK_ERROR":"Errore di rete durante il salvataggio."}}
   },
   "suppliersUi": {
     "title": "Fornitori",
@@ -1838,5 +1856,214 @@
     "language": "Lingua",
     "country": "Paese",
     "event": "Evento"
+  },
+  "runtimeUi": {
+    "auth": {
+      "title": "Accedi o registrati",
+      "confirmationTitle": "Conferma la tua email",
+      "confirmationBody": "Abbiamo inviato un link di conferma. Aprilo per attivare l’account.",
+      "resend": "Invia di nuovo l’email di conferma",
+      "backToLogin": "Torna al login",
+      "eventType": "Tipo di evento",
+      "partnerEmail": "Email partner (opzionale)",
+      "weddingDate": "Data matrimonio",
+      "brideBudget": "Budget sposa (EUR)",
+      "groomBudget": "Budget sposo (EUR)",
+      "totalBudget": "Budget totale (EUR)",
+      "passwordHint": "Almeno 10 caratteri.",
+      "working": "Operazione in corso…",
+      "signIn": "Accedi",
+      "register": "Registrati",
+      "sendInstructions": "Invia istruzioni",
+      "forgotPassword": "Password dimenticata?",
+      "eventTypes": {
+        "wedding": "Matrimonio"
+      },
+      "errors": {
+        "emailNotConfirmed": "Devi prima confermare il tuo indirizzo email.",
+        "invalidCredentials": "Email o password non corretti.",
+        "passwordTooShort": "La password deve contenere almeno 10 caratteri.",
+        "invalidOrExpiredLink": "Il link non è valido o è scaduto. Richiedine uno nuovo.",
+        "rateLimited": "Hai effettuato troppi tentativi. Attendi e riprova.",
+        "generic": "Non è stato possibile completare l’operazione. Riprova."
+      }
+    },
+    "resetPassword": {
+      "title": "Nuova password",
+      "saving": "Salvataggio…",
+      "submit": "Aggiorna password",
+      "updated": "Password aggiornata. Ora puoi accedere.",
+      "errors": {
+        "emailNotConfirmed": "Conferma prima il tuo indirizzo email.",
+        "invalidCredentials": "Credenziali non valide.",
+        "passwordTooShort": "La password deve contenere almeno 10 caratteri.",
+        "invalidOrExpiredLink": "Il link non è valido o è scaduto. Richiedine uno nuovo.",
+        "rateLimited": "Hai effettuato troppi tentativi. Attendi e riprova.",
+        "generic": "Non è stato possibile aggiornare la password. Riprova."
+      }
+    },
+    "routing": {
+      "profileCheckFailed": "Impossibile verificare il tuo profilo",
+      "retry": "Riprova",
+      "loadingSpace": "Caricamento del tuo spazio…",
+      "setupUnavailable": "Configurazione non disponibile",
+      "checkingSetup": "Verifica della configurazione…",
+      "selectEvent": "Seleziona l’evento dalle Impostazioni per continuare.",
+      "openSettings": "Apri Impostazioni",
+      "checkingModule": "Verifica disponibilità modulo",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Impossibile verificare la sessione.",
+        "PROJECT_CHECK_FAILED": "Impossibile verificare il progetto dell’utente.",
+        "APP_ENTRY_FAILED": "Impossibile aprire l’app.",
+        "WIZARD_ENTRY_FAILED": "Impossibile avviare la configurazione."
+      }
+    },
+    "shared": {
+      "optionsLoadFailed": "Errore nel caricamento delle opzioni",
+      "loadingOptions": "Caricamento opzioni…",
+      "comingSoon": "In arrivo",
+      "country": "Nazione",
+      "event": "Evento",
+      "loading": "Caricamento in corso",
+      "signIn": "Accedi",
+      "profile": "Profilo",
+      "logout": "Esci",
+      "brandName": "Il Budget degli Sposi",
+      "ideaBudget": "Idea di Budget",
+      "openSettings": "Apri impostazioni",
+      "settings": "Impostazioni",
+      "export": "Esporta",
+      "noExportData": "Nessun dato da esportare"
+    },
+    "profile": {
+      "title": "Profilo",
+      "displayName": "Nome visualizzato",
+      "emailReadOnly": "Il cambio email non è disponibile in questo flusso.",
+      "preferredLanguage": "Lingua preferita",
+      "comingSoon": "In arrivo",
+      "saving": "Salvataggio…",
+      "save": "Salva profilo",
+      "updated": "Profilo aggiornato.",
+      "updateFailed": "Non è stato possibile salvare il profilo.",
+      "deleteTitle": "Eliminazione account",
+      "deleteDescription": "La richiesta prevede 7 giorni di sicurezza. Prima dell’elaborazione viene protetto l’evento condiviso con il partner.",
+      "confirmEmail": "Conferma email",
+      "typeDelete": "Scrivi DELETE",
+      "cancelDeletion": "Annulla richiesta",
+      "requestDeletion": "Richiedi eliminazione",
+      "confirmMismatch": "Inserisci la tua email e scrivi DELETE.",
+      "deletionRecorded": "Richiesta registrata. Hai 7 giorni per annullarla; l’evento condiviso sarà verificato prima dell’elaborazione.",
+      "deletionFailed": "Richiesta non registrata.",
+      "deletionCancelled": "Richiesta annullata."
+    },
+    "settings": {
+      "settings": "Impostazioni",
+      "language": "Lingua",
+      "country": "Nazione evento",
+      "currentEvent": "Matrimonio corrente",
+      "eventType": "Tipo evento",
+      "theme": "Tema",
+      "light": "Chiaro",
+      "dark": "Scuro",
+      "system": "Sistema",
+      "locked": "Il tipo evento non può essere cambiato dopo la creazione: il cambio richiede una migrazione sicura dei dati.",
+      "close": "Chiudi",
+      "apply": "Applica modifiche",
+      "comingSoon": "in arrivo"
+    },
+    "dashboard": {
+      "authRequired": "Accedi per salvare il budget.",
+      "budgetSaved": "Budget salvato. I dati sono ora disponibili in Idea di Budget.",
+      "budgetSaveFailed": "Non è stato possibile salvare il budget. Riprova.",
+      "loadFailed": "Impossibile caricare la Dashboard",
+      "retry": "Riprova",
+      "loading": "Caricamento Dashboard",
+      "eyebrow": "Il tuo evento",
+      "title": "Dashboard",
+      "description": "Budget, attività e prossimi passi: tutto ciò che serve per organizzare con serenità.",
+      "fallbackItem": "Voce",
+      "fallbackActivity": "Attività",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Impossibile verificare la sessione.",
+        "PROJECT_CHECK_FAILED": "Impossibile verificare il progetto.",
+        "DASHBOARD_LOAD_FAILED": "Impossibile caricare la Dashboard."
+      },
+      "info": {
+        "title": "Centro di controllo del tuo evento",
+        "description": "La Dashboard è il cuore dell’applicazione. Qui puoi gestire il budget complessivo, i budget dei partecipanti e tutte le categorie di spesa.",
+        "tips": {
+          "budgetDate": "Imposta il budget totale e la data dell’evento per attivare tutte le funzionalità",
+          "split": "Il budget si divide tra i partecipanti, con spese comuni condivise",
+          "customize": "Personalizza le categorie, aggiungi preventivi e traccia i pagamenti",
+          "ideas": "Usa Idea di Budget per applicare modelli precompilati"
+        },
+        "events": {
+          "wedding": "Il budget del matrimonio è diviso tra sposa, sposo e spese comuni.",
+          "baptism": "Le spese del battesimo sono considerate comuni.",
+          "communion": "La comunione utilizza un budget familiare unificato.",
+          "confirmation": "La cresima utilizza le spese comuni della famiglia.",
+          "birthday": "Il budget del compleanno può essere diviso tra organizzatore e spese condivise.",
+          "eighteenth": "Il diciottesimo utilizza un budget unico.",
+          "graduation": "Il budget della laurea può essere comune o diviso con il laureato."
+        }
+      },
+      "planning": {
+        "label": "Scelte cerimonia e ricevimento",
+        "ceremony": "Cerimonia",
+        "churchEmpty": "Luogo della cerimonia da scegliere",
+        "openChurches": "Apri luoghi",
+        "reception": "Ricevimento",
+        "locationEmpty": "Location da scegliere",
+        "openLocations": "Apri location"
+      },
+      "actions": {
+        "eyebrow": "Azioni rapide",
+        "title": "Continua l’organizzazione",
+        "save": "Salva configurazione",
+        "preparing": "Funzione in preparazione",
+        "pdf": "Genera PDF",
+        "video": "Genera video",
+        "comingSoon": "Prossimamente"
+      },
+      "idea": {
+        "title": "Idea di Budget",
+        "description": "Compila le voci e applicale al budget.",
+        "open": "Apri le idee"
+      },
+      "honeymoon": {
+        "title": "Viaggio di nozze",
+        "description": "Consigli e idee per la luna di miele.",
+        "open": "Esplora il viaggio"
+      },
+      "suggestions": {
+        "title": "Suggerimenti e consigli",
+        "description": "Idee utili in base alle tue scelte.",
+        "open": "Scopri i consigli"
+      }
+    },
+    "userSummary": {
+      "language": "Lingua:",
+      "country": "Nazione:",
+      "event": "Evento:",
+      "change": "Cambia",
+      "languages": {
+        "it": "Italiano",
+        "en": "Inglese",
+        "es": "Spagnolo",
+        "fr": "Francese",
+        "de": "Tedesco"
+      },
+      "countries": {
+        "it": "Italia",
+        "mx": "Messico",
+        "gb": "Regno Unito"
+      },
+      "events": {
+        "wedding": "Matrimonio",
+        "anniversary": "Anniversario",
+        "graduation": "Laurea",
+        "other": "Altro"
+      }
+    }
   }
 }

@@ -1,0 +1,57 @@
+{
+  "milestone7": {
+    "documents": {
+      "eyebrow": "Archivo digital",
+      "title": "Documentos y presupuestos",
+      "description": "Sube y organiza todos los documentos importantes de tu evento.",
+      "infoTitle": "Tu archivo digital de documentos",
+      "infoDescription": "Reúne presupuestos, contratos, facturas, recibos y certificados en un lugar seguro.",
+      "tips": {
+        "1": "Sube los presupuestos al recibirlos para compararlos",
+        "2": "Asocia cada documento con el proveedor correspondiente",
+        "3": "Usa la categoría Contrato para documentos firmados",
+        "4": "Guarda recibos y facturas para la contabilidad final",
+        "5": "Filtra por categoría para encontrar archivos rápidamente",
+        "6": "Formatos admitidos: PDF, DOC, DOCX, JPG, PNG (máximo 10 MB)"
+      },
+      "events": {
+        "wedding": "Organiza documentos del lugar, catering, fotografía, flores, vestuario, música y ceremonia.",
+        "baptism": "Archiva certificados, presupuestos, contratos y facturas del bautizo.",
+        "birthday": "Guarda contratos, presupuestos y facturas del cumpleaños.",
+        "graduation": "Archiva reservas, presupuestos, contratos y facturas de la graduación."
+      },
+      "agendaTitle": "Agenda de documentos",
+      "agendaDescription": "Organiza visitas, plazos y reuniones relacionados con tus documentos.",
+      "uploading": "Subiendo…",
+      "upload": "Subir documentos",
+      "uploadHelper": "Selecciona o arrastra aquí los archivos",
+      "uploadFormats": "PDF, Word, imágenes • Máximo 10 MB por archivo",
+      "unassigned": "Sin asignar",
+      "confirmDelete": "¿Eliminar este documento?",
+      "empty": "No hay documentos subidos",
+      "emptyCategory": "No hay documentos en esta categoría",
+      "emptyDescription": "Sube tu primer presupuesto o contrato para iniciar el archivo.",
+      "emptyCategoryDescription": "Elige otra categoría para ver los documentos disponibles.",
+      "download": "Descargar",
+      "downloadNamed": "Descargar {name}",
+      "delete": "Eliminar",
+      "deleteNamed": "Eliminar {name}",
+      "categories": {
+        "all": "Todos",
+        "quote": "Presupuesto",
+        "contract": "Contrato",
+        "invoice": "Factura",
+        "receipt": "Recibo",
+        "generic": "Documento general",
+        "certificate": "Certificado",
+        "license": "Licencia"
+      },
+      "stats": {
+        "total": "Documentos totales",
+        "quotes": "Presupuestos",
+        "contracts": "Contratos",
+        "storage": "Espacio usado"
+      }
+    }
+  }
+}

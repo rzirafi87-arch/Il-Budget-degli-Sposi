@@ -1,0 +1,92 @@
+{
+  "confirmationIdea": {
+    "title": "Idea de presupuesto",
+    "description": "Define un presupuesto estimado para la Confirmación y asígnalo a las categorías principales.",
+    "categories": {
+      "venue": "Lugar y catering",
+      "clothing": "Ropa",
+      "photo": "Fotografía y entretenimiento",
+      "favors": "Recuerdos y decoración",
+      "invitations": "Invitaciones e impresión"
+    },
+    "tip": "Consejo: parte de un total y repártelo por categorías. Podrás ajustar los importes cuando recibas presupuestos."
+  },
+  "confirmationBudget": {
+    "title": "Presupuesto de confirmación",
+    "description": "Resumen de los gastos aprobados y comparación con la idea inicial.",
+    "actualTotal": "Total real",
+    "loading": "Cargando…",
+    "empty": "No hay gastos aprobados. Ve a Gastos para aprobarlos.",
+    "item": "Partida",
+    "table": {
+      "category": "Categoría",
+      "subcategory": "Subcategoría",
+      "budget": "Presupuesto",
+      "committed": "Comprometido",
+      "paid": "Pagado",
+      "residual": "Restante",
+      "fromQuote": "Desde presupuesto",
+      "difference": "Diferencia"
+    },
+    "comparison": {
+      "title": "Planificado vs real",
+      "plannedTotal": "Total planificado",
+      "approvedTotal": "Total real (aprobado)",
+      "over": "(por encima de lo previsto)",
+      "under": "(por debajo de lo previsto)",
+      "planned": "Planificado",
+      "actual": "Real",
+      "empty": "No hay datos que comparar. Usa Idea de presupuesto y aprueba gastos en Gastos."
+    }
+  },
+  "budgetRuntime": {
+    "layout": {
+      "title": "Presupuesto",
+      "approved": "Gastos aprobados",
+      "idea": "Idea de presupuesto"
+    },
+    "chart": {
+      "ofBudget": "del presupuesto",
+      "spent": "Gastado",
+      "remaining": "Restante",
+      "total": "Presupuesto total",
+      "status": {
+        "start": "💚 ¡Excelente comienzo! Vais por buen camino",
+        "progress": "💛 Buen progreso, seguid así",
+        "warning": "🧡 Atención al presupuesto: estáis cerca del límite",
+        "limit": "❤️ Casi en el límite; valorad bien los próximos gastos",
+        "exceeded": "🚨 ¡Presupuesto superado! Revisad las prioridades"
+      }
+    },
+    "categories": {
+      "title": "📊 Gastos por categoría (Top 8)",
+      "empty": "Aún no hay gastos registrados"
+    },
+    "controls": {
+      "currency": "Moneda",
+      "contingency": "Imprevistos (%)",
+      "estimatedTotal": "Total estimado:",
+      "contingencyTotal": "Imprevistos:",
+      "withContingency": "Total con imprevistos:"
+    },
+    "exportPdf": {
+      "defaultTitle": "Lista de la cronología",
+      "button": "Exportar PDF",
+      "empty": "No hay datos para exportar"
+    }
+  },
+  "budgetPage": {
+    "eyebrow": "Planificación económica",
+    "fallbackItem": "Partida",
+    "emptyTitle": "El presupuesto todavía está vacío",
+    "emptyAction": "Crea tu primer plan de presupuesto",
+    "export": { "button": "Exportar PDF", "fromDashboard": "Desde el panel" }
+  },
+  "expensesPage": {
+    "quotesCount": "{count, plural, one {# presupuesto} other {# presupuestos}}",
+    "messages": {
+      "saveError": "Error: {error}",
+      "unableToSave": "No se ha podido guardar"
+    }
+  }
+}

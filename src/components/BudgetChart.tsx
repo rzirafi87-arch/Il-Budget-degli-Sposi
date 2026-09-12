@@ -2,6 +2,7 @@
 
 import { formatCurrency } from "@/lib/locale";
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 type BudgetChartProps = {
   totalBudget: number;
@@ -10,6 +11,7 @@ type BudgetChartProps = {
 };
 
 export default function BudgetChart({ totalBudget, spentAmount, className = "" }: BudgetChartProps) {
+  const t = useTranslations("budgetRuntime.chart");
   const percentage = totalBudget > 0 ? Math.min(100, (spentAmount / totalBudget) * 100) : 0;
   const remaining = Math.max(0, totalBudget - spentAmount);
 
@@ -50,7 +52,7 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
           <div className="text-4xl font-bold" style={{ color }}>
             {Math.round(percentage)}%
           </div>
-          <div className="text-xs text-gray-500 font-medium">del budget</div>
+          <div className="text-xs text-gray-500 font-medium">{t("ofBudget")}</div>
         </div>
       </div>
 
@@ -62,7 +64,7 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
         >
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
-            <span className="text-sm font-medium text-gray-700">Speso</span>
+            <span className="text-sm font-medium text-gray-700">{t("spent")}</span>
           </div>
           <span className="text-sm font-bold text-gray-800">{formatCurrency(spentAmount)}</span>
         </div>
@@ -73,7 +75,7 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
         >
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "var(--chart-neutral)" }}></div>
-            <span className="text-sm font-medium text-gray-700">Restante</span>
+            <span className="text-sm font-medium text-gray-700">{t("remaining")}</span>
           </div>
           <span className="text-sm font-bold text-gray-800">{formatCurrency(remaining)}</span>
         </div>
@@ -85,7 +87,7 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
             borderColor: "var(--accent-sage-500)",
           }}
         >
-          <span className="text-sm font-bold text-gray-800">Budget Totale</span>
+          <span className="text-sm font-bold text-gray-800">{t("total")}</span>
           <span className="text-lg font-bold" style={{ color: "var(--color-sage)" }}>
             {formatCurrency(totalBudget)}
           </span>
@@ -96,14 +98,14 @@ export default function BudgetChart({ totalBudget, spentAmount, className = "" }
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600 italic">
           {percentage < 30 
-            ? "💚 Ottimo inizio! Siete nei tempi"
+            ? t("status.start")
             : percentage < 70
-            ? "💛 Buon progresso, continuate così"
+            ? t("status.progress")
             : percentage < 90
-            ? "🧡 Attenzione al budget, state per raggiungerlo"
+            ? t("status.warning")
             : percentage < 100
-            ? "❤️ Quasi al limite, valutate bene le prossime spese"
-            : "🚨 Budget superato! Rivedete le priorità"}
+            ? t("status.limit")
+            : t("status.exceeded")}
         </p>
       </div>
     </div>

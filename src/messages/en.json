@@ -82,8 +82,12 @@
       "eventTypeSpecific": {
         "wedding": "For a wedding, you can split expenses between bride, groom, and common. This helps understand each contribution and manage finances transparently.",
         "baptism": "For a baptism, all expenses are automatically set as 'common' — no need to specify who pays.",
+        "eighteenth": "For an eighteenth birthday, all expenses are shared. Plan the venue, catering, entertainment and keepsakes for an unforgettable celebration!",
+        "confirmation": "For a confirmation, all expenses are shared. Organise the ceremony, reception, favours and keepsakes to celebrate this spiritual milestone.",
+        "communion": "For a first communion, all expenses are treated as shared, with no split between parents.",
         "birthday": "For a birthday, split expenses between the main organizer and any shared costs.",
-        "graduation": "For a graduation, track all event-related expenses: venue, catering, invitations, decorations, and keepsakes."
+        "graduation": "For a graduation, track all event-related expenses: venue, catering, invitations, decorations, and keepsakes.",
+        "anniversary": "For a wedding anniversary, manage the celebration expenses together. Whether it is a silver, golden or more intimate anniversary, every detail helps renew your love."
       }
     },
     "title": "Expenses",
@@ -165,7 +169,8 @@
         "wedding": "During weddings, it's customary to receive envelopes with monetary contributions from guests. Record every envelope received for a complete tracking.",
         "baptism": "For a baptism, record contributions from godparents and family members who want to participate in the expenses.",
         "birthday": "For a birthday, track contributions from friends and relatives who want to help with the organization.",
-        "graduation": "For a graduation, record family contributions and gifts received to celebrate the milestone."
+        "graduation": "For a graduation, record family contributions and gifts received to celebrate the milestone.",
+        "anniversary": "For a wedding anniversary, record contributions from children, grandchildren and relatives who want to join the celebration. Families often organise a surprise party or share the costs."
       }
     },
     "title": "Incomes",
@@ -254,6 +259,7 @@
     "retirement": "Retirement",
     "confirmation": "Confirmation",
     "graduation": "Graduation",
+    "babyshower": "Baby Shower",
     "baby-shower": "Baby Shower",
     "engagement": "Engagement Party",
     "corporate": "Corporate Event",
@@ -267,9 +273,9 @@
     "engagement-party": "Engagement Party"
   },
   "header": {
-    "today": "Today!",
-    "dayLeft": "1 day left",
-    "daysLeft": "{count} days left"
+    "language": "Language",
+    "country": "Country",
+    "event": "Event"
   },
   "home": {
     "hero": {
@@ -283,6 +289,7 @@
       "footnote": "✨ No credit card required • Create your event in 2 minutes"
     },
     "usp": {
+      "title": "Everything you need",
       "budgetUi": {
         "cards": {
           "clarity": {
@@ -1144,16 +1151,37 @@
     },
     "types": {
       "villa": "Villa",
+      "Villa": "Villa",
       "castello": "Castle",
+      "Castello": "Castle",
+      "palazzo": "Palace",
+      "Palazzo": "Palace",
       "agriturismo": "Farmhouse",
+      "Agriturismo": "Farmhouse",
+      "cascina": "Country house",
+      "Cascina": "Country house",
       "masseria": "Masseria",
+      "Masseria": "Masseria",
+      "baglio": "Baglio",
+      "Baglio": "Baglio",
+      "borgo": "Village",
+      "Borgo": "Village",
       "ristorante": "Restaurant",
+      "Ristorante": "Restaurant",
       "hotel": "Hotel",
+      "Hotel": "Hotel",
+      "hotel di lusso": "Luxury hotel",
+      "Hotel di lusso": "Luxury hotel",
       "resort": "Resort",
+      "Resort": "Resort",
       "tenuta": "Estate",
+      "Tenuta": "Estate",
       "giardino": "Garden",
+      "Giardino": "Garden",
       "spiaggia": "Beach",
-      "altro": "Other"
+      "Spiaggia": "Beach",
+      "altro": "Other",
+      "Altro": "Other"
     },
     "messages": {
       "authRequired": "You must be authenticated to add a venue",
@@ -1264,7 +1292,7 @@
     },
     "loading": "Loading ateliers...",
     "results": {
-      "count": "Found {count} atelier{count, plural, one {} other {s}}{region, select, other { in {region}} }"
+      "count": "Found {count} atelier{region, select, other { in {region}} }"
     },
     "labels": {
       "verified": "✓ Verified",
@@ -1677,8 +1705,19 @@
       "previous": "Previous",
       "next": "Next",
       "page": "Page {page} of {totalPages} · {total} results",
-      "verification": { "verified": "Verified", "probable": "Probable", "toCheck": "To check" },
-      "types": { "church": "Church", "cathedral": "Cathedral", "basilica": "Basilica", "sanctuary": "Sanctuary", "chapel": "Chapel", "placeOfWorship": "Place of worship" }
+      "verification": {
+        "verified": "Verified",
+        "probable": "Probable",
+        "toCheck": "To check"
+      },
+      "types": {
+        "church": "Church",
+        "cathedral": "Cathedral",
+        "basilica": "Basilica",
+        "sanctuary": "Sanctuary",
+        "chapel": "Chapel",
+        "placeOfWorship": "Place of worship"
+      }
     }
   },
   "ceremonyCeremonyChurch": {
@@ -1751,9 +1790,282 @@
     "back": "Back",
     "goToDashboard": "Go to dashboard"
   },
-  "header": {
-    "language": "Language",
-    "country": "Country",
-    "event": "Event"
+  "retirement": "Retirement",
+  "guestsPage": {
+    "title": "Guest Management",
+    "tabs": {
+      "guests": "Guests",
+      "tables": "Tables",
+      "label": "Guest sections"
+    },
+    "sections": {
+      "guestsManagement": "Complete Guest Management",
+      "familyGroups": "Family Groups",
+      "nonInvited": "Not Invited (favours only)"
+    },
+    "loading":"Loading guests","header":{"eyebrow":"People and tables","description":"Organise the list, manage families, track RSVPs and plan table seating."},
+    "messages":{"familyNameRequired":"Enter a family name.","familySaving":"Family created. Saving…","authRequired":"Sign in to save.","familySaved":"Family created and saved. You can now assign guests.","guestsSaved":"Guests saved successfully."},
+    "errors":{"FAMILY_SAVE_FAILED":"Unable to save the family.","FAMILY_NETWORK_ERROR":"Network error while saving the family.","GUEST_SNAPSHOT_INVALID":"The guest data is invalid.","GUEST_SNAPSHOT_TOO_LARGE":"The guest list is too large.","GUEST_SNAPSHOT_SAVE_FAILED":"Unable to save the guests. No data was changed.","GUEST_NETWORK_ERROR":"Network error while saving guests."},
+    "info":{"description":"Create and manage the complete guest list, families, RSVPs, menu preferences and tables.","tips":{"families":"Create family groups to seat members at the same table.","separate":"Use Separate table to exclude members from automatic seating.","rsvp":"Track RSVPs to know who will attend.","menu":"Record menu preferences for the caterer.","nonInvited":"Use Not invited for people receiving only favours or sugared almonds."},"events":{"wedding":"Manage the bride’s, groom’s and shared guests, organised by family.","baptism":"Keep track of godparents, relatives and friends.","birthday":"Organise guests into groups such as family, friends and colleagues.","graduation":"Invite family, friends and classmates and track their RSVPs."}},
+    "rsvpDeadline":"RSVP deadline, the same for everyone","summary":{"title":"Attendee summary","attendees":"Total attendees","favours":"Favours needed","allergies":"Reported allergies or intolerances","total":"Total"},"guestTypes":{"bride":"Bride","groom":"Groom","common":"Shared"},"menu":{"seat":"Table seat","meat":"Meat","fish":"Fish","child":"Child","entertainment":"Entertainment","vegetarian":"Vegetarian","carne":"Meat","pesce":"Fish","baby":"Children’s menu","animazione":"Entertainment","vegetariano":"Vegetarian","posto_tavolo":"Table seat"},
+    "families":{"add":"Add family","helper":"Create family groups to organise guests. The primary contact represents the whole family.","tipLabel":"Tip:","tip":"Use Separate table to exclude members from automatic seating.","empty":"No families yet. Add a family to get started.","name":"Family name","delete":"Delete family","deleteNamed":"Delete the {name} family","contact":"Contact","unassigned":"Unassigned","familyTable":"Family table","separateTable":"Separate table","createTitle":"Create a family group","namePlaceholder":"e.g. Rossi family","create":"Create family","none":"None","excludeGuest":"Exclude this guest from the family table","assignFirst":"Assign the guest to a family first"},
+    "list":{"title":"Guest list","add":"Add guest","empty":"No guests yet. Add a guest to get started.","namePlaceholder":"Full name","allergiesPlaceholder":"e.g. gluten, lactose…","guestFallback":"guest"},
+    "fieldLabels":{"mainContact":"Set {name} as primary contact","separateTable":"Separate table for {name}","invitationDate":"Invitation date for {name}","rsvp":"RSVP received for {name}","attending":"Attendance for {name}","favour":"Favour for {name}","confetti":"Sugared almonds for {name}"},
+    "columns":{"name":"Name","type":"Type","family":"Family","mainContact":"Primary contact","separate":"Separate table","separateHelp":"Exclude from automatic family-table seating","invitationDate":"Invitation date","rsvpReceived":"RSVP received","attending":"Attending","menu":"Menu preferences","favour":"Favour","allergies":"Allergies / Intolerances","notes":"Notes","actions":"Actions"},
+    "actions":{"exportCsv":"Export CSV","closeDialog":"Close dialog","cancel":"Cancel","delete":"Delete","deleteGuest":"Delete {name}","deleteRecipient":"Delete {name}","saving":"Saving…","saveAll":"Save all"},
+    "nonInvited":{"title":"Favours / sugared almonds for non-guests","add":"Add person","confetti":"Sugared almonds","empty":"No non-guests are receiving favours or sugared almonds.","personFallback":"person"},
+    "confirmation":{"title":"Guests","description":"Prepare the guest list and track RSVPs, tables and preferences.","godparents":"Godparents, family and friends","rsvp":"Attendance confirmations (RSVP)","allergies":"Allergies or special requirements","comingSoon":"You will soon be able to manage guests with the same simple wedding flow."},
+    "tables":{"loading":"Loading tables…","summary":"Table summary","totalTables":"Total tables","totalSeats":"Total seats","assignedSeats":"Assigned seats","availableSeats":"Available seats","description":"View a summary of configured tables and assigned seats here.","advanced":"Detailed seating management is available on the Tables page.","open":"Open Tables page","pageTitle":"Table seating","back":"Back to guests","autoAssign":"Auto-assign by family","noGuests":"No guests are available to assign.","withoutFamily":"No family","namedTable":"{label} table","cousinsTable":"Cousins table","namedFamily":"{name} family","friends":"Friends","cousins":"Cousins","generated":"Created {tables} tables for {guests} available guests.","saved":"Tables saved.","seatsPerTable":"Seats per table","recommended":"Recommended: 8–10","empty":"Use automatic assignment to create a seating proposal.","table":"Table","tableDetails":"Type: {type} · Seats: {seats} · Assigned: {assigned}","saving":"Saving…","save":"Save seating","errors":{"TABLE_SAVE_FAILED":"Unable to save the tables.","TABLE_NETWORK_ERROR":"Network error while saving."}}
+  },
+  "footer": {
+    "newsletterTitle": "Stay updated",
+    "newsletterDesc": "Get tips, checklists and exclusive offers for your perfect wedding!",
+    "newsletterFormLabel": "Newsletter subscription",
+    "emailPlaceholder": "Your email...",
+    "emailAriaLabel": "Enter your email",
+    "subscribeBtn": "Subscribe",
+    "thankYouMsg": "Thank you for subscribing! Check your email.",
+    "aboutTitle": "Wedding Budget",
+    "aboutDesc": "The Italian platform for planning your wedding budget. Simple, complete and free.",
+    "toolsTitle": "Tools",
+    "expenses": "Expense Management",
+    "incomes": "Income & Gifts",
+    "guestsList": "Guest List",
+    "suppliersTitle": "Find Suppliers",
+    "locations": "Reception Venues",
+    "churches": "Ceremony Venues",
+    "allSuppliers": "All Suppliers",
+    "infoTitle": "Info & Support",
+    "aboutUs": "About Us",
+    "howItWorks": "How It Works",
+    "contacts": "Contacts",
+    "legalTitle": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy",
+    "securePayments": "Secure Payments",
+    "madeInItaly": "Made in Italy",
+    "gdprCompliant": "GDPR Compliant",
+    "free100": "100% Free",
+    "copyright": "All rights reserved.",
+    "madeWithLove": "Made with love for Italian couples",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contacts"
+  },
+  "locationReception": "Reception Venue",
+  "locationCeremony": "Ceremony Venue",
+  "languages": {
+    "pt": "Portuguese",
+    "id": "Indonesian"
+  },
+  "runtimeUi": {
+    "auth": {
+      "title": "Sign in or register",
+      "confirmationTitle": "Confirm your email",
+      "confirmationBody": "We sent you a confirmation link. Open it to activate your account.",
+      "resend": "Resend confirmation email",
+      "backToLogin": "Back to sign in",
+      "eventType": "Event type",
+      "partnerEmail": "Partner email (optional)",
+      "weddingDate": "Wedding date",
+      "brideBudget": "Bride budget (EUR)",
+      "groomBudget": "Groom budget (EUR)",
+      "totalBudget": "Total budget (EUR)",
+      "passwordHint": "At least 10 characters.",
+      "working": "Working…",
+      "signIn": "Sign in",
+      "register": "Register",
+      "sendInstructions": "Send instructions",
+      "forgotPassword": "Forgot password?",
+      "eventTypes": {
+        "wedding": "Wedding"
+      },
+      "errors": {
+        "emailNotConfirmed": "Confirm your email address first.",
+        "invalidCredentials": "Incorrect email or password.",
+        "passwordTooShort": "The password must contain at least 10 characters.",
+        "invalidOrExpiredLink": "The link is invalid or has expired. Request a new one.",
+        "rateLimited": "Too many attempts. Wait and try again.",
+        "generic": "The operation could not be completed. Try again."
+      }
+    },
+    "resetPassword": {
+      "title": "New password",
+      "saving": "Saving…",
+      "submit": "Update password",
+      "updated": "Password updated. You can now sign in.",
+      "errors": {
+        "emailNotConfirmed": "Confirm your email address first.",
+        "invalidCredentials": "Invalid credentials.",
+        "passwordTooShort": "The password must contain at least 10 characters.",
+        "invalidOrExpiredLink": "The link is invalid or has expired. Request a new one.",
+        "rateLimited": "Too many attempts. Wait and try again.",
+        "generic": "The password could not be updated. Try again."
+      }
+    },
+    "routing": {
+      "profileCheckFailed": "Unable to verify your profile",
+      "retry": "Try again",
+      "loadingSpace": "Loading your workspace…",
+      "setupUnavailable": "Setup unavailable",
+      "checkingSetup": "Checking setup…",
+      "selectEvent": "Select the event from Settings to continue.",
+      "openSettings": "Open Settings",
+      "checkingModule": "Checking module availability",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Unable to verify the session.",
+        "PROJECT_CHECK_FAILED": "Unable to verify your project.",
+        "APP_ENTRY_FAILED": "Unable to open the app.",
+        "WIZARD_ENTRY_FAILED": "Unable to start setup."
+      }
+    },
+    "shared": {
+      "optionsLoadFailed": "Unable to load options",
+      "loadingOptions": "Loading options…",
+      "comingSoon": "Coming soon",
+      "country": "Country",
+      "event": "Event",
+      "loading": "Loading",
+      "signIn": "Sign in",
+      "profile": "Profile",
+      "logout": "Log out",
+      "brandName": "Wedding Budget",
+      "ideaBudget": "Budget Idea",
+      "openSettings": "Open settings",
+      "settings": "Settings",
+      "export": "Export",
+      "noExportData": "No data to export"
+    },
+    "profile": {
+      "title": "Profile",
+      "displayName": "Display name",
+      "emailReadOnly": "Email changes are not available in this flow.",
+      "preferredLanguage": "Preferred language",
+      "comingSoon": "Coming soon",
+      "saving": "Saving…",
+      "save": "Save profile",
+      "updated": "Profile updated.",
+      "updateFailed": "The profile could not be saved.",
+      "deleteTitle": "Delete account",
+      "deleteDescription": "The request includes a 7-day safety period. The event shared with your partner is protected before processing.",
+      "confirmEmail": "Confirm email",
+      "typeDelete": "Type DELETE",
+      "cancelDeletion": "Cancel request",
+      "requestDeletion": "Request deletion",
+      "confirmMismatch": "Enter your email and type DELETE.",
+      "deletionRecorded": "Request recorded. You have 7 days to cancel it; the shared event will be checked before processing.",
+      "deletionFailed": "Request not recorded.",
+      "deletionCancelled": "Request cancelled."
+    },
+    "settings": {
+      "settings": "Settings",
+      "language": "Language",
+      "country": "Event country",
+      "currentEvent": "Current wedding",
+      "eventType": "Event type",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "locked": "The event type cannot be changed after creation because it requires a safe data migration.",
+      "close": "Close",
+      "apply": "Apply changes",
+      "comingSoon": "coming soon"
+    },
+    "dashboard": {
+      "authRequired": "Sign in to save the budget.",
+      "budgetSaved": "Budget saved. The data is now available in Budget Idea.",
+      "budgetSaveFailed": "The budget could not be saved. Try again.",
+      "loadFailed": "Unable to load the Dashboard",
+      "retry": "Try again",
+      "loading": "Loading Dashboard",
+      "eyebrow": "Your event",
+      "title": "Dashboard",
+      "description": "Budget, tasks and next steps: everything you need to plan with confidence.",
+      "fallbackItem": "Item",
+      "fallbackActivity": "Task",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Unable to verify the session.",
+        "PROJECT_CHECK_FAILED": "Unable to verify the project.",
+        "DASHBOARD_LOAD_FAILED": "Unable to load the Dashboard."
+      },
+      "info": {
+        "title": "Your event control centre",
+        "description": "The Dashboard is the heart of the application. Manage the overall budget, participant budgets and every spending category here.",
+        "tips": {
+          "budgetDate": "Set the total budget and event date to enable every feature",
+          "split": "The budget is split between participants, with shared common expenses",
+          "customize": "Customise categories, add quotes and track payments",
+          "ideas": "Use Budget Idea to apply pre-filled templates"
+        },
+        "events": {
+          "wedding": "The wedding budget is split between the bride, groom and common expenses.",
+          "baptism": "Baptism expenses are treated as common expenses.",
+          "communion": "Communion uses a single family budget.",
+          "confirmation": "Confirmation uses common family expenses.",
+          "birthday": "The birthday budget can be split between the organiser and shared expenses.",
+          "eighteenth": "An eighteenth birthday uses a single event budget.",
+          "graduation": "The graduation budget can be shared or split with the graduate."
+        }
+      },
+      "planning": {
+        "label": "Ceremony and reception choices",
+        "ceremony": "Ceremony",
+        "churchEmpty": "Ceremony venue to choose",
+        "openChurches": "Open venues",
+        "reception": "Reception",
+        "locationEmpty": "Reception venue to choose",
+        "openLocations": "Open venues"
+      },
+      "actions": {
+        "eyebrow": "Quick actions",
+        "title": "Continue planning",
+        "save": "Save configuration",
+        "preparing": "Feature in preparation",
+        "pdf": "Generate PDF",
+        "video": "Generate video",
+        "comingSoon": "Coming soon"
+      },
+      "idea": {
+        "title": "Budget Idea",
+        "description": "Fill in the items and apply them to the budget.",
+        "open": "Open ideas"
+      },
+      "honeymoon": {
+        "title": "Honeymoon",
+        "description": "Advice and ideas for your honeymoon.",
+        "open": "Explore honeymoon"
+      },
+      "suggestions": {
+        "title": "Tips and advice",
+        "description": "Useful ideas based on your choices.",
+        "open": "View tips"
+      }
+    },
+    "userSummary": {
+      "language": "Language:",
+      "country": "Country:",
+      "event": "Event:",
+      "change": "Change",
+      "languages": {
+        "it": "Italian",
+        "en": "English",
+        "es": "Spanish",
+        "fr": "French",
+        "de": "German"
+      },
+      "countries": {
+        "it": "Italy",
+        "mx": "Mexico",
+        "gb": "United Kingdom"
+      },
+      "events": {
+        "wedding": "Wedding",
+        "anniversary": "Anniversary",
+        "graduation": "Graduation",
+        "other": "Other"
+      }
+    }
   }
 }

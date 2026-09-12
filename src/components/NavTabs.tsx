@@ -145,7 +145,7 @@ export default function NavTabs() {
               type="button"
               className="fixed inset-0 z-40 h-auto w-auto bg-black/35 backdrop-blur-[1px]"
               onClick={() => setMobileMenuOpen(false)}
-              aria-label="Chiudi menu"
+              aria-label={t("milestone9.shared.closeMenu")}
             />
             <div id="mobile-nav" className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-2xl shadow-soft-xl z-50 max-h-[min(65vh,32rem)] overflow-y-auto p-1.5">
               {tabs.map((tab) => {

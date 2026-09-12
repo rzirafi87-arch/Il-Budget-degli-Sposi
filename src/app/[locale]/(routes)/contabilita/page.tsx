@@ -12,10 +12,7 @@ export default function ContabilitaPage() {
   return (
     <section className="pt-6">
       <h2 className="font-serif text-3xl mb-2 text-gray-800">{t("accounting")}</h2>
-      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
-        Gestisci tutte le transazioni economiche del tuo matrimonio in un unico posto:
-        spese sostenute e entrate ricevute. Tieni traccia di preventivi, pagamenti confermati e contributi.
-      </p>
+      <p className="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">{t("milestone9.accounting.description")}</p>
 
       {/* Tabs */}
       <div className="mb-6 flex flex-wrap gap-2 border-b pb-1" style={{ borderColor: "var(--border-soft)" }}>
@@ -37,7 +34,7 @@ export default function ContabilitaPage() {
                 }
           }
         >
-          Spese
+          {t("expenses")}
         </button>
         <button
           onClick={() => setActiveTab("entrate")}
@@ -57,7 +54,7 @@ export default function ContabilitaPage() {
                 }
           }
         >
-          Entrate
+          {t("income")}
         </button>
       </div>
 

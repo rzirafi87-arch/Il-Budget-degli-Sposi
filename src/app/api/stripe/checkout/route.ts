@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const jwt = authHeader?.split(" ")[1];
 
     if (!jwt) {
-      return NextResponse.json({ error: "Autenticazione richiesta" }, { status: 401 });
+      return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
     }
 
     const db = getServiceClient();
@@ -105,6 +105,6 @@ export async function POST(req: NextRequest) {
   } catch (e: unknown) {
     const error = e as Error;
     console.error("STRIPE CHECKOUT error:", error);
-    return NextResponse.json({ error: error?.message || "Errore creazione sessione" }, { status: 500 });
+    return NextResponse.json({ error: error?.message || "CHECKOUT_SESSION_CREATE_FAILED" }, { status: 500 });
   }
 }

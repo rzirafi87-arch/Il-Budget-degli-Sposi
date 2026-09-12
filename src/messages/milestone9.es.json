@@ -1,0 +1,96 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Lista de bodas",
+      "income": "Ir a ingresos",
+      "dashboard": "Volver al panel",
+      "weddingOnly": "La lista solo está disponible para bodas. Selecciona “Boda” para activarla.",
+      "added": "¡Añadido a la lista!",
+      "errors": {
+        "generic": "Error",
+        "network": "Error de red"
+      },
+      "info": {
+        "title": "Crea tu lista de bodas moderna",
+        "description": "Crea una lista con aportaciones para el viaje, experiencias, un fondo común o regalos tradicionales.",
+        "tips": {
+          "honeymoon": "Permite que los invitados contribuyan a la luna de miel",
+          "cash": "El fondo común ofrece la máxima flexibilidad",
+          "links": "Añade enlaces para indicar exactamente qué comprar",
+          "purchased": "Marca los regalos recibidos para evitar duplicados",
+          "priority": "Las prioridades indican lo que más deseáis"
+        },
+        "events": {
+          "wedding": "Incluye luna de miel, experiencias, muebles y tecnología.",
+          "baptism": "Incluye ahorros, libros, juguetes y aportaciones para el futuro.",
+          "birthday": "Personaliza la lista según la edad y los intereses.",
+          "graduation": "Considera estudios, viajes, equipo profesional y experiencias."
+        }
+      },
+      "addGift": "Añadir regalo",
+      "fields": {
+        "type": "Tipo",
+        "name": "Nombre",
+        "namePlaceholder": "Ej. robot aspirador",
+        "price": "Precio estimado (€)",
+        "description": "Descripción",
+        "priority": "Prioridad",
+        "status": "Estado",
+        "notes": "Notas",
+        "notesPlaceholder": "Notas opcionales"
+      },
+      "types": {
+        "honeymoon": "Aportación para luna de miel",
+        "cash": "Fondo común",
+        "experiences": "Experiencias (cenas, spa, tours)",
+        "furniture": "Muebles",
+        "appliances": "Electrodomésticos",
+        "luxury": "Artículos de lujo",
+        "charity": "Beneficencia",
+        "vouchers": "Tarjetas regalo",
+        "smartHome": "Tecnología y hogar inteligente",
+        "other": "Otro"
+      },
+      "priorities": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      },
+      "statuses": {
+        "wanted": "Deseado",
+        "purchased": "Comprado"
+      },
+      "saving": "Guardando…",
+      "add": "+ Añadir",
+      "loading": "Cargando…",
+      "empty": "No hay elementos"
+    },
+    "currentEvent": {
+      "label": "Evento actual", "choose": "Elige un evento", "none": "Ningún evento", "change": "Cambiar evento", "soon": "Próximamente"
+    },
+    "errorPage": {
+      "title": "Algo ha salido mal", "description": "No se pudo cargar esta página. Inténtalo de nuevo en breve.", "retry": "Reintentar"
+    },
+    "onboarding": {"welcome": "¡Bienvenido!", "description": "Configura el idioma, el país y el tipo de evento para personalizar tu experiencia.", "configure": "Configurar idioma, país y evento"},
+    "setup": {"title": "¡Bienvenido! Configura tu evento", "language": "Idioma", "country": "País", "event": "Evento", "confirm": "Confirmar", "comingSoon": "Próximamente", "selectEvent": "Selecciona tu evento"},
+    "availability": {"badge":"Próximamente","title":"Tipo de evento aún no disponible","description":"El flujo específico de {event} todavía no está disponible.","legacyTitle":"Evento anterior preservado","legacyBody":"Los datos de este evento se han preservado. Hasta que el flujo específico esté completo, la aplicación limita los módulos que no corresponden.","noDataLoss":"No se elimina ni se convierte automáticamente ningún dato del evento."},
+    "consent": {"label": "Preferencias de cookies", "description": "Usamos cookies técnicas necesarias. Las estadísticas opcionales se activan solo con tu consentimiento y puedes cambiar tu elección en cualquier momento.", "accept": "Aceptar estadísticas", "necessary": "Solo necesarias", "close": "Cerrar"},
+    "breadcrumbs": {"home":"Inicio","dashboard":"Panel","timeline":"Cronología","budget":"Presupuesto","guests":"Invitados","tables":"Mesas","expenses":"Gastos","income":"Ingresos","vendors":"Proveedores","reception":"Recepción","receptionVenue":"Lugar de recepción","ceremony":"Ceremonia","ceremonyVenue":"Lugar de ceremonia","favorites":"Favoritos","documents":"Documentos","giftList":"Lista de bodas","ceremonyMusic":"Música de ceremonia","receptionMusic":"Música de recepción","weddingIdeas":"Ideas de boda","signIn":"Acceso","contacts":"Contacto"},
+    "chat": {"signIn":"Inicia sesión para usar el asistente de IA.","requestError":"Error durante la solicitud.","connectionError":"Conexión no disponible.","checking":"Comprobando disponibilidad del asistente…","unavailable":"Asistente de IA no disponible","configurationRequired":"El asistente no está configurado en este entorno.","title":"Chat con tu asistente de IA","empty":"Inicia la conversación…","placeholder":"Escribe un mensaje…","sending":"Enviando…","send":"Enviar"},
+    "aiChat": {"invalidAmount":"Introduce un importe válido","saveError":"Error al guardar ({status})","saved":"Presupuesto guardado","unexpectedError":"Error inesperado","title":"Chat con el asistente de IA","enterBudget":"Introducir presupuesto","setBudget":"Establecer presupuesto total","budgetPlaceholder":"Ej. 25000","cancel":"Cancelar","saving":"Guardando…","save":"Guardar"},
+    "accounting": {"description":"Gestiona todas las transacciones de tu boda en un solo lugar: gastos realizados e ingresos recibidos. Controla presupuestos, pagos confirmados y aportaciones."},
+    "supplierPackages": {
+      "paymentSuccess": "¡Pago completado correctamente! Tu suscripción ya está activa.",
+      "paymentCancelled": "Pago cancelado. Puedes intentarlo de nuevo cuando quieras.",
+      "popular": "POPULAR", "bestValue": "MEJOR VALOR",
+      "paymentsDisabled": "Los pagos en línea están temporalmente deshabilitados. Inténtalo más tarde o contáctanos para comprar el plan.",
+      "freeAvailable": "¡El plan gratuito está siempre disponible!", "loginRequired": "Debes iniciar sesión para comprar una suscripción.",
+      "profileRequired": "Primero debes crear un perfil de proveedor. Ve a Proveedores y presenta tu negocio.", "purchaseError": "No se pudo iniciar la compra. Inténtalo de nuevo.",
+      "monthly": "Mensual", "yearly": "Anual", "loading": "Cargando…", "comingSoon": "Próximamente", "processing": "Procesando…", "purchase": "Comprar",
+      "maintenance": "Los pagos con Stripe están temporalmente en mantenimiento. Los planes seguirán visibles, pero no se podrán comprar.", "learnMore": "Descubre cómo funciona"
+    },
+    "shared": {
+      "close": "Cerrar", "cookiePreferences": "Preferencias de cookies", "closeMenu": "Cerrar menú"
+    }
+  }
+}

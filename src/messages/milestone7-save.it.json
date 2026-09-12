@@ -1,0 +1,66 @@
+{
+  "milestone7": {
+    "saveTheDate": {
+      "authSave": "Accedi per salvare la configurazione",
+      "saved": "Configurazione salvata con successo!",
+      "saveError": "Errore nel salvataggio",
+      "authPdf": "Accedi per generare il PDF",
+      "pdfError": "Errore nella generazione del PDF",
+      "videoComingSoon": "La generazione video sarà presto disponibile.",
+      "title": "Crea il tuo Save the Date",
+      "couple": "Informazioni sugli sposi",
+      "brideName": "Nome sposa",
+      "bridePlaceholder": "Nome della sposa",
+      "groomName": "Nome sposo",
+      "groomPlaceholder": "Nome dello sposo",
+      "weddingDate": "Data del matrimonio",
+      "ceremony": "Cerimonia",
+      "ceremonyName": "Nome del luogo della cerimonia",
+      "ceremonyPlaceholder": "Luogo della cerimonia",
+      "ceremonyAddress": "Indirizzo della cerimonia",
+      "addressPlaceholder": "Via e città",
+      "ceremonyTime": "Orario della cerimonia",
+      "reception": "Location / Ricevimento",
+      "venueName": "Nome location",
+      "venuePlaceholder": "Nome della location",
+      "venueAddress": "Indirizzo location",
+      "receptionTime": "Orario del ricevimento",
+      "bankDetails": "Informazioni bancarie (facoltative)",
+      "bank": "Banca",
+      "bankPlaceholder": "Nome della banca",
+      "customization": "Personalizzazione",
+      "nameFont": "Font dei nomi",
+      "colorScheme": "Schema colori",
+      "templateStyle": "Stile del modello",
+      "customMessage": "Messaggio personalizzato",
+      "messagePlaceholder": "Scrivi il tuo messaggio personale…",
+      "saving": "Salvataggio…",
+      "save": "Salva configurazione",
+      "generating": "Generazione…",
+      "generatePdf": "Genera PDF",
+      "generateVideo": "Genera video",
+      "videoPreview": "Anteprima video Save the Date",
+      "fonts": {
+        "Playfair Display": "Playfair Display",
+        "Great Vibes": "Great Vibes",
+        "Cormorant Garamond": "Cormorant Garamond",
+        "Dancing Script": "Dancing Script",
+        "Cinzel": "Cinzel",
+        "Italiana": "Italiana"
+      },
+      "colors": {
+        "classic": "Classico",
+        "modern": "Moderno",
+        "rustic": "Rustico",
+        "romantic": "Romantico",
+        "luxury": "Luxury"
+      },
+      "styles": {
+        "elegant": "Elegante",
+        "minimal": "Minimalista",
+        "floral": "Floreale",
+        "vintage": "Vintage"
+      }
+    }
+  }
+}

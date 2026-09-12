@@ -1,0 +1,44 @@
+{
+  "milestone7": {
+    "timeline": {
+      "loading": "Loading timeline",
+      "eyebrow": "Activity plan",
+      "back": "Back to Dashboard",
+      "progress": "You have completed {percent}% of the tasks.",
+      "saveChecklist": "Save as personal checklist",
+      "yes": "Yes",
+      "no": "No",
+      "exportCsv": "Export CSV",
+      "exportPdf": "Export PDF",
+      "filter": "Filter by category:",
+      "all": "All",
+      "export": {
+        "task": "Task",
+        "description": "Description",
+        "category": "Category",
+        "priority": "Priority",
+        "completed": "Completed"
+      }
+    },
+    "appointments": {
+      "title": "Appointments and deadlines",
+      "mustAuth": "Sign in to save appointments",
+      "validation": "Title and date are required.",
+      "error": "Could not save the appointment",
+      "saved": "Appointment added",
+      "confirmDelete": "Delete this appointment?",
+      "suggested": "This sample schedule is generated automatically; customize it with your real appointments.",
+      "formTitle": "Appointment title",
+      "dateLabel": "Date",
+      "formLocation": "Location",
+      "formNotes": "Notes",
+      "saving": "Saving…",
+      "add": "Add appointment",
+      "loading": "Loading…",
+      "empty": "No appointments added.",
+      "locationLabel": "Location",
+      "delete": "Delete",
+      "deleteNamed": "Delete {title}"
+    }
+  }
+}

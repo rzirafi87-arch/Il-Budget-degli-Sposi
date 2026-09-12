@@ -1,0 +1,57 @@
+{
+  "milestone7": {
+    "documents": {
+      "eyebrow": "Archivio digitale",
+      "title": "Documenti e preventivi",
+      "description": "Carica e organizza tutti i documenti importanti del tuo evento.",
+      "infoTitle": "Archivio digitale dei tuoi documenti",
+      "infoDescription": "Centralizza preventivi, contratti, fatture, ricevute e certificati in un unico posto sicuro.",
+      "tips": {
+        "1": "Carica i preventivi appena li ricevi per confrontarli facilmente",
+        "2": "Associa ogni documento al fornitore corrispondente",
+        "3": "Usa la categoria Contratto per i documenti firmati",
+        "4": "Conserva ricevute e fatture per la contabilità finale",
+        "5": "Filtra per categoria per trovare rapidamente i file",
+        "6": "Formati supportati: PDF, DOC, DOCX, JPG, PNG (massimo 10 MB)"
+      },
+      "events": {
+        "wedding": "Organizza i documenti di location, catering, fotografi, fioristi, abiti, musica e cerimonia.",
+        "baptism": "Archivia certificati, preventivi, contratti e fatture del battesimo.",
+        "birthday": "Conserva contratti, preventivi e fatture del compleanno.",
+        "graduation": "Archivia prenotazioni, preventivi, contratti e fatture della laurea."
+      },
+      "agendaTitle": "Agenda documenti",
+      "agendaDescription": "Organizza sopralluoghi, scadenze e incontri legati ai documenti.",
+      "uploading": "Caricamento in corso…",
+      "upload": "Carica documenti",
+      "uploadHelper": "Seleziona o trascina qui i file",
+      "uploadFormats": "PDF, Word, immagini • Massimo 10 MB per file",
+      "unassigned": "Da assegnare",
+      "confirmDelete": "Eliminare questo documento?",
+      "empty": "Nessun documento caricato",
+      "emptyCategory": "Nessun documento in questa categoria",
+      "emptyDescription": "Carica il primo preventivo o contratto per costruire il tuo archivio.",
+      "emptyCategoryDescription": "Scegli un’altra categoria per visualizzare i documenti disponibili.",
+      "download": "Scarica",
+      "downloadNamed": "Scarica {name}",
+      "delete": "Elimina",
+      "deleteNamed": "Elimina {name}",
+      "categories": {
+        "all": "Tutti",
+        "quote": "Preventivo",
+        "contract": "Contratto",
+        "invoice": "Fattura",
+        "receipt": "Ricevuta",
+        "generic": "Documento generico",
+        "certificate": "Certificato",
+        "license": "Licenza"
+      },
+      "stats": {
+        "total": "Documenti totali",
+        "quotes": "Preventivi",
+        "contracts": "Contratti",
+        "storage": "Spazio usato"
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "milestone7": {
+    "timeline": {
+      "loading": "Caricamento timeline",
+      "eyebrow": "Piano delle attività",
+      "back": "Torna alla Dashboard",
+      "progress": "Hai completato il {percent}% delle attività.",
+      "saveChecklist": "Salva come checklist personale",
+      "yes": "Sì",
+      "no": "No",
+      "exportCsv": "Esporta CSV",
+      "exportPdf": "Esporta PDF",
+      "filter": "Filtra per categoria:",
+      "all": "Tutte",
+      "export": {
+        "task": "Attività",
+        "description": "Descrizione",
+        "category": "Categoria",
+        "priority": "Priorità",
+        "completed": "Completata"
+      }
+    },
+    "appointments": {
+      "title": "Appuntamenti e scadenze",
+      "mustAuth": "Accedi per salvare gli appuntamenti",
+      "validation": "Titolo e data sono obbligatori.",
+      "error": "Errore di salvataggio",
+      "saved": "Appuntamento aggiunto",
+      "confirmDelete": "Eliminare questo appuntamento?",
+      "suggested": "Questa agenda di esempio è generata automaticamente: personalizzala con gli appuntamenti reali.",
+      "formTitle": "Titolo appuntamento",
+      "dateLabel": "Data",
+      "formLocation": "Luogo",
+      "formNotes": "Note",
+      "saving": "Salvataggio…",
+      "add": "Aggiungi appuntamento",
+      "loading": "Caricamento…",
+      "empty": "Nessun appuntamento inserito.",
+      "locationLabel": "Luogo",
+      "delete": "Elimina",
+      "deleteNamed": "Elimina {title}"
+    }
+  }
+}

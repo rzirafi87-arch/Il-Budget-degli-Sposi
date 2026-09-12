@@ -22,7 +22,7 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ eventId: 
       .eq("id", eventId)
       .single();
 
-    if (evErr || !ev) return NextResponse.json({ error: evErr?.message || "Evento non trovato" }, { status: 404 });
+    if (evErr || !ev) return NextResponse.json({ error: evErr?.message || "EVENT_NOT_FOUND" }, { status: 404 });
     if (ev.owner_id !== authData.user.id) return NextResponse.json({ error: "Non autorizzato" }, { status: 403 });
 
     const url = new URL(_req.url);

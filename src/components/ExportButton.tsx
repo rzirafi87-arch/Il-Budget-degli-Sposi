@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 interface GenericRecord { [key: string]: unknown }
 
@@ -17,8 +18,9 @@ export default function ExportButton<T extends GenericRecord = GenericRecord>({
   filename,
   type,
   className = "",
-  children = "Esporta",
+  children,
 }: ExportButtonProps<T>) {
+  const t = useTranslations("runtimeUi.shared");
   const handleExport = () => {
     if (type === "csv") {
       exportToCSV();
@@ -29,7 +31,7 @@ export default function ExportButton<T extends GenericRecord = GenericRecord>({
 
   const exportToCSV = () => {
     if (data.length === 0) {
-      alert("Nessun dato da esportare");
+      alert(t("noExportData"));
       return;
     }
 
@@ -59,7 +61,7 @@ export default function ExportButton<T extends GenericRecord = GenericRecord>({
 
   const exportToJSON = () => {
     if (data.length === 0) {
-      alert("Nessun dato da esportare");
+      alert(t("noExportData"));
       return;
     }
 
@@ -85,7 +87,7 @@ export default function ExportButton<T extends GenericRecord = GenericRecord>({
       className={`btn-secondary ${className}`}
       disabled={data.length === 0}
     >
-      {children}
+      {children || t("export")}
     </button>
   );
 }

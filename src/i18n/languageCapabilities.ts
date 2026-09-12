@@ -17,14 +17,15 @@ export type LanguageCapability = {
   visible: boolean;
 };
 
-const COMING_SOON = new Set(["en", "es", "fr", "de"]);
+const READY = new Set(["it", "es", "en", "fr", "de"]);
+const COMING_SOON = new Set<string>();
 const CONFIGURED_LANGUAGES = [
   ...languages,
   { slug: "mx", label: "Español (México)", locale: "es-MX", dir: "ltr", emoji: "", available: false },
 ];
 
 export const languageCapabilities: readonly LanguageCapability[] = CONFIGURED_LANGUAGES.map((language) => {
-  const status: LanguageStatus = language.slug === "it"
+  const status: LanguageStatus = READY.has(language.slug)
     ? "READY"
     : COMING_SOON.has(language.slug)
       ? "COMING_SOON"
@@ -41,7 +42,7 @@ export const languageCapabilities: readonly LanguageCapability[] = CONFIGURED_LA
     metadataReady: ready,
     authReady: ready,
     appReady: ready,
-    emailReady: language.slug === "it",
+    emailReady: ready,
     direction: language.dir as "ltr" | "rtl",
     visible: status !== "INTERNAL_ONLY",
   });

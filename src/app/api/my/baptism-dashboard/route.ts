@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
   } catch (e: unknown) {
     console.error("/api/my/baptism-dashboard error", e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Errore server" },
+      { error: e instanceof Error ? e.message : "INTERNAL_ERROR" },
       { status: 500 }
     );
   }
@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
     if (eventsError) throw eventsError;
 
     if (!event) {
-      return NextResponse.json({ error: "Nessun evento trovato" }, { status: 404 });
+      return NextResponse.json({ error: "EVENT_NOT_FOUND" }, { status: 404 });
     }
 
     const eventId = event.id;
@@ -229,7 +229,7 @@ export async function POST(req: NextRequest) {
   } catch (e: unknown) {
     console.error("/api/my/baptism-dashboard POST error", e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Errore server" },
+      { error: e instanceof Error ? e.message : "INTERNAL_ERROR" },
       { status: 500 }
     );
   }

@@ -1,0 +1,44 @@
+{
+  "milestone7": {
+    "timeline": {
+      "loading": "Zeitplan wird geladen",
+      "eyebrow": "Aktivitätsplan",
+      "back": "Zurück zum Dashboard",
+      "progress": "Du hast {percent}% der Aufgaben erledigt.",
+      "saveChecklist": "Als persönliche Checkliste speichern",
+      "yes": "Ja",
+      "no": "Nein",
+      "exportCsv": "CSV exportieren",
+      "exportPdf": "PDF exportieren",
+      "filter": "Nach Kategorie filtern:",
+      "all": "Alle",
+      "export": {
+        "task": "Aufgabe",
+        "description": "Beschreibung",
+        "category": "Kategorie",
+        "priority": "Priorität",
+        "completed": "Erledigt"
+      }
+    },
+    "appointments": {
+      "title": "Termine und Fristen",
+      "mustAuth": "Melde dich an, um Termine zu speichern",
+      "validation": "Titel und Datum sind erforderlich.",
+      "error": "Termin konnte nicht gespeichert werden",
+      "saved": "Termin hinzugefügt",
+      "confirmDelete": "Diesen Termin löschen?",
+      "suggested": "Dieser Beispielplan wird automatisch erstellt; ergänze deine tatsächlichen Termine.",
+      "formTitle": "Termintitel",
+      "dateLabel": "Datum",
+      "formLocation": "Ort",
+      "formNotes": "Notizen",
+      "saving": "Wird gespeichert…",
+      "add": "Termin hinzufügen",
+      "loading": "Wird geladen…",
+      "empty": "Keine Termine eingetragen.",
+      "locationLabel": "Ort",
+      "delete": "Löschen",
+      "deleteNamed": "{title} löschen"
+    }
+  }
+}

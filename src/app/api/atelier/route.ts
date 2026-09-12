@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     const jwt = authHeader?.split(" ")[1];
 
     if (!jwt) {
-      return NextResponse.json({ error: "Autenticazione richiesta" }, { status: 401 });
+      return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
     }
 
     const db = getServiceClient();
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
 
     if (!["sposa", "sposo"].includes(category)) {
       return NextResponse.json(
-        { error: "category deve essere 'sposa' o 'sposo'" },
+        { error: "INVALID_ATELIER_CATEGORY" },
         { status: 400 }
       );
     }

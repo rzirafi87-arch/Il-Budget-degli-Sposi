@@ -1,0 +1,95 @@
+{
+  "confirmationIdea": {
+    "title": "Idée de budget",
+    "description": "Définissez un budget estimatif pour la Confirmation et répartissez-le entre les principales catégories.",
+    "categories": {
+      "venue": "Lieu et traiteur",
+      "clothing": "Tenues",
+      "photo": "Photographe et animations",
+      "favors": "Cadeaux et décorations",
+      "invitations": "Invitations et impression"
+    },
+    "tip": "Conseil : partez d’un total et répartissez-le par catégorie. Vous pourrez affiner les montants à réception des devis."
+  },
+  "confirmationBudget": {
+    "title": "Budget de confirmation",
+    "description": "Résumé des dépenses approuvées et comparaison avec l’idée initiale.",
+    "actualTotal": "Total réel",
+    "loading": "Chargement…",
+    "empty": "Aucune dépense approuvée. Accédez à Dépenses pour les approuver.",
+    "item": "Poste",
+    "table": {
+      "category": "Catégorie",
+      "subcategory": "Sous-catégorie",
+      "budget": "Budget",
+      "committed": "Engagé",
+      "paid": "Payé",
+      "residual": "Restant",
+      "fromQuote": "Depuis un devis",
+      "difference": "Différence"
+    },
+    "comparison": {
+      "title": "Prévu vs réel",
+      "plannedTotal": "Total prévu",
+      "approvedTotal": "Total réel (approuvé)",
+      "over": "(au-dessus des prévisions)",
+      "under": "(sous les prévisions)",
+      "planned": "Prévu",
+      "actual": "Réel",
+      "empty": "Aucune donnée à comparer. Utilisez Idée de budget et approuvez les dépenses dans Dépenses."
+    }
+  },
+  "budgetRuntime": {
+    "layout": {
+      "title": "Budget",
+      "approved": "Dépenses approuvées",
+      "idea": "Idée de budget"
+    },
+    "chart": {
+      "ofBudget": "du budget",
+      "spent": "Dépensé",
+      "remaining": "Restant",
+      "total": "Budget total",
+      "status": {
+        "start": "💚 Excellent début ! Vous êtes dans les temps",
+        "progress": "💛 Bonne progression, continuez ainsi",
+        "warning": "🧡 Attention au budget, vous approchez de la limite",
+        "limit": "❤️ Presque à la limite ; évaluez bien les prochaines dépenses",
+        "exceeded": "🚨 Budget dépassé ! Revoyez vos priorités"
+      }
+    },
+    "categories": {
+      "title": "📊 Dépenses par catégorie (Top 8)",
+      "empty": "Aucune dépense enregistrée pour le moment"
+    },
+    "controls": {
+      "currency": "Devise",
+      "contingency": "Imprévus (%)",
+      "estimatedTotal": "Total estimé :",
+      "contingencyTotal": "Imprévus :",
+      "withContingency": "Total avec imprévus :"
+    },
+    "exportPdf": {
+      "defaultTitle": "Checklist de la chronologie",
+      "button": "Exporter en PDF",
+      "empty": "Aucune donnée à exporter"
+    }
+  },
+  "budgetPage": {
+    "eyebrow": "Planification financière",
+    "fallbackItem": "Poste",
+    "emptyTitle": "Le budget est encore vide",
+    "emptyAction": "Créez votre premier plan de budget",
+    "export": {
+      "button": "Exporter en PDF",
+      "fromDashboard": "Depuis le tableau de bord"
+    }
+  },
+  "expensesPage": {
+    "quotesCount": "{count, plural, one {# devis} other {# devis}}",
+    "messages": {
+      "saveError": "Erreur : {error}",
+      "unableToSave": "Impossible d’enregistrer"
+    }
+  }
+}

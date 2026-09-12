@@ -22,10 +22,11 @@ describe('SelectLanguagePage', () => {
     expect(window.localStorage.getItem('language')).toBe('it');
   });
 
-  it('mostra EN/ES Coming Soon senza renderle selezionabili', () => {
+  it('rende selezionabili tutte le lingue READY', () => {
     render(<SelectLanguagePage />);
-    expect(screen.getByRole('button', { name: 'English' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Español' })).toBeDisabled();
-    expect(screen.getAllByText('In arrivo').length).toBeGreaterThanOrEqual(2);
+    for (const language of ['English', 'Español', 'Français', 'Deutsch']) {
+      expect(screen.getByRole('button', { name: language })).toBeEnabled();
+    }
+    expect(screen.queryByText('In arrivo')).not.toBeInTheDocument();
   });
 });

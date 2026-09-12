@@ -1,0 +1,96 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Lista Nozze",
+      "income": "Vai a Entrate",
+      "dashboard": "Torna in Dashboard",
+      "weddingOnly": "La Lista Nozze è disponibile solo per l’evento Matrimonio. Seleziona il tipo evento “Matrimonio” per abilitarla.",
+      "added": "Aggiunto alla lista!",
+      "errors": {
+        "generic": "Errore",
+        "network": "Errore di rete"
+      },
+      "info": {
+        "title": "Crea la tua Lista Nozze moderna",
+        "description": "Crea una lista con contributi al viaggio, esperienze, cassa comune o regali tradizionali.",
+        "tips": {
+          "honeymoon": "Permetti agli ospiti di contribuire alla luna di miele",
+          "cash": "La cassa comune offre la massima flessibilità",
+          "links": "Aggiungi link per indicare esattamente cosa acquistare",
+          "purchased": "Segna i regali ricevuti per evitare duplicati",
+          "priority": "Le priorità indicano cosa desiderate di più"
+        },
+        "events": {
+          "wedding": "Includi viaggio di nozze, esperienze, arredamento e tecnologia.",
+          "baptism": "Includi risparmi, libri, giocattoli e contributi per il futuro.",
+          "birthday": "Personalizza la lista in base all’età e agli interessi.",
+          "graduation": "Considera studio, viaggio, attrezzatura professionale ed esperienze."
+        }
+      },
+      "addGift": "Aggiungi regalo",
+      "fields": {
+        "type": "Tipologia",
+        "name": "Nome",
+        "namePlaceholder": "Es. Robot aspirapolvere",
+        "price": "Prezzo stimato (€)",
+        "description": "Descrizione",
+        "priority": "Priorità",
+        "status": "Stato",
+        "notes": "Note",
+        "notesPlaceholder": "Note opzionali"
+      },
+      "types": {
+        "honeymoon": "Contributo viaggio di nozze",
+        "cash": "Cassa comune",
+        "experiences": "Esperienze (cene, spa, tour)",
+        "furniture": "Arredamento",
+        "appliances": "Elettrodomestici",
+        "luxury": "Beni di lusso",
+        "charity": "Beneficenza",
+        "vouchers": "Buoni regalo",
+        "smartHome": "Tech & Smart Home",
+        "other": "Altro"
+      },
+      "priorities": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Bassa"
+      },
+      "statuses": {
+        "wanted": "Desiderato",
+        "purchased": "Acquistato"
+      },
+      "saving": "Salvataggio…",
+      "add": "+ Aggiungi",
+      "loading": "Caricamento…",
+      "empty": "Nessun elemento in lista"
+    },
+    "currentEvent": {
+      "label": "Evento corrente", "choose": "Scegli un evento", "none": "Nessun evento", "change": "Cambia evento", "soon": "Prossimamente"
+    },
+    "errorPage": {
+      "title": "Qualcosa è andato storto", "description": "Non è stato possibile caricare questa pagina. Riprova tra poco.", "retry": "Riprova"
+    },
+    "onboarding": {"welcome": "Benvenuto!", "description": "Configura la lingua, la nazione e il tipo di evento per personalizzare la tua esperienza.", "configure": "Configura lingua, nazione ed evento"},
+    "setup": {"title": "Benvenuto! Configura il tuo evento", "language": "Lingua", "country": "Nazione", "event": "Evento", "confirm": "Conferma", "comingSoon": "In arrivo", "selectEvent": "Seleziona il tuo evento"},
+    "availability": {"badge":"Prossimamente","title":"Tipo evento non ancora disponibile","description":"Il flusso dedicato a {event} non è ancora disponibile.","legacyTitle":"Evento precedente preservato","legacyBody":"I dati di questo evento sono stati preservati. Finché il flusso dedicato non sarà completo, l’app limita i moduli non pertinenti.","noDataLoss":"Nessun dato dell’evento viene cancellato o convertito automaticamente."},
+    "consent": {"label": "Preferenze cookie", "description": "Usiamo cookie tecnici necessari. Le statistiche opzionali partono soltanto dopo il consenso e puoi cambiare scelta in qualsiasi momento.", "accept": "Accetta statistiche", "necessary": "Solo necessari", "close": "Chiudi"},
+    "breadcrumbs": {"home":"Home","dashboard":"Dashboard","timeline":"Timeline","budget":"Budget","guests":"Invitati","tables":"Tavoli","expenses":"Spese","income":"Entrate","vendors":"Fornitori","reception":"Ricevimento","receptionVenue":"Location Ricevimento","ceremony":"Cerimonia","ceremonyVenue":"Location Cerimonia","favorites":"Preferiti","documents":"Documenti","giftList":"Lista Nozze","ceremonyMusic":"Musica Cerimonia","receptionMusic":"Musica Ricevimento","weddingIdeas":"Cose Matrimonio","signIn":"Accesso","contacts":"Contatti"},
+    "chat": {"signIn":"Accedi per utilizzare l’assistente AI.","requestError":"Errore durante la richiesta.","connectionError":"Connessione non disponibile.","checking":"Verifica disponibilità assistente…","unavailable":"Assistente AI non disponibile","configurationRequired":"L’assistente non è configurato in questo ambiente.","title":"Chat con il tuo assistente AI","empty":"Inizia la conversazione…","placeholder":"Scrivi un messaggio…","sending":"Invio…","send":"Invia"},
+    "aiChat": {"invalidAmount":"Inserisci un importo valido","saveError":"Errore salvataggio ({status})","saved":"Budget salvato","unexpectedError":"Errore imprevisto","title":"Chat con Assistente IA","enterBudget":"Inserisci budget","setBudget":"Imposta budget totale","budgetPlaceholder":"Es. 25000","cancel":"Annulla","saving":"Salvo…","save":"Salva"},
+    "accounting": {"description":"Gestisci tutte le transazioni economiche del tuo matrimonio in un unico posto: spese sostenute e entrate ricevute. Tieni traccia di preventivi, pagamenti confermati e contributi."},
+    "supplierPackages": {
+      "paymentSuccess": "Pagamento completato con successo! Il tuo abbonamento è ora attivo.",
+      "paymentCancelled": "Pagamento annullato. Puoi riprovare quando vuoi.",
+      "popular": "POPOLARE", "bestValue": "MIGLIOR VALORE",
+      "paymentsDisabled": "I pagamenti online sono temporaneamente disabilitati. Riprova più tardi o contattaci per acquistare il piano.",
+      "freeAvailable": "Il piano gratuito è sempre disponibile!", "loginRequired": "Devi effettuare il login per acquistare un abbonamento.",
+      "profileRequired": "Devi prima creare un profilo fornitore. Vai a Fornitori e proponi la tua attività.", "purchaseError": "Non è stato possibile avviare l’acquisto. Riprova.",
+      "monthly": "Mensile", "yearly": "Annuale", "loading": "Caricamento…", "comingSoon": "Prossimamente", "processing": "Elaborazione…", "purchase": "Acquista",
+      "maintenance": "I pagamenti Stripe sono momentaneamente in manutenzione. I piani resteranno visibili ma non acquistabili.", "learnMore": "Scopri come funziona"
+    },
+    "shared": {
+      "close": "Chiudi", "cookiePreferences": "Preferenze cookie", "closeMenu": "Chiudi menu"
+    }
+  }
+}
