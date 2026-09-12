@@ -1,0 +1,44 @@
+{
+  "milestone7": {
+    "timeline": {
+      "loading": "Cargando cronograma",
+      "eyebrow": "Plan de actividades",
+      "back": "Volver al panel",
+      "progress": "Has completado el {percent}% de las tareas.",
+      "saveChecklist": "Guardar como lista personal",
+      "yes": "Sí",
+      "no": "No",
+      "exportCsv": "Exportar CSV",
+      "exportPdf": "Exportar PDF",
+      "filter": "Filtrar por categoría:",
+      "all": "Todas",
+      "export": {
+        "task": "Tarea",
+        "description": "Descripción",
+        "category": "Categoría",
+        "priority": "Prioridad",
+        "completed": "Completada"
+      }
+    },
+    "appointments": {
+      "title": "Citas y plazos",
+      "mustAuth": "Inicia sesión para guardar citas",
+      "validation": "El título y la fecha son obligatorios.",
+      "error": "No se pudo guardar la cita",
+      "saved": "Cita añadida",
+      "confirmDelete": "¿Eliminar esta cita?",
+      "suggested": "Esta agenda de ejemplo se genera automáticamente; personalízala con tus citas reales.",
+      "formTitle": "Título de la cita",
+      "dateLabel": "Fecha",
+      "formLocation": "Lugar",
+      "formNotes": "Notas",
+      "saving": "Guardando…",
+      "add": "Añadir cita",
+      "loading": "Cargando…",
+      "empty": "No hay citas.",
+      "locationLabel": "Lugar",
+      "delete": "Eliminar",
+      "deleteNamed": "Eliminar {title}"
+    }
+  }
+}

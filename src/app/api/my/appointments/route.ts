@@ -145,7 +145,7 @@ export async function GET(req: NextRequest) {
       .eq("event_id", ev.id)
       .order("appointment_date", { ascending: true });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ code: "APPOINTMENTS_LOAD_FAILED" }, { status: 500 });
 
     const result: Appointment[] = (data || []).map((a: { id: string; title: string; appointment_date: string; location?: string | null; notes?: string | null; }) => ({
       id: a.id,
@@ -162,8 +162,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ appointments: result });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "Unexpected";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("appointments GET failed", e);
+    return NextResponse.json({ code: "APPOINTMENTS_LOAD_FAILED" }, { status: 500 });
   }
 }
 
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
     const body = (await req.json()) as Appointment;
 
     if (!body.title || !body.date) {
-      return NextResponse.json({ error: "Titolo e data sono obbligatori" }, { status: 400 });
+      return NextResponse.json({ code: "APPOINTMENT_REQUIRED_FIELDS" }, { status: 400 });
     }
 
     const db = getServiceClient();
@@ -189,11 +189,11 @@ export async function POST(req: NextRequest) {
       notes: body.notes || null,
     });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ code: "APPOINTMENT_SAVE_FAILED" }, { status: 500 });
 
     return NextResponse.json({ ok: true });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "Unexpected";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("appointments POST failed", e);
+    return NextResponse.json({ code: "APPOINTMENT_SAVE_FAILED" }, { status: 500 });
   }
 }

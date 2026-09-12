@@ -1,0 +1,66 @@
+{
+  "milestone7": {
+    "saveTheDate": {
+      "authSave": "Melde dich an, um die Konfiguration zu speichern",
+      "saved": "Konfiguration erfolgreich gespeichert!",
+      "saveError": "Konfiguration konnte nicht gespeichert werden",
+      "authPdf": "Melde dich an, um das PDF zu erstellen",
+      "pdfError": "PDF konnte nicht erstellt werden",
+      "videoComingSoon": "Die Videoerstellung ist bald verfügbar.",
+      "title": "Erstelle dein Save the Date",
+      "couple": "Angaben zum Paar",
+      "brideName": "Name der Braut",
+      "bridePlaceholder": "Name der Braut",
+      "groomName": "Name des Bräutigams",
+      "groomPlaceholder": "Name des Bräutigams",
+      "weddingDate": "Hochzeitsdatum",
+      "ceremony": "Zeremonie",
+      "ceremonyName": "Name des Zeremonieorts",
+      "ceremonyPlaceholder": "Ort der Zeremonie",
+      "ceremonyAddress": "Adresse der Zeremonie",
+      "addressPlaceholder": "Straße und Ort",
+      "ceremonyTime": "Uhrzeit der Zeremonie",
+      "reception": "Location / Empfang",
+      "venueName": "Name der Location",
+      "venuePlaceholder": "Name der Location",
+      "venueAddress": "Adresse der Location",
+      "receptionTime": "Uhrzeit des Empfangs",
+      "bankDetails": "Bankverbindung (optional)",
+      "bank": "Bank",
+      "bankPlaceholder": "Name der Bank",
+      "customization": "Personalisierung",
+      "nameFont": "Schriftart der Namen",
+      "colorScheme": "Farbschema",
+      "templateStyle": "Vorlagenstil",
+      "customMessage": "Persönliche Nachricht",
+      "messagePlaceholder": "Schreibe deine persönliche Nachricht…",
+      "saving": "Wird gespeichert…",
+      "save": "Konfiguration speichern",
+      "generating": "Wird erstellt…",
+      "generatePdf": "PDF erstellen",
+      "generateVideo": "Video erstellen",
+      "videoPreview": "Save-the-Date-Videovorschau",
+      "fonts": {
+        "Playfair Display": "Playfair Display — elegant",
+        "Great Vibes": "Great Vibes — Schreibschrift",
+        "Cormorant Garamond": "Cormorant Garamond — klassisch",
+        "Dancing Script": "Dancing Script — romantisch",
+        "Cinzel": "Cinzel",
+        "Italiana": "Italiana"
+      },
+      "colors": {
+        "classic": "Klassisch",
+        "modern": "Modern",
+        "rustic": "Rustikal",
+        "romantic": "Romantisch",
+        "luxury": "Luxuriös"
+      },
+      "styles": {
+        "elegant": "Elegant",
+        "minimal": "Minimalistisch",
+        "floral": "Floral",
+        "vintage": "Vintage"
+      }
+    }
+  }
+}

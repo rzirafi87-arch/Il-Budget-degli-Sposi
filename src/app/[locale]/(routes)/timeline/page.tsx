@@ -13,7 +13,7 @@ import { getUserCountrySafe } from "@/constants/geo";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { buttonClasses } from "@/components/ui/AppButton";
@@ -33,6 +33,7 @@ type TimelineTask = {
 
 export default function TimelinePage() {
   const locale = useLocale();
+  const t = useTranslations("milestone7.timeline");
   const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
   const eventConfig = getEventConfig(eventType);
   const [country] = useState(() => getUserCountrySafe());
@@ -42,7 +43,7 @@ export default function TimelinePage() {
   const [hasSession, setHasSession] = useState(false);
   const [tasksFromDb, setTasksFromDb] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>("Tutti");
+  const [selectedCategory, setSelectedCategory] = useState<string>("__all__");
   const [localizedTemplates, setLocalizedTemplates] = useState<
     TimelineTaskTemplate[] | null
   >(null);
@@ -184,13 +185,13 @@ export default function TimelinePage() {
   }, [localizedTemplates, eventConfig, eventType, tasksFromDb]);
 
   const categories = useMemo(
-    () => ["Tutti", ...Array.from(new Set(tasks.map((task) => task.category)))],
+    () => ["__all__", ...Array.from(new Set(tasks.map((task) => task.category)))],
     [tasks]
   );
 
   const filteredTasks = useMemo(
     () =>
-      selectedCategory === "Tutti"
+      selectedCategory === "__all__"
         ? tasks
         : tasks.filter((task) => task.category === selectedCategory),
     [selectedCategory, tasks]
@@ -269,24 +270,24 @@ export default function TimelinePage() {
     tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
 
   if (loading) {
-    return <LoadingState label="Caricamento timeline" cards={4} />;
+    return <LoadingState label={t("loading")} cards={4} />;
   }
 
   return (
     <section className="space-y-6">
       <PageHeader
-        eyebrow="Piano delle attività"
+        eyebrow={t("eyebrow")}
         title={eventConfig.timelineTitle}
         description={eventConfig.timelineDescription}
         icon={<CalendarCheck size={24} aria-hidden />}
-        actions={<Link href={`/${locale}/dashboard`} className={buttonClasses({ variant: "outline", size: "sm" })}>Torna alla Dashboard</Link>}
+        actions={<Link href={`/${locale}/dashboard`} className={buttonClasses({ variant: "outline", size: "sm" })}>{t("back")}</Link>}
       />
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm text-gray-500">
-              Hai completato il {progressPercent}% delle attivita.
+              {t("progress", { percent: progressPercent })}
             </p>
             <div className="mt-2 h-3 w-64 overflow-hidden rounded-full bg-gray-200">
               <div
@@ -304,44 +305,44 @@ export default function TimelinePage() {
                 onClick={importTemplates}
                 className="rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
               >
-                Salva come checklist personale
+                {t("saveChecklist")}
               </button>
             )}
             <ExportButton
               data={tasks.map((task) => ({
-                task: task.title,
-                descrizione: task.description,
-                categoria: task.category,
-                priorita: task.priority,
-                completato: task.completed ? "Si" : "No",
+                [t("export.task")]: task.title,
+                [t("export.description")]: task.description,
+                [t("export.category")]: task.category,
+                [t("export.priority")]: task.priority,
+                [t("export.completed")]: task.completed ? t("yes") : t("no"),
               }))}
               filename={`timeline-${eventType}`}
               type="csv"
               className="text-sm"
             >
-              Esporta CSV
+              {t("exportCsv")}
             </ExportButton>
             <ExportPDFButton
               data={tasks.map((task) => ({
-                Task: task.title,
-                Descrizione: task.description,
-                Categoria: task.category,
-                Priorita: task.priority,
-                Completato: task.completed ? "Si" : "No",
+                [t("export.task")]: task.title,
+                [t("export.description")]: task.description,
+                [t("export.category")]: task.category,
+                [t("export.priority")]: task.priority,
+                [t("export.completed")]: task.completed ? t("yes") : t("no"),
               }))}
               filename={`timeline-${eventType}`}
               title={eventConfig.timelineTitle}
               subtitle={eventConfig.timelineDescription}
               className="text-sm border border-gray-300 rounded-full px-4 py-2 ml-2"
             >
-              Esporta PDF
+              {t("exportPdf")}
             </ExportPDFButton>
           </div>
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium text-gray-700">
-            Filtra per categoria:
+            {t("filter")}
           </label>
           <select
             value={selectedCategory}
@@ -350,7 +351,7 @@ export default function TimelinePage() {
           >
             {categories.map((category) => (
               <option key={category} value={category}>
-                {category}
+                {category === "__all__" ? t("all") : category}
               </option>
             ))}
           </select>

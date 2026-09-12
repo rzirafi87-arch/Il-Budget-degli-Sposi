@@ -5,7 +5,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import SaveTheDateVideoPreview from "@/components/SaveTheDateVideoPreview";
-import { SaveTheDateVideo } from "@/components/SaveTheDateVideo";
+import { useTranslations } from "next-intl";
 
 interface WeddingCardConfig {
   bride_name: string;
@@ -25,32 +25,13 @@ interface WeddingCardConfig {
   custom_message: string;
 }
 
-const fontOptions = [
-  { value: "Playfair Display", label: "Playfair Display (Elegante)" },
-  { value: "Great Vibes", label: "Great Vibes (Corsivo)" },
-  { value: "Cormorant Garamond", label: "Cormorant Garamond (Classico)" },
-  { value: "Dancing Script", label: "Dancing Script (Romantico)" },
-  { value: "Cinzel", label: "Cinzel (Formale)" },
-  { value: "Italiana", label: "Italiana (Moderno)" },
-];
-
-const colorSchemes = [
-  { value: "classic", label: "Classico (Oro e Avorio)" },
-  { value: "modern", label: "Moderno (Nero e Bianco)" },
-  { value: "rustic", label: "Rustico (Verde Salvia)" },
-  { value: "romantic", label: "Romantico (Rosa e Pesca)" },
-  { value: "luxury", label: "Luxury (Blu Navy e Oro)" },
-];
-
-const templateStyles = [
-  { value: "elegant", label: "Elegante" },
-  { value: "minimal", label: "Minimalista" },
-  { value: "floral", label: "Floreale" },
-  { value: "vintage", label: "Vintage" },
-];
+const fontOptions = ["Playfair Display", "Great Vibes", "Cormorant Garamond", "Dancing Script", "Cinzel", "Italiana"];
+const colorSchemes = ["classic", "modern", "rustic", "romantic", "luxury"];
+const templateStyles = ["elegant", "minimal", "floral", "vintage"];
 
 export default function PartecipazionePage() {
   const supabase = getBrowserClient();
+  const t = useTranslations("milestone7.saveTheDate");
   const country = getUserCountrySafe();
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -103,7 +84,7 @@ export default function PartecipazionePage() {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        alert("Accedi per salvare la configurazione");
+        alert(t("authSave"));
         return;
       }
 
@@ -115,11 +96,11 @@ export default function PartecipazionePage() {
         },
         body: JSON.stringify(config),
       });
-      if (res.ok) alert("Configurazione salvata con successo!");
-      else alert("Errore nel salvataggio");
+      if (res.ok) alert(t("saved"));
+      else alert(t("saveError"));
     } catch (e) {
       console.error("Errore salvataggio:", e);
-      alert("Errore nel salvataggio");
+      alert(t("saveError"));
     } finally {
       setLoading(false);
     }
@@ -131,7 +112,7 @@ export default function PartecipazionePage() {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        alert("Accedi per generare il PDF");
+        alert(t("authPdf"));
         return;
       }
       const res = await fetch("/api/generate-wedding-pdf", {
@@ -153,11 +134,11 @@ export default function PartecipazionePage() {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       } else {
-        alert("Errore nella generazione del PDF");
+        alert(t("pdfError"));
       }
     } catch (e) {
       console.error("Errore generazione PDF:", e);
-      alert("Errore nella generazione del PDF");
+      alert(t("pdfError"));
     } finally {
       setGenerating(false);
     }
@@ -167,7 +148,7 @@ export default function PartecipazionePage() {
     setGenerating(true);
     try {
       alert(
-        "Funzione video in sviluppo: sarà possibile scaricare un video Save the Date personalizzato!",
+        t("videoComingSoon"),
       );
     } finally {
       setGenerating(false);
@@ -185,37 +166,37 @@ export default function PartecipazionePage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-6 text-[#A3B59D]">📣 Crea il tuo Save the Date</h1>
+        <h1 className="text-3xl font-bold mb-6 text-[#A3B59D]">📣 {t("title")}</h1>
 
         <ImageCarousel images={getPageImages("save-the-date", country)} height="280px" />
 
         <div className="space-y-6">
           {/* Informazioni Sposi */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">👰🤵 Informazioni Sposi</h2>
+            <h2 className="text-xl font-semibold mb-4">👰🤵 {t("couple")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Nome Sposa</label>
+                <label className="block text-sm font-medium mb-2">{t("brideName")}</label>
                 <input
                   type="text"
                   value={config.bride_name}
                   onChange={(e) => setConfig({ ...config, bride_name: e.target.value })}
                   className="w-full border rounded px-3 py-2"
-                  placeholder="Maria"
+                  placeholder={t("bridePlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Nome Sposo</label>
+                <label className="block text-sm font-medium mb-2">{t("groomName")}</label>
                 <input
                   type="text"
                   value={config.groom_name}
                   onChange={(e) => setConfig({ ...config, groom_name: e.target.value })}
                   className="w-full border rounded px-3 py-2"
-                  placeholder="Giovanni"
+                  placeholder={t("groomPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Data Matrimonio</label>
+                <label className="block text-sm font-medium mb-2">{t("weddingDate")}</label>
                 <input
                   type="date"
                   value={config.wedding_date}
@@ -228,30 +209,30 @@ export default function PartecipazionePage() {
 
           {/* Cerimonia */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">⛪ Cerimonia</h2>
+            <h2 className="text-xl font-semibold mb-4">⛪ {t("ceremony")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Nome Chiesa</label>
+                <label className="block text-sm font-medium mb-2">{t("ceremonyName")}</label>
                 <input
                   type="text"
                   value={config.church_name}
                   onChange={(e) => setConfig({ ...config, church_name: e.target.value })}
                   className="w-full border rounded px-3 py-2"
-                  placeholder="Chiesa di Santa Maria"
+                  placeholder={t("ceremonyPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Indirizzo Chiesa</label>
+                <label className="block text-sm font-medium mb-2">{t("ceremonyAddress")}</label>
                 <input
                   type="text"
                   value={config.church_address}
                   onChange={(e) => setConfig({ ...config, church_address: e.target.value })}
                   className="w-full border rounded px-3 py-2"
-                  placeholder="Via Roma, 1 - Milano"
+                  placeholder={t("addressPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Orario Cerimonia</label>
+                <label className="block text-sm font-medium mb-2">{t("ceremonyTime")}</label>
                 <input
                   type="time"
                   value={config.ceremony_time}
@@ -264,30 +245,30 @@ export default function PartecipazionePage() {
 
           {/* Location / Ricevimento */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">🏛️ Location / Ricevimento</h2>
+            <h2 className="text-xl font-semibold mb-4">🏛️ {t("reception")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Nome Location</label>
+                <label className="block text-sm font-medium mb-2">{t("venueName")}</label>
                 <input
                   type="text"
                   value={config.location_name}
                   onChange={(e) => setConfig({ ...config, location_name: e.target.value })}
                   className="w-full border rounded px-3 py-2"
-                  placeholder="Villa delle Rose"
+                  placeholder={t("venuePlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Indirizzo Location</label>
+                <label className="block text-sm font-medium mb-2">{t("venueAddress")}</label>
                 <input
                   type="text"
                   value={config.location_address}
                   onChange={(e) => setConfig({ ...config, location_address: e.target.value })}
                   className="w-full border rounded px-3 py-2"
-                  placeholder="Via delle Magnolie, 10 - Roma"
+                  placeholder={t("addressPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Orario Ricevimento</label>
+                <label className="block text-sm font-medium mb-2">{t("receptionTime")}</label>
                 <input
                   type="time"
                   value={config.reception_time}
@@ -300,7 +281,7 @@ export default function PartecipazionePage() {
 
           {/* Bonifico (Opzionale) */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">💳 Informazioni Bonifico (Facoltativo)</h2>
+            <h2 className="text-xl font-semibold mb-4">💳 {t("bankDetails")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">IBAN</label>
@@ -313,13 +294,13 @@ export default function PartecipazionePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Banca</label>
+                <label className="block text-sm font-medium mb-2">{t("bank")}</label>
                 <input
                   type="text"
                   value={config.bank_name}
                   onChange={(e) => setConfig({ ...config, bank_name: e.target.value })}
                   className="w-full border rounded px-3 py-2"
-                  placeholder="Intesa Sanpaolo"
+                  placeholder={t("bankPlaceholder")}
                 />
               </div>
             </div>
@@ -327,46 +308,46 @@ export default function PartecipazionePage() {
 
           {/* Design */}
           <div className="border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">🎨 Personalizzazione</h2>
+            <h2 className="text-xl font-semibold mb-4">🎨 {t("customization")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Font Nomi</label>
+                <label className="block text-sm font-medium mb-2">{t("nameFont")}</label>
                 <select
                   value={config.font_family}
                   onChange={(e) => setConfig({ ...config, font_family: e.target.value })}
                   className="w-full border rounded px-3 py-2"
                 >
-                  {fontOptions.map((f) => (
-                    <option key={f.value} value={f.value}>
-                      {f.label}
+                  {fontOptions.map((font) => (
+                    <option key={font} value={font}>
+                      {t(`fonts.${font}`)}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Schema Colori</label>
+                <label className="block text-sm font-medium mb-2">{t("colorScheme")}</label>
                 <select
                   value={config.color_scheme}
                   onChange={(e) => setConfig({ ...config, color_scheme: e.target.value })}
                   className="w-full border rounded px-3 py-2"
                 >
-                  {colorSchemes.map((c) => (
-                    <option key={c.value} value={c.value}>
-                      {c.label}
+                  {colorSchemes.map((scheme) => (
+                    <option key={scheme} value={scheme}>
+                      {t(`colors.${scheme}`)}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Stile Template</label>
+                <label className="block text-sm font-medium mb-2">{t("templateStyle")}</label>
                 <select
                   value={config.template_style}
                   onChange={(e) => setConfig({ ...config, template_style: e.target.value })}
                   className="w-full border rounded px-3 py-2"
                 >
-                  {templateStyles.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
+                  {templateStyles.map((style) => (
+                    <option key={style} value={style}>
+                      {t(`styles.${style}`)}
                     </option>
                   ))}
                 </select>
@@ -376,12 +357,12 @@ export default function PartecipazionePage() {
 
           {/* Messaggio Personalizzato */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">📝 Messaggio Personalizzato</h2>
+            <h2 className="text-xl font-semibold mb-4">📝 {t("customMessage")}</h2>
             <textarea
               value={config.custom_message}
               onChange={(e) => setConfig({ ...config, custom_message: e.target.value })}
               className="w-full border rounded px-3 py-2 h-24"
-              placeholder="Saremo felici di condividere con voi il giorno più importante della nostra vita..."
+              placeholder={t("messagePlaceholder")}
             />
           </div>
 
@@ -392,27 +373,27 @@ export default function PartecipazionePage() {
               disabled={loading}
               className="flex-1 bg-[#A3B59D] text-white py-3 px-6 rounded font-semibold hover:bg-[#8da182] disabled:opacity-50"
             >
-              {loading ? "Salvataggio..." : "💾 Salva Configurazione"}
+              {loading ? t("saving") : `💾 ${t("save")}`}
             </button>
             <button
               onClick={handleGeneratePDF}
               disabled={generating || !config.bride_name || !config.groom_name}
               className="flex-1 bg-blue-600 text-white py-3 px-6 rounded font-semibold hover:bg-blue-700 disabled:opacity-50"
             >
-              {generating ? "Generazione..." : "📄 Genera PDF"}
+              {generating ? t("generating") : `📄 ${t("generatePdf")}`}
             </button>
             <button
               onClick={handleGenerateVideo}
               disabled={generating || !config.bride_name || !config.groom_name}
               className="flex-1 bg-pink-600 text-white py-3 px-6 rounded font-semibold hover:bg-pink-700 disabled:opacity-50"
             >
-              {generating ? "Generazione..." : "🎬 Genera Video"}
+              {generating ? t("generating") : `🎬 ${t("generateVideo")}`}
             </button>
           </div>
 
           {/* Preview Video Save the Date */}
           <div className="mt-10">
-            <h2 className="text-xl font-semibold mb-4 text-[#A3B59D]">Anteprima Video Save the Date</h2>
+            <h2 className="text-xl font-semibold mb-4 text-[#A3B59D]">{t("videoPreview")}</h2>
             <SaveTheDateVideoPreview {...videoProps} />
           </div>
         </div>
