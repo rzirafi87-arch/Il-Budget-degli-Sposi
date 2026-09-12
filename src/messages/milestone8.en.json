@@ -1,0 +1,133 @@
+{
+  "milestone8": {
+    "map": {
+      "loading": "Loading map",
+      "results": "Catalog results map",
+      "dataAttribution": "Map data"
+    },
+    "favoriteActions": {
+      "loadError": "Unable to load favourites",
+      "authRequired": "Sign in to save favourites",
+      "removeError": "Unable to remove the favourite",
+      "saveError": "Unable to save the favourite",
+      "manageError": "Unable to update favourites",
+      "item": "Item",
+      "removed": "{name} removed from favourites",
+      "added": "{name} added to favourites"
+    },
+    "suppliers": {
+      "eyebrow": "Verifiable global catalogue",
+      "title": "Suppliers",
+      "description": "Search professionals by name, category and location.",
+      "search": "Search",
+      "searchPlaceholder": "Name, city, province, region or category",
+      "category": "Category",
+      "allCategories": "All categories",
+      "city": "City",
+      "loadError": "Unable to load suppliers.",
+      "authRequired": "Sign in to save a supplier.",
+      "saveError": "Unable to update saved suppliers.",
+      "loading": "Loading…",
+      "emptyTitle": "No suppliers found",
+      "emptyDescription": "Change the filters to broaden your search.",
+      "removeSaved": "Remove from saved",
+      "saveSupplier": "Save supplier",
+      "details": "Details",
+      "pagination": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {total}",
+      "verification": {
+        "VERIFIED": "Verified",
+        "PROBABLE": "Probable",
+        "TO_CHECK": "To check"
+      },
+      "categories": {
+        "Beauty & Benessere": "Beauty & wellness",
+        "Catering": "Catering",
+        "Location & Catering": "Venues & catering",
+        "Sposa": "Bride",
+        "Foto & Video": "Photo & video",
+        "Fiori & Decor": "Flowers & decor",
+        "Gioiellerie": "Jewellers",
+        "Inviti & Stationery": "Invitations & stationery",
+        "Trasporti": "Transport",
+        "Sposo": "Groom",
+        "Musica & Intrattenimento": "Music & entertainment",
+        "Viaggio di nozze": "Honeymoon",
+        "Ricevimento Location": "Reception venues",
+        "Bomboniere & Regali": "Favours & gifts",
+        "Fiorai": "Florists",
+        "Musica Ricevimento": "Reception music",
+        "Fotografi": "Photographers",
+        "fiori": "Flowers"
+      }
+    },
+    "supplierProfile": {
+      "errors": {
+        "save": "Unable to save changes",
+        "authUpload": "You must be signed in to upload images.",
+        "saveImages": "Unable to save images",
+        "removeImage": "Unable to remove the image"
+      },
+      "watchVideo": "Watch video {number}",
+      "loading": "Loading supplier…",
+      "notFound": "Supplier not found.",
+      "supplier": "Supplier",
+      "photoAlt": "Photo {number} of {name}",
+      "deletePhoto": "Delete photo",
+      "delete": "Delete",
+      "description": "Description",
+      "noDescription": "The supplier has not added a description yet.",
+      "video": "Video",
+      "contacts": "Contacts",
+      "website": "Website",
+      "discounts": "Discounts and promotions",
+      "editPage": "Edit your page",
+      "descriptionPlaceholder": "Tell couples who you are, what you offer and why they should choose you.",
+      "discountPlaceholder": "Any discounts or promotions (e.g. 10% off when booking by 31 December).",
+      "uploadPhotos": "Upload photos",
+      "uploading": "Uploading…",
+      "photosOnePerLine": "Photos (one per line)",
+      "videosOnePerLine": "Videos (one per line)",
+      "saving": "Saving…",
+      "saveChanges": "Save changes",
+      "publicChanges": "Changes are visible to everyone."
+    },
+    "favorites": {
+      "unknownCity": "Location unavailable",
+      "loading": "Loading…",
+      "title": "My favourites",
+      "home": "Home",
+      "breadcrumb": "Favourites",
+      "summary": "All your saved suppliers, venues and churches in one place.",
+      "infoTitle": "Collect your favourites",
+      "infoDescription": "Find all the suppliers, venues and churches you saved while browsing. Add personal notes, ratings and compare them easily.",
+      "tips": {
+        "save": "Save options you are interested in to compare later",
+        "notes": "Add personal notes to each favourite",
+        "rating": "Use stars to give a personal rating",
+        "filter": "Filter by type to organise your search",
+        "remove": "Remove discarded options to keep the list tidy"
+      },
+      "eventTips": {
+        "wedding": "For your wedding, save and compare professionals before deciding and booking.",
+        "baptism": "For a baptism, compare churches, venues and photographers.",
+        "birthday": "For a birthday, compare venues, catering, DJs and entertainers.",
+        "graduation": "For graduation, compare venues, photographers and invitation services."
+      },
+      "filters": {
+        "all": "All",
+        "suppliers": "Suppliers",
+        "locations": "Venues",
+        "churches": "Churches"
+      },
+      "emptyTitle": "No favourites yet",
+      "emptyDescription": "Start saving suppliers, venues and churches you like!",
+      "exploreSuppliers": "Explore suppliers",
+      "discoverLocations": "Discover venues",
+      "removeFavorite": "Remove from favourites",
+      "savedOn": "Saved on {date}"
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "milestone8": {
+    "map": {
+      "loading": "Cargando mapa",
+      "results": "Mapa de resultados del catálogo",
+      "dataAttribution": "Datos del mapa"
+    },
+    "favoriteActions": {
+      "loadError": "No se pueden cargar los favoritos",
+      "authRequired": "Inicia sesión para guardar favoritos",
+      "removeError": "No se puede eliminar el favorito",
+      "saveError": "No se puede guardar el favorito",
+      "manageError": "No se pueden actualizar los favoritos",
+      "item": "Elemento",
+      "removed": "{name} eliminado de favoritos",
+      "added": "{name} añadido a favoritos"
+    },
+    "suppliers": {
+      "eyebrow": "Catálogo global verificable",
+      "title": "Proveedores",
+      "description": "Busca profesionales por nombre, categoría y ubicación.",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre, ciudad, provincia, región o categoría",
+      "category": "Categoría",
+      "allCategories": "Todas las categorías",
+      "city": "Ciudad",
+      "loadError": "No se pueden cargar los proveedores.",
+      "authRequired": "Inicia sesión para guardar un proveedor.",
+      "saveError": "No se pueden actualizar los proveedores guardados.",
+      "loading": "Cargando…",
+      "emptyTitle": "No se encontraron proveedores",
+      "emptyDescription": "Cambia los filtros para ampliar la búsqueda.",
+      "removeSaved": "Eliminar de guardados",
+      "saveSupplier": "Guardar proveedor",
+      "details": "Detalles",
+      "pagination": "Paginación",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {page} de {total}",
+      "verification": {
+        "VERIFIED": "Verificado",
+        "PROBABLE": "Probable",
+        "TO_CHECK": "Por verificar"
+      },
+      "categories": {
+        "Beauty & Benessere": "Belleza y bienestar",
+        "Catering": "Catering",
+        "Location & Catering": "Lugares y catering",
+        "Sposa": "Novia",
+        "Foto & Video": "Foto y vídeo",
+        "Fiori & Decor": "Flores y decoración",
+        "Gioiellerie": "Joyerías",
+        "Inviti & Stationery": "Invitaciones y papelería",
+        "Trasporti": "Transporte",
+        "Sposo": "Novio",
+        "Musica & Intrattenimento": "Música y entretenimiento",
+        "Viaggio di nozze": "Luna de miel",
+        "Ricevimento Location": "Lugares para la recepción",
+        "Bomboniere & Regali": "Detalles y regalos",
+        "Fiorai": "Floristas",
+        "Musica Ricevimento": "Música para la recepción",
+        "Fotografi": "Fotógrafos",
+        "fiori": "Flores"
+      }
+    },
+    "supplierProfile": {
+      "errors": {
+        "save": "No se pueden guardar los cambios",
+        "authUpload": "Debes iniciar sesión para subir imágenes.",
+        "saveImages": "No se pueden guardar las imágenes",
+        "removeImage": "No se puede eliminar la imagen"
+      },
+      "watchVideo": "Ver vídeo {number}",
+      "loading": "Cargando proveedor…",
+      "notFound": "Proveedor no encontrado.",
+      "supplier": "Proveedor",
+      "photoAlt": "Foto {number} de {name}",
+      "deletePhoto": "Eliminar foto",
+      "delete": "Eliminar",
+      "description": "Descripción",
+      "noDescription": "El proveedor aún no ha añadido una descripción.",
+      "video": "Vídeo",
+      "contacts": "Contactos",
+      "website": "Sitio web",
+      "discounts": "Descuentos y promociones",
+      "editPage": "Edita tu página",
+      "descriptionPlaceholder": "Cuenta quién eres, qué ofreces y por qué deberían elegirte.",
+      "discountPlaceholder": "Descuentos o promociones disponibles.",
+      "uploadPhotos": "Subir fotos",
+      "uploading": "Subiendo…",
+      "photosOnePerLine": "Fotos (una por línea)",
+      "videosOnePerLine": "Vídeos (uno por línea)",
+      "saving": "Guardando…",
+      "saveChanges": "Guardar cambios",
+      "publicChanges": "Los cambios son visibles para todos."
+    },
+    "favorites": {
+      "unknownCity": "Ubicación no disponible",
+      "loading": "Cargando…",
+      "title": "Mis favoritos",
+      "home": "Inicio",
+      "breadcrumb": "Favoritos",
+      "summary": "Todos tus proveedores, lugares e iglesias guardados en un solo lugar.",
+      "infoTitle": "Reúne tus favoritos",
+      "infoDescription": "Aquí encontrarás los proveedores, lugares e iglesias que guardaste. Añade notas, valoraciones y compáralos fácilmente.",
+      "tips": {
+        "save": "Guarda opciones para compararlas más tarde",
+        "notes": "Añade notas personales a cada favorito",
+        "rating": "Usa estrellas para asignar una valoración",
+        "filter": "Filtra por tipo para organizar la búsqueda",
+        "remove": "Elimina las opciones descartadas"
+      },
+      "eventTips": {
+        "wedding": "Para tu boda, guarda y compara profesionales antes de reservar.",
+        "baptism": "Para un bautizo, compara iglesias, lugares y fotógrafos.",
+        "birthday": "Para un cumpleaños, compara lugares, catering, DJ y animadores.",
+        "graduation": "Para una graduación, compara lugares, fotógrafos y servicios de invitaciones."
+      },
+      "filters": {
+        "all": "Todos",
+        "suppliers": "Proveedores",
+        "locations": "Lugares",
+        "churches": "Iglesias"
+      },
+      "emptyTitle": "Aún no hay favoritos",
+      "emptyDescription": "Empieza a guardar proveedores, lugares e iglesias que te gusten.",
+      "exploreSuppliers": "Explorar proveedores",
+      "discoverLocations": "Descubrir lugares",
+      "removeFavorite": "Eliminar de favoritos",
+      "savedOn": "Guardado el {date}"
+    }
+  }
+}

@@ -2,8 +2,14 @@
 
 import type { CatalogSearchResult } from "@/lib/catalogSearch";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
-const MapCanvas = dynamic(() => import("./CatalogMapCanvas"), { ssr: false, loading: () => <div className="h-80 animate-pulse rounded-xl bg-gray-100" aria-label="Loading map" /> });
+function LoadingMap() {
+  const t = useTranslations("milestone8.map");
+  return <div className="h-80 animate-pulse rounded-xl bg-gray-100" aria-label={t("loading")} />;
+}
+
+const MapCanvas = dynamic(() => import("./CatalogMapCanvas"), { ssr: false, loading: LoadingMap });
 
 export function hasValidMapCoordinates(item: Pick<CatalogSearchResult, "latitude" | "longitude">) {
   const latitude = item.latitude;
@@ -14,12 +20,13 @@ export function hasValidMapCoordinates(item: Pick<CatalogSearchResult, "latitude
 }
 
 export function CatalogMap({ results, selectedId, onSelect }: { results: CatalogSearchResult[]; selectedId?: string | null; onSelect: (id: string) => void }) {
+  const t = useTranslations("milestone8.map");
   const markers = results.filter(hasValidMapCoordinates);
   if (!markers.length) return null;
-  return <div aria-label="Catalog results map" className="min-w-0 overflow-hidden rounded-xl border border-gray-200">
+  return <div aria-label={t("results")} className="min-w-0 overflow-hidden rounded-xl border border-gray-200">
     <MapCanvas results={markers} selectedId={selectedId} onSelect={onSelect} />
     <p className="border-t border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
-      Map data © <a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a> · ODbL
+      {t("dataAttribution")} © <a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a> · ODbL
     </p>
   </div>;
 }
