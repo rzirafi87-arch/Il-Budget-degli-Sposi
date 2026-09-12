@@ -90,7 +90,7 @@ export default function BudgetPage() {
         type PlannedItem = { name?: string; category?: string; subcategory?: string; amount?: number };
         const planned = Array.isArray(plannedJson?.items)
           ? plannedJson.items.map((it: PlannedItem) => ({
-              name: it.name || [it.category, it.subcategory].filter(Boolean).join(" - ") || "Voce",
+              name: it.name || [it.category, it.subcategory].filter(Boolean).join(" - ") || t("budgetPage.fallbackItem"),
               amount: Number(it.amount || 0) || 0,
             }))
           : [];
@@ -103,31 +103,31 @@ export default function BudgetPage() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [t]);
 
   const plannedTotal = useMemo(() => plannedItems.reduce((s, it) => s + (Number(it.amount)||0), 0), [plannedItems]);
   const compareRows = useMemo(() => {
     const planMap = new Map<string, number>();
     for (const p of plannedItems) {
-      const key = p.name || "Voce";
+      const key = p.name || t("budgetPage.fallbackItem");
       planMap.set(key, (planMap.get(key) || 0) + (Number(p.amount) || 0));
     }
     const actualMap = new Map<string, number>();
     for (const r of rows) {
-      const key = [r.category, r.subcategory].filter(Boolean).join(" - ") || "Voce";
+      const key = [r.category, r.subcategory].filter(Boolean).join(" - ") || t("budgetPage.fallbackItem");
       actualMap.set(key, (actualMap.get(key) || 0) + (Number(r.budget) || 0));
     }
     const userLang = getUserLanguage();
     const keys = Array.from(new Set([...planMap.keys(), ...actualMap.keys()])).sort((a,b)=>a.localeCompare(b,userLang));
     return keys.map((k) => ({ key: k, planned: planMap.get(k) || 0, actual: actualMap.get(k) || 0 }));
-  }, [plannedItems, rows]);
+  }, [plannedItems, rows, t]);
 
   return (
     <section>
       <h3 className="sr-only">{t("budgetPage.approvedExpenses")}</h3>
 
       <PageHeader
-        eyebrow="Pianificazione economica"
+        eyebrow={t("budgetPage.eyebrow")}
         title={t("budget")}
         description={t("budgetPage.description")}
         icon={<WalletCards size={24} aria-hidden />}
@@ -145,23 +145,23 @@ export default function BudgetPage() {
       <div className="flex items-center justify-end mb-4 gap-2">
         <ExportPDFButton
           data={rows.map((r) => ({
-            Categoria: r.category,
-            Sottocategoria: r.subcategory,
-            "Tipo spesa": r.spend_type,
-            "Metodo pagamento": r.payment_method,
-            Budget: formatEuro(r.budget),
-            Impegnato: formatEuro(r.committed),
-            Pagato: formatEuro(r.paid),
-            Residuo: formatEuro(r.residual),
-            "Da dashboard": r.fromDashboard ? "✓" : "",
-            Differenza: formatEuro(r.difference),
+            [t("budgetPage.table.category")]: r.category,
+            [t("budgetPage.table.subcategory")]: r.subcategory,
+            [t("budgetPage.table.spendType")]: r.spend_type,
+            [t("budgetPage.table.paymentMethod")]: r.payment_method,
+            [t("budgetPage.table.budget")]: formatEuro(r.budget),
+            [t("budgetPage.table.committed")]: formatEuro(r.committed),
+            [t("budgetPage.table.paid")]: formatEuro(r.paid),
+            [t("budgetPage.table.residual")]: formatEuro(r.residual),
+            [t("budgetPage.export.fromDashboard")]: r.fromDashboard ? "✓" : "",
+            [t("budgetPage.table.difference")]: formatEuro(r.difference),
           }) )}
           filename={`budget-${userEventType}`}
           title={t("budgetPage.totals.title")}
           subtitle={t("budgetPage.description")}
           className={buttonClasses({ variant: "outline", size: "sm" })}
         >
-          Esporta PDF
+          {t("budgetPage.export.button")}
         </ExportPDFButton>
       </div>
 
@@ -204,9 +204,9 @@ export default function BudgetPage() {
           <div className="min-w-0 p-4 sm:p-6">
             <EmptyState
               icon={<Inbox size={26} />}
-              title="Il budget è ancora vuoto"
+              title={t("budgetPage.emptyTitle")}
               description={t("budgetPage.empty")}
-              action={<AppButtonLink href={`/${locale}/idea-di-budget`}>Crea il primo piano di budget</AppButtonLink>}
+              action={<AppButtonLink href={`/${locale}/idea-di-budget`}>{t("budgetPage.emptyAction")}</AppButtonLink>}
             />
           </div>
         ) : (

@@ -135,7 +135,7 @@ export default function SpesePage() {
 
       if (!r.ok) {
         const j = await r.json();
-        showToast(`Errore: ${j.error || "Impossibile salvare"}`, "error");
+        showToast(t("expensesPage.messages.saveError", { error: j.error || t("expensesPage.messages.unableToSave") }), "error");
       } else {
         showToast(t("expensesPage.messages.successAdded"), "success");
         setShowForm(false);
@@ -406,7 +406,7 @@ export default function SpesePage() {
                   {group.category} → {group.subcategory}
                 </h3>
                 <div className="text-xs text-gray-600 mt-1">
-                  {group.expenses.length} preventivo{group.expenses.length !== 1 ? "i" : ""}
+                  {t("expensesPage.quotesCount", { count: group.expenses.length })}
                 </div>
               </div>
 
@@ -432,7 +432,7 @@ export default function SpesePage() {
                         </span>
                       </dd></div>
                       <div className="col-span-2"><dt className="text-muted-foreground">{t("expensesPage.table.fromQuote")}</dt><dd>{exp.fromDashboard ? <span className="text-green-600 font-bold">✓</span> : "—"}</dd></div>
-                      <div className="col-span-2"><dt className="text-muted-foreground">Azioni</dt><dd>
+                      <div className="col-span-2"><dt className="text-muted-foreground">{t("expensesPage.table.actions")}</dt><dd>
                         {exp.status === "pending" && (
                           <div className="flex gap-2 justify-center">
                             <button

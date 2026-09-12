@@ -1,6 +1,7 @@
 "use client";
 import jsPDF from "jspdf";
 import { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 export type ExportPDFButtonProps = {
   data: Array<{ [k: string]: unknown }>;
@@ -14,20 +15,23 @@ export type ExportPDFButtonProps = {
 export default function ExportPDFButton({
   data,
   filename,
-  title = "Checklist timeline",
+  title,
   subtitle = "",
   className = "",
-  children = "Esporta PDF",
+  children,
 }: ExportPDFButtonProps) {
+  const t = useTranslations("budgetRuntime.exportPdf");
+  const resolvedTitle = title || t("defaultTitle");
+  const resolvedChildren = children || t("button");
   const handleExport = () => {
     if (!data || data.length === 0) {
-      alert("Nessun dato da esportare");
+      alert(t("empty"));
       return;
     }
     const doc = new jsPDF();
     let y = 15;
     doc.setFontSize(18);
-    doc.text(title, 10, y);
+    doc.text(resolvedTitle, 10, y);
     y += 8;
     if (subtitle) {
       doc.setFontSize(12);
@@ -60,7 +64,7 @@ export default function ExportPDFButton({
   };
   return (
     <button type="button" className={className} onClick={handleExport}>
-      {children}
+      {resolvedChildren}
     </button>
   );
 }

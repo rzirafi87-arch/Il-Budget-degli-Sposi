@@ -2,12 +2,13 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { locales } from "@/i18n/config";
 
 export default function BudgetLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("budgetRuntime.layout");
   const normalizedPath = React.useMemo(() => {
     if (!pathname) return "/budget";
     const segments = pathname.split("/").filter(Boolean);
@@ -20,7 +21,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-2 text-gray-800">Budget</h2>
+      <h2 className="font-serif text-3xl mb-2 text-gray-800">{t("title")}</h2>
       {/* Tabs in stile Contabilità */}
       <div className="mb-6 flex flex-wrap gap-2 border-b pb-1" style={{ borderColor: "var(--border-soft)" }}>
         <Link
@@ -42,7 +43,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
                 }
           }
         >
-          Spese approvate
+          {t("approved")}
         </Link>
         <Link
           href="/idea-di-budget"
@@ -63,7 +64,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
                 }
           }
         >
-          Idea di spesa
+          {t("idea")}
         </Link>
       </div>
       {children}
