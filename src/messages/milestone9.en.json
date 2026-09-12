@@ -71,6 +71,11 @@
     "errorPage": {
       "title": "Something went wrong", "description": "This page could not be loaded. Please try again shortly.", "retry": "Try again"
     },
+    "onboarding": {"welcome": "Welcome!", "description": "Set your language, country and event type to personalize your experience.", "configure": "Set language, country and event"},
+    "setup": {"title": "Welcome! Set up your event", "language": "Language", "country": "Country", "event": "Event", "confirm": "Confirm", "comingSoon": "Coming soon", "selectEvent": "Select your event"},
+    "availability": {"badge":"Coming soon","title":"Event type not available yet","description":"The dedicated {event} flow is not available yet.","legacyTitle":"Previous event preserved","legacyBody":"This event’s data has been preserved. Until its dedicated workflow is complete, the app limits modules that do not apply.","noDataLoss":"No event data is deleted or automatically converted."},
+    "consent": {"label": "Cookie preferences", "description": "We use necessary technical cookies. Optional analytics start only after consent, and you can change your choice at any time.", "accept": "Accept analytics", "necessary": "Necessary only", "close": "Close"},
+    "breadcrumbs": {"home":"Home","dashboard":"Dashboard","timeline":"Timeline","budget":"Budget","guests":"Guests","tables":"Tables","expenses":"Expenses","income":"Income","vendors":"Vendors","reception":"Reception","receptionVenue":"Reception venue","ceremony":"Ceremony","ceremonyVenue":"Ceremony venue","favorites":"Favorites","documents":"Documents","giftList":"Gift list","ceremonyMusic":"Ceremony music","receptionMusic":"Reception music","weddingIdeas":"Wedding ideas","signIn":"Sign in","contacts":"Contacts"},
     "shared": {
       "close": "Close", "cookiePreferences": "Cookie preferences", "closeMenu": "Close menu"
     }

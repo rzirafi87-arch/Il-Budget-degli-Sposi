@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { locales } from "@/i18n/config";
 
 type BreadcrumbItem = {
@@ -14,32 +14,16 @@ type BreadcrumbItem = {
 export default function Breadcrumbs() {
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("milestone9.breadcrumbs");
 
   const pathLabels: Record<string, string> = {
-    "": "Home",
-    dashboard: "Dashboard",
-    timeline: "Timeline",
-    budget: "Budget",
-    invitati: "Invitati",
-    "formazione-tavoli": "Tavoli",
-    spese: "Spese",
-    entrate: "Entrate",
-    fornitori: "Fornitori",
-    ricevimento: "Ricevimento",
-    location: "Location Ricevimento",
-    cerimonia: "Cerimonia",
-    chiesa: "Location Cerimonia",
-    chiese: "Location Cerimonia",
-    preferiti: "Preferiti",
-    documenti: "Documenti",
-    "lista-nozze": "Lista Nozze",
-    "wedding-planner": "Wedding Planner",
-    "musica-cerimonia": "Musica Cerimonia",
-    "musica-ricevimento": "Musica Ricevimento",
-    "cose-matrimonio": "Cose Matrimonio",
+    "": t("home"), dashboard: t("dashboard"), timeline: t("timeline"), budget: t("budget"), invitati: t("guests"),
+    "formazione-tavoli": t("tables"), spese: t("expenses"), entrate: t("income"), fornitori: t("vendors"), ricevimento: t("reception"),
+    location: t("receptionVenue"), cerimonia: t("ceremony"), chiesa: t("ceremonyVenue"), chiese: t("ceremonyVenue"),
+    preferiti: t("favorites"), documenti: t("documents"), "lista-nozze": t("giftList"), "wedding-planner": "Wedding Planner",
+    "musica-cerimonia": t("ceremonyMusic"), "musica-ricevimento": t("receptionMusic"), "cose-matrimonio": t("weddingIdeas"),
     "save-the-date": "Save the Date",
-    auth: "Accesso",
-    contatti: "Contatti",
+    auth: t("signIn"), contatti: t("contacts"),
   };
 
   // Costruisci i breadcrumbs dal path
@@ -52,7 +36,7 @@ export default function Breadcrumbs() {
     return null; // Non mostrare breadcrumbs sulla homepage
   }
 
-  const breadcrumbs: BreadcrumbItem[] = [{ label: "Home", href: `/${locale}` }];
+  const breadcrumbs: BreadcrumbItem[] = [{ label: t("home"), href: `/${locale}` }];
 
   let currentPath = "";
   pathSegments.forEach((segment, index) => {
@@ -83,4 +67,3 @@ export default function Breadcrumbs() {
     </nav>
   );
 }
-

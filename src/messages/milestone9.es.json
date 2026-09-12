@@ -71,6 +71,11 @@
     "errorPage": {
       "title": "Algo ha salido mal", "description": "No se pudo cargar esta página. Inténtalo de nuevo en breve.", "retry": "Reintentar"
     },
+    "onboarding": {"welcome": "¡Bienvenido!", "description": "Configura el idioma, el país y el tipo de evento para personalizar tu experiencia.", "configure": "Configurar idioma, país y evento"},
+    "setup": {"title": "¡Bienvenido! Configura tu evento", "language": "Idioma", "country": "País", "event": "Evento", "confirm": "Confirmar", "comingSoon": "Próximamente", "selectEvent": "Selecciona tu evento"},
+    "availability": {"badge":"Próximamente","title":"Tipo de evento aún no disponible","description":"El flujo específico de {event} todavía no está disponible.","legacyTitle":"Evento anterior preservado","legacyBody":"Los datos de este evento se han preservado. Hasta que el flujo específico esté completo, la aplicación limita los módulos que no corresponden.","noDataLoss":"No se elimina ni se convierte automáticamente ningún dato del evento."},
+    "consent": {"label": "Preferencias de cookies", "description": "Usamos cookies técnicas necesarias. Las estadísticas opcionales se activan solo con tu consentimiento y puedes cambiar tu elección en cualquier momento.", "accept": "Aceptar estadísticas", "necessary": "Solo necesarias", "close": "Cerrar"},
+    "breadcrumbs": {"home":"Inicio","dashboard":"Panel","timeline":"Cronología","budget":"Presupuesto","guests":"Invitados","tables":"Mesas","expenses":"Gastos","income":"Ingresos","vendors":"Proveedores","reception":"Recepción","receptionVenue":"Lugar de recepción","ceremony":"Ceremonia","ceremonyVenue":"Lugar de ceremonia","favorites":"Favoritos","documents":"Documentos","giftList":"Lista de bodas","ceremonyMusic":"Música de ceremonia","receptionMusic":"Música de recepción","weddingIdeas":"Ideas de boda","signIn":"Acceso","contacts":"Contacto"},
     "shared": {
       "close": "Cerrar", "cookiePreferences": "Preferencias de cookies", "closeMenu": "Cerrar menú"
     }

@@ -71,6 +71,11 @@
     "errorPage": {
       "title": "Une erreur est survenue", "description": "Cette page n’a pas pu être chargée. Réessayez dans un instant.", "retry": "Réessayer"
     },
+    "onboarding": {"welcome": "Bienvenue !", "description": "Configurez la langue, le pays et le type d’événement pour personnaliser votre expérience.", "configure": "Configurer la langue, le pays et l’événement"},
+    "setup": {"title": "Bienvenue ! Configurez votre événement", "language": "Langue", "country": "Pays", "event": "Événement", "confirm": "Confirmer", "comingSoon": "Prochainement", "selectEvent": "Sélectionnez votre événement"},
+    "availability": {"badge":"Prochainement","title":"Type d’événement pas encore disponible","description":"Le parcours consacré à {event} n’est pas encore disponible.","legacyTitle":"Événement précédent préservé","legacyBody":"Les données de cet événement ont été préservées. Tant que son parcours dédié n’est pas terminé, l’application limite les modules non pertinents.","noDataLoss":"Aucune donnée de l’événement n’est supprimée ou convertie automatiquement."},
+    "consent": {"label": "Préférences des cookies", "description": "Nous utilisons les cookies techniques nécessaires. Les statistiques facultatives ne démarrent qu’après votre consentement, modifiable à tout moment.", "accept": "Accepter les statistiques", "necessary": "Nécessaires uniquement", "close": "Fermer"},
+    "breadcrumbs": {"home":"Accueil","dashboard":"Tableau de bord","timeline":"Calendrier","budget":"Budget","guests":"Invités","tables":"Tables","expenses":"Dépenses","income":"Recettes","vendors":"Prestataires","reception":"Réception","receptionVenue":"Lieu de réception","ceremony":"Cérémonie","ceremonyVenue":"Lieu de cérémonie","favorites":"Favoris","documents":"Documents","giftList":"Liste de mariage","ceremonyMusic":"Musique de cérémonie","receptionMusic":"Musique de réception","weddingIdeas":"Idées de mariage","signIn":"Connexion","contacts":"Contact"},
     "shared": {
       "close": "Fermer", "cookiePreferences": "Préférences des cookies", "closeMenu": "Fermer le menu"
     }

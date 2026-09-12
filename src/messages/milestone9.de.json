@@ -71,6 +71,11 @@
     "errorPage": {
       "title": "Etwas ist schiefgelaufen", "description": "Diese Seite konnte nicht geladen werden. Bitte versuche es gleich noch einmal.", "retry": "Erneut versuchen"
     },
+    "onboarding": {"welcome": "Willkommen!", "description": "Legt Sprache, Land und Veranstaltungstyp fest, um euer Erlebnis anzupassen.", "configure": "Sprache, Land und Ereignis festlegen"},
+    "setup": {"title": "Willkommen! Richtet euer Ereignis ein", "language": "Sprache", "country": "Land", "event": "Ereignis", "confirm": "Bestätigen", "comingSoon": "Demnächst", "selectEvent": "Wählt euer Ereignis"},
+    "availability": {"badge":"Demnächst","title":"Ereignistyp noch nicht verfügbar","description":"Der spezielle Ablauf für {event} ist noch nicht verfügbar.","legacyTitle":"Vorheriges Ereignis beibehalten","legacyBody":"Die Daten dieses Ereignisses wurden beibehalten. Bis der spezielle Ablauf vollständig ist, begrenzt die App nicht passende Module.","noDataLoss":"Ereignisdaten werden weder gelöscht noch automatisch umgewandelt."},
+    "consent": {"label": "Cookie-Einstellungen", "description": "Wir verwenden notwendige technische Cookies. Optionale Statistiken starten erst nach Zustimmung; ihr könnt eure Auswahl jederzeit ändern.", "accept": "Statistiken akzeptieren", "necessary": "Nur notwendige", "close": "Schließen"},
+    "breadcrumbs": {"home":"Startseite","dashboard":"Dashboard","timeline":"Zeitplan","budget":"Budget","guests":"Gäste","tables":"Tische","expenses":"Ausgaben","income":"Einnahmen","vendors":"Anbieter","reception":"Empfang","receptionVenue":"Empfangsort","ceremony":"Zeremonie","ceremonyVenue":"Zeremonieort","favorites":"Favoriten","documents":"Dokumente","giftList":"Geschenkliste","ceremonyMusic":"Zeremoniemusik","receptionMusic":"Empfangsmusik","weddingIdeas":"Hochzeitsideen","signIn":"Anmelden","contacts":"Kontakt"},
     "shared": {
       "close": "Schließen", "cookiePreferences": "Cookie-Einstellungen", "closeMenu": "Menü schließen"
     }

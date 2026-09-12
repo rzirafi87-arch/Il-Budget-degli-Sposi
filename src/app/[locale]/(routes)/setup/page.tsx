@@ -1,5 +1,5 @@
 ﻿"use client";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { EVENT_CONFIGS } from "@/constants/eventConfigs";
@@ -20,15 +20,18 @@ const COUNTRIES = [
 export default function SetupPage() {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("milestone9.setup");
+  const tCountries = useTranslations("countries");
+  const tEvents = useTranslations("events");
 
   // Eventi generati dinamicamente dai config: value = slug canonico, label = nome IT
   const EVENTS = useMemo(
     () =>
-      Object.entries(EVENT_CONFIGS).map(([slug, cfg]) => ({
+      Object.keys(EVENT_CONFIGS).map((slug) => ({
         value: slug, // es: "wedding", "baptism", "birthday", ...
-        label: cfg.name, // es: "Matrimonio", "Battesimo", ...
+        label: tEvents(slug),
       })),
-    []
+    [tEvents]
   );
 
   const [language, setLanguage] = useState(locale || "it");
@@ -60,7 +63,7 @@ export default function SetupPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-wedding-rose-floral">
       <h1 className="text-3xl font-bold mb-8 text-sage-900">
-        Benvenuto! Configura il tuo evento
+        {t("title")}
       </h1>
 
       <form
@@ -69,7 +72,7 @@ export default function SetupPage() {
       >
         <div>
           <label className="block mb-2 font-semibold text-sage-700">
-            Lingua
+            {t("language")}
           </label>
           <select
             value={language}
@@ -79,7 +82,7 @@ export default function SetupPage() {
           >
             {LANGUAGES.map((l) => (
               <option key={l.value} value={l.value} disabled={!l.selectable}>
-                {l.label}{!l.selectable ? " (In arrivo)" : ""}
+                {l.label}{!l.selectable ? ` (${t("comingSoon")})` : ""}
               </option>
             ))}
           </select>
@@ -87,7 +90,7 @@ export default function SetupPage() {
 
         <div>
           <label className="block mb-2 font-semibold text-sage-700">
-            Nazione
+            {t("country")}
           </label>
           <select
             value={country}
@@ -97,7 +100,7 @@ export default function SetupPage() {
           >
             {COUNTRIES.map((c) => (
               <option key={c.value} value={c.value}>
-                {c.label}
+                {tCountries(c.value)}
               </option>
             ))}
           </select>
@@ -105,7 +108,7 @@ export default function SetupPage() {
 
         <div>
           <label className="block mb-2 font-semibold text-sage-700">
-            Evento
+            {t("event")}
           </label>
           <select
             value={event}
@@ -125,7 +128,7 @@ export default function SetupPage() {
           type="submit"
           className="w-full bg-[#A3B59D] text-white font-bold py-2 rounded hover:bg-[#8fa88a] transition"
         >
-          Conferma
+          {t("confirm")}
         </button>
       </form>
     </div>

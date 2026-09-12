@@ -71,6 +71,11 @@
     "errorPage": {
       "title": "Qualcosa è andato storto", "description": "Non è stato possibile caricare questa pagina. Riprova tra poco.", "retry": "Riprova"
     },
+    "onboarding": {"welcome": "Benvenuto!", "description": "Configura la lingua, la nazione e il tipo di evento per personalizzare la tua esperienza.", "configure": "Configura lingua, nazione ed evento"},
+    "setup": {"title": "Benvenuto! Configura il tuo evento", "language": "Lingua", "country": "Nazione", "event": "Evento", "confirm": "Conferma", "comingSoon": "In arrivo", "selectEvent": "Seleziona il tuo evento"},
+    "availability": {"badge":"Prossimamente","title":"Tipo evento non ancora disponibile","description":"Il flusso dedicato a {event} non è ancora disponibile.","legacyTitle":"Evento precedente preservato","legacyBody":"I dati di questo evento sono stati preservati. Finché il flusso dedicato non sarà completo, l’app limita i moduli non pertinenti.","noDataLoss":"Nessun dato dell’evento viene cancellato o convertito automaticamente."},
+    "consent": {"label": "Preferenze cookie", "description": "Usiamo cookie tecnici necessari. Le statistiche opzionali partono soltanto dopo il consenso e puoi cambiare scelta in qualsiasi momento.", "accept": "Accetta statistiche", "necessary": "Solo necessari", "close": "Chiudi"},
+    "breadcrumbs": {"home":"Home","dashboard":"Dashboard","timeline":"Timeline","budget":"Budget","guests":"Invitati","tables":"Tavoli","expenses":"Spese","income":"Entrate","vendors":"Fornitori","reception":"Ricevimento","receptionVenue":"Location Ricevimento","ceremony":"Cerimonia","ceremonyVenue":"Location Cerimonia","favorites":"Preferiti","documents":"Documenti","giftList":"Lista Nozze","ceremonyMusic":"Musica Cerimonia","receptionMusic":"Musica Ricevimento","weddingIdeas":"Cose Matrimonio","signIn":"Accesso","contacts":"Contatti"},
     "shared": {
       "close": "Chiudi", "cookiePreferences": "Preferenze cookie", "closeMenu": "Chiudi menu"
     }
