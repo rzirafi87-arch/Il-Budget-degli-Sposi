@@ -26,4 +26,6 @@ test("ignores implementation strings and test-only files", () => {
   const source = `const code="GUEST_SAVE_FAILED", route="/api/my/guests", taxonomy="wedding_bag_fan", query="SELECT * FROM guests", filename="invitati.json";`;
   assert.deepEqual(scanSource(source), []);
   assert.deepEqual(scanSource(`<div>Nessun invitato</div>`, "component.test.tsx"), []);
+  assert.deepEqual(scanSource(`function View(){return <><span>{t("nonInvited.confetti")}</span><a href={\`/\${locale}/invitati\`}>x</a><Export filename="invitati" /></>}`), []);
+  assert.deepEqual(scanSource(`function View(){return <Carousel images={getPageImages("invitati", country)} />}`), []);
 });

@@ -154,7 +154,7 @@ export default function InvitatiPage() {
 
   const createFamily = async () => {
     if (!newFamilyName.trim()) {
-      setMessage("❌ Inserisci un nome per la famiglia");
+      setMessage(t("messages.familyNameRequired"));
       return;
     }
     const newFamily: FamilyGroup = {
@@ -166,14 +166,14 @@ export default function InvitatiPage() {
     setFamilyGroups(updatedFamilies);
     setNewFamilyName("");
     setShowFamilyModal(false);
-    setMessage("✅ Famiglia creata! Salvataggio in corso...");
+    setMessage(t("messages.familySaving"));
 
     // Salva automaticamente la nuova famiglia
     try {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
+        setMessage(t("messages.authRequired"));
         return;
       }
 
@@ -188,16 +188,16 @@ export default function InvitatiPage() {
 
       if (!res.ok) {
         const json = await res.json();
-        setMessage(`❌ Errore salvataggio famiglia: ${json.error || "Impossibile salvare"}`);
+        setMessage(t(`errors.${json.error || "FAMILY_SAVE_FAILED"}`));
       } else {
-        setMessage("✅ Famiglia creata e salvata! Ora puoi assegnare gli invitati.");
+        setMessage(t("messages.familySaved"));
         setTimeout(() => setMessage(null), 3000);
         // Ricarica i dati per ottenere l'ID reale dal database
         await loadData();
       }
     } catch (err) {
       console.error("Errore salvataggio famiglia:", err);
-      setMessage("❌ Errore di rete durante il salvataggio della famiglia");
+      setMessage(t("errors.FAMILY_NETWORK_ERROR"));
     }
   };
 
@@ -259,7 +259,7 @@ export default function InvitatiPage() {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        setMessage("❌ Devi essere autenticato per salvare. Clicca su 'Registrati' in alto.");
+        setMessage(t("messages.authRequired"));
         setSaving(false);
         return;
       }
@@ -275,15 +275,15 @@ export default function InvitatiPage() {
 
       if (!res.ok) {
         const json = await res.json();
-        setMessage(`❌ Errore: ${json.error || "Impossibile salvare"}`);
+        setMessage(t(`errors.${json.error || "GUEST_SNAPSHOT_SAVE_FAILED"}`));
       } else {
         await loadData();
-        setMessage("✅ Invitati salvati con successo!");
+        setMessage(t("messages.guestsSaved"));
         setTimeout(() => setMessage(null), 3000);
       }
     } catch (err) {
       console.error("Errore salvataggio:", err);
-  setMessage("❌ Errore di rete");
+      setMessage(t("errors.GUEST_NETWORK_ERROR"));
     } finally {
       setSaving(false);
     }
@@ -308,20 +308,20 @@ export default function InvitatiPage() {
   };
 
   if (loading) {
-    return <LoadingState label="Caricamento invitati" cards={4} />;
+    return <LoadingState label={t("loading")} cards={4} />;
   }
 
   return (
     <section>
       <PageHeader
-        eyebrow="Persone e tavoli"
-        title="Gestione invitati"
-        description="Organizza la lista, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli."
+        eyebrow={t("header.eyebrow")}
+        title={t("title")}
+        description={t("header.description")}
         icon={<Users size={24} aria-hidden />}
       />
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Sezioni invitati">
+      <div className="mb-6 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label={t("tabs.label")}>
         <button
           onClick={() => setActiveTab("guests")}
           className={`flex-1 rounded-lg px-4 py-2.5 font-semibold transition-colors ${activeTab === "guests" ? "bg-white text-fg shadow-soft-sm" : "text-muted-fg hover:text-fg"}`}
@@ -359,26 +359,21 @@ export default function InvitatiPage() {
       <PageInfoNote
         icon="👥"
         title={t("sections.guestsManagement")}
-        description="In questa pagina puoi creare e gestire la lista completa degli invitati. Organizza le persone per gruppi familiari, traccia le conferme RSVP, registra le preferenze del menù, e gestisci l'assegnazione ai tavoli. Puoi anche tracciare chi riceve bomboniere anche senza essere invitato al ricevimento."
+        description={t("info.description")}
         tips={[
-          "Crea gruppi familiari per organizzare gli invitati e assegnarli automaticamente allo stesso tavolo",
-          "Usa il flag 'Escludi da tavolo famiglia' per separare alcuni membri (es. cugini vs genitori)",
-          "Traccia le conferme RSVP per sapere quanti parteciperanno realmente",
-          "Registra le preferenze del menù (carne, pesce, vegetariano, baby) per comunicarle al catering",
-          "La sezione 'Non Invitati' serve per chi riceve solo bomboniera/confetti senza partecipare"
+          t("info.tips.families"), t("info.tips.separate"), t("info.tips.rsvp"),
+          t("info.tips.menu"), t("info.tips.nonInvited")
         ]}
         eventTypeSpecific={{
-          wedding: "Per il matrimonio, gestisci invitati della sposa, dello sposo e comuni. Organizza per famiglie e assegna i tavoli in modo strategico per creare un'atmosfera piacevole.",
-          baptism: "Per il battesimo, traccia padrino, madrina, familiari e amici. La lista è generalmente più piccola e familiare.",
-          birthday: "Per il compleanno, organizza gli invitati per gruppi (famiglia, amici, colleghi) per una migliore gestione.",
-          graduation: "Per la laurea, invita familiari, amici e compagni di studi. Traccia le conferme per organizzare il buffet o il pranzo."
+          wedding: t("info.events.wedding"), baptism: t("info.events.baptism"),
+          birthday: t("info.events.birthday"), graduation: t("info.events.graduation")
         }}
       />
 
       {/* Deadline RSVP Globale */}
       <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Data massima per la risposta (RSVP) - Uguale per tutti
+          {t("rsvpDeadline")}
         </label>
         <input
           type="date"
@@ -390,62 +385,62 @@ export default function InvitatiPage() {
 
       {/* Statistiche */}
       <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <h3 className="font-semibold text-lg mb-4">Riepilogo Partecipanti</h3>
+        <h3 className="font-semibold text-lg mb-4">{t("summary.title")}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div className="p-3 bg-pink-50 rounded-lg border border-pink-200">
-            <div className="text-gray-800 font-semibold">Sposa</div>
+            <div className="text-gray-800 font-semibold">{t("guestTypes.bride")}</div>
             <div className="text-2xl font-bold text-pink-600">{totalByType.bride}</div>
           </div>
           <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="text-gray-800 font-semibold">Sposo</div>
+            <div className="text-gray-800 font-semibold">{t("guestTypes.groom")}</div>
             <div className="text-2xl font-bold text-blue-600">{totalByType.groom}</div>
           </div>
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-300">
-            <div className="text-gray-800 font-semibold">Comuni</div>
+            <div className="text-gray-800 font-semibold">{t("guestTypes.common")}</div>
             <div className="text-2xl font-bold text-gray-700">{totalByType.common}</div>
           </div>
           <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-            <div className="text-gray-800 font-semibold">Totale partecipanti</div>
+            <div className="text-gray-800 font-semibold">{t("summary.attendees")}</div>
             <div className="text-2xl font-bold text-green-600">{totalGuests}</div>
           </div>
         </div>
 
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🥩 Carne:</span>
+            <span>🥩 {t("menu.meat")}:</span>
             <span className="font-semibold">{menuCounts.carne}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🐟 Pesce:</span>
+            <span>🐟 {t("menu.fish")}:</span>
             <span className="font-semibold">{menuCounts.pesce}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>👶 Baby:</span>
+            <span>👶 {t("menu.child")}:</span>
             <span className="font-semibold">{menuCounts.baby}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🎪 Animazione:</span>
+            <span>🎪 {t("menu.entertainment")}:</span>
             <span className="font-semibold">{menuCounts.animazione}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>🥗 Vegetariano:</span>
+            <span>🥗 {t("menu.vegetarian")}:</span>
             <span className="font-semibold">{menuCounts.vegetariano}</span>
           </div>
           <div className="flex justify-between p-2 bg-gray-50 rounded">
-            <span>💺 Posto tavolo:</span>
+            <span>💺 {t("menu.seat")}:</span>
             <span className="font-semibold">{menuCounts.posto_tavolo}</span>
           </div>
         </div>
 
         <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-800 font-semibold">🎁 Bomboniere necessarie:</span>
+            <span className="text-gray-800 font-semibold">🎁 {t("summary.favours")}:</span>
             <span className="font-bold text-purple-600">{totalBomboniere}</span>
           </div>
         </div>
         <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-800 font-semibold">Allergie / intolleranze segnalate:</span>
+            <span className="text-gray-800 font-semibold">{t("summary.allergies")}:</span>
             <span className="font-bold text-amber-700">{totalAllergies}</span>
           </div>
         </div>
@@ -459,15 +454,14 @@ export default function InvitatiPage() {
             onClick={() => setShowFamilyModal(true)}
             size="sm"
           >
-            <Plus size={17} aria-hidden /> Aggiungi famiglia
+            <Plus size={17} aria-hidden /> {t("families.add")}
           </AppButton>
         </div>
   <p className="text-xs text-gray-600 mb-3">
-   Crea gruppi famiglia per organizzare meglio gli invitati. Il contatto principale rappresenta tutta la famiglia.
-   <strong className="text-purple-700">💡 Suggerimento:</strong> Usa la colonna &quot;Tavolo separato&quot; per escludere alcuni membri (es. cugini) dall&apos;assegnazione automatica al tavolo famiglia.
+          {t("families.helper")} <strong className="text-purple-700">💡 {t("families.tipLabel")}</strong> {t("families.tip")}
   </p>
         {familyGroups.length === 0 ? (
-          <div className="text-center text-gray-500 py-4">Nessuna famiglia creata. Clicca &quot;Aggiungi Famiglia&quot; per iniziare.</div>
+          <div className="text-center text-gray-500 py-4">{t("families.empty")}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {familyGroups.map((family) => {
@@ -483,25 +477,26 @@ export default function InvitatiPage() {
                       className="font-bold text-gray-800 border-b-2 border-transparent hover:border-purple-300 focus:border-purple-500 focus:outline-none bg-transparent flex-1 mr-2"
                       value={family.familyName}
                       onChange={(e) => updateFamilyName(family.id, e.target.value)}
-                      placeholder="Nome famiglia"
+                      placeholder={t("families.name")}
                     />
                     <button
                       onClick={() => deleteFamily(family.id)}
                       className="text-red-500 hover:text-red-700 text-xs font-bold"
-                      title="Elimina famiglia"
+                      title={t("families.delete")}
+                      aria-label={t("families.deleteNamed", {name: family.familyName})}
                     >
                       ?
                     </button>
                   </div>
                   <div className="text-xs text-gray-600">
-                    <div className="mb-1">👤 Contatto: {mainContact?.name || "Non assegnato"}</div>
+                    <div className="mb-1">👤 {t("families.contact")}: {mainContact?.name || t("families.unassigned")}</div>
                       <div className="flex justify-between items-center">
-                        <span>👥 Totale: {familyMembers.length}</span>
-                        <span className="text-green-700">🪑 Tavolo famiglia: {familyMembersIncluded.length}</span>
+                        <span>👥 {t("summary.total")}: {familyMembers.length}</span>
+                        <span className="text-green-700">🪑 {t("families.familyTable")}: {familyMembersIncluded.length}</span>
                       </div>
                       {familyMembersExcluded.length > 0 && (
                         <div className="mt-1 text-orange-600">
-                          🚫 Tavolo separato: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
+                          🚫 {t("families.separateTable")}: {familyMembersExcluded.length} ({familyMembersExcluded.map(g => g.name).join(', ')})
                         </div>
                       )}
                   </div>
@@ -517,16 +512,17 @@ export default function InvitatiPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]" role="presentation">
           <div className="app-card app-card--lg max-h-[min(90vh,42rem)] w-full max-w-md overflow-y-auto shadow-soft-xl" role="dialog" aria-modal="true" aria-labelledby="family-modal-title">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h3 id="family-modal-title" className="font-bold text-xl text-gray-900">Crea nuovo gruppo famiglia</h3>
-              <button type="button" className="app-button app-button--ghost app-button--icon" onClick={() => { setShowFamilyModal(false); setNewFamilyName(""); }} aria-label="Chiudi finestra">
+              <h3 id="family-modal-title" className="font-bold text-xl text-gray-900">{t("families.createTitle")}</h3>
+              <button type="button" className="app-button app-button--ghost app-button--icon" onClick={() => { setShowFamilyModal(false); setNewFamilyName(""); }} aria-label={t("actions.closeDialog")}>
                 <X size={20} aria-hidden />
               </button>
             </div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Nome Famiglia</label>
+            <label htmlFor="new-family-name" className="block text-sm font-medium text-gray-700 mb-2">{t("families.name")}</label>
             <input
               type="text"
               className="app-input mb-4"
-              placeholder="es. Famiglia Rossi"
+              id="new-family-name"
+              placeholder={t("families.namePlaceholder")}
               value={newFamilyName}
               onChange={(e) => setNewFamilyName(e.target.value)}
             />
@@ -535,14 +531,14 @@ export default function InvitatiPage() {
                 onClick={createFamily}
                 className="flex-1"
               >
-                Crea Famiglia
+                {t("families.create")}
               </AppButton>
               <AppButton
                 onClick={() => { setShowFamilyModal(false); setNewFamilyName(""); }}
                 variant="outline"
                 className="flex-1"
               >
-                Annulla
+                {t("actions.cancel")}
               </AppButton>
             </div>
           </div>
@@ -552,7 +548,7 @@ export default function InvitatiPage() {
       {/* Tabella Invitati */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
-          <h3 className="font-semibold text-lg">Lista Invitati</h3>
+          <h3 className="font-semibold text-lg">{t("list.title")}</h3>
           <div className="flex gap-2">
             <ExportButton
               data={guests}
@@ -560,13 +556,13 @@ export default function InvitatiPage() {
               type="csv"
               className="text-sm"
             >
-              ⬇️ Esporta CSV
+              ⬇️ {t("actions.exportCsv")}
             </ExportButton>
             <AppButton
               onClick={addGuest}
               size="sm"
             >
-              <Plus size={17} aria-hidden /> Aggiungi invitato
+              <Plus size={17} aria-hidden /> {t("list.add")}
             </AppButton>
           </div>
         </div>
@@ -575,26 +571,26 @@ export default function InvitatiPage() {
           <table className="app-table text-xs">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
-                <th className="px-3 py-2 text-left font-semibold text-gray-900">Nome</th>
-                <th className="px-2 py-2 text-left font-semibold text-gray-900">Tipo</th>
-                <th className="px-2 py-2 text-left font-semibold text-gray-900">Famiglia</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Contatto principale</th>
-                  <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title="Escludi dall'assegnazione automatica al tavolo famiglia">🚫 Tavolo separato</th>
-                  <th className="px-2 py-2 text-left font-semibold text-gray-900">Data invito</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Risposta ricevuta</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Partecipa</th>
-                <th className="px-2 py-2 text-left font-semibold text-gray-900">Preferenze menu</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Bomboniera</th>
-                <th className="px-3 py-2 text-left font-semibold text-gray-900">Allergie / Intolleranze</th>
-                <th className="px-3 py-2 text-left font-semibold text-gray-900">Note</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Azioni</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">{t("columns.name")}</th>
+                <th className="px-2 py-2 text-left font-semibold text-gray-900">{t("columns.type")}</th>
+                <th className="px-2 py-2 text-left font-semibold text-gray-900">{t("columns.family")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.mainContact")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title={t("columns.separateHelp")}>🚫 {t("columns.separate")}</th>
+                <th className="px-2 py-2 text-left font-semibold text-gray-900">{t("columns.invitationDate")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.rsvpReceived")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.attending")}</th>
+                <th className="px-2 py-2 text-left font-semibold text-gray-900">{t("columns.menu")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.favour")}</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">{t("columns.allergies")}</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">{t("columns.notes")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.actions")}</th>
               </tr>
             </thead>
             <tbody>
               {guests.length === 0 ? (
                 <tr>
                     <td colSpan={13} className="px-6 py-8 text-center text-gray-500">
-                    Nessun invitato ancora. Clicca su &quot;Aggiungi Invitato&quot; per iniziare.
+                    {t("list.empty")}
                   </td>
                 </tr>
               ) : (
@@ -606,7 +602,7 @@ export default function InvitatiPage() {
                         className="border border-gray-200 rounded px-2 py-1 w-full text-xs"
                         value={guest.name}
                         onChange={(e) => updateGuest(guest.id, "name", e.target.value)}
-                        placeholder="Nome completo"
+                        placeholder={t("list.namePlaceholder")}
                       />
                     </td>
                     <td className="px-2 py-2">
@@ -615,9 +611,9 @@ export default function InvitatiPage() {
                         value={guest.guestType}
                         onChange={(e) => updateGuest(guest.id, "guestType", e.target.value)}
                       >
-                        <option value="common">Comune</option>
-                        <option value="bride">Sposa</option>
-                        <option value="groom">Sposo</option>
+                        <option value="common">{t("guestTypes.common")}</option>
+                        <option value="bride">{t("guestTypes.bride")}</option>
+                        <option value="groom">{t("guestTypes.groom")}</option>
                       </select>
                     </td>
                     <td className="px-2 py-2">
@@ -633,7 +629,7 @@ export default function InvitatiPage() {
                           });
                         }}
                       >
-                        <option value="">-- Nessuna --</option>
+                        <option value="">{t("families.none")}</option>
                         {familyGroups.map(f => (
                           <option key={f.id} value={f.id}>{f.familyName}</option>
                         ))}
@@ -645,6 +641,7 @@ export default function InvitatiPage() {
                         checked={guest.isMainContact}
                         onChange={(e) => updateGuest(guest.id, "isMainContact", e.target.checked)}
                         className="w-4 h-4"
+                        aria-label={t("fieldLabels.mainContact", {name: guest.name || t("list.guestFallback")})}
                       />
                     </td>
                       <td className="px-2 py-2 text-center">
@@ -654,7 +651,8 @@ export default function InvitatiPage() {
                           onChange={(e) => updateGuest(guest.id, "excludeFromFamilyTable", e.target.checked)}
                           className="w-4 h-4"
                           disabled={!guest.familyGroupId}
-                          title={guest.familyGroupId ? "Escludi questo invitato dal tavolo famiglia (es. per cugini)" : "Assegna prima a una famiglia"}
+                          title={guest.familyGroupId ? t("families.excludeGuest") : t("families.assignFirst")}
+                          aria-label={t("fieldLabels.separateTable", {name: guest.name || t("list.guestFallback")})}
                         />
                       </td>
                     <td className="px-2 py-2">
@@ -663,6 +661,7 @@ export default function InvitatiPage() {
                         className="border border-gray-200 rounded px-2 py-1 w-full text-xs"
                         value={guest.invitationDate}
                         onChange={(e) => updateGuest(guest.id, "invitationDate", e.target.value)}
+                        aria-label={t("fieldLabels.invitationDate", {name: guest.name || t("list.guestFallback")})}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
@@ -671,6 +670,7 @@ export default function InvitatiPage() {
                         checked={guest.rsvpReceived}
                         onChange={(e) => updateGuest(guest.id, "rsvpReceived", e.target.checked)}
                         className="w-4 h-4"
+                        aria-label={t("fieldLabels.rsvp", {name: guest.name || t("list.guestFallback")})}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
@@ -679,6 +679,7 @@ export default function InvitatiPage() {
                         checked={guest.attending}
                         onChange={(e) => updateGuest(guest.id, "attending", e.target.checked)}
                         className="w-4 h-4"
+                        aria-label={t("fieldLabels.attending", {name: guest.name || t("list.guestFallback")})}
                       />
                     </td>
                     <td className="px-2 py-2">
@@ -692,6 +693,8 @@ export default function InvitatiPage() {
                                 ? "bg-[#A3B59D] text-white"
                                 : "bg-gray-100 text-gray-600"
                             }`}
+                            aria-label={t(`menu.${pref}`)}
+                            aria-pressed={guest.menuPreferences.includes(pref)}
                           >
                             {pref === "carne" && "🥩"}
                             {pref === "pesce" && "🐟"}
@@ -709,6 +712,7 @@ export default function InvitatiPage() {
                         checked={guest.receivesBomboniera}
                         onChange={(e) => updateGuest(guest.id, "receivesBomboniera", e.target.checked)}
                         className="w-4 h-4"
+                        aria-label={t("fieldLabels.favour", {name: guest.name || t("list.guestFallback")})}
                       />
                     </td>
                     <td className="px-3 py-2">
@@ -717,7 +721,7 @@ export default function InvitatiPage() {
                         className="min-w-40 border border-gray-200 rounded px-2 py-2 w-full text-xs"
                         value={guest.allergiesIntolerances}
                         onChange={(e) => updateGuest(guest.id, "allergiesIntolerances", e.target.value)}
-                        placeholder="Es. glutine, lattosio..."
+                        placeholder={t("list.allergiesPlaceholder")}
                       />
                     </td>
                     <td className="px-3 py-2">
@@ -726,15 +730,15 @@ export default function InvitatiPage() {
                         className="border border-gray-200 rounded px-2 py-1 w-full text-xs"
                         value={guest.notes}
                         onChange={(e) => updateGuest(guest.id, "notes", e.target.value)}
-                        placeholder="Note..."
+                        placeholder={t("columns.notes")}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
                       <button
                         onClick={() => deleteGuest(guest.id)}
                         className="app-button app-button--ghost app-button--icon text-red-600 hover:text-red-800"
-                        title="Elimina"
-                        aria-label={`Elimina ${guest.name || "invitato"}`}
+                        title={t("actions.delete")}
+                        aria-label={t("actions.deleteGuest", {name: guest.name || t("list.guestFallback")})}
                       >
                         <Trash2 size={17} aria-hidden />
                       </button>
@@ -750,12 +754,12 @@ export default function InvitatiPage() {
       {/* Tabella Non Invitati che ricevono bomboniere/confetti */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3">
-          <h3 className="font-semibold text-lg">Bomboniere / Confetti per Non Invitati</h3>
+          <h3 className="font-semibold text-lg">{t("nonInvited.title")}</h3>
           <button
             onClick={addNonInvited}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-semibold"
           >
-            + Aggiungi Persona
+            {t("nonInvited.add")}
           </button>
         </div>
 
@@ -763,18 +767,18 @@ export default function InvitatiPage() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
-                <th className="px-3 py-2 text-left font-semibold text-gray-900">Nome</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Bomboniera</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Confetti</th>
-                <th className="px-3 py-2 text-left font-semibold text-gray-900">Note</th>
-                <th className="px-2 py-2 text-center font-semibold text-gray-900">Azioni</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">{t("columns.name")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.favour")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("nonInvited.confetti")}</th>
+                <th className="px-3 py-2 text-left font-semibold text-gray-900">{t("columns.notes")}</th>
+                <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.actions")}</th>
               </tr>
             </thead>
             <tbody>
               {nonInvitedRecipients.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                    Nessuna persona non invitata che riceve bomboniere/confetti.
+                    {t("nonInvited.empty")}
                   </td>
                 </tr>
               ) : (
@@ -786,7 +790,7 @@ export default function InvitatiPage() {
                         className="border border-gray-200 rounded px-2 py-1 w-full text-xs"
                         value={recipient.name}
                         onChange={(e) => updateNonInvited(recipient.id, "name", e.target.value)}
-                        placeholder="Nome"
+                        placeholder={t("columns.name")}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
@@ -795,6 +799,7 @@ export default function InvitatiPage() {
                         checked={recipient.receivesBomboniera}
                         onChange={(e) => updateNonInvited(recipient.id, "receivesBomboniera", e.target.checked)}
                         className="w-4 h-4"
+                        aria-label={t("fieldLabels.favour", {name: recipient.name || t("nonInvited.personFallback")})}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
@@ -803,6 +808,7 @@ export default function InvitatiPage() {
                         checked={recipient.receivesConfetti}
                         onChange={(e) => updateNonInvited(recipient.id, "receivesConfetti", e.target.checked)}
                         className="w-4 h-4"
+                        aria-label={t("fieldLabels.confetti", {name: recipient.name || t("nonInvited.personFallback")})}
                       />
                     </td>
                     <td className="px-3 py-2">
@@ -811,14 +817,15 @@ export default function InvitatiPage() {
                         className="border border-gray-200 rounded px-2 py-1 w-full text-xs"
                         value={recipient.notes}
                         onChange={(e) => updateNonInvited(recipient.id, "notes", e.target.value)}
-                        placeholder="Note..."
+                        placeholder={t("columns.notes")}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
                       <button
                         onClick={() => deleteNonInvited(recipient.id)}
                         className="text-red-600 hover:text-red-800 font-bold"
-                        title="Elimina"
+                        title={t("actions.delete")}
+                        aria-label={t("actions.deleteRecipient", {name: recipient.name || t("nonInvited.personFallback")})}
                       >
                         🗑️
                       </button>
@@ -838,7 +845,7 @@ export default function InvitatiPage() {
           disabled={saving}
           className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] disabled:opacity-50 font-semibold"
         >
-          {saving ? "Salvataggio..." : "💾 Salva tutto"}
+          {saving ? t("actions.saving") : t("actions.saveAll")}
         </button>
       </div>
     </>
@@ -852,28 +859,28 @@ export default function InvitatiPage() {
     const availableSeats = totalSeats - assignedSeats;
 
     if (loadingTables) {
-      return <p className="text-gray-500">Caricamento tavoli...</p>;
+      return <p className="text-gray-500">{t("tables.loading")}</p>;
     }
 
     return (
       <>
         <div className="mb-6 p-5 sm:p-6 rounded-2xl border-3 border-gray-600 bg-linear-to-br from-gray-200 to-gray-300 shadow-xl">
-          <h3 className="font-bold text-lg mb-4 text-gray-900">🪑 Riepilogo Tavoli</h3>
+          <h3 className="font-bold text-lg mb-4 text-gray-900">🪑 {t("tables.summary")}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
             <div className="p-4 bg-white rounded-xl border-2 border-blue-500 shadow-md">
-              <div className="text-gray-800 font-bold">Tavoli Totali</div>
+              <div className="text-gray-800 font-bold">{t("tables.totalTables")}</div>
               <div className="text-3xl font-bold text-blue-700">{totalTables}</div>
             </div>
             <div className="p-4 bg-white rounded-xl border-2 border-green-500 shadow-md">
-              <div className="text-gray-800 font-bold">Posti Totali</div>
+              <div className="text-gray-800 font-bold">{t("tables.totalSeats")}</div>
               <div className="text-3xl font-bold text-green-700">{totalSeats}</div>
             </div>
             <div className="p-4 bg-white rounded-xl border-2 border-purple-500 shadow-md">
-              <div className="text-gray-800 font-bold">Posti Assegnati</div>
+              <div className="text-gray-800 font-bold">{t("tables.assignedSeats")}</div>
               <div className="text-3xl font-bold text-purple-700">{assignedSeats}</div>
             </div>
             <div className="p-4 bg-white rounded-xl border-2 border-orange-500 shadow-md">
-              <div className="text-gray-800 font-bold">Posti Liberi</div>
+              <div className="text-gray-800 font-bold">{t("tables.availableSeats")}</div>
               <div className="text-3xl font-bold text-orange-700">{availableSeats}</div>
             </div>
           </div>
@@ -881,15 +888,14 @@ export default function InvitatiPage() {
 
         <div className="p-6 rounded-lg border border-gray-300 bg-white/70">
           <p className="text-sm text-gray-600">
-            La gestione dettagliata della disposizione dei tavoli è disponibile tramite l&apos;API <code className="bg-gray-100 px-2 py-1 rounded">/api/my/tables</code>.
-            Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.
+            {t("tables.description")}
           </p>
           <p className="text-sm text-gray-600 mt-2">
-            Per una gestione avanzata della disposizione, considera di implementare un&apos;interfaccia drag-and-drop dedicata.
+            {t("tables.advanced")}
           </p>
           <div className="mt-4">
             <Link href={`/${locale}/invitati/tavoli`} className="inline-block px-4 py-2 rounded-full text-white hover:opacity-90" style={{ background: 'var(--color-sage)' }}>
-              Apri pagina Tavoli
+              {t("tables.open")}
             </Link>
           </div>
         </div>
@@ -897,6 +903,3 @@ export default function InvitatiPage() {
     );
   }
 }
-
-
-

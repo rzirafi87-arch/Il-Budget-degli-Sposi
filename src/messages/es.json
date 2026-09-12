@@ -818,13 +818,26 @@
     "title": "Gestión de invitados",
     "tabs": {
       "guests": "Huéspedes",
-      "tables": "Mesas"
+      "tables": "Mesas", "label": "Secciones de invitados"
     },
     "sections": {
       "guestsManagement": "Gestión completa de huéspedes",
       "familyGroups": "Grupos familiares",
-      "nonInvited": "No invitado (solo favores)"
-    }
+      "nonInvited": "No invitados (solo detalles)"
+    },
+    "loading":"Cargando invitados","header":{"eyebrow":"Personas y mesas","description":"Organiza la lista, gestiona las familias, controla las confirmaciones y planifica las mesas."},
+    "messages":{"familyNameRequired":"Introduce un nombre de familia.","familySaving":"Familia creada. Guardando…","authRequired":"Inicia sesión para guardar.","familySaved":"Familia creada y guardada. Ya puedes asignar invitados.","guestsSaved":"Invitados guardados correctamente."},
+    "errors":{"FAMILY_SAVE_FAILED":"No se pudo guardar la familia.","FAMILY_NETWORK_ERROR":"Error de red al guardar la familia.","GUEST_SNAPSHOT_INVALID":"Los datos de invitados no son válidos.","GUEST_SNAPSHOT_TOO_LARGE":"La lista de invitados es demasiado grande.","GUEST_SNAPSHOT_SAVE_FAILED":"No se pudieron guardar los invitados. No se modificó ningún dato.","GUEST_NETWORK_ERROR":"Error de red al guardar los invitados."},
+    "info":{"description":"Crea y gestiona la lista de invitados, las familias, las confirmaciones, las preferencias de menú y las mesas.","tips":{"families":"Crea grupos familiares para sentar juntos a sus miembros.","separate":"Usa Mesa separada para excluir miembros de la asignación automática.","rsvp":"Controla las confirmaciones para saber quién asistirá.","menu":"Registra las preferencias de menú para el catering.","nonInvited":"Usa No invitados para quienes solo reciben un detalle o peladillas."},"events":{"wedding":"Gestiona los invitados de la novia, del novio y comunes, organizados por familias.","baptism":"Controla padrinos, familiares y amigos.","birthday":"Organiza a los invitados en grupos como familia, amigos y compañeros.","graduation":"Invita a familiares, amigos y compañeros de estudios y controla sus confirmaciones."}},
+    "rsvpDeadline":"Fecha límite de confirmación, igual para todos","summary":{"title":"Resumen de asistentes","attendees":"Total de asistentes","favours":"Detalles necesarios","allergies":"Alergias o intolerancias indicadas","total":"Total"},"guestTypes":{"bride":"Novia","groom":"Novio","common":"Comunes"},"menu":{"seat":"Asiento en mesa","meat":"Carne","fish":"Pescado","child":"Niño","entertainment":"Animación","vegetarian":"Vegetariano","carne":"Carne","pesce":"Pescado","baby":"Menú infantil","animazione":"Animación","vegetariano":"Vegetariano","posto_tavolo":"Asiento en mesa"},
+    "families":{"add":"Añadir familia","helper":"Crea grupos familiares para organizar a los invitados. El contacto principal representa a toda la familia.","tipLabel":"Consejo:","tip":"Usa Mesa separada para excluir miembros de la asignación automática.","empty":"Aún no hay familias. Añade una para empezar.","name":"Nombre de la familia","delete":"Eliminar familia","deleteNamed":"Eliminar la familia {name}","contact":"Contacto","unassigned":"Sin asignar","familyTable":"Mesa familiar","separateTable":"Mesa separada","createTitle":"Crear un grupo familiar","namePlaceholder":"p. ej., Familia García","create":"Crear familia","none":"Ninguna","excludeGuest":"Excluir a este invitado de la mesa familiar","assignFirst":"Asigna primero el invitado a una familia"},
+    "list":{"title":"Lista de invitados","add":"Añadir invitado","empty":"Aún no hay invitados. Añade uno para empezar.","namePlaceholder":"Nombre completo","allergiesPlaceholder":"p. ej., gluten, lactosa…","guestFallback":"invitado"},
+    "fieldLabels":{"mainContact":"Establecer a {name} como contacto principal","separateTable":"Mesa separada para {name}","invitationDate":"Fecha de invitación de {name}","rsvp":"Confirmación recibida de {name}","attending":"Asistencia de {name}","favour":"Detalle para {name}","confetti":"Peladillas para {name}"},
+    "columns":{"name":"Nombre","type":"Tipo","family":"Familia","mainContact":"Contacto principal","separate":"Mesa separada","separateHelp":"Excluir de la asignación automática a la mesa familiar","invitationDate":"Fecha de invitación","rsvpReceived":"Confirmación recibida","attending":"Asiste","menu":"Preferencias de menú","favour":"Detalle","allergies":"Alergias / Intolerancias","notes":"Notas","actions":"Acciones"},
+    "actions":{"exportCsv":"Exportar CSV","closeDialog":"Cerrar diálogo","cancel":"Cancelar","delete":"Eliminar","deleteGuest":"Eliminar a {name}","deleteRecipient":"Eliminar a {name}","saving":"Guardando…","saveAll":"Guardar todo"},
+    "nonInvited":{"title":"Detalles / peladillas para no invitados","add":"Añadir persona","confetti":"Peladillas","empty":"Ninguna persona no invitada recibe detalles o peladillas.","personFallback":"persona"},
+    "confirmation":{"title":"Invitados","description":"Prepara la lista de invitados y controla las confirmaciones, las mesas y las preferencias.","godparents":"Padrinos, familia y amigos","rsvp":"Confirmaciones de asistencia (RSVP)","allergies":"Alergias o necesidades especiales","comingSoon":"Pronto podrás gestionar los invitados con el mismo flujo sencillo de la boda."},
+    "tables":{"loading":"Cargando mesas…","summary":"Resumen de mesas","totalTables":"Total de mesas","totalSeats":"Total de plazas","assignedSeats":"Plazas asignadas","availableSeats":"Plazas libres","description":"Aquí puedes ver el resumen de las mesas configuradas y las plazas asignadas.","advanced":"La gestión detallada está disponible en la página Mesas.","open":"Abrir página Mesas","pageTitle":"Distribución de mesas","back":"Volver a invitados","autoAssign":"Asignar automáticamente por familia","noGuests":"No hay invitados disponibles para asignar.","withoutFamily":"Sin familia","namedTable":"Mesa {label}","cousinsTable":"Mesa de primos","namedFamily":"Familia {name}","friends":"Amigos","cousins":"Primos","generated":"Se crearon {tables} mesas para {guests} invitados disponibles.","saved":"Mesas guardadas.","seatsPerTable":"Plazas por mesa","recommended":"Recomendado: 8–10","empty":"Usa la asignación automática para crear una propuesta.","table":"Mesa","tableDetails":"Tipo: {type} · Plazas: {seats} · Asignados: {assigned}","saving":"Guardando…","save":"Guardar distribución","errors":{"TABLE_SAVE_FAILED":"No se pudieron guardar las mesas.","TABLE_NETWORK_ERROR":"Error de red al guardar."}}
   },
   "suppliersUi": {
     "title": "🏢 Proveedores",
@@ -2454,7 +2467,9 @@
       "brandName": "El Presupuesto de los Novios",
       "ideaBudget": "Idea de Presupuesto",
       "openSettings": "Abrir ajustes",
-      "settings": "Ajustes"
+      "settings": "Ajustes",
+      "export": "Exportar",
+      "noExportData": "No hay datos para exportar"
     },
     "profile": {
       "title": "Perfil",

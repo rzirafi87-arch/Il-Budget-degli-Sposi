@@ -5,8 +5,8 @@ import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
-function fail(message: string, status = 500) {
-  return NextResponse.json({ error: message }, { status });
+function fail(error: string, status = 500) {
+  return NextResponse.json({ error }, { status });
 }
 
 export async function GET(req: NextRequest) {
@@ -61,10 +61,10 @@ export async function POST(req: NextRequest) {
     const eventId = (await requireServerCurrentEvent(userId)).eventId;
     const body = await req.json();
     if (!Array.isArray(body?.guests) || !Array.isArray(body?.familyGroups) || !Array.isArray(body?.nonInvitedRecipients)) {
-      return fail("Payload invitati non valido", 400);
+      return fail("GUEST_SNAPSHOT_INVALID", 400);
     }
     if (body.guests.length > 2000 || body.familyGroups.length > 1000 || body.nonInvitedRecipients.length > 2000) {
-      return fail("Payload invitati troppo grande", 413);
+      return fail("GUEST_SNAPSHOT_TOO_LARGE", 413);
     }
     const { data, error } = await db.rpc("save_event_guest_snapshot", {
       p_event_id: eventId,
@@ -76,12 +76,12 @@ export async function POST(req: NextRequest) {
     });
     if (error) {
       logger.error("POST /api/my/guests transaction failed", { code: error.code, message: error.message, eventId });
-      return fail("Salvataggio non riuscito: nessun dato è stato modificato");
+      return fail("GUEST_SNAPSHOT_SAVE_FAILED");
     }
     return NextResponse.json(data || { success: true });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Internal error";
     logger.error("POST /api/my/guests error", { message });
-    return fail(message);
+    return fail("GUEST_SNAPSHOT_SAVE_FAILED");
   }
 }

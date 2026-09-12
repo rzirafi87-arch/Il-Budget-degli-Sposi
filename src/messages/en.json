@@ -1795,13 +1795,27 @@
     "title": "Guest Management",
     "tabs": {
       "guests": "Guests",
-      "tables": "Tables"
+      "tables": "Tables",
+      "label": "Guest sections"
     },
     "sections": {
       "guestsManagement": "Complete Guest Management",
       "familyGroups": "Family Groups",
       "nonInvited": "Not Invited (favours only)"
-    }
+    },
+    "loading":"Loading guests","header":{"eyebrow":"People and tables","description":"Organise the list, manage families, track RSVPs and plan table seating."},
+    "messages":{"familyNameRequired":"Enter a family name.","familySaving":"Family created. Saving…","authRequired":"Sign in to save.","familySaved":"Family created and saved. You can now assign guests.","guestsSaved":"Guests saved successfully."},
+    "errors":{"FAMILY_SAVE_FAILED":"Unable to save the family.","FAMILY_NETWORK_ERROR":"Network error while saving the family.","GUEST_SNAPSHOT_INVALID":"The guest data is invalid.","GUEST_SNAPSHOT_TOO_LARGE":"The guest list is too large.","GUEST_SNAPSHOT_SAVE_FAILED":"Unable to save the guests. No data was changed.","GUEST_NETWORK_ERROR":"Network error while saving guests."},
+    "info":{"description":"Create and manage the complete guest list, families, RSVPs, menu preferences and tables.","tips":{"families":"Create family groups to seat members at the same table.","separate":"Use Separate table to exclude members from automatic seating.","rsvp":"Track RSVPs to know who will attend.","menu":"Record menu preferences for the caterer.","nonInvited":"Use Not invited for people receiving only favours or sugared almonds."},"events":{"wedding":"Manage the bride’s, groom’s and shared guests, organised by family.","baptism":"Keep track of godparents, relatives and friends.","birthday":"Organise guests into groups such as family, friends and colleagues.","graduation":"Invite family, friends and classmates and track their RSVPs."}},
+    "rsvpDeadline":"RSVP deadline, the same for everyone","summary":{"title":"Attendee summary","attendees":"Total attendees","favours":"Favours needed","allergies":"Reported allergies or intolerances","total":"Total"},"guestTypes":{"bride":"Bride","groom":"Groom","common":"Shared"},"menu":{"seat":"Table seat","meat":"Meat","fish":"Fish","child":"Child","entertainment":"Entertainment","vegetarian":"Vegetarian","carne":"Meat","pesce":"Fish","baby":"Children’s menu","animazione":"Entertainment","vegetariano":"Vegetarian","posto_tavolo":"Table seat"},
+    "families":{"add":"Add family","helper":"Create family groups to organise guests. The primary contact represents the whole family.","tipLabel":"Tip:","tip":"Use Separate table to exclude members from automatic seating.","empty":"No families yet. Add a family to get started.","name":"Family name","delete":"Delete family","deleteNamed":"Delete the {name} family","contact":"Contact","unassigned":"Unassigned","familyTable":"Family table","separateTable":"Separate table","createTitle":"Create a family group","namePlaceholder":"e.g. Rossi family","create":"Create family","none":"None","excludeGuest":"Exclude this guest from the family table","assignFirst":"Assign the guest to a family first"},
+    "list":{"title":"Guest list","add":"Add guest","empty":"No guests yet. Add a guest to get started.","namePlaceholder":"Full name","allergiesPlaceholder":"e.g. gluten, lactose…","guestFallback":"guest"},
+    "fieldLabels":{"mainContact":"Set {name} as primary contact","separateTable":"Separate table for {name}","invitationDate":"Invitation date for {name}","rsvp":"RSVP received for {name}","attending":"Attendance for {name}","favour":"Favour for {name}","confetti":"Sugared almonds for {name}"},
+    "columns":{"name":"Name","type":"Type","family":"Family","mainContact":"Primary contact","separate":"Separate table","separateHelp":"Exclude from automatic family-table seating","invitationDate":"Invitation date","rsvpReceived":"RSVP received","attending":"Attending","menu":"Menu preferences","favour":"Favour","allergies":"Allergies / Intolerances","notes":"Notes","actions":"Actions"},
+    "actions":{"exportCsv":"Export CSV","closeDialog":"Close dialog","cancel":"Cancel","delete":"Delete","deleteGuest":"Delete {name}","deleteRecipient":"Delete {name}","saving":"Saving…","saveAll":"Save all"},
+    "nonInvited":{"title":"Favours / sugared almonds for non-guests","add":"Add person","confetti":"Sugared almonds","empty":"No non-guests are receiving favours or sugared almonds.","personFallback":"person"},
+    "confirmation":{"title":"Guests","description":"Prepare the guest list and track RSVPs, tables and preferences.","godparents":"Godparents, family and friends","rsvp":"Attendance confirmations (RSVP)","allergies":"Allergies or special requirements","comingSoon":"You will soon be able to manage guests with the same simple wedding flow."},
+    "tables":{"loading":"Loading tables…","summary":"Table summary","totalTables":"Total tables","totalSeats":"Total seats","assignedSeats":"Assigned seats","availableSeats":"Available seats","description":"View a summary of configured tables and assigned seats here.","advanced":"Detailed seating management is available on the Tables page.","open":"Open Tables page","pageTitle":"Table seating","back":"Back to guests","autoAssign":"Auto-assign by family","noGuests":"No guests are available to assign.","withoutFamily":"No family","namedTable":"{label} table","cousinsTable":"Cousins table","namedFamily":"{name} family","friends":"Friends","cousins":"Cousins","generated":"Created {tables} tables for {guests} available guests.","saved":"Tables saved.","seatsPerTable":"Seats per table","recommended":"Recommended: 8–10","empty":"Use automatic assignment to create a seating proposal.","table":"Table","tableDetails":"Type: {type} · Seats: {seats} · Assigned: {assigned}","saving":"Saving…","save":"Save seating","errors":{"TABLE_SAVE_FAILED":"Unable to save the tables.","TABLE_NETWORK_ERROR":"Network error while saving."}}
   },
   "footer": {
     "newsletterTitle": "Stay updated",
@@ -1919,7 +1933,9 @@
       "brandName": "Wedding Budget",
       "ideaBudget": "Budget Idea",
       "openSettings": "Open settings",
-      "settings": "Settings"
+      "settings": "Settings",
+      "export": "Export",
+      "noExportData": "No data to export"
     },
     "profile": {
       "title": "Profile",

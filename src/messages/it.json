@@ -449,13 +449,31 @@
     "title": "Gestione Invitati",
     "tabs": {
       "guests": "Invitati",
-      "tables": "Tavoli"
+      "tables": "Tavoli",
+      "label": "Sezioni invitati"
     },
     "sections": {
       "guestsManagement": "Gestione Completa degli Invitati",
       "familyGroups": "Gruppi Familiari",
       "nonInvited": "Non Invitati (solo bomboniere)"
-    }
+    },
+    "loading": "Caricamento invitati",
+    "header": {"eyebrow":"Persone e tavoli","description":"Organizza la lista, gestisci le famiglie, traccia le risposte RSVP e pianifica la disposizione dei tavoli."},
+    "messages": {"familyNameRequired":"Inserisci un nome per la famiglia.","familySaving":"Famiglia creata. Salvataggio in corso…","authRequired":"Accedi per salvare.","familySaved":"Famiglia creata e salvata. Ora puoi assegnare gli invitati.","guestsSaved":"Invitati salvati con successo."},
+    "errors": {"FAMILY_SAVE_FAILED":"Impossibile salvare la famiglia.","FAMILY_NETWORK_ERROR":"Errore di rete durante il salvataggio della famiglia.","GUEST_SNAPSHOT_INVALID":"I dati degli invitati non sono validi.","GUEST_SNAPSHOT_TOO_LARGE":"La lista degli invitati è troppo grande.","GUEST_SNAPSHOT_SAVE_FAILED":"Impossibile salvare gli invitati. Nessun dato è stato modificato.","GUEST_NETWORK_ERROR":"Errore di rete durante il salvataggio degli invitati."},
+    "info": {"description":"Crea e gestisci la lista completa degli invitati, le famiglie, le risposte RSVP, le preferenze del menù e i tavoli.","tips":{"families":"Crea gruppi familiari per assegnare i membri allo stesso tavolo.","separate":"Usa Tavolo separato per escludere alcuni membri dall’assegnazione automatica.","rsvp":"Traccia le conferme RSVP per conoscere i partecipanti.","menu":"Registra le preferenze del menù per comunicarle al catering.","nonInvited":"Usa Non invitati per chi riceve solo bomboniera o confetti."},"events":{"wedding":"Gestisci gli invitati della sposa, dello sposo e comuni, organizzandoli per famiglie.","baptism":"Tieni traccia di padrino, madrina, familiari e amici.","birthday":"Organizza gli invitati per gruppi, come famiglia, amici e colleghi.","graduation":"Invita familiari, amici e compagni di studi e tracciane le conferme."}},
+    "rsvpDeadline":"Data massima per la risposta RSVP, uguale per tutti",
+    "summary":{"title":"Riepilogo partecipanti","attendees":"Totale partecipanti","favours":"Bomboniere necessarie","allergies":"Allergie o intolleranze segnalate","total":"Totale"},
+    "guestTypes":{"bride":"Sposa","groom":"Sposo","common":"Comuni"},
+    "menu":{"seat":"Posto tavolo","meat":"Carne","fish":"Pesce","child":"Bambino","entertainment":"Animazione","vegetarian":"Vegetariano","carne":"Carne","pesce":"Pesce","baby":"Menù bambino","animazione":"Animazione","vegetariano":"Vegetariano","posto_tavolo":"Posto tavolo"},
+    "families":{"add":"Aggiungi famiglia","helper":"Crea gruppi famiglia per organizzare gli invitati. Il contatto principale rappresenta tutta la famiglia.","tipLabel":"Suggerimento:","tip":"Usa Tavolo separato per escludere alcuni membri dall’assegnazione automatica.","empty":"Nessuna famiglia creata. Aggiungi una famiglia per iniziare.","name":"Nome famiglia","delete":"Elimina famiglia","deleteNamed":"Elimina la famiglia {name}","contact":"Contatto","unassigned":"Non assegnato","familyTable":"Tavolo famiglia","separateTable":"Tavolo separato","createTitle":"Crea nuovo gruppo famiglia","namePlaceholder":"es. Famiglia Rossi","create":"Crea famiglia","none":"Nessuna","excludeGuest":"Escludi questo invitato dal tavolo famiglia","assignFirst":"Assegna prima l’invitato a una famiglia"},
+    "list":{"title":"Lista invitati","add":"Aggiungi invitato","empty":"Nessun invitato presente. Aggiungi un invitato per iniziare.","namePlaceholder":"Nome completo","allergiesPlaceholder":"Es. glutine, lattosio…","guestFallback":"invitato"},
+    "fieldLabels":{"mainContact":"Imposta {name} come contatto principale","separateTable":"Tavolo separato per {name}","invitationDate":"Data invito per {name}","rsvp":"Risposta ricevuta per {name}","attending":"Partecipazione di {name}","favour":"Bomboniera per {name}","confetti":"Confetti per {name}"},
+    "columns":{"name":"Nome","type":"Tipo","family":"Famiglia","mainContact":"Contatto principale","separate":"Tavolo separato","separateHelp":"Escludi dall’assegnazione automatica al tavolo famiglia","invitationDate":"Data invito","rsvpReceived":"Risposta ricevuta","attending":"Partecipa","menu":"Preferenze menù","favour":"Bomboniera","allergies":"Allergie / Intolleranze","notes":"Note","actions":"Azioni"},
+    "actions":{"exportCsv":"Esporta CSV","closeDialog":"Chiudi finestra","cancel":"Annulla","delete":"Elimina","deleteGuest":"Elimina {name}","deleteRecipient":"Elimina {name}","saving":"Salvataggio…","saveAll":"Salva tutto"},
+    "nonInvited":{"title":"Bomboniere / Confetti per non invitati","add":"Aggiungi persona","confetti":"Confetti","empty":"Nessuna persona non invitata riceve bomboniere o confetti.","personFallback":"persona"},
+    "confirmation":{"title":"Invitati","description":"Prepara la lista degli invitati e tieni traccia di conferme, tavoli e preferenze.","godparents":"Padrino, madrina, famiglia e amici","rsvp":"Conferme di partecipazione (RSVP)","allergies":"Allergie o esigenze particolari","comingSoon":"A breve potrai gestire gli invitati con lo stesso semplice flusso del matrimonio."},
+    "tables":{"loading":"Caricamento tavoli…","summary":"Riepilogo tavoli","totalTables":"Tavoli totali","totalSeats":"Posti totali","assignedSeats":"Posti assegnati","availableSeats":"Posti liberi","description":"Qui puoi vedere il riepilogo dei tavoli configurati e dei posti assegnati.","advanced":"La gestione dettagliata della disposizione è disponibile nella pagina Tavoli.","open":"Apri pagina Tavoli","pageTitle":"Disposizione tavoli","back":"Torna agli invitati","autoAssign":"Assegna automaticamente per famiglia","noGuests":"Nessun invitato disponibile da assegnare.","withoutFamily":"Senza famiglia","namedTable":"Tavolo {label}","cousinsTable":"Tavolo cugini","namedFamily":"Famiglia {name}","friends":"Amici","cousins":"Cugini","generated":"Generati {tables} tavoli da {guests} invitati disponibili.","saved":"Tavoli salvati.","seatsPerTable":"Posti per tavolo","recommended":"Consigliato: 8–10","empty":"Usa l’assegnazione automatica per generare una proposta.","table":"Tavolo","tableDetails":"Tipo: {type} · Posti: {seats} · Assegnati: {assigned}","saving":"Salvataggio…","save":"Salva disposizione","errors":{"TABLE_SAVE_FAILED":"Impossibile salvare i tavoli.","TABLE_NETWORK_ERROR":"Errore di rete durante il salvataggio."}}
   },
   "suppliersUi": {
     "title": "Fornitori",
@@ -1913,7 +1931,9 @@
       "brandName": "Il Budget degli Sposi",
       "ideaBudget": "Idea di Budget",
       "openSettings": "Apri impostazioni",
-      "settings": "Impostazioni"
+      "settings": "Impostazioni",
+      "export": "Esporta",
+      "noExportData": "Nessun dato da esportare"
     },
     "profile": {
       "title": "Profilo",

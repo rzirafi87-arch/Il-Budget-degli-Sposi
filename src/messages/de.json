@@ -818,13 +818,26 @@
     "title": "Gästemanagement",
     "tabs": {
       "guests": "Gäste",
-      "tables": "Tische"
+      "tables": "Tische", "label": "Gästebereiche"
     },
     "sections": {
       "guestsManagement": "Komplettes Gästemanagement",
       "familyGroups": "Familiengruppen",
-      "nonInvited": "Nicht eingeladen (nur Gefälligkeiten)"
-    }
+      "nonInvited": "Nicht eingeladen (nur Gastgeschenke)"
+    },
+    "loading":"Gäste werden geladen","header":{"eyebrow":"Personen und Tische","description":"Organisiert die Gästeliste, verwaltet Familien, verfolgt Zusagen und plant die Sitzordnung."},
+    "messages":{"familyNameRequired":"Gebt einen Familiennamen ein.","familySaving":"Familie erstellt. Wird gespeichert…","authRequired":"Meldet euch zum Speichern an.","familySaved":"Familie erstellt und gespeichert. Gäste können jetzt zugeordnet werden.","guestsSaved":"Gäste erfolgreich gespeichert."},
+    "errors":{"FAMILY_SAVE_FAILED":"Die Familie konnte nicht gespeichert werden.","FAMILY_NETWORK_ERROR":"Netzwerkfehler beim Speichern der Familie.","GUEST_SNAPSHOT_INVALID":"Die Gästedaten sind ungültig.","GUEST_SNAPSHOT_TOO_LARGE":"Die Gästeliste ist zu groß.","GUEST_SNAPSHOT_SAVE_FAILED":"Die Gäste konnten nicht gespeichert werden. Es wurden keine Daten geändert.","GUEST_NETWORK_ERROR":"Netzwerkfehler beim Speichern der Gäste."},
+    "info":{"description":"Erstellt und verwaltet Gästeliste, Familien, Rückmeldungen, Menüwünsche und Tische.","tips":{"families":"Erstellt Familiengruppen, um Mitglieder am selben Tisch zu platzieren.","separate":"Mit Separater Tisch schließt ihr Mitglieder von der automatischen Zuordnung aus.","rsvp":"Verfolgt die Rückmeldungen, um die Teilnehmerzahl zu kennen.","menu":"Erfasst Menüwünsche für das Catering.","nonInvited":"Nicht eingeladen ist für Personen, die nur Gastgeschenke erhalten."},"events":{"wedding":"Verwaltet Gäste der Braut, des Bräutigams und gemeinsame Gäste nach Familien.","baptism":"Erfasst Paten, Verwandte und Freunde.","birthday":"Organisiert Gäste in Gruppen wie Familie, Freunde und Kollegen.","graduation":"Ladet Familie, Freunde und Studienkollegen ein und verfolgt ihre Rückmeldungen."}},
+    "rsvpDeadline":"Rückmeldefrist, für alle gleich","summary":{"title":"Teilnehmerübersicht","attendees":"Teilnehmer insgesamt","favours":"Benötigte Gastgeschenke","allergies":"Gemeldete Allergien oder Unverträglichkeiten","total":"Gesamt"},"guestTypes":{"bride":"Braut","groom":"Bräutigam","common":"Gemeinsam"},"menu":{"seat":"Sitzplatz","meat":"Fleisch","fish":"Fisch","child":"Kind","entertainment":"Unterhaltung","vegetarian":"Vegetarisch","carne":"Fleisch","pesce":"Fisch","baby":"Kindermenü","animazione":"Unterhaltung","vegetariano":"Vegetarisch","posto_tavolo":"Sitzplatz"},
+    "families":{"add":"Familie hinzufügen","helper":"Erstellt Familiengruppen zur Organisation der Gäste. Der Hauptkontakt vertritt die ganze Familie.","tipLabel":"Tipp:","tip":"Mit Separater Tisch schließt ihr Mitglieder von der automatischen Zuordnung aus.","empty":"Noch keine Familie vorhanden. Fügt eine hinzu.","name":"Familienname","delete":"Familie löschen","deleteNamed":"Familie {name} löschen","contact":"Kontakt","unassigned":"Nicht zugeordnet","familyTable":"Familientisch","separateTable":"Separater Tisch","createTitle":"Familiengruppe erstellen","namePlaceholder":"z. B. Familie Müller","create":"Familie erstellen","none":"Keine","excludeGuest":"Diesen Gast vom Familientisch ausschließen","assignFirst":"Ordnet den Gast zuerst einer Familie zu"},
+    "list":{"title":"Gästeliste","add":"Gast hinzufügen","empty":"Noch keine Gäste. Fügt einen Gast hinzu.","namePlaceholder":"Vollständiger Name","allergiesPlaceholder":"z. B. Gluten, Laktose…","guestFallback":"Gast"},
+    "fieldLabels":{"mainContact":"{name} als Hauptkontakt festlegen","separateTable":"Separater Tisch für {name}","invitationDate":"Einladungsdatum für {name}","rsvp":"Antwort von {name} erhalten","attending":"Teilnahme von {name}","favour":"Gastgeschenk für {name}","confetti":"Hochzeitsmandeln für {name}"},
+    "columns":{"name":"Name","type":"Typ","family":"Familie","mainContact":"Hauptkontakt","separate":"Separater Tisch","separateHelp":"Von der automatischen Familientisch-Zuordnung ausschließen","invitationDate":"Einladungsdatum","rsvpReceived":"Antwort erhalten","attending":"Nimmt teil","menu":"Menüwünsche","favour":"Gastgeschenk","allergies":"Allergien / Unverträglichkeiten","notes":"Notizen","actions":"Aktionen"},
+    "actions":{"exportCsv":"CSV exportieren","closeDialog":"Dialog schließen","cancel":"Abbrechen","delete":"Löschen","deleteGuest":"{name} löschen","deleteRecipient":"{name} löschen","saving":"Wird gespeichert…","saveAll":"Alles speichern"},
+    "nonInvited":{"title":"Gastgeschenke für nicht eingeladene Personen","add":"Person hinzufügen","confetti":"Hochzeitsmandeln","empty":"Keine nicht eingeladene Person erhält Gastgeschenke.","personFallback":"Person"},
+    "confirmation":{"title":"Gäste","description":"Bereitet die Gästeliste vor und verfolgt Rückmeldungen, Tische und Wünsche.","godparents":"Paten, Familie und Freunde","rsvp":"Teilnahmebestätigungen (RSVP)","allergies":"Allergien oder besondere Anforderungen","comingSoon":"Bald könnt ihr Gäste mit demselben einfachen Ablauf wie bei der Hochzeit verwalten."},
+    "tables":{"loading":"Tische werden geladen…","summary":"Tischübersicht","totalTables":"Tische insgesamt","totalSeats":"Plätze insgesamt","assignedSeats":"Belegte Plätze","availableSeats":"Freie Plätze","description":"Hier seht ihr eine Übersicht der eingerichteten Tische und belegten Plätze.","advanced":"Die detaillierte Sitzplanung ist auf der Seite Tische verfügbar.","open":"Seite Tische öffnen","pageTitle":"Tischordnung","back":"Zurück zu den Gästen","autoAssign":"Automatisch nach Familie zuordnen","noGuests":"Keine Gäste zum Zuordnen verfügbar.","withoutFamily":"Ohne Familie","namedTable":"Tisch {label}","cousinsTable":"Cousin-Tisch","namedFamily":"Familie {name}","friends":"Freunde","cousins":"Cousins","generated":"{tables} Tische für {guests} verfügbare Gäste erstellt.","saved":"Tische gespeichert.","seatsPerTable":"Plätze pro Tisch","recommended":"Empfohlen: 8–10","empty":"Nutzt die automatische Zuordnung für einen Sitzvorschlag.","table":"Tisch","tableDetails":"Typ: {type} · Plätze: {seats} · Zugeordnet: {assigned}","saving":"Wird gespeichert…","save":"Sitzordnung speichern","errors":{"TABLE_SAVE_FAILED":"Die Tische konnten nicht gespeichert werden.","TABLE_NETWORK_ERROR":"Netzwerkfehler beim Speichern."}}
   },
   "suppliersUi": {
     "title": "🏢 Lieferanten",
@@ -2454,7 +2467,9 @@
       "brandName": "Hochzeitsbudget",
       "ideaBudget": "Budgetidee",
       "openSettings": "Einstellungen öffnen",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "export": "Exportieren",
+      "noExportData": "Keine Daten zum Exportieren"
     },
     "profile": {
       "title": "Profil",

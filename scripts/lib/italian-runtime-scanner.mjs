@@ -5,13 +5,15 @@ import ts from "typescript";
 const defaultRoots = ["src/app", "src/components", "src/hooks", "src/lib"];
 const ignored = /(?:^|\/)(?:__tests__|data)(?:\/|$)|\.(?:test|spec)\.[cm]?[jt]sx?$/;
 const uiAttributes = new Set(["alt", "aria-label", "aria-description", "aria-describedby", "description", "eyebrow", "helperText", "label", "placeholder", "title"]);
+const implementationAttributes = new Set(["filename"]);
 const uiCalls = new Set(["alert", "confirm", "prompt", "setError", "setMessage", "showToast"]);
+const implementationCalls = new Set(["getPageImages"]);
 const uiProperties = new Set(["alt", "ariaLabel", "breadcrumb", "description", "empty", "error", "eyebrow", "helper", "label", "placeholder", "tab", "title", "tooltip"]);
 const uiCollectionNames = /(?:breadcrumbs?|columns?|headers?|labels?|menu|options?|statuses|tabs?|tooltips?)$/i;
 const italian = /\b(?:accedi|aggiungi|allergi[ae]|annulla|apri|assegna|azioni|bombonier[ae]|caricamento|cerca|chiudi|comun[ei]|conferma|confermat[ao]|confetti|contatto|continua|crea|data|devi|elimina|errore|evento|famigli[ae]|fornitore|impossibile|impostazioni|invit(?:at[ioe]?|o|a)|matrimonio|modifica|nessun[ao]?|nome|note|partecipa|persona|posti?|preferenze|profilo|ricevuta|rifiutat[ao]|riprova|richiesta|risposta|salva|salvataggio|scegli|segnalat[ae]|seleziona|senza|spesa|spos[ao]|tavol[oi]|totale|verifica)\b/i;
 const invariant = new Set(["SIAE", "Wikidata", "OpenStreetMap", "Made in Italy", "Email", "Password", "Dashboard", "Budget", "Save the Date"]);
 const stableCode = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+$/;
-const implementationString = /^(?:\.?\.?\/|\/api\/|https?:\/\/|[\w@.-]+\.(?:css|json|sql|tsx?|jsx?|mjs|png|jpe?g|svg|pdf))$/i;
+const implementationString = /^(?:\.?\.?\/.*|\/.*|https?:\/\/.*|[\w@.-]+\.(?:css|json|sql|tsx?|jsx?|mjs|png|jpe?g|svg|pdf))$/i;
 const sql = /^\s*(?:select|insert|update|delete|alter|create|drop|grant|revoke)\b/i;
 
 function walk(directory) {
@@ -39,11 +41,15 @@ function uiContext(node) {
   if (ts.isJsxText(node)) return { userFacing:true, context:"JSX text", category:"A", action:"translate with next-intl" };
   let current = node.parent;
   while (current && !ts.isStatement(current) && !ts.isSourceFile(current)) {
+    if (ts.isJsxAttribute(current) && implementationAttributes.has(current.name.getText())) return null;
+    if (ts.isJsxExpression(current) && ts.isJsxAttribute(current.parent) && implementationAttributes.has(current.parent.name.getText())) return null;
     if (ts.isJsxAttribute(current) && uiAttributes.has(current.name.getText())) return { userFacing:true, context:`JSX attribute ${current.name.getText()}`, category:"B", action:"translate accessible/presentation attribute" };
     if (ts.isJsxExpression(current)) return { userFacing:true, context:"JSX expression", category:"A", action:"translate with next-intl" };
     if (ts.isPropertyAssignment(current) && uiProperties.has(propertyName(current))) return { userFacing:true, context:`UI object property ${propertyName(current)}`, category:"A", action:"translate UI configuration" };
     if (ts.isCallExpression(current)) {
       const name = callName(current);
+      if (name === "t") return null;
+      if (implementationCalls.has(name)) return null;
       if (uiCalls.has(name)) return { userFacing:true, context:`runtime call ${name}`, category:name === "setError" ? "D" : "A", action:"translate presentation message" };
       if (name === "Error") return { userFacing:false, context:"runtime Error", category:"C", action:"replace presentation leak with stable code" };
     }

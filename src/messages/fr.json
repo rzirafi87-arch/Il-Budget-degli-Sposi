@@ -1021,13 +1021,26 @@
     "title": "Gestion des invités",
     "tabs": {
       "guests": "Invités",
-      "tables": "Tableaux"
+      "tables": "Tables", "label": "Sections des invités"
     },
     "sections": {
       "guestsManagement": "Gestion complète des invités",
       "familyGroups": "Groupes familiaux",
-      "nonInvited": "Non invité (faveurs uniquement)"
-    }
+      "nonInvited": "Non-invités (cadeaux uniquement)"
+    },
+    "loading":"Chargement des invités","header":{"eyebrow":"Personnes et tables","description":"Organisez la liste, gérez les familles, suivez les réponses et planifiez les tables."},
+    "messages":{"familyNameRequired":"Saisissez un nom de famille.","familySaving":"Famille créée. Enregistrement…","authRequired":"Connectez-vous pour enregistrer.","familySaved":"Famille créée et enregistrée. Vous pouvez maintenant affecter les invités.","guestsSaved":"Invités enregistrés avec succès."},
+    "errors":{"FAMILY_SAVE_FAILED":"Impossible d’enregistrer la famille.","FAMILY_NETWORK_ERROR":"Erreur réseau lors de l’enregistrement de la famille.","GUEST_SNAPSHOT_INVALID":"Les données des invités ne sont pas valides.","GUEST_SNAPSHOT_TOO_LARGE":"La liste d’invités est trop volumineuse.","GUEST_SNAPSHOT_SAVE_FAILED":"Impossible d’enregistrer les invités. Aucune donnée n’a été modifiée.","GUEST_NETWORK_ERROR":"Erreur réseau lors de l’enregistrement des invités."},
+    "info":{"description":"Créez et gérez la liste des invités, les familles, les réponses, les préférences de menu et les tables.","tips":{"families":"Créez des groupes familiaux pour réunir leurs membres à la même table.","separate":"Utilisez Table séparée pour exclure des membres de l’affectation automatique.","rsvp":"Suivez les réponses pour connaître les participants.","menu":"Enregistrez les préférences de menu pour le traiteur.","nonInvited":"Utilisez Non-invités pour les personnes recevant seulement un cadeau ou des dragées."},"events":{"wedding":"Gérez les invités de la mariée, du marié et communs, organisés par famille.","baptism":"Suivez les parrains, marraines, proches et amis.","birthday":"Organisez les invités en groupes : famille, amis et collègues.","graduation":"Invitez proches, amis et camarades d’études et suivez leurs réponses."}},
+    "rsvpDeadline":"Date limite de réponse, identique pour tous","summary":{"title":"Résumé des participants","attendees":"Total des participants","favours":"Cadeaux nécessaires","allergies":"Allergies ou intolérances signalées","total":"Total"},"guestTypes":{"bride":"Mariée","groom":"Marié","common":"Communs"},"menu":{"seat":"Place à table","meat":"Viande","fish":"Poisson","child":"Enfant","entertainment":"Animation","vegetarian":"Végétarien","carne":"Viande","pesce":"Poisson","baby":"Menu enfant","animazione":"Animation","vegetariano":"Végétarien","posto_tavolo":"Place à table"},
+    "families":{"add":"Ajouter une famille","helper":"Créez des groupes familiaux pour organiser les invités. Le contact principal représente toute la famille.","tipLabel":"Conseil :","tip":"Utilisez Table séparée pour exclure des membres de l’affectation automatique.","empty":"Aucune famille. Ajoutez-en une pour commencer.","name":"Nom de famille","delete":"Supprimer la famille","deleteNamed":"Supprimer la famille {name}","contact":"Contact","unassigned":"Non affecté","familyTable":"Table familiale","separateTable":"Table séparée","createTitle":"Créer un groupe familial","namePlaceholder":"ex. Famille Martin","create":"Créer la famille","none":"Aucune","excludeGuest":"Exclure cet invité de la table familiale","assignFirst":"Affectez d’abord l’invité à une famille"},
+    "list":{"title":"Liste des invités","add":"Ajouter un invité","empty":"Aucun invité. Ajoutez-en un pour commencer.","namePlaceholder":"Nom complet","allergiesPlaceholder":"ex. gluten, lactose…","guestFallback":"invité"},
+    "fieldLabels":{"mainContact":"Définir {name} comme contact principal","separateTable":"Table séparée pour {name}","invitationDate":"Date d’invitation de {name}","rsvp":"Réponse reçue de {name}","attending":"Présence de {name}","favour":"Cadeau pour {name}","confetti":"Dragées pour {name}"},
+    "columns":{"name":"Nom","type":"Type","family":"Famille","mainContact":"Contact principal","separate":"Table séparée","separateHelp":"Exclure de l’affectation automatique à la table familiale","invitationDate":"Date d’invitation","rsvpReceived":"Réponse reçue","attending":"Présent","menu":"Préférences de menu","favour":"Cadeau","allergies":"Allergies / Intolérances","notes":"Notes","actions":"Actions"},
+    "actions":{"exportCsv":"Exporter en CSV","closeDialog":"Fermer la boîte de dialogue","cancel":"Annuler","delete":"Supprimer","deleteGuest":"Supprimer {name}","deleteRecipient":"Supprimer {name}","saving":"Enregistrement…","saveAll":"Tout enregistrer"},
+    "nonInvited":{"title":"Cadeaux / dragées pour les non-invités","add":"Ajouter une personne","confetti":"Dragées","empty":"Aucun non-invité ne reçoit de cadeau ou de dragées.","personFallback":"personne"},
+    "confirmation":{"title":"Invités","description":"Préparez la liste des invités et suivez les réponses, les tables et les préférences.","godparents":"Parrain, marraine, famille et amis","rsvp":"Confirmations de présence (RSVP)","allergies":"Allergies ou besoins particuliers","comingSoon":"Vous pourrez bientôt gérer les invités avec le même parcours simple que pour le mariage."},
+    "tables":{"loading":"Chargement des tables…","summary":"Résumé des tables","totalTables":"Nombre de tables","totalSeats":"Nombre de places","assignedSeats":"Places attribuées","availableSeats":"Places libres","description":"Consultez ici le résumé des tables configurées et des places attribuées.","advanced":"La gestion détaillée est disponible sur la page Tables.","open":"Ouvrir la page Tables","pageTitle":"Plan de table","back":"Retour aux invités","autoAssign":"Attribuer automatiquement par famille","noGuests":"Aucun invité disponible à attribuer.","withoutFamily":"Sans famille","namedTable":"Table {label}","cousinsTable":"Table des cousins","namedFamily":"Famille {name}","friends":"Amis","cousins":"Cousins","generated":"{tables} tables créées pour {guests} invités disponibles.","saved":"Tables enregistrées.","seatsPerTable":"Places par table","recommended":"Recommandé : 8–10","empty":"Utilisez l’attribution automatique pour créer une proposition.","table":"Table","tableDetails":"Type : {type} · Places : {seats} · Attribuées : {assigned}","saving":"Enregistrement…","save":"Enregistrer le plan","errors":{"TABLE_SAVE_FAILED":"Impossible d’enregistrer les tables.","TABLE_NETWORK_ERROR":"Erreur réseau lors de l’enregistrement."}}
   },
   "suppliersUi": {
     "title": "🏢 Fournisseurs",
@@ -2454,7 +2467,9 @@
       "brandName": "Budget de Mariage",
       "ideaBudget": "Idée de Budget",
       "openSettings": "Ouvrir les paramètres",
-      "settings": "Paramètres"
+      "settings": "Paramètres",
+      "export": "Exporter",
+      "noExportData": "Aucune donnée à exporter"
     },
     "profile": {
       "title": "Profil",
