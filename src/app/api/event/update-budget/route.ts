@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "total_budget non valido" }, { status: 400 });
     }
     if ((bride !== null && (!isFinite(bride) || bride < 0)) || (groom !== null && (!isFinite(groom) || groom < 0))) {
-      return NextResponse.json({ error: "budget sposa/sposo non valido" }, { status: 400 });
+      return NextResponse.json({ error: "INVALID_PARTNER_BUDGET" }, { status: 400 });
     }
 
     const db = getServiceClient();

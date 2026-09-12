@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!cat?.id) {
-      return NextResponse.json({ error: "Impossibile creare categoria" }, { status: 500 });
+      return NextResponse.json({ error: "CATEGORY_CREATE_FAILED" }, { status: 500 });
     }
 
     const categoryId = cat.id;
@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!sub?.id) {
-      return NextResponse.json({ error: "Impossibile creare sottocategoria" }, { status: 500 });
+      return NextResponse.json({ error: "SUBCATEGORY_CREATE_FAILED" }, { status: 500 });
     }
 
     const { data: created, error: insertError } = await db.from("expenses").insert({

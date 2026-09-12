@@ -1,5 +1,6 @@
 ﻿"use client";
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import {
   createContext,
   useCallback,
@@ -23,6 +24,7 @@ type ToastContextType = {
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const t = useTranslations("milestone9.shared");
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = useCallback(
@@ -81,7 +83,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <button
                 onClick={() => removeToast(toast.id)}
                 className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
-                aria-label="Chiudi"
+                aria-label={t("close")}
               >
                 ✖️
               </button>

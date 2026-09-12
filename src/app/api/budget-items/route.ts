@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   const jwt = authHeader?.split(" ")[1];
 
   if (!jwt) {
-    return NextResponse.json({ error: "Autenticazione richiesta" }, { status: 401 });
+    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   }
 
   const { data: userData, error: authError } = await db.auth.getUser(jwt);

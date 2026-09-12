@@ -115,6 +115,6 @@ export async function POST(req: NextRequest) {
     console.error("REGISTER Uncaught:", e);
     const err = (e && typeof e === "object" && "message" in e) ? (e as Error) : new Error(String(e));
     console.error("REGISTER unexpected error type:", err.name);
-    return NextResponse.json({ ok: false, error: "Registrazione non disponibile. Riprova." }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "REGISTRATION_UNAVAILABLE" }, { status: 500 });
   }
 }

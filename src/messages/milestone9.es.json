@@ -1,0 +1,78 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Lista de bodas",
+      "income": "Ir a ingresos",
+      "dashboard": "Volver al panel",
+      "weddingOnly": "La lista solo está disponible para bodas. Selecciona “Boda” para activarla.",
+      "added": "¡Añadido a la lista!",
+      "errors": {
+        "generic": "Error",
+        "network": "Error de red"
+      },
+      "info": {
+        "title": "Crea tu lista de bodas moderna",
+        "description": "Crea una lista con aportaciones para el viaje, experiencias, un fondo común o regalos tradicionales.",
+        "tips": {
+          "honeymoon": "Permite que los invitados contribuyan a la luna de miel",
+          "cash": "El fondo común ofrece la máxima flexibilidad",
+          "links": "Añade enlaces para indicar exactamente qué comprar",
+          "purchased": "Marca los regalos recibidos para evitar duplicados",
+          "priority": "Las prioridades indican lo que más deseáis"
+        },
+        "events": {
+          "wedding": "Incluye luna de miel, experiencias, muebles y tecnología.",
+          "baptism": "Incluye ahorros, libros, juguetes y aportaciones para el futuro.",
+          "birthday": "Personaliza la lista según la edad y los intereses.",
+          "graduation": "Considera estudios, viajes, equipo profesional y experiencias."
+        }
+      },
+      "addGift": "Añadir regalo",
+      "fields": {
+        "type": "Tipo",
+        "name": "Nombre",
+        "namePlaceholder": "Ej. robot aspirador",
+        "price": "Precio estimado (€)",
+        "description": "Descripción",
+        "priority": "Prioridad",
+        "status": "Estado",
+        "notes": "Notas",
+        "notesPlaceholder": "Notas opcionales"
+      },
+      "types": {
+        "honeymoon": "Aportación para luna de miel",
+        "cash": "Fondo común",
+        "experiences": "Experiencias (cenas, spa, tours)",
+        "furniture": "Muebles",
+        "appliances": "Electrodomésticos",
+        "luxury": "Artículos de lujo",
+        "charity": "Beneficencia",
+        "vouchers": "Tarjetas regalo",
+        "smartHome": "Tecnología y hogar inteligente",
+        "other": "Otro"
+      },
+      "priorities": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      },
+      "statuses": {
+        "wanted": "Deseado",
+        "purchased": "Comprado"
+      },
+      "saving": "Guardando…",
+      "add": "+ Añadir",
+      "loading": "Cargando…",
+      "empty": "No hay elementos"
+    },
+    "currentEvent": {
+      "label": "Evento actual", "choose": "Elige un evento", "none": "Ningún evento", "change": "Cambiar evento", "soon": "Próximamente"
+    },
+    "errorPage": {
+      "title": "Algo ha salido mal", "description": "No se pudo cargar esta página. Inténtalo de nuevo en breve.", "retry": "Reintentar"
+    },
+    "shared": {
+      "close": "Cerrar", "cookiePreferences": "Preferencias de cookies", "closeMenu": "Cerrar menú"
+    }
+  }
+}

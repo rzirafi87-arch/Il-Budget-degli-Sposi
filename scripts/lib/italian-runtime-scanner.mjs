@@ -29,6 +29,12 @@ function textValue(node) {
   return "";
 }
 function callName(node) { const expression = node.expression; return ts.isIdentifier(expression) ? expression.text : ts.isPropertyAccessExpression(expression) ? expression.name.text : ""; }
+function isTranslationCall(node) {
+  if (!ts.isCallExpression(node)) return false;
+  if (callName(node) === "t") return true;
+  const expression = node.expression;
+  return ts.isPropertyAccessExpression(expression) && ts.isIdentifier(expression.expression) && expression.expression.text === "t";
+}
 function propertyName(node) { return node?.name && (ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)) ? node.name.text : ""; }
 function variableName(node) {
   let current = node.parent;
@@ -48,7 +54,7 @@ function uiContext(node) {
     if (ts.isPropertyAssignment(current) && uiProperties.has(propertyName(current))) return { userFacing:true, context:`UI object property ${propertyName(current)}`, category:"A", action:"translate UI configuration" };
     if (ts.isCallExpression(current)) {
       const name = callName(current);
-      if (name === "t") return null;
+      if (isTranslationCall(current)) return null;
       if (implementationCalls.has(name)) return null;
       if (uiCalls.has(name)) return { userFacing:true, context:`runtime call ${name}`, category:name === "setError" ? "D" : "A", action:"translate presentation message" };
       if (name === "Error") return { userFacing:false, context:"runtime Error", category:"C", action:"replace presentation leak with stable code" };

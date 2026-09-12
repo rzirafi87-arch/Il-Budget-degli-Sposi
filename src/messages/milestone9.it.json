@@ -1,0 +1,78 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Lista Nozze",
+      "income": "Vai a Entrate",
+      "dashboard": "Torna in Dashboard",
+      "weddingOnly": "La Lista Nozze è disponibile solo per l’evento Matrimonio. Seleziona il tipo evento “Matrimonio” per abilitarla.",
+      "added": "Aggiunto alla lista!",
+      "errors": {
+        "generic": "Errore",
+        "network": "Errore di rete"
+      },
+      "info": {
+        "title": "Crea la tua Lista Nozze moderna",
+        "description": "Crea una lista con contributi al viaggio, esperienze, cassa comune o regali tradizionali.",
+        "tips": {
+          "honeymoon": "Permetti agli ospiti di contribuire alla luna di miele",
+          "cash": "La cassa comune offre la massima flessibilità",
+          "links": "Aggiungi link per indicare esattamente cosa acquistare",
+          "purchased": "Segna i regali ricevuti per evitare duplicati",
+          "priority": "Le priorità indicano cosa desiderate di più"
+        },
+        "events": {
+          "wedding": "Includi viaggio di nozze, esperienze, arredamento e tecnologia.",
+          "baptism": "Includi risparmi, libri, giocattoli e contributi per il futuro.",
+          "birthday": "Personalizza la lista in base all’età e agli interessi.",
+          "graduation": "Considera studio, viaggio, attrezzatura professionale ed esperienze."
+        }
+      },
+      "addGift": "Aggiungi regalo",
+      "fields": {
+        "type": "Tipologia",
+        "name": "Nome",
+        "namePlaceholder": "Es. Robot aspirapolvere",
+        "price": "Prezzo stimato (€)",
+        "description": "Descrizione",
+        "priority": "Priorità",
+        "status": "Stato",
+        "notes": "Note",
+        "notesPlaceholder": "Note opzionali"
+      },
+      "types": {
+        "honeymoon": "Contributo viaggio di nozze",
+        "cash": "Cassa comune",
+        "experiences": "Esperienze (cene, spa, tour)",
+        "furniture": "Arredamento",
+        "appliances": "Elettrodomestici",
+        "luxury": "Beni di lusso",
+        "charity": "Beneficenza",
+        "vouchers": "Buoni regalo",
+        "smartHome": "Tech & Smart Home",
+        "other": "Altro"
+      },
+      "priorities": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Bassa"
+      },
+      "statuses": {
+        "wanted": "Desiderato",
+        "purchased": "Acquistato"
+      },
+      "saving": "Salvataggio…",
+      "add": "+ Aggiungi",
+      "loading": "Caricamento…",
+      "empty": "Nessun elemento in lista"
+    },
+    "currentEvent": {
+      "label": "Evento corrente", "choose": "Scegli un evento", "none": "Nessun evento", "change": "Cambia evento", "soon": "Prossimamente"
+    },
+    "errorPage": {
+      "title": "Qualcosa è andato storto", "description": "Non è stato possibile caricare questa pagina. Riprova tra poco.", "retry": "Riprova"
+    },
+    "shared": {
+      "close": "Chiudi", "cookiePreferences": "Preferenze cookie", "closeMenu": "Chiudi menu"
+    }
+  }
+}

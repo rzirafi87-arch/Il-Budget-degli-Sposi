@@ -1,0 +1,78 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Liste de mariage",
+      "income": "Voir les recettes",
+      "dashboard": "Retour au tableau de bord",
+      "weddingOnly": "La liste est disponible uniquement pour les mariages. Sélectionnez « Mariage » pour l’activer.",
+      "added": "Ajouté à la liste !",
+      "errors": {
+        "generic": "Erreur",
+        "network": "Erreur réseau"
+      },
+      "info": {
+        "title": "Créez votre liste de mariage moderne",
+        "description": "Créez une liste avec des participations au voyage, des expériences, une cagnotte ou des cadeaux traditionnels.",
+        "tips": {
+          "honeymoon": "Permettez aux invités de participer à votre voyage de noces",
+          "cash": "La cagnotte commune offre une flexibilité maximale",
+          "links": "Ajoutez des liens pour indiquer exactement quoi acheter",
+          "purchased": "Marquez les cadeaux reçus afin d’éviter les doublons",
+          "priority": "Les priorités indiquent ce que vous souhaitez le plus"
+        },
+        "events": {
+          "wedding": "Incluez voyage de noces, expériences, mobilier et technologie.",
+          "baptism": "Incluez épargne, livres, jouets et participations pour l’avenir.",
+          "birthday": "Personnalisez la liste selon l’âge et les centres d’intérêt.",
+          "graduation": "Pensez aux études, aux voyages, au matériel professionnel et aux expériences."
+        }
+      },
+      "addGift": "Ajouter un cadeau",
+      "fields": {
+        "type": "Type",
+        "name": "Nom",
+        "namePlaceholder": "Ex. robot aspirateur",
+        "price": "Prix estimé (€)",
+        "description": "Description",
+        "priority": "Priorité",
+        "status": "Statut",
+        "notes": "Notes",
+        "notesPlaceholder": "Notes facultatives"
+      },
+      "types": {
+        "honeymoon": "Participation au voyage de noces",
+        "cash": "Cagnotte commune",
+        "experiences": "Expériences (dîners, spa, visites)",
+        "furniture": "Mobilier",
+        "appliances": "Électroménager",
+        "luxury": "Produits de luxe",
+        "charity": "Œuvre caritative",
+        "vouchers": "Cartes cadeaux",
+        "smartHome": "Technologie et maison intelligente",
+        "other": "Autre"
+      },
+      "priorities": {
+        "high": "Haute",
+        "medium": "Moyenne",
+        "low": "Basse"
+      },
+      "statuses": {
+        "wanted": "Souhaité",
+        "purchased": "Acheté"
+      },
+      "saving": "Enregistrement…",
+      "add": "+ Ajouter",
+      "loading": "Chargement…",
+      "empty": "Aucun élément"
+    },
+    "currentEvent": {
+      "label": "Événement actuel", "choose": "Choisir un événement", "none": "Aucun événement", "change": "Changer d’événement", "soon": "Prochainement"
+    },
+    "errorPage": {
+      "title": "Une erreur est survenue", "description": "Cette page n’a pas pu être chargée. Réessayez dans un instant.", "retry": "Réessayer"
+    },
+    "shared": {
+      "close": "Fermer", "cookiePreferences": "Préférences des cookies", "closeMenu": "Fermer le menu"
+    }
+  }
+}

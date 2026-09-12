@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     .eq("user_id", userId)
     .single();
   if (!event) {
-    return NextResponse.json({ error: "Evento non trovato" }, { status: 404 });
+    return NextResponse.json({ error: "EVENT_NOT_FOUND" }, { status: 404 });
   }
 
   // Categorie
