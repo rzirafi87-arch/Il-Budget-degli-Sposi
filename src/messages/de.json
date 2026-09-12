@@ -2379,5 +2379,78 @@
     "durataLabel": "Dauer/Organisation: ",
     "festaLabel": "Feier und Traditionen: ",
     "usanzeLabel": "Weitere Bräuche: "
+  },
+  "runtimeUi": {
+    "auth": {
+      "title": "Anmelden oder registrieren",
+      "confirmationTitle": "E-Mail bestätigen",
+      "confirmationBody": "Wir haben dir einen Bestätigungslink gesendet. Öffne ihn, um dein Konto zu aktivieren.",
+      "resend": "Bestätigungs-E-Mail erneut senden",
+      "backToLogin": "Zurück zur Anmeldung",
+      "eventType": "Veranstaltungsart",
+      "partnerEmail": "E-Mail der Partnerperson (optional)",
+      "weddingDate": "Hochzeitsdatum",
+      "brideBudget": "Budget der Braut (EUR)",
+      "groomBudget": "Budget des Bräutigams (EUR)",
+      "totalBudget": "Gesamtbudget (EUR)",
+      "passwordHint": "Mindestens 10 Zeichen.",
+      "working": "Wird bearbeitet…",
+      "signIn": "Anmelden",
+      "register": "Registrieren",
+      "sendInstructions": "Anweisungen senden",
+      "forgotPassword": "Passwort vergessen?",
+      "eventTypes": {
+        "wedding": "Hochzeit"
+      },
+      "errors": {
+        "emailNotConfirmed": "Bestätige zuerst deine E-Mail-Adresse.",
+        "invalidCredentials": "E-Mail oder Passwort ist falsch.",
+        "passwordTooShort": "Das Passwort muss mindestens 10 Zeichen enthalten.",
+        "invalidOrExpiredLink": "Der Link ist ungültig oder abgelaufen. Fordere einen neuen an.",
+        "rateLimited": "Zu viele Versuche. Warte und versuche es erneut.",
+        "generic": "Der Vorgang konnte nicht abgeschlossen werden. Versuche es erneut."
+      }
+    },
+    "resetPassword": {
+      "title": "Neues Passwort",
+      "saving": "Wird gespeichert…",
+      "submit": "Passwort aktualisieren",
+      "updated": "Passwort aktualisiert. Du kannst dich jetzt anmelden.",
+      "errors": {
+        "emailNotConfirmed": "Bestätige zuerst deine E-Mail-Adresse.",
+        "invalidCredentials": "Ungültige Anmeldedaten.",
+        "passwordTooShort": "Das Passwort muss mindestens 10 Zeichen enthalten.",
+        "invalidOrExpiredLink": "Der Link ist ungültig oder abgelaufen. Fordere einen neuen an.",
+        "rateLimited": "Zu viele Versuche. Warte und versuche es erneut.",
+        "generic": "Das Passwort konnte nicht aktualisiert werden. Versuche es erneut."
+      }
+    },
+    "routing": {
+      "profileCheckFailed": "Dein Profil konnte nicht überprüft werden",
+      "retry": "Erneut versuchen",
+      "loadingSpace": "Dein Bereich wird geladen…",
+      "setupUnavailable": "Einrichtung nicht verfügbar",
+      "checkingSetup": "Einrichtung wird geprüft…",
+      "selectEvent": "Wähle das Ereignis in den Einstellungen aus, um fortzufahren.",
+      "openSettings": "Einstellungen öffnen",
+      "checkingModule": "Modulverfügbarkeit wird geprüft",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Die Sitzung konnte nicht überprüft werden.",
+        "PROJECT_CHECK_FAILED": "Dein Projekt konnte nicht überprüft werden.",
+        "APP_ENTRY_FAILED": "Die App konnte nicht geöffnet werden.",
+        "WIZARD_ENTRY_FAILED": "Die Einrichtung konnte nicht gestartet werden."
+      }
+    },
+    "shared": {
+      "optionsLoadFailed": "Optionen konnten nicht geladen werden",
+      "loadingOptions": "Optionen werden geladen…",
+      "comingSoon": "Demnächst",
+      "country": "Land",
+      "event": "Ereignis",
+      "loading": "Wird geladen",
+      "signIn": "Anmelden",
+      "profile": "Profil",
+      "logout": "Abmelden"
+    }
   }
 }

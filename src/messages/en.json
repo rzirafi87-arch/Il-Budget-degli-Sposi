@@ -273,9 +273,9 @@
     "engagement-party": "Engagement Party"
   },
   "header": {
-    "today": "Today!",
-    "dayLeft": "1 day left",
-    "daysLeft": "{count} days left"
+    "language": "Language",
+    "country": "Country",
+    "event": "Event"
   },
   "home": {
     "hero": {
@@ -1705,8 +1705,19 @@
       "previous": "Previous",
       "next": "Next",
       "page": "Page {page} of {totalPages} · {total} results",
-      "verification": { "verified": "Verified", "probable": "Probable", "toCheck": "To check" },
-      "types": { "church": "Church", "cathedral": "Cathedral", "basilica": "Basilica", "sanctuary": "Sanctuary", "chapel": "Chapel", "placeOfWorship": "Place of worship" }
+      "verification": {
+        "verified": "Verified",
+        "probable": "Probable",
+        "toCheck": "To check"
+      },
+      "types": {
+        "church": "Church",
+        "cathedral": "Cathedral",
+        "basilica": "Basilica",
+        "sanctuary": "Sanctuary",
+        "chapel": "Chapel",
+        "placeOfWorship": "Place of worship"
+      }
     }
   },
   "ceremonyCeremonyChurch": {
@@ -1779,11 +1790,6 @@
     "back": "Back",
     "goToDashboard": "Go to dashboard"
   },
-  "header": {
-    "language": "Language",
-    "country": "Country",
-    "event": "Event"
-  },
   "retirement": "Retirement",
   "guestsPage": {
     "title": "Guest Management",
@@ -1838,5 +1844,78 @@
   "languages": {
     "pt": "Portuguese",
     "id": "Indonesian"
+  },
+  "runtimeUi": {
+    "auth": {
+      "title": "Sign in or register",
+      "confirmationTitle": "Confirm your email",
+      "confirmationBody": "We sent you a confirmation link. Open it to activate your account.",
+      "resend": "Resend confirmation email",
+      "backToLogin": "Back to sign in",
+      "eventType": "Event type",
+      "partnerEmail": "Partner email (optional)",
+      "weddingDate": "Wedding date",
+      "brideBudget": "Bride budget (EUR)",
+      "groomBudget": "Groom budget (EUR)",
+      "totalBudget": "Total budget (EUR)",
+      "passwordHint": "At least 10 characters.",
+      "working": "Working…",
+      "signIn": "Sign in",
+      "register": "Register",
+      "sendInstructions": "Send instructions",
+      "forgotPassword": "Forgot password?",
+      "eventTypes": {
+        "wedding": "Wedding"
+      },
+      "errors": {
+        "emailNotConfirmed": "Confirm your email address first.",
+        "invalidCredentials": "Incorrect email or password.",
+        "passwordTooShort": "The password must contain at least 10 characters.",
+        "invalidOrExpiredLink": "The link is invalid or has expired. Request a new one.",
+        "rateLimited": "Too many attempts. Wait and try again.",
+        "generic": "The operation could not be completed. Try again."
+      }
+    },
+    "resetPassword": {
+      "title": "New password",
+      "saving": "Saving…",
+      "submit": "Update password",
+      "updated": "Password updated. You can now sign in.",
+      "errors": {
+        "emailNotConfirmed": "Confirm your email address first.",
+        "invalidCredentials": "Invalid credentials.",
+        "passwordTooShort": "The password must contain at least 10 characters.",
+        "invalidOrExpiredLink": "The link is invalid or has expired. Request a new one.",
+        "rateLimited": "Too many attempts. Wait and try again.",
+        "generic": "The password could not be updated. Try again."
+      }
+    },
+    "routing": {
+      "profileCheckFailed": "Unable to verify your profile",
+      "retry": "Try again",
+      "loadingSpace": "Loading your workspace…",
+      "setupUnavailable": "Setup unavailable",
+      "checkingSetup": "Checking setup…",
+      "selectEvent": "Select the event from Settings to continue.",
+      "openSettings": "Open Settings",
+      "checkingModule": "Checking module availability",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Unable to verify the session.",
+        "PROJECT_CHECK_FAILED": "Unable to verify your project.",
+        "APP_ENTRY_FAILED": "Unable to open the app.",
+        "WIZARD_ENTRY_FAILED": "Unable to start setup."
+      }
+    },
+    "shared": {
+      "optionsLoadFailed": "Unable to load options",
+      "loadingOptions": "Loading options…",
+      "comingSoon": "Coming soon",
+      "country": "Country",
+      "event": "Event",
+      "loading": "Loading",
+      "signIn": "Sign in",
+      "profile": "Profile",
+      "logout": "Log out"
+    }
   }
 }

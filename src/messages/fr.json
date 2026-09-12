@@ -2379,5 +2379,78 @@
       "panoramic": "Lieu pittoresque",
       "other": "Autre"
     }
+  },
+  "runtimeUi": {
+    "auth": {
+      "title": "Se connecter ou s’inscrire",
+      "confirmationTitle": "Confirmez votre e-mail",
+      "confirmationBody": "Nous vous avons envoyé un lien de confirmation. Ouvrez-le pour activer votre compte.",
+      "resend": "Renvoyer l’e-mail de confirmation",
+      "backToLogin": "Retour à la connexion",
+      "eventType": "Type d’événement",
+      "partnerEmail": "E-mail du partenaire (facultatif)",
+      "weddingDate": "Date du mariage",
+      "brideBudget": "Budget de la mariée (EUR)",
+      "groomBudget": "Budget du marié (EUR)",
+      "totalBudget": "Budget total (EUR)",
+      "passwordHint": "Au moins 10 caractères.",
+      "working": "Traitement en cours…",
+      "signIn": "Se connecter",
+      "register": "S’inscrire",
+      "sendInstructions": "Envoyer les instructions",
+      "forgotPassword": "Mot de passe oublié ?",
+      "eventTypes": {
+        "wedding": "Mariage"
+      },
+      "errors": {
+        "emailNotConfirmed": "Confirmez d’abord votre adresse e-mail.",
+        "invalidCredentials": "E-mail ou mot de passe incorrect.",
+        "passwordTooShort": "Le mot de passe doit contenir au moins 10 caractères.",
+        "invalidOrExpiredLink": "Le lien est invalide ou a expiré. Demandez-en un nouveau.",
+        "rateLimited": "Trop de tentatives. Patientez puis réessayez.",
+        "generic": "L’opération n’a pas pu être effectuée. Réessayez."
+      }
+    },
+    "resetPassword": {
+      "title": "Nouveau mot de passe",
+      "saving": "Enregistrement…",
+      "submit": "Mettre à jour le mot de passe",
+      "updated": "Mot de passe mis à jour. Vous pouvez vous connecter.",
+      "errors": {
+        "emailNotConfirmed": "Confirmez d’abord votre e-mail.",
+        "invalidCredentials": "Identifiants invalides.",
+        "passwordTooShort": "Le mot de passe doit contenir au moins 10 caractères.",
+        "invalidOrExpiredLink": "Le lien est invalide ou a expiré. Demandez-en un nouveau.",
+        "rateLimited": "Trop de tentatives. Patientez puis réessayez.",
+        "generic": "Le mot de passe n’a pas pu être mis à jour. Réessayez."
+      }
+    },
+    "routing": {
+      "profileCheckFailed": "Impossible de vérifier votre profil",
+      "retry": "Réessayer",
+      "loadingSpace": "Chargement de votre espace…",
+      "setupUnavailable": "Configuration indisponible",
+      "checkingSetup": "Vérification de la configuration…",
+      "selectEvent": "Sélectionnez l’événement dans les Paramètres pour continuer.",
+      "openSettings": "Ouvrir les paramètres",
+      "checkingModule": "Vérification de la disponibilité du module",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Impossible de vérifier la session.",
+        "PROJECT_CHECK_FAILED": "Impossible de vérifier votre projet.",
+        "APP_ENTRY_FAILED": "Impossible d’ouvrir l’application.",
+        "WIZARD_ENTRY_FAILED": "Impossible de démarrer la configuration."
+      }
+    },
+    "shared": {
+      "optionsLoadFailed": "Impossible de charger les options",
+      "loadingOptions": "Chargement des options…",
+      "comingSoon": "Bientôt disponible",
+      "country": "Pays",
+      "event": "Événement",
+      "loading": "Chargement",
+      "signIn": "Se connecter",
+      "profile": "Profil",
+      "logout": "Se déconnecter"
+    }
   }
 }

@@ -1838,5 +1838,78 @@
     "language": "Lingua",
     "country": "Paese",
     "event": "Evento"
+  },
+  "runtimeUi": {
+    "auth": {
+      "title": "Accedi o registrati",
+      "confirmationTitle": "Conferma la tua email",
+      "confirmationBody": "Abbiamo inviato un link di conferma. Aprilo per attivare l’account.",
+      "resend": "Invia di nuovo l’email di conferma",
+      "backToLogin": "Torna al login",
+      "eventType": "Tipo di evento",
+      "partnerEmail": "Email partner (opzionale)",
+      "weddingDate": "Data matrimonio",
+      "brideBudget": "Budget sposa (EUR)",
+      "groomBudget": "Budget sposo (EUR)",
+      "totalBudget": "Budget totale (EUR)",
+      "passwordHint": "Almeno 10 caratteri.",
+      "working": "Operazione in corso…",
+      "signIn": "Accedi",
+      "register": "Registrati",
+      "sendInstructions": "Invia istruzioni",
+      "forgotPassword": "Password dimenticata?",
+      "eventTypes": {
+        "wedding": "Matrimonio"
+      },
+      "errors": {
+        "emailNotConfirmed": "Devi prima confermare il tuo indirizzo email.",
+        "invalidCredentials": "Email o password non corretti.",
+        "passwordTooShort": "La password deve contenere almeno 10 caratteri.",
+        "invalidOrExpiredLink": "Il link non è valido o è scaduto. Richiedine uno nuovo.",
+        "rateLimited": "Hai effettuato troppi tentativi. Attendi e riprova.",
+        "generic": "Non è stato possibile completare l’operazione. Riprova."
+      }
+    },
+    "resetPassword": {
+      "title": "Nuova password",
+      "saving": "Salvataggio…",
+      "submit": "Aggiorna password",
+      "updated": "Password aggiornata. Ora puoi accedere.",
+      "errors": {
+        "emailNotConfirmed": "Conferma prima il tuo indirizzo email.",
+        "invalidCredentials": "Credenziali non valide.",
+        "passwordTooShort": "La password deve contenere almeno 10 caratteri.",
+        "invalidOrExpiredLink": "Il link non è valido o è scaduto. Richiedine uno nuovo.",
+        "rateLimited": "Hai effettuato troppi tentativi. Attendi e riprova.",
+        "generic": "Non è stato possibile aggiornare la password. Riprova."
+      }
+    },
+    "routing": {
+      "profileCheckFailed": "Impossibile verificare il tuo profilo",
+      "retry": "Riprova",
+      "loadingSpace": "Caricamento del tuo spazio…",
+      "setupUnavailable": "Configurazione non disponibile",
+      "checkingSetup": "Verifica della configurazione…",
+      "selectEvent": "Seleziona l’evento dalle Impostazioni per continuare.",
+      "openSettings": "Apri Impostazioni",
+      "checkingModule": "Verifica disponibilità modulo",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Impossibile verificare la sessione.",
+        "PROJECT_CHECK_FAILED": "Impossibile verificare il progetto dell’utente.",
+        "APP_ENTRY_FAILED": "Impossibile aprire l’app.",
+        "WIZARD_ENTRY_FAILED": "Impossibile avviare la configurazione."
+      }
+    },
+    "shared": {
+      "optionsLoadFailed": "Errore nel caricamento delle opzioni",
+      "loadingOptions": "Caricamento opzioni…",
+      "comingSoon": "In arrivo",
+      "country": "Nazione",
+      "event": "Evento",
+      "loading": "Caricamento in corso",
+      "signIn": "Accedi",
+      "profile": "Profilo",
+      "logout": "Esci"
+    }
   }
 }

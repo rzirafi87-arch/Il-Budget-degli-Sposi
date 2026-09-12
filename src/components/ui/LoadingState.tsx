@@ -1,12 +1,16 @@
+import { useTranslations } from "next-intl";
+
 type LoadingStateProps = {
   label?: string;
   cards?: number;
 };
 
-export function LoadingState({ label = "Caricamento in corso", cards = 3 }: LoadingStateProps) {
+export function LoadingState({ label, cards = 3 }: LoadingStateProps) {
+  const t = useTranslations("runtimeUi.shared");
+  const accessibleLabel = label || t("loading");
   return (
     <div className="space-y-4" role="status" aria-live="polite">
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{accessibleLabel}</span>
       <div className="app-skeleton h-9 w-52" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: cards }, (_, index) => (

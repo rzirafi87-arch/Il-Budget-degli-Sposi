@@ -2379,5 +2379,78 @@
     "durataLabel": "Duración/organización: ",
     "festaLabel": "Fiesta y tradiciones: ",
     "usanzeLabel": "Otras costumbres: "
+  },
+  "runtimeUi": {
+    "auth": {
+      "title": "Inicia sesión o regístrate",
+      "confirmationTitle": "Confirma tu correo",
+      "confirmationBody": "Te hemos enviado un enlace de confirmación. Ábrelo para activar tu cuenta.",
+      "resend": "Reenviar correo de confirmación",
+      "backToLogin": "Volver al acceso",
+      "eventType": "Tipo de evento",
+      "partnerEmail": "Correo de la pareja (opcional)",
+      "weddingDate": "Fecha de la boda",
+      "brideBudget": "Presupuesto de la novia (EUR)",
+      "groomBudget": "Presupuesto del novio (EUR)",
+      "totalBudget": "Presupuesto total (EUR)",
+      "passwordHint": "Al menos 10 caracteres.",
+      "working": "Procesando…",
+      "signIn": "Acceder",
+      "register": "Registrarse",
+      "sendInstructions": "Enviar instrucciones",
+      "forgotPassword": "¿Olvidaste la contraseña?",
+      "eventTypes": {
+        "wedding": "Boda"
+      },
+      "errors": {
+        "emailNotConfirmed": "Primero confirma tu dirección de correo.",
+        "invalidCredentials": "Correo o contraseña incorrectos.",
+        "passwordTooShort": "La contraseña debe tener al menos 10 caracteres.",
+        "invalidOrExpiredLink": "El enlace no es válido o ha caducado. Solicita uno nuevo.",
+        "rateLimited": "Demasiados intentos. Espera y vuelve a intentarlo.",
+        "generic": "No se pudo completar la operación. Inténtalo de nuevo."
+      }
+    },
+    "resetPassword": {
+      "title": "Nueva contraseña",
+      "saving": "Guardando…",
+      "submit": "Actualizar contraseña",
+      "updated": "Contraseña actualizada. Ya puedes acceder.",
+      "errors": {
+        "emailNotConfirmed": "Primero confirma tu correo.",
+        "invalidCredentials": "Credenciales no válidas.",
+        "passwordTooShort": "La contraseña debe tener al menos 10 caracteres.",
+        "invalidOrExpiredLink": "El enlace no es válido o ha caducado. Solicita uno nuevo.",
+        "rateLimited": "Demasiados intentos. Espera y vuelve a intentarlo.",
+        "generic": "No se pudo actualizar la contraseña. Inténtalo de nuevo."
+      }
+    },
+    "routing": {
+      "profileCheckFailed": "No se pudo verificar tu perfil",
+      "retry": "Intentar de nuevo",
+      "loadingSpace": "Cargando tu espacio…",
+      "setupUnavailable": "Configuración no disponible",
+      "checkingSetup": "Comprobando la configuración…",
+      "selectEvent": "Selecciona el evento desde Ajustes para continuar.",
+      "openSettings": "Abrir Ajustes",
+      "checkingModule": "Comprobando la disponibilidad del módulo",
+      "errors": {
+        "SESSION_CHECK_FAILED": "No se pudo verificar la sesión.",
+        "PROJECT_CHECK_FAILED": "No se pudo verificar tu proyecto.",
+        "APP_ENTRY_FAILED": "No se pudo abrir la aplicación.",
+        "WIZARD_ENTRY_FAILED": "No se pudo iniciar la configuración."
+      }
+    },
+    "shared": {
+      "optionsLoadFailed": "No se pudieron cargar las opciones",
+      "loadingOptions": "Cargando opciones…",
+      "comingSoon": "Próximamente",
+      "country": "País",
+      "event": "Evento",
+      "loading": "Cargando",
+      "signIn": "Acceder",
+      "profile": "Perfil",
+      "logout": "Cerrar sesión"
+    }
   }
 }
