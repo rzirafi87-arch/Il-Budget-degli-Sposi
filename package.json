@@ -76,6 +76,7 @@
     "test:e2e": "playwright test",
     "check:mojibake": "node scripts/check-mojibake.mjs",
     "audit:italian-runtime": "node scripts/check-italian-runtime.mjs",
+    "test:italian-runtime": "node --test scripts/lib/italian-runtime-scanner.test.mjs",
     "check:italian-runtime": "node scripts/check-italian-runtime.mjs --fail"
   },
   "engines": {
