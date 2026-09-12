@@ -1915,7 +1915,11 @@
       "loading": "Loading",
       "signIn": "Sign in",
       "profile": "Profile",
-      "logout": "Log out"
+      "logout": "Log out",
+      "brandName": "Wedding Budget",
+      "ideaBudget": "Budget Idea",
+      "openSettings": "Open settings",
+      "settings": "Settings"
     },
     "profile": {
       "title": "Profile",
@@ -1937,6 +1941,115 @@
       "deletionRecorded": "Request recorded. You have 7 days to cancel it; the shared event will be checked before processing.",
       "deletionFailed": "Request not recorded.",
       "deletionCancelled": "Request cancelled."
+    },
+    "settings": {
+      "settings": "Settings",
+      "language": "Language",
+      "country": "Event country",
+      "currentEvent": "Current wedding",
+      "eventType": "Event type",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "locked": "The event type cannot be changed after creation because it requires a safe data migration.",
+      "close": "Close",
+      "apply": "Apply changes",
+      "comingSoon": "coming soon"
+    },
+    "dashboard": {
+      "authRequired": "Sign in to save the budget.",
+      "budgetSaved": "Budget saved. The data is now available in Budget Idea.",
+      "budgetSaveFailed": "The budget could not be saved. Try again.",
+      "loadFailed": "Unable to load the Dashboard",
+      "retry": "Try again",
+      "loading": "Loading Dashboard",
+      "eyebrow": "Your event",
+      "title": "Dashboard",
+      "description": "Budget, tasks and next steps: everything you need to plan with confidence.",
+      "fallbackItem": "Item",
+      "fallbackActivity": "Task",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Unable to verify the session.",
+        "PROJECT_CHECK_FAILED": "Unable to verify the project.",
+        "DASHBOARD_LOAD_FAILED": "Unable to load the Dashboard."
+      },
+      "info": {
+        "title": "Your event control centre",
+        "description": "The Dashboard is the heart of the application. Manage the overall budget, participant budgets and every spending category here.",
+        "tips": {
+          "budgetDate": "Set the total budget and event date to enable every feature",
+          "split": "The budget is split between participants, with shared common expenses",
+          "customize": "Customise categories, add quotes and track payments",
+          "ideas": "Use Budget Idea to apply pre-filled templates"
+        },
+        "events": {
+          "wedding": "The wedding budget is split between the bride, groom and common expenses.",
+          "baptism": "Baptism expenses are treated as common expenses.",
+          "communion": "Communion uses a single family budget.",
+          "confirmation": "Confirmation uses common family expenses.",
+          "birthday": "The birthday budget can be split between the organiser and shared expenses.",
+          "eighteenth": "An eighteenth birthday uses a single event budget.",
+          "graduation": "The graduation budget can be shared or split with the graduate."
+        }
+      },
+      "planning": {
+        "label": "Ceremony and reception choices",
+        "ceremony": "Ceremony",
+        "churchEmpty": "Ceremony venue to choose",
+        "openChurches": "Open venues",
+        "reception": "Reception",
+        "locationEmpty": "Reception venue to choose",
+        "openLocations": "Open venues"
+      },
+      "actions": {
+        "eyebrow": "Quick actions",
+        "title": "Continue planning",
+        "save": "Save configuration",
+        "preparing": "Feature in preparation",
+        "pdf": "Generate PDF",
+        "video": "Generate video",
+        "comingSoon": "Coming soon"
+      },
+      "idea": {
+        "title": "Budget Idea",
+        "description": "Fill in the items and apply them to the budget.",
+        "open": "Open ideas"
+      },
+      "honeymoon": {
+        "title": "Honeymoon",
+        "description": "Advice and ideas for your honeymoon.",
+        "open": "Explore honeymoon"
+      },
+      "suggestions": {
+        "title": "Tips and advice",
+        "description": "Useful ideas based on your choices.",
+        "open": "View tips"
+      }
+    },
+    "userSummary": {
+      "language": "Language:",
+      "country": "Country:",
+      "event": "Event:",
+      "change": "Change",
+      "languages": {
+        "it": "Italian",
+        "en": "English",
+        "es": "Spanish",
+        "fr": "French",
+        "de": "German"
+      },
+      "countries": {
+        "it": "Italy",
+        "mx": "Mexico",
+        "gb": "United Kingdom"
+      },
+      "events": {
+        "wedding": "Wedding",
+        "anniversary": "Anniversary",
+        "graduation": "Graduation",
+        "other": "Other"
+      }
     }
   }
 }

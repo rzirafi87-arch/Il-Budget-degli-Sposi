@@ -2450,7 +2450,11 @@
       "loading": "Wird geladen",
       "signIn": "Anmelden",
       "profile": "Profil",
-      "logout": "Abmelden"
+      "logout": "Abmelden",
+      "brandName": "Hochzeitsbudget",
+      "ideaBudget": "Budgetidee",
+      "openSettings": "Einstellungen öffnen",
+      "settings": "Einstellungen"
     },
     "profile": {
       "title": "Profil",
@@ -2472,6 +2476,115 @@
       "deletionRecorded": "Anfrage erfasst. Du kannst sie 7 Tage lang stornieren; das geteilte Ereignis wird vor der Verarbeitung geprüft.",
       "deletionFailed": "Anfrage wurde nicht erfasst.",
       "deletionCancelled": "Anfrage abgebrochen."
+    },
+    "settings": {
+      "settings": "Einstellungen",
+      "language": "Sprache",
+      "country": "Land der Veranstaltung",
+      "currentEvent": "Aktuelle Hochzeit",
+      "eventType": "Veranstaltungsart",
+      "theme": "Design",
+      "light": "Hell",
+      "dark": "Dunkel",
+      "system": "System",
+      "locked": "Die Veranstaltungsart kann nach der Erstellung nicht geändert werden, da dafür eine sichere Datenmigration erforderlich ist.",
+      "close": "Schließen",
+      "apply": "Änderungen anwenden",
+      "comingSoon": "demnächst"
+    },
+    "dashboard": {
+      "authRequired": "Melde dich an, um das Budget zu speichern.",
+      "budgetSaved": "Budget gespeichert. Die Daten sind jetzt in der Budgetidee verfügbar.",
+      "budgetSaveFailed": "Das Budget konnte nicht gespeichert werden. Versuche es erneut.",
+      "loadFailed": "Dashboard konnte nicht geladen werden",
+      "retry": "Erneut versuchen",
+      "loading": "Dashboard wird geladen",
+      "eyebrow": "Deine Veranstaltung",
+      "title": "Dashboard",
+      "description": "Budget, Aufgaben und nächste Schritte: alles für eine entspannte Planung.",
+      "fallbackItem": "Eintrag",
+      "fallbackActivity": "Aufgabe",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Die Sitzung konnte nicht überprüft werden.",
+        "PROJECT_CHECK_FAILED": "Das Projekt konnte nicht überprüft werden.",
+        "DASHBOARD_LOAD_FAILED": "Das Dashboard konnte nicht geladen werden."
+      },
+      "info": {
+        "title": "Steuerzentrale deiner Veranstaltung",
+        "description": "Das Dashboard ist das Herzstück der Anwendung. Hier verwaltest du Gesamtbudget, Teilnehmerbudgets und Ausgabenkategorien.",
+        "tips": {
+          "budgetDate": "Lege Gesamtbudget und Veranstaltungsdatum fest, um alle Funktionen zu aktivieren",
+          "split": "Das Budget wird zwischen Teilnehmern und gemeinsamen Ausgaben aufgeteilt",
+          "customize": "Passe Kategorien an, füge Angebote hinzu und verfolge Zahlungen",
+          "ideas": "Nutze die Budgetidee, um vorbereitete Vorlagen anzuwenden"
+        },
+        "events": {
+          "wedding": "Das Hochzeitsbudget ist auf Braut, Bräutigam und gemeinsame Ausgaben verteilt.",
+          "baptism": "Taufkosten werden als gemeinsame Ausgaben behandelt.",
+          "communion": "Die Kommunion verwendet ein gemeinsames Familienbudget.",
+          "confirmation": "Die Firmung verwendet gemeinsame Familienausgaben.",
+          "birthday": "Das Geburtstagsbudget kann zwischen Organisator und gemeinsamen Ausgaben aufgeteilt werden.",
+          "eighteenth": "Ein achtzehnter Geburtstag verwendet ein einheitliches Budget.",
+          "graduation": "Das Abschlussbudget kann gemeinsam oder mit dem Absolventen aufgeteilt werden."
+        }
+      },
+      "planning": {
+        "label": "Auswahl für Zeremonie und Empfang",
+        "ceremony": "Zeremonie",
+        "churchEmpty": "Ort der Zeremonie auswählen",
+        "openChurches": "Orte öffnen",
+        "reception": "Empfang",
+        "locationEmpty": "Empfangsort auswählen",
+        "openLocations": "Orte öffnen"
+      },
+      "actions": {
+        "eyebrow": "Schnellaktionen",
+        "title": "Planung fortsetzen",
+        "save": "Konfiguration speichern",
+        "preparing": "Funktion in Vorbereitung",
+        "pdf": "PDF erstellen",
+        "video": "Video erstellen",
+        "comingSoon": "Demnächst"
+      },
+      "idea": {
+        "title": "Budgetidee",
+        "description": "Fülle die Einträge aus und übernimm sie ins Budget.",
+        "open": "Ideen öffnen"
+      },
+      "honeymoon": {
+        "title": "Flitterwochen",
+        "description": "Tipps und Ideen für eure Flitterwochen.",
+        "open": "Reise erkunden"
+      },
+      "suggestions": {
+        "title": "Tipps und Empfehlungen",
+        "description": "Nützliche Ideen passend zu deiner Auswahl.",
+        "open": "Tipps ansehen"
+      }
+    },
+    "userSummary": {
+      "language": "Sprache:",
+      "country": "Land:",
+      "event": "Veranstaltung:",
+      "change": "Ändern",
+      "languages": {
+        "it": "Italienisch",
+        "en": "Englisch",
+        "es": "Spanisch",
+        "fr": "Französisch",
+        "de": "Deutsch"
+      },
+      "countries": {
+        "it": "Italien",
+        "mx": "Mexiko",
+        "gb": "Vereinigtes Königreich"
+      },
+      "events": {
+        "wedding": "Hochzeit",
+        "anniversary": "Jubiläum",
+        "graduation": "Abschluss",
+        "other": "Andere"
+      }
     }
   }
 }

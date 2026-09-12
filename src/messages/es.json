@@ -2450,7 +2450,11 @@
       "loading": "Cargando",
       "signIn": "Acceder",
       "profile": "Perfil",
-      "logout": "Cerrar sesión"
+      "logout": "Cerrar sesión",
+      "brandName": "El Presupuesto de los Novios",
+      "ideaBudget": "Idea de Presupuesto",
+      "openSettings": "Abrir ajustes",
+      "settings": "Ajustes"
     },
     "profile": {
       "title": "Perfil",
@@ -2472,6 +2476,115 @@
       "deletionRecorded": "Solicitud registrada. Tienes 7 días para cancelarla; el evento compartido se comprobará antes de procesarla.",
       "deletionFailed": "Solicitud no registrada.",
       "deletionCancelled": "Solicitud cancelada."
+    },
+    "settings": {
+      "settings": "Ajustes",
+      "language": "Idioma",
+      "country": "País del evento",
+      "currentEvent": "Boda actual",
+      "eventType": "Tipo de evento",
+      "theme": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema",
+      "locked": "El tipo de evento no puede cambiarse después de crearlo porque requiere una migración segura de los datos.",
+      "close": "Cerrar",
+      "apply": "Aplicar cambios",
+      "comingSoon": "próximamente"
+    },
+    "dashboard": {
+      "authRequired": "Accede para guardar el presupuesto.",
+      "budgetSaved": "Presupuesto guardado. Los datos ya están disponibles en Idea de Presupuesto.",
+      "budgetSaveFailed": "No se pudo guardar el presupuesto. Inténtalo de nuevo.",
+      "loadFailed": "No se pudo cargar el panel",
+      "retry": "Intentar de nuevo",
+      "loading": "Cargando el panel",
+      "eyebrow": "Tu evento",
+      "title": "Panel",
+      "description": "Presupuesto, tareas y próximos pasos: todo lo necesario para organizar con tranquilidad.",
+      "fallbackItem": "Elemento",
+      "fallbackActivity": "Actividad",
+      "errors": {
+        "SESSION_CHECK_FAILED": "No se pudo verificar la sesión.",
+        "PROJECT_CHECK_FAILED": "No se pudo verificar el proyecto.",
+        "DASHBOARD_LOAD_FAILED": "No se pudo cargar el panel."
+      },
+      "info": {
+        "title": "Centro de control de tu evento",
+        "description": "El panel es el centro de la aplicación. Aquí puedes gestionar el presupuesto total, los presupuestos de los participantes y las categorías de gasto.",
+        "tips": {
+          "budgetDate": "Define el presupuesto total y la fecha del evento para activar todas las funciones",
+          "split": "El presupuesto se divide entre los participantes y los gastos comunes",
+          "customize": "Personaliza categorías, añade presupuestos y controla los pagos",
+          "ideas": "Usa Idea de Presupuesto para aplicar plantillas predefinidas"
+        },
+        "events": {
+          "wedding": "El presupuesto de la boda se divide entre novia, novio y gastos comunes.",
+          "baptism": "Los gastos del bautizo se consideran comunes.",
+          "communion": "La comunión utiliza un presupuesto familiar único.",
+          "confirmation": "La confirmación utiliza los gastos comunes de la familia.",
+          "birthday": "El presupuesto del cumpleaños puede dividirse entre organizador y gastos compartidos.",
+          "eighteenth": "El decimoctavo cumpleaños utiliza un presupuesto único.",
+          "graduation": "El presupuesto de graduación puede ser común o dividirse con el graduado."
+        }
+      },
+      "planning": {
+        "label": "Opciones de ceremonia y recepción",
+        "ceremony": "Ceremonia",
+        "churchEmpty": "Lugar de la ceremonia por elegir",
+        "openChurches": "Abrir lugares",
+        "reception": "Recepción",
+        "locationEmpty": "Lugar de recepción por elegir",
+        "openLocations": "Abrir lugares"
+      },
+      "actions": {
+        "eyebrow": "Acciones rápidas",
+        "title": "Seguir organizando",
+        "save": "Guardar configuración",
+        "preparing": "Función en preparación",
+        "pdf": "Generar PDF",
+        "video": "Generar vídeo",
+        "comingSoon": "Próximamente"
+      },
+      "idea": {
+        "title": "Idea de Presupuesto",
+        "description": "Completa los elementos y aplícalos al presupuesto.",
+        "open": "Abrir ideas"
+      },
+      "honeymoon": {
+        "title": "Luna de miel",
+        "description": "Consejos e ideas para la luna de miel.",
+        "open": "Explorar el viaje"
+      },
+      "suggestions": {
+        "title": "Sugerencias y consejos",
+        "description": "Ideas útiles basadas en tus elecciones.",
+        "open": "Ver consejos"
+      }
+    },
+    "userSummary": {
+      "language": "Idioma:",
+      "country": "País:",
+      "event": "Evento:",
+      "change": "Cambiar",
+      "languages": {
+        "it": "Italiano",
+        "en": "Inglés",
+        "es": "Español",
+        "fr": "Francés",
+        "de": "Alemán"
+      },
+      "countries": {
+        "it": "Italia",
+        "mx": "México",
+        "gb": "Reino Unido"
+      },
+      "events": {
+        "wedding": "Boda",
+        "anniversary": "Aniversario",
+        "graduation": "Graduación",
+        "other": "Otro"
+      }
     }
   }
 }

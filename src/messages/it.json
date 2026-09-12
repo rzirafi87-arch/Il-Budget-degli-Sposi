@@ -1909,7 +1909,11 @@
       "loading": "Caricamento in corso",
       "signIn": "Accedi",
       "profile": "Profilo",
-      "logout": "Esci"
+      "logout": "Esci",
+      "brandName": "Il Budget degli Sposi",
+      "ideaBudget": "Idea di Budget",
+      "openSettings": "Apri impostazioni",
+      "settings": "Impostazioni"
     },
     "profile": {
       "title": "Profilo",
@@ -1931,6 +1935,115 @@
       "deletionRecorded": "Richiesta registrata. Hai 7 giorni per annullarla; l’evento condiviso sarà verificato prima dell’elaborazione.",
       "deletionFailed": "Richiesta non registrata.",
       "deletionCancelled": "Richiesta annullata."
+    },
+    "settings": {
+      "settings": "Impostazioni",
+      "language": "Lingua",
+      "country": "Nazione evento",
+      "currentEvent": "Matrimonio corrente",
+      "eventType": "Tipo evento",
+      "theme": "Tema",
+      "light": "Chiaro",
+      "dark": "Scuro",
+      "system": "Sistema",
+      "locked": "Il tipo evento non può essere cambiato dopo la creazione: il cambio richiede una migrazione sicura dei dati.",
+      "close": "Chiudi",
+      "apply": "Applica modifiche",
+      "comingSoon": "in arrivo"
+    },
+    "dashboard": {
+      "authRequired": "Accedi per salvare il budget.",
+      "budgetSaved": "Budget salvato. I dati sono ora disponibili in Idea di Budget.",
+      "budgetSaveFailed": "Non è stato possibile salvare il budget. Riprova.",
+      "loadFailed": "Impossibile caricare la Dashboard",
+      "retry": "Riprova",
+      "loading": "Caricamento Dashboard",
+      "eyebrow": "Il tuo evento",
+      "title": "Dashboard",
+      "description": "Budget, attività e prossimi passi: tutto ciò che serve per organizzare con serenità.",
+      "fallbackItem": "Voce",
+      "fallbackActivity": "Attività",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Impossibile verificare la sessione.",
+        "PROJECT_CHECK_FAILED": "Impossibile verificare il progetto.",
+        "DASHBOARD_LOAD_FAILED": "Impossibile caricare la Dashboard."
+      },
+      "info": {
+        "title": "Centro di controllo del tuo evento",
+        "description": "La Dashboard è il cuore dell’applicazione. Qui puoi gestire il budget complessivo, i budget dei partecipanti e tutte le categorie di spesa.",
+        "tips": {
+          "budgetDate": "Imposta il budget totale e la data dell’evento per attivare tutte le funzionalità",
+          "split": "Il budget si divide tra i partecipanti, con spese comuni condivise",
+          "customize": "Personalizza le categorie, aggiungi preventivi e traccia i pagamenti",
+          "ideas": "Usa Idea di Budget per applicare modelli precompilati"
+        },
+        "events": {
+          "wedding": "Il budget del matrimonio è diviso tra sposa, sposo e spese comuni.",
+          "baptism": "Le spese del battesimo sono considerate comuni.",
+          "communion": "La comunione utilizza un budget familiare unificato.",
+          "confirmation": "La cresima utilizza le spese comuni della famiglia.",
+          "birthday": "Il budget del compleanno può essere diviso tra organizzatore e spese condivise.",
+          "eighteenth": "Il diciottesimo utilizza un budget unico.",
+          "graduation": "Il budget della laurea può essere comune o diviso con il laureato."
+        }
+      },
+      "planning": {
+        "label": "Scelte cerimonia e ricevimento",
+        "ceremony": "Cerimonia",
+        "churchEmpty": "Luogo della cerimonia da scegliere",
+        "openChurches": "Apri luoghi",
+        "reception": "Ricevimento",
+        "locationEmpty": "Location da scegliere",
+        "openLocations": "Apri location"
+      },
+      "actions": {
+        "eyebrow": "Azioni rapide",
+        "title": "Continua l’organizzazione",
+        "save": "Salva configurazione",
+        "preparing": "Funzione in preparazione",
+        "pdf": "Genera PDF",
+        "video": "Genera video",
+        "comingSoon": "Prossimamente"
+      },
+      "idea": {
+        "title": "Idea di Budget",
+        "description": "Compila le voci e applicale al budget.",
+        "open": "Apri le idee"
+      },
+      "honeymoon": {
+        "title": "Viaggio di nozze",
+        "description": "Consigli e idee per la luna di miele.",
+        "open": "Esplora il viaggio"
+      },
+      "suggestions": {
+        "title": "Suggerimenti e consigli",
+        "description": "Idee utili in base alle tue scelte.",
+        "open": "Scopri i consigli"
+      }
+    },
+    "userSummary": {
+      "language": "Lingua:",
+      "country": "Nazione:",
+      "event": "Evento:",
+      "change": "Cambia",
+      "languages": {
+        "it": "Italiano",
+        "en": "Inglese",
+        "es": "Spagnolo",
+        "fr": "Francese",
+        "de": "Tedesco"
+      },
+      "countries": {
+        "it": "Italia",
+        "mx": "Messico",
+        "gb": "Regno Unito"
+      },
+      "events": {
+        "wedding": "Matrimonio",
+        "anniversary": "Anniversario",
+        "graduation": "Laurea",
+        "other": "Altro"
+      }
     }
   }
 }

@@ -2450,7 +2450,11 @@
       "loading": "Chargement",
       "signIn": "Se connecter",
       "profile": "Profil",
-      "logout": "Se déconnecter"
+      "logout": "Se déconnecter",
+      "brandName": "Budget de Mariage",
+      "ideaBudget": "Idée de Budget",
+      "openSettings": "Ouvrir les paramètres",
+      "settings": "Paramètres"
     },
     "profile": {
       "title": "Profil",
@@ -2472,6 +2476,115 @@
       "deletionRecorded": "Demande enregistrée. Vous avez 7 jours pour l’annuler ; l’événement partagé sera vérifié avant traitement.",
       "deletionFailed": "Demande non enregistrée.",
       "deletionCancelled": "Demande annulée."
+    },
+    "settings": {
+      "settings": "Paramètres",
+      "language": "Langue",
+      "country": "Pays de l’événement",
+      "currentEvent": "Mariage actuel",
+      "eventType": "Type d’événement",
+      "theme": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système",
+      "locked": "Le type d’événement ne peut pas être modifié après sa création, car cela nécessite une migration sécurisée des données.",
+      "close": "Fermer",
+      "apply": "Appliquer les modifications",
+      "comingSoon": "bientôt disponible"
+    },
+    "dashboard": {
+      "authRequired": "Connectez-vous pour enregistrer le budget.",
+      "budgetSaved": "Budget enregistré. Les données sont maintenant disponibles dans Idée de Budget.",
+      "budgetSaveFailed": "Le budget n’a pas pu être enregistré. Réessayez.",
+      "loadFailed": "Impossible de charger le tableau de bord",
+      "retry": "Réessayer",
+      "loading": "Chargement du tableau de bord",
+      "eyebrow": "Votre événement",
+      "title": "Tableau de bord",
+      "description": "Budget, tâches et prochaines étapes : tout pour organiser sereinement.",
+      "fallbackItem": "Élément",
+      "fallbackActivity": "Tâche",
+      "errors": {
+        "SESSION_CHECK_FAILED": "Impossible de vérifier la session.",
+        "PROJECT_CHECK_FAILED": "Impossible de vérifier le projet.",
+        "DASHBOARD_LOAD_FAILED": "Impossible de charger le tableau de bord."
+      },
+      "info": {
+        "title": "Centre de contrôle de votre événement",
+        "description": "Le tableau de bord est le cœur de l’application. Gérez ici le budget global, les budgets des participants et les catégories de dépenses.",
+        "tips": {
+          "budgetDate": "Définissez le budget total et la date de l’événement pour activer toutes les fonctions",
+          "split": "Le budget est réparti entre les participants et les dépenses communes",
+          "customize": "Personnalisez les catégories, ajoutez des devis et suivez les paiements",
+          "ideas": "Utilisez Idée de Budget pour appliquer des modèles préremplis"
+        },
+        "events": {
+          "wedding": "Le budget du mariage est réparti entre la mariée, le marié et les dépenses communes.",
+          "baptism": "Les dépenses du baptême sont considérées comme communes.",
+          "communion": "La communion utilise un budget familial unique.",
+          "confirmation": "La confirmation utilise les dépenses communes de la famille.",
+          "birthday": "Le budget d’anniversaire peut être réparti entre l’organisateur et les dépenses partagées.",
+          "eighteenth": "Un dix-huitième anniversaire utilise un budget unique.",
+          "graduation": "Le budget de remise de diplôme peut être commun ou partagé avec le diplômé."
+        }
+      },
+      "planning": {
+        "label": "Choix de cérémonie et de réception",
+        "ceremony": "Cérémonie",
+        "churchEmpty": "Lieu de cérémonie à choisir",
+        "openChurches": "Ouvrir les lieux",
+        "reception": "Réception",
+        "locationEmpty": "Lieu de réception à choisir",
+        "openLocations": "Ouvrir les lieux"
+      },
+      "actions": {
+        "eyebrow": "Actions rapides",
+        "title": "Continuer l’organisation",
+        "save": "Enregistrer la configuration",
+        "preparing": "Fonction en préparation",
+        "pdf": "Générer le PDF",
+        "video": "Générer la vidéo",
+        "comingSoon": "Bientôt disponible"
+      },
+      "idea": {
+        "title": "Idée de Budget",
+        "description": "Renseignez les postes et appliquez-les au budget.",
+        "open": "Ouvrir les idées"
+      },
+      "honeymoon": {
+        "title": "Voyage de noces",
+        "description": "Conseils et idées pour votre voyage de noces.",
+        "open": "Explorer le voyage"
+      },
+      "suggestions": {
+        "title": "Suggestions et conseils",
+        "description": "Des idées utiles selon vos choix.",
+        "open": "Voir les conseils"
+      }
+    },
+    "userSummary": {
+      "language": "Langue :",
+      "country": "Pays :",
+      "event": "Événement :",
+      "change": "Modifier",
+      "languages": {
+        "it": "Italien",
+        "en": "Anglais",
+        "es": "Espagnol",
+        "fr": "Français",
+        "de": "Allemand"
+      },
+      "countries": {
+        "it": "Italie",
+        "mx": "Mexique",
+        "gb": "Royaume-Uni"
+      },
+      "events": {
+        "wedding": "Mariage",
+        "anniversary": "Anniversaire",
+        "graduation": "Remise de diplôme",
+        "other": "Autre"
+      }
     }
   }
 }
