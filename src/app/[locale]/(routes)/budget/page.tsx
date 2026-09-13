@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { AppButtonLink, buttonClasses } from "@/components/ui/AppButton";
 import { Inbox, Lightbulb, WalletCards } from "lucide-react";
+import { ExpenseForm } from "@/components/expenses/ExpenseForm";
 
 const supabase = getBrowserClient();
 
@@ -39,6 +40,8 @@ export default function BudgetPage() {
   const [totals, setTotals] = useState<Totals>({ total: 0, common: 0, bride: 0, groom: 0 });
   const [loading, setLoading] = useState(true);
   const [plannedItems, setPlannedItems] = useState<{ name: string; amount: number }[]>([]);
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [expenseRefresh, setExpenseRefresh] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -56,19 +59,19 @@ export default function BudgetPage() {
         ]);
 
         const expensesData = await expensesRes.json();
-        type ExpenseData = { status?: string; category?: string; subcategory?: string; spend_type?: string; amount?: number; from_dashboard?: boolean };
-        const approvedExpenses = (expensesData.expenses || []).filter((exp: ExpenseData) => exp.status === "approved");
+        type ExpenseData = { status?: string; category?: string; subcategory?: string; spendType?: string; amount?: number; committed?: number; paid?: number; fromDashboard?: boolean };
+        const includedExpenses = (expensesData.expenses || []).filter((exp: ExpenseData) => exp.status !== "rejected");
 
-        const budgetRows: Row[] = approvedExpenses.map((exp: ExpenseData) => ({
+        const budgetRows: Row[] = includedExpenses.map((exp: ExpenseData) => ({
           category: exp.category || "",
           subcategory: exp.subcategory || "",
-          spend_type: (exp.spend_type || "common") as "common" | "bride" | "groom" | "gift",
-          payment_method: (exp.spend_type || "common") as "common" | "bride" | "groom" | "gift",
-          budget: Number(exp.amount || 0),
-          committed: Number(exp.amount || 0),
-          paid: 0,
-          residual: Number(exp.amount || 0),
-          fromDashboard: exp.from_dashboard || false,
+          spend_type: (exp.spendType || "common") as "common" | "bride" | "groom" | "gift",
+          payment_method: (exp.spendType || "common") as "common" | "bride" | "groom" | "gift",
+          budget: Number(exp.committed || exp.amount || 0),
+          committed: Number(exp.committed || 0),
+          paid: Number(exp.paid || 0),
+          residual: Math.max(Number(exp.committed || 0) - Number(exp.paid || 0), 0),
+          fromDashboard: exp.fromDashboard || false,
           difference: 0,
         }));
 
@@ -103,7 +106,7 @@ export default function BudgetPage() {
         setLoading(false);
       }
     })();
-  }, [t]);
+  }, [t, expenseRefresh]);
 
   const plannedTotal = useMemo(() => plannedItems.reduce((s, it) => s + (Number(it.amount)||0), 0), [plannedItems]);
   const compareRows = useMemo(() => {
@@ -131,13 +134,10 @@ export default function BudgetPage() {
         title={t("budget")}
         description={t("budgetPage.description")}
         icon={<WalletCards size={24} aria-hidden />}
-        actions={
-          <AppButtonLink href={`/${locale}/idea-di-budget`} variant="secondary">
-            <Lightbulb size={18} aria-hidden />
-            {t("budgetPage.ctaIdeaBudget")}
-          </AppButtonLink>
-        }
+        actions={<div className="flex flex-wrap gap-2"><button className={buttonClasses({ variant: "primary" })} onClick={() => setShowExpenseForm((value) => !value)}>{t("budgetPage.registerExpense")}</button><AppButtonLink href={`/${locale}/idea-di-budget`} variant="secondary"><Lightbulb size={18} aria-hidden />{t("budgetPage.ctaIdeaBudget")}</AppButtonLink></div>}
       />
+
+      {showExpenseForm && <div className="mb-6 rounded-2xl border bg-white/80 p-4 sm:p-6"><ExpenseForm compact onCreated={() => { setShowExpenseForm(false); setExpenseRefresh((value) => value + 1); }} /></div>}
 
       {/* Carosello immagini */}
       <ImageCarousel images={getPageImages("budget", country)} height="280px" />

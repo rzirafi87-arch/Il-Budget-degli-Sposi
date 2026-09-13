@@ -4,13 +4,13 @@ import { WEDDING_BUDGET_CATEGORIES } from "@/constants/budgetCategories";
 
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
-import { useToast } from "@/components/ToastProvider";
 import { getUserCountrySafe } from "@/constants/geo";
 import { formatCurrency, formatDate } from "@/lib/locale";
 import { getPageImages } from "@/lib/pageImages";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { ExpenseForm } from "@/components/expenses/ExpenseForm";
 
 const supabase = getBrowserClient();
 
@@ -40,25 +40,11 @@ export default function SpesePage() {
   const t = useTranslations();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const country = getUserCountrySafe();
-  const { showToast } = useToast();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const [newExpense, setNewExpense] = useState<Expense>({
-    category: ALL_CATEGORIES[0],
-    subcategory: CATEGORIES_MAP[ALL_CATEGORIES[0]][0],
-    supplier: "",
-    description: "",
-    amount: 0,
-    spendType: "common",
-    status: "pending",
-    date: new Date().toISOString().split("T")[0],
-    notes: "",
-    fromDashboard: false,
-  });
 
   // Detect single-budget events (baptism, communion, confirmation, birthday, eighteenth, graduation, fifty, retirement)
   const isBaptism = userEventType === "baptism";
@@ -76,13 +62,6 @@ export default function SpesePage() {
   const isQuinceanera = userEventType === "quinceanera";
   const isCharityGala = userEventType === "charity-gala";
   const isSingleBudgetEvent = isBaptism || isCommunion || isConfirmation || isBirthday || isEighteenth || isGraduation || isFifty || isRetirement || isBabyShower || isProposal || isCorporate || isBarMitzvah || isQuinceanera || isCharityGala;
-
-  // For single-budget events: force spend type to common
-  useEffect(() => {
-    if (isSingleBudgetEvent && newExpense.spendType !== "common") {
-      setNewExpense((prev) => ({ ...prev, spendType: "common" }));
-    }
-  }, [isSingleBudgetEvent, newExpense.spendType]);
 
   // Carica le spese
   useEffect(() => {
@@ -108,57 +87,6 @@ export default function SpesePage() {
       setExpenses([]);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const addExpense = async () => {
-    setSaving(true);
-    setMessage(null);
-    try {
-      const { data } = await supabase.auth.getSession();
-      const jwt = data.session?.access_token;
-
-      if (!jwt) {
-        setMessage(t("expensesPage.messages.mustAuthAdd"));
-        setSaving(false);
-        return;
-      }
-
-      const r = await fetch("/api/my/expenses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify(newExpense),
-      });
-
-      if (!r.ok) {
-        const j = await r.json();
-        showToast(t("expensesPage.messages.saveError", { error: j.error || t("expensesPage.messages.unableToSave") }), "error");
-      } else {
-        showToast(t("expensesPage.messages.successAdded"), "success");
-        setShowForm(false);
-        loadExpenses();
-        // Reset form
-        setNewExpense({
-          category: ALL_CATEGORIES[0],
-          subcategory: CATEGORIES_MAP[ALL_CATEGORIES[0]][0],
-          supplier: "",
-          description: "",
-          amount: 0,
-          spendType: "common",
-          status: "pending",
-          date: new Date().toISOString().split("T")[0],
-          notes: "",
-          fromDashboard: false,
-        });
-      }
-    } catch (err) {
-      console.error("Errore:", err);
-      showToast(t("expensesPage.messages.networkError"), "error");
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -285,111 +213,7 @@ export default function SpesePage() {
       </div>
 
       {/* Form nuova spesa */}
-      {showForm && (
-        <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold mb-4 text-center">{t("expensesPage.form.new")}</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.category")}</label>
-              <select
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.category}
-                onChange={(e) => setNewExpense({
-                  ...newExpense,
-                  category: e.target.value,
-                  subcategory: CATEGORIES_MAP[e.target.value][0]
-                })}
-              >
-                {ALL_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.subcategory")}</label>
-              <select
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.subcategory}
-                onChange={(e) => setNewExpense({ ...newExpense, subcategory: e.target.value })}
-              >
-                {(CATEGORIES_MAP[newExpense.category] || []).map((sub) => (
-                  <option key={sub} value={sub}>{sub}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.supplier")}</label>
-              <input
-                type="text"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.supplier}
-                onChange={(e) => setNewExpense({ ...newExpense, supplier: e.target.value })}
-                placeholder={t("expensesPage.form.placeholders.supplier")}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.amount")}</label>
-              <input
-                type="number"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.amount || ""}
-                onChange={(e) => setNewExpense({ ...newExpense, amount: Number(e.target.value) || 0 })}
-                placeholder={t("expensesPage.form.placeholders.amount")}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.spendType")}</label>
-              <select
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.spendType}
-                onChange={(e) => setNewExpense({ ...newExpense, spendType: e.target.value as SpendType })}
-              >
-                <option value="common">{t("expensesPage.form.spendTypeOptions.common")}</option>
-                {!isSingleBudgetEvent && <option value="bride">{t("expensesPage.form.spendTypeOptions.bride")}</option>}
-                {!isSingleBudgetEvent && <option value="groom">{t("expensesPage.form.spendTypeOptions.groom")}</option>}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.date")}</label>
-              <input
-                type="date"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.date}
-                onChange={(e) => setNewExpense({ ...newExpense, date: e.target.value })}
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.description")}</label>
-              <input
-                type="text"
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                value={newExpense.description}
-                onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
-                placeholder={t("expensesPage.form.placeholders.description")}
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("expensesPage.form.notes")}</label>
-              <textarea
-                className="border border-gray-300 rounded px-3 py-2 w-full"
-                rows={2}
-                value={newExpense.notes}
-                onChange={(e) => setNewExpense({ ...newExpense, notes: e.target.value })}
-                placeholder={t("expensesPage.form.placeholders.notes")}
-              />
-            </div>
-          </div>
-          <div className="mt-4">
-            <button
-              onClick={addExpense}
-              disabled={saving}
-              className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84] disabled:opacity-50"
-            >
-              {saving ? t("loading", { fallback: "Salvataggio..." }) : t("expensesPage.buttons.save")}
-            </button>
-          </div>
-        </div>
-      )}
+      {showForm && <ExpenseForm onCreated={async () => { setShowForm(false); await loadExpenses(); }} />}
 
       {/* Preventivi raggruppati per categoria */}
       <div className="space-y-8">

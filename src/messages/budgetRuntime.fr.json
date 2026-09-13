@@ -80,12 +80,14 @@
     "fallbackItem": "Poste",
     "emptyTitle": "Le budget est encore vide",
     "emptyAction": "Créez votre premier plan de budget",
+    "registerExpense": "Enregistrer une dépense",
     "export": {
       "button": "Exporter en PDF",
       "fromDashboard": "Depuis le tableau de bord"
     }
   },
   "expensesPage": {
+    "form": { "customItem": "+ Poste personnalisé", "paymentStatus": "Statut du paiement" },
     "quotesCount": "{count, plural, one {# devis} other {# devis}}",
     "messages": {
       "saveError": "Erreur : {error}",

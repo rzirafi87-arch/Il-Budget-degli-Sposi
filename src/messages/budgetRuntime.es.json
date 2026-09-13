@@ -80,9 +80,11 @@
     "fallbackItem": "Partida",
     "emptyTitle": "El presupuesto todavía está vacío",
     "emptyAction": "Crea tu primer plan de presupuesto",
+    "registerExpense": "Registrar un gasto",
     "export": { "button": "Exportar PDF", "fromDashboard": "Desde el panel" }
   },
   "expensesPage": {
+    "form": { "customItem": "+ Partida personalizada", "paymentStatus": "Estado del pago" },
     "quotesCount": "{count, plural, one {# presupuesto} other {# presupuestos}}",
     "messages": {
       "saveError": "Error: {error}",

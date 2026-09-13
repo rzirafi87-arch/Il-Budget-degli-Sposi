@@ -174,6 +174,11 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260911080649_branch_45_wedding_budget_taxonomy_dedup.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_45_wedding_budget_taxonomy.sql
 
+      - name: Apply and verify Branch 47 partner collaboration
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260913132811_branch_47_partner_collaboration.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_47_partner_collaboration.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci

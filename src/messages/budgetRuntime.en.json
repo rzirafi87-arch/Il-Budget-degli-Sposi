@@ -80,9 +80,11 @@
     "fallbackItem": "Item",
     "emptyTitle": "Your budget is still empty",
     "emptyAction": "Create your first budget plan",
+    "registerExpense": "Record an expense",
     "export": { "button": "Export PDF", "fromDashboard": "From dashboard" }
   },
   "expensesPage": {
+    "form": { "customItem": "+ Custom item", "paymentStatus": "Payment status" },
     "quotesCount": "{count, plural, one {# quote} other {# quotes}}",
     "messages": {
       "saveError": "Error: {error}",

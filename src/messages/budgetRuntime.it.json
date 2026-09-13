@@ -80,9 +80,11 @@
     "fallbackItem": "Voce",
     "emptyTitle": "Il budget è ancora vuoto",
     "emptyAction": "Crea il primo piano di budget",
+    "registerExpense": "Registra una spesa",
     "export": { "button": "Esporta PDF", "fromDashboard": "Da dashboard" }
   },
   "expensesPage": {
+    "form": { "customItem": "+ Voce personalizzata", "paymentStatus": "Stato pagamento" },
     "quotesCount": "{count, plural, one {# preventivo} other {# preventivi}}",
     "messages": {
       "saveError": "Errore: {error}",
