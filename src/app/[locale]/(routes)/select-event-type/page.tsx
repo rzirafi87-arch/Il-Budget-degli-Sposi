@@ -168,7 +168,7 @@ export default function SelectEventTypePage() {
     }
   }
 
-  if (!accessChecked) return <LoadingState label="Verifica configurazione evento" cards={2} />;
+  if (!accessChecked) return <LoadingState label={t("milestone9.setup.checkingConfiguration")} cards={2} />;
 
   return (
     <main

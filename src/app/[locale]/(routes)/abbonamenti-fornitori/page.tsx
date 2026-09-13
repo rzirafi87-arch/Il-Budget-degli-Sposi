@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 type SubscriptionPackage = {
@@ -16,6 +17,7 @@ type SubscriptionPackage = {
 };
 
 export default function SubscriptionPricingPage() {
+  const t = useTranslations("milestone9.runtime");
   const [packages, setPackages] = useState<SubscriptionPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly");
@@ -54,7 +56,7 @@ export default function SubscriptionPricingPage() {
       <div className="min-h-screen bg-gradient-to-b from-[#EAD9D4]/20 to-white flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#A3B59D] border-t-transparent"></div>
-          <p className="mt-4 text-gray-600">Caricamento...</p>
+          <p className="mt-4 text-gray-600">{t("supplierSubscriptions.loading")}</p>
         </div>
       </div>
     );
@@ -66,10 +68,10 @@ export default function SubscriptionPricingPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-4xl font-bold text-gray-900 text-center mb-4">
-            Piani di Abbonamento per Fornitori
+            {t("supplierSubscriptions.title")}
           </h1>
           <p className="text-xl text-gray-600 text-center max-w-3xl mx-auto">
-            Scegli il piano più adatto per far crescere la tua visibilità e raggiungere migliaia di coppie in cerca di servizi per il loro matrimonio
+            {t("supplierSubscriptions.description")}
           </p>
         </div>
       </div>
@@ -81,7 +83,7 @@ export default function SubscriptionPricingPage() {
             "text-lg font-medium",
             billingPeriod === "monthly" ? "text-gray-900" : "text-gray-500"
           )}>
-            Mensile
+            {t("supplierSubscriptions.billing.monthly")}
           </span>
           <button
             onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
@@ -101,9 +103,9 @@ export default function SubscriptionPricingPage() {
             "text-lg font-medium",
             billingPeriod === "yearly" ? "text-gray-900" : "text-gray-500"
           )}>
-            Annuale
+            {t("supplierSubscriptions.billing.yearly")}
             <span className="ml-2 text-sm text-green-600 font-semibold">
-              (Risparmia fino al 17%)
+              {t("supplierSubscriptions.billing.savingsBadge")}
             </span>
           </span>
         </div>
@@ -132,7 +134,7 @@ export default function SubscriptionPricingPage() {
                       "px-4 py-1 rounded-full text-sm font-semibold text-white",
                       isBest ? "bg-[#A3B59D]" : "bg-[#EAD9D4] text-gray-700"
                     )}>
-                      {isBest ? "🌟 PIÙ SCELTO" : "💼 POPOLARE"}
+                      {isBest ? t("supplierSubscriptions.badges.mostChosen") : t("supplierSubscriptions.badges.popular")}
                     </span>
                   </div>
                 )}
@@ -153,12 +155,15 @@ export default function SubscriptionPricingPage() {
                         €{price.toFixed(2)}
                       </span>
                       <span className="text-gray-600">
-                        /{billingPeriod === "monthly" ? "mese" : "anno"}
+                        /{billingPeriod === "monthly" ? t("supplierSubscriptions.billing.month") : t("supplierSubscriptions.billing.year")}
                       </span>
                     </div>
                     {billingPeriod === "yearly" && pkg.tier !== "free" && (
                       <p className="text-sm text-gray-500 mt-2">
-                        €{getMonthlyEquivalent(pkg.price_yearly)}/mese • Risparmi {savings}%
+                        {t("supplierSubscriptions.billing.yearlySavings", {
+                          monthlyPrice: getMonthlyEquivalent(pkg.price_yearly),
+                          savings,
+                        })}
                       </p>
                     )}
                   </div>
@@ -174,7 +179,7 @@ export default function SubscriptionPricingPage() {
                         : "bg-white border-2 border-[#A3B59D] text-[#A3B59D] hover:bg-[#A3B59D] hover:text-white"
                     )}
                   >
-                    {pkg.tier === "free" ? "Inizia Gratis" : "Inizia Ora"}
+                    {pkg.tier === "free" ? t("supplierSubscriptions.actions.startFree") : t("supplierSubscriptions.actions.startNow")}
                   </button>
 
                   {/* Features */}
@@ -199,34 +204,31 @@ export default function SubscriptionPricingPage() {
         {/* FAQ Section */}
         <div className="mt-20 max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-            Domande Frequenti
+            {t("supplierSubscriptions.faq.title")}
           </h2>
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Posso cambiare piano in qualsiasi momento?
+                {t("supplierSubscriptions.faq.changePlan.question")}
               </h3>
               <p className="text-gray-600">
-                Sì, puoi fare upgrade o downgrade del tuo piano in qualsiasi momento. 
-                Il cambio sarà effettivo immediatamente e il costo sarà ripartito proporzionalmente.
+                {t("supplierSubscriptions.faq.changePlan.answer")}
               </p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Cosa succede se cancello il mio abbonamento?
+                {t("supplierSubscriptions.faq.cancel.question")}
               </h3>
               <p className="text-gray-600">
-                Il tuo profilo rimarrà attivo fino alla fine del periodo pagato, 
-                dopodiché tornerai automaticamente al piano Gratuito (senza visibilità pubblica).
+                {t("supplierSubscriptions.faq.cancel.answer")}
               </p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Quanto dura la visibilità nella Demo?
+                {t("supplierSubscriptions.faq.demo.question")}
               </h3>
               <p className="text-gray-600">
-                Solo i fornitori con piano Premium Plus appaiono nella versione demo del sito, 
-                garantendo massima esposizione anche agli utenti non registrati.
+                {t("supplierSubscriptions.faq.demo.answer")}
               </p>
             </div>
           </div>

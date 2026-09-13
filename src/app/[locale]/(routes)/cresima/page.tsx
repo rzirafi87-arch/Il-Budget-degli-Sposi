@@ -1,71 +1,74 @@
 ﻿import React from "react";
 import CresimaNav from "@/components/cresima/CresimaNav";
 import CresimaTraditions from "@/components/cresima/CresimaTraditions";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Cresima",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("milestone9.runtime.confirmation");
+  return { title: t("title") };
+}
 
-export default function CresimaPage() {
+export default async function CresimaPage() {
+  const t = await getTranslations("milestone9.runtime.confirmation");
   return (
     <main>
       <CresimaNav />
       <header className="mb-6">
-        <h2 className="text-xl font-medium">Panoramica</h2>
+        <h2 className="text-xl font-medium">{t("overview.title")}</h2>
         <p className="text-neutral-600 mt-1">
-          Inizia a organizzare la tua Cresima: definisci il budget, la lista degli invitati e le attività principali.
+          {t("overview.description")}
         </p>
       </header>
       <CresimaTraditions />
 
       <section className="grid gap-6 md:grid-cols-2">
         <div className="rounded-lg border border-neutral-200 p-5">
-          <h2 className="text-xl font-medium">Panoramica evento</h2>
+          <h2 className="text-xl font-medium">{t("event.title")}</h2>
           <p className="text-neutral-600 mt-2">
-            Raccogli in un unico posto informazioni chiave: data, luogo, stile dell’evento e note.
+            {t("event.description")}
           </p>
           <ul className="list-disc ml-5 mt-3 text-neutral-700">
-            <li>Data e ora della celebrazione</li>
-            <li>Chiesa e location del ricevimento</li>
-            <li>Stile/tema e palette colori</li>
+            <li>{t("event.items.date")}</li>
+            <li>{t("event.items.venues")}</li>
+            <li>{t("event.items.style")}</li>
           </ul>
         </div>
 
         <div className="rounded-lg border border-neutral-200 p-5">
-          <h2 className="text-xl font-medium">Idea di budget</h2>
+          <h2 className="text-xl font-medium">{t("budget.title")}</h2>
           <p className="text-neutral-600 mt-2">
-            Imposta un budget stimato e suddividilo tra le principali categorie.
+            {t("budget.description")}
           </p>
           <ul className="list-disc ml-5 mt-3 text-neutral-700">
-            <li>Location e catering</li>
-            <li>Abbigliamento e accessori</li>
-            <li>Fotografo e intrattenimento</li>
-            <li>Bomboniere e decorazioni</li>
+            <li>{t("budget.items.venue")}</li>
+            <li>{t("budget.items.clothing")}</li>
+            <li>{t("budget.items.photography")}</li>
+            <li>{t("budget.items.favors")}</li>
           </ul>
         </div>
 
         <div className="rounded-lg border border-neutral-200 p-5">
-          <h2 className="text-xl font-medium">Invitati</h2>
+          <h2 className="text-xl font-medium">{t("guests.title")}</h2>
           <p className="text-neutral-600 mt-2">
-            Prepara la lista invitati e tieni traccia di conferme, tavoli e preferenze.
+            {t("guests.description")}
           </p>
           <ul className="list-disc ml-5 mt-3 text-neutral-700">
-            <li>Famiglia, padrino/madrina e amici</li>
-            <li>Conferme di partecipazione (RSVP)</li>
-            <li>Allergie o esigenze particolari</li>
+            <li>{t("guests.items.people")}</li>
+            <li>{t("guests.items.rsvp")}</li>
+            <li>{t("guests.items.needs")}</li>
           </ul>
         </div>
 
         <div className="rounded-lg border border-neutral-200 p-5">
-          <h2 className="text-xl font-medium">Attività da fare</h2>
+          <h2 className="text-xl font-medium">{t("tasks.title")}</h2>
           <p className="text-neutral-600 mt-2">
-            Un promemoria rapido delle prossime azioni per restare in pista.
+            {t("tasks.description")}
           </p>
           <ul className="list-disc ml-5 mt-3 text-neutral-700">
-            <li>Prenota chiesa e location</li>
-            <li>Definisci menu e torta</li>
-            <li>Scegli fotografo e musica</li>
-            <li>Prepara inviti e bomboniere</li>
+            <li>{t("tasks.items.venues")}</li>
+            <li>{t("tasks.items.menu")}</li>
+            <li>{t("tasks.items.photography")}</li>
+            <li>{t("tasks.items.invitations")}</li>
           </ul>
         </div>
       </section>

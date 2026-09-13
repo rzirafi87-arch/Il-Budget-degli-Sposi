@@ -16,13 +16,13 @@ export default function Breadcrumbs() {
   const locale = useLocale();
   const t = useTranslations("milestone9.breadcrumbs");
 
-  const pathLabels: Record<string, string> = {
+  const routeSegments: Record<string, string> = {
     "": t("home"), dashboard: t("dashboard"), timeline: t("timeline"), budget: t("budget"), invitati: t("guests"),
     "formazione-tavoli": t("tables"), spese: t("expenses"), entrate: t("income"), fornitori: t("vendors"), ricevimento: t("reception"),
     location: t("receptionVenue"), cerimonia: t("ceremony"), chiesa: t("ceremonyVenue"), chiese: t("ceremonyVenue"),
-    preferiti: t("favorites"), documenti: t("documents"), "lista-nozze": t("giftList"), "wedding-planner": "Wedding Planner",
+    preferiti: t("favorites"), documenti: t("documents"), "lista-nozze": t("giftList"), "wedding-planner": t("weddingPlanner"),
     "musica-cerimonia": t("ceremonyMusic"), "musica-ricevimento": t("receptionMusic"), "cose-matrimonio": t("weddingIdeas"),
-    "save-the-date": "Save the Date",
+    "save-the-date": t("saveTheDate"),
     auth: t("signIn"), contatti: t("contacts"),
   };
 
@@ -44,13 +44,13 @@ export default function Breadcrumbs() {
     const isLast = index === pathSegments.length - 1;
 
     breadcrumbs.push({
-      label: pathLabels[segment] || segment.charAt(0).toUpperCase() + segment.slice(1),
+      label: routeSegments[segment] || segment.charAt(0).toUpperCase() + segment.slice(1),
       href: isLast ? undefined : `/${locale}${currentPath}`,
     });
   });
 
   return (
-    <nav className="flex items-center gap-2 text-sm mb-4 overflow-x-auto pb-2" aria-label="Breadcrumb">
+    <nav className="flex items-center gap-2 text-sm mb-4 overflow-x-auto pb-2" aria-label={t("ariaLabel")}>
       {breadcrumbs.map((crumb, index) => (
         <span key={index} className="flex items-center gap-2 whitespace-nowrap">
           {crumb.href ? (

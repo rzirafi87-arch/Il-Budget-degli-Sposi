@@ -97,7 +97,7 @@ export default function HealthPage() {
 
       {!loading && !err && rows.length === 0 && (
         <div className="rounded-lg border border-dashed p-6 text-center text-sm text-gray-500">
-          Nessun dato disponibile. Premi <span className="font-medium">Recompute</span> per generare il primo snapshot.
+          No records available. Select <span className="font-medium">Recompute</span> to generate the first snapshot.
         </div>
       )}
 

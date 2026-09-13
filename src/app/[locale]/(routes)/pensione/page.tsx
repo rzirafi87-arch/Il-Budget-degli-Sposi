@@ -1,8 +1,10 @@
 ﻿"use client";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 import React from "react";
 
 export default function PensionePage() {
+  const t = useTranslations("milestone9.runtime.retirement");
   type LocalRow = { id?: string; category: string; subcategory: string; supplier?: string | null; amount?: number | null; spend_type?: string | null; notes?: string | null };
   const [rows, setRows] = React.useState<LocalRow[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -60,7 +62,7 @@ export default function PensionePage() {
       const json = await res.json();
       if (!res.ok) {
         console.error("Errore creando evento:", json);
-        alert("Si è verificato un errore durante la creazione dell'evento.");
+        alert(t("errors.createEvent"));
         return;
       }
 
@@ -75,7 +77,7 @@ export default function PensionePage() {
       }
 
       // set event name immediately and refetch rows
-      setEventName(json.event?.name ?? "Festa di Pensionamento");
+      setEventName(json.event?.name ?? t("title"));
       setLoading(true);
       const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
       const fetchJson = await fetchRes.json();
@@ -84,7 +86,7 @@ export default function PensionePage() {
       setRows(fetchJson.rows || []);
     } catch (err) {
       console.error(err);
-      alert("Errore imprevisto");
+      alert(t("errors.unexpected"));
     } finally {
       setCreating(false);
       setLoading(false);
@@ -114,8 +116,8 @@ export default function PensionePage() {
       }
 
       const expense = {
-        category: cat || "Altro",
-        subcategory: subcat || "Generico",
+        category: cat || t("defaults.other"),
+        subcategory: subcat || t("defaults.generic"),
         supplier: supplier || null,
         amount: Number(amount) || 0,
         spend_type: spendType,
@@ -131,7 +133,7 @@ export default function PensionePage() {
       const json = await res.json();
       if (!res.ok) {
         console.error("Errore inserimento spesa:", json);
-        alert("Errore inserimento spesa");
+        alert(t("errors.addExpense"));
         return;
       }
 
@@ -149,7 +151,7 @@ export default function PensionePage() {
       setSpendType("common");
     } catch (err) {
       console.error(err);
-      alert("Errore imprevisto");
+      alert(t("errors.unexpected"));
     } finally {
       setCreating(false);
     }
@@ -191,7 +193,7 @@ export default function PensionePage() {
       const expense = { id: editingId, category: editCat, subcategory: editSubcat, supplier: editSupplier || null, amount: Number(editAmount) || 0, spend_type: editSpendType, notes: editNotes || null };
       const res = await fetch("/api/retirement", { method: "PUT", headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` }, body: JSON.stringify({ expense }) });
       const json = await res.json();
-      if (!res.ok) { console.error("Errore update:", json); alert("Errore aggiornamento"); return; }
+      if (!res.ok) { console.error("Errore update:", json); alert(t("errors.updateExpense")); return; }
 
       // refetch
       const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
@@ -200,14 +202,14 @@ export default function PensionePage() {
       setEditingId(null);
     } catch (err) {
       console.error(err);
-      alert("Errore imprevisto");
+      alert(t("errors.unexpected"));
     } finally {
       setCreating(false);
     }
   }
 
   async function deleteExpense(id: string) {
-    if (!confirm("Eliminare questa spesa?")) return;
+    if (!confirm(t("confirmDelete"))) return;
     try {
       setCreating(true);
   const supabase = getBrowserClient();
@@ -218,14 +220,14 @@ export default function PensionePage() {
 
       const res = await fetch("/api/retirement", { method: "DELETE", headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` }, body: JSON.stringify({ expenseId: id }) });
       const json = await res.json();
-      if (!res.ok) { console.error("Errore delete:", json); alert("Errore eliminazione"); return; }
+      if (!res.ok) { console.error("Errore delete:", json); alert(t("errors.deleteExpense")); return; }
 
       const fetchRes = await fetch("/api/retirement", { headers: { Authorization: `Bearer ${jwt}` } });
       const fetchJson = await fetchRes.json();
       setRows(fetchJson.rows || []);
     } catch (err) {
       console.error(err);
-      alert("Errore imprevisto");
+      alert(t("errors.unexpected"));
     } finally {
       setCreating(false);
     }
@@ -233,32 +235,32 @@ export default function PensionePage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-4">Festa di Pensionamento</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
       {loading ? (
-        <p>Caricamento...</p>
+        <p>{t("loading")}</p>
       ) : (
         <>
-          {demo === true && <p className="mb-4 text-sm text-gray-600">Esempio demo (utente non autenticato)</p>}
+          {demo === true && <p className="mb-4 text-sm text-gray-600">{t("demoNotice")}</p>}
           {demo === false && !eventName && (
             <div className="mb-4 text-sm text-gray-700">
-              <p>Non hai ancora creato una Festa di Pensionamento &mdash; puoi crearla subito per iniziare a salvare il budget.</p>
+              <p>{t("emptyEvent")}</p>
               <div className="mt-3">
                 <button
                   onClick={createEvent}
                   disabled={creating}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-(--color-sage) text-white font-semibold hover:brightness-95"
                 >
-                  {creating ? "Creazione..." : "Crea Evento Pensione"}
+                  {creating ? t("creating") : t("createEvent")}
                 </button>
               </div>
             </div>
           )}
-          {eventName && <p className="mb-4 text-sm text-gray-700">Evento: {eventName}</p>}
+          {eventName && <p className="mb-4 text-sm text-gray-700">{t("eventLabel", { name: eventName })}</p>}
 
           <div className="bg-white border rounded-lg p-4">
-            <h2 className="font-semibold">Voci di budget</h2>
+            <h2 className="font-semibold">{t("budgetItems")}</h2>
             <ul className="mt-3 divide-y">
-              {rows.length === 0 && <li className="py-3 text-sm text-gray-500">Nessuna voce</li>}
+              {rows.length === 0 && <li className="py-3 text-sm text-gray-500">{t("noItems")}</li>}
               {rows.map((r, idx) => (
                 <li key={r.id ?? idx} className="py-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                   {editingId === r.id ? (
@@ -269,31 +271,31 @@ export default function PensionePage() {
                         <input value={editSupplier} onChange={(e) => setEditSupplier(e.target.value)} className="p-2 border rounded" />
                         <input value={editAmount} onChange={(e) => setEditAmount(e.target.value)} type="number" className="p-2 border rounded" />
                         <select value={editSpendType} onChange={(e) => setEditSpendType(e.target.value)} className="p-2 border rounded">
-                          <option value="common">Comune</option>
-                          <option value="bride">Sposa</option>
-                          <option value="groom">Sposo</option>
-                          <option value="retirement">Pensione</option>
+                          <option value="common">{t("spendTypes.common")}</option>
+                          <option value="bride">{t("spendTypes.bride")}</option>
+                          <option value="groom">{t("spendTypes.groom")}</option>
+                          <option value="retirement">{t("spendTypes.retirement")}</option>
                         </select>
                         <input value={editNotes} onChange={(e) => setEditNotes(e.target.value)} className="p-2 border rounded" />
                       </div>
                       <div className="mt-2 flex gap-2">
-                        <button onClick={saveEdit} disabled={creating} className="px-3 py-1 rounded bg-(--color-sage) text-white">Salva</button>
-                        <button onClick={cancelEdit} className="px-3 py-1 rounded border">Annulla</button>
+                        <button onClick={saveEdit} disabled={creating} className="px-3 py-1 rounded bg-(--color-sage) text-white">{t("actions.save")}</button>
+                        <button onClick={cancelEdit} className="px-3 py-1 rounded border">{t("actions.cancel")}</button>
                       </div>
                     </div>
                   ) : (
                     <>
                       <div>
                         <div className="font-medium">{r.category} — {r.subcategory}</div>
-                        {r.supplier && <div className="text-sm text-gray-500">Fornitore: {r.supplier}</div>}
-                        {r.notes && <div className="text-sm text-gray-500">Note: {r.notes}</div>}
+                        {r.supplier && <div className="text-sm text-gray-500">{t("supplierLabel", { supplier: r.supplier })}</div>}
+                        {r.notes && <div className="text-sm text-gray-500">{t("notesLabel", { notes: r.notes })}</div>}
                       </div>
                       <div className="text-right flex flex-col items-end gap-2">
                         <div className="font-medium">€ {Number(r.amount || 0).toFixed(2)}</div>
                         {r.spend_type && <div className="text-sm text-gray-500">{r.spend_type}</div>}
                         <div className="flex gap-2 mt-2">
-                          <button onClick={() => startEdit(r)} className="px-2 py-1 rounded border">Modifica</button>
-                          {r.id && <button onClick={() => deleteExpense(r.id!)} className="px-2 py-1 rounded border text-red-600">Elimina</button>}
+                          <button onClick={() => startEdit(r)} className="px-2 py-1 rounded border">{t("actions.edit")}</button>
+                          {r.id && <button onClick={() => deleteExpense(r.id!)} className="px-2 py-1 rounded border text-red-600">{t("actions.delete")}</button>}
                         </div>
                       </div>
                     </>
@@ -303,27 +305,27 @@ export default function PensionePage() {
             </ul>
 
             <div className="mt-4 flex justify-end">
-              <div className="font-semibold">Totale: € {total.toFixed(2)}</div>
+              <div className="font-semibold">{t("total", { total: total.toFixed(2) })}</div>
             </div>
 
               <form onSubmit={submitExpense} className="mt-6 border-t pt-4">
-                <h3 className="font-medium mb-2">Aggiungi spesa</h3>
+                <h3 className="font-medium mb-2">{t("addExpense")}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <input value={cat} onChange={(e) => setCat(e.target.value)} placeholder="Categoria" className="p-2 border rounded" />
-                  <input value={subcat} onChange={(e) => setSubcat(e.target.value)} placeholder="Sottocategoria" className="p-2 border rounded" />
-                  <input value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Fornitore" className="p-2 border rounded" />
-                  <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Importo" type="number" className="p-2 border rounded" />
+                  <input value={cat} onChange={(e) => setCat(e.target.value)} placeholder={t("fields.category")} className="p-2 border rounded" />
+                  <input value={subcat} onChange={(e) => setSubcat(e.target.value)} placeholder={t("fields.subcategory")} className="p-2 border rounded" />
+                  <input value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder={t("fields.supplier")} className="p-2 border rounded" />
+                  <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t("fields.amount")} type="number" className="p-2 border rounded" />
                   <select value={spendType} onChange={(e) => setSpendType(e.target.value)} className="p-2 border rounded">
-                    <option value="common">Comune</option>
-                    <option value="bride">Sposa</option>
-                    <option value="groom">Sposo</option>
-                    <option value="retirement">Pensione</option>
+                    <option value="common">{t("spendTypes.common")}</option>
+                    <option value="bride">{t("spendTypes.bride")}</option>
+                    <option value="groom">{t("spendTypes.groom")}</option>
+                    <option value="retirement">{t("spendTypes.retirement")}</option>
                   </select>
-                  <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Note" className="p-2 border rounded" />
+                  <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t("fields.notes")} className="p-2 border rounded" />
                 </div>
                 <div className="mt-3 flex gap-2">
                   <button type="submit" disabled={creating} className="px-4 py-2 rounded bg-(--color-sage) text-white font-semibold">
-                    {creating ? "Salvo..." : "Aggiungi spesa"}
+                    {creating ? t("saving") : t("addExpense")}
                   </button>
                 </div>
               </form>
