@@ -17,7 +17,7 @@ test("localized mobile and accessibility smoke", async ({ page }, testInfo) => {
     if (message.type() === "error") consoleErrors.push(message.text());
   });
 
-  await page.goto(`/${locale}/responsive-showcase`, { waitUntil: "networkidle" });
+  await page.goto(`/${locale}/responsive-showcase`, { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveAttribute("lang", locale);
   await expect(page.locator("body")).toContainText(expectedCopy[locale]);
   await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
