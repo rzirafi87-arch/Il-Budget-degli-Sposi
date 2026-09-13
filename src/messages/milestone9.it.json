@@ -66,7 +66,7 @@
       "empty": "Nessun elemento in lista"
     },
     "currentEvent": {
-      "label": "Evento corrente", "choose": "Scegli un evento", "none": "Nessun evento", "change": "Cambia evento", "soon": "Prossimamente"
+      "label": "Evento corrente", "choose": "Scegli un evento", "none": "Nessun evento", "change": "Cambia evento", "soon": "Prossimamente", "confirmTitle": "Cambiare evento?", "confirmDescription": "Stai per passare a {event}. Tutte le pagine useranno i dati di questo evento.", "cancel": "Annulla", "confirm": "Cambia evento", "switching": "Cambio in corso…"
     },
     "errorPage": {
       "title": "Qualcosa è andato storto", "description": "Non è stato possibile caricare questa pagina. Riprova tra poco.", "retry": "Riprova"

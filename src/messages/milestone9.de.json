@@ -66,7 +66,7 @@
       "empty": "Keine Einträge"
     },
     "currentEvent": {
-      "label": "Aktuelles Ereignis", "choose": "Ereignis auswählen", "none": "Kein Ereignis", "change": "Ereignis wechseln", "soon": "Demnächst"
+      "label": "Aktuelles Ereignis", "choose": "Ereignis auswählen", "none": "Kein Ereignis", "change": "Ereignis wechseln", "soon": "Demnächst", "confirmTitle": "Ereignis wechseln?", "confirmDescription": "Du wechselst zu {event}. Alle Seiten verwenden danach die Daten dieses Ereignisses.", "cancel": "Abbrechen", "confirm": "Ereignis wechseln", "switching": "Wechsel läuft…"
     },
     "errorPage": {
       "title": "Etwas ist schiefgelaufen", "description": "Diese Seite konnte nicht geladen werden. Bitte versuche es gleich noch einmal.", "retry": "Erneut versuchen"

@@ -66,7 +66,7 @@
       "empty": "No hay elementos"
     },
     "currentEvent": {
-      "label": "Evento actual", "choose": "Elige un evento", "none": "Ningún evento", "change": "Cambiar evento", "soon": "Próximamente"
+      "label": "Evento actual", "choose": "Elige un evento", "none": "Ningún evento", "change": "Cambiar evento", "soon": "Próximamente", "confirmTitle": "¿Cambiar de evento?", "confirmDescription": "Vas a cambiar a {event}. Todas las páginas usarán los datos de este evento.", "cancel": "Cancelar", "confirm": "Cambiar evento", "switching": "Cambiando…"
     },
     "errorPage": {
       "title": "Algo ha salido mal", "description": "No se pudo cargar esta página. Inténtalo de nuevo en breve.", "retry": "Reintentar"
