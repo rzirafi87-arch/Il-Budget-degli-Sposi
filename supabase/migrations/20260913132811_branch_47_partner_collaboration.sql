@@ -56,6 +56,7 @@ for each row execute function public.create_event_owner_membership();
 insert into public.event_members (event_id, user_id, role, status, accepted_at)
 select e.id, e.owner_id, 'owner', 'active', coalesce(e.inserted_at, now())
 from public.events e
+join auth.users u on u.id = e.owner_id
 where e.owner_id is not null
 on conflict (event_id, user_id) do update
 set role = 'owner', status = 'active', updated_at = now();
