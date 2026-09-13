@@ -11,7 +11,11 @@ test("authenticated wedding journey, event context and logout", async ({ page },
   test.skip(testInfo.project.name !== "it-390", "One authenticated browser is sufficient; the full width matrix runs in language-rollout.spec.ts.");
   test.skip(!email || !password, "Set PLAYWRIGHT_TEST_EMAIL and PLAYWRIGHT_TEST_PASSWORD for local authenticated QA.");
 
-  if (process.env.PLAYWRIGHT_BASE_URL?.includes("_vercel_share=")) {\n    await page.goto(process.env.PLAYWRIGHT_BASE_URL, { waitUntil: "domcontentloaded" });\n  }\n\n  await page.goto("/it/auth");
+  if (process.env.PLAYWRIGHT_BASE_URL?.includes("_vercel_share=")) {
+    await page.goto(process.env.PLAYWRIGHT_BASE_URL, { waitUntil: "domcontentloaded" });
+  }
+
+  await page.goto("/it/auth");
   const auth = page.locator("main");
   await auth.getByLabel("Email", { exact: true }).fill(email!);
   await auth.getByLabel("Password", { exact: true }).fill(password!);
