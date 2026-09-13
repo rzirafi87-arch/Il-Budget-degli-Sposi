@@ -84,9 +84,9 @@ export default function ResponsiveShowcasePage() {
             hoverable
             onClick={() => alert(t("responsiveShowcase.grid.budget.clicked"))}
             footer={
-              <button className="btn-primary w-full">
+              <span className="btn-primary block w-full text-center">
                 {t("responsiveShowcase.grid.budget.open")}
-              </button>
+              </span>
             }
           >
             <p className="text-gray-700">

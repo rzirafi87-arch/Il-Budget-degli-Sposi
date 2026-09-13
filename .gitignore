@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+/.playwright-results/
+/playwright-report/
+/test-results/.last-run.json
 
 # next.js
 /.next/

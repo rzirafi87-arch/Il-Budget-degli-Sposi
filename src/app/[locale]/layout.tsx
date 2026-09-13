@@ -89,10 +89,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     <>
       <WebsiteSchema />
       <OrganizationSchema />
-      <ConsentAwareAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
       <ThemeProvider>
         <AppSettingsProvider initialLocale={locale}>
           <NextIntlClientProvider locale={locale} messages={messages} timeZone="Europe/Rome">
+            <ConsentAwareAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
             <ClientLayoutShell><EventModuleGuard>{children}</EventModuleGuard></ClientLayoutShell>
           </NextIntlClientProvider>
         </AppSettingsProvider>
