@@ -46,6 +46,31 @@ do $$ begin
   exception when others then if sqlerrm = 'invitation replay accepted' then raise; end if; end;
 end $$;
 
+-- Each requested shared Matrimonio module remains wired to the same canonical
+-- access helper. Combined with the authenticated partner checks below, this
+-- guards Budget, Guests/Families, Timeline, Documents/Save the Date, Expenses,
+-- and saved supplier/location writes against route or policy drift.
+do $$
+declare
+  scoped_table text;
+  scoped_tables constant text[] := array[
+    'budget_items', 'budget_ideas', 'guests', 'family_groups',
+    'timeline_items', 'appointments', 'wedding_cards', 'expenses',
+    'saved_suppliers', 'saved_locations'
+  ];
+begin
+  foreach scoped_table in array scoped_tables loop
+    if not exists (
+      select 1 from pg_policies
+      where schemaname = 'public' and tablename = scoped_table
+        and cmd in ('ALL', 'INSERT', 'UPDATE')
+        and coalesce(with_check, qual, '') like '%can_access_event%'
+    ) then
+      raise exception 'partner write policy missing for %', scoped_table;
+    end if;
+  end loop;
+end $$;
+
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"47000000-0000-4000-8000-000000000002","email":"partner47@example.invalid","role":"authenticated"}',true);
 do $$ begin
