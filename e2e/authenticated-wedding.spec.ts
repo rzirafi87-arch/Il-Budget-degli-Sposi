@@ -12,9 +12,10 @@ test("authenticated wedding journey, event context and logout", async ({ page },
   test.skip(!email || !password, "Set PLAYWRIGHT_TEST_EMAIL and PLAYWRIGHT_TEST_PASSWORD for local authenticated QA.");
 
   await page.goto("/it/auth");
-  await page.getByLabel("Email").fill(email!);
-  await page.getByLabel("Password").fill(password!);
-  await page.getByRole("button", { name: /accedi/i }).click();
+  const auth = page.locator("main");
+  await auth.getByLabel("Email", { exact: true }).fill(email!);
+  await auth.getByLabel("Password", { exact: true }).fill(password!);
+  await auth.getByRole("button", { name: /accedi/i }).click();
   await page.waitForURL(/\/it\/(dashboard|select-event)/);
 
   if (page.url().includes("select-event")) {
@@ -49,8 +50,8 @@ test("authenticated wedding journey, event context and logout", async ({ page },
   await expect(page).not.toHaveURL(/\/profilo/);
 
   await page.goto("/it/auth");
-  await page.getByLabel("Email").fill(email!);
-  await page.getByLabel("Password").fill(password!);
-  await page.getByRole("button", { name: /accedi/i }).click();
+  await auth.getByLabel("Email", { exact: true }).fill(email!);
+  await auth.getByLabel("Password", { exact: true }).fill(password!);
+  await auth.getByRole("button", { name: /accedi/i }).click();
   await page.waitForURL(/\/it\/(dashboard|select-event)/);
 });
