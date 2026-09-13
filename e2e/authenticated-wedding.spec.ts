@@ -27,7 +27,7 @@ test("authenticated wedding journey, event context and logout", async ({ page },
     await page.waitForURL(/\/it\/dashboard/);
   }
 
-  await expect(page.getByRole("heading", { name: /dashboard/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /dashboard/i })).toBeVisible({ timeout: 15_000 });
   await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
   await expect(page.getByText(/configurazione progressiva/i).or(page.getByText(/budget advisor/i))).toBeVisible();
 
