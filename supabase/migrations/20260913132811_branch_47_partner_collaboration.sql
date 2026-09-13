@@ -224,6 +224,8 @@ $$;
 revoke all on function public.accept_event_invitation(text, uuid) from public, anon, authenticated;
 grant execute on function public.accept_event_invitation(text, uuid) to service_role;
 
+revoke all on public.event_members from anon;
+revoke all on public.event_invitations from anon;
 grant select, insert, update, delete on public.event_members to authenticated, service_role;
 grant select, insert on public.event_invitations to authenticated;
 grant select, insert, update, delete on public.event_invitations to service_role;
