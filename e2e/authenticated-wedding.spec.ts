@@ -3,9 +3,13 @@ import { expect, test } from "@playwright/test";
 const email = process.env.PLAYWRIGHT_TEST_EMAIL;
 const password = process.env.PLAYWRIGHT_TEST_PASSWORD;
 
+if (process.env.CI && (!email || !password)) {
+  throw new Error("Authenticated QA requires PLAYWRIGHT_TEST_EMAIL and PLAYWRIGHT_TEST_PASSWORD in CI.");
+}
+
 test("authenticated wedding journey, event context and logout", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "it-390", "One authenticated browser is sufficient; the full width matrix runs in language-rollout.spec.ts.");
-  test.skip(!email || !password, "PLAYWRIGHT_TEST_EMAIL and PLAYWRIGHT_TEST_PASSWORD are required for authenticated QA.");
+  test.skip(!email || !password, "Set PLAYWRIGHT_TEST_EMAIL and PLAYWRIGHT_TEST_PASSWORD for local authenticated QA.");
 
   await page.goto("/it/auth");
   await page.getByLabel("Email").fill(email!);
