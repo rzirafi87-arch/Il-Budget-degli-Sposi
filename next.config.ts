@@ -36,6 +36,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/:locale(it|en|es|fr|de)/spese",
+        destination: "/:locale/contabilita",
+        permanent: true,
+      },
+      {
         source: "/spese",
         destination: "/contabilita",
         permanent: true,

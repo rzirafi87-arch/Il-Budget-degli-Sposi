@@ -111,7 +111,7 @@ export default function Footer() {
           <div>
             <h4 className="font-serif text-lg sm:text-xl font-bold mb-3 sm:mb-4">{t("toolsTitle", { default: "Strumenti" })}</h4>
             <ul className="space-y-2 text-sm text-white/90">
-              <li><Link href={`/${locale}/spese`} className="hover:text-white transition-colors">{t("expenses", { default: "Gestione Spese" })}</Link></li>
+              <li><Link href={`/${locale}/contabilita`} className="hover:text-white transition-colors">{t("expenses", { default: "Gestione Spese" })}</Link></li>
               <li><Link href={`/${locale}/entrate`} className="hover:text-white transition-colors">{t("incomes", { default: "Entrate e Regali" })}</Link></li>
               <li><Link href={`/${locale}/invitati`} className="hover:text-white transition-colors">{t("guestsList", { default: "Lista Invitati" })}</Link></li>
             </ul>

@@ -791,6 +791,97 @@ export type Database = {
           },
         ]
       }
+      event_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          event_id: string
+          expires_at: string
+          id: string
+          invited_by: string
+          invited_email_normalized: string
+          revoked_at: string | null
+          role: string
+          status: string
+          token_hash: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          event_id: string
+          expires_at: string
+          id?: string
+          invited_by: string
+          invited_email_normalized: string
+          revoked_at?: string | null
+          role?: string
+          status?: string
+          token_hash: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          event_id?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          invited_email_normalized?: string
+          revoked_at?: string | null
+          role?: string
+          status?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_invitations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_members: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          event_id: string
+          id: string
+          role: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          role: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          role?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_members_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_timeline_translations: {
         Row: {
           description: string | null
@@ -3309,6 +3400,10 @@ export type Database = {
       }
     }
     Functions: {
+      accept_event_invitation: {
+        Args: { p_token: string; p_user_id: string }
+        Returns: string
+      }
       can_access_event: { Args: { p_event_id: string }; Returns: boolean }
       check_table_availability: {
         Args: { p_table_id: string }
@@ -3391,6 +3486,7 @@ export type Database = {
         Returns: undefined
       }
       is_catalog_admin: { Args: never; Returns: boolean }
+      is_event_owner: { Args: { p_event_id: string }; Returns: boolean }
       is_subscription_active: {
         Args: { p_expires_at: string; p_subscription_tier: string }
         Returns: boolean

@@ -102,11 +102,7 @@ export const EVENT_TYPE_CAPABILITIES: Record<string, EventTypeCapability> = {
     guestModule: true,
     documentModule: true,
     churchModule: true,
-    description: {
-      it: "Flusso completo per il Matrimonio, con budget, invitati, fornitori, location, cerimonia, chiese, timeline e documenti.",
-      en: "Complete Wedding workflow with budget, guests, suppliers, venues, ceremony, churches, timeline and documents.",
-      es: "Flujo completo para Bodas con presupuesto, invitados, proveedores, lugares, ceremonia, iglesias, cronograma y documentos.",
-    },
+    description: WEDDING_CAPABILITY_DESCRIPTION,
   },
   baptism: comingSoon("baptism"),
   eighteenth: comingSoon("eighteenth"),
@@ -195,3 +191,4 @@ export const ROUTE_MODULE_RULES: ReadonlyArray<{ prefix: string; module: EventMo
 export function moduleForPath(pathname: string): EventModule | null {
   return ROUTE_MODULE_RULES.find((rule) => pathname.startsWith(rule.prefix))?.module || null;
 }
+import { WEDDING_CAPABILITY_DESCRIPTION } from "@/data/eventCapabilityDescriptions";

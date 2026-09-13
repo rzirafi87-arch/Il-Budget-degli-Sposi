@@ -17,6 +17,7 @@ export type OwnedEventSummary = {
   locale: string | null;
   country: string | null;
   capability: EventTypeCapability;
+  accessRole: "owner" | "partner" | "legacy";
 };
 
 export type CurrentEventContext = OwnedEventSummary & {
@@ -41,7 +42,7 @@ type EventRow = {
   event_date: string | null;
 };
 
-function summarize(row: EventRow): OwnedEventSummary {
+function summarize(row: EventRow, accessRole: OwnedEventSummary["accessRole"]): OwnedEventSummary {
   const eventType = normalizeEventType(row.event_type);
   return {
     id: row.id,
@@ -52,6 +53,7 @@ function summarize(row: EventRow): OwnedEventSummary {
     locale: row.language,
     country: row.country,
     capability: getEventTypeCapability(eventType),
+    accessRole,
   };
 }
 
@@ -71,9 +73,32 @@ async function authenticatedEmail(userId: string): Promise<string | null> {
 export async function listOwnedEvents(userId: string): Promise<OwnedEventSummary[]> {
   const db = getServiceClient();
   const email = await authenticatedEmail(userId);
+  const eventColumns = "id,owner_id,name,event_type,language,country,inserted_at,event_date";
+
+  // Membership is authoritative. Fetch all rows (including revoked/left) so a
+  // canonical revocation cannot be bypassed through the temporary email fallback.
+  const { data: memberships, error: membershipError } = await db
+    .from("event_members")
+    .select(`event_id,role,status,event:events(${eventColumns})`)
+    .eq("user_id", userId);
+  if (membershipError) throw membershipError;
+
+  const memberRows = (memberships || []) as unknown as Array<{
+    event_id: string;
+    role: "owner" | "partner";
+    status: "active" | "revoked" | "left";
+    event: EventRow | EventRow[] | null;
+  }>;
+  const canonicalEventIds = new Set(memberRows.map((membership) => membership.event_id));
+  const canonical = memberRows.flatMap((membership) => {
+    if (membership.status !== "active") return [];
+    const event = Array.isArray(membership.event) ? membership.event[0] : membership.event;
+    return event ? [summarize(event, membership.role)] : [];
+  });
+
   let query = db
     .from("events")
-    .select("id,owner_id,name,event_type,language,country,inserted_at,event_date");
+    .select(eventColumns);
 
   // Registration stores the two spouses in bride_email/groom_email. Treat those
   // addresses as access to the same couple project instead of creating a second,
@@ -86,7 +111,13 @@ export async function listOwnedEvents(userId: string): Promise<OwnedEventSummary
     .order("inserted_at", { ascending: true })
     .order("id", { ascending: true });
   if (error) throw error;
-  return ((data || []) as EventRow[]).map(summarize);
+  const legacy = ((data || []) as EventRow[])
+    .filter((event) => !canonicalEventIds.has(event.id))
+    .map((event) => summarize(event, "legacy"));
+  return [...canonical, ...legacy].sort((a, b) => {
+    const dateOrder = (a.date || "").localeCompare(b.date || "");
+    return dateOrder || a.id.localeCompare(b.id);
+  });
 }
 
 export async function resolveCurrentEvent(

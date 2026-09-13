@@ -66,7 +66,7 @@
       "empty": "No items in the list"
     },
     "currentEvent": {
-      "label": "Current event", "choose": "Choose an event", "none": "No event", "change": "Change event", "soon": "Coming Soon"
+      "label": "Current event", "choose": "Choose an event", "none": "No event", "change": "Change event", "soon": "Coming Soon", "confirmTitle": "Change event?", "confirmDescription": "You are about to switch to {event}. Every page will use this event’s data.", "cancel": "Cancel", "confirm": "Change event", "switching": "Switching…"
     },
     "errorPage": {
       "title": "Something went wrong", "description": "This page could not be loaded. Please try again shortly.", "retry": "Try again"

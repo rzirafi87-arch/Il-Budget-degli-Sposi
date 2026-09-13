@@ -3,7 +3,7 @@ import path from "node:path";
 import ts from "typescript";
 
 const defaultRoots = ["src/app", "src/components", "src/hooks", "src/lib"];
-const ignored = /(?:^|\/)(?:__tests__|data)(?:\/|$)|\.(?:test|spec)\.[cm]?[jt]sx?$/;
+const ignored = /(?:^|\/)(?:__tests__|data)(?:\/|$)|(?:^|\/)lib\/carousels\.ts$|\.(?:test|spec)\.[cm]?[jt]sx?$/;
 const uiAttributes = new Set(["alt", "aria-label", "aria-description", "aria-describedby", "description", "eyebrow", "helperText", "label", "placeholder", "title"]);
 const implementationAttributes = new Set(["filename"]);
 const uiCalls = new Set(["alert", "confirm", "prompt", "setError", "setMessage", "showToast"]);

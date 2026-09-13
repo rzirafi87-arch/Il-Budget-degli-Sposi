@@ -44,7 +44,7 @@ function placeholders(value: unknown): string[] {
 
 function suspiciousItalianResidual(locale: string, key: string, value: unknown, italianValue: unknown) {
   if (locale === "it" || typeof value !== "string" || typeof italianValue !== "string" || value !== italianValue) return false;
-  const invariant = new Set(["Budget", "Dashboard", "Timeline", "Location", "Save the Date", "Wedding Planner", "Wedding Bag", "OpenStreetMap", "Wikidata", "SIAE", "DJ", "QR Code", "Email", "URL", "Instagram", "Facebook"]);
+  const invariant = new Set(["Budget", "Budget Advisor", "Honeymoon Advisor", "Dashboard", "Timeline", "Location", "Save the Date", "Wedding Planner", "Wedding Bag", "OpenStreetMap", "Wikidata", "SIAE", "DJ", "QR Code", "Email", "URL", "Instagram", "Facebook"]);
   const invariantKeys = new Set([
     "catalogSearch.distance",
     "events.gender-reveal",

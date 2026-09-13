@@ -80,9 +80,11 @@
     "fallbackItem": "Posten",
     "emptyTitle": "Das Budget ist noch leer",
     "emptyAction": "Ersten Budgetplan erstellen",
+    "registerExpense": "Ausgabe erfassen",
     "export": { "button": "PDF exportieren", "fromDashboard": "Vom Dashboard" }
   },
   "expensesPage": {
+    "form": { "customItem": "+ Eigener Posten", "paymentStatus": "Zahlungsstatus" },
     "quotesCount": "{count, plural, one {# Angebot} other {# Angebote}}",
     "messages": {
       "saveError": "Fehler: {error}",

@@ -12,6 +12,8 @@ type Expense = {
   supplier: string;
   description: string;
   amount: number;
+  committed?: number;
+  paid?: number;
   spendType: "common" | "bride" | "groom";
   status: "pending" | "approved" | "rejected";
   date: string;
@@ -93,6 +95,8 @@ export async function GET(req: NextRequest) {
       supplier: e.supplier || "",
       description: e.description || "",
       amount: Number(e.paid_amount || e.committed_amount || 0),
+      committed: Number(e.committed_amount || 0),
+      paid: Number(e.paid_amount || 0),
       spendType: e.spend_type || "common",
       status: e.status || "pending",
       date: e.expense_date || new Date().toISOString().split("T")[0],

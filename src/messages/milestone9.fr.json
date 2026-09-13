@@ -66,7 +66,7 @@
       "empty": "Aucun élément"
     },
     "currentEvent": {
-      "label": "Événement actuel", "choose": "Choisir un événement", "none": "Aucun événement", "change": "Changer d’événement", "soon": "Prochainement"
+      "label": "Événement actuel", "choose": "Choisir un événement", "none": "Aucun événement", "change": "Changer d’événement", "soon": "Prochainement", "confirmTitle": "Changer d’événement ?", "confirmDescription": "Vous allez passer à {event}. Toutes les pages utiliseront les données de cet événement.", "cancel": "Annuler", "confirm": "Changer d’événement", "switching": "Changement…"
     },
     "errorPage": {
       "title": "Une erreur est survenue", "description": "Cette page n’a pas pu être chargée. Réessayez dans un instant.", "retry": "Réessayer"

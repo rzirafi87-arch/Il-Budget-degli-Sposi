@@ -17,6 +17,10 @@ test("localized mobile and accessibility smoke", async ({ page }, testInfo) => {
     if (message.type() === "error") consoleErrors.push(message.text());
   });
 
+  if (process.env.PLAYWRIGHT_BASE_URL?.includes("_vercel_share=")) {
+    await page.goto(process.env.PLAYWRIGHT_BASE_URL, { waitUntil: "domcontentloaded" });
+  }
+
   await page.goto(`/${locale}/responsive-showcase`, { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveAttribute("lang", locale);
   await expect(page.locator("body")).toContainText(expectedCopy[locale]);

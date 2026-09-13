@@ -3,6 +3,8 @@
 import BudgetFocusHint, { BudgetFocus } from "@/components/dashboard/BudgetFocusHint";
 import BudgetItemsSection from "@/components/dashboard/BudgetItemsSection";
 import BudgetSummary from "@/components/dashboard/BudgetSummary";
+import BudgetAdvisor from "@/components/dashboard/BudgetAdvisor";
+import ProgressiveSetup from "@/components/dashboard/ProgressiveSetup";
 import ChecklistSection from "@/components/dashboard/ChecklistSection";
 import LocalizedWeddingSection, { LocalizedWeddingData } from "@/components/dashboard/LocalizedWeddingSection";
 import TraditionsSection from "@/components/dashboard/TraditionsSection";
@@ -299,6 +301,8 @@ export default function DashboardPage() {
         icon={<LayoutDashboard size={24} aria-hidden />}
       />
 
+      <ProgressiveSetup />
+
       <PageInfoNote
         icon="📊"
         title={t("info.title")}
@@ -322,6 +326,8 @@ export default function DashboardPage() {
         setGroomBudget={setGroomBudget}
         setWeddingDate={setWeddingDate}
       />
+
+      <BudgetAdvisor totalBudget={totalBudget} country={countryState} />
 
       {isWedding && <section className="mb-8 grid gap-4 md:grid-cols-2" aria-label={t("planning.label")}>
         <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Church size={21} aria-hidden /></span><div className="flex-1"><p className="app-eyebrow">{t("planning.ceremony")}</p><h2 className="text-lg">{planningSelections.church?.churches?.name || t("planning.churchEmpty")}</h2><AppButtonLink href={`/${locale}/chiese`} variant="secondary" className="mt-3">{t("planning.openChurches")}</AppButtonLink></div></div></AppCard>

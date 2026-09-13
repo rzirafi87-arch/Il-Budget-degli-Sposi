@@ -23,6 +23,7 @@ export default function CurrentEventSelector() {
   const id = useId();
   const [payload, setPayload] = useState<Payload | null>(null);
   const [switching, setSwitching] = useState(false);
+  const [pendingEventId, setPendingEventId] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -55,6 +56,31 @@ export default function CurrentEventSelector() {
   }
 
   const value = payload.currentEvent?.eventId || "";
+  const pendingEvent = payload.events.find((item) => item.id === pendingEventId);
+
+  async function confirmSwitch() {
+    if (!pendingEventId || pendingEventId === value) return;
+    setSwitching(true);
+    try {
+      const { data } = await getBrowserClient().auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) return;
+      const response = await fetch("/api/my/current-event", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ eventId: pendingEventId }),
+      });
+      if (!response.ok) return;
+      const next = (await response.json()) as Payload;
+      const eventType = next.currentEvent?.eventType;
+      if (eventType) localStorage.setItem("eventType", eventType);
+      localStorage.setItem("currentEventChangedAt", String(Date.now()));
+      window.location.reload();
+    } finally {
+      setSwitching(false);
+      setPendingEventId(null);
+    }
+  }
   return (
     <div className="min-w-0 max-w-48">
       <label className="sr-only" htmlFor={id}>{t("label")}</label>
@@ -64,28 +90,10 @@ export default function CurrentEventSelector() {
         className="min-h-10 w-full rounded-xl border border-border bg-card px-3 text-sm font-semibold text-fg shadow-soft-sm focus-ring-sage disabled:cursor-wait disabled:opacity-60"
         value={value}
         disabled={switching}
-        onChange={async (event) => {
+        onChange={(event) => {
           const eventId = event.target.value;
           if (!eventId || eventId === value) return;
-          setSwitching(true);
-          try {
-            const { data } = await getBrowserClient().auth.getSession();
-            const jwt = data.session?.access_token;
-            if (!jwt) return;
-            const response = await fetch("/api/my/current-event", {
-              method: "POST",
-              headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
-              body: JSON.stringify({ eventId }),
-            });
-            if (!response.ok) return;
-            const next = (await response.json()) as Payload;
-            const eventType = next.currentEvent?.eventType;
-            if (eventType) localStorage.setItem("eventType", eventType);
-            localStorage.setItem("currentEventChangedAt", String(Date.now()));
-            window.location.reload();
-          } finally {
-            setSwitching(false);
-          }
+          setPendingEventId(eventId);
         }}
       >
         <option value="" disabled>{t("choose")}</option>
@@ -95,6 +103,18 @@ export default function CurrentEventSelector() {
           </option>
         ))}
       </select>
+      {pendingEvent && (
+        <div className="fixed inset-0 z-[80] grid place-items-center bg-black/45 p-4" role="presentation">
+          <section className="w-full max-w-md rounded-2xl border border-border bg-bg p-5 text-fg shadow-2xl" role="dialog" aria-modal="true" aria-labelledby={`${id}-switch-title`}>
+            <h2 id={`${id}-switch-title`} className="text-lg font-semibold">{t("confirmTitle")}</h2>
+            <p className="mt-2 text-sm text-muted-fg">{t("confirmDescription", { event: pendingEvent.name || pendingEvent.eventType })}</p>
+            <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button type="button" className="app-button app-button-ghost" disabled={switching} onClick={() => setPendingEventId(null)}>{t("cancel")}</button>
+              <button type="button" className="app-button app-button-primary" disabled={switching} onClick={confirmSwitch}>{switching ? t("switching") : t("confirm")}</button>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }
