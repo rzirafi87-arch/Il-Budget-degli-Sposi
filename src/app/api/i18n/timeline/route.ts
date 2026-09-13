@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
+import { defaultLocale, locales, type Locale } from "@/i18n/config";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const event = searchParams.get("event");
-  const locale = searchParams.get("locale") || "it";
+  const requestedLocale = searchParams.get("locale");
+  const locale = locales.includes(requestedLocale as Locale) ? requestedLocale as Locale : defaultLocale;
+  const t = await getTranslations({ locale, namespace: "milestone7.timeline.demo" });
 
   // Demo: restituisce timeline statica per BABY_SHOWER e PROPOSAL
   if (!event || !["BABY_SHOWER", "PROPOSAL"].includes(event)) {
@@ -14,18 +18,18 @@ export async function GET(req: NextRequest) {
 
   const demo = {
     BABY_SHOWER: [
-      { code: "PLAN_6W", title: locale === "en" ? "6–8 weeks before" : "6–8 settimane prima", description: locale === "en" ? "Pick date, guest list, budget, theme." : "Scegli data, guest list, budget e tema.", sort: 10 },
-      { code: "BOOK_4W", title: locale === "en" ? "4–6 weeks before" : "4–6 settimane prima", description: locale === "en" ? "Book venue/home setup, catering, photographer." : "Prenota location/casa, catering e fotografo.", sort: 20 },
-      { code: "INVITES_3W", title: locale === "en" ? "3–4 weeks before" : "3–4 settimane prima", description: locale === "en" ? "Send invites, open RSVPs." : "Invia inviti, apri RSVP.", sort: 30 },
-      { code: "DECOR_2W", title: locale === "en" ? "2 weeks before" : "2 settimane prima", description: locale === "en" ? "Order decor, balloons, cake." : "Ordina decor, palloncini, torta.", sort: 40 },
-      { code: "FINAL_WEEK", title: locale === "en" ? "Event week" : "Settimana dell’evento", description: locale === "en" ? "Final confirms, setup, games." : "Conferme finali, allestimenti, giochi.", sort: 50 },
-      { code: "DAY_OF", title: locale === "en" ? "Day of" : "Giorno evento", description: locale === "en" ? "Setup, welcome, photos, thank-you." : "Allestisci, accoglienza, foto e ringraziamenti.", sort: 60 },
+      { code: "PLAN_6W", title: t("baby.plan.title"), description: t("baby.plan.description"), sort: 10 },
+      { code: "BOOK_4W", title: t("baby.book.title"), description: t("baby.book.description"), sort: 20 },
+      { code: "INVITES_3W", title: t("baby.invites.title"), description: t("baby.invites.description"), sort: 30 },
+      { code: "DECOR_2W", title: t("baby.decor.title"), description: t("baby.decor.description"), sort: 40 },
+      { code: "FINAL_WEEK", title: t("baby.final.title"), description: t("baby.final.description"), sort: 50 },
+      { code: "DAY_OF", title: t("baby.day.title"), description: t("baby.day.description"), sort: 60 },
     ],
     PROPOSAL: [
-      { code: "PLAN", title: locale === "en" ? "Plan" : "Pianifica", description: locale === "en" ? "Define budget, style and timing." : "Definisci budget, stile e timing.", sort: 10 },
-      { code: "BOOK", title: locale === "en" ? "Book" : "Prenota", description: locale === "en" ? "Venue, photographer, music." : "Location, fotografo, musica.", sort: 20 },
-      { code: "PREP", title: locale === "en" ? "Prepare" : "Prepara", description: locale === "en" ? "Setup, script, cover story." : "Allestimento, copione, cover-story.", sort: 30 },
-      { code: "DAY", title: locale === "en" ? "Day of" : "Il giorno", description: locale === "en" ? "Coordination and surprise." : "Coordinamento e sorpresa.", sort: 40 },
+      { code: "PLAN", title: t("proposal.plan.title"), description: t("proposal.plan.description"), sort: 10 },
+      { code: "BOOK", title: t("proposal.book.title"), description: t("proposal.book.description"), sort: 20 },
+      { code: "PREP", title: t("proposal.prepare.title"), description: t("proposal.prepare.description"), sort: 30 },
+      { code: "DAY", title: t("proposal.day.title"), description: t("proposal.day.description"), sort: 40 },
     ],
   };
 

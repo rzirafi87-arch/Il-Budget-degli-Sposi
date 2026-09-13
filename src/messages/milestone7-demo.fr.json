@@ -1,0 +1,52 @@
+{
+  "milestone7": {
+    "timeline": {
+      "demo": {
+        "baby": {
+          "plan": {
+            "title": "6 à 8 semaines avant",
+            "description": "Choisissez la date, les invités, le budget et le thème."
+          },
+          "book": {
+            "title": "4 à 6 semaines avant",
+            "description": "Réservez le lieu, le traiteur et le photographe."
+          },
+          "invites": {
+            "title": "3 à 4 semaines avant",
+            "description": "Envoyez les invitations et ouvrez les réponses."
+          },
+          "decor": {
+            "title": "2 semaines avant",
+            "description": "Commandez décorations, ballons et gâteau."
+          },
+          "final": {
+            "title": "Semaine de l’événement",
+            "description": "Confirmations finales, installation et jeux."
+          },
+          "day": {
+            "title": "Jour de l’événement",
+            "description": "Installation, accueil, photos et remerciements."
+          }
+        },
+        "proposal": {
+          "plan": {
+            "title": "Planifier",
+            "description": "Définissez le budget, le style et le calendrier."
+          },
+          "book": {
+            "title": "Réserver",
+            "description": "Lieu, photographe et musique."
+          },
+          "prepare": {
+            "title": "Préparer",
+            "description": "Installation, discours et prétexte."
+          },
+          "day": {
+            "title": "Le jour J",
+            "description": "Coordination et surprise."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Wedding Gift List",
+      "income": "Go to Income",
+      "dashboard": "Back to Dashboard",
+      "weddingOnly": "The Wedding Gift List is available only for Wedding events. Select “Wedding” to enable it.",
+      "added": "Added to the list!",
+      "errors": {
+        "generic": "Error",
+        "network": "Network error"
+      },
+      "info": {
+        "title": "Create your modern wedding gift list",
+        "description": "Create a list with honeymoon contributions, experiences, a cash fund or traditional gifts.",
+        "tips": {
+          "honeymoon": "Let guests contribute to your honeymoon",
+          "cash": "A cash fund offers maximum flexibility",
+          "links": "Add links to show exactly what to buy",
+          "purchased": "Mark received gifts to avoid duplicates",
+          "priority": "Priorities show what you want most"
+        },
+        "events": {
+          "wedding": "Include honeymoon travel, experiences, furniture and technology.",
+          "baptism": "Include savings, books, toys and contributions for the future.",
+          "birthday": "Personalize the list according to age and interests.",
+          "graduation": "Consider education, travel, professional equipment and experiences."
+        }
+      },
+      "addGift": "Add gift",
+      "fields": {
+        "type": "Type",
+        "name": "Name",
+        "namePlaceholder": "E.g. robot vacuum",
+        "price": "Estimated price (€)",
+        "description": "Description",
+        "priority": "Priority",
+        "status": "Status",
+        "notes": "Notes",
+        "notesPlaceholder": "Optional notes"
+      },
+      "types": {
+        "honeymoon": "Honeymoon contribution",
+        "cash": "Cash fund",
+        "experiences": "Experiences (dinners, spa, tours)",
+        "furniture": "Furniture",
+        "appliances": "Appliances",
+        "luxury": "Luxury goods",
+        "charity": "Charity",
+        "vouchers": "Gift cards",
+        "smartHome": "Connected-home technology",
+        "other": "Other"
+      },
+      "priorities": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "statuses": {
+        "wanted": "Wanted",
+        "purchased": "Purchased"
+      },
+      "saving": "Saving…",
+      "add": "+ Add",
+      "loading": "Loading…",
+      "empty": "No items in the list"
+    },
+    "currentEvent": {
+      "label": "Current event", "choose": "Choose an event", "none": "No event", "change": "Change event", "soon": "Coming Soon"
+    },
+    "errorPage": {
+      "title": "Something went wrong", "description": "This page could not be loaded. Please try again shortly.", "retry": "Try again"
+    },
+    "onboarding": {"welcome": "Welcome!", "description": "Set your language, country and event type to personalize your experience.", "configure": "Set language, country and event"},
+    "setup": {"title": "Welcome! Set up your event", "language": "Language", "country": "Country", "event": "Event", "confirm": "Confirm", "comingSoon": "Coming soon", "selectEvent": "Select your event", "checkingConfiguration": "Checking event configuration"},
+    "availability": {"badge":"Coming soon","title":"Event type not available yet","description":"The dedicated {event} flow is not available yet.","legacyTitle":"Previous event preserved","legacyBody":"This event’s data has been preserved. Until its dedicated workflow is complete, the app limits modules that do not apply.","noDataLoss":"No event data is deleted or automatically converted."},
+    "consent": {"label": "Cookie preferences", "description": "We use necessary technical cookies. Optional analytics start only after consent, and you can change your choice at any time.", "accept": "Accept analytics", "necessary": "Necessary only", "close": "Close"},
+    "breadcrumbs": {"home":"Home","dashboard":"Dashboard","timeline":"Timeline","budget":"Budget","guests":"Guests","tables":"Tables","expenses":"Expenses","income":"Income","vendors":"Vendors","reception":"Reception","receptionVenue":"Reception venue","ceremony":"Ceremony","ceremonyVenue":"Ceremony venue","favorites":"Favorites","documents":"Documents","giftList":"Gift list","weddingPlanner":"Event planner","ceremonyMusic":"Ceremony music","receptionMusic":"Reception music","weddingIdeas":"Wedding ideas","saveTheDate":"Save the Date","signIn":"Sign in","contacts":"Contacts","ariaLabel":"Breadcrumb"},
+    "chat": {"signIn":"Sign in to use the AI assistant.","requestError":"An error occurred while processing the request.","connectionError":"Connection unavailable.","checking":"Checking assistant availability…","unavailable":"AI assistant unavailable","configurationRequired":"The assistant is not configured in this environment.","title":"Chat with your AI assistant","empty":"Start the conversation…","placeholder":"Write a message…","sending":"Sending…","send":"Send"},
+    "aiChat": {"invalidAmount":"Enter a valid amount","saveError":"Save error ({status})","saved":"Budget saved","unexpectedError":"Unexpected error","title":"Chat with AI Assistant","enterBudget":"Enter budget","setBudget":"Set total budget","budgetPlaceholder":"E.g. 25000","cancel":"Cancel","saving":"Saving…","save":"Save"},
+    "accounting": {"description":"Manage all your wedding transactions in one place: expenses paid and income received. Track quotes, confirmed payments and contributions."},
+    "supplierPackages": {
+      "paymentSuccess": "Payment completed successfully! Your subscription is now active.",
+      "paymentCancelled": "Payment cancelled. You can try again whenever you like.",
+      "popular": "POPULAR", "bestValue": "BEST VALUE",
+      "paymentsDisabled": "Online payments are temporarily disabled. Try again later or contact us to purchase the plan.",
+      "freeAvailable": "The free plan is always available!", "loginRequired": "You must sign in to purchase a subscription.",
+      "profileRequired": "You must create a supplier profile first. Go to Suppliers and submit your business.", "purchaseError": "The purchase could not be started. Please try again.",
+      "monthly": "Monthly", "yearly": "Yearly", "loading": "Loading…", "comingSoon": "Coming soon", "processing": "Processing…", "purchase": "Purchase",
+      "maintenance": "Stripe payments are temporarily under maintenance. Plans remain visible but cannot be purchased.", "learnMore": "Learn how it works"
+    },
+    "runtime": {
+      "contacts": {
+        "sendFailed": "Could not send message", "title": "Contact us", "sendMessage": "Send us a message", "sentTitle": "Message sent!", "sentDescription": "We will get back to you as soon as possible.", "fullName": "Full name", "message": "Message", "messagePlaceholder": "Write your message here...", "sending": "Sending...", "submit": "Send message", "whatsappDescription": "Chat with us directly on WhatsApp for immediate assistance!", "openChat": "Open chat", "support": "Support", "supportHours": "Support hours", "weekdays": "Mon - Fri", "saturday": "Saturday", "sunday": "Sunday", "closed": "Closed", "followSocial": "Follow us on social media"
+      },
+      "publicEvent": {
+        "loadFailed": "Could not load event", "title": "Public event", "loading": "Loading...", "eventFallback": "Event", "visibility": "Visibility", "public": "Public", "private": "Private", "createdAt": "Created on", "eventTypeId": "Event type ID"
+      },
+      "structuredData": {
+        "description": "Web app for organizing your wedding budget, guests, tasks, suppliers and documents.",
+        "features": {"budget": "Wedding budget management", "guests": "Guest management", "timeline": "Event timeline", "documents": "Document management"}
+      },
+      "eventTypes": {
+        "wedding": {"name": "Wedding", "description": "Wedding celebration"}, "birthday": {"name": "Birthday", "description": "Birthday party"}, "baptism": {"name": "Baptism", "description": "Baptism ceremony"}, "communion": {"name": "First Communion", "description": "First Communion ceremony"}, "confirmation": {"name": "Confirmation", "description": "Confirmation ceremony"}, "engagementParty": {"name": "Engagement", "description": "Engagement party"}, "anniversary": {"name": "Anniversary", "description": "Wedding anniversary"}, "babyShower": {"name": "Baby Shower", "description": "Baby shower party"}, "genderReveal": {"name": "Gender Reveal", "description": "Gender reveal party"}, "fifty": {"name": "50th birthday", "description": "50th birthday celebration"}
+      },
+      "confirmationNav": {"overview": "Overview", "timeline": "Timeline", "budgetIdea": "Budget idea", "guests": "Guests", "budget": "Budget"},
+      "confirmation": {
+        "title": "Confirmation",
+        "overview": {"title": "Overview", "description": "Start planning your Confirmation: set the budget, guest list and main activities."},
+        "event": {"title": "Event overview", "description": "Keep key information in one place: date, venue, event style and notes.", "items": {"date": "Celebration date and time", "venues": "Church and reception venue", "style": "Style, theme and color palette"}},
+        "budget": {"title": "Budget idea", "description": "Set an estimated budget and allocate it among the main categories.", "items": {"venue": "Venue and catering", "clothing": "Clothing and accessories", "photography": "Photography and entertainment", "favors": "Favors and decorations"}},
+        "guests": {"title": "Guests", "description": "Prepare the guest list and track RSVPs, tables and preferences.", "items": {"people": "Family, sponsor and friends", "rsvp": "Attendance confirmations (RSVPs)", "needs": "Allergies or special needs"}},
+        "tasks": {"title": "To-do list", "description": "A quick reminder of upcoming actions to keep everything under control.", "items": {"venues": "Book the church and venue", "menu": "Choose the menu and cake", "photography": "Choose photography and music", "invitations": "Prepare invitations and favors"}}
+      },
+      "suggestions": {
+        "mexico": {"mariachi": "Remember to book the mariachi band!", "venue": "Check venue availability at least 6 months in advance.", "photoBooth": "Consider a themed photo booth for the party.", "documents": "Check the legal documents required in Mexico."},
+        "general": {"photographer": "Book the photographer well in advance.", "guestList": "Review the guest list and update their preferences.", "traditions": "Explore local traditions to enrich the ceremony."},
+        "chatWithAi": "Chat with AI", "introduction": "Here you will find personalized advice based on your choices, budget and any documents or photos you upload.", "uploadTitle": "Upload a photo", "uploadDescription": "Upload an image here—such as a dress, palette or venue—to receive specific advice.", "selectFile": "Select file..."
+      },
+      "honeymoonTips": {"backDashboard": "Back to Dashboard", "title": "Honeymoon", "description": "Tips to plan your honeymoon better: destinations, budget, best time to travel and document checklist.", "tips": {"budget": "Set the budget and trip duration", "destinations": "Choose 2 or 3 destinations and compare the seasonal weather", "documents": "Check documents: passports, visas and insurance", "activities": "Plan 1 or 2 special activities and one day to relax"}},
+      "incomes": {"saveFailed": "Could not save"},
+      "retirement": {
+        "title": "Retirement", "loading": "Loading...", "eventType": "Event type: Retirement", "eventLabel": "Event", "createEvent": "Create retirement event", "creating": "Creating...", "demoNotice": "Demo mode: data will not be saved permanently.", "emptyEvent": "Create an event to manage the retirement party budget.", "budgetItems": "Budget items", "noItems": "No items", "total": "Total: € {total}", "addExpense": "Add expense", "saving": "Saving...", "confirmDelete": "Do you want to delete this expense?", "supplierLabel": "Supplier: {supplier}", "notesLabel": "Notes: {notes}",
+        "defaults": {"generic": "General", "other": "Other"},
+        "fields": {"category": "Category", "subcategory": "Subcategory", "supplier": "Supplier", "amount": "Amount", "notes": "Notes"},
+        "spendTypes": {"common": "Shared", "bride": "Bride", "groom": "Groom", "retirement": "Retirement"},
+        "actions": {"save": "Save", "cancel": "Cancel", "edit": "Edit", "delete": "Delete"},
+        "errors": {"createEvent": "Could not create event", "addExpense": "Could not add expense", "updateExpense": "Could not update expense", "deleteExpense": "Could not delete expense", "unexpected": "An unexpected error occurred"}
+      },
+      "weddingEntertainment": {
+        "title": "Music, entertainment and extras", "ceremony": "Ceremony", "reception": "Reception", "chooseFor": "Choose for {destination}", "selectedFor": "Selections for {destination}", "add": "Add", "added": "Added", "empty": "You have not added anything yet.", "notesPlaceholder": "Add notes...", "summary": "Overall summary", "forCeremony": "For the ceremony", "forReception": "For the reception",
+        "categories": {"0": "Live music and performances", "1": "Entertainment and shows", "2": "Guest participation and experiences", "3": "Extras and equipment"},
+        "options": {
+          "mus-1": "DJ", "mus-2": "Live band", "mus-3": "Solo singer", "mus-4": "Acoustic duo", "mus-5": "String quartet", "mus-6": "Pianist", "mus-7": "Harpist", "mus-8": "Soprano/Tenor", "mus-9": "Organist", "mus-10": "Jazz band", "mus-11": "Orchestra",
+          "ani-1": "Children's entertainers", "ani-2": "Magician/Illusionist", "ani-3": "Caricature artist", "ani-4": "Fireworks display", "ani-5": "Professional dancers", "ani-6": "Street performer", "ani-7": "Stilt walkers", "ani-8": "Mime artists",
+          "exp-1": "Photo booth", "exp-2": "Balloon or lantern release", "exp-3": "Traditional dessert table", "exp-4": "Candy Bar", "exp-5": "Cigar corner", "exp-6": "Wine-tasting corner", "exp-7": "Creative guest book", "exp-8": "Custom cocktail station", "exp-9": "Children's play area", "exp-10": "Rice or petals for throwing", "exp-11": "Wedding Bag", "exp-12": "Personalized fans",
+          "tec-1": "Videographer/Drone", "tec-2": "Photographer", "tec-3": "Stage lighting", "tec-4": "Sound system", "tec-5": "Video projection", "tec-6": "LED screen", "tec-7": "Classic car rental", "tec-8": "Smoke machine", "tec-9": "Chocolate fountain"
+        }
+      },
+      "supplierSubscriptions": {
+        "loading": "Loading...", "title": "Supplier subscription plans", "description": "Choose the right plan to increase your visibility and reach thousands of couples looking for wedding services",
+        "billing": {"monthly": "Monthly", "yearly": "Yearly", "savingsBadge": "(Save up to 17%)", "month": "month", "year": "year", "yearlySavings": "€{monthlyPrice}/month • Save {savings}%"},
+        "badges": {"mostChosen": "🌟 MOST CHOSEN", "popular": "💼 POPULAR"}, "actions": {"startFree": "Start free", "startNow": "Start now"},
+        "faq": {"title": "Frequently asked questions", "changePlan": {"question": "Can I change plans at any time?", "answer": "Yes, you can upgrade or downgrade your plan at any time. The change takes effect immediately and the cost is prorated."}, "cancel": {"question": "What happens if I cancel my subscription?", "answer": "Your profile remains active until the end of the paid period, then automatically returns to the Free plan without public visibility."}, "demo": {"question": "How long does demo visibility last?", "answer": "Only suppliers with the Premium Plus plan appear in the demo version of the site, with maximum exposure even to users who are not signed in."}}
+      },
+      "supplierDashboard": {
+        "loading": "Loading...", "title": "Supplier dashboard", "tiers": {"free": "Free", "base": "Basic", "premium": "Premium", "premiumPlus": "Premium Plus plan"},
+        "empty": {"title": "Supplier profile not found", "description": "You have not created a supplier profile yet. Start by introducing your business!", "exploreCategories": "Explore categories"}, "badges": {"verified": "✓ Verified", "featured": "⭐ Featured"},
+        "subscription": {"status": "Subscription status", "active": "✓ Active", "expired": "✗ Expired", "expiration": "Expiration", "daysRemaining": "Days remaining", "days": "{count} days", "notAvailable": "N/A"},
+        "actions": {"buyPlan": "Buy plan", "changePlan": "Change plan", "buyPlanDescription": "Choose a plan to increase your visibility", "changePlanDescription": "Upgrade or renew your subscription", "manageComingSoon": "Coming soon: profile editing, photo uploads and much more.", "manageProfile": "Manage profile", "manageProfileDescription": "Edit details, upload photos and optimize your listing", "publicPage": "Public page", "publicPageDescription": "See how couples view your profile"},
+        "analytics": {"title": "📊 Analytics", "profileViews": "Profile views", "contactClicks": "Contact clicks", "websiteClicks": "Website clicks", "lastView": "Last viewed: {date}"},
+        "visibility": {"title": "📊 Your visibility", "free": "• Profile created but <strong>not visible</strong> in public searches", "category": "✓ Visible on the <strong>{category}</strong> page", "noHub": "✗ Not shown on the main Suppliers page", "hub": "✓ Shown on the main <strong>Suppliers</strong> page", "noDemo": "✗ Not shown in the demo to users who are not signed in", "demo": "⭐ Shown in the <strong>demo</strong> with maximum visibility"},
+        "transactions": {"title": "Subscription history", "empty": "No transactions recorded", "monthly": "Monthly", "yearly": "Yearly", "status": {"completed": "Completed", "pending": "Pending", "failed": "Failed", "refunded": "Refunded"}, "period": "From {start} to {end} • Purchased on {purchased}"}
+      },
+      "vendorExplorer": {
+        "title": "Explore wedding suppliers", "description": "Find the best suppliers for your event from verified sources (Google Places and OpenStreetMap)", "loading": "Loading...",
+        "types": {"location": "Reception venue", "church": "Churches", "planner": "Wedding-planning service", "band": "Band/Music", "dj": "DJ", "photographer": "Photographer", "videographer": "Videographer", "florist": "Florist", "caterer": "Caterer"},
+        "filters": {"type": "Supplier type", "region": "Region", "allRegions": "All regions", "city": "City", "cityPlaceholder": "E.g. Palermo", "minimumRating": "Minimum rating", "any": "Any", "priceRange": "Price range", "verifiedOnly": "Verified only", "reset": "Reset filters"},
+        "priceRanges": {"budget": "€ - Budget", "medium": "€€ - Mid-range", "high": "€€€ - High-end", "luxury": "€€€€ - Luxury"},
+        "results": {"count": "<strong>{total}</strong> suppliers found", "empty": "No suppliers found with the selected filters."}, "pagination": {"previous": "Previous", "page": "Page {current} of {total}", "next": "Next"},
+        "card": {"verified": "✓ Verified", "reviews": "{rating} ({count} reviews)", "phone": "Phone:", "email": "Email:", "visitWebsite": "Visit website →", "source": "Data from"}
+      },
+      "responsiveExamples": {
+        "budget": {"title": "Budget overview", "bride": "Bride's budget", "groom": "Groom's budget", "shared": "Shared budget", "used": "{percentage}% used", "of": "of {amount}"},
+        "actions": {"title": "Quick actions", "addExpense": "Add expense", "addExpenseAlert": "Open the form to add an expense", "addGuest": "Add guest", "addGuestAlert": "Open the form to add a guest", "searchSupplier": "Find supplier", "searchSupplierAlert": "Open supplier search"},
+        "vendors": {"title": "Saved suppliers", "selected": "Selected supplier: {name}", "verified": "Verified", "details": "View details"},
+        "search": {"title": "Find suppliers", "placeholder": "Search by name...", "supplierType": "Supplier type", "location": "Venue", "catering": "Catering", "photographer": "Photographer", "region": "Region", "budget": "Budget", "submit": "Search", "reset": "Reset"}
+      },
+      "responsiveShowcase": {
+        "title": "Responsive system demo", "nav": {"dashboard": "Dashboard", "budget": "Budget", "guests": "Guests", "suppliers": "Suppliers"},
+        "deviceInfo": {"title": "Device information", "type": "Device type", "os": "Operating system", "viewport": "Viewport", "size": "Size", "touch": "Touchscreen", "orientation": "Orientation", "yes": "Yes", "no": "No", "portrait": "Portrait", "landscape": "Landscape"},
+        "grid": {"title": "Responsive grid", "budget": {"title": "Budget", "subtitle": "Manage expenses", "description": "View and update your event budget.", "clicked": "Budget selected", "open": "Open budget"}, "guests": {"title": "Guests", "subtitle": "Manage RSVPs", "description": "Organize your guest list and responses.", "count": "120 guests"}, "timeline": {"title": "Timeline", "subtitle": "Plan tasks", "description": "Keep all important deadlines under control.", "clicked": "Timeline selected", "progress": "8 of 12 tasks completed"}},
+        "stack": {"title": "Budget breakdown", "bride": "Bride", "groom": "Groom", "shared": "Shared", "budgetUsed": "Budget used"}, "buttons": {"title": "Responsive buttons", "save": "Save changes", "cancel": "Cancel"}, "cards": {"title": "Interactive cards", "selected": "You selected {name}"},
+        "optimizations": {"title": "Active optimizations", "ios": {"safeAreas": "✓ Safe areas for notch and home indicator", "tapHighlight": "✓ Optimized tap highlighting", "smoothScrolling": "✓ Smooth scrolling"}, "android": {"ripple": "✓ Touch ripple effects", "shadows": "✓ Optimized shadows", "fontRendering": "✓ Improved font rendering"}, "desktop": {"hover": "✓ Hover states", "keyboard": "✓ Keyboard navigation", "multiColumn": "✓ Multi-column layouts"}, "touchTargets": "✓ Touch targets of at least 44 × 44 px", "adaptiveFont": "✓ Responsive font sizes", "layouts": "✓ Layouts optimized for every screen"}
+      },
+      "graduation": {
+        "title": "Graduation", "intro": "Tools and tips for planning your graduation party: budget, venue, catering, invitations and much more.", "eventSetAlert": "Event set to Graduation. Some advanced sections are coming soon!", "eventType": "Graduation", "comingSoon": "Coming soon", "placeholder": "Feature in preparation", "add": "Add", "remove": "Remove", "yes": "Yes", "no": "No", "total": "Total: {count}", "counts": "{confirmed} confirmed out of {invited} invited", "empty": "No guests yet.", "namePlaceholder": "Full name", "contactPlaceholder": "Phone or email", "notesPlaceholder": "Notes", "copyList": "Copy list", "copySummary": "Copy summary", "downloadCsv": "Download CSV", "exportCsv": "Export CSV", "csvName": "graduation-guests.csv", "csvHeaders": "Name,Contact,Invited,Notes", "summaryInvited": "Invited: {count}", "summaryConfirmed": "Confirmed: {count}",
+        "actions": {"setEvent": "Use Graduation as event", "backToEventChoice": "Back to event selection", "openBudgetIdea": "Open budget idea"},
+        "sections": {
+          "budget": {"title": "Party budget", "description": "Set the total budget and track spending on the venue, catering, cake, photography, music and decorations.", "items": {"estimate": "Initial estimate and contingencies", "quotes": "Quotes and payments", "sharing": "Share with friends and family"}},
+          "venue": {"title": "Venue and catering", "description": "Choose the ideal venue and catering that match your style.", "items": {"menu": "Food and drinks", "spaces": "Spaces and setup", "toast": "Cake and toast"}},
+          "guests": {"title": "Guests and invitations", "description": "Organize the guest list and collect RSVPs.", "items": {"digital": "Digital or printed invitations", "rsvp": "Attendance confirmations", "reminders": "Reminders and special needs"}},
+          "atmosphere": {"title": "Music and atmosphere", "description": "Create the right atmosphere to celebrate this major achievement.", "items": {"music": "DJ, band or playlist", "decorations": "Themed decorations", "photos": "Photography and video"}}
+        },
+        "checklist": {"title": "Planning checklist", "required": "Priority", "tip": "Mark completed tasks to track your progress.", "items": {"budgetDate": "Set the budget and date", "location": "Choose and book the venue", "catering": "Confirm catering and menu", "invitations": "Invitations and RSVPs", "music": "DJ or playlist", "photos": "Photographer or friends for photos and video", "cake": "Graduation cake and toast", "decorations": "Decorations and setup", "gadgets": "Themed accessories", "schedule": "Schedule for the evening"}},
+        "tips": {"title": "Practical tips", "limitedBudget": "On a limited budget, prioritize food, drinks and music.", "confirmCatering": "Confirm the number of attendees with the caterer in advance.", "accessibleVenue": "Choose an accessible, easy-to-reach venue.", "simpleSchedule": "Prepare a simple schedule for the evening.", "themeDetails": "Add small details related to the degree subject."},
+        "columns": {"name": "Name", "contact": "Contact", "invited": "Confirmed", "notes": "Notes", "actions": "Actions"},
+        "quickInvites": {"title": "Quick invitations", "description": "Quickly add guests and track their RSVPs."}, "quickRsvp": {"title": "Quick RSVPs", "description": "See response status at a glance."}
+      }
+    },
+    "shared": {
+      "close": "Close", "cookiePreferences": "Cookie preferences", "closeMenu": "Close menu"
+    }
+  }
+}

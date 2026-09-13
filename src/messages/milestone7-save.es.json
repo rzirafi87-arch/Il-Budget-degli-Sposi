@@ -1,0 +1,66 @@
+{
+  "milestone7": {
+    "saveTheDate": {
+      "authSave": "Inicia sesión para guardar la configuración",
+      "saved": "¡Configuración guardada!",
+      "saveError": "No se pudo guardar la configuración",
+      "authPdf": "Inicia sesión para generar el PDF",
+      "pdfError": "No se pudo generar el PDF",
+      "videoComingSoon": "La generación de vídeo estará disponible próximamente.",
+      "title": "Crea tu Reserva la fecha",
+      "couple": "Datos de la pareja",
+      "brideName": "Nombre de la novia",
+      "bridePlaceholder": "Nombre de la novia",
+      "groomName": "Nombre del novio",
+      "groomPlaceholder": "Nombre del novio",
+      "weddingDate": "Fecha de la boda",
+      "ceremony": "Ceremonia",
+      "ceremonyName": "Nombre del lugar de la ceremonia",
+      "ceremonyPlaceholder": "Lugar de la ceremonia",
+      "ceremonyAddress": "Dirección de la ceremonia",
+      "addressPlaceholder": "Calle y ciudad",
+      "ceremonyTime": "Hora de la ceremonia",
+      "reception": "Lugar / Recepción",
+      "venueName": "Nombre del lugar",
+      "venuePlaceholder": "Nombre del lugar",
+      "venueAddress": "Dirección del lugar",
+      "receptionTime": "Hora de la recepción",
+      "bankDetails": "Datos bancarios (opcionales)",
+      "bank": "Banco",
+      "bankPlaceholder": "Nombre del banco",
+      "customization": "Personalización",
+      "nameFont": "Fuente de los nombres",
+      "colorScheme": "Combinación de colores",
+      "templateStyle": "Estilo de plantilla",
+      "customMessage": "Mensaje personalizado",
+      "messagePlaceholder": "Escribe tu mensaje personal…",
+      "saving": "Guardando…",
+      "save": "Guardar configuración",
+      "generating": "Generando…",
+      "generatePdf": "Generar PDF",
+      "generateVideo": "Generar vídeo",
+      "videoPreview": "Vista previa del vídeo",
+      "fonts": {
+        "Playfair Display": "Playfair Display — elegante",
+        "Great Vibes": "Great Vibes — manuscrita",
+        "Cormorant Garamond": "Cormorant Garamond — clásica",
+        "Dancing Script": "Dancing Script — romántica",
+        "Cinzel": "Cinzel",
+        "Italiana": "Italiana"
+      },
+      "colors": {
+        "classic": "Clásico",
+        "modern": "Moderno",
+        "rustic": "Rústico",
+        "romantic": "Romántico",
+        "luxury": "Lujo"
+      },
+      "styles": {
+        "elegant": "Elegante",
+        "minimal": "Minimalista",
+        "floral": "Floral",
+        "vintage": "Vintage"
+      }
+    }
+  }
+}

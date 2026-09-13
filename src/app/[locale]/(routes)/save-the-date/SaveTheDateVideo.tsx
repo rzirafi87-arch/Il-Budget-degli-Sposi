@@ -7,16 +7,18 @@ export interface SaveTheDateVideoProps {
   lang: string;
 }
 
-const LABELS: Record<string, { save: string; date: string; location: string }> = {
+const localizedVideoCopy: Record<string, { save: string; date: string; location: string }> = {
   it: { save: 'Save the Date', date: 'Data', location: 'Luogo' },
   en: { save: 'Save the Date', date: 'Date', location: 'Location' },
   es: { save: 'Reserva la fecha', date: 'Fecha', location: 'Lugar' },
+  fr: { save: 'Save the Date', date: 'Date', location: 'Lieu' },
+  de: { save: 'Save the Date', date: 'Datum', location: 'Ort' },
 };
 
 function SaveTheDateVideo({ names, date, location, lang }: SaveTheDateVideoProps) {
   const frame = useCurrentFrame();
   const opacity = interpolate(frame, [0, 30], [0, 1]);
-  const labels = LABELS[lang] || LABELS['it'];
+  const labels = localizedVideoCopy[lang] || localizedVideoCopy.it;
 
   return (
     <div style={{

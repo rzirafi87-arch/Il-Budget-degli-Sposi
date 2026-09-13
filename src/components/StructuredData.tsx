@@ -1,14 +1,17 @@
 import Script from 'next/script';
 import { BRAND_NAME, getSiteUrl } from '@/config/brand';
+import { getLocale, getTranslations } from 'next-intl/server';
 
-export function JsonLd() {
+export async function JsonLd() {
   const SITE_URL = getSiteUrl();
+  const locale = await getLocale();
+  const t = await getTranslations('milestone9.runtime.structuredData');
 
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": BRAND_NAME,
-    "description": "Applicazione web per organizzare budget, invitati, attività, fornitori e documenti del matrimonio.",
+    "description": t('description'),
     "url": SITE_URL,
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Web",
@@ -18,12 +21,12 @@ export function JsonLd() {
       "url": SITE_URL
     },
     "featureList": [
-      "Gestione budget matrimonio",
-      "Gestione invitati",
-      "Timeline eventi",
-      "Gestione documenti"
+      t('features.budget'),
+      t('features.guests'),
+      t('features.timeline'),
+      t('features.documents')
     ],
-    "inLanguage": "it-IT",
+    "inLanguage": locale,
   };
 
   return (
@@ -35,15 +38,16 @@ export function JsonLd() {
   );
 }
 
-export function WebsiteSchema() {
+export async function WebsiteSchema() {
   const SITE_URL = getSiteUrl();
+  const locale = await getLocale();
 
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": BRAND_NAME,
     "url": SITE_URL,
-    "inLanguage": ["it-IT"]
+    "inLanguage": [locale]
   };
 
   return (

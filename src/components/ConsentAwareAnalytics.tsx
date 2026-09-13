@@ -3,6 +3,7 @@
 import { GoogleAnalytics } from "@/components/GoogleTracking";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 export const ANALYTICS_CONSENT_COOKIE = "analytics_consent";
 export const COOKIE_PREFERENCES_EVENT = "open-cookie-preferences";
@@ -23,6 +24,8 @@ function persistConsent(value: Exclude<Consent, null>) {
 }
 
 export default function ConsentAwareAnalytics({ gaId }: { gaId?: string }) {
+  const locale = useLocale();
+  const t = useTranslations("milestone9.consent");
   const [consent, setConsent] = useState<Consent>(null);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
 
@@ -53,25 +56,24 @@ export default function ConsentAwareAnalytics({ gaId }: { gaId?: string }) {
           className="fixed inset-x-4 bottom-4 z-[100] mx-auto max-w-xl rounded-xl border bg-white p-4 text-sm text-gray-900 shadow-xl"
           role="dialog"
           aria-modal="true"
-          aria-label="Preferenze cookie"
+          aria-label={t("label")}
         >
           <p>
-            Usiamo cookie tecnici necessari. Le statistiche opzionali partono soltanto
-            dopo il consenso e puoi cambiare scelta in qualsiasi momento.
+            {t("description")}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button className="app-button app-button-primary" onClick={() => choose("granted")}>
-              Accetta statistiche
+              {t("accept")}
             </button>
             <button className="app-button app-button-ghost" onClick={() => choose("denied")}>
-              Solo necessari
+              {t("necessary")}
             </button>
-            <Link className="app-button app-button-ghost" href="/it/cookie-policy">
+            <Link className="app-button app-button-ghost" href={`/${locale}/cookie-policy`}>
               Cookie Policy
             </Link>
             {consent !== null ? (
               <button className="app-button app-button-ghost" onClick={() => setPreferencesOpen(false)}>
-                Chiudi
+                {t("close")}
               </button>
             ) : null}
           </div>

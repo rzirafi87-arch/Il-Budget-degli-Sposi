@@ -1,0 +1,66 @@
+{
+  "milestone7": {
+    "saveTheDate": {
+      "authSave": "Sign in to save the configuration",
+      "saved": "Configuration saved successfully!",
+      "saveError": "Could not save the configuration",
+      "authPdf": "Sign in to generate the PDF",
+      "pdfError": "Could not generate the PDF",
+      "videoComingSoon": "Video generation will be available soon.",
+      "title": "Create your Save the Date",
+      "couple": "Couple details",
+      "brideName": "Bride's name",
+      "bridePlaceholder": "Bride's name",
+      "groomName": "Groom's name",
+      "groomPlaceholder": "Groom's name",
+      "weddingDate": "Wedding date",
+      "ceremony": "Ceremony",
+      "ceremonyName": "Ceremony venue name",
+      "ceremonyPlaceholder": "Ceremony venue",
+      "ceremonyAddress": "Ceremony address",
+      "addressPlaceholder": "Street and city",
+      "ceremonyTime": "Ceremony time",
+      "reception": "Venue / Reception",
+      "venueName": "Venue name",
+      "venuePlaceholder": "Venue name",
+      "venueAddress": "Venue address",
+      "receptionTime": "Reception time",
+      "bankDetails": "Bank details (optional)",
+      "bank": "Bank",
+      "bankPlaceholder": "Bank name",
+      "customization": "Customization",
+      "nameFont": "Names font",
+      "colorScheme": "Color scheme",
+      "templateStyle": "Template style",
+      "customMessage": "Custom message",
+      "messagePlaceholder": "Write your personal message…",
+      "saving": "Saving…",
+      "save": "Save configuration",
+      "generating": "Generating…",
+      "generatePdf": "Generate PDF",
+      "generateVideo": "Generate video",
+      "videoPreview": "Save the Date video preview",
+      "fonts": {
+        "Playfair Display": "Playfair Display — elegant",
+        "Great Vibes": "Great Vibes — script",
+        "Cormorant Garamond": "Cormorant Garamond — classic",
+        "Dancing Script": "Dancing Script — romantic",
+        "Cinzel": "Cinzel",
+        "Italiana": "Italiana"
+      },
+      "colors": {
+        "classic": "Classic",
+        "modern": "Modern",
+        "rustic": "Rustic",
+        "romantic": "Romantic",
+        "luxury": "Luxury"
+      },
+      "styles": {
+        "elegant": "Elegant",
+        "minimal": "Minimal",
+        "floral": "Floral",
+        "vintage": "Vintage"
+      }
+    }
+  }
+}

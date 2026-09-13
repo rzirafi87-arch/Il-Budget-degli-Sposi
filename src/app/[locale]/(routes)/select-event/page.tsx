@@ -1,15 +1,12 @@
 ﻿"use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { EVENT_CONFIGS } from "@/constants/eventConfigs";
 
-import type { EventConfiguration } from "@/constants/eventConfigs";
-const EVENTS = Object.entries(EVENT_CONFIGS).map(([slug, cfg]) => {
-  const config = cfg as EventConfiguration;
+const EVENTS = Object.keys(EVENT_CONFIGS).map((slug) => {
   return {
     id: slug,
-    name: config.name,
     type: slug,
   };
 });
@@ -17,6 +14,8 @@ const EVENTS = Object.entries(EVENT_CONFIGS).map(([slug, cfg]) => {
 export default function SelectEventPage() {
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations("milestone9.setup");
+  const tEvents = useTranslations("events");
   const [selected, setSelected] = useState<string>("");
 
   useEffect(() => {
@@ -35,7 +34,7 @@ export default function SelectEventPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0]">
-      <h1 className="text-3xl font-bold mb-8">Seleziona il tuo evento</h1>
+      <h1 className="text-3xl font-bold mb-8">{t("selectEvent")}</h1>
       <div className="flex flex-col gap-4 mb-8">
         {EVENTS.map((ev) => (
           <button
@@ -45,7 +44,7 @@ export default function SelectEventPage() {
             }`}
             onClick={() => handleSelect(ev.id)}
           >
-            {ev.name}
+            {tEvents(ev.type)}
           </button>
         ))}
       </div>

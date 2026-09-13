@@ -8,64 +8,16 @@ import { Settings, X } from "lucide-react";
 import React from "react";
 import { useTheme, type ThemePreference } from "@/components/ThemeProvider";
 import { isSelectableLocale } from "@/i18n/languageCapabilities";
-
-const COPY = {
-  it: {
-    settings: "Impostazioni",
-    language: "Lingua",
-    country: "Nazione evento",
-    currentEvent: "Matrimonio corrente",
-    eventType: "Tipo evento",
-    theme: "Tema",
-    light: "Chiaro",
-    dark: "Scuro",
-    system: "Sistema",
-    locked: "Il tipo evento non può essere cambiato dopo la creazione: il cambio richiede una migrazione sicura dei dati.",
-    close: "Chiudi",
-    apply: "Applica modifiche",
-    comingSoon: "coming soon",
-  },
-  en: {
-    settings: "Settings",
-    language: "Language",
-    country: "Event country",
-    currentEvent: "Current wedding",
-    eventType: "Event type",
-    theme: "Theme",
-    light: "Light",
-    dark: "Dark",
-    system: "System",
-    locked: "The event type cannot be changed after creation: changing it requires a safe data migration.",
-    close: "Close",
-    apply: "Apply changes",
-    comingSoon: "coming soon",
-  },
-  es: {
-    settings: "Ajustes",
-    language: "Idioma",
-    country: "País del evento",
-    currentEvent: "Boda actual",
-    eventType: "Tipo de evento",
-    theme: "Tema",
-    light: "Claro",
-    dark: "Oscuro",
-    system: "Sistema",
-    locked: "El tipo de evento no puede cambiarse después de crearlo: el cambio requiere una migración segura de los datos.",
-    close: "Cerrar",
-    apply: "Aplicar cambios",
-    comingSoon: "coming soon",
-  },
-} as const;
+import { useTranslations } from "next-intl";
 
 export default function QuickSettings() {
+  const t = useTranslations("runtimeUi.settings");
   const { preference, setPreference } = useTheme();
   const [open, setOpen] = React.useState(false);
   const [lang, setLang] = React.useState<string>("it");
   const [country, setCountry] = React.useState<string>("it");
   const [eventType, setEventType] = React.useState<string>("wedding");
 
-  const language = lang === "en" ? "en" : lang === "es" ? "es" : "it";
-  const copy = COPY[language];
   const capability = getEventTypeCapability(eventType);
 
   React.useEffect(() => {
@@ -107,7 +59,7 @@ export default function QuickSettings() {
   return (
     <>
       <button
-        aria-label={copy.settings}
+        aria-label={t("settings")}
         className="app-button app-button--primary app-button--icon fixed bottom-5 right-5 z-60 rounded-full shadow-soft-lg md:hidden"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
@@ -120,7 +72,7 @@ export default function QuickSettings() {
         <button
           className="fixed inset-0 z-59 h-auto w-auto bg-black/40 backdrop-blur-[2px]"
           onClick={() => setOpen(false)}
-          aria-label={copy.close}
+          aria-label={t("close")}
         />
       )}
 
@@ -133,15 +85,15 @@ export default function QuickSettings() {
           aria-labelledby="quick-settings-title"
         >
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h3 id="quick-settings-title" className="font-semibold text-xl text-gray-900">{copy.settings}</h3>
-            <button type="button" className="app-button app-button--ghost app-button--icon" onClick={() => setOpen(false)} aria-label={copy.close}>
+            <h3 id="quick-settings-title" className="font-semibold text-xl text-gray-900">{t("settings")}</h3>
+            <button type="button" className="app-button app-button--ghost app-button--icon" onClick={() => setOpen(false)} aria-label={t("close")}>
               <X size={20} aria-hidden />
             </button>
           </div>
 
           <div className="space-y-3">
             <fieldset className="app-field">
-              <legend className="app-label">{copy.theme}</legend>
+              <legend className="app-label">{t("theme")}</legend>
               <div className="grid grid-cols-3 gap-2">
                 {(["light", "dark", "system"] as ThemePreference[]).map((theme) => (
                   <button
@@ -151,41 +103,41 @@ export default function QuickSettings() {
                     aria-pressed={preference === theme}
                     onClick={() => setPreference(theme)}
                   >
-                    {copy[theme]}
+                    {t(theme)}
                   </button>
                 ))}
               </div>
             </fieldset>
 
             <div className="app-field">
-              <label className="app-label">{copy.language}</label>
-              <select className="app-select" value={lang} onChange={(event) => setLang(event.target.value)}>
+              <label className="app-label" htmlFor="quick-settings-language">{t("language")}</label>
+              <select id="quick-settings-language" className="app-select" value={lang} onChange={(event) => setLang(event.target.value)}>
                 {LANGS.map((item) => (
                   <option key={item.slug} value={item.slug} disabled={!item.available}>
-                    {item.emoji} {item.label} {!item.available ? `(${copy.comingSoon})` : ""}
+                    {item.emoji} {item.label} {!item.available ? `(${t("comingSoon")})` : ""}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="app-field">
-              <label className="app-label">{copy.country}</label>
-              <select className="app-select" value={country} onChange={(event) => setCountry(event.target.value)}>
+              <label className="app-label" htmlFor="quick-settings-country">{t("country")}</label>
+              <select id="quick-settings-country" className="app-select" value={country} onChange={(event) => setCountry(event.target.value)}>
                 {COUNTRIES.map((item) => (
                   <option key={item.code} value={item.code} disabled={!item.available}>
-                    {item.emoji} {item.label} {!item.available ? `(${copy.comingSoon})` : ""}
+                    {item.emoji} {item.label} {!item.available ? `(${t("comingSoon")})` : ""}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="app-field">
-              <p className="app-label">{copy.currentEvent}</p>
+              <p className="app-label">{t("currentEvent")}</p>
               <CurrentEventSelector />
             </div>
 
             <div className="app-field">
-              <label className="app-label">{copy.eventType}</label>
+              <p className="app-label">{t("eventType")}</p>
               <div className="app-input flex items-center justify-between gap-3 bg-muted/50" aria-readonly="true">
                 <span className="truncate font-semibold">{eventType}</span>
                 <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${
@@ -196,13 +148,13 @@ export default function QuickSettings() {
                   {capability.availabilityStatus === "READY" ? "READY" : "COMING SOON"}
                 </span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-muted-fg">{copy.locked}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-fg">{t("locked")}</p>
             </div>
           </div>
 
           <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <AppButton variant="outline" onClick={() => setOpen(false)}>{copy.close}</AppButton>
-            <AppButton onClick={applyChanges}>{copy.apply}</AppButton>
+            <AppButton variant="outline" onClick={() => setOpen(false)}>{t("close")}</AppButton>
+            <AppButton onClick={applyChanges}>{t("apply")}</AppButton>
           </div>
         </div>
       )}

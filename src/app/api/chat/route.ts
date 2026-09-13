@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     );
     if (!messages) {
       return NextResponse.json(
-        { error: "Richiesta non valida o troppo grande.", reply: "" },
+        { error: "INVALID_OR_OVERSIZED_REQUEST", reply: "" },
         { status: 400 },
       );
     }
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
     const message = error instanceof Error ? error.message : "Errore interno inatteso.";
     const status = message === "Missing JWT" || message === "Invalid JWT" ? 401 : 500;
     return NextResponse.json(
-      { error: status === 401 ? "Autenticazione richiesta." : "Errore interno inatteso.", reply: "" },
+      { error: status === 401 ? "AUTH_REQUIRED" : "INTERNAL_ERROR", reply: "" },
       { status },
     );
   }

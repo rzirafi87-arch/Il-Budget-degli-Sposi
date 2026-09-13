@@ -8,7 +8,7 @@ import { buttonClasses } from "@/components/ui/AppButton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CalendarDays, Download, FileArchive, FileText, Inbox, Trash2, UploadCloud } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 type Document = {
   id: string;
@@ -21,21 +21,14 @@ type Document = {
   notes?: string;
 };
 
-const DOCUMENT_CATEGORIES = [
-  "Preventivo",
-  "Contratto",
-  "Fattura",
-  "Ricevuta",
-  "Documento generico",
-  "Certificato",
-  "Licenza",
-];
+const DOCUMENT_CATEGORIES = ["quote", "contract", "invoice", "receipt", "generic", "certificate", "license"] as const;
 
 export default function DocumentiPage() {
   const locale = useLocale();
+  const t = useTranslations("milestone7.documents");
   const [documents, setDocuments] = useState<Document[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [filter, setFilter] = useState<string>("Tutti");
+  const [filter, setFilter] = useState<string>("all");
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -48,8 +41,8 @@ export default function DocumentiPage() {
       const newDocs: Document[] = Array.from(files).map((file, idx) => ({
         id: `doc-${Date.now()}-${idx}`,
         name: file.name,
-        category: "Documento generico",
-        supplier: "Da assegnare",
+        category: "generic",
+        supplier: t("unassigned"),
         fileUrl: URL.createObjectURL(file),
         fileSize: file.size,
         uploadedAt: new Date().toISOString(),
@@ -61,12 +54,13 @@ export default function DocumentiPage() {
   };
 
   const deleteDocument = (id: string) => {
+    if (!window.confirm(t("confirmDelete"))) return;
     setDocuments(documents.filter(d => d.id !== id));
   };
 
-  const categories = ["Tutti", ...DOCUMENT_CATEGORIES];
-  const filteredDocs = filter === "Tutti" 
-    ? documents 
+  const categories = ["all", ...DOCUMENT_CATEGORIES];
+  const filteredDocs = filter === "all"
+    ? documents
     : documents.filter(d => d.category === filter);
 
   const formatFileSize = (bytes: number) => {
@@ -78,29 +72,20 @@ export default function DocumentiPage() {
   return (
     <section className="space-y-6">
       <PageHeader
-        eyebrow="Archivio digitale"
-        title="Documenti e preventivi"
-        description="Carica e organizza preventivi, contratti, ricevute e tutti i documenti importanti del tuo evento."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        description={t("description")}
         icon={<FileArchive size={24} aria-hidden />}
       />
 
       <PageInfoNote
         icon="📁"
-        title="Archivio Digitale dei Tuoi Documenti"
-        description="Centralizza tutti i documenti importanti in un unico posto sicuro. Carica preventivi ricevuti dai fornitori, contratti firmati, fatture, ricevute di pagamento e certificati. Ogni documento può essere categorizzato, associato a un fornitore e dotato di note."
-        tips={[
-          "Carica i preventivi appena li ricevi per confrontarli facilmente",
-          "Associa ogni documento al fornitore corrispondente per una migliore organizzazione",
-          "Usa la categoria 'Contratto' per i documenti già firmati e confermati",
-          "Le ricevute e le fatture ti servono per la contabilità finale e le dichiarazioni fiscali",
-          "Filtra per categoria per trovare rapidamente ciò che cerchi",
-          "Formati supportati: PDF, DOC, DOCX, JPG, PNG (fino a 10MB per file)"
-        ]}
+        title={t("infoTitle")}
+        description={t("infoDescription")}
+        tips={Array.from({ length: 6 }, (_, index) => t(`tips.${index + 1}`))}
         eventTypeSpecific={{
-          wedding: "Per il matrimonio, organizza documenti per: location, catering, fotografi, fioristi, abiti, musica, chiese. Tieni tutto sotto controllo in un archivio digitale!",
-          baptism: "Per il battesimo, carica: certificato di battesimo, preventivi della location per il rinfresco, contratti del fotografo, fatture del catering.",
-          birthday: "Per il compleanno, conserva: contratto della location, preventivi del catering/ristorante, accordi con DJ/intrattenimento, fatture delle decorazioni.",
-          graduation: "Per la laurea, archivia: prenotazione ristorante/location, preventivi del catering per il buffet, contratto fotografo, fatture per stampa inviti e gadget."
+          wedding: t("events.wedding"), baptism: t("events.baptism"),
+          birthday: t("events.birthday"), graduation: t("events.graduation")
         }}
       />
 
@@ -111,10 +96,8 @@ export default function DocumentiPage() {
         >
           <span className="app-page-header__icon"><CalendarDays size={23} aria-hidden /></span>
           <div>
-            <h2 className="text-lg font-semibold text-gray-800">Agenda Documenti</h2>
-            <p className="text-sm text-gray-600">
-              Organizza sopralluoghi, scadenze e incontri legati ai documenti caricati.
-            </p>
+            <h2 className="text-lg font-semibold text-gray-800">{t("agendaTitle")}</h2>
+            <p className="text-sm text-gray-600">{t("agendaDescription")}</p>
           </div>
         </Link>
       </div>
@@ -133,13 +116,13 @@ export default function DocumentiPage() {
           <div className="text-center">
             <UploadCloud className="mx-auto mb-3 text-primary" size={42} strokeWidth={1.6} aria-hidden />
             <h3 className="font-bold text-lg text-gray-800 mb-2">
-              {uploading ? "Caricamento in corso..." : "Carica Documenti"}
+              {uploading ? t("uploading") : t("upload")}
             </h3>
             <p className="text-sm text-gray-600 mb-4">
-              Clicca per selezionare o trascina qui i file
+              {t("uploadHelper")}
             </p>
             <p className="text-xs text-gray-400">
-              PDF, Word, Immagini • Max 10 MB per file
+              {t("uploadFormats")}
             </p>
           </div>
         </label>
@@ -157,7 +140,7 @@ export default function DocumentiPage() {
                 : "app-button--outline"
             }`}
           >
-            {cat}
+            {t(`categories.${cat}`)}
           </button>
         ))}
       </div>
@@ -166,8 +149,8 @@ export default function DocumentiPage() {
       {filteredDocs.length === 0 ? (
         <EmptyState
           icon={<Inbox size={26} />}
-          title={documents.length === 0 ? "Nessun documento caricato" : "Nessun documento in questa categoria"}
-          description={documents.length === 0 ? "Carica il primo preventivo o contratto per costruire il tuo archivio." : "Scegli un’altra categoria per visualizzare i documenti disponibili."}
+          title={documents.length === 0 ? t("empty") : t("emptyCategory")}
+          description={documents.length === 0 ? t("emptyDescription") : t("emptyCategoryDescription")}
         />
       ) : (
         <div className="space-y-3">
@@ -187,7 +170,7 @@ export default function DocumentiPage() {
                       <h3 className="font-bold text-gray-800 truncate">{doc.name}</h3>
                       <div className="flex items-center gap-3 mt-1">
                         <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">
-                          {doc.category}
+                          {t(`categories.${doc.category}`)}
                         </span>
                         <span className="text-xs text-gray-500">
                           {doc.supplier}
@@ -200,16 +183,16 @@ export default function DocumentiPage() {
                         href={doc.fileUrl}
                         download
                         className={buttonClasses({ variant: "ghost", size: "icon" })}
-                        title="Scarica"
-                        aria-label={`Scarica ${doc.name}`}
+                        title={t("download")}
+                        aria-label={t("downloadNamed", { name: doc.name })}
                       >
                         <Download size={18} aria-hidden />
                       </a>
                       <button
                         onClick={() => deleteDocument(doc.id)}
                         className={buttonClasses({ variant: "ghost", size: "icon", className: "text-red-600" })}
-                        title="Elimina"
-                        aria-label={`Elimina ${doc.name}`}
+                        title={t("delete")}
+                        aria-label={t("deleteNamed", { name: doc.name })}
                       >
                         <Trash2 size={18} aria-hidden />
                       </button>
@@ -240,25 +223,25 @@ export default function DocumentiPage() {
               <div className="text-2xl font-bold" style={{ color: "var(--color-sage)" }}>
                 {documents.length}
               </div>
-              <div className="text-sm text-gray-600">Documenti totali</div>
+              <div className="text-sm text-gray-600">{t("stats.total")}</div>
             </div>
             <div>
               <div className="text-2xl font-bold" style={{ color: "var(--color-sage)" }}>
-                {documents.filter(d => d.category === "Preventivo").length}
+                {documents.filter(d => d.category === "quote").length}
               </div>
-              <div className="text-sm text-gray-600">Preventivi</div>
+              <div className="text-sm text-gray-600">{t("stats.quotes")}</div>
             </div>
             <div>
               <div className="text-2xl font-bold" style={{ color: "var(--color-sage)" }}>
-                {documents.filter(d => d.category === "Contratto").length}
+                {documents.filter(d => d.category === "contract").length}
               </div>
-              <div className="text-sm text-gray-600">Contratti</div>
+              <div className="text-sm text-gray-600">{t("stats.contracts")}</div>
             </div>
             <div>
               <div className="text-2xl font-bold" style={{ color: "var(--color-sage)" }}>
                 {(documents.reduce((sum, d) => sum + d.fileSize, 0) / (1024 * 1024)).toFixed(1)} MB
               </div>
-              <div className="text-sm text-gray-600">Spazio usato</div>
+              <div className="text-sm text-gray-600">{t("stats.storage")}</div>
             </div>
           </div>
         </div>

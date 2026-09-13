@@ -1,0 +1,92 @@
+{
+  "confirmationIdea": {
+    "title": "Budget idea",
+    "description": "Set an estimated Confirmation budget and allocate it to the main categories.",
+    "categories": {
+      "venue": "Venue and catering",
+      "clothing": "Clothing",
+      "photo": "Photography and entertainment",
+      "favors": "Favors and decorations",
+      "invitations": "Invitations and printing"
+    },
+    "tip": "Tip: start with a total and divide it by category. You can refine the amounts as quotes arrive."
+  },
+  "confirmationBudget": {
+    "title": "Confirmation budget",
+    "description": "Summary of approved expenses compared with the initial plan.",
+    "actualTotal": "Actual total",
+    "loading": "Loading…",
+    "empty": "No approved expenses. Go to Expenses to approve your expenses.",
+    "item": "Item",
+    "table": {
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "budget": "Budget",
+      "committed": "Committed",
+      "paid": "Paid",
+      "residual": "Remaining",
+      "fromQuote": "From quote",
+      "difference": "Difference"
+    },
+    "comparison": {
+      "title": "Planned vs actual",
+      "plannedTotal": "Planned total",
+      "approvedTotal": "Actual total (approved)",
+      "over": "(over plan)",
+      "under": "(under plan)",
+      "planned": "Planned",
+      "actual": "Actual",
+      "empty": "No data to compare. Use Budget Idea to plan and approve expenses in Expenses."
+    }
+  },
+  "budgetRuntime": {
+    "layout": {
+      "title": "Budget",
+      "approved": "Approved expenses",
+      "idea": "Budget idea"
+    },
+    "chart": {
+      "ofBudget": "of the budget",
+      "spent": "Spent",
+      "remaining": "Remaining",
+      "total": "Total budget",
+      "status": {
+        "start": "💚 Great start! You are on track",
+        "progress": "💛 Good progress, keep it up",
+        "warning": "🧡 Watch the budget, you are getting close",
+        "limit": "❤️ Almost at the limit; review the next expenses carefully",
+        "exceeded": "🚨 Budget exceeded! Review your priorities"
+      }
+    },
+    "categories": {
+      "title": "📊 Expenses by category (Top 8)",
+      "empty": "No expenses recorded yet"
+    },
+    "controls": {
+      "currency": "Currency",
+      "contingency": "Contingency (%)",
+      "estimatedTotal": "Estimated total:",
+      "contingencyTotal": "Contingency:",
+      "withContingency": "Total with contingency:"
+    },
+    "exportPdf": {
+      "defaultTitle": "Timeline checklist",
+      "button": "Export PDF",
+      "empty": "No data to export"
+    }
+  },
+  "budgetPage": {
+    "eyebrow": "Financial planning",
+    "fallbackItem": "Item",
+    "emptyTitle": "Your budget is still empty",
+    "emptyAction": "Create your first budget plan",
+    "export": { "button": "Export PDF", "fromDashboard": "From dashboard" }
+  },
+  "expensesPage": {
+    "quotesCount": "{count, plural, one {# quote} other {# quotes}}",
+    "messages": {
+      "saveError": "Error: {error}",
+      "unableToSave": "Unable to save"
+    }
+  }
+}

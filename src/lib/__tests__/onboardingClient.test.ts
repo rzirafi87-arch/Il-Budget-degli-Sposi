@@ -54,6 +54,9 @@ describe("getOnboardingStatus", () => {
     getSession.mockResolvedValue({ data: { session: { access_token: "token" } }, error: null });
     (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
 
-    await expect(getOnboardingStatus()).rejects.toThrow("Impossibile verificare il progetto");
+    await expect(getOnboardingStatus()).rejects.toMatchObject({
+      name: "OnboardingError",
+      code: "PROJECT_CHECK_FAILED",
+    });
   });
 });

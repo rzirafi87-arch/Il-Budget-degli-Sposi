@@ -3,6 +3,7 @@
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 type SupplierProfile = {
@@ -31,6 +32,7 @@ type Transaction = {
 };
 
 export default function FornitoriDashboardPage() {
+  const t = useTranslations("milestone9.runtime");
   const [profile, setProfile] = useState<SupplierProfile | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,10 +93,10 @@ export default function FornitoriDashboardPage() {
 
   function getTierName(tier: string) {
     switch (tier) {
-      case "free": return "Gratuito";
-      case "base": return "Base";
-      case "premium": return "Premium";
-      case "premium_plus": return "Premium Plus";
+      case "free": return t("supplierDashboard.tiers.free");
+      case "base": return t("supplierDashboard.tiers.base");
+      case "premium": return t("supplierDashboard.tiers.premium");
+      case "premium_plus": return t("supplierDashboard.tiers.premiumPlus");
       default: return tier;
     }
   }
@@ -112,7 +114,7 @@ export default function FornitoriDashboardPage() {
   if (loading) {
     return (
       <section className="pt-6">
-        <div className="text-center text-gray-500 py-12">Caricamento...</div>
+        <div className="text-center text-gray-500 py-12">{t("supplierDashboard.loading")}</div>
       </section>
     );
   }
@@ -121,15 +123,15 @@ export default function FornitoriDashboardPage() {
     return (
       <section className="pt-6">
         <div className="max-w-2xl mx-auto text-center p-8 rounded-2xl border border-gray-200 bg-white/70">
-          <h2 className="font-serif text-2xl mb-4">Profilo Fornitore Non Trovato</h2>
+          <h2 className="font-serif text-2xl mb-4">{t("supplierDashboard.empty.title")}</h2>
           <p className="text-gray-600 mb-6">
-            Non hai ancora creato un profilo fornitore. Inizia proponendo la tua attività!
+            {t("supplierDashboard.empty.description")}
           </p>
           <Link
             href="/fornitori"
             className="inline-block px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8a9d84] transition-colors font-semibold"
           >
-            Esplora Categorie
+            {t("supplierDashboard.empty.exploreCategories")}
           </Link>
         </div>
       </section>
@@ -142,7 +144,7 @@ export default function FornitoriDashboardPage() {
   return (
     <section className="pt-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="font-serif text-3xl mb-6">Dashboard Fornitore</h1>
+        <h1 className="font-serif text-3xl mb-6">{t("supplierDashboard.title")}</h1>
 
         {/* Profilo */}
         <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
@@ -156,10 +158,10 @@ export default function FornitoriDashboardPage() {
                 {getTierName(profile.subscription_tier)}
               </span>
               {profile.verified && (
-                <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded">✓ Verificato</span>
+                <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded">{t("supplierDashboard.badges.verified")}</span>
               )}
               {profile.is_featured && (
-                <span className="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded">⭐ In Evidenza</span>
+                <span className="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded">{t("supplierDashboard.badges.featured")}</span>
               )}
             </div>
           </div>
@@ -167,23 +169,23 @@ export default function FornitoriDashboardPage() {
           {/* Status */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Stato Abbonamento</p>
+              <p className="text-sm text-gray-600 mb-1">{t("supplierDashboard.subscription.status")}</p>
               <p className={`font-semibold ${isActive ? "text-green-600" : "text-red-600"}`}>
-                {isActive ? "✓ Attivo" : "✗ Scaduto"}
+                {isActive ? t("supplierDashboard.subscription.active") : t("supplierDashboard.subscription.expired")}
               </p>
             </div>
             {profile.subscription_expires_at && (
               <>
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Scadenza</p>
+                  <p className="text-sm text-gray-600 mb-1">{t("supplierDashboard.subscription.expiration")}</p>
                   <p className="font-semibold">
                     {formatDate(new Date(profile.subscription_expires_at))}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Giorni Rimanenti</p>
+                  <p className="text-sm text-gray-600 mb-1">{t("supplierDashboard.subscription.daysRemaining")}</p>
                   <p className={`font-semibold ${daysRemaining && daysRemaining < 7 ? "text-orange-600" : ""}`}>
-                    {daysRemaining !== null ? `${daysRemaining} giorni` : "N/A"}
+                    {daysRemaining !== null ? t("supplierDashboard.subscription.days", { count: daysRemaining }) : t("supplierDashboard.subscription.notAvailable")}
                   </p>
                 </div>
               </>
@@ -198,22 +200,22 @@ export default function FornitoriDashboardPage() {
             className="p-6 rounded-2xl border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D]/10 transition-all text-center"
           >
             <h3 className="font-semibold text-lg mb-2">
-              {profile.subscription_tier === "free" ? "Acquista Piano" : "Cambia Piano"}
+              {profile.subscription_tier === "free" ? t("supplierDashboard.actions.buyPlan") : t("supplierDashboard.actions.changePlan")}
             </h3>
             <p className="text-sm text-gray-600">
               {profile.subscription_tier === "free" 
-                ? "Scegli un piano per aumentare la tua visibilità"
-                : "Effettua upgrade o rinnova il tuo abbonamento"}
+                ? t("supplierDashboard.actions.buyPlanDescription")
+                : t("supplierDashboard.actions.changePlanDescription")}
             </p>
           </Link>
 
           <button
-            onClick={() => alert("Funzionalità in arrivo: modifica profilo, carica foto, etc.")}
+            onClick={() => alert(t("supplierDashboard.actions.manageComingSoon"))}
             className="p-6 rounded-2xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all text-center"
           >
-            <h3 className="font-semibold text-lg mb-2">Gestisci Profilo</h3>
+            <h3 className="font-semibold text-lg mb-2">{t("supplierDashboard.actions.manageProfile")}</h3>
             <p className="text-sm text-gray-600">
-              Modifica dati, carica foto e ottimizza la tua scheda
+              {t("supplierDashboard.actions.manageProfileDescription")}
             </p>
           </button>
 
@@ -221,32 +223,32 @@ export default function FornitoriDashboardPage() {
             href={`/fornitori/${profile.id}`}
             className="p-6 rounded-2xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all text-center"
           >
-            <h3 className="font-semibold text-lg mb-2">Pagina pubblica</h3>
-            <p className="text-sm text-gray-600">Visualizza come ti vedono gli sposi</p>
+            <h3 className="font-semibold text-lg mb-2">{t("supplierDashboard.actions.publicPage")}</h3>
+            <p className="text-sm text-gray-600">{t("supplierDashboard.actions.publicPageDescription")}</p>
           </Link>
         </div>
 
         {/* Analytics - Solo per Premium e Premium Plus */}
         {(profile.subscription_tier === "premium" || profile.subscription_tier === "premium_plus") && (
           <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-linear-to-br from-white to-[#A3B59D]/5">
-            <h3 className="font-semibold text-lg mb-4">📊 Analytics</h3>
+            <h3 className="font-semibold text-lg mb-4">{t("supplierDashboard.analytics.title")}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-lg bg-white border border-gray-200">
                 <div className="text-3xl font-bold text-[#A3B59D]">{profile.profile_views || 0}</div>
-                <div className="text-sm text-gray-600 mt-1">Visualizzazioni Profilo</div>
+                <div className="text-sm text-gray-600 mt-1">{t("supplierDashboard.analytics.profileViews")}</div>
               </div>
               <div className="p-4 rounded-lg bg-white border border-gray-200">
                 <div className="text-3xl font-bold text-blue-600">{profile.contact_clicks || 0}</div>
-                <div className="text-sm text-gray-600 mt-1">Click su Contatti</div>
+                <div className="text-sm text-gray-600 mt-1">{t("supplierDashboard.analytics.contactClicks")}</div>
               </div>
               <div className="p-4 rounded-lg bg-white border border-gray-200">
                 <div className="text-3xl font-bold text-purple-600">{profile.website_clicks || 0}</div>
-                <div className="text-sm text-gray-600 mt-1">Click su Sito Web</div>
+                <div className="text-sm text-gray-600 mt-1">{t("supplierDashboard.analytics.websiteClicks")}</div>
               </div>
             </div>
             {profile.last_view_at && (
               <p className="text-xs text-gray-500 mt-3">
-                Ultima visualizzazione: {formatDateTime(new Date(profile.last_view_at))}
+                {t("supplierDashboard.analytics.lastView", { date: formatDateTime(new Date(profile.last_view_at)) })}
               </p>
             )}
           </div>
@@ -254,32 +256,32 @@ export default function FornitoriDashboardPage() {
 
         {/* Visibilità Info */}
         <div className="mb-6 p-6 rounded-2xl border border-blue-200 bg-blue-50">
-          <h3 className="font-semibold mb-3">📊 La Tua Visibilità</h3>
+          <h3 className="font-semibold mb-3">{t("supplierDashboard.visibility.title")}</h3>
           <ul className="space-y-2 text-sm">
             {profile.subscription_tier === "free" && (
               <li className="text-gray-600">
-                • Profilo creato ma <strong>non visibile</strong> nelle ricerche pubbliche
+                {t.rich("supplierDashboard.visibility.free", { strong: (chunks) => <strong>{chunks}</strong> })}
               </li>
             )}
             {profile.subscription_tier === "base" && isActive && (
               <>
-                <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
-                <li className="text-gray-600">✗ Non appare nella pagina hub Fornitori</li>
-                <li className="text-gray-600">✗ Non appare nella Demo (utenti non registrati)</li>
+                <li className="text-green-600">{t.rich("supplierDashboard.visibility.category", { category: profile.category, strong: (chunks) => <strong>{chunks}</strong> })}</li>
+                <li className="text-gray-600">{t("supplierDashboard.visibility.noHub")}</li>
+                <li className="text-gray-600">{t("supplierDashboard.visibility.noDemo")}</li>
               </>
             )}
             {profile.subscription_tier === "premium" && isActive && (
               <>
-                <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
-                <li className="text-green-600">✓ Appare nella pagina hub <strong>Fornitori</strong></li>
-                <li className="text-gray-600">✗ Non appare nella Demo (utenti non registrati)</li>
+                <li className="text-green-600">{t.rich("supplierDashboard.visibility.category", { category: profile.category, strong: (chunks) => <strong>{chunks}</strong> })}</li>
+                <li className="text-green-600">{t.rich("supplierDashboard.visibility.hub", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+                <li className="text-gray-600">{t("supplierDashboard.visibility.noDemo")}</li>
               </>
             )}
             {profile.subscription_tier === "premium_plus" && isActive && (
               <>
-                <li className="text-green-600">✓ Visibile nella pagina <strong>{profile.category}</strong></li>
-                <li className="text-green-600">✓ Appare nella pagina hub <strong>Fornitori</strong></li>
-                <li className="text-amber-600 font-semibold">⭐ Appare nella <strong>Demo</strong> (massima visibilità!)</li>
+                <li className="text-green-600">{t.rich("supplierDashboard.visibility.category", { category: profile.category, strong: (chunks) => <strong>{chunks}</strong> })}</li>
+                <li className="text-green-600">{t.rich("supplierDashboard.visibility.hub", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+                <li className="text-amber-600 font-semibold">{t.rich("supplierDashboard.visibility.demo", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
               </>
             )}
           </ul>
@@ -287,9 +289,9 @@ export default function FornitoriDashboardPage() {
 
         {/* Transazioni */}
         <div className="p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-          <h3 className="font-semibold text-lg mb-4">Storico Abbonamenti</h3>
+          <h3 className="font-semibold text-lg mb-4">{t("supplierDashboard.transactions.title")}</h3>
           {transactions.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">Nessuna transazione registrata</p>
+            <p className="text-gray-500 text-center py-8">{t("supplierDashboard.transactions.empty")}</p>
           ) : (
             <div className="space-y-3">
               {transactions.map((tx) => (
@@ -300,7 +302,7 @@ export default function FornitoriDashboardPage() {
                         {getTierName(tx.tier)}
                       </span>
                       <span className="text-sm text-gray-600">
-                        {tx.billing_period === "monthly" ? "Mensile" : "Annuale"}
+                        {tx.billing_period === "monthly" ? t("supplierDashboard.transactions.monthly") : t("supplierDashboard.transactions.yearly")}
                       </span>
                     </div>
                     <div className="text-right">
@@ -310,15 +312,18 @@ export default function FornitoriDashboardPage() {
                         tx.status === "pending" ? "text-orange-600" :
                         "text-red-600"
                       }`}>
-                        {tx.status === "completed" ? "Completato" :
-                         tx.status === "pending" ? "In attesa" :
-                         tx.status === "failed" ? "Fallito" : "Rimborsato"}
+                        {tx.status === "completed" ? t("supplierDashboard.transactions.status.completed") :
+                         tx.status === "pending" ? t("supplierDashboard.transactions.status.pending") :
+                         tx.status === "failed" ? t("supplierDashboard.transactions.status.failed") : t("supplierDashboard.transactions.status.refunded")}
                       </div>
                     </div>
                   </div>
                   <div className="text-xs text-gray-500">
-                    Dal {formatDate(new Date(tx.starts_at))} al {formatDate(new Date(tx.expires_at))}
-                    {" • "}Acquistato il {formatDate(new Date(tx.created_at))}
+                    {t("supplierDashboard.transactions.period", {
+                      start: formatDate(new Date(tx.starts_at)),
+                      end: formatDate(new Date(tx.expires_at)),
+                      purchased: formatDate(new Date(tx.created_at)),
+                    })}
                   </div>
                 </div>
               ))}

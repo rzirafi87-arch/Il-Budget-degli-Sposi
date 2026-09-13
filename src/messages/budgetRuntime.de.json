@@ -1,0 +1,92 @@
+{
+  "confirmationIdea": {
+    "title": "Budgetidee",
+    "description": "Lege ein geschätztes Budget für die Firmung fest und verteile es auf die wichtigsten Kategorien.",
+    "categories": {
+      "venue": "Location und Catering",
+      "clothing": "Kleidung",
+      "photo": "Fotografie und Unterhaltung",
+      "favors": "Gastgeschenke und Dekoration",
+      "invitations": "Einladungen und Druck"
+    },
+    "tip": "Tipp: Beginne mit einer Gesamtsumme und verteile sie auf Kategorien. Mit eingehenden Angeboten kannst du die Beträge verfeinern."
+  },
+  "confirmationBudget": {
+    "title": "Firmungsbudget",
+    "description": "Übersicht der genehmigten Ausgaben im Vergleich zur ursprünglichen Planung.",
+    "actualTotal": "Tatsächliche Summe",
+    "loading": "Wird geladen…",
+    "empty": "Keine genehmigten Ausgaben. Genehmige Ausgaben im Bereich Ausgaben.",
+    "item": "Posten",
+    "table": {
+      "category": "Kategorie",
+      "subcategory": "Unterkategorie",
+      "budget": "Budget",
+      "committed": "Gebunden",
+      "paid": "Bezahlt",
+      "residual": "Verbleibend",
+      "fromQuote": "Aus Angebot",
+      "difference": "Differenz"
+    },
+    "comparison": {
+      "title": "Geplant vs tatsächlich",
+      "plannedTotal": "Geplante Summe",
+      "approvedTotal": "Tatsächliche Summe (genehmigt)",
+      "over": "(über Plan)",
+      "under": "(unter Plan)",
+      "planned": "Geplant",
+      "actual": "Tatsächlich",
+      "empty": "Keine Daten zum Vergleichen. Plane mit der Budgetidee und genehmige Ausgaben im Bereich Ausgaben."
+    }
+  },
+  "budgetRuntime": {
+    "layout": {
+      "title": "Budget",
+      "approved": "Genehmigte Ausgaben",
+      "idea": "Budgetidee"
+    },
+    "chart": {
+      "ofBudget": "des Budgets",
+      "spent": "Ausgegeben",
+      "remaining": "Verbleibend",
+      "total": "Gesamtbudget",
+      "status": {
+        "start": "💚 Toller Start! Ihr liegt im Zeitplan",
+        "progress": "💛 Guter Fortschritt, macht weiter so",
+        "warning": "🧡 Achtet auf das Budget, ihr nähert euch dem Limit",
+        "limit": "❤️ Fast am Limit; prüft die nächsten Ausgaben sorgfältig",
+        "exceeded": "🚨 Budget überschritten! Überprüft eure Prioritäten"
+      }
+    },
+    "categories": {
+      "title": "📊 Ausgaben nach Kategorie (Top 8)",
+      "empty": "Noch keine Ausgaben erfasst"
+    },
+    "controls": {
+      "currency": "Währung",
+      "contingency": "Puffer (%)",
+      "estimatedTotal": "Geschätzte Summe:",
+      "contingencyTotal": "Puffer:",
+      "withContingency": "Gesamtsumme mit Puffer:"
+    },
+    "exportPdf": {
+      "defaultTitle": "Zeitplan-Checkliste",
+      "button": "PDF exportieren",
+      "empty": "Keine Daten zum Exportieren"
+    }
+  },
+  "budgetPage": {
+    "eyebrow": "Finanzplanung",
+    "fallbackItem": "Posten",
+    "emptyTitle": "Das Budget ist noch leer",
+    "emptyAction": "Ersten Budgetplan erstellen",
+    "export": { "button": "PDF exportieren", "fromDashboard": "Vom Dashboard" }
+  },
+  "expensesPage": {
+    "quotesCount": "{count, plural, one {# Angebot} other {# Angebote}}",
+    "messages": {
+      "saveError": "Fehler: {error}",
+      "unableToSave": "Speichern nicht möglich"
+    }
+  }
+}

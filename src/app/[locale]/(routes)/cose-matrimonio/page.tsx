@@ -4,6 +4,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type EntertainmentItem = {
   id: string;
@@ -72,14 +73,10 @@ const ENTERTAINMENT_OPTIONS: EntertainmentItem[] = [
   { id: "tec-9", name: "Fontana di cioccolato", category: "Extra/Tecnica", forCerimonia: false, forRicevimento: true },
 ];
 
-const CATEGORIES = [
-  "Musica e Performance Live",
-  "Animazione e Spettacolo",
-  "Coinvolgimento Ospiti/Esperienze",
-  "Extra/Tecnica",
-];
+const CATEGORIES = ["Musica e Performance Live", "Animazione e Spettacolo", "Coinvolgimento Ospiti/Esperienze", "Extra/Tecnica"];
 
 export default function CoseMatrimonioPage() {
+  const t = useTranslations("milestone9.runtime.weddingEntertainment");
   const [activeTab, setActiveTab] = useState<"cerimonia" | "ricevimento">("cerimonia");
   const [selections, setSelections] = useState<Selection[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -97,7 +94,7 @@ export default function CoseMatrimonioPage() {
     const newSelection: Selection = {
       id: `sel-${idCounter.current}`,
       itemId: item.id,
-      name: item.name,
+      name: t(`options.${item.id}`),
       category: item.category,
       location: activeTab,
       notes: "",
@@ -118,7 +115,7 @@ export default function CoseMatrimonioPage() {
 
   return (
     <section className="pt-6">
-      <h2 className="font-serif text-3xl mb-6">Cose da Matrimonio · Intrattenimento</h2>
+      <h2 className="font-serif text-3xl mb-6">{t("title")}</h2>
 
       <ImageCarousel images={getPageImages("cose-matrimonio", country)} height="280px" />
 
@@ -131,7 +128,7 @@ export default function CoseMatrimonioPage() {
               : "bg-white/70 border-2 border-gray-300 text-gray-700 hover:bg-gray-50"
           }`}
         >
-          ⛪ Cerimonia ({ceremonySelections.length})
+          ⛪ {t("ceremony")} ({ceremonySelections.length})
         </button>
         <button
           onClick={() => setActiveTab("ricevimento")}
@@ -141,7 +138,7 @@ export default function CoseMatrimonioPage() {
               : "bg-white/70 border-2 border-gray-300 text-gray-700 hover:bg-gray-50"
           }`}
         >
-          🎉 Ricevimento ({receptionSelections.length})
+          🎉 {t("reception")} ({receptionSelections.length})
         </button>
       </div>
 
@@ -149,7 +146,7 @@ export default function CoseMatrimonioPage() {
         {/* Colonna sinistra: selezione per categoria */}
         <div className="space-y-4">
           <h3 className="text-xl font-bold mb-3">
-            Scegli per {activeTab === "cerimonia" ? "la Cerimonia" : "il Ricevimento"}
+            {t("chooseFor", { destination: activeTab === "cerimonia" ? t("ceremony") : t("reception") })}
           </h3>
           {CATEGORIES.map((category) => {
             const categoryItems = filteredOptions.filter((item) => item.category === category);
@@ -163,7 +160,7 @@ export default function CoseMatrimonioPage() {
                   onClick={() => setExpandedCategory(isExpanded ? null : category)}
                   className="w-full px-4 py-3 flex justify-between items-center hover:bg-gray-50 transition"
                 >
-                  <span className="font-semibold text-left">{category}</span>
+                  <span className="font-semibold text-left">{t(`categories.${CATEGORIES.indexOf(category)}`)}</span>
                   <span className="text-gray-500">
                     {isExpanded ? "−" : "+"} ({categoryItems.length})
                   </span>
@@ -180,7 +177,7 @@ export default function CoseMatrimonioPage() {
                           key={item.id}
                           className="flex justify-between items-center py-2 border-b last:border-b-0"
                         >
-                          <span className="text-sm">{item.name}</span>
+                          <span className="text-sm">{t(`options.${item.id}`)}</span>
                           <button
                             onClick={() => addSelection(item)}
                             disabled={alreadyAdded}
@@ -190,7 +187,7 @@ export default function CoseMatrimonioPage() {
                                 : "bg-[#A3B59D] text-white hover:bg-[#8a9d84]"
                             }`}
                           >
-                            {alreadyAdded ? "✓ Aggiunto" : "+ Aggiungi"}
+                            {alreadyAdded ? `✓ ${t("added")}` : `+ ${t("add")}`}
                           </button>
                         </div>
                       );
@@ -205,12 +202,12 @@ export default function CoseMatrimonioPage() {
         {/* Colonna destra: riepilogo selezioni */}
         <div className="space-y-4">
           <h3 className="text-xl font-bold mb-3">
-            Selezionati per {activeTab === "cerimonia" ? "la Cerimonia" : "il Ricevimento"}
+            {t("selectedFor", { destination: activeTab === "cerimonia" ? t("ceremony") : t("reception") })}
           </h3>
           {(activeTab === "cerimonia" ? ceremonySelections : receptionSelections).length === 0 ? (
             <div className="p-8 text-center bg-white/50 rounded-xl border-2 border-dashed border-gray-300">
               <div className="text-4xl mb-2">📋</div>
-              <p className="text-gray-500">Nessuna selezione ancora</p>
+              <p className="text-gray-500">{t("empty")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -219,7 +216,7 @@ export default function CoseMatrimonioPage() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <div className="font-semibold">{sel.name}</div>
-                      <div className="text-xs text-gray-500">{sel.category}</div>
+                      <div className="text-xs text-gray-500">{t(`categories.${CATEGORIES.indexOf(sel.category)}`)}</div>
                     </div>
                     <button
                       onClick={() => removeSelection(sel.id)}
@@ -230,7 +227,7 @@ export default function CoseMatrimonioPage() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Note (fornitore, orario, ecc.)"
+                    placeholder={t("notesPlaceholder")}
                     value={sel.notes || ""}
                     onChange={(e) => updateNotes(sel.id, e.target.value)}
                     className="w-full border rounded px-3 py-2 text-sm"
@@ -245,15 +242,15 @@ export default function CoseMatrimonioPage() {
       {/* Riepilogo complessivo */}
       {selections.length > 0 && (
         <div className="mt-8 p-6 bg-linear-to-br from-green-50 to-blue-50 rounded-xl border-2 border-[#A3B59D]">
-          <h3 className="text-xl font-bold mb-4">📊 Riepilogo Totale</h3>
+          <h3 className="text-xl font-bold mb-4">📊 {t("summary")}</h3>
           <div className="grid grid-cols-2 gap-4 text-center">
             <div className="bg-white rounded-lg p-4 shadow">
               <div className="text-2xl font-bold text-[#A3B59D]">{ceremonySelections.length}</div>
-              <div className="text-sm text-gray-600">Per la Cerimonia</div>
+              <div className="text-sm text-gray-600">{t("forCeremony")}</div>
             </div>
             <div className="bg-white rounded-lg p-4 shadow">
               <div className="text-2xl font-bold text-[#A3B59D]">{receptionSelections.length}</div>
-              <div className="text-sm text-gray-600">Per il Ricevimento</div>
+              <div className="text-sm text-gray-600">{t("forReception")}</div>
             </div>
           </div>
         </div>

@@ -1,0 +1,92 @@
+{
+  "confirmationIdea": {
+    "title": "Idea di budget",
+    "description": "Imposta un budget stimato per la Cresima e assegnalo alle principali categorie.",
+    "categories": {
+      "venue": "Location e catering",
+      "clothing": "Abbigliamento",
+      "photo": "Fotografo e intrattenimento",
+      "favors": "Bomboniere e decorazioni",
+      "invitations": "Inviti e stampa"
+    },
+    "tip": "Suggerimento: parti da un totale e ripartisci per categoria. Potrai affinare le cifre quando raccoglierai i preventivi."
+  },
+  "confirmationBudget": {
+    "title": "Budget Cresima",
+    "description": "Riepilogo delle spese approvate e confronto con l’idea iniziale.",
+    "actualTotal": "Totale effettivo",
+    "loading": "Caricamento…",
+    "empty": "Nessuna spesa approvata. Vai alla sezione Spese per approvare le tue spese.",
+    "item": "Voce",
+    "table": {
+      "category": "Categoria",
+      "subcategory": "Sottocategoria",
+      "budget": "Budget",
+      "committed": "Impegnato",
+      "paid": "Pagato",
+      "residual": "Residuo",
+      "fromQuote": "Da preventivo",
+      "difference": "Differenza"
+    },
+    "comparison": {
+      "title": "Pianificato vs Effettivo",
+      "plannedTotal": "Totale pianificato",
+      "approvedTotal": "Totale effettivo (approvato)",
+      "over": "(+ oltre il previsto)",
+      "under": "(sotto il previsto)",
+      "planned": "Pianificato",
+      "actual": "Effettivo",
+      "empty": "Nessun dato da confrontare. Usa Idea di Budget per pianificare e approva spese nella sezione Spese."
+    }
+  },
+  "budgetRuntime": {
+    "layout": {
+      "title": "Budget",
+      "approved": "Spese approvate",
+      "idea": "Idea di spesa"
+    },
+    "chart": {
+      "ofBudget": "del budget",
+      "spent": "Speso",
+      "remaining": "Restante",
+      "total": "Budget totale",
+      "status": {
+        "start": "💚 Ottimo inizio! Siete nei tempi",
+        "progress": "💛 Buon progresso, continuate così",
+        "warning": "🧡 Attenzione al budget, state per raggiungerlo",
+        "limit": "❤️ Quasi al limite, valutate bene le prossime spese",
+        "exceeded": "🚨 Budget superato! Rivedete le priorità"
+      }
+    },
+    "categories": {
+      "title": "📊 Spese per categoria (Top 8)",
+      "empty": "Nessuna spesa registrata ancora"
+    },
+    "controls": {
+      "currency": "Valuta",
+      "contingency": "Imprevisti (%)",
+      "estimatedTotal": "Totale ipotizzato:",
+      "contingencyTotal": "Imprevisti:",
+      "withContingency": "Totale con imprevisti:"
+    },
+    "exportPdf": {
+      "defaultTitle": "Checklist timeline",
+      "button": "Esporta PDF",
+      "empty": "Nessun dato da esportare"
+    }
+  },
+  "budgetPage": {
+    "eyebrow": "Pianificazione economica",
+    "fallbackItem": "Voce",
+    "emptyTitle": "Il budget è ancora vuoto",
+    "emptyAction": "Crea il primo piano di budget",
+    "export": { "button": "Esporta PDF", "fromDashboard": "Da dashboard" }
+  },
+  "expensesPage": {
+    "quotesCount": "{count, plural, one {# preventivo} other {# preventivi}}",
+    "messages": {
+      "saveError": "Errore: {error}",
+      "unableToSave": "Impossibile salvare"
+    }
+  }
+}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useToast } from "@/components/ToastProvider";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 
 type FavoriteItemType = "supplier" | "location" | "church";
 
@@ -24,6 +25,7 @@ type PendingState = Record<string, boolean>;
 const supabase = getBrowserClient();
 
 export function useFavorites(itemType: FavoriteItemType) {
+  const t = useTranslations("milestone8.favoriteActions");
   const { showToast } = useToast();
   const [favorites, setFavorites] = useState<FavoriteMap>({});
   const [loading, setLoading] = useState(true);
@@ -45,8 +47,7 @@ export function useFavorites(itemType: FavoriteItemType) {
       });
 
       if (!res.ok) {
-        const errorBody = await res.json().catch(() => ({}));
-        throw new Error(errorBody.error || "Impossibile recuperare i preferiti");
+        throw new Error(t("loadError"));
       }
 
       const json = await res.json();
@@ -61,11 +62,11 @@ export function useFavorites(itemType: FavoriteItemType) {
       setFavorites(next);
     } catch (error) {
       console.error("Favorites load error", error);
-      showToast("Errore durante il caricamento dei preferiti", "error");
+      showToast(t("loadError"), "error");
     } finally {
       setLoading(false);
     }
-  }, [itemType, showToast]);
+  }, [itemType, showToast, t]);
 
   useEffect(() => {
     loadFavorites();
@@ -85,7 +86,7 @@ export function useFavorites(itemType: FavoriteItemType) {
         const jwt = data.session?.access_token;
 
         if (!jwt) {
-          showToast("Accedi per salvare i preferiti", "info");
+          showToast(t("authRequired"), "info");
           return;
         }
 
@@ -98,8 +99,7 @@ export function useFavorites(itemType: FavoriteItemType) {
           });
 
           if (!res.ok) {
-            const body = await res.json().catch(() => ({}));
-            throw new Error(body.error || "Errore durante la rimozione dai preferiti");
+            throw new Error(t("removeError"));
           }
 
           setFavorites((prev) => {
@@ -110,7 +110,7 @@ export function useFavorites(itemType: FavoriteItemType) {
 
           showToast(
             options?.removeMessage ||
-              `${options?.name ?? "Elemento"} rimosso dai preferiti`,
+              t("removed", { name: options?.name ?? t("item") }),
             "info",
           );
         } else {
@@ -124,8 +124,7 @@ export function useFavorites(itemType: FavoriteItemType) {
           });
 
           if (!res.ok) {
-            const body = await res.json().catch(() => ({}));
-            throw new Error(body.error || "Errore durante il salvataggio nei preferiti");
+            throw new Error(t("saveError"));
           }
 
           const json = await res.json();
@@ -138,7 +137,7 @@ export function useFavorites(itemType: FavoriteItemType) {
 
           showToast(
             options?.addMessage ||
-              `${options?.name ?? "Elemento"} aggiunto ai preferiti`,
+              t("added", { name: options?.name ?? t("item") }),
             "success",
           );
         }
@@ -147,7 +146,7 @@ export function useFavorites(itemType: FavoriteItemType) {
         showToast(
           error instanceof Error
             ? error.message
-            : "Errore durante la gestione dei preferiti",
+            : t("manageError"),
           "error",
         );
       } finally {
@@ -158,7 +157,7 @@ export function useFavorites(itemType: FavoriteItemType) {
         });
       }
     },
-    [favorites, itemType, showToast],
+    [favorites, itemType, showToast, t],
   );
 
   return {
@@ -170,4 +169,3 @@ export function useFavorites(itemType: FavoriteItemType) {
     reload: loadFavorites,
   };
 }
-

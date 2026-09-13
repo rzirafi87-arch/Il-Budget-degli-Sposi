@@ -1,0 +1,133 @@
+{
+  "milestone8": {
+    "map": {
+      "loading": "Chargement de la carte",
+      "results": "Carte des résultats du catalogue",
+      "dataAttribution": "Données cartographiques"
+    },
+    "favoriteActions": {
+      "loadError": "Impossible de charger les favoris",
+      "authRequired": "Connectez-vous pour enregistrer des favoris",
+      "removeError": "Impossible de supprimer le favori",
+      "saveError": "Impossible d'enregistrer le favori",
+      "manageError": "Impossible de mettre à jour les favoris",
+      "item": "Élément",
+      "removed": "{name} supprimé des favoris",
+      "added": "{name} ajouté aux favoris"
+    },
+    "suppliers": {
+      "eyebrow": "Catalogue mondial vérifiable",
+      "title": "Prestataires",
+      "description": "Recherchez des professionnels par nom, catégorie et zone géographique.",
+      "search": "Rechercher",
+      "searchPlaceholder": "Nom, ville, province, région ou catégorie",
+      "category": "Catégorie",
+      "allCategories": "Toutes les catégories",
+      "city": "Ville",
+      "loadError": "Impossible de charger les prestataires.",
+      "authRequired": "Connectez-vous pour enregistrer un prestataire.",
+      "saveError": "Impossible de mettre à jour les prestataires enregistrés.",
+      "loading": "Chargement…",
+      "emptyTitle": "Aucun prestataire trouvé",
+      "emptyDescription": "Modifiez les filtres pour élargir la recherche.",
+      "removeSaved": "Retirer des éléments enregistrés",
+      "saveSupplier": "Enregistrer le prestataire",
+      "details": "Détails",
+      "pagination": "Pagination",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page": "Page {page} sur {total}",
+      "verification": {
+        "VERIFIED": "Vérifié",
+        "PROBABLE": "Probable",
+        "TO_CHECK": "À vérifier"
+      },
+      "categories": {
+        "Beauty & Benessere": "Beauté et bien-être",
+        "Catering": "Traiteur",
+        "Location & Catering": "Lieux et traiteur",
+        "Sposa": "Mariée",
+        "Foto & Video": "Photo et vidéo",
+        "Fiori & Decor": "Fleurs et décoration",
+        "Gioiellerie": "Bijouteries",
+        "Inviti & Stationery": "Invitations et papeterie",
+        "Trasporti": "Transport",
+        "Sposo": "Marié",
+        "Musica & Intrattenimento": "Musique et divertissement",
+        "Viaggio di nozze": "Lune de miel",
+        "Ricevimento Location": "Lieux de réception",
+        "Bomboniere & Regali": "Cadeaux d'invités",
+        "Fiorai": "Fleuristes",
+        "Musica Ricevimento": "Musique de réception",
+        "Fotografi": "Photographes",
+        "fiori": "Fleurs"
+      }
+    },
+    "supplierProfile": {
+      "errors": {
+        "save": "Impossible d'enregistrer les modifications",
+        "authUpload": "Vous devez être connecté pour importer des images.",
+        "saveImages": "Impossible d'enregistrer les images",
+        "removeImage": "Impossible de supprimer l'image"
+      },
+      "watchVideo": "Voir la vidéo {number}",
+      "loading": "Chargement du prestataire…",
+      "notFound": "Prestataire introuvable.",
+      "supplier": "Prestataire",
+      "photoAlt": "Photo {number} de {name}",
+      "deletePhoto": "Supprimer la photo",
+      "delete": "Supprimer",
+      "description": "Description",
+      "noDescription": "Le prestataire n'a pas encore ajouté de description.",
+      "video": "Vidéo",
+      "contacts": "Coordonnées",
+      "website": "Site web",
+      "discounts": "Réductions et promotions",
+      "editPage": "Modifier votre page",
+      "descriptionPlaceholder": "Présentez qui vous êtes, vos services et vos atouts.",
+      "discountPlaceholder": "Réductions ou promotions éventuelles.",
+      "uploadPhotos": "Importer des photos",
+      "uploading": "Importation…",
+      "photosOnePerLine": "Photos (une par ligne)",
+      "videosOnePerLine": "Vidéos (une par ligne)",
+      "saving": "Enregistrement…",
+      "saveChanges": "Enregistrer les modifications",
+      "publicChanges": "Les modifications sont visibles par tous."
+    },
+    "favorites": {
+      "unknownCity": "Lieu indisponible",
+      "loading": "Chargement…",
+      "title": "Mes favoris",
+      "home": "Accueil",
+      "breadcrumb": "Favoris",
+      "summary": "Tous vos prestataires, lieux et églises enregistrés au même endroit.",
+      "infoTitle": "Rassemblez vos favoris",
+      "infoDescription": "Retrouvez les prestataires, lieux et églises enregistrés. Ajoutez des notes, des évaluations et comparez-les facilement.",
+      "tips": {
+        "save": "Enregistrez des options pour les comparer plus tard",
+        "notes": "Ajoutez des notes personnelles à chaque favori",
+        "rating": "Utilisez les étoiles pour attribuer une note",
+        "filter": "Filtrez par type pour organiser la recherche",
+        "remove": "Supprimez les options écartées"
+      },
+      "eventTips": {
+        "wedding": "Pour votre mariage, enregistrez et comparez les professionnels avant de réserver.",
+        "baptism": "Pour un baptême, comparez les églises, lieux et photographes.",
+        "birthday": "Pour un anniversaire, comparez lieux, traiteurs, DJ et animateurs.",
+        "graduation": "Pour une remise de diplôme, comparez lieux, photographes et services d'invitations."
+      },
+      "filters": {
+        "all": "Tous",
+        "suppliers": "Prestataires",
+        "locations": "Lieux",
+        "churches": "Églises"
+      },
+      "emptyTitle": "Aucun favori pour le moment",
+      "emptyDescription": "Commencez à enregistrer les prestataires, lieux et églises qui vous plaisent.",
+      "exploreSuppliers": "Explorer les prestataires",
+      "discoverLocations": "Découvrir les lieux",
+      "removeFavorite": "Supprimer des favoris",
+      "savedOn": "Enregistré le {date}"
+    }
+  }
+}

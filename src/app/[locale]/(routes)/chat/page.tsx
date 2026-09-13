@@ -1,10 +1,12 @@
 ﻿"use client";
 import { useEffect, useState } from "react";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useTranslations } from "next-intl";
 
 type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 
 export default function ChatPage() {
+  const t = useTranslations("milestone9.chat");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,7 +43,7 @@ export default function ChatPage() {
       const { data: sessionData } = await getBrowserClient().auth.getSession();
       const jwt = sessionData.session?.access_token;
       if (!jwt) {
-        setError("Accedi per utilizzare l’assistente AI.");
+        setError(t("signIn"));
         return;
       }
       const res = await fetch("/api/chat", {
@@ -54,11 +56,11 @@ export default function ChatPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || "Errore durante la richiesta.");
+        setError(data?.error || t("requestError"));
       }
       setMessages([...newMessages, { role: "assistant", content: data?.reply || "" }]);
     } catch {
-      setError("Connessione non disponibile.");
+      setError(t("connectionError"));
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ export default function ChatPage() {
   if (enabled === null) {
     return (
   <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
-        <div className="text-gray-700">Verifica disponibilità assistente…</div>
+        <div className="text-gray-700">{t("checking")}</div>
       </div>
     );
   }
@@ -76,8 +78,8 @@ export default function ChatPage() {
     return (
   <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
         <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 border border-gray-200 text-center">
-          <h1 className="text-2xl font-bold mb-3">Assistente AI non disponibile</h1>
-          <p className="text-gray-600">Configura la variabile <code>OPENAI_API_KEY</code> per abilitare la chat.</p>
+          <h1 className="text-2xl font-bold mb-3">{t("unavailable")}</h1>
+          <p className="text-gray-600">{t("configurationRequired")}</p>
         </div>
       </div>
     );
@@ -86,10 +88,10 @@ export default function ChatPage() {
   return (
   <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0] p-4">
       <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-        <h1 className="text-2xl font-bold mb-4 text-center">Chat con il tuo assistente AI</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">{t("title")}</h1>
         <div className="mb-2 text-sm text-red-600 h-5">{error || ""}</div>
         <div className="mb-4 h-64 overflow-y-auto border rounded p-2 bg-gray-50">
-          {messages.length === 0 && <div className="text-gray-400 text-center mt-16">Inizia la conversazione...</div>}
+          {messages.length === 0 && <div className="text-gray-400 text-center mt-16">{t("empty")}</div>}
           {messages.map((msg, i) => (
             <div key={i} className={`mb-2 text-sm ${msg.role === "user" ? "text-right" : "text-left"}`}>
               <span className={msg.role === "user" ? "bg-[#A3B59D] text-white px-3 py-2 rounded-xl inline-block" : "bg-gray-200 text-gray-800 px-3 py-2 rounded-xl inline-block"}>
@@ -104,14 +106,14 @@ export default function ChatPage() {
             className="flex-1 border border-gray-300 rounded-xl px-4 py-2 text-base"
             value={input}
             onChange={e => setInput(e.target.value)}
-            placeholder="Scrivi un messaggio..."
+            placeholder={t("placeholder")}
             disabled={loading}
           />
           <button
             type="submit"
             className="bg-[#A3B59D] text-white px-6 py-2 rounded-xl font-semibold hover:bg-[#8da182] transition-all disabled:opacity-60"
             disabled={loading || !input.trim()}
-          >{loading ? "Invio..." : "Invia"}</button>
+          >{loading ? t("sending") : t("send")}</button>
         </form>
       </div>
     </div>

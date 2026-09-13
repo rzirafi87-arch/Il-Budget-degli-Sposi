@@ -14,7 +14,13 @@ describe("Branch 41 guest snapshot contract", () => {
 
   it("never returns success when the database reports an error", () => {
     expect(route).toContain("if (error)");
-    expect(route).toContain("nessun dato è stato modificato");
+    expect(route).toContain('fail("GUEST_SNAPSHOT_SAVE_FAILED")');
+    expect(route).not.toContain("nessun dato è stato modificato");
+  });
+
+  it("returns stable presentation-independent validation codes", () => {
+    expect(route).toContain('fail("GUEST_SNAPSHOT_INVALID", 400)');
+    expect(route).toContain('fail("GUEST_SNAPSHOT_TOO_LARGE", 413)');
   });
 
   it("preserves IDs, resolves temporary relations, partner access and event isolation", () => {

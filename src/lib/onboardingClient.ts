@@ -13,12 +13,19 @@ export type OnboardingStatus =
   | { kind: "needs-event-selection"; accessToken: string }
   | { kind: "complete"; accessToken: string; event: EventSummary };
 
+export class OnboardingError extends Error {
+  constructor(public readonly code: "SESSION_CHECK_FAILED" | "PROJECT_CHECK_FAILED") {
+    super(code);
+    this.name = "OnboardingError";
+  }
+}
+
 export async function getOnboardingStatus(): Promise<OnboardingStatus> {
   const supabase = getBrowserClient();
   const { data, error } = await supabase.auth.getSession();
 
   if (error) {
-    throw new Error(error.message || "Impossibile verificare la sessione");
+    throw new OnboardingError("SESSION_CHECK_FAILED");
   }
 
   const accessToken = data.session?.access_token;
@@ -30,7 +37,7 @@ export async function getOnboardingStatus(): Promise<OnboardingStatus> {
   });
 
   if (!response.ok) {
-    throw new Error("Impossibile verificare il progetto dell'utente");
+    throw new OnboardingError("PROJECT_CHECK_FAILED");
   }
 
   const payload = (await response.json()) as { event?: EventSummary | null; status?: string };

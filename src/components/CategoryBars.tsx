@@ -1,5 +1,6 @@
 ﻿"use client";
 import { formatCurrency } from "@/lib/locale";
+import { useTranslations } from "next-intl";
 
 type CategorySpend = {
   category: string;
@@ -14,6 +15,7 @@ type CategoryBarsProps = {
 };
 
 export default function CategoryBars({ categories, totalBudget, className = "" }: CategoryBarsProps) {
+  const t = useTranslations("budgetRuntime.categories");
   // Ordina per importo decrescente
   const sortedCategories = [...categories].sort((a, b) => b.amount - a.amount).slice(0, 8); // Top 8
 
@@ -34,12 +36,12 @@ export default function CategoryBars({ categories, totalBudget, className = "" }
   return (
     <div className={`space-y-4 ${className}`}>
       <h3 className="text-lg font-bold text-gray-800 mb-4">
-        📊 Spese per Categoria (Top 8)
+        {t("title")}
       </h3>
 
       {sortedCategories.length === 0 ? (
         <div className="text-center py-8 text-gray-500 italic">
-          Nessuna spesa registrata ancora
+          {t("empty")}
         </div>
       ) : (
         sortedCategories.map((cat, index) => (

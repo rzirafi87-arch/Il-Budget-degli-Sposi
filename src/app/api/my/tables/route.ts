@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   const db = getServiceClient();
   const { data: userData, error: userError } = await db.auth.getUser(jwt);
   if (userError) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   }
   const userId = userData.user.id;
 
@@ -55,14 +55,14 @@ export async function GET(req: NextRequest) {
   const tables = (tablesData || []).map((t: any) => ({
     id: t.id,
     tableNumber: t.table_number,
-    tableName: t.table_name || `Tavolo ${t.table_number}`,
+    tableName: t.table_name || null,
     tableType: t.table_type,
     totalSeats: t.total_seats,
     notes: t.notes || "",
     assignedGuests: (t.table_assignments || []).map((ta: any) => ({
       id: ta.id,
       guestId: ta.guest_id,
-      guestName: ta.guests?.name || "Sconosciuto",
+      guestName: ta.guests?.name || null,
       seatNumber: ta.seat_number,
     })),
   }));

@@ -9,7 +9,7 @@ import {
   normalizeEventType,
 } from "@/lib/eventTypeCapabilities";
 import { locales } from "@/i18n/config";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
@@ -45,6 +45,7 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
   const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations("runtimeUi.routing");
   const normalizedPath = useMemo(() => normalizePathname(pathname), [pathname]);
   const routeModule = useMemo(() => moduleForPath(normalizedPath), [normalizedPath]);
   const isLegacyComingSoonRoute = COMING_SOON_EVENT_ROUTE_PREFIXES.some(
@@ -124,28 +125,22 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
   }
 
   if (selectionRequired) {
-    const copy = locale === "en"
-      ? "Select the event from Settings to continue."
-      : locale === "es"
-        ? "Selecciona el evento desde Ajustes para continuar."
-        : "Seleziona l’evento dalle Impostazioni per continuare.";
-    const button = locale === "en" ? "Open Settings" : locale === "es" ? "Abrir Ajustes" : "Apri Impostazioni";
     return (
       <section className="mx-auto my-10 max-w-lg rounded-2xl border border-border bg-card p-6 text-center shadow-soft">
-        <p className="text-fg">{copy}</p>
+        <p className="text-fg">{t("selectEvent")}</p>
         <button
           type="button"
           className="app-button app-button--primary mt-5"
           onClick={() => window.dispatchEvent(new CustomEvent("open-quick-settings"))}
         >
-          {button}
+          {t("openSettings")}
         </button>
       </section>
     );
   }
 
   if (isLegacyComingSoonRoute || !routeModule || verifiedPath !== normalizedPath) {
-    return <LoadingState label="Verifica disponibilità modulo" cards={2} />;
+    return <LoadingState label={t("checkingModule")} cards={2} />;
   }
 
   return <>{children}</>;

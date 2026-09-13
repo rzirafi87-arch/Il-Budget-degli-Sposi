@@ -1,0 +1,52 @@
+{
+  "milestone7": {
+    "timeline": {
+      "demo": {
+        "baby": {
+          "plan": {
+            "title": "6–8 Wochen vorher",
+            "description": "Datum, Gästeliste, Budget und Thema festlegen."
+          },
+          "book": {
+            "title": "4–6 Wochen vorher",
+            "description": "Location, Catering und Fotografie buchen."
+          },
+          "invites": {
+            "title": "3–4 Wochen vorher",
+            "description": "Einladungen senden und Rückmeldungen öffnen."
+          },
+          "decor": {
+            "title": "2 Wochen vorher",
+            "description": "Dekoration, Ballons und Torte bestellen."
+          },
+          "final": {
+            "title": "Woche der Veranstaltung",
+            "description": "Letzte Bestätigungen, Aufbau und Spiele."
+          },
+          "day": {
+            "title": "Veranstaltungstag",
+            "description": "Aufbau, Empfang, Fotos und Danksagungen."
+          }
+        },
+        "proposal": {
+          "plan": {
+            "title": "Planen",
+            "description": "Budget, Stil und Zeitplan festlegen."
+          },
+          "book": {
+            "title": "Buchen",
+            "description": "Location, Fotografie und Musik."
+          },
+          "prepare": {
+            "title": "Vorbereiten",
+            "description": "Aufbau, Rede und Vorwand."
+          },
+          "day": {
+            "title": "Der Tag",
+            "description": "Koordination und Überraschung."
+          }
+        }
+      }
+    }
+  }
+}

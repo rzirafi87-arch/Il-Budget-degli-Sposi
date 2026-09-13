@@ -1,4 +1,5 @@
 import { defaultLocale, locales, type Locale } from "./config";
+import { normalizeMessageSchema } from "./normalizeMessageSchema";
 import path from "node:path";
 import fs from "node:fs/promises";
 
@@ -53,5 +54,5 @@ export async function getMessages(locale: string): Promise<Messages> {
     return getMessages(defaultLocale);
   }
 
-  return messages;
+  return normalizeMessageSchema(messages);
 }

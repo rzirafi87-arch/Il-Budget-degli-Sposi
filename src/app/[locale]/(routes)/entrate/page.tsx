@@ -145,7 +145,7 @@ export default function EntratePage() {
 
       if (!r.ok) {
         const j = await r.json();
-        setMessage(`${t("incomesPage.messages.networkError")}: ${j.error || "Impossibile salvare"}`);
+        setMessage(`${t("incomesPage.messages.networkError")}: ${j.error || t("milestone9.runtime.incomes.saveFailed")}`);
       } else {
         setMessage(t("incomesPage.messages.successAdded"));
         setShowForm(false);

@@ -3,7 +3,7 @@
 import PageInfoNote from "@/components/PageInfoNote";
 import { formatCurrency } from "@/lib/locale";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 type GiftItem = {
@@ -18,21 +18,16 @@ type GiftItem = {
   notes?: string;
 };
 
-const GIFT_TYPES = [
-  "Contributo viaggio di nozze",
-  "Cassa comune",
-  "Esperienze (cene, spa, tour)",
-  "Arredamento",
-  "Elettrodomestici",
-  "Beni di lusso",
-  "Beneficenza",
-  "Buoni regalo",
-  "Tech & Smart Home",
-  "Altro",
-];
+const GIFT_TYPES = ["honeymoon", "cash", "experiences", "furniture", "appliances", "luxury", "charity", "vouchers", "smartHome", "other"] as const;
+const GIFT_TYPE_VALUES: Record<(typeof GIFT_TYPES)[number], string> = {
+  honeymoon: "Contributo viaggio di nozze", cash: "Cassa comune", experiences: "Esperienze (cene, spa, tour)",
+  furniture: "Arredamento", appliances: "Elettrodomestici", luxury: "Beni di lusso", charity: "Beneficenza",
+  vouchers: "Buoni regalo", smartHome: "Tech & Smart Home", other: "Altro",
+};
 
 export default function ListaNozzePage() {
   const locale = useLocale();
+  const t = useTranslations("milestone9.giftList");
   const eventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isWedding = eventType === "wedding";
   const [items, setItems] = useState<GiftItem[]>([]);
@@ -41,7 +36,7 @@ export default function ListaNozzePage() {
   const [message, setMessage] = useState<string | null>(null);
 
   const [newItem, setNewItem] = useState<GiftItem>({
-    type: GIFT_TYPES[0],
+    type: GIFT_TYPE_VALUES.honeymoon,
     name: "",
     description: "",
     price: undefined,
@@ -76,19 +71,19 @@ export default function ListaNozzePage() {
       });
       if (!res.ok) {
         const j = await res.json();
-        setMessage(`${j.error || "Errore"}`);
+        setMessage(`${j.error || t("errors.generic")}`);
       } else {
         const j = await res.json();
         setItems((prev) => [j.item, ...prev]);
-        setMessage("Aggiunto alla lista!");
+        setMessage(t("added"));
         setNewItem({
-          type: GIFT_TYPES[0], name: "", description: "", price: undefined, url: "",
+          type: GIFT_TYPE_VALUES.honeymoon, name: "", description: "", price: undefined, url: "",
           priority: "media", status: "desiderato", notes: "",
         });
         setTimeout(() => setMessage(null), 2500);
       }
     } catch {
-      setMessage("Errore di rete");
+      setMessage(t("errors.network"));
     } finally {
       setSaving(false);
     }
@@ -97,19 +92,19 @@ export default function ListaNozzePage() {
   return (
     <section className="pt-6">
       <div className="flex items-start justify-between mb-2">
-        <h2 className="font-serif text-3xl">Lista Nozze</h2>
+        <h2 className="font-serif text-3xl">{t("title")}</h2>
         <div className="flex gap-2">
           {isWedding && (
-            <Link href={`/${locale}/entrate`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Vai a Entrate</Link>
+            <Link href={`/${locale}/entrate`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("income")}</Link>
           )}
-          <Link href={`/${locale}/dashboard`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna in Dashboard</Link>
+          <Link href={`/${locale}/dashboard`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("dashboard")}</Link>
         </div>
       </div>
 
       {!isWedding && (
         <div className="p-5 rounded-2xl border-2 border-yellow-300 bg-yellow-50 mb-6">
           <p className="text-gray-900">
-            La Lista Nozze è disponibile solo per l&apos;evento Matrimonio. Seleziona il tipo evento &quot;Matrimonio&quot; per abilitarla.
+            {t("weddingOnly")}
           </p>
         </div>
       )}
@@ -117,20 +112,11 @@ export default function ListaNozzePage() {
       {isWedding && (
       <PageInfoNote
         icon="🎁"
-        title="Crea la Tua Lista Nozze Moderna"
-        description="La Lista Nozze non è più solo oggetti per la casa! Qui puoi creare una lista moderna con contributi al viaggio di nozze, esperienze, cassa comune o regali tradizionali. Ogni articolo può avere priorità, descrizione, link e stato (desiderato/acquistato)."
-        tips={[
-          "Usa 'Contributo viaggio di nozze' per permettere agli ospiti di contribuire alla luna di miele",
-          "La 'Cassa comune' è perfetta se preferite liquidità invece di oggetti specifici",
-          "Aggiungi link URL per articoli su Amazon, eBay o negozi online - gli ospiti sapranno esattamente cosa comprare",
-          "Marca come 'acquistato' i regali che ricevi per evitare duplicati",
-          "Le priorità (alta/media/bassa) aiutano gli ospiti a capire cosa desiderate di più"
-        ]}
+        title={t("info.title")}
+        description={t("info.description")}
+        tips={[t("info.tips.honeymoon"), t("info.tips.cash"), t("info.tips.links"), t("info.tips.purchased"), t("info.tips.priority")]}
         eventTypeSpecific={{
-          wedding: "Per il matrimonio, la lista nozze moderna include: viaggio di nozze (la più popolare!), esperienze di coppia, arredamento casa, tech/smart home. Meno piatti e più esperienze!",
-          baptism: "Per il battesimo, la lista regalo può includere: buoni risparmio per il bambino, libretti educativi, giocattoli montessoriani, contributi per il futuro del bimbo.",
-          birthday: "Per il compleanno, personalizza la lista in base all'età: per i 18 anni contributi per viaggi/esperienze, per i 50 anni esperienze di lusso (spa, cene stellate).",
-          graduation: "Per la laurea, considera: contributi per master/specializzazione, viaggio post-laurea, attrezzatura professionale (laptop, tablet), esperienze di celebrazione."
+          wedding: t("info.events.wedding"), baptism: t("info.events.baptism"), birthday: t("info.events.birthday"), graduation: t("info.events.graduation")
         }}
   />)}
 
@@ -140,31 +126,31 @@ export default function ListaNozzePage() {
 
       {isWedding && (
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <h3 className="font-semibold mb-3">Aggiungi regalo</h3>
+        <h3 className="font-semibold mb-3">{t("addGift")}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Tipologia</label>
+            <label className="block text-sm font-medium mb-1">{t("fields.type")}</label>
             <select
               className="border rounded px-3 py-2 w-full"
               value={newItem.type}
               onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
             >
-              {GIFT_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
+              {GIFT_TYPES.map((key) => (
+                <option key={key} value={GIFT_TYPE_VALUES[key]}>{t(`types.${key}`)}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Nome</label>
+            <label className="block text-sm font-medium mb-1">{t("fields.name")}</label>
             <input
               className="border rounded px-3 py-2 w-full"
               value={newItem.name}
               onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-              placeholder="Es. Robot aspirapolvere"
+              placeholder={t("fields.namePlaceholder")}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Prezzo stimato (€)</label>
+            <label className="block text-sm font-medium mb-1">{t("fields.price")}</label>
             <input
               type="number"
               className="border rounded px-3 py-2 w-full"
@@ -182,7 +168,7 @@ export default function ListaNozzePage() {
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">Descrizione</label>
+            <label className="block text-sm font-medium mb-1">{t("fields.description")}</label>
             <textarea
               className="border rounded px-3 py-2 w-full"
               rows={2}
@@ -191,35 +177,35 @@ export default function ListaNozzePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Priorità</label>
+            <label className="block text-sm font-medium mb-1">{t("fields.priority")}</label>
             <select
               className="border rounded px-3 py-2 w-full"
               value={newItem.priority}
               onChange={(e) => setNewItem({ ...newItem, priority: e.target.value as GiftItem["priority"] })}
             >
-              <option value="alta">Alta</option>
-              <option value="media">Media</option>
-              <option value="bassa">Bassa</option>
+              <option value="alta">{t("priorities.high")}</option>
+              <option value="media">{t("priorities.medium")}</option>
+              <option value="bassa">{t("priorities.low")}</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Stato</label>
+            <label className="block text-sm font-medium mb-1">{t("fields.status")}</label>
             <select
               className="border rounded px-3 py-2 w-full"
               value={newItem.status}
               onChange={(e) => setNewItem({ ...newItem, status: e.target.value as GiftItem["status"] })}
             >
-              <option value="desiderato">Desiderato</option>
-              <option value="acquistato">Acquistato</option>
+              <option value="desiderato">{t("statuses.wanted")}</option>
+              <option value="acquistato">{t("statuses.purchased")}</option>
             </select>
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">Note</label>
+            <label className="block text-sm font-medium mb-1">{t("fields.notes")}</label>
             <input
               className="border rounded px-3 py-2 w-full"
               value={newItem.notes}
               onChange={(e) => setNewItem({ ...newItem, notes: e.target.value })}
-              placeholder="Note opzionali"
+              placeholder={t("fields.notesPlaceholder")}
             />
           </div>
         </div>
@@ -229,16 +215,16 @@ export default function ListaNozzePage() {
             disabled={saving}
             className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84] disabled:opacity-50"
           >
-            {saving ? "Salvataggio..." : "+ Aggiungi"}
+            {saving ? t("saving") : t("add")}
           </button>
         </div>
   </div>
   )}
 
       {isWedding && (loading ? (
-        <div className="text-gray-500">Caricamento...</div>
+        <div className="text-gray-500">{t("loading")}</div>
       ) : items.length === 0 ? (
-        <div className="p-8 text-center text-gray-500 rounded-xl border bg-white/70">Nessun elemento in lista</div>
+        <div className="p-8 text-center text-gray-500 rounded-xl border bg-white/70">{t("empty")}</div>
       ) : (
         <div className="grid gap-4">
           {items.map((it) => (
@@ -257,7 +243,7 @@ export default function ListaNozzePage() {
                 {typeof it.price === "number" && (
                   <div className="font-bold">{formatCurrency(it.price)}</div>
                 )}
-                <div className="text-xs text-gray-500 mt-1">{it.status === "acquistato" ? "Acquistato" : "Desiderato"}</div>
+                <div className="text-xs text-gray-500 mt-1">{it.status === "acquistato" ? t("statuses.purchased") : t("statuses.wanted")}</div>
               </div>
             </div>
           ))}
@@ -266,5 +252,4 @@ export default function ListaNozzePage() {
     </section>
   );
 }
-
 

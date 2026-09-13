@@ -11,9 +11,10 @@ describe("Branch 41 budget snapshot contract", () => {
     expect(migration).toContain("create or replace function public.save_budget_idea_snapshot");
   });
 
-  it("reports failure without claiming that partial data was saved", () => {
+  it("reports a localizable failure without claiming that partial data was saved", () => {
     expect(route).toContain("if (snapshotError)");
-    expect(route).toContain("nessun dato è stato modificato");
+    expect(route).toContain('{ error: "BUDGET_IDEA_SAVE_FAILED", code: snapshotError.code || null }');
+    expect(route).not.toContain("nessun dato è stato modificato");
   });
 
   it("keeps the privileged RPC service-role-only and validates couple access", () => {
@@ -25,4 +26,3 @@ describe("Branch 41 budget snapshot contract", () => {
     expect(migration).toContain("to service_role");
   });
 });
-

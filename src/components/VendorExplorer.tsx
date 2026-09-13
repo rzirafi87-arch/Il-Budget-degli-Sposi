@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface Vendor {
   id: string;
@@ -37,15 +38,8 @@ interface VendorExplorerProps {
 }
 
 const VENDOR_TYPES = [
-  { value: "location", label: "Location Ricevimento" },
-  { value: "church", label: "Chiese" },
-  { value: "planner", label: "Wedding Planner" },
-  { value: "band", label: "Band/Musica" },
-  { value: "dj", label: "DJ" },
-  { value: "photographer", label: "Fotogralo" },
-  { value: "videographer", label: "Videomaker" },
-  { value: "florist", label: "Fiorista" },
-  { value: "caterer", label: "Catering" },
+  "location", "church", "planner", "band", "dj", "photographer",
+  "videographer", "florist", "caterer",
 ];
 
 const ITALIAN_REGIONS = [
@@ -96,6 +90,7 @@ export default function VendorExplorer({
   initialType = "location",
   initialRegion,
 }: VendorExplorerProps) {
+  const t = useTranslations("milestone9.runtime");
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -161,11 +156,10 @@ export default function VendorExplorer({
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Esplora Fornitori Matrimonio
+            {t("vendorExplorer.title")}
           </h1>
           <p className="text-gray-600">
-            Trova i migliori fornitori per il tuo evento da fonti verificate
-            (Google Places, OpenStreetMap)
+            {t("vendorExplorer.description")}
           </p>
         </div>
 
@@ -175,7 +169,7 @@ export default function VendorExplorer({
             {/* Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tipo Fornitore
+                {t("vendorExplorer.filters.type")}
               </label>
               <select
                 value={type}
@@ -185,9 +179,9 @@ export default function VendorExplorer({
                 }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent"
               >
-                {VENDOR_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
+                {VENDOR_TYPES.map((vendorType) => (
+                  <option key={vendorType} value={vendorType}>
+                    {t(`vendorExplorer.types.${vendorType}`)}
                   </option>
                 ))}
               </select>
@@ -196,7 +190,7 @@ export default function VendorExplorer({
             {/* Region */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Regione
+                {t("vendorExplorer.filters.region")}
               </label>
               <select
                 value={region}
@@ -206,7 +200,7 @@ export default function VendorExplorer({
                 }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent"
               >
-                <option value="">Tutte le regioni</option>
+                <option value="">{t("vendorExplorer.filters.allRegions")}</option>
                 {(
                   (typeof window !== 'undefined' && (localStorage.getItem('country') || 'it')) === 'mx'
                     ? MEXICAN_STATES
@@ -222,7 +216,7 @@ export default function VendorExplorer({
             {/* City */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Città
+                {t("vendorExplorer.filters.city")}
               </label>
               <input
                 type="text"
@@ -231,7 +225,7 @@ export default function VendorExplorer({
                   setCity(e.target.value);
                   setOffset(0);
                 }}
-                placeholder="Es: Palermo"
+                placeholder={t("vendorExplorer.filters.cityPlaceholder")}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent"
               />
             </div>
@@ -239,7 +233,7 @@ export default function VendorExplorer({
             {/* Rating */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Valutazione Minima
+                {t("vendorExplorer.filters.minimumRating")}
               </label>
               <select
                 value={minRating || ""}
@@ -249,7 +243,7 @@ export default function VendorExplorer({
                 }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent"
               >
-                <option value="">Qualsiasi</option>
+                <option value="">{t("vendorExplorer.filters.any")}</option>
                 <option value="3.0">3.0+</option>
                 <option value="3.5">3.5+</option>
                 <option value="4.0">4.0+</option>
@@ -260,7 +254,7 @@ export default function VendorExplorer({
             {/* Price Range */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Fascia Prezzo
+                {t("vendorExplorer.filters.priceRange")}
               </label>
               <select
                 value={priceRange}
@@ -270,11 +264,11 @@ export default function VendorExplorer({
                 }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#A3B59D] focus:border-transparent"
               >
-                <option value="">Qualsiasi</option>
-                <option value="€">€ - Economico</option>
-                <option value="€€">€€ - Medio</option>
-                <option value="€€€">€€€ - Alto</option>
-                <option value="€€€€">€€€€ - Lusso</option>
+                <option value="">{t("vendorExplorer.filters.any")}</option>
+                <option value="€">{t("vendorExplorer.priceRanges.budget")}</option>
+                <option value="€€">{t("vendorExplorer.priceRanges.medium")}</option>
+                <option value="€€€">{t("vendorExplorer.priceRanges.high")}</option>
+                <option value="€€€€">{t("vendorExplorer.priceRanges.luxury")}</option>
               </select>
             </div>
 
@@ -291,7 +285,7 @@ export default function VendorExplorer({
                   className="w-5 h-5 text-[#A3B59D] border-gray-300 rounded focus:ring-[#A3B59D]"
                 />
                 <span className="text-sm font-medium text-gray-700">
-                  Solo Verificati
+                  {t("vendorExplorer.filters.verifiedOnly")}
                 </span>
               </label>
             </div>
@@ -302,7 +296,7 @@ export default function VendorExplorer({
                 onClick={resetFilters}
                 className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 underline"
               >
-                Reset Filtri
+                {t("vendorExplorer.filters.reset")}
               </button>
             </div>
           </div>
@@ -311,10 +305,10 @@ export default function VendorExplorer({
         {/* Results Count */}
         <div className="mb-4 text-gray-600">
           {loading ? (
-            <span>Caricamento...</span>
+            <span>{t("vendorExplorer.loading")}</span>
           ) : (
             <span>
-              Trovati <strong>{total}</strong> fornitori
+              {t.rich("vendorExplorer.results.count", { total, strong: (chunks) => <strong>{chunks}</strong> })}
             </span>
           )}
         </div>
@@ -326,7 +320,7 @@ export default function VendorExplorer({
           </div>
         ) : vendors.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow-md">
-            <p className="text-gray-600">Nessun fornitore trovato con i filtri selezionati.</p>
+            <p className="text-gray-600">{t("vendorExplorer.results.empty")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -344,11 +338,14 @@ export default function VendorExplorer({
               disabled={offset === 0}
               className="px-4 py-2 bg-white border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Precedente
+              {t("vendorExplorer.pagination.previous")}
             </button>
             
             <span className="text-gray-600">
-              Pagina {Math.floor(offset / limit) + 1} di {Math.ceil(total / limit)}
+              {t("vendorExplorer.pagination.page", {
+                current: Math.floor(offset / limit) + 1,
+                total: Math.ceil(total / limit),
+              })}
             </span>
             
             <button
@@ -356,7 +353,7 @@ export default function VendorExplorer({
               disabled={offset + limit >= total}
               className="px-4 py-2 bg-white border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Successiva
+              {t("vendorExplorer.pagination.next")}
             </button>
           </div>
         )}
@@ -366,6 +363,7 @@ export default function VendorExplorer({
 }
 
 function VendorCard({ vendor }: { vendor: Vendor }) {
+  const t = useTranslations("milestone9.runtime");
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       {/* Header with badge */}
@@ -376,7 +374,7 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
           </h3>
           {vendor.verified && (
             <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-              ✓ Verificato
+              {t("vendorExplorer.card.verified")}
             </span>
           )}
         </div>
@@ -389,7 +387,10 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
               {"☆".repeat(5 - Math.round(vendor.rating))}
             </span>
             <span className="ml-2 text-gray-600 text-sm">
-              {vendor.rating.toFixed(1)} ({vendor.ratingCount} recensioni)
+              {t("vendorExplorer.card.reviews", {
+                rating: vendor.rating.toFixed(1),
+                count: vendor.ratingCount ?? 0,
+              })}
             </span>
           </div>
         )}
@@ -425,7 +426,7 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
         <div className="space-y-2 mb-4">
           {vendor.contact.phone && (
             <div className="text-sm">
-              <span className="font-medium text-gray-700">Tel:</span>{" "}
+              <span className="font-medium text-gray-700">{t("vendorExplorer.card.phone")}</span>{" "}
               <a href={`tel:${vendor.contact.phone}`} className="text-[#A3B59D] hover:underline">
                 {vendor.contact.phone}
               </a>
@@ -433,7 +434,7 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
           )}
           {vendor.contact.email && (
             <div className="text-sm">
-              <span className="font-medium text-gray-700">Email:</span>{" "}
+              <span className="font-medium text-gray-700">{t("vendorExplorer.card.email")}</span>{" "}
               <a href={`mailto:${vendor.contact.email}`} className="text-[#A3B59D] hover:underline">
                 {vendor.contact.email}
               </a>
@@ -447,7 +448,7 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
                 rel="noopener noreferrer"
                 className="text-[#A3B59D] hover:underline font-medium"
               >
-                Visita il sito →
+                {t("vendorExplorer.card.visitWebsite")}
               </a>
             </div>
           )}
@@ -456,7 +457,7 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
         {/* Source badge */}
         <div className="pt-4 border-t border-gray-100">
           <span className="text-xs text-gray-500">
-            Dati da{" "}
+            {t("vendorExplorer.card.source")}{" "}
             {vendor.source.type === "google" ? "Google Places" : 
              vendor.source.type === "osm" ? "OpenStreetMap" : 
              vendor.source.type}

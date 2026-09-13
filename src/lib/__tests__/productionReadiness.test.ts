@@ -18,7 +18,7 @@ describe("Branch 39 production readiness", () => {
   });
   it("provides a guarded cancellable deletion request", () => {
     const route = read("src/app/api/my/account-deletion/route.ts");
-    expect(route).toContain('body?.confirmation !== "ELIMINA"');
+    expect(route).toContain('body?.confirmation !== "DELETE"');
     expect(route).toContain("7 * 24 * 60 * 60 * 1000");
     expect(route).toContain("export async function DELETE");
   });

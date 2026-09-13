@@ -1,5 +1,7 @@
 import { getSiteUrl } from "@/config/brand";
+import { defaultLocale, getLanguageCapability } from "@/i18n/languageCapabilities";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
@@ -17,47 +19,25 @@ const themeBootstrapScript = `(() => {
   } catch {}
 })();`;
 
-// Load global fonts once at the app root and expose CSS variables
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-serif",
-  display: "swap",
-});
+const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-serif", display: "swap" });
+const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-sans", display: "swap" });
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-sans",
-  display: "swap",
-});
+export const metadata: Metadata = { metadataBase: new URL(getSiteUrl()) };
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getSiteUrl()),
-};
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const requestHeaders = await headers();
+  const requested = requestHeaders.get("x-app-locale");
+  const capability = getLanguageCapability(requested);
+  const locale = capability?.publicRouting ? capability.locale : defaultLocale;
+  const direction = capability?.publicRouting ? capability.direction : "ltr";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="it" data-theme="light" suppressHydrationWarning className={`${playfair.variable} ${inter.variable}`}>
+    <html lang={locale} dir={direction} data-theme="light" suppressHydrationWarning className={`${playfair.variable} ${inter.variable}`}>
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
-        <Script id="theme-bootstrap" strategy="beforeInteractive">
-          {themeBootstrapScript}
-        </Script>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <Script id="theme-bootstrap" strategy="beforeInteractive">{themeBootstrapScript}</Script>
       </head>
-
-      <body
-        className="min-h-screen antialiased"
-        style={{
-          background: "var(--background)",
-          color: "var(--text-primary)",
-        }}
-      >
-        {children}
-      </body>
+      <body className="min-h-screen antialiased" style={{ background: "var(--background)", color: "var(--text-primary)" }}>{children}</body>
     </html>
   );
 }

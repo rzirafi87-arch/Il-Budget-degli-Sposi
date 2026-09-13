@@ -10,6 +10,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 const supabase = getBrowserClient();
+const BRIDE_CATEGORY = "sposa";
+const GROOM_CATEGORY = "sposo";
 
 type AtelierItem = {
   id: string;
@@ -39,7 +41,7 @@ const ITALIAN_REGIONS = [
 export default function AtelierPage() {
   const t = useTranslations("suppliersAtelier");
   const country = getUserCountrySafe();
-  const [activeTab, setActiveTab] = useState<"sposa" | "sposo">("sposa");
+  const [activeTab, setActiveTab] = useState<"sposa" | "sposo">(BRIDE_CATEGORY);
   const [atelier, setAtelier] = useState<AtelierItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState<string>("");
@@ -178,11 +180,11 @@ export default function AtelierPage() {
       <div className="mb-6 flex gap-4 border-b border-gray-200">
         <button
           onClick={() => {
-            setActiveTab("sposa");
+            setActiveTab(BRIDE_CATEGORY);
             setSelectedRegion("");
           }}
           className={`px-6 py-3 font-semibold text-base transition-all ${
-            activeTab === "sposa"
+            activeTab === BRIDE_CATEGORY
               ? "border-b-4 border-pink-500 text-pink-700"
               : "text-gray-500 hover:text-gray-700"
           }`}
@@ -191,11 +193,11 @@ export default function AtelierPage() {
         </button>
         <button
           onClick={() => {
-            setActiveTab("sposo");
+            setActiveTab(GROOM_CATEGORY);
             setSelectedRegion("");
           }}
           className={`px-6 py-3 font-semibold text-base transition-all ${
-            activeTab === "sposo"
+            activeTab === GROOM_CATEGORY
               ? "border-b-4 border-blue-500 text-blue-700"
               : "text-gray-500 hover:text-gray-700"
           }`}
@@ -253,8 +255,8 @@ export default function AtelierPage() {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full border rounded px-3 py-2"
               >
-                <option value="sposa">{t("form.categories.bride")}</option>
-                <option value="sposo">{t("form.categories.groom")}</option>
+                <option value={BRIDE_CATEGORY}>{t("form.categories.bride")}</option>
+                <option value={GROOM_CATEGORY}>{t("form.categories.groom")}</option>
               </select>
             </div>
 
@@ -425,7 +427,7 @@ export default function AtelierPage() {
                       </span>
                     )}
                   </div>
-                  <span className="text-2xl">{activeTab === "sposa" ? "👰" : "🤵"}</span>
+                  <span className="text-2xl">{activeTab === BRIDE_CATEGORY ? "👰" : "🤵"}</span>
                 </div>
 
                 <div className="space-y-2 text-sm text-gray-600 mb-4">
@@ -489,7 +491,7 @@ export default function AtelierPage() {
                       <span
                         key={idx}
                         className={`text-xs px-3 py-1 rounded-full font-medium ${
-                          activeTab === "sposa"
+                          activeTab === BRIDE_CATEGORY
                             ? "bg-pink-100 text-pink-700"
                             : "bg-blue-100 text-blue-700"
                         }`}

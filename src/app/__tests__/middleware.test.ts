@@ -65,16 +65,16 @@ describe('middleware redirects onboarding', () => {
     expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
   });
 
-  it.each(['en', 'es', 'fr', 'de'])('redirects unavailable locale %s to the READY default without a mixed UI', (locale) => {
+  it.each(['en', 'es', 'fr', 'de'])('serves the audited locale %s without redirecting', (locale) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const res = middleware(makeReq(`/${locale}/dashboard`) as unknown as any) as MiddlewareResponse;
-    expect(res.status).toBe(307);
-    expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('location')).toBeNull();
   });
 
-  it('ignores a stale Coming Soon locale cookie', () => {
+  it('uses a READY English locale cookie', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const res = middleware(makeReq('/dashboard', { language: 'en' }) as unknown as any) as MiddlewareResponse;
-    expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
+    expect(res.headers.get('location')).toBe('http://localhost/en/dashboard');
   });
 });

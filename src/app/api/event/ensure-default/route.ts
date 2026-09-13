@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
           ok: false,
           code: "EVENT_TYPE_COMING_SOON",
           eventType: eventTypeSlug,
-          error: "Questo tipo di evento non è ancora disponibile.",
+          error: "EVENT_TYPE_NOT_AVAILABLE",
         },
         { status: 409 }
       );

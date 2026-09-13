@@ -1,0 +1,57 @@
+{
+  "milestone7": {
+    "documents": {
+      "eyebrow": "Archives numériques",
+      "title": "Documents et devis",
+      "description": "Importez et organisez tous les documents importants de votre événement.",
+      "infoTitle": "Vos archives numériques",
+      "infoDescription": "Regroupez devis, contrats, factures, reçus et certificats dans un espace sécurisé.",
+      "tips": {
+        "1": "Importez les devis dès leur réception pour les comparer",
+        "2": "Associez chaque document au prestataire concerné",
+        "3": "Utilisez la catégorie Contrat pour les documents signés",
+        "4": "Conservez reçus et factures pour la comptabilité finale",
+        "5": "Filtrez par catégorie pour retrouver rapidement les fichiers",
+        "6": "Formats acceptés : PDF, DOC, DOCX, JPG, PNG (10 Mo maximum)"
+      },
+      "events": {
+        "wedding": "Organisez les documents du lieu, du traiteur, du photographe, des fleurs, des tenues, de la musique et de la cérémonie.",
+        "baptism": "Archivez les certificats, devis, contrats et factures du baptême.",
+        "birthday": "Conservez les contrats, devis et factures de l’anniversaire.",
+        "graduation": "Archivez les réservations, devis, contrats et factures de la remise de diplôme."
+      },
+      "agendaTitle": "Agenda des documents",
+      "agendaDescription": "Organisez visites, échéances et rendez-vous liés à vos documents.",
+      "uploading": "Importation…",
+      "upload": "Importer des documents",
+      "uploadHelper": "Sélectionnez ou déposez les fichiers ici",
+      "uploadFormats": "PDF, Word, images • 10 Mo maximum par fichier",
+      "unassigned": "Non attribué",
+      "confirmDelete": "Supprimer ce document ?",
+      "empty": "Aucun document importé",
+      "emptyCategory": "Aucun document dans cette catégorie",
+      "emptyDescription": "Importez votre premier devis ou contrat pour créer vos archives.",
+      "emptyCategoryDescription": "Choisissez une autre catégorie pour afficher les documents disponibles.",
+      "download": "Télécharger",
+      "downloadNamed": "Télécharger {name}",
+      "delete": "Supprimer",
+      "deleteNamed": "Supprimer {name}",
+      "categories": {
+        "all": "Tous",
+        "quote": "Devis",
+        "contract": "Contrat",
+        "invoice": "Facture",
+        "receipt": "Reçu",
+        "generic": "Document général",
+        "certificate": "Certificat",
+        "license": "Licence"
+      },
+      "stats": {
+        "total": "Total des documents",
+        "quotes": "Devis",
+        "contracts": "Contrats",
+        "storage": "Espace utilisé"
+      }
+    }
+  }
+}

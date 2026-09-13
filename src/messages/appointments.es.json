@@ -1,13 +1,1 @@
-{
-  "appointments": {
-    "title": "Citas y plazos",
-    "formTitle": "Título de la cita",
-    "formLocation": "Lugar",
-    "formNotes": "Notas",
-    "addBtn": "Agregar cita",
-    "empty": "No se han agregado citas.",
-    "dateLabel": "Fecha",
-    "locationLabel": "Lugar",
-    "suggested": "Esta agenda de ejemplo se genera automáticamente a partir del evento de boda: personalízala con tus citas reales."
-  }
-}
+{}

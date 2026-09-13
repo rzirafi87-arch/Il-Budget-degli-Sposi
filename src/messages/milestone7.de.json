@@ -1,0 +1,57 @@
+{
+  "milestone7": {
+    "documents": {
+      "eyebrow": "Digitales Archiv",
+      "title": "Dokumente und Angebote",
+      "description": "Lade alle wichtigen Dokumente für deine Veranstaltung hoch und organisiere sie.",
+      "infoTitle": "Dein digitales Dokumentenarchiv",
+      "infoDescription": "Bewahre Angebote, Verträge, Rechnungen, Belege und Bescheinigungen sicher an einem Ort auf.",
+      "tips": {
+        "1": "Lade Angebote gleich nach Erhalt hoch, um sie zu vergleichen",
+        "2": "Ordne jedes Dokument dem passenden Anbieter zu",
+        "3": "Nutze die Kategorie Vertrag für unterzeichnete Dokumente",
+        "4": "Bewahre Belege und Rechnungen für die Abschlussabrechnung auf",
+        "5": "Filtere nach Kategorie, um Dateien schnell zu finden",
+        "6": "Unterstützte Formate: PDF, DOC, DOCX, JPG, PNG (maximal 10 MB)"
+      },
+      "events": {
+        "wedding": "Organisiere Dokumente zu Location, Catering, Fotografie, Floristik, Kleidung, Musik und Zeremonie.",
+        "baptism": "Archiviere Bescheinigungen, Angebote, Verträge und Rechnungen zur Taufe.",
+        "birthday": "Bewahre Verträge, Angebote und Rechnungen zum Geburtstag auf.",
+        "graduation": "Archiviere Reservierungen, Angebote, Verträge und Rechnungen zur Abschlussfeier."
+      },
+      "agendaTitle": "Dokumentenplaner",
+      "agendaDescription": "Organisiere Besichtigungen, Fristen und Termine zu deinen Dokumenten.",
+      "uploading": "Wird hochgeladen…",
+      "upload": "Dokumente hochladen",
+      "uploadHelper": "Dateien auswählen oder hierher ziehen",
+      "uploadFormats": "PDF, Word, Bilder • Maximal 10 MB pro Datei",
+      "unassigned": "Nicht zugewiesen",
+      "confirmDelete": "Dieses Dokument löschen?",
+      "empty": "Keine Dokumente hochgeladen",
+      "emptyCategory": "Keine Dokumente in dieser Kategorie",
+      "emptyDescription": "Lade dein erstes Angebot oder deinen ersten Vertrag hoch.",
+      "emptyCategoryDescription": "Wähle eine andere Kategorie, um verfügbare Dokumente anzuzeigen.",
+      "download": "Herunterladen",
+      "downloadNamed": "{name} herunterladen",
+      "delete": "Löschen",
+      "deleteNamed": "{name} löschen",
+      "categories": {
+        "all": "Alle",
+        "quote": "Angebot",
+        "contract": "Vertrag",
+        "invoice": "Rechnung",
+        "receipt": "Beleg",
+        "generic": "Allgemeines Dokument",
+        "certificate": "Bescheinigung",
+        "license": "Lizenz"
+      },
+      "stats": {
+        "total": "Dokumente gesamt",
+        "quotes": "Angebote",
+        "contracts": "Verträge",
+        "storage": "Belegter Speicher"
+      }
+    }
+  }
+}

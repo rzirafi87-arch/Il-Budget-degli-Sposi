@@ -1,0 +1,57 @@
+{
+  "milestone7": {
+    "documents": {
+      "eyebrow": "Digital archive",
+      "title": "Documents and quotes",
+      "description": "Upload and organize all the important documents for your event.",
+      "infoTitle": "Your digital document archive",
+      "infoDescription": "Keep quotes, contracts, invoices, receipts and certificates together in one secure place.",
+      "tips": {
+        "1": "Upload quotes as soon as you receive them so you can compare them",
+        "2": "Link each document to the relevant supplier",
+        "3": "Use the Contract category for signed documents",
+        "4": "Keep receipts and invoices for your final accounts",
+        "5": "Filter by category to find files quickly",
+        "6": "Supported formats: PDF, DOC, DOCX, JPG, PNG (maximum 10 MB)"
+      },
+      "events": {
+        "wedding": "Organize venue, catering, photographer, florist, attire, music and ceremony documents.",
+        "baptism": "Store baptism certificates, quotes, contracts and invoices.",
+        "birthday": "Keep birthday contracts, quotes and invoices.",
+        "graduation": "Store graduation bookings, quotes, contracts and invoices."
+      },
+      "agendaTitle": "Document schedule",
+      "agendaDescription": "Organize inspections, deadlines and meetings linked to your documents.",
+      "uploading": "Uploading…",
+      "upload": "Upload documents",
+      "uploadHelper": "Select files or drag them here",
+      "uploadFormats": "PDF, Word, images • Maximum 10 MB per file",
+      "unassigned": "Unassigned",
+      "confirmDelete": "Delete this document?",
+      "empty": "No documents uploaded",
+      "emptyCategory": "No documents in this category",
+      "emptyDescription": "Upload your first quote or contract to start your archive.",
+      "emptyCategoryDescription": "Choose another category to view available documents.",
+      "download": "Download",
+      "downloadNamed": "Download {name}",
+      "delete": "Delete",
+      "deleteNamed": "Delete {name}",
+      "categories": {
+        "all": "All",
+        "quote": "Quote",
+        "contract": "Contract",
+        "invoice": "Invoice",
+        "receipt": "Receipt",
+        "generic": "General document",
+        "certificate": "Certificate",
+        "license": "Licence"
+      },
+      "stats": {
+        "total": "Total documents",
+        "quotes": "Quotes",
+        "contracts": "Contracts",
+        "storage": "Storage used"
+      }
+    }
+  }
+}

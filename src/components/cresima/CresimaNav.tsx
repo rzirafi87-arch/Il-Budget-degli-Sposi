@@ -2,12 +2,13 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { locales } from "@/i18n/config";
 
 export default function CresimaNav() {
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("milestone9.runtime.confirmationNav");
   const normalizedPath = React.useMemo(() => {
     if (!pathname) return "/";
     const segments = pathname.split("/").filter(Boolean);
@@ -17,11 +18,11 @@ export default function CresimaNav() {
     return `/${segments.join("/")}` || "/";
   }, [pathname]);
   const items = [
-    { href: "/cresima", label: "Panoramica" },
-    { href: "/cresima/timeline", label: "Timeline" },
-    { href: "/cresima/idea-di-budget", label: "Idea di budget" },
-    { href: "/cresima/invitati", label: "Invitati" },
-    { href: "/cresima/budget", label: "Budget" },
+    { href: "/cresima", label: t("overview") },
+    { href: "/cresima/timeline", label: t("timeline") },
+    { href: "/cresima/idea-di-budget", label: t("budgetIdea") },
+    { href: "/cresima/invitati", label: t("guests") },
+    { href: "/cresima/budget", label: t("budget") },
   ];
 
   return (

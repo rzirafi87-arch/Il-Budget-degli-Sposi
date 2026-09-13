@@ -2,6 +2,7 @@
 import CresimaNav from "@/components/cresima/CresimaNav";
 import { formatCurrency, getUserLanguage } from "@/lib/locale";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Row = {
   category: string;
@@ -17,6 +18,7 @@ type Row = {
 type Totals = { total: number };
 
 export default function CresimaBudgetPage() {
+  const t = useTranslations("confirmationBudget");
   const [rows, setRows] = useState<Row[]>([]);
   const [totals, setTotals] = useState<Totals>({ total: 0 });
   const [plannedItems, setPlannedItems] = useState<{ name: string; amount: number }[]>([]);
@@ -72,7 +74,7 @@ export default function CresimaBudgetPage() {
         type PlannedItem = { name?: string; category?: string; subcategory?: string; amount?: number };
         const planned = Array.isArray(plannedJson?.items)
           ? (plannedJson.items as PlannedItem[]).map((it) => ({
-              name: it.name || [it.category, it.subcategory].filter(Boolean).join(" - ") || "Voce",
+              name: it.name || [it.category, it.subcategory].filter(Boolean).join(" - ") || t("item"),
               amount: Number(it.amount || 0) || 0,
             }))
           : [];
@@ -85,40 +87,40 @@ export default function CresimaBudgetPage() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [t]);
 
   const plannedTotal = useMemo(() => plannedItems.reduce((s, it) => s + (Number(it.amount)||0), 0), [plannedItems]);
   const compareRows = useMemo(() => {
     const planMap = new Map<string, number>();
     for (const p of plannedItems) {
-      const key = p.name || "Voce";
+      const key = p.name || t("item");
       planMap.set(key, (planMap.get(key) || 0) + (Number(p.amount) || 0));
     }
     const actualMap = new Map<string, number>();
     for (const r of rows) {
-      const key = [r.category, r.subcategory].filter(Boolean).join(" - ") || "Voce";
+      const key = [r.category, r.subcategory].filter(Boolean).join(" - ") || t("item");
       actualMap.set(key, (actualMap.get(key) || 0) + (Number(r.budget) || 0));
     }
     const userLang = getUserLanguage();
     const keys = Array.from(new Set([...planMap.keys(), ...actualMap.keys()])).sort((a,b)=>a.localeCompare(b,userLang));
     return keys.map((k) => ({ key: k, planned: planMap.get(k) || 0, actual: actualMap.get(k) || 0 }));
-  }, [plannedItems, rows]);
+  }, [plannedItems, rows, t]);
 
   return (
     <main>
       <CresimaNav />
 
       <section className="mb-6">
-        <h2 className="text-xl font-semibold">Budget Cresima</h2>
+        <h2 className="text-xl font-semibold">{t("title")}</h2>
         <p className="text-neutral-600 mt-1">
-          Riepilogo delle spese approvate e confronto con l&apos;idea iniziale.
+          {t("description")}
         </p>
       </section>
 
       <div className="mb-6 bg-white/80 rounded-2xl border border-gray-200 shadow-sm">
         <div className="px-6 py-4 flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h3 className="text-lg font-semibold">Totale effettivo</h3>
+            <h3 className="text-lg font-semibold">{t("actualTotal")}</h3>
             <div className="text-xl">{formatEuro(totals.total)}</div>
           </div>
         </div>
@@ -126,20 +128,20 @@ export default function CresimaBudgetPage() {
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
         <div className="grid grid-cols-8 gap-0 px-6 py-3 text-sm text-gray-700">
-          <div>Categoria</div>
-          <div>Sottocategoria</div>
-          <div className="text-right">Budget</div>
-          <div className="text-right">Impegnato</div>
-          <div className="text-right">Pagato</div>
-          <div className="text-right">Residuo</div>
-          <div className="text-center">Da preventivo</div>
-          <div className="text-right">Differenza</div>
+          <div>{t("table.category")}</div>
+          <div>{t("table.subcategory")}</div>
+          <div className="text-right">{t("table.budget")}</div>
+          <div className="text-right">{t("table.committed")}</div>
+          <div className="text-right">{t("table.paid")}</div>
+          <div className="text-right">{t("table.residual")}</div>
+          <div className="text-center">{t("table.fromQuote")}</div>
+          <div className="text-right">{t("table.difference")}</div>
         </div>
         {loading ? (
-          <div className="p-6 text-gray-500 text-sm">Caricamento...</div>
+          <div className="p-6 text-gray-500 text-sm">{t("loading")}</div>
         ) : rows.length === 0 ? (
           <div className="p-10 text-center text-gray-500">
-            Nessuna spesa approvata. Vai alla sezione &quot;Spese&quot; per approvare le tue spese.
+            {t("empty")}
           </div>
         ) : (
           <ul>
@@ -176,25 +178,25 @@ export default function CresimaBudgetPage() {
 
       <div className="mt-8 bg-white/80 rounded-2xl border border-gray-200 shadow-sm">
         <div className="px-6 py-4 flex items-center justify-between flex-wrap gap-4">
-          <h3 className="text-lg font-semibold">Pianificato vs Effettivo</h3>
+          <h3 className="text-lg font-semibold">{t("comparison.title")}</h3>
           <div className="text-sm text-right">
-            <div>Totale pianificato: {formatEuro(plannedTotal)}</div>
-            <div>Totale effettivo (approvato): {formatEuro(totals.total)}</div>
+            <div>{t("comparison.plannedTotal")}: {formatEuro(plannedTotal)}</div>
+            <div>{t("comparison.approvedTotal")}: {formatEuro(totals.total)}</div>
             <div className={`${plannedTotal - totals.total > 0 ? 'text-red-600' : 'text-emerald-700'} font-medium`}>
-              Differenza: {formatEuro(Math.abs(plannedTotal - totals.total))} {plannedTotal - totals.total > 0 ? '(+ oltre il previsto)' : '(sotto il previsto)'}
+              {t("table.difference")}: {formatEuro(Math.abs(plannedTotal - totals.total))} {plannedTotal - totals.total > 0 ? t("comparison.over") : t("comparison.under")}
             </div>
           </div>
         </div>
         <div className="h-px bg-gray-100" />
         <div className="px-6 py-3 grid grid-cols-12 text-sm text-gray-700">
-          <div className="col-span-6">Voce</div>
-          <div className="col-span-3 text-right">Pianificato</div>
-          <div className="col-span-3 text-right">Effettivo</div>
+          <div className="col-span-6">{t("item")}</div>
+          <div className="col-span-3 text-right">{t("comparison.planned")}</div>
+          <div className="col-span-3 text-right">{t("comparison.actual")}</div>
         </div>
         <div className="h-px bg-gray-100" />
         <ul>
           {compareRows.length === 0 ? (
-            <li className="px-6 py-6 text-sm text-gray-500">Nessun dato da confrontare. Usa &quot;Idea di Budget&quot; per pianificare e approva spese nella sezione &quot;Spese&quot;.</li>
+            <li className="px-6 py-6 text-sm text-gray-500">{t("comparison.empty")}</li>
           ) : (
             compareRows.map((row) => (
               <li key={row.key} className="grid grid-cols-12 px-6 py-3 text-sm border-t border-gray-50">

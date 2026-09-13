@@ -61,7 +61,7 @@ export async function GET(req: NextRequest, ctx: CtxId) {
         email: "",
         website: "",
         verified: false,
-        description: "Aggiungi qui una descrizione del tuo servizio per gli sposi.",
+        description: null,
         photo_urls: [],
         video_urls: [],
         discount_info: "",
@@ -135,7 +135,7 @@ export async function PUT(req: NextRequest, ctx: CtxId) {
   const exp = supplier.subscription_expires_at ? new Date(supplier.subscription_expires_at) : null;
   const isActive = tier === "free" ? false : exp ? exp > new Date() : false;
   if (!isActive) {
-    return NextResponse.json({ error: "Abbonamento non attivo. Aggiorna il piano per modificare la tua pagina." }, { status: 402 });
+    return NextResponse.json({ error: "SUBSCRIPTION_INACTIVE" }, { status: 402 });
   }
 
   const update: SupplierUpdate = {};

@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: terr.message }, { status: 500 });
       }
       if (!trows || trows.length === 0) {
-        return NextResponse.json({ error: "Tipo evento non trovato" }, { status: 400 });
+        return NextResponse.json({ error: "EVENT_TYPE_NOT_FOUND" }, { status: 400 });
       }
       typeId = trows[0].id as number;
     }
@@ -77,11 +77,11 @@ export async function POST(req: NextRequest) {
         publicId = generatePublicId();
         continue;
       }
-      return NextResponse.json({ error: evtErr?.message ?? "Errore creazione evento" }, { status: 500 });
+      return NextResponse.json({ error: evtErr?.message ?? "EVENT_CREATE_FAILED" }, { status: 500 });
     }
 
     if (!evtId) {
-      return NextResponse.json({ error: "Impossibile creare l'evento" }, { status: 500 });
+      return NextResponse.json({ error: "EVENT_CREATE_FAILED" }, { status: 500 });
     }
 
     // 4) Ensure owner membership (best-effort)
@@ -100,5 +100,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
   }
 }
-
 

@@ -1,7 +1,7 @@
 ﻿/* Le tipizzazioni esplicite eliminano la necessità di any */
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -26,6 +26,7 @@ type AvailableGuest = {
 };
 
 export default function TavoliPage() {
+  const t = useTranslations("guestsPage.tables");
   const locale = useLocale() || "it";
   const [tables, setTables] = useState<Table[]>([]);
   const [availableGuests, setAvailableGuests] = useState<AvailableGuest[]>([]);
@@ -64,7 +65,7 @@ export default function TavoliPage() {
   }, []);
 
   if (loading) {
-    return <div className="pt-6">Caricamento tavoli...</div>;
+    return <div className="pt-6">{t("loading")}</div>;
   }
 
   const totalTables = tables.length;
@@ -74,7 +75,7 @@ export default function TavoliPage() {
 
   function autoAssignByFamily() {
     if (!availableGuests || availableGuests.length === 0) {
-      setMessage("Nessun invitato disponibile da assegnare.");
+      setMessage(t("noGuests"));
       return;
     }
 
@@ -86,7 +87,7 @@ export default function TavoliPage() {
     const byFamily = new Map<string, { name: string; members: AvailableGuest[] }>();
     for (const g of inc) {
       const key = g.familyGroupId || `no-family`;
-      const fam = byFamily.get(key) || { name: g.familyName || "Senza famiglia", members: [] };
+      const fam = byFamily.get(key) || { name: g.familyName || t("withoutFamily"), members: [] };
       fam.members.push(g);
       byFamily.set(key, fam);
     }
@@ -99,8 +100,8 @@ export default function TavoliPage() {
       for (let i = 0; i < members.length; i += seatsPerTable) {
         const slice = members.slice(i, i + seatsPerTable);
         const tableName = type === "family" && members.length <= seatsPerTable
-          ? `Tavolo ${label}`
-          : `${type === "family" ? `Tavolo ${label}` : `Tavolo Cugini`} ${Math.floor(i / seatsPerTable) + 1}`;
+          ? t("namedTable", {label})
+          : `${type === "family" ? t("namedTable", {label}) : t("cousinsTable")} ${Math.floor(i / seatsPerTable) + 1}`;
         const assigned: AssignedGuest[] = slice.map((g, idx) => ({ guestId: g.id, seatNumber: idx + 1, guestName: g.name }));
         newTables.push({
           tableNumber: tableCounter++,
@@ -117,24 +118,24 @@ export default function TavoliPage() {
     for (const [key, fam] of byFamily.entries()) {
       if (key === 'no-family') continue; // handle later
       if (fam.members.length === 0) continue;
-      createTablesForGroup(`Famiglia ${fam.name}`, fam.members, "family");
+      createTablesForGroup(t("namedFamily", {name: fam.name}), fam.members, "family");
     }
 
     // Guests without family but included ? group into generic tables
     const noFamilyIncluded = byFamily.get('no-family')?.members || [];
     if (noFamilyIncluded.length > 0) {
-      createTablesForGroup("Amici", noFamilyIncluded, "friends");
+      createTablesForGroup(t("friends"), noFamilyIncluded, "friends");
     }
 
     // Excluded across families ? Cugini tables
     if (exc.length > 0) {
       // Keep a stable order by familyName and name
       const sortedExc = [...exc].sort((a, b) => (a.familyName || '').localeCompare(b.familyName || '') || a.name.localeCompare(b.name));
-      createTablesForGroup("Cugini", sortedExc, "cousins");
+      createTablesForGroup(t("cousins"), sortedExc, "cousins");
     }
 
     setTables(newTables);
-    setMessage(`Generati ${newTables.length} tavoli da ${availableGuests.length} invitati disponibili.`);
+    setMessage(t("generated", {tables: newTables.length, guests: availableGuests.length}));
   }
 
   async function saveTables() {
@@ -148,12 +149,12 @@ export default function TavoliPage() {
       });
       if (!res.ok) {
         const j = await res.json();
-        setMessage(`Errore salvataggio: ${j.error || 'Impossibile salvare'}`);
+        setMessage(t(`errors.${j.error || "TABLE_SAVE_FAILED"}`));
       } else {
-        setMessage('? Tavoli salvati!');
+        setMessage(t("saved"));
       }
     } catch {
-      setMessage('Errore di rete nel salvataggio');
+      setMessage(t("errors.TABLE_NETWORK_ERROR"));
     } finally {
       setSaving(false);
     }
@@ -162,24 +163,24 @@ export default function TavoliPage() {
   return (
     <section className="pt-6">
       <div className="flex items-start justify-between mb-4">
-        <h1 className="font-serif text-3xl">Disposizione Tavoli</h1>
+        <h1 className="font-serif text-3xl">{t("pageTitle")}</h1>
         <div className="flex gap-2">
-          <Link href={`/${locale}/invitati`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">Torna a Invitati</Link>
-          <button onClick={autoAssignByFamily} className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm" style={{ background: 'var(--color-sage)' }}>Auto-assegna per Famiglia</button>
+          <Link href={`/${locale}/invitati`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("back")}</Link>
+          <button onClick={autoAssignByFamily} className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm" style={{ background: 'var(--color-sage)' }}>{t("autoAssign")}</button>
         </div>
       </div>
 
       <div className="mb-6 p-5 sm:p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm sm:text-base">
-          <div className="p-4 bg-gray-50 rounded-lg border">Tavoli Totali: <strong>{totalTables}</strong></div>
-          <div className="p-4 bg-gray-50 rounded-lg border">Posti Totali: <strong>{totalSeats}</strong></div>
-          <div className="p-4 bg-gray-50 rounded-lg border">Posti Assegnati: <strong>{assignedSeats}</strong></div>
-          <div className="p-4 bg-gray-50 rounded-lg border">Posti Liberi: <strong>{availableSeats}</strong></div>
+          <div className="p-4 bg-gray-50 rounded-lg border">{t("totalTables")}: <strong>{totalTables}</strong></div>
+          <div className="p-4 bg-gray-50 rounded-lg border">{t("totalSeats")}: <strong>{totalSeats}</strong></div>
+          <div className="p-4 bg-gray-50 rounded-lg border">{t("assignedSeats")}: <strong>{assignedSeats}</strong></div>
+          <div className="p-4 bg-gray-50 rounded-lg border">{t("availableSeats")}: <strong>{availableSeats}</strong></div>
         </div>
         <div className="mt-4 flex items-center gap-3 text-sm">
-          <label className="font-semibold">Posti per tavolo</label>
-          <input type="number" min={4} max={14} value={seatsPerTable} onChange={(e) => setSeatsPerTable(Number(e.target.value || 8))} className="border rounded px-2 py-1 w-20" />
-          <span className="text-gray-500">(consigliato 8-10)</span>
+          <label htmlFor="seats-per-table" className="font-semibold">{t("seatsPerTable")}</label>
+          <input id="seats-per-table" type="number" min={4} max={14} value={seatsPerTable} onChange={(e) => setSeatsPerTable(Number(e.target.value || 8))} className="border rounded px-2 py-1 w-20" />
+          <span className="text-gray-500">{t("recommended")}</span>
         </div>
         {message && <div className="mt-3 text-sm p-2 rounded border bg-gray-50">{message}</div>}
       </div>
@@ -187,22 +188,22 @@ export default function TavoliPage() {
       {/* Preview simple list */}
       <div className="p-6 rounded-lg border border-gray-200 bg-white/70">
         {tables.length === 0 ? (
-          <p className="text-sm text-gray-600">Clicca su &quot;Auto-assegna per Famiglia&quot; per generare una proposta di disposizione.</p>
+          <p className="text-sm text-gray-600">{t("empty")}</p>
         ) : (
           <div className="space-y-3">
-            {tables.map((t, idx) => (
+            {tables.map((table, idx) => (
               <div key={idx} className="border rounded p-3">
-                <div className="font-semibold">{t.tableName || `Tavolo ${t.tableNumber}`}</div>
-                <div className="text-xs text-gray-500 mb-2">Tipo: {t.tableType || 'n/d'} • Posti: {t.totalSeats} • Assegnati: {t.assignedGuests.length}</div>
+                <div className="font-semibold">{table.tableName || `${t("table")} ${table.tableNumber}`}</div>
+                <div className="text-xs text-gray-500 mb-2">{t("tableDetails", {type: table.tableType || "n/a", seats: table.totalSeats, assigned: table.assignedGuests.length})}</div>
                 <ul className="text-sm list-disc pl-5">
-                  {t.assignedGuests.map((ag) => (
+                  {table.assignedGuests.map((ag) => (
                     <li key={ag.guestId}>{ag.guestName || ag.guestId}</li>
                   ))}
                 </ul>
               </div>
             ))}
             <div className="flex justify-end">
-              <button onClick={saveTables} disabled={saving} className="px-4 py-2 rounded text-white" style={{ background: 'var(--color-sage)' }}>{saving ? 'Salvataggio...' : 'Salva disposizione'}</button>
+              <button onClick={saveTables} disabled={saving} className="px-4 py-2 rounded text-white" style={{ background: 'var(--color-sage)' }}>{saving ? t("saving") : t("save")}</button>
             </div>
           </div>
         )}
@@ -210,5 +211,3 @@ export default function TavoliPage() {
     </section>
   );
 }
-
-

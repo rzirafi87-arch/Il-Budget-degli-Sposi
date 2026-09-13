@@ -1,0 +1,368 @@
+{
+  "milestone9": {
+    "giftList": {
+      "title": "Lista de bodas",
+      "income": "Ir a ingresos",
+      "dashboard": "Volver al panel",
+      "weddingOnly": "La lista solo está disponible para bodas. Selecciona “Boda” para activarla.",
+      "added": "¡Añadido a la lista!",
+      "errors": {
+        "generic": "Error",
+        "network": "Error de red"
+      },
+      "info": {
+        "title": "Crea tu lista de bodas moderna",
+        "description": "Crea una lista con aportaciones para el viaje, experiencias, un fondo común o regalos tradicionales.",
+        "tips": {
+          "honeymoon": "Permite que los invitados contribuyan a la luna de miel",
+          "cash": "El fondo común ofrece la máxima flexibilidad",
+          "links": "Añade enlaces para indicar exactamente qué comprar",
+          "purchased": "Marca los regalos recibidos para evitar duplicados",
+          "priority": "Las prioridades indican lo que más deseáis"
+        },
+        "events": {
+          "wedding": "Incluye luna de miel, experiencias, muebles y tecnología.",
+          "baptism": "Incluye ahorros, libros, juguetes y aportaciones para el futuro.",
+          "birthday": "Personaliza la lista según la edad y los intereses.",
+          "graduation": "Considera estudios, viajes, equipo profesional y experiencias."
+        }
+      },
+      "addGift": "Añadir regalo",
+      "fields": {
+        "type": "Tipo",
+        "name": "Nombre",
+        "namePlaceholder": "Ej. robot aspirador",
+        "price": "Precio estimado (€)",
+        "description": "Descripción",
+        "priority": "Prioridad",
+        "status": "Estado",
+        "notes": "Notas",
+        "notesPlaceholder": "Notas opcionales"
+      },
+      "types": {
+        "honeymoon": "Aportación para luna de miel",
+        "cash": "Fondo común",
+        "experiences": "Experiencias (cenas, spa, tours)",
+        "furniture": "Muebles",
+        "appliances": "Electrodomésticos",
+        "luxury": "Artículos de lujo",
+        "charity": "Beneficencia",
+        "vouchers": "Tarjetas regalo",
+        "smartHome": "Tecnología y hogar inteligente",
+        "other": "Otro"
+      },
+      "priorities": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      },
+      "statuses": {
+        "wanted": "Deseado",
+        "purchased": "Comprado"
+      },
+      "saving": "Guardando…",
+      "add": "+ Añadir",
+      "loading": "Cargando…",
+      "empty": "No hay elementos"
+    },
+    "currentEvent": {
+      "label": "Evento actual", "choose": "Elige un evento", "none": "Ningún evento", "change": "Cambiar evento", "soon": "Próximamente"
+    },
+    "errorPage": {
+      "title": "Algo ha salido mal", "description": "No se pudo cargar esta página. Inténtalo de nuevo en breve.", "retry": "Reintentar"
+    },
+    "onboarding": {"welcome": "¡Bienvenido!", "description": "Configura el idioma, el país y el tipo de evento para personalizar tu experiencia.", "configure": "Configurar idioma, país y evento"},
+    "setup": {"title": "¡Bienvenido! Configura tu evento", "language": "Idioma", "country": "País", "event": "Evento", "confirm": "Confirmar", "comingSoon": "Próximamente", "selectEvent": "Selecciona tu evento", "checkingConfiguration": "Comprobando la configuración del evento"},
+    "availability": {"badge":"Próximamente","title":"Tipo de evento aún no disponible","description":"El flujo específico de {event} todavía no está disponible.","legacyTitle":"Evento anterior preservado","legacyBody":"Los datos de este evento se han preservado. Hasta que el flujo específico esté completo, la aplicación limita los módulos que no corresponden.","noDataLoss":"No se elimina ni se convierte automáticamente ningún dato del evento."},
+    "consent": {"label": "Preferencias de cookies", "description": "Usamos cookies técnicas necesarias. Las estadísticas opcionales se activan solo con tu consentimiento y puedes cambiar tu elección en cualquier momento.", "accept": "Aceptar estadísticas", "necessary": "Solo necesarias", "close": "Cerrar"},
+    "breadcrumbs": {"home":"Inicio","dashboard":"Panel","timeline":"Cronología","budget":"Presupuesto","guests":"Invitados","tables":"Mesas","expenses":"Gastos","income":"Ingresos","vendors":"Proveedores","reception":"Recepción","receptionVenue":"Lugar de recepción","ceremony":"Ceremonia","ceremonyVenue":"Lugar de ceremonia","favorites":"Favoritos","documents":"Documentos","giftList":"Lista de bodas","weddingPlanner":"Organizador de bodas","ceremonyMusic":"Música de ceremonia","receptionMusic":"Música de recepción","weddingIdeas":"Ideas de boda","saveTheDate":"Reserva la fecha","signIn":"Acceso","contacts":"Contacto","ariaLabel":"Ruta de navegación"},
+    "chat": {"signIn":"Inicia sesión para usar el asistente de IA.","requestError":"Error durante la solicitud.","connectionError":"Conexión no disponible.","checking":"Comprobando disponibilidad del asistente…","unavailable":"Asistente de IA no disponible","configurationRequired":"El asistente no está configurado en este entorno.","title":"Chat con tu asistente de IA","empty":"Inicia la conversación…","placeholder":"Escribe un mensaje…","sending":"Enviando…","send":"Enviar"},
+    "aiChat": {"invalidAmount":"Introduce un importe válido","saveError":"Error al guardar ({status})","saved":"Presupuesto guardado","unexpectedError":"Error inesperado","title":"Chat con el asistente de IA","enterBudget":"Introducir presupuesto","setBudget":"Establecer presupuesto total","budgetPlaceholder":"Ej. 25000","cancel":"Cancelar","saving":"Guardando…","save":"Guardar"},
+    "accounting": {"description":"Gestiona todas las transacciones de tu boda en un solo lugar: gastos realizados e ingresos recibidos. Controla presupuestos, pagos confirmados y aportaciones."},
+    "supplierPackages": {
+      "paymentSuccess": "¡Pago completado correctamente! Tu suscripción ya está activa.",
+      "paymentCancelled": "Pago cancelado. Puedes intentarlo de nuevo cuando quieras.",
+      "popular": "POPULAR", "bestValue": "MEJOR VALOR",
+      "paymentsDisabled": "Los pagos en línea están temporalmente deshabilitados. Inténtalo más tarde o contáctanos para comprar el plan.",
+      "freeAvailable": "¡El plan gratuito está siempre disponible!", "loginRequired": "Debes iniciar sesión para comprar una suscripción.",
+      "profileRequired": "Primero debes crear un perfil de proveedor. Ve a Proveedores y presenta tu negocio.", "purchaseError": "No se pudo iniciar la compra. Inténtalo de nuevo.",
+      "monthly": "Mensual", "yearly": "Anual", "loading": "Cargando…", "comingSoon": "Próximamente", "processing": "Procesando…", "purchase": "Comprar",
+      "maintenance": "Los pagos con Stripe están temporalmente en mantenimiento. Los planes seguirán visibles, pero no se podrán comprar.", "learnMore": "Descubre cómo funciona"
+    },
+    "runtime": {
+      "contacts": {
+        "sendFailed": "No se pudo enviar",
+        "title": "Contáctanos",
+        "sendMessage": "Envíanos un mensaje",
+        "sentTitle": "¡Mensaje enviado!",
+        "sentDescription": "Te responderemos lo antes posible.",
+        "fullName": "Nombre y apellidos",
+        "message": "Mensaje",
+        "messagePlaceholder": "Escribe aquí tu mensaje...",
+        "sending": "Enviando...",
+        "submit": "Enviar mensaje",
+        "whatsappDescription": "¡Chatea con nosotros directamente por WhatsApp para recibir asistencia inmediata!",
+        "openChat": "Abrir chat",
+        "support": "Asistencia",
+        "supportHours": "Horario de asistencia",
+        "weekdays": "Lun - Vie",
+        "saturday": "Sábado",
+        "sunday": "Domingo",
+        "closed": "Cerrado",
+        "followSocial": "Síguenos en redes sociales"
+      },
+      "publicEvent": {
+        "loadFailed": "No se pudo cargar el evento",
+        "title": "Evento público",
+        "loading": "Cargando...",
+        "eventFallback": "Evento",
+        "visibility": "Visibilidad",
+        "public": "Público",
+        "private": "Privado",
+        "createdAt": "Creado el",
+        "eventTypeId": "ID del tipo de evento"
+      },
+      "structuredData": {
+        "description": "Aplicación web para organizar el presupuesto, los invitados, las tareas, los proveedores y los documentos de la boda.",
+        "features": {
+          "budget": "Gestión del presupuesto de boda",
+          "guests": "Gestión de invitados",
+          "timeline": "Cronología de eventos",
+          "documents": "Gestión de documentos"
+        }
+      },
+      "eventTypes": {
+        "wedding": {"name": "Boda", "description": "Celebración de boda"},
+        "birthday": {"name": "Cumpleaños", "description": "Fiesta de cumpleaños"},
+        "baptism": {"name": "Bautizo", "description": "Ceremonia de bautizo"},
+        "communion": {"name": "Comunión", "description": "Ceremonia de comunión"},
+        "confirmation": {"name": "Confirmación", "description": "Ceremonia de confirmación"},
+        "engagementParty": {"name": "Compromiso", "description": "Fiesta de compromiso"},
+        "anniversary": {"name": "Aniversario", "description": "Aniversario de boda"},
+        "babyShower": {"name": "Fiesta prenatal", "description": "Fiesta prenatal"},
+        "genderReveal": {"name": "Revelación de género", "description": "Fiesta de revelación de género"},
+        "fifty": {"name": "Fiesta de 50 años", "description": "Cumpleaños de 50 años"}
+      },
+      "confirmationNav": {
+        "overview": "Resumen",
+        "timeline": "Cronología",
+        "budgetIdea": "Idea de presupuesto",
+        "guests": "Invitados",
+        "budget": "Presupuesto"
+      },
+      "confirmation": {
+        "title": "Confirmación",
+        "overview": {
+          "title": "Resumen",
+          "description": "Empieza a organizar tu confirmación: define el presupuesto, la lista de invitados y las actividades principales."
+        },
+        "event": {
+          "title": "Resumen del evento",
+          "description": "Reúne en un solo lugar la información clave: fecha, lugar, estilo del evento y notas.",
+          "items": {
+            "date": "Fecha y hora de la celebración",
+            "venues": "Iglesia y lugar de la recepción",
+            "style": "Estilo, tema y paleta de colores"
+          }
+        },
+        "budget": {
+          "title": "Idea de presupuesto",
+          "description": "Establece un presupuesto estimado y repártelo entre las categorías principales.",
+          "items": {
+            "venue": "Lugar y catering",
+            "clothing": "Ropa y accesorios",
+            "photography": "Fotografía y entretenimiento",
+            "favors": "Detalles y decoración"
+          }
+        },
+        "guests": {
+          "title": "Invitados",
+          "description": "Prepara la lista de invitados y controla las confirmaciones, las mesas y las preferencias.",
+          "items": {
+            "people": "Familia, padrino, madrina y amigos",
+            "rsvp": "Confirmaciones de asistencia (RSVP)",
+            "needs": "Alergias o necesidades especiales"
+          }
+        },
+        "tasks": {
+          "title": "Tareas pendientes",
+          "description": "Un recordatorio rápido de las próximas acciones para mantenerlo todo bajo control.",
+          "items": {
+            "venues": "Reserva la iglesia y el lugar",
+            "menu": "Define el menú y la tarta",
+            "photography": "Elige la fotografía y la música",
+            "invitations": "Prepara las invitaciones y los detalles"
+          }
+        }
+      },
+      "suggestions": {
+        "mexico": {
+          "mariachi": "¡Recuerda reservar el mariachi!",
+          "venue": "Comprueba la disponibilidad del lugar con al menos 6 meses de antelación.",
+          "photoBooth": "Valora un fotomatón temático para la fiesta.",
+          "documents": "Comprueba los documentos legales exigidos en México."
+        },
+        "general": {
+          "photographer": "Reserva al fotógrafo con suficiente antelación.",
+          "guestList": "Revisa la lista de invitados y actualiza sus preferencias.",
+          "traditions": "Consulta las tradiciones locales para enriquecer la ceremonia."
+        },
+        "chatWithAi": "Chatea con la IA",
+        "introduction": "Aquí encontrarás consejos personalizados según tus decisiones, tu presupuesto y los documentos o fotos que hayas subido.",
+        "uploadTitle": "Sube una foto",
+        "uploadDescription": "Aquí puedes subir una imagen —vestido, paleta o lugar— para recibir consejos específicos.",
+        "selectFile": "Seleccionar archivo..."
+      },
+      "honeymoonTips": {
+        "backDashboard": "Volver al panel",
+        "title": "Luna de miel",
+        "description": "Consejos para planificar mejor la luna de miel: destinos, presupuesto, mejor época y lista de documentos.",
+        "tips": {
+          "budget": "Define el presupuesto y la duración del viaje",
+          "destinations": "Elige 2 o 3 destinos y compara el clima de la época",
+          "documents": "Comprueba los documentos: pasaportes, visados y seguro",
+          "activities": "Planifica 1 o 2 actividades especiales y un día de descanso"
+        }
+      },
+      "incomes": {"saveFailed": "No se pudo guardar"},
+      "retirement": {
+        "title": "Jubilación",
+        "loading": "Cargando...",
+        "eventType": "Tipo de evento: Jubilación",
+        "eventLabel": "Evento",
+        "createEvent": "Crear evento de jubilación",
+        "creating": "Creando...",
+        "demoNotice": "Modo de demostración: los datos no se guardarán de forma permanente.",
+        "emptyEvent": "Crea un evento para gestionar el presupuesto de la fiesta de jubilación.",
+        "budgetItems": "Partidas del presupuesto",
+        "noItems": "No hay partidas",
+        "total": "Total: € {total}",
+        "addExpense": "Añadir gasto",
+        "saving": "Guardando...",
+        "confirmDelete": "¿Quieres eliminar este gasto?",
+        "supplierLabel": "Proveedor: {supplier}",
+        "notesLabel": "Notas: {notes}",
+        "defaults": {"generic": "General", "other": "Otros"},
+        "fields": {
+          "category": "Categoría", "subcategory": "Subcategoría", "supplier": "Proveedor", "amount": "Importe", "notes": "Notas"
+        },
+        "spendTypes": {"common": "Común", "bride": "Novia", "groom": "Novio", "retirement": "Jubilación"},
+        "actions": {"save": "Guardar", "cancel": "Cancelar", "edit": "Editar", "delete": "Eliminar"},
+        "errors": {
+          "createEvent": "No se pudo crear el evento",
+          "addExpense": "No se pudo añadir el gasto",
+          "updateExpense": "No se pudo actualizar el gasto",
+          "deleteExpense": "No se pudo eliminar el gasto",
+          "unexpected": "Se ha producido un error inesperado"
+        }
+      },
+      "weddingEntertainment": {
+        "title": "Música, animación y extras",
+        "ceremony": "Ceremonia",
+        "reception": "Recepción",
+        "chooseFor": "Elige para {destination}",
+        "selectedFor": "Selecciones para {destination}",
+        "add": "Añadir",
+        "added": "Añadido",
+        "empty": "Todavía no has añadido nada.",
+        "notesPlaceholder": "Añade notas...",
+        "summary": "Resumen general",
+        "forCeremony": "Para la ceremonia",
+        "forReception": "Para la recepción",
+        "categories": {
+          "0": "Música y actuaciones en directo",
+          "1": "Animación y espectáculos",
+          "2": "Participación de los invitados y experiencias",
+          "3": "Extras y técnica"
+        },
+        "options": {
+          "mus-1": "DJ", "mus-2": "Grupo en directo", "mus-3": "Voz solista", "mus-4": "Dúo acústico", "mus-5": "Cuarteto de cuerda", "mus-6": "Pianista", "mus-7": "Arpista", "mus-8": "Soprano/Tenor", "mus-9": "Organista", "mus-10": "Grupo de jazz", "mus-11": "Orquesta",
+          "ani-1": "Animadores infantiles", "ani-2": "Mago/Ilusionista", "ani-3": "Caricaturista", "ani-4": "Espectáculo de fuegos artificiales", "ani-5": "Bailarines profesionales", "ani-6": "Artista callejero", "ani-7": "Zancudos", "ani-8": "Mimos",
+          "exp-1": "Fotomatón", "exp-2": "Suelta de globos o farolillos", "exp-3": "Mesa de dulces tradicionales", "exp-4": "Mesa de golosinas", "exp-5": "Rincón de puros", "exp-6": "Rincón de cata de vinos", "exp-7": "Libro de invitados creativo", "exp-8": "Estación de cócteles personalizados", "exp-9": "Zona de juegos infantil", "exp-10": "Arroz o pétalos para lanzar", "exp-11": "Bolsa para invitados", "exp-12": "Abanicos personalizados",
+          "tec-1": "Videógrafo/Drone", "tec-2": "Fotógrafo", "tec-3": "Iluminación escénica", "tec-4": "Equipo de sonido", "tec-5": "Proyección de vídeo", "tec-6": "Pantalla LED", "tec-7": "Alquiler de coche clásico", "tec-8": "Máquina de humo", "tec-9": "Fuente de chocolate"
+        }
+      },
+      "supplierSubscriptions": {
+        "loading": "Cargando...",
+        "title": "Planes de suscripción para proveedores",
+        "description": "Elige el plan más adecuado para aumentar tu visibilidad y llegar a miles de parejas que buscan servicios para su boda",
+        "billing": {"monthly": "Mensual", "yearly": "Anual", "savingsBadge": "(Ahorra hasta un 17 %)", "month": "mes", "year": "año", "yearlySavings": "€{monthlyPrice}/mes • Ahorras un {savings}%"},
+        "badges": {"mostChosen": "🌟 MÁS ELEGIDO", "popular": "💼 POPULAR"},
+        "actions": {"startFree": "Empieza gratis", "startNow": "Empieza ahora"},
+        "faq": {
+          "title": "Preguntas frecuentes",
+          "changePlan": {"question": "¿Puedo cambiar de plan en cualquier momento?", "answer": "Sí, puedes mejorar o reducir tu plan en cualquier momento. El cambio será inmediato y el coste se prorrateará."},
+          "cancel": {"question": "¿Qué ocurre si cancelo mi suscripción?", "answer": "Tu perfil seguirá activo hasta el final del periodo pagado y después volverás automáticamente al plan Gratuito, sin visibilidad pública."},
+          "demo": {"question": "¿Cuánto dura la visibilidad en la demo?", "answer": "Solo los proveedores con el plan Premium Plus aparecen en la versión de demostración del sitio, con la máxima exposición incluso ante usuarios no registrados."}
+        }
+      },
+      "supplierDashboard": {
+        "loading": "Cargando...", "title": "Panel del proveedor",
+        "tiers": {"free": "Gratuito", "base": "Básico", "premium": "Premium", "premiumPlus": "Plan Premium Plus"},
+        "empty": {"title": "No se encontró el perfil del proveedor", "description": "Todavía no has creado un perfil de proveedor. ¡Empieza presentando tu negocio!", "exploreCategories": "Explorar categorías"},
+        "badges": {"verified": "✓ Verificado", "featured": "⭐ Destacado"},
+        "subscription": {"status": "Estado de la suscripción", "active": "✓ Activa", "expired": "✗ Caducada", "expiration": "Vencimiento", "daysRemaining": "Días restantes", "days": "{count} días", "notAvailable": "N/D"},
+        "actions": {"buyPlan": "Comprar plan", "changePlan": "Cambiar plan", "buyPlanDescription": "Elige un plan para aumentar tu visibilidad", "changePlanDescription": "Mejora o renueva tu suscripción", "manageComingSoon": "Próximamente: edición del perfil, carga de fotos y mucho más.", "manageProfile": "Gestionar perfil", "manageProfileDescription": "Edita los datos, sube fotos y optimiza tu ficha", "publicPage": "Página pública", "publicPageDescription": "Mira cómo te ven las parejas"},
+        "analytics": {"title": "📊 Estadísticas", "profileViews": "Visitas al perfil", "contactClicks": "Clics en los contactos", "websiteClicks": "Clics en el sitio web", "lastView": "Última visita: {date}"},
+        "visibility": {"title": "📊 Tu visibilidad", "free": "• Perfil creado pero <strong>no visible</strong> en las búsquedas públicas", "category": "✓ Visible en la página <strong>{category}</strong>", "noHub": "✗ No aparece en la página principal de Proveedores", "hub": "✓ Aparece en la página principal de <strong>Proveedores</strong>", "noDemo": "✗ No aparece en la demo para usuarios no registrados", "demo": "⭐ Aparece en la <strong>demo</strong> con la máxima visibilidad"},
+        "transactions": {"title": "Historial de suscripciones", "empty": "No hay transacciones registradas", "monthly": "Mensual", "yearly": "Anual", "status": {"completed": "Completada", "pending": "Pendiente", "failed": "Fallida", "refunded": "Reembolsada"}, "period": "Del {start} al {end} • Comprado el {purchased}"}
+      },
+      "vendorExplorer": {
+        "title": "Explora proveedores de boda", "description": "Encuentra los mejores proveedores para tu evento en fuentes verificadas (Google Places y OpenStreetMap)", "loading": "Cargando...",
+        "types": {"location": "Lugar de recepción", "church": "Iglesias", "planner": "Organizador de bodas", "band": "Grupo/Música", "dj": "DJ", "photographer": "Fotógrafo", "videographer": "Videógrafo", "florist": "Florista", "caterer": "Catering"},
+        "filters": {"type": "Tipo de proveedor", "region": "Región", "allRegions": "Todas las regiones", "city": "Ciudad", "cityPlaceholder": "Ej.: Palermo", "minimumRating": "Valoración mínima", "any": "Cualquiera", "priceRange": "Rango de precios", "verifiedOnly": "Solo verificados", "reset": "Restablecer filtros"},
+        "priceRanges": {"budget": "€ - Económico", "medium": "€€ - Precio medio", "high": "€€€ - Precio alto", "luxury": "€€€€ - Lujo"},
+        "results": {"count": "Se encontraron <strong>{total}</strong> proveedores", "empty": "No se encontraron proveedores con los filtros seleccionados."},
+        "pagination": {"previous": "Anterior", "page": "Página {current} de {total}", "next": "Siguiente"},
+        "card": {"verified": "✓ Verificado", "reviews": "{rating} ({count} reseñas)", "phone": "Tel.:", "email": "Correo:", "visitWebsite": "Visitar el sitio →", "source": "Datos de"}
+      },
+      "responsiveExamples": {
+        "budget": {"title": "Resumen del presupuesto", "bride": "Presupuesto de la novia", "groom": "Presupuesto del novio", "shared": "Presupuesto común", "used": "{percentage}% utilizado", "of": "de {amount}"},
+        "actions": {"title": "Acciones rápidas", "addExpense": "Añadir gasto", "addExpenseAlert": "Abrir formulario para añadir un gasto", "addGuest": "Añadir invitado", "addGuestAlert": "Abrir formulario para añadir un invitado", "searchSupplier": "Buscar proveedor", "searchSupplierAlert": "Abrir búsqueda de proveedores"},
+        "vendors": {"title": "Proveedores guardados", "selected": "Proveedor seleccionado: {name}", "verified": "Verificado", "details": "Ver detalles"},
+        "search": {"title": "Buscar proveedores", "placeholder": "Buscar por nombre...", "supplierType": "Tipo de proveedor", "location": "Lugar", "catering": "Catering", "photographer": "Fotógrafo", "region": "Región", "budget": "Presupuesto", "submit": "Buscar", "reset": "Restablecer"}
+      },
+      "responsiveShowcase": {
+        "title": "Demostración del sistema adaptable",
+        "nav": {"dashboard": "Panel", "budget": "Presupuesto", "guests": "Invitados", "suppliers": "Proveedores"},
+        "deviceInfo": {"title": "Información del dispositivo", "type": "Tipo de dispositivo", "os": "Sistema del dispositivo", "viewport": "Área visible", "size": "Tamaño", "touch": "Pantalla táctil", "orientation": "Orientación", "yes": "Sí", "no": "No", "portrait": "Vertical", "landscape": "Horizontal"},
+        "grid": {
+          "title": "Cuadrícula adaptable",
+          "budget": {"title": "Presupuesto", "subtitle": "Gestiona los gastos", "description": "Consulta y actualiza el presupuesto de tu evento.", "clicked": "Presupuesto seleccionado", "open": "Abrir presupuesto"},
+          "guests": {"title": "Invitados", "subtitle": "Gestiona las confirmaciones", "description": "Organiza la lista de invitados y las respuestas.", "count": "120 invitados"},
+          "timeline": {"title": "Cronología", "subtitle": "Planifica las tareas", "description": "Mantén bajo control todos los plazos importantes.", "clicked": "Cronología seleccionada", "progress": "8 de 12 tareas completadas"}
+        },
+        "stack": {"title": "Distribución del presupuesto", "bride": "Novia", "groom": "Novio", "shared": "Común", "budgetUsed": "Presupuesto utilizado"},
+        "buttons": {"title": "Botones adaptables", "save": "Guardar cambios", "cancel": "Cancelar"},
+        "cards": {"title": "Tarjetas interactivas", "selected": "Has seleccionado {name}"},
+        "optimizations": {
+          "title": "Optimizaciones activas",
+          "ios": {"safeAreas": "✓ Áreas seguras para notch y barra de inicio", "tapHighlight": "✓ Resaltado táctil optimizado", "smoothScrolling": "✓ Desplazamiento fluido"},
+          "android": {"ripple": "✓ Efectos táctiles", "shadows": "✓ Sombras optimizadas", "fontRendering": "✓ Renderizado de fuentes mejorado"},
+          "desktop": {"hover": "✓ Estados al pasar el cursor", "keyboard": "✓ Navegación con teclado", "multiColumn": "✓ Diseños multicolumna"},
+          "touchTargets": "✓ Objetivos táctiles de al menos 44 × 44 px",
+          "adaptiveFont": "✓ Tamaños de fuente adaptables",
+          "layouts": "✓ Diseños optimizados para cada pantalla"
+        }
+      },
+      "graduation": {
+        "title": "Graduación", "intro": "Herramientas y consejos para organizar tu fiesta de graduación: presupuesto, lugar, catering, invitaciones y mucho más.", "eventSetAlert": "Evento configurado como Graduación. ¡Algunas secciones avanzadas llegarán pronto!", "eventType": "Graduación", "comingSoon": "Próximamente", "placeholder": "Función en preparación", "add": "Añadir", "remove": "Eliminar", "yes": "Sí", "no": "No", "total": "Total: {count}", "counts": "{confirmed} confirmados de {invited} invitados", "empty": "Todavía no hay invitados.", "namePlaceholder": "Nombre y apellidos", "contactPlaceholder": "Teléfono o correo", "notesPlaceholder": "Notas", "copyList": "Copiar lista", "copySummary": "Copiar resumen", "downloadCsv": "Descargar CSV", "exportCsv": "Exportar CSV", "csvName": "invitados-graduacion.csv", "csvHeaders": "Nombre,Contacto,Invitado,Notas", "summaryInvited": "Invitados: {count}", "summaryConfirmed": "Confirmados: {count}",
+        "actions": {"setEvent": "Usar Graduación como evento", "backToEventChoice": "Volver a elegir evento", "openBudgetIdea": "Abrir idea de presupuesto"},
+        "sections": {
+          "budget": {"title": "Presupuesto de la fiesta", "description": "Define el presupuesto total y controla los gastos del lugar, catering, tarta, fotografía, música y decoración.", "items": {"estimate": "Estimación inicial e imprevistos", "quotes": "Presupuestos y pagos", "sharing": "Compartir con amigos y familia"}},
+          "venue": {"title": "Lugar y catering", "description": "Elige el lugar ideal y un catering acorde con tu estilo.", "items": {"menu": "Menú y bebidas", "spaces": "Espacios y montaje", "toast": "Tarta y brindis"}},
+          "guests": {"title": "Invitados e invitaciones", "description": "Organiza la lista de invitados y recopila las confirmaciones.", "items": {"digital": "Invitaciones digitales o impresas", "rsvp": "Confirmaciones de asistencia", "reminders": "Recordatorios y necesidades especiales"}},
+          "atmosphere": {"title": "Música y ambiente", "description": "Crea el ambiente adecuado para celebrar este gran logro.", "items": {"music": "DJ, grupo o lista de reproducción", "decorations": "Decoración temática", "photos": "Fotografía y vídeo"}}
+        },
+        "checklist": {"title": "Lista de preparación", "required": "Prioritario", "tip": "Marca las tareas completadas para controlar el progreso.", "items": {"budgetDate": "Define el presupuesto y la fecha", "location": "Elige y reserva el lugar", "catering": "Confirma el catering y el menú", "invitations": "Invitaciones y confirmaciones", "music": "DJ o lista de reproducción", "photos": "Fotógrafo o amigos para fotos y vídeo", "cake": "Tarta de graduación y brindis", "decorations": "Decoración y montaje", "gadgets": "Accesorios temáticos", "schedule": "Programa de la velada"}},
+        "tips": {"title": "Consejos prácticos", "limitedBudget": "Con un presupuesto limitado, prioriza comida, bebidas y música.", "confirmCatering": "Confirma el número de asistentes con el catering con antelación.", "accessibleVenue": "Elige un lugar accesible y fácil de alcanzar.", "simpleSchedule": "Prepara un programa sencillo para la velada.", "themeDetails": "Añade pequeños detalles relacionados con la carrera universitaria."},
+        "columns": {"name": "Nombre", "contact": "Contacto", "invited": "Confirmado", "notes": "Notas", "actions": "Acciones"},
+        "quickInvites": {"title": "Invitaciones rápidas", "description": "Añade rápidamente a tus invitados y controla las confirmaciones."},
+        "quickRsvp": {"title": "Confirmaciones rápidas", "description": "Consulta de un vistazo el estado de las respuestas."}
+      }
+    },
+    "shared": {
+      "close": "Cerrar", "cookiePreferences": "Preferencias de cookies", "closeMenu": "Cerrar menú"
+    }
+  }
+}

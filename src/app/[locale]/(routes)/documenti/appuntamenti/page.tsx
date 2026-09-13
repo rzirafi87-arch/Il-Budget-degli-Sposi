@@ -15,7 +15,7 @@ export type Appointment = {
 const supabase = getBrowserClient();
 
 export default function AppuntamentiPage() {
-  const t = useTranslations();
+  const t = useTranslations("milestone7.appointments");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [form, setForm] = useState<Appointment>({ title: "", date: new Date().toISOString().slice(0, 10) });
   const [loading, setLoading] = useState(true);
@@ -56,7 +56,7 @@ export default function AppuntamentiPage() {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
       if (!jwt) {
-        setMessage(t("mustAuth", { default: "Accedi per salvare gli appuntamenti" }));
+        setMessage(t("mustAuth"));
         setSaving(false);
         return;
       }
@@ -67,9 +67,9 @@ export default function AppuntamentiPage() {
       });
       if (!r.ok) {
         const j = await r.json();
-        setMessage(j.error || t("error", { default: "Errore di salvataggio" }));
+        setMessage(j.code === "APPOINTMENT_REQUIRED_FIELDS" ? t("validation") : t("error"));
       } else {
-        setMessage(t("saved", { default: "Appuntamento aggiunto" }));
+        setMessage(t("saved"));
         setForm({ title: "", date: new Date().toISOString().slice(0, 10), location: "", notes: "" });
         await loadAppointments();
         setTimeout(() => setMessage(null), 2500);
@@ -81,7 +81,7 @@ export default function AppuntamentiPage() {
 
   async function handleDelete(id?: string) {
     if (!id) return;
-    if (!confirm(t("confirmDelete", { default: "Eliminare questo appuntamento?" }))) return;
+    if (!confirm(t("confirmDelete"))) return;
     const { data } = await supabase.auth.getSession();
     const jwt = data.session?.access_token;
     if (!jwt) return;
@@ -91,7 +91,7 @@ export default function AppuntamentiPage() {
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">{t("appointments.title", { default: "Appuntamenti e Scadenze" })}</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
 
       {message && (
         <div className="mb-4 p-3 rounded bg-blue-50 border border-blue-200 text-sm">{message}</div>
@@ -99,10 +99,7 @@ export default function AppuntamentiPage() {
 
       {!loading && appointments.some((a) => !a.id) && (
         <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
-          {t("appointments.suggested", {
-            default:
-              "Questa agenda di esempio è generata automaticamente per il matrimonio: personalizzala aggiungendo gli appuntamenti reali.",
-          })}
+          {t("suggested")}
         </div>
       )}
 
@@ -111,7 +108,8 @@ export default function AppuntamentiPage() {
           name="title"
           value={form.title}
           onChange={handleChange}
-          placeholder={t("appointments.formTitle", { default: "Titolo appuntamento" })}
+          placeholder={t("formTitle")}
+          aria-label={t("formTitle")}
           className="border rounded px-3 py-2"
           required
         />
@@ -122,32 +120,35 @@ export default function AppuntamentiPage() {
           onChange={handleChange}
           className="border rounded px-3 py-2"
           required
+          aria-label={t("dateLabel")}
         />
         <input
           name="location"
           value={form.location || ""}
           onChange={handleChange}
-          placeholder={t("appointments.formLocation", { default: "Luogo" })}
+          placeholder={t("formLocation")}
+          aria-label={t("formLocation")}
           className="border rounded px-3 py-2"
         />
         <textarea
           name="notes"
           value={form.notes || ""}
           onChange={handleChange}
-          placeholder={t("appointments.formNotes", { default: "Note" })}
+          placeholder={t("formNotes")}
+          aria-label={t("formNotes")}
           className="border rounded px-3 py-2"
         />
         <button type="submit" className="bg-[#A3B59D] text-white px-4 py-2 rounded font-semibold" disabled={saving}>
-          {saving ? t("loading", { default: "Salvataggio..." }) : t("appointments.addBtn", { default: "Aggiungi appuntamento" })}
+          {saving ? t("saving") : t("add")}
         </button>
       </form>
 
       {loading ? (
-        <div className="text-gray-500">{t("loading", { default: "Caricamento..." })}</div>
+        <div className="text-gray-500">{t("loading")}</div>
       ) : (
         <ul className="space-y-3">
           {appointments.length === 0 && (
-            <li className="text-gray-500">{t("appointments.empty", { default: "Nessun appuntamento inserito." })}</li>
+            <li className="text-gray-500">{t("empty")}</li>
           )}
           {appointments.map((a, index) => (
             <li
@@ -156,12 +157,12 @@ export default function AppuntamentiPage() {
             >
               <div>
                 <div className="font-bold text-green-800">{a.title}</div>
-                <div className="text-sm text-gray-700">{t("appointments.dateLabel", { default: "Data" })}: {a.date}</div>
-                {a.location && <div className="text-sm text-gray-700">{t("appointments.locationLabel", { default: "Luogo" })}: {a.location}</div>}
+                <div className="text-sm text-gray-700">{t("dateLabel")}: {a.date}</div>
+                {a.location && <div className="text-sm text-gray-700">{t("locationLabel")}: {a.location}</div>}
                 {a.notes && <div className="text-sm text-gray-600">{a.notes}</div>}
               </div>
               {a.id && (
-                <button onClick={() => handleDelete(a.id)} className="text-red-600 text-xs hover:underline">{t("delete", { default: "Elimina" })}</button>
+                <button onClick={() => handleDelete(a.id)} className="text-red-600 text-xs hover:underline" aria-label={t("deleteNamed", { title: a.title })}>{t("delete")}</button>
               )}
             </li>
           ))}

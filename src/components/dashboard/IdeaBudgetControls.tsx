@@ -1,12 +1,14 @@
 ﻿"use client";
 
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Props = {
   baseTotal: number; // Somma dei budget ipotizzati
 };
 
 export default function IdeaBudgetControls({ baseTotal }: Props) {
+  const t = useTranslations("budgetRuntime.controls");
   const [currency, setCurrency] = useState<string>(() =>
     (typeof window !== "undefined" && localStorage.getItem("budgetIdea.currency")) || "EUR"
   );
@@ -29,7 +31,7 @@ export default function IdeaBudgetControls({ baseTotal }: Props) {
     <div className="mb-6 p-4 border rounded-lg bg-gray-50">
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
         <div>
-          <label className="block text-sm font-medium mb-1">Valuta</label>
+          <label className="block text-sm font-medium mb-1">{t("currency")}</label>
           <input
             type="text"
             value={currency}
@@ -39,7 +41,7 @@ export default function IdeaBudgetControls({ baseTotal }: Props) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Imprevisti (%)</label>
+          <label className="block text-sm font-medium mb-1">{t("contingency")}</label>
           <input
             type="number"
             min={0}
@@ -51,13 +53,12 @@ export default function IdeaBudgetControls({ baseTotal }: Props) {
         </div>
         <div className="sm:col-span-2 text-sm text-gray-700">
           <div className="flex flex-wrap gap-4">
-            <div><strong>Totale ipotizzato:</strong> {currency} {baseTotal.toLocaleString()}</div>
-            <div><strong>Imprevisti:</strong> {currency} {extra.toLocaleString()} ({contingencyPct}%)</div>
-            <div><strong>Totale con imprevisti:</strong> {currency} {total.toLocaleString()}</div>
+            <div><strong>{t("estimatedTotal")}</strong> {currency} {baseTotal.toLocaleString()}</div>
+            <div><strong>{t("contingencyTotal")}</strong> {currency} {extra.toLocaleString()} ({contingencyPct}%)</div>
+            <div><strong>{t("withContingency")}</strong> {currency} {total.toLocaleString()}</div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-

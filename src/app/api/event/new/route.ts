@@ -28,7 +28,7 @@ export async function POST(_req: NextRequest) {
       .single();
 
     if (evtErr || !evt) {
-      return NextResponse.json({ error: evtErr?.message ?? "Errore creazione evento" }, { status: 500 });
+      return NextResponse.json({ error: evtErr?.message ?? "EVENT_CREATE_FAILED" }, { status: 500 });
     }
 
     // 3) Seed categorie di base

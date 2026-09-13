@@ -2,8 +2,10 @@
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function ContattiPage() {
+  const t = useTranslations("milestone9.runtime.contacts");
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -43,7 +45,7 @@ export default function ContattiPage() {
       });
       const payload = await res.json();
       if (!res.ok || !payload.ok) {
-        throw new Error(payload.error || "Invio non riuscito");
+        throw new Error(payload.error || t("sendFailed"));
       }
       setSubmitted(true);
       setFormData({ nome: "", email: "", messaggio: "" });
@@ -57,18 +59,18 @@ export default function ContattiPage() {
 
   return (
     <section>
-      <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">📞 Contattaci</h2>
+      <h2 className="font-serif text-2xl sm:text-3xl mb-4 sm:mb-6 font-bold">📞 {t("title")}</h2>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Form Contatto */}
         <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border-2 border-gray-200">
-          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">✉️ Inviaci un Messaggio</h3>
+          <h3 className="text-xl font-bold text-[#A3B59D] mb-4">✉️ {t("sendMessage")}</h3>
 
           {submitted ? (
             <div className="bg-green-50 border-2 border-green-300 rounded-xl p-6 text-center">
               <div className="text-6xl mb-4">✅</div>
-              <h4 className="text-xl font-bold text-green-700 mb-2">Messaggio Inviato!</h4>
-              <p className="text-green-600">Ti risponderemo al più presto.</p>
+              <h4 className="text-xl font-bold text-green-700 mb-2">{t("sentTitle")}</h4>
+              <p className="text-green-600">{t("sentDescription")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +81,7 @@ export default function ContattiPage() {
               )}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Nome e Cognome *
+                  {t("fullName")} *
                 </label>
                 <input
                   type="text"
@@ -107,7 +109,7 @@ export default function ContattiPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Messaggio *
+                  {t("message")} *
                 </label>
                 <textarea
                   required
@@ -115,7 +117,7 @@ export default function ContattiPage() {
                   value={formData.messaggio}
                   onChange={(e) => setFormData({...formData, messaggio: e.target.value})}
                   className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#A3B59D] focus:border-[#A3B59D]"
-                  placeholder="Scrivi qui il tuo messaggio..."
+                  placeholder={t("messagePlaceholder")}
                 />
               </div>
 
@@ -124,7 +126,7 @@ export default function ContattiPage() {
                 disabled={loading}
                 className="w-full bg-linear-to-r from-[#A3B59D] to-[#8a9d84] text-white px-6 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loading ? "Invio in corso..." : "📤 Invia Messaggio"}
+                {loading ? t("sending") : `📤 ${t("submit")}`}
               </button>
             </form>
           )}
@@ -137,7 +139,7 @@ export default function ContattiPage() {
             <div className="text-5xl mb-3">💬</div>
             <h3 className="text-xl font-bold text-green-700 mb-2">WhatsApp</h3>
             <p className="text-gray-700 mb-4">
-              Chatta con noi direttamente su WhatsApp per supporto immediato!
+              {t("whatsappDescription")}
             </p>
             <a
               href="https://wa.me/393001234567?text=Ciao!%20Vorrei%20informazioni%20su%20Il%20Budget%20degli%20Sposi"
@@ -145,7 +147,7 @@ export default function ContattiPage() {
               rel="noopener noreferrer"
               className="inline-block bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors"
             >
-              Apri Chat
+              {t("openChat")}
             </a>
           </div>
 
@@ -154,7 +156,7 @@ export default function ContattiPage() {
             <div className="text-5xl mb-3">📧</div>
             <h3 className="text-xl font-bold text-blue-700 mb-2">Email</h3>
             <p className="text-gray-700 mb-2">
-              <strong>Supporto:</strong> support@ilbudgetdeglisposi.it
+              <strong>{t("support")}:</strong> support@ilbudgetdeglisposi.it
             </p>
             <p className="text-gray-700">
               <strong>Info:</strong> info@ilbudgetdeglisposi.it
@@ -164,18 +166,18 @@ export default function ContattiPage() {
           {/* Orari */}
           <div className="bg-linear-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg p-6 border-2 border-purple-300">
             <div className="text-5xl mb-3">🕐</div>
-            <h3 className="text-xl font-bold text-purple-700 mb-2">Orari di Supporto</h3>
+            <h3 className="text-xl font-bold text-purple-700 mb-2">{t("supportHours")}</h3>
             <p className="text-gray-700">
-              <strong>Lun - Ven:</strong> 9:00 - 18:00<br/>
-              <strong>Sabato:</strong> 10:00 - 14:00<br/>
-              <strong>Domenica:</strong> Chiuso
+              <strong>{t("weekdays")}:</strong> 9:00 - 18:00<br/>
+              <strong>{t("saturday")}:</strong> 10:00 - 14:00<br/>
+              <strong>{t("sunday")}:</strong> {t("closed")}
             </p>
           </div>
 
           {/* Social */}
           <div className="bg-linear-to-br from-pink-50 to-pink-100 rounded-2xl shadow-lg p-6 border-2 border-pink-300">
             <div className="text-5xl mb-3">📱</div>
-            <h3 className="text-xl font-bold text-pink-700 mb-2">Seguici sui Social</h3>
+            <h3 className="text-xl font-bold text-pink-700 mb-2">{t("followSocial")}</h3>
             <div className="flex gap-3 mt-4">
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-pink-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-pink-600 transition-colors">
                 📷

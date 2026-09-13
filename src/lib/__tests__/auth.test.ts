@@ -1,4 +1,4 @@
-import { authErrorMessage, safeInternalPath } from "../auth";
+import { authErrorKey, safeInternalPath } from "../auth";
 
 describe("auth safety helpers", () => {
   it("allows only internal redirect paths", () => {
@@ -9,8 +9,8 @@ describe("auth safety helpers", () => {
   });
 
   it("maps Supabase errors without exposing raw details", () => {
-    expect(authErrorMessage("Email not confirmed")).toBe("Devi prima confermare il tuo indirizzo email.");
-    expect(authErrorMessage("Invalid login credentials")).toBe("Email o password non corretti.");
-    expect(authErrorMessage("internal database detail")).not.toContain("database");
+    expect(authErrorKey("Email not confirmed")).toBe("emailNotConfirmed");
+    expect(authErrorKey("Invalid login credentials")).toBe("invalidCredentials");
+    expect(authErrorKey("internal database detail")).toBe("generic");
   });
 });

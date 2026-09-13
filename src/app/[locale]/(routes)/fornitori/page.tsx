@@ -19,6 +19,7 @@ const categories = ["Beauty & Benessere","Catering","Location & Catering","Sposa
 
 export default function SuppliersPage() {
   const t = useTranslations("catalogSearch");
+  const ui = useTranslations("milestone8.suppliers");
   const [items,setItems]=useState<CatalogSearchResult[]>([]), [saved,setSaved]=useState<Saved[]>([]);
   const [q,setQ]=useState(""), [category,setCategory]=useState(""), [verification,setVerification]=useState("");
   const [city,setCity]=useState(""), [province,setProvince]=useState(""), [region,setRegion]=useState("");
@@ -26,19 +27,19 @@ export default function SuppliersPage() {
   const [sort,setSort]=useState<CatalogSort>("RELEVANCE"), [page,setPage]=useState(1);
   const [pagination,setPagination]=useState<Pagination>({page:1,pageSize:12,total:0,totalPages:1});
   const [loading,setLoading]=useState(true), [selectedId,setSelectedId]=useState<string|null>(null), [mapMode,setMapMode]=useState(false);
+  const [error,setError]=useState<string|null>(null);
 
   async function load(next=page, currentPosition=position, requestedSort=sort) {
-    setLoading(true);
+    setLoading(true); setError(null);
     const p=new URLSearchParams({entityType:"supplier",page:String(next),pageSize:"12",sort:currentPosition&&requestedSort==="NEAREST"?"NEAREST":requestedSort});
     if(q)p.set("q",q); if(category)p.set("category",category); if(verification)p.set("verification",verification);
     if(city)p.set("city",city); if(province)p.set("province",province); if(region)p.set("region",region);
     if(currentPosition){p.set("latitude",String(currentPosition.latitude));p.set("longitude",String(currentPosition.longitude));p.set("radius",radius);}
-    const response=await fetch(`/api/catalog/search?${p}`,{cache:"no-store"});
-    const body=await response.json();
-    setItems(body.results||[]); setPagination(body.pagination||{page:next,pageSize:12,total:0,totalPages:1});
-    setPage(next); setLoading(false);
-    const shareable=new URLSearchParams(p); shareable.delete("latitude");shareable.delete("longitude");shareable.delete("radius");shareable.delete("entityType");shareable.delete("pageSize");
-    window.history.replaceState(null,"",`?${shareable}`);
+    try { const response=await fetch(`/api/catalog/search?${p}`,{cache:"no-store"});
+      const body=await response.json(); if(!response.ok) throw new Error(ui("loadError"));
+      setItems(body.results||[]); setPagination(body.pagination||{page:next,pageSize:12,total:0,totalPages:1}); setPage(next);
+      const shareable=new URLSearchParams(p); shareable.delete("latitude");shareable.delete("longitude");shareable.delete("radius");shareable.delete("entityType");shareable.delete("pageSize"); window.history.replaceState(null,"",`?${shareable}`);
+    } catch { setError(ui("loadError")); } finally { setLoading(false); }
   }
 
   useEffect(()=>{ async function initial(){
@@ -53,24 +54,25 @@ export default function SuppliersPage() {
   function submit(e:FormEvent){e.preventDefault();void load(1);}
   function located(next:CurrentPosition){setPosition(next);setSort("NEAREST");void load(1,next,"NEAREST");}
   const savedBy=(id:string)=>saved.find(s=>s.supplier_id===id);
-  async function toggle(id:string){const current=savedBy(id);const {data}=await getBrowserClient().auth.getSession();const token=data.session?.access_token;if(!token)return;const r=await fetch(current?`/api/my/suppliers?id=${current.id}`:"/api/my/suppliers",{method:current?"DELETE":"POST",headers:{"content-type":"application/json",authorization:`Bearer ${token}`},body:current?undefined:JSON.stringify({supplier_id:id})});if(r.ok){if(current)setSaved(v=>v.filter(s=>s.id!==current.id));else{const j=await r.json();setSaved(v=>[...v,j.savedSupplier]);}}}
+  async function toggle(id:string){setError(null);const current=savedBy(id);const {data}=await getBrowserClient().auth.getSession();const token=data.session?.access_token;if(!token){setError(ui("authRequired"));return;}const r=await fetch(current?`/api/my/suppliers?id=${current.id}`:"/api/my/suppliers",{method:current?"DELETE":"POST",headers:{"content-type":"application/json",authorization:`Bearer ${token}`},body:current?undefined:JSON.stringify({supplier_id:id})});if(r.ok){if(current)setSaved(v=>v.filter(s=>s.id!==current.id));else{const j=await r.json();setSaved(v=>[...v,j.savedSupplier]);}}else setError(ui("saveError"));}
 
-  return <section className="space-y-6"><PageHeader eyebrow="Catalogo globale verificabile" title="Fornitori" description="Cerca professionisti per nome, categoria e area geografica." icon={<Store size={24} aria-hidden/>}/>
+  return <section className="space-y-6"><PageHeader eyebrow={ui("eyebrow")} title={ui("title")} description={ui("description")} icon={<Store size={24} aria-hidden/>}/>
     <ContributionPanel entityType="supplier" initialData={{ city, province, region }} />
     <form onSubmit={submit} className="app-card app-card--md grid gap-3 lg:grid-cols-4">
-      <label className="lg:col-span-2"><span className="sr-only">Cerca</span><input className="app-input w-full" value={q} onChange={e=>setQ(e.target.value)} placeholder="Nome, città, provincia, regione o categoria"/></label>
-      <select className="app-select" value={category} onChange={e=>setCategory(e.target.value)} aria-label="Categoria"><option value="">Tutte le categorie</option>{categories.map(c=><option key={c} value={c}>{c.replaceAll("_"," ")}</option>)}</select>
+      <label className="lg:col-span-2"><span className="sr-only">{ui("search")}</span><input className="app-input w-full" value={q} onChange={e=>setQ(e.target.value)} placeholder={ui("searchPlaceholder")}/></label>
+      <select className="app-select" value={category} onChange={e=>setCategory(e.target.value)} aria-label={ui("category")}><option value="">{ui("allCategories")}</option>{categories.map(c=><option key={c} value={c}>{ui.has(`categories.${c}`) ? ui(`categories.${c}`) : c.replaceAll("_"," ")}</option>)}</select>
       <select className="app-select" value={verification} onChange={e=>setVerification(e.target.value)} aria-label={t("verification")}><option value="">{t("all")}</option><option>VERIFIED</option><option>PROBABLE</option><option>TO_CHECK</option></select>
-      <input className="app-input" value={city} onChange={e=>setCity(e.target.value)} placeholder="Città" aria-label="Città"/>
+      <input className="app-input" value={city} onChange={e=>setCity(e.target.value)} placeholder={ui("city")} aria-label={ui("city")}/>
       <input className="app-input" value={province} onChange={e=>setProvince(e.target.value)} placeholder={t("province")} aria-label={t("province")}/>
       <input className="app-input" value={region} onChange={e=>setRegion(e.target.value)} placeholder={t("region")} aria-label={t("region")}/>
       <select className="app-select" value={sort} onChange={e=>setSort(e.target.value as CatalogSort)} aria-label={t("sort")}><option value="RELEVANCE">{t("relevance")}</option><option value="VERIFIED_FIRST">{t("verifiedFirst")}</option><option value="NAME_ASC">{t("name")}</option>{position?<option value="NEAREST">{t("nearest")}</option>:null}</select>
-      <div className="flex flex-wrap gap-2 lg:col-span-4"><NearMeButton onPosition={located} label={t("nearMe")} unavailableLabel={t("positionUnavailable")}/>{position?<label className="flex items-center gap-2 text-sm">{t("radius")}<select className="app-select" value={radius} onChange={e=>setRadius(e.target.value)}><option value="10">10 km</option><option value="25">25 km</option><option value="50">50 km</option><option value="100">100 km</option></select></label>:null}<AppButton type="submit"><Search size={16} aria-hidden/> Cerca</AppButton></div>
+      <div className="flex flex-wrap gap-2 lg:col-span-4"><NearMeButton onPosition={located} label={t("nearMe")} unavailableLabel={t("positionUnavailable")}/>{position?<label className="flex items-center gap-2 text-sm">{t("radius")}<select className="app-select" value={radius} onChange={e=>setRadius(e.target.value)}><option value="10">10 km</option><option value="25">25 km</option><option value="50">50 km</option><option value="100">100 km</option></select></label>:null}<AppButton type="submit"><Search size={16} aria-hidden/> {ui("search")}</AppButton></div>
     </form>
+    {error?<p role="alert" className="text-sm text-red-700">{error}</p>:null}
     {items.some(i=>i.latitude!==null)?<div className="flex gap-2 md:hidden"><AppButton variant={!mapMode?"primary":"outline"} onClick={()=>setMapMode(false)}>{t("list")}</AppButton><AppButton variant={mapMode?"primary":"outline"} onClick={()=>setMapMode(true)}>{t("map")}</AppButton></div>:null}
     {mapMode?<CatalogMap results={items} selectedId={selectedId} onSelect={setSelectedId}/>:null}
     <div className="hidden md:block"><CatalogMap results={items} selectedId={selectedId} onSelect={setSelectedId}/></div>
-    {!mapMode?(loading?<p aria-live="polite">Caricamento…</p>:items.length===0?<EmptyState icon={<Search/>} title="Nessun fornitore trovato" description="Modifica i filtri per ampliare la ricerca."/>:<ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{items.map(s=><li id={`catalog-${s.id}`} key={s.id} onClick={()=>setSelectedId(s.id)} className={`app-card app-card--md ${selectedId===s.id?"ring-2 ring-[#8d3f63]":""}`}><div className="flex justify-between gap-3"><div><h2 className="font-semibold text-lg">{s.name}</h2>{s.category&&<p className="text-sm capitalize">{s.category.replaceAll("_"," ")}</p>}</div><button onClick={e=>{e.stopPropagation();void toggle(s.id)}} aria-label={savedBy(s.id)?"Rimuovi dai salvati":"Salva fornitore"} className={savedBy(s.id)?"text-red-600":"text-gray-500"}><Heart fill={savedBy(s.id)?"currentColor":"none"}/></button></div><p className="mt-2 text-sm text-gray-600">{[s.city,s.province,s.region].filter(Boolean).join(", ")}</p><p className="mt-2 text-xs font-semibold">{s.verificationStatus}</p>{s.distanceKm!==null?<p className="text-sm">{t("distance",{distance:s.distanceKm})}</p>:position?<p className="text-sm text-gray-500">{t("distanceUnavailable")}</p>:null}<Link className="mt-3 inline-block text-sm underline" href={`fornitori/${s.id}`}>Dettaglio</Link></li>)}</ul>):null}
-    <nav className="flex items-center justify-center gap-3" aria-label="Paginazione"><AppButton variant="outline" disabled={page<=1} onClick={()=>void load(page-1)}>Precedente</AppButton><span>{page}/{pagination.totalPages}</span><AppButton variant="outline" disabled={page>=pagination.totalPages} onClick={()=>void load(page+1)}>Successiva</AppButton></nav>
+    {!mapMode?(loading?<p aria-live="polite">{ui("loading")}</p>:items.length===0?<EmptyState icon={<Search/>} title={ui("emptyTitle")} description={ui("emptyDescription")}/>:<ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{items.map(s=><li id={`catalog-${s.id}`} key={s.id} onClick={()=>setSelectedId(s.id)} className={`app-card app-card--md ${selectedId===s.id?"ring-2 ring-[#8d3f63]":""}`}><div className="flex justify-between gap-3"><div><h2 className="font-semibold text-lg">{s.name}</h2>{s.category&&<p className="text-sm capitalize">{ui.has(`categories.${s.category}`) ? ui(`categories.${s.category}`) : s.category.replaceAll("_"," ")}</p>}</div><button onClick={e=>{e.stopPropagation();void toggle(s.id)}} aria-label={savedBy(s.id)?ui("removeSaved"):ui("saveSupplier")} className={savedBy(s.id)?"text-red-600":"text-gray-500"}><Heart fill={savedBy(s.id)?"currentColor":"none"}/></button></div><p className="mt-2 text-sm text-gray-600">{[s.city,s.province,s.region].filter(Boolean).join(", ")}</p><p className="mt-2 text-xs font-semibold">{ui(`verification.${s.verificationStatus}`)}</p>{s.distanceKm!==null?<p className="text-sm">{t("distance",{distance:s.distanceKm})}</p>:position?<p className="text-sm text-gray-500">{t("distanceUnavailable")}</p>:null}<Link className="mt-3 inline-block text-sm underline" href={`fornitori/${s.id}`}>{ui("details")}</Link></li>)}</ul>):null}
+    <nav className="flex items-center justify-center gap-3" aria-label={ui("pagination")}><AppButton variant="outline" disabled={page<=1} onClick={()=>void load(page-1)}>{ui("previous")}</AppButton><span>{ui("page",{page,total:pagination.totalPages})}</span><AppButton variant="outline" disabled={page>=pagination.totalPages} onClick={()=>void load(page+1)}>{ui("next")}</AppButton></nav>
   </section>;
 }

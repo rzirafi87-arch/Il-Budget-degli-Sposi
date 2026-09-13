@@ -20,18 +20,20 @@ interface DeviceInfo {
   pixelRatio: number;
 }
 
+const serverDeviceInfo: DeviceInfo = {
+  deviceType: "desktop",
+  os: "unknown",
+  viewportSize: "lg",
+  isTouchDevice: false,
+  isPortrait: false,
+  screenWidth: 1920,
+  screenHeight: 1080,
+  pixelRatio: 1,
+};
+
 const detectDevice = (): DeviceInfo => {
   if (typeof window === "undefined") {
-    return {
-      deviceType: "desktop",
-      os: "unknown",
-      viewportSize: "lg",
-      isTouchDevice: false,
-      isPortrait: false,
-      screenWidth: 1920,
-      screenHeight: 1080,
-      pixelRatio: 1,
-    };
+    return serverDeviceInfo;
   }
 
   const ua = navigator.userAgent.toLowerCase();
@@ -98,13 +100,15 @@ const detectDevice = (): DeviceInfo => {
 };
 
 export function useDeviceDetection(): DeviceInfo {
-  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(() => detectDevice());
+  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(serverDeviceInfo);
 
   useEffect(() => {
     // Update on resize and orientation change
     const handleResize = () => {
       setDeviceInfo(detectDevice());
     };
+
+    handleResize();
 
     window.addEventListener("resize", handleResize);
     window.addEventListener("orientationchange", handleResize);
