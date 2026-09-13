@@ -35,11 +35,13 @@ jobs:
           PLAYWRIGHT_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
           PLAYWRIGHT_TEST_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
           PLAYWRIGHT_TEST_PASSWORD: ${{ secrets.PLAYWRIGHT_TEST_PASSWORD }}
+          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
         run: |
           test -n "$PLAYWRIGHT_SUPABASE_URL"
           test -n "$PLAYWRIGHT_SUPABASE_ANON_KEY"
           test -n "$PLAYWRIGHT_TEST_EMAIL"
           test -n "$PLAYWRIGHT_TEST_PASSWORD"
+          test -n "$PLAYWRIGHT_BASE_URL"
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build
@@ -52,6 +54,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
           PLAYWRIGHT_TEST_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
           PLAYWRIGHT_TEST_PASSWORD: ${{ secrets.PLAYWRIGHT_TEST_PASSWORD }}
+          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
