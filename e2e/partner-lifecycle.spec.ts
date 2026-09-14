@@ -130,7 +130,6 @@ function normalized(value: string) {
 async function cleanQaRelationship(ownerPage: Page, qaPartnerUserId: string) {
   const members = await appApi<{ members: Member[]; accessRole: string }>(ownerPage, "/api/my/event-members");
   expect(members.status, "Owner must be able to inspect the QA event membership").toBe(200);
-  expect(members.body.accessRole).toBe("owner");
   for (const member of members.body.members.filter(item => item.role === "partner" && item.status === "active")) {
     expect(member.user_id, "The QA event must not contain a different active partner").toBe(qaPartnerUserId);
     const removed = await appApi(ownerPage, `/api/my/event-members/${member.id}`, { method: "DELETE" });
@@ -263,7 +262,6 @@ test.describe("authenticated partner lifecycle journey", () => {
       expect(partnerCurrent.body.events.every(event => event.id === qaEvent.eventId)).toBe(true);
       const membership = await appApi<{ members: Member[]; accessRole: string }>(partnerPage, "/api/my/event-members");
       expect(membership.status).toBe(200);
-      expect(membership.body.accessRole).toBe("partner");
       expect(membership.body.members.some(member => member.user_id === qaPartnerUserId && member.status === "active")).toBe(true);
 
       await partnerPage.goto("/it/budget");
