@@ -4,6 +4,7 @@ import { rateLimitResponse } from "@/lib/publicApiGuard";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { generatePublicId } from "@/lib/publicId";
+import { validateEventTypeForRegistration } from "@/lib/eventTypeCapabilities";
 export const runtime = "nodejs";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,10 +30,22 @@ export async function POST(req: NextRequest) {
     const password = "password" in body && typeof body.password === "string" ? body.password : "";
     const weddingDate =
       "weddingDate" in body && typeof body.weddingDate === "string" ? body.weddingDate : null;
-    const eventType =
-      "eventType" in body && typeof body.eventType === "string" && body.eventType.trim()
-        ? body.eventType.trim().toLowerCase()
-        : "wedding";
+    const eventTypeDecision = validateEventTypeForRegistration(
+      "eventType" in body ? body.eventType : "wedding",
+    );
+
+    if (!eventTypeDecision.ok) {
+      const status = eventTypeDecision.reason === "COMING_SOON" ? 409 : 400;
+      return NextResponse.json(
+        {
+          ok: false,
+          code: `EVENT_TYPE_${eventTypeDecision.reason}`,
+          error: "EVENT_TYPE_NOT_AVAILABLE",
+        },
+        { status },
+      );
+    }
+    const eventType = eventTypeDecision.eventType;
 
     if (!EMAIL_PATTERN.test(primaryEmail) || password.length < 10 || password.length > 128) {
       return NextResponse.json(

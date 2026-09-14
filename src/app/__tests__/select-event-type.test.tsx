@@ -47,6 +47,22 @@ describe("SelectEventTypePage", () => {
     });
   });
 
+  it("rende visibili ma disabilita tutti i 17 tipi Coming Soon", async () => {
+    window.localStorage.setItem("language", "it");
+    window.localStorage.setItem("country", "it");
+    render(<SelectEventTypePage />);
+
+    await screen.findByText("events.wedding");
+    const eventButtons = screen.getAllByRole("button");
+    expect(eventButtons).toHaveLength(18);
+    expect(eventButtons[0]).toBeEnabled();
+    for (const button of eventButtons.slice(1)) {
+      expect(button).toBeDisabled();
+      expect(button).toHaveAttribute("aria-disabled", "true");
+      expect(button).toHaveAttribute("aria-describedby");
+    }
+  });
+
   it("non mostra la wizard a un utente con matrimonio già configurato", async () => {
     mockGetOnboardingStatus.mockResolvedValue({
       kind: "complete",

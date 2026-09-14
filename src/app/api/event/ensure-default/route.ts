@@ -1,4 +1,4 @@
-import { getEventTypeCapability, normalizeEventType } from "@/lib/eventTypeCapabilities";
+import { getEventTypeCapability, validateEventTypeForRegistration } from "@/lib/eventTypeCapabilities";
 import { generatePublicId } from "@/lib/publicId";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { CURRENT_EVENT_COOKIE, resolveCurrentEvent } from "@/lib/currentEvent";
@@ -24,9 +24,18 @@ export async function POST(req: NextRequest) {
 
     const body: EventCreateBody = await req.json().catch(() => ({}));
     const url = new URL(req.url);
-    const requestedEventType = (typeof body.eventType === "string" && body.eventType) || url.searchParams.get("eventType") || "wedding";
-    const eventTypeSlug = normalizeEventType(String(requestedEventType));
-    const capability = getEventTypeCapability(eventTypeSlug);
+    const requestedEventType = body.eventType ?? url.searchParams.get("eventType") ?? "wedding";
+    const eventTypeDecision = validateEventTypeForRegistration(requestedEventType);
+    if (!eventTypeDecision.ok) {
+      const status = eventTypeDecision.reason === "COMING_SOON" ? 409 : 400;
+      return NextResponse.json({
+        ok: false,
+        code: `EVENT_TYPE_${eventTypeDecision.reason}`,
+        eventType: eventTypeDecision.eventType,
+        error: "EVENT_TYPE_NOT_AVAILABLE",
+      }, { status });
+    }
+    const eventTypeSlug = eventTypeDecision.eventType;
     const country = ((typeof body.country === "string" && body.country) || url.searchParams.get("country") || "").trim();
     const language = ((typeof body.language === "string" && body.language) || url.searchParams.get("language") || "").trim();
     const userId = userData.user.id;
@@ -39,9 +48,6 @@ export async function POST(req: NextRequest) {
       if (!persisted?.language && language) updates.language = language;
       if (!persisted?.country && country) updates.country = country;
       if (!persisted?.event_type) {
-        if (capability.availabilityStatus !== "READY") {
-          return NextResponse.json({ ok: false, code: "EVENT_TYPE_COMING_SOON", error: "EVENT_TYPE_NOT_AVAILABLE" }, { status: 409 });
-        }
         updates.event_type = eventTypeSlug;
       }
       if (Object.keys(updates).length > 0) {
@@ -62,19 +68,6 @@ export async function POST(req: NextRequest) {
     }
     if (resolution.status === "SELECTION_REQUIRED") {
       return NextResponse.json({ ok: false, code: "EVENT_SELECTION_REQUIRED", events: resolution.events }, { status: 409 });
-    }
-
-    // Product rule: a type that is not genuinely ready cannot create a new event.
-    if (capability.availabilityStatus !== "READY") {
-      return NextResponse.json(
-        {
-          ok: false,
-          code: "EVENT_TYPE_COMING_SOON",
-          eventType: eventTypeSlug,
-          error: "EVENT_TYPE_NOT_AVAILABLE",
-        },
-        { status: 409 }
-      );
     }
 
     const publicId = generatePublicId();

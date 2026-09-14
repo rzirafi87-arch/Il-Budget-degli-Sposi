@@ -1,4 +1,4 @@
-export type EventAvailabilityStatus = "READY" | "COMING_SOON" | "BETA";
+export type EventAvailabilityStatus = "READY" | "COMING_SOON" | "INTERNAL_ONLY";
 
 export type EventModule =
   | "dashboard"
@@ -21,6 +21,7 @@ export type LocationRole = "ceremony" | "reception" | "main_event" | "accommodat
 export type EventTypeCapability = {
   slug: string;
   availabilityStatus: EventAvailabilityStatus;
+  publicVisible: boolean;
   enabledModules: readonly EventModule[];
   legacyAccessModules: readonly EventModule[];
   ceremonyMode: CeremonyMode;
@@ -35,6 +36,8 @@ export type EventTypeCapability = {
     it: string;
     en: string;
     es: string;
+    fr: string;
+    de: string;
   };
 };
 
@@ -58,11 +61,14 @@ const COMING_SOON_DESCRIPTION = {
   it: "Questo tipo di evento è visibile in anteprima ma non è ancora supportato con un flusso completo e coerente.",
   en: "This event type is visible as a preview but is not yet supported by a complete, coherent workflow.",
   es: "Este tipo de evento se muestra como vista previa, pero todavía no dispone de un flujo completo y coherente.",
+  fr: "Ce type d’événement est visible en aperçu, mais ne dispose pas encore d’un parcours complet et cohérent.",
+  de: "Dieser Veranstaltungstyp ist als Vorschau sichtbar, wird aber noch nicht durch einen vollständigen Ablauf unterstützt.",
 } as const;
 
 const comingSoon = (slug: string): EventTypeCapability => ({
   slug,
   availabilityStatus: "COMING_SOON",
+  publicVisible: true,
   enabledModules: [],
   legacyAccessModules: ["dashboard"],
   ceremonyMode: "not_configured",
@@ -80,6 +86,7 @@ export const EVENT_TYPE_CAPABILITIES: Record<string, EventTypeCapability> = {
   wedding: {
     slug: "wedding",
     availabilityStatus: "READY",
+    publicVisible: true,
     enabledModules: WEDDING_MODULES,
     legacyAccessModules: WEDDING_MODULES,
     ceremonyMode: "religious_or_civil",
@@ -121,6 +128,13 @@ export const EVENT_TYPE_CAPABILITIES: Record<string, EventTypeCapability> = {
   "bar-mitzvah": comingSoon("bar-mitzvah"),
   quinceanera: comingSoon("quinceanera"),
   "charity-gala": comingSoon("charity-gala"),
+  // Reserved for non-public lifecycle testing and future internal previews. It is
+  // deliberately absent from every selector and can never create an event.
+  "internal-preview": {
+    ...comingSoon("internal-preview"),
+    availabilityStatus: "INTERNAL_ONLY",
+    publicVisible: false,
+  },
 };
 
 const EVENT_TYPE_ALIASES: Record<string, string> = {
@@ -153,7 +167,35 @@ export function normalizeEventType(value: string | null | undefined): string {
 
 export function getEventTypeCapability(value: string | null | undefined): EventTypeCapability {
   const normalized = normalizeEventType(value);
-  return EVENT_TYPE_CAPABILITIES[normalized] || comingSoon(normalized || "unknown");
+  return EVENT_TYPE_CAPABILITIES[normalized] || {
+    ...comingSoon(normalized || "unknown"),
+    availabilityStatus: "INTERNAL_ONLY",
+    publicVisible: false,
+  };
+}
+
+export type EventTypeRegistrationDecision =
+  | { ok: true; eventType: "wedding" }
+  | { ok: false; eventType: string; reason: "COMING_SOON" | "INTERNAL_ONLY" | "UNKNOWN" };
+
+export function validateEventTypeForRegistration(value: unknown): EventTypeRegistrationDecision {
+  if (typeof value !== "string" || !value.trim()) {
+    return { ok: false, eventType: "", reason: "UNKNOWN" };
+  }
+  const eventType = normalizeEventType(value);
+  const capability = EVENT_TYPE_CAPABILITIES[eventType];
+  if (!capability) return { ok: false, eventType, reason: "UNKNOWN" };
+  if (capability.availabilityStatus === "COMING_SOON") {
+    return { ok: false, eventType, reason: "COMING_SOON" };
+  }
+  if (capability.availabilityStatus === "INTERNAL_ONLY") {
+    return { ok: false, eventType, reason: "INTERNAL_ONLY" };
+  }
+  return { ok: true, eventType: "wedding" };
+}
+
+export function publicEventTypeCapabilities(): EventTypeCapability[] {
+  return Object.values(EVENT_TYPE_CAPABILITIES).filter((capability) => capability.publicVisible);
 }
 
 export function isEventTypeReady(value: string | null | undefined): boolean {

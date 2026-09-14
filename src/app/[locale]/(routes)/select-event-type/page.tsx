@@ -4,8 +4,8 @@ import { LoadingState } from "@/components/ui/LoadingState";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { EVENT_CONFIGS } from "@/constants/eventConfigs";
 import {
-  EVENT_TYPE_CAPABILITIES,
   getEventTypeCapability,
+  publicEventTypeCapabilities,
 } from "@/lib/eventTypeCapabilities";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { getOnboardingStatus } from "@/lib/onboardingClient";
@@ -44,13 +44,23 @@ const STATUS_COPY = {
     genericError: "No se puede completar la configuración",
     progress: "Paso 3 de 3",
   },
+  fr: {
+    ready: "Disponible", comingSoon: "Bientôt disponible", description: "Pas encore disponible",
+    selected: "Sélectionné", start: "Commencer", creating: "Création de votre événement…",
+    genericError: "Impossible de terminer la configuration", progress: "Étape 3 sur 3",
+  },
+  de: {
+    ready: "Verfügbar", comingSoon: "Demnächst", description: "Noch nicht verfügbar",
+    selected: "Ausgewählt", start: "Starten", creating: "Deine Veranstaltung wird erstellt…",
+    genericError: "Die Einrichtung konnte nicht abgeschlossen werden", progress: "Schritt 3 von 3",
+  },
 } as const;
 
 export default function SelectEventTypePage() {
   const t = useTranslations();
   const router = useRouter();
   const locale = useLocale();
-  const language = locale === "en" ? "en" : locale === "es" ? "es" : "it";
+  const language = (["it", "en", "es", "fr", "de"] as const).find((item) => item === locale) || "it";
   const statusCopy = STATUS_COPY[language];
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
   const [saving, setSaving] = useState(false);
@@ -125,10 +135,10 @@ export default function SelectEventTypePage() {
 
   const events = useMemo(() => {
     const configs = EVENT_CONFIGS as Record<string, { name: string; emoji: string }>;
-    return Object.entries(EVENT_TYPE_CAPABILITIES).map(([slug, capability]) => ({
-      slug,
-      label: t(`events.${slug}`),
-      emoji: configs[slug]?.emoji || "✨",
+    return publicEventTypeCapabilities().map((capability) => ({
+      slug: capability.slug,
+      label: t(`events.${capability.slug}`),
+      emoji: configs[capability.slug]?.emoji || "✨",
       capability,
     }));
   }, [t]);
@@ -219,6 +229,7 @@ export default function SelectEventTypePage() {
                 onClick={() => void handleSelect(event.slug)}
                 aria-pressed={isSelected}
                 aria-disabled={!isReady}
+                aria-describedby={!isReady ? `event-type-${event.slug}-status` : undefined}
               >
                 <div className="relative min-h-44 w-full bg-linear-to-br from-[#f7f1ec] to-[#e1ece5]">
                   <div className="absolute inset-0 flex flex-col justify-between p-5 text-left text-fg">
@@ -236,7 +247,7 @@ export default function SelectEventTypePage() {
                           {isReady ? statusCopy.ready : statusCopy.comingSoon}
                         </span>
                       </div>
-                      {!isReady && <p className="mt-4 text-sm text-muted-fg">{event.capability.description[language]}</p>}
+                      {!isReady && <p id={`event-type-${event.slug}-status`} className="mt-4 text-sm text-muted-fg">{event.capability.description[language]}</p>}
                     </div>
                     <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted-fg">
                       <span>{isReady ? (isSelected ? statusCopy.selected : statusCopy.start) : statusCopy.description}</span>

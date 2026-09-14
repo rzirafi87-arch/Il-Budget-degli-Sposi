@@ -9,7 +9,7 @@ type EventSummary = {
   name: string | null;
   eventType: string;
   date: string | null;
-  capability: { availabilityStatus: "READY" | "COMING_SOON" | "BETA" };
+  capability: { availabilityStatus: "READY" | "COMING_SOON" | "INTERNAL_ONLY" };
 };
 
 type Payload = {
