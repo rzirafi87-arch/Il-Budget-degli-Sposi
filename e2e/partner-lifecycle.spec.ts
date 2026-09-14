@@ -45,7 +45,19 @@ async function login(page: Page, email: string, password: string) {
   await main.getByLabel("Email", { exact: true }).fill(email);
   await main.getByLabel("Password", { exact: true }).fill(password);
   await main.getByRole("button", { name: /accedi/i }).click();
-  await page.waitForURL(/\/it\/(dashboard|select-event|select-language|select-event-type)/, { timeout: 20_000 });
+  await expect.poll(() => page.evaluate(() => {
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index);
+      if (!key?.startsWith("sb-") || !key.endsWith("-auth-token")) continue;
+      try {
+        const value = JSON.parse(localStorage.getItem(key) || "null") as { access_token?: string } | null;
+        if (value?.access_token) return true;
+      } catch {
+        // Ignore unrelated browser storage entries.
+      }
+    }
+    return false;
+  }), { timeout: 20_000, message: "Supabase login must establish a real browser session" }).toBe(true);
   if (page.url().includes("select-event")) {
     const firstEvent = page.getByRole("listitem").first();
     if (await firstEvent.isVisible()) {
