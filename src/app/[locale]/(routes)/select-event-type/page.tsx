@@ -74,8 +74,12 @@ export default function SelectEventTypePage() {
           router.replace(`/${locale}/auth`);
           return;
         }
-        if (status.kind === "complete" || status.kind === "needs-event-selection") {
+        if (status.kind === "complete") {
           router.replace(`/${locale}/dashboard`);
+          return;
+        }
+        if (status.kind === "needs-event-selection") {
+          router.replace(`/${locale}/select-event`);
           return;
         }
         setAccessChecked(true);

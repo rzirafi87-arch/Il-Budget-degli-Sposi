@@ -1,53 +1,75 @@
-﻿"use client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { EVENT_CONFIGS } from "@/constants/eventConfigs";
+"use client";
 
-const EVENTS = Object.keys(EVENT_CONFIGS).map((slug) => {
-  return {
-    id: slug,
-    type: slug,
-  };
-});
+import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+
+type EventOption = { id: string; name: string | null; eventType: string; date: string | null };
+type ResolvePayload = { status: "RESOLVED" | "NO_EVENT" | "SELECTION_REQUIRED"; events: EventOption[] };
 
 export default function SelectEventPage() {
   const router = useRouter();
   const locale = useLocale();
-  const t = useTranslations("milestone9.setup");
-  const tEvents = useTranslations("events");
-  const [selected, setSelected] = useState<string>("");
+  const t = useTranslations("milestone9.currentEvent");
+  const [events, setEvents] = useState<EventOption[]>([]);
+  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
+  const [selecting, setSelecting] = useState<string | null>(null);
 
-  useEffect(() => {
-    const activeEvent = localStorage.getItem("activeEventId");
-    if (activeEvent) {
-      setTimeout(() => setSelected(activeEvent), 0);
+  const load = useCallback(async () => {
+    setState("loading");
+    const { data } = await getBrowserClient().auth.getSession();
+    const jwt = data.session?.access_token;
+    if (!jwt) return router.replace(`/${locale}/auth`);
+    try {
+      const response = await fetch("/api/my/current-event", { headers: { Authorization: `Bearer ${jwt}` }, cache: "no-store" });
+      if (!response.ok) throw new Error("EVENTS_LOAD_FAILED");
+      const payload = (await response.json()) as ResolvePayload;
+      if (payload.status === "RESOLVED") return router.replace(`/${locale}/dashboard`);
+      if (payload.status === "NO_EVENT") return router.replace(`/${locale}/select-language`);
+      setEvents(payload.events);
+      setState("ready");
+    } catch {
+      setState("error");
     }
-  }, []);
+  }, [locale, router]);
 
-  function handleSelect(id: string) {
-    setSelected(id);
-    localStorage.setItem("activeEventId", id);
-    localStorage.setItem("eventType", id);
-    router.push(`/${locale}/dashboard`);
+  useEffect(() => { void load(); }, [load]);
+
+  async function choose(eventId: string) {
+    setSelecting(eventId);
+    try {
+      const { data } = await getBrowserClient().auth.getSession();
+      const jwt = data.session?.access_token;
+      if (!jwt) throw new Error("NOT_AUTHENTICATED");
+      const response = await fetch("/api/my/current-event", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ eventId }),
+      });
+      if (!response.ok) throw new Error("EVENT_SELECTION_FAILED");
+      localStorage.setItem("currentEventChangedAt", String(Date.now()));
+      router.replace(`/${locale}/dashboard`);
+      router.refresh();
+    } catch {
+      setState("error");
+      setSelecting(null);
+    }
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#A3B59D] to-[#e6f2e0]">
-      <h1 className="text-3xl font-bold mb-8">{t("selectEvent")}</h1>
-      <div className="flex flex-col gap-4 mb-8">
-        {EVENTS.map((ev) => (
-          <button
-            key={ev.id}
-            className={`px-8 py-4 rounded-xl font-semibold text-lg shadow-md border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D] hover:text-white transition-all ${
-              selected === ev.id ? "bg-[#A3B59D] text-white" : ""
-            }`}
-            onClick={() => handleSelect(ev.id)}
-          >
-            {tEvents(ev.type)}
-          </button>
-        ))}
-      </div>
-    </div>
+    <main className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col justify-center px-4 py-10" aria-busy={state === "loading"}>
+      <h1 className="text-center text-3xl font-bold text-fg">{t("choose")}</h1>
+      {state === "loading" && <p className="mt-6 text-center text-muted-fg" role="status">{t("switching")}</p>}
+      {state === "error" && <div className="mt-6 text-center" role="alert"><p className="text-muted-fg">{t("none")}</p><button type="button" className="app-button app-button--primary mt-4" onClick={() => void load()}>{t("change")}</button></div>}
+      {state === "ready" && <div className="mt-8 grid gap-3" role="list">{events.map((event) => (
+        <button key={event.id} type="button" role="listitem" disabled={selecting !== null}
+          className="rounded-2xl border border-border bg-card p-5 text-left shadow-soft transition hover:border-primary focus-ring-sage disabled:opacity-60"
+          onClick={() => void choose(event.id)}>
+          <span className="block font-semibold text-fg">{event.name || event.eventType}</span>
+          {event.date && <span className="mt-1 block text-sm text-muted-fg">{event.date.slice(0, 10)}</span>}
+        </button>
+      ))}</div>}
+    </main>
   );
 }

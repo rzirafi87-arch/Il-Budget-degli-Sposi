@@ -1,6 +1,7 @@
 "use client";
 
 import { getOnboardingStatus, OnboardingError } from "@/lib/onboardingClient";
+import { onboardingDestination } from "@/lib/onboardingRouting";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -15,12 +16,7 @@ export default function AppEntryGate({ locale }: { locale?: string }) {
     setError(null);
     try {
       const status = await getOnboardingStatus();
-      const destination =
-        status.kind === "anonymous"
-          ? "/welcome"
-          : status.kind === "complete"
-            ? "/dashboard"
-            : "/wizard";
+      const destination = status.kind === "anonymous" ? "/welcome" : onboardingDestination(status);
       router.replace(buildLocalizedPath(locale, destination));
     } catch (cause) {
       setError(cause instanceof OnboardingError ? cause.code : "APP_ENTRY_FAILED");
@@ -32,12 +28,7 @@ export default function AppEntryGate({ locale }: { locale?: string }) {
     getOnboardingStatus()
       .then((status) => {
         if (!active) return;
-        const destination =
-          status.kind === "anonymous"
-            ? "/welcome"
-            : status.kind === "complete"
-              ? "/dashboard"
-              : "/wizard";
+        const destination = status.kind === "anonymous" ? "/welcome" : onboardingDestination(status);
         router.replace(buildLocalizedPath(locale, destination));
       })
       .catch((cause) => {

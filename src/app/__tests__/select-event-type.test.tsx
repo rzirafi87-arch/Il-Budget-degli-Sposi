@@ -60,7 +60,7 @@ describe("SelectEventTypePage", () => {
     expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
   });
 
-  it("rimanda la selezione multi-evento alle Impostazioni", async () => {
+  it("rimanda la selezione multi-evento al selettore ID canonico", async () => {
     mockGetOnboardingStatus.mockResolvedValue({
       kind: "needs-event-selection",
       accessToken: "token",
@@ -68,7 +68,7 @@ describe("SelectEventTypePage", () => {
 
     render(<SelectEventTypePage />);
 
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/dashboard"));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/select-event"));
     expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
   });
 });

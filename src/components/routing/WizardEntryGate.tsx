@@ -1,6 +1,7 @@
 "use client";
 
 import { getOnboardingStatus, OnboardingError } from "@/lib/onboardingClient";
+import { onboardingDestination } from "@/lib/onboardingRouting";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -15,18 +16,7 @@ export default function WizardEntryGate({ locale }: { locale?: string }) {
     setError(null);
     try {
       const status = await getOnboardingStatus();
-      if (status.kind === "needs-onboarding") {
-        localStorage.removeItem("country");
-        localStorage.removeItem("eventType");
-        document.cookie = "country=; Path=/; Max-Age=0; SameSite=Lax";
-        document.cookie = "eventType=; Path=/; Max-Age=0; SameSite=Lax";
-      }
-      const destination =
-        status.kind === "anonymous"
-          ? "/auth"
-          : status.kind === "complete"
-            ? "/dashboard"
-            : "/select-language";
+      const destination = onboardingDestination(status);
       router.replace(buildLocalizedPath(locale, destination));
     } catch (cause) {
       setError(cause instanceof OnboardingError ? cause.code : "WIZARD_ENTRY_FAILED");
@@ -38,18 +28,7 @@ export default function WizardEntryGate({ locale }: { locale?: string }) {
     getOnboardingStatus()
       .then((status) => {
         if (!active) return;
-        if (status.kind === "needs-onboarding") {
-          localStorage.removeItem("country");
-          localStorage.removeItem("eventType");
-          document.cookie = "country=; Path=/; Max-Age=0; SameSite=Lax";
-          document.cookie = "eventType=; Path=/; Max-Age=0; SameSite=Lax";
-        }
-        const destination =
-          status.kind === "anonymous"
-            ? "/auth"
-            : status.kind === "complete"
-              ? "/dashboard"
-              : "/select-language";
+        const destination = onboardingDestination(status);
         router.replace(buildLocalizedPath(locale, destination));
       })
       .catch((cause) => {

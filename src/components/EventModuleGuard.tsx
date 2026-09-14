@@ -57,7 +57,6 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
       UNGUARDED_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix)) ||
       !routeModule);
   const [verifiedPath, setVerifiedPath] = useState<string | null>(null);
-  const [selectionRequired, setSelectionRequired] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -89,7 +88,7 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
           return;
         }
         if (status.kind === "needs-event-selection") {
-          setSelectionRequired(true);
+          router.replace(`/${locale}/select-event`);
           return;
         }
 
@@ -122,21 +121,6 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
 
   if (isUnguarded) {
     return <>{children}</>;
-  }
-
-  if (selectionRequired) {
-    return (
-      <section className="mx-auto my-10 max-w-lg rounded-2xl border border-border bg-card p-6 text-center shadow-soft">
-        <p className="text-fg">{t("selectEvent")}</p>
-        <button
-          type="button"
-          className="app-button app-button--primary mt-5"
-          onClick={() => window.dispatchEvent(new CustomEvent("open-quick-settings"))}
-        >
-          {t("openSettings")}
-        </button>
-      </section>
-    );
   }
 
   if (isLegacyComingSoonRoute || !routeModule || verifiedPath !== normalizedPath) {

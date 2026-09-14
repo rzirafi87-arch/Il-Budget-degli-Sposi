@@ -3,7 +3,7 @@ import { generatePublicId } from "@/lib/publicId";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { CURRENT_EVENT_COOKIE, resolveCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
-import type { EventCreateBody, EventInsert } from "../lifecycleTypes";
+import type { EventCreateBody, EventInsert, EventUpdate } from "../lifecycleTypes";
 
 export const runtime = "nodejs";
 
@@ -33,8 +33,23 @@ export async function POST(req: NextRequest) {
 
     const resolution = await resolveCurrentEvent(req, userId);
     if (resolution.status === "RESOLVED") {
-      const existingEventType = resolution.currentEvent.eventType;
-      const existingCapability = resolution.currentEvent.capability;
+      const { data: persisted } = await db.from("events").select("language,country,event_type")
+        .eq("id", resolution.currentEvent.eventId).maybeSingle();
+      const updates: EventUpdate = {};
+      if (!persisted?.language && language) updates.language = language;
+      if (!persisted?.country && country) updates.country = country;
+      if (!persisted?.event_type) {
+        if (capability.availabilityStatus !== "READY") {
+          return NextResponse.json({ ok: false, code: "EVENT_TYPE_COMING_SOON", error: "EVENT_TYPE_NOT_AVAILABLE" }, { status: 409 });
+        }
+        updates.event_type = eventTypeSlug;
+      }
+      if (Object.keys(updates).length > 0) {
+        const { error: updateError } = await db.from("events").update(updates).eq("id", resolution.currentEvent.eventId);
+        if (updateError) return NextResponse.json({ ok: false, error: "EVENT_SETUP_UPDATE_FAILED" }, { status: 500 });
+      }
+      const existingEventType = persisted?.event_type ? resolution.currentEvent.eventType : eventTypeSlug;
+      const existingCapability = getEventTypeCapability(existingEventType);
       return NextResponse.json(
         {
           ok: true,
