@@ -45,7 +45,7 @@ async function login(page: Page, email: string, password: string) {
   await main.getByLabel("Email", { exact: true }).fill(email);
   await main.getByLabel("Password", { exact: true }).fill(password);
   await main.getByRole("button", { name: /accedi/i }).click();
-  await page.waitForURL(/\/it\/(dashboard|select-event|select-language)/, { timeout: 20_000 });
+  await page.waitForURL(/\/it\/(dashboard|select-event|select-language|select-event-type)/, { timeout: 20_000 });
   if (page.url().includes("select-event")) {
     const firstEvent = page.getByRole("listitem").first();
     if (await firstEvent.isVisible()) {
