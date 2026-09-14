@@ -434,8 +434,6 @@ export type Database = {
           canonical_record_id: string | null
           conflict_level: string
           created_at: string
-          delivery_error_code: string | null
-          delivery_status: string
           entity_type: string
           event_id: string | null
           id: string
@@ -3421,20 +3419,6 @@ export type Database = {
         Args: { p_token: string; p_user_id: string }
         Returns: string
       }
-      reject_event_invitation: {
-        Args: { p_token: string; p_user_id: string }
-        Returns: string
-      }
-      rotate_event_invitation_token: {
-        Args: {
-          p_event_id: string
-          p_expires_at: string
-          p_invitation_id: string
-          p_token_hash: string
-          p_user_id: string
-        }
-        Returns: string
-      }
       can_access_event: { Args: { p_event_id: string }; Returns: boolean }
       check_table_availability: {
         Args: { p_table_id: string }
@@ -3540,6 +3524,20 @@ export type Database = {
       regenerate_event_data: { Args: { p_event_id: string }; Returns: string }
       regenerate_event_timeline: {
         Args: { p_event_id: string }
+        Returns: string
+      }
+      reject_event_invitation: {
+        Args: { p_token: string; p_user_id: string }
+        Returns: string
+      }
+      rotate_event_invitation_token: {
+        Args: {
+          p_event_id: string
+          p_expires_at: string
+          p_invitation_id: string
+          p_token_hash: string
+          p_user_id: string
+        }
         Returns: string
       }
       save_budget_idea_snapshot: {
