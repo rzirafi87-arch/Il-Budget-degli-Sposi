@@ -2496,6 +2496,7 @@
       "deletionFailed": "Demande non enregistrée.",
       "deletionCancelled": "Demande annulée."
     },
+    "eventDeletion": {"title":"Supprimer l’événement","description":"Supprimez définitivement {event} et toutes les données de planification associées.","open":"Supprimer cet événement","confirmTitle":"Supprimer définitivement l’événement","consequences":"Vous allez supprimer {event} : budget, dépenses, invités, prestataires enregistrés, lieux, calendrier, rendez-vous et Save the Date seront irrécupérables.","typeName":"Pour confirmer, saisissez exactement : {event}","cancel":"Annuler","confirm":"Supprimer définitivement","deleting":"Suppression…","error":"Impossible de supprimer l’événement ({code}). Réessayez."},
     "settings": {
       "settings": "Paramètres",
       "language": "Langue",

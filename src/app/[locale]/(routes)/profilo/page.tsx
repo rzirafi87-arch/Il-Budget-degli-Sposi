@@ -1,18 +1,220 @@
 "use client";
-import { defaultLocale, isSelectableLocale, visibleLanguages } from "@/i18n/languageCapabilities";
+import {
+  defaultLocale,
+  isSelectableLocale,
+  visibleLanguages,
+} from "@/i18n/languageCapabilities";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import LogoutButton from "@/components/LogoutButton";
+import EventDeletionSection from "@/components/EventDeletionSection";
 
 export default function ProfilePage() {
-  const locale = useLocale(), t = useTranslations("runtimeUi.profile");
-  const [deleteEmail, setDeleteEmail] = useState(""), [deletePhrase, setDeletePhrase] = useState(""), [deletionPending, setDeletionPending] = useState(false);
-  const [name, setName] = useState(""), [email, setEmail] = useState(""), [preferredLocale, setPreferredLocale] = useState(locale), [busy, setBusy] = useState(true), [message, setMessage] = useState<string | null>(null);
-  async function authRequest(method: "GET" | "PATCH", body?: object) { const { data } = await getBrowserClient().auth.getSession(); if (!data.session) { window.location.replace(`/${locale}/auth`); return null; } const response = await fetch("/api/my/profile", { method, headers: { Authorization: `Bearer ${data.session.access_token}`, ...(body ? { "Content-Type": "application/json" } : {}) }, body: body ? JSON.stringify(body) : undefined }); return response.ok ? response.json() : null; }
-  useEffect(() => { getBrowserClient().auth.getSession().then(async ({ data }) => { if (!data.session) { window.location.replace(`/${locale}/auth`); return; } const response = await fetch("/api/my/profile", { headers: { Authorization: `Bearer ${data.session.access_token}` } }); const profile = response.ok ? await response.json() : null; if (profile) { setName(profile.profile?.full_name || ""); setEmail(profile.email || ""); const storedLocale = profile.profile?.preferred_locale; setPreferredLocale(isSelectableLocale(storedLocale) ? storedLocale : defaultLocale); } setBusy(false); }); }, [locale]);
-  async function requestDeletion() { if (deletePhrase !== "DELETE" || deleteEmail.trim().toLowerCase() !== email.trim().toLowerCase()) { setMessage(t("confirmMismatch")); return; } setBusy(true); const { data } = await getBrowserClient().auth.getSession(); const response = await fetch("/api/my/account-deletion", { method: "POST", headers: { Authorization: `Bearer ${data.session?.access_token || ""}`, "Content-Type": "application/json" }, body: JSON.stringify({ email: deleteEmail, confirmation: deletePhrase }) }); setBusy(false); setDeletionPending(response.ok); setMessage(response.ok ? t("deletionRecorded") : t("deletionFailed")); }
-  async function cancelDeletion() { setBusy(true); const { data } = await getBrowserClient().auth.getSession(); const response = await fetch("/api/my/account-deletion", { method: "DELETE", headers: { Authorization: `Bearer ${data.session?.access_token || ""}` } }); setBusy(false); if (response.ok) { setDeletionPending(false); setMessage(t("deletionCancelled")); } }
-  async function save() { setBusy(true); setMessage(null); const data = await authRequest("PATCH", { fullName: name, preferredLocale }); setBusy(false); if (data?.ok) { setMessage(t("updated")); window.dispatchEvent(new Event("profile-updated")); } else setMessage(t("updateFailed")); }
-  return <main className="mx-auto max-w-xl space-y-4"><h1 className="text-2xl font-bold">{t("title")}</h1><label className="block">{t("displayName")}<input className="mt-1 block w-full border px-3 py-2" autoComplete="name" maxLength={100} value={name} onChange={e => setName(e.target.value)} /></label><label className="block">Email<input className="mt-1 block w-full border bg-black/5 px-3 py-2" type="email" value={email} readOnly /></label><p className="text-xs text-muted-fg">{t("emailReadOnly")}</p><label className="block">{t("preferredLanguage")}<select className="mt-1 block w-full border px-3 py-2" value={preferredLocale} onChange={e => setPreferredLocale(e.target.value)}>{visibleLanguages.map(language => <option key={language.locale} value={language.locale} disabled={!language.selectable}>{language.nativeLabel}{!language.selectable ? ` (${t("comingSoon")})` : ""}</option>)}</select></label><button className="app-button app-button-primary" disabled={busy || !name.trim()} onClick={save}>{busy ? t("saving") : t("save")}</button>{message && <p role="status">{message}</p>}<section className="mt-8 space-y-3 border-t pt-6" aria-labelledby="logout-title"><h2 id="logout-title" className="text-xl font-semibold">{t("logoutTitle")}</h2><p className="text-sm text-muted-fg">{t("logoutDescription")}</p><LogoutButton placement="profile" /></section><section className="mt-10 space-y-3 border-t pt-6" aria-labelledby="delete-account-title"><h2 id="delete-account-title" className="text-xl font-semibold text-red-700">{t("deleteTitle")}</h2><p className="text-sm text-muted-fg">{t("deleteDescription")}</p><label className="block">{t("confirmEmail")}<input className="mt-1 block w-full border px-3 py-2" type="email" value={deleteEmail} onChange={e => setDeleteEmail(e.target.value)} /></label><label className="block">{t("typeDelete")}<input className="mt-1 block w-full border px-3 py-2" value={deletePhrase} onChange={e => setDeletePhrase(e.target.value)} /></label>{deletionPending ? <button className="app-button app-button-ghost" disabled={busy} onClick={cancelDeletion}>{t("cancelDeletion")}</button> : <button className="app-button app-button-ghost text-red-700" disabled={busy || deletePhrase !== "DELETE"} onClick={requestDeletion}>{t("requestDeletion")}</button>}</section></main>;
+  const locale = useLocale(),
+    t = useTranslations("runtimeUi.profile");
+  const [deleteEmail, setDeleteEmail] = useState(""),
+    [deletePhrase, setDeletePhrase] = useState(""),
+    [deletionPending, setDeletionPending] = useState(false);
+  const [name, setName] = useState(""),
+    [email, setEmail] = useState(""),
+    [preferredLocale, setPreferredLocale] = useState(locale),
+    [busy, setBusy] = useState(true),
+    [message, setMessage] = useState<string | null>(null);
+  async function authRequest(method: "GET" | "PATCH", body?: object) {
+    const { data } = await getBrowserClient().auth.getSession();
+    if (!data.session) {
+      window.location.replace(`/${locale}/auth`);
+      return null;
+    }
+    const response = await fetch("/api/my/profile", {
+      method,
+      headers: {
+        Authorization: `Bearer ${data.session.access_token}`,
+        ...(body ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    return response.ok ? response.json() : null;
+  }
+  useEffect(() => {
+    getBrowserClient()
+      .auth.getSession()
+      .then(async ({ data }) => {
+        if (!data.session) {
+          window.location.replace(`/${locale}/auth`);
+          return;
+        }
+        const response = await fetch("/api/my/profile", {
+          headers: { Authorization: `Bearer ${data.session.access_token}` },
+        });
+        const profile = response.ok ? await response.json() : null;
+        if (profile) {
+          setName(profile.profile?.full_name || "");
+          setEmail(profile.email || "");
+          const storedLocale = profile.profile?.preferred_locale;
+          setPreferredLocale(
+            isSelectableLocale(storedLocale) ? storedLocale : defaultLocale,
+          );
+        }
+        setBusy(false);
+      });
+  }, [locale]);
+  async function requestDeletion() {
+    if (
+      deletePhrase !== "DELETE" ||
+      deleteEmail.trim().toLowerCase() !== email.trim().toLowerCase()
+    ) {
+      setMessage(t("confirmMismatch"));
+      return;
+    }
+    setBusy(true);
+    const { data } = await getBrowserClient().auth.getSession();
+    const response = await fetch("/api/my/account-deletion", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${data.session?.access_token || ""}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: deleteEmail, confirmation: deletePhrase }),
+    });
+    setBusy(false);
+    setDeletionPending(response.ok);
+    setMessage(response.ok ? t("deletionRecorded") : t("deletionFailed"));
+  }
+  async function cancelDeletion() {
+    setBusy(true);
+    const { data } = await getBrowserClient().auth.getSession();
+    const response = await fetch("/api/my/account-deletion", {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${data.session?.access_token || ""}` },
+    });
+    setBusy(false);
+    if (response.ok) {
+      setDeletionPending(false);
+      setMessage(t("deletionCancelled"));
+    }
+  }
+  async function save() {
+    setBusy(true);
+    setMessage(null);
+    const data = await authRequest("PATCH", {
+      fullName: name,
+      preferredLocale,
+    });
+    setBusy(false);
+    if (data?.ok) {
+      setMessage(t("updated"));
+      window.dispatchEvent(new Event("profile-updated"));
+    } else setMessage(t("updateFailed"));
+  }
+  return (
+    <main className="mx-auto max-w-xl space-y-4">
+      <h1 className="text-2xl font-bold">{t("title")}</h1>
+      <label className="block">
+        {t("displayName")}
+        <input
+          className="mt-1 block w-full border px-3 py-2"
+          autoComplete="name"
+          maxLength={100}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <label className="block">
+        Email
+        <input
+          className="mt-1 block w-full border bg-black/5 px-3 py-2"
+          type="email"
+          value={email}
+          readOnly
+        />
+      </label>
+      <p className="text-xs text-muted-fg">{t("emailReadOnly")}</p>
+      <label className="block">
+        {t("preferredLanguage")}
+        <select
+          className="mt-1 block w-full border px-3 py-2"
+          value={preferredLocale}
+          onChange={(e) => setPreferredLocale(e.target.value)}
+        >
+          {visibleLanguages.map((language) => (
+            <option
+              key={language.locale}
+              value={language.locale}
+              disabled={!language.selectable}
+            >
+              {language.nativeLabel}
+              {!language.selectable ? ` (${t("comingSoon")})` : ""}
+            </option>
+          ))}
+        </select>
+      </label>
+      <button
+        className="app-button app-button-primary"
+        disabled={busy || !name.trim()}
+        onClick={save}
+      >
+        {busy ? t("saving") : t("save")}
+      </button>
+      {message && <p role="status">{message}</p>}
+      <section
+        className="mt-8 space-y-3 border-t pt-6"
+        aria-labelledby="logout-title"
+      >
+        <h2 id="logout-title" className="text-xl font-semibold">
+          {t("logoutTitle")}
+        </h2>
+        <p className="text-sm text-muted-fg">{t("logoutDescription")}</p>
+        <LogoutButton placement="profile" />
+      </section>
+      <EventDeletionSection />
+      <section
+        className="mt-10 space-y-3 border-t pt-6"
+        aria-labelledby="delete-account-title"
+      >
+        <h2
+          id="delete-account-title"
+          className="text-xl font-semibold text-red-700"
+        >
+          {t("deleteTitle")}
+        </h2>
+        <p className="text-sm text-muted-fg">{t("deleteDescription")}</p>
+        <label className="block">
+          {t("confirmEmail")}
+          <input
+            className="mt-1 block w-full border px-3 py-2"
+            type="email"
+            value={deleteEmail}
+            onChange={(e) => setDeleteEmail(e.target.value)}
+          />
+        </label>
+        <label className="block">
+          {t("typeDelete")}
+          <input
+            className="mt-1 block w-full border px-3 py-2"
+            value={deletePhrase}
+            onChange={(e) => setDeletePhrase(e.target.value)}
+          />
+        </label>
+        {deletionPending ? (
+          <button
+            className="app-button app-button-ghost"
+            disabled={busy}
+            onClick={cancelDeletion}
+          >
+            {t("cancelDeletion")}
+          </button>
+        ) : (
+          <button
+            className="app-button app-button-ghost text-red-700"
+            disabled={busy || deletePhrase !== "DELETE"}
+            onClick={requestDeletion}
+          >
+            {t("requestDeletion")}
+          </button>
+        )}
+      </section>
+    </main>
+  );
 }

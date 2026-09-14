@@ -1962,6 +1962,7 @@
       "deletionFailed": "Request not recorded.",
       "deletionCancelled": "Request cancelled."
     },
+    "eventDeletion": {"title":"Delete event","description":"Permanently delete {event} and all linked planning data.","open":"Delete this event","confirmTitle":"Permanently delete event","consequences":"You are about to delete {event}: budgets, expenses, guests, saved suppliers, venues, timeline, appointments and Save the Date cannot be recovered.","typeName":"To confirm, type exactly: {event}","cancel":"Cancel","confirm":"Delete permanently","deleting":"Deleting…","error":"The event could not be deleted ({code}). Try again."},
     "settings": {
       "settings": "Settings",
       "language": "Language",
