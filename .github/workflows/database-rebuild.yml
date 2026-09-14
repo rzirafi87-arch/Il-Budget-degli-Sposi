@@ -189,6 +189,11 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260914114238_branch_48_safe_event_deletion.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_safe_event_deletion.sql
 
+      - name: Apply and verify Branch 48 partner lifecycle
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260914150000_branch_48_partner_lifecycle.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_partner_lifecycle.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci

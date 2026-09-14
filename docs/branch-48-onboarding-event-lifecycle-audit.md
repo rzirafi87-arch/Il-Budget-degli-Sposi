@@ -129,3 +129,38 @@ TypeScript, ESLint (0 errors), Jest, build, i18n integrity, MISSING_MESSAGE scan
 This milestone intentionally does not implement deletion, partner UI/invitation
 delivery or acceptance UX, incomplete-setup recovery, multi-event routing,
 registration changes, later integrations, or new event-type activation.
+
+## Milestone 5 — Complete partner lifecycle
+
+- Reused the canonical Branch 47 `event_members`, `event_invitations`,
+  `can_access_event()` and service-only atomic acceptance RPC. No second
+  partner model was introduced; roles remain only `owner` and `partner`.
+- Replaced raw-token API responses with delivery through the existing Resend
+  adapter. Only SHA-256 hashes are stored; links use a verified HTTPS origin,
+  HTML-escaped event/owner data, explicit expiry and localized IT/EN/ES/FR/DE
+  copy. Provider rejection is persisted as `delivery_status=failed` and is
+  returned as a non-success response.
+- Added one-pending-invitation and one-active-partner uniqueness, atomic
+  accept/reject and atomic token rotation for controlled resend. The lifecycle
+  recognizes pending, accepted, rejected, revoked and expired states.
+- Added owner UI in Profile for status, invite, resend, cancel and removal; added
+  recipient invite UI for login/signup return, inspection, accept/reject; added
+  partner status and voluntary leave. Acceptance selects CurrentEvent using the
+  existing HTTP-only cookie. Revoke/leave make canonical membership non-active,
+  which disables the legacy email fallback and causes stale CurrentEvent
+  recovery on the next request.
+- Legacy `bride_email`/`groom_email` access remains unchanged for rows that
+  have no canonical membership. A revoked/left canonical membership continues
+  to override that fallback. No legacy backfill, cleanup or Production DML is
+  included.
+- The additive migration adds only constraints, indexes, delivery metadata and
+  functions; it performs no DML and preserves existing valid memberships,
+  invitations, 11 orphan events, 326 suppliers, global catalogs and unrelated
+  event data.
+- The legacy optional partner field during ordinary owner registration remains
+  compatible. Registration reached from a canonical invitation now creates only
+  the recipient account and returns to that invitation after confirmation,
+  avoiding creation of an unrelated default event.
+- Deferred: real two-identity authenticated partner Playwright is gated on a
+  securely configured second QA identity. Local tests use only invalid-domain
+  fixtures and mocked/static contracts; no real non-QA email is sent.

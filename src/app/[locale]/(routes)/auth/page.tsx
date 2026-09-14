@@ -1,6 +1,6 @@
 "use client";
 
-import { AUTH_RESEND_COOLDOWN_SECONDS, authErrorKey } from "@/lib/auth";
+import { AUTH_RESEND_COOLDOWN_SECONDS, authErrorKey, safeInternalPath } from "@/lib/auth";
 import { publicEventTypeCapabilities } from "@/lib/eventTypeCapabilities";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
@@ -26,10 +26,11 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const returnPath = typeof window === "undefined" ? `/${locale}/dashboard` : safeInternalPath(new URLSearchParams(window.location.search).get("next"), `/${locale}/dashboard`);
 
   useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
   useEffect(() => { if (!cooldown) return; const timer = window.setInterval(() => setCooldown(v => Math.max(0, v - 1)), 1000); return () => window.clearInterval(timer); }, [cooldown]);
-  useEffect(() => { supabase.auth.getSession().then(({ data }) => { if (data.session) window.location.replace(`/${locale}/dashboard`); }); }, [locale]);
+  useEffect(() => { supabase.auth.getSession().then(({ data }) => { if (data.session) window.location.replace(returnPath); }); }, [returnPath]);
 
   async function request(path: string, body: object) {
     const response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -41,7 +42,7 @@ export default function AuthPage() {
   async function signUp() {
     setError(null); setMessage(null); setLoading(true);
     try {
-      await request("/api/auth/register", { primaryEmail: email, password, eventType, partnerEmail: partnerEmail || undefined, weddingDate: weddingDate || undefined, brideBudget: brideBudget ? Number(brideBudget) : undefined, groomBudget: groomBudget ? Number(groomBudget) : undefined, totalBudget: eventType !== "wedding" && brideBudget ? Number(brideBudget) : undefined });
+      await request("/api/auth/register", { primaryEmail: email, password, eventType, partnerEmail: partnerEmail || undefined, weddingDate: weddingDate || undefined, brideBudget: brideBudget ? Number(brideBudget) : undefined, groomBudget: groomBudget ? Number(groomBudget) : undefined, totalBudget: eventType !== "wedding" && brideBudget ? Number(brideBudget) : undefined, next: returnPath });
       setMode("waiting"); setCooldown(AUTH_RESEND_COOLDOWN_SECONDS);
     } catch (e) { setError(t(`errors.${authErrorKey(e instanceof Error ? e.message : undefined)}`)); }
     finally { setLoading(false); }
@@ -52,7 +53,7 @@ export default function AuthPage() {
     const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
     if (authError) { setError(t(`errors.${authErrorKey(authError.message)}`)); if (authError.message.toLowerCase().includes("email not confirmed")) setMode("waiting"); }
-    else window.location.assign(`/${locale}/dashboard`);
+    else window.location.assign(returnPath);
   }
 
   async function resend() {

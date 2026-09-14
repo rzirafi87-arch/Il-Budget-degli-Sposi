@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import LogoutButton from "@/components/LogoutButton";
 import EventDeletionSection from "@/components/EventDeletionSection";
+import PartnerLifecycleSection from "@/components/PartnerLifecycleSection";
 
 export default function ProfilePage() {
   const locale = useLocale(),
@@ -169,6 +170,7 @@ export default function ProfilePage() {
         <LogoutButton placement="profile" />
       </section>
       <EventDeletionSection />
+      <PartnerLifecycleSection />
       <section
         className="mt-10 space-y-3 border-t pt-6"
         aria-labelledby="delete-account-title"

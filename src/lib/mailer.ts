@@ -16,7 +16,7 @@ if (RESEND_API_KEY) {
 
 export async function sendMail(to: string, subject: string, html: string) {
   if (!resend) {
-    console.warn("Resend non configurato: salto invio email a", to);
+    console.warn("Resend non configurato: invio email saltato");
     return { id: "skipped-local" };
   }
   const { data, error } = await resend.emails.send({
