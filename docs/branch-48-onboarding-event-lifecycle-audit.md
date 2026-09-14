@@ -103,3 +103,29 @@ Status meanings: **IMPLEMENTATO** = complete in code/schema and backed by releva
 ## Required gates before Ready for review
 
 TypeScript, ESLint (0 errors), Jest, build, i18n integrity, MISSING_MESSAGE scan, authenticated Playwright, 320–430 px, accessibility, Database Rebuild, RLS, IDOR, CI, Preview READY and affected route/API smoke must all pass. The PR remains Draft until then.
+
+## Milestone 1 — Security & event lifecycle API foundation
+
+- Authoritative protected data baseline: 326 legacy suppliers and 11 events whose
+  owner_id no longer resolves to auth.users. The migration performs no data
+  update, deletion, backfill, or cleanup.
+- Canonical event-creation endpoint: POST /api/event/ensure-default.
+  /api/event/new, /api/event/create, and /api/event-core/new remain POST
+  compatibility aliases, so existing callers are not broken while duplicate
+  implementations are removed.
+- GET /api/event/new is read-only and returns stable METHOD_NOT_ALLOWED with
+  HTTP 405 and Allow: POST.
+- events.owner_id is protected by an additive BEFORE UPDATE OF owner_id trigger.
+  Authenticated Data API callers, including active partners, receive
+  EVENT_OWNER_IMMUTABLE; normal owner and partner updates to permitted
+  non-ownership fields remain governed by existing RLS.
+- Lifecycle route payloads now use generated Supabase Insert/Update types and
+  runtime validation. All as-any casts and their lint suppressions were removed
+  from the lifecycle endpoints in scope.
+- Added Jest contract/source tests and transactional SQL tests for anonymous,
+  owner, partner, unrelated-user, cross-event, direct Data API, row-preservation,
+  canonical-consumer and GET-no-mutation behavior.
+
+This milestone intentionally does not implement deletion, partner UI/invitation
+delivery or acceptance UX, incomplete-setup recovery, multi-event routing,
+registration changes, later integrations, or new event-type activation.

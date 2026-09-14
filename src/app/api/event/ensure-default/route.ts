@@ -3,6 +3,7 @@ import { generatePublicId } from "@/lib/publicId";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { CURRENT_EVENT_COOKIE, resolveCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
+import type { EventCreateBody, EventInsert } from "../lifecycleTypes";
 
 export const runtime = "nodejs";
 
@@ -21,13 +22,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Invalid token" }, { status: 401 });
     }
 
-    const body = await req.json().catch(() => ({}));
+    const body: EventCreateBody = await req.json().catch(() => ({}));
     const url = new URL(req.url);
-    const requestedEventType = body.eventType || url.searchParams.get("eventType") || "wedding";
+    const requestedEventType = (typeof body.eventType === "string" && body.eventType) || url.searchParams.get("eventType") || "wedding";
     const eventTypeSlug = normalizeEventType(String(requestedEventType));
     const capability = getEventTypeCapability(eventTypeSlug);
-    const country = (body.country || url.searchParams.get("country") || "").toString();
-    const language = (body.language || url.searchParams.get("language") || "").toString();
+    const country = ((typeof body.country === "string" && body.country) || url.searchParams.get("country") || "").trim();
+    const language = ((typeof body.language === "string" && body.language) || url.searchParams.get("language") || "").trim();
     const userId = userData.user.id;
 
     const resolution = await resolveCurrentEvent(req, userId);
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
         event_type: eventTypeSlug,
         language: language || null,
         country: country || null,
-      })
+      } satisfies EventInsert)
       .select("id")
       .single();
 
