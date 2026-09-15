@@ -50,7 +50,8 @@
     "actions": {
       "save": "Speichern",
       "apply": "Auf Budget anwenden",
-      "saving": "Wird gespeichert…"
+      "saving": "Wird gespeichert…",
+      "retry": "Erneut versuchen"
     },
     "messages": {
       "saved": "Budgetidee gespeichert.",
@@ -58,7 +59,8 @@
       "applied": "{count, plural, =0 {Es wurden keine Positionen auf das Budget angewendet.} one {# Position wurde auf das Budget angewendet.} other {# Positionen wurden auf das Budget angewendet.}}",
       "applyError": "Die Positionen konnten nicht auf das Budget angewendet werden.",
       "loadError": "Die Budgetidee konnte nicht geladen werden.",
-      "applyDone": "Anwendung abgeschlossen: {count}-Elemente erstellt oder aktualisiert."
+      "applyDone": "Anwendung abgeschlossen: {count}-Elemente erstellt oder aktualisiert.",
+      "duplicate": "Dieser Eintrag ist in der Kategorie bereits vorhanden."
     },
     "buttons": {
       "save": "Budgetidee speichern",

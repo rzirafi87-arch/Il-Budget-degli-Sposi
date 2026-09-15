@@ -50,7 +50,8 @@
     "actions": {
       "save": "Guardar",
       "apply": "Aplicar al presupuesto",
-      "saving": "Guardando…"
+      "saving": "Guardando…",
+      "retry": "Reintentar"
     },
     "messages": {
       "saved": "Idea de presupuesto guardada.",
@@ -58,7 +59,8 @@
       "applied": "{count, plural, =0 {No se ha aplicado ninguna partida al presupuesto.} one {Se ha aplicado # partida al presupuesto.} other {Se han aplicado # partidas al presupuesto.}}",
       "applyError": "No se han podido aplicar las partidas al presupuesto.",
       "loadError": "No se ha podido cargar la idea de presupuesto.",
-      "applyDone": "Solicitud completada: elementos {count} creados o actualizados."
+      "applyDone": "Solicitud completada: elementos {count} creados o actualizados.",
+      "duplicate": "Esta partida ya está presente en la categoría."
     },
     "buttons": {
       "save": "Guardar idea de presupuesto",
