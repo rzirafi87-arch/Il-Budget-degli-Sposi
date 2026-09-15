@@ -23,8 +23,13 @@ class FinancialAuthenticationError extends Error {}
 class FinancialAuthorizationError extends Error {}
 class FinancialReferenceError extends Error {
   constructor(
-    readonly code: "SAVED_SUPPLIER_NOT_FOUND" | "SAVED_SUPPLIER_LOOKUP_FAILED",
-    readonly status: 404 | 500,
+    readonly code:
+      | "SAVED_SUPPLIER_NOT_FOUND"
+      | "SAVED_SUPPLIER_LOOKUP_FAILED"
+      | "EXPENSE_NOT_FOUND"
+      | "EXPENSE_LOOKUP_FAILED"
+      | "EXPENSE_SUPPLIER_LINK_REQUIRED",
+    readonly status: 404 | 409 | 500,
   ) {
     super(code);
   }
@@ -66,6 +71,30 @@ export async function requireSameEventSavedSupplier(
   if (!data) {
     throw new FinancialReferenceError("SAVED_SUPPLIER_NOT_FOUND", 404);
   }
+}
+
+export async function requireSameEventLinkedExpense(
+  db: ReturnType<typeof getServiceClient>,
+  eventId: string,
+  expenseId: string,
+): Promise<{ id: string; saved_supplier_id: string }> {
+  const { data, error } = await db
+    .from("expenses")
+    .select("id,saved_supplier_id")
+    .eq("id", expenseId)
+    .eq("event_id", eventId)
+    .maybeSingle();
+
+  if (error) {
+    throw new FinancialReferenceError("EXPENSE_LOOKUP_FAILED", 500);
+  }
+  if (!data) {
+    throw new FinancialReferenceError("EXPENSE_NOT_FOUND", 404);
+  }
+  if (!data.saved_supplier_id) {
+    throw new FinancialReferenceError("EXPENSE_SUPPLIER_LINK_REQUIRED", 409);
+  }
+  return data as { id: string; saved_supplier_id: string };
 }
 
 export function financialErrorResponse(error: unknown): NextResponse {
