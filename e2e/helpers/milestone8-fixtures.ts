@@ -54,7 +54,13 @@ export async function login(page: Page, identity: Pick<QaIdentity, "email" | "pa
   const main = page.locator("main");
   await main.getByLabel("Email", { exact: true }).fill(identity.email);
   await main.getByLabel("Password", { exact: true }).fill(identity.password);
+  const tokenResponse = page.waitForResponse(response =>
+    response.request().method() === "POST"
+    && new URL(response.url()).pathname.endsWith("/auth/v1/token")
+  );
   await main.getByRole("button", { name: /accedi/i }).click();
+  expect((await tokenResponse).status()).toBe(200);
+  await page.waitForURL(/\/it\/(select-language|select-event|dashboard)/);
 }
 
 export async function renameCurrentEvent(identity: QaIdentity, eventId: string, name: string) {
