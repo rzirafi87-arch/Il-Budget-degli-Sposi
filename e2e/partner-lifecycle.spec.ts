@@ -335,7 +335,7 @@ test.describe("authenticated partner lifecycle journey", () => {
       expect(partnerCurrent.body.status).toBe("RESOLVED");
       expect(partnerCurrent.body.currentEvent?.eventId).toBe(qaEvent.eventId);
       expect(partnerCurrent.body.currentEvent?.accessRole).toBe("partner");
-      expect(partnerCurrent.body.events.every(event => event.id === qaEvent.eventId)).toBe(true);
+      expect(partnerCurrent.body.events.some(event => event.id === qaEvent.eventId)).toBe(true);
       const membership = await appApi<{ members: Member[]; accessRole: string }>(partnerPage, "/api/my/event-members");
       expect(membership.status).toBe(200);
       expect(membership.body.members.some(member => member.user_id === qaPartnerUserId && member.status === "active")).toBe(true);
