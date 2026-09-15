@@ -63,6 +63,42 @@ export async function renameCurrentEvent(identity: QaIdentity, eventId: string, 
   if (error || data?.id !== eventId || data.owner_id !== identity.id || data.name !== name) throw new Error("QA event marker update failed.");
 }
 
+export async function seedDeletionDependency(identity: QaIdentity, eventId: string) {
+  const client = admin();
+  const event = await client.from("events").select("id,owner_id,name").eq("id", eventId).single();
+  if (event.error || event.data.owner_id !== identity.id || !String(event.data.name).startsWith("QA-M8-")) throw new Error("Refusing dependency seed.");
+  const inserted = await client.from("budget_items").insert({ event_id: eventId, name: "QA-M8-DEPENDENCY-" + identity.marker, amount: 123, country_code: "IT" }).select("id").single();
+  if (inserted.error || !inserted.data) throw new Error("QA dependency creation failed.");
+  return inserted.data.id;
+}
+
+export async function verifyDeletedCascade(eventId: string, dependencyId: string) {
+  const client = admin();
+  const [event, dependency] = await Promise.all([
+    client.from("events").select("id").eq("id", eventId).maybeSingle(),
+    client.from("budget_items").select("id").eq("id", dependencyId).maybeSingle(),
+  ]);
+  if (event.error || dependency.error || event.data || dependency.data) throw new Error("Event cascade verification failed.");
+}
+
+export async function apiDeleteAttempt(page: Page, eventId: string, confirmationName: string) {
+  return page.evaluate(async ({ eventId, confirmationName }) => {
+    let token = "";
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (!key?.startsWith("sb-") || !key.endsWith("-auth-token")) continue;
+      const value = JSON.parse(localStorage.getItem(key) || "null") as { access_token?: string } | null;
+      if (value?.access_token) token = value.access_token;
+    }
+    const response = await fetch("/api/event/delete", {
+      method: "DELETE",
+      headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+      body: JSON.stringify({ eventId, confirmationName }),
+    });
+    return { status: response.status, body: await response.json() };
+  }, { eventId, confirmationName });
+}
+
 export async function currentEvent(page: Page) {
   return page.evaluate(async () => {
     let token = "";

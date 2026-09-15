@@ -1,16 +1,20 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
+  apiDeleteAttempt,
   createQaIdentity,
   currentEvent,
   deleteQaIdentity,
   login,
   milestone8FixtureReady,
   renameCurrentEvent,
+  seedDeletionDependency,
+  verifyDeletedCascade,
   type QaIdentity,
 } from "./helpers/milestone8-fixtures";
 
 const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
+const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
 
 test.use({ trace: "off", screenshot: "off", video: "off" });
 
@@ -50,6 +54,26 @@ async function logout(page: Page) {
 async function recoveryLink(identity: QaIdentity, startedAt: number) {
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
+    if (inbucketUrl) {
+      const mailbox = identity.email.split("@")[0];
+      const listed = await fetch(`${inbucketUrl.replace(/\/$/, "")}/api/v1/mailbox/${encodeURIComponent(mailbox)}`);
+      if (!listed.ok) throw new Error(`Local recovery mailbox lookup failed with HTTP ${listed.status}.`);
+      const messages = await listed.json() as Array<{ id: string; subject?: string; date?: string }>;
+      const item = messages.find(message => (!message.date || Date.parse(message.date) >= startedAt) && /reimposta|reset|password/i.test(message.subject || ""));
+      if (item) {
+        const detail = await fetch(`${inbucketUrl.replace(/\/$/, "")}/api/v1/mailbox/${encodeURIComponent(mailbox)}/${encodeURIComponent(item.id)}`);
+        if (!detail.ok) throw new Error(`Local recovery email lookup failed with HTTP ${detail.status}.`);
+        const payload = await detail.json() as { body?: { html?: string }; html?: string; HTML?: string };
+        const html = payload.body?.html || payload.html || payload.HTML || "";
+        const hrefs = [...html.matchAll(/href=["']([^"']+)["']/gi)].map(match => match[1].replaceAll("&amp;", "&"));
+        const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
+        if (!link) throw new Error("Local recovery email did not contain the real verification callback.");
+        return link;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1_000));
+      continue;
+    }
+    if (!resendApiKey) throw new Error("No recovery mailbox provider is configured.");
     const listed = await fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: `Bearer ${resendApiKey}` } });
     if (!listed.ok) throw new Error(`Recovery email lookup failed with HTTP ${listed.status}.`);
     const body = await listed.json() as { data: Array<{ id: string; to: string[]; subject: string; created_at: string }> };
@@ -71,8 +95,8 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
   test.describe.configure({ mode: "serial" });
 
   test("[M8][reset] real request, email callback, password change and login", async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== "it-320", "Reset runs once on an isolated identity.");
-    test.skip(!milestone8FixtureReady || !resendApiKey || !baseUrl, "Milestone 8 isolated fixture secrets are required.");
+    expect(testInfo.project.name).toBe("m8-320");
+    expect(milestone8FixtureReady && Boolean(inbucketUrl || (resendApiKey && baseUrl))).toBe(true);
     test.setTimeout(150_000);
     const identity = await createQaIdentity("reset");
     const nextPassword = `${identity.password}-Changed!7`;
@@ -102,8 +126,8 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
   });
 
   test("[M8][matrix] real 0 to 1 to N routing, switching, reload and relogin", async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== "it-320", "The destructive 0/1/N fixture runs once.");
-    test.skip(!milestone8FixtureReady, "Milestone 8 isolated fixture secrets are required.");
+    expect(testInfo.project.name).toBe("m8-320");
+    expect(milestone8FixtureReady).toBe(true);
     const identity = await createQaIdentity("matrix");
     try {
       await login(page, identity);
@@ -127,14 +151,22 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
     }
   });
 
-  test("[M8][responsive][delete] lifecycle dialog at 320 and 430, keyboard and UI deletion", async ({ page }, testInfo) => {
-    test.skip(!["it-320", "it-430"].includes(testInfo.project.name), "Required lifecycle widths are 320 and 430 px.");
-    test.skip(!milestone8FixtureReady, "Milestone 8 isolated fixture secrets are required.");
+  for (const width of [320, 430] as const) test(`[M8][responsive-${width}][delete] lifecycle dialog at ${width}, keyboard and UI deletion`, async ({ page }, testInfo) => {
+    expect(testInfo.project.name).toBe(`m8-${width}`);
+    expect(milestone8FixtureReady).toBe(true);
     const identity = await createQaIdentity(`delete-${testInfo.project.name}`);
+    const attacker = await createQaIdentity(`idor-${testInfo.project.name}`);
     const name = `QA-M8-DELETE-${identity.marker}`;
     try {
       await login(page, identity);
-      await finishFirstEvent(page, identity, name);
+      const eventId = await finishFirstEvent(page, identity, name);
+      const dependencyId = await seedDeletionDependency(identity, eventId);
+      await logout(page);
+      await login(page, attacker);
+      expect((await apiDeleteAttempt(page, eventId, name)).status).toBe(404);
+      await logout(page);
+      await login(page, identity);
+      await page.waitForURL(/\/it\/dashboard/);
       for (const colorScheme of ["light", "dark"] as const) {
         await page.emulateMedia({ colorScheme });
         await page.goto("/it/profilo");
@@ -156,17 +188,19 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       const response = page.waitForResponse(item => new URL(item.url()).pathname === "/api/event/delete");
       await dialog.getByRole("button", { name: /elimina definitivamente/i }).click();
       expect((await response).status()).toBe(200);
+      await verifyDeletedCascade(eventId, dependencyId);
       await page.waitForURL(/\/it\/select-language/);
       await page.goBack();
       await expect(page).not.toHaveURL(/\/profilo/);
     } finally {
       await deleteQaIdentity(identity);
+      await deleteQaIdentity(attacker);
     }
   });
 
   test("[M8][idea-budget] browser persistence, custom rows, duplicate guard, apply and event isolation", async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== "it-430", "Idea Budget runs once on the required wide mobile viewport.");
-    test.skip(!milestone8FixtureReady, "Milestone 8 isolated fixture secrets are required.");
+    expect(testInfo.project.name).toBe("m8-430");
+    expect(milestone8FixtureReady).toBe(true);
     const identity = await createQaIdentity("idea");
     const firstName = `QA-M8-IDEA-A-${identity.marker}`;
     try {
