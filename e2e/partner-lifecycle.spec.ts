@@ -1,4 +1,4 @@
-import { expect, type BrowserContext, type Page, test } from "@playwright/test";
+import { expect, type BrowserContext, type Page, test, type TestInfo } from "@playwright/test";
 
 const ownerEmail = process.env.PLAYWRIGHT_TEST_EMAIL;
 const ownerPassword = process.env.PLAYWRIGHT_TEST_PASSWORD;
@@ -29,6 +29,23 @@ type CurrentEventPayload = {
 };
 type Member = { id: string; user_id: string; role: string; status: string };
 type Invitation = { id: string; invited_email_normalized: string; status: string };
+type AcceptanceStage =
+  | "invitation_open"
+  | "invitation_inspected"
+  | "login_required"
+  | "invitation_return_saved"
+  | "login_submitted"
+  | "invitation_resumed"
+  | "acceptance_requested"
+  | "acceptance_responded"
+  | "current_event_updated"
+  | "dashboard_arrived";
+type AcceptanceDiagnostic = {
+  failedStage: AcceptanceStage;
+  pathname: string;
+  httpStatus: number | null;
+  applicationCode: string | null;
+};
 
 test.use({ trace: "off", screenshot: "off", video: "off" });
 
@@ -203,24 +220,79 @@ async function sendInvitationFromUi(ownerPage: Page) {
   return startedAt;
 }
 
-async function acceptInvitation(partnerPage: Page, href: string, needsLogin: boolean) {
+function safePathname(page: Page) {
+  try { return new URL(page.url()).pathname; } catch { return "unavailable"; }
+}
+
+async function safeApiDiagnostic(response: import("@playwright/test").Response) {
+  const body = await response.json().catch(() => ({})) as { error?: unknown; code?: unknown };
+  const candidate = typeof body.error === "string" ? body.error : typeof body.code === "string" ? body.code : null;
+  return {
+    httpStatus: response.status(),
+    applicationCode: candidate && /^[A-Z][A-Z0-9_]{1,63}$/.test(candidate) ? candidate : null,
+  };
+}
+
+async function attachSanitizedFailure(page: Page, context: BrowserContext, testInfo: TestInfo, diagnostic: AcceptanceDiagnostic) {
+  await page.evaluate(() => {
+    history.replaceState(null, "", location.pathname);
+    for (const input of document.querySelectorAll<HTMLInputElement>("input")) input.value = "[redacted]";
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (node.textContent?.includes("@")) node.textContent = "[redacted]";
+    }
+  }).catch(() => undefined);
+  await context.tracing.start({ screenshots: true, snapshots: true, sources: false });
+  const screenshot = await page.screenshot({ fullPage: true }).catch(() => null);
+  if (screenshot) await testInfo.attach("sanitized-failure.png", { body: screenshot, contentType: "image/png" });
+  const tracePath = testInfo.outputPath("sanitized-trace.zip");
+  await context.tracing.stop({ path: tracePath });
+  await testInfo.attach("acceptance-diagnostic.json", {
+    body: Buffer.from(JSON.stringify(diagnostic, null, 2)),
+    contentType: "application/json",
+  });
+}
+
+async function acceptInvitation(partnerPage: Page, partnerContext: BrowserContext, href: string, needsLogin: boolean, testInfo: TestInfo) {
+  let stage: AcceptanceStage = "invitation_open";
+  let httpStatus: number | null = null;
+  let applicationCode: string | null = null;
   try {
     await partnerPage.goto(href);
     await expect(partnerPage.getByRole("heading", { name: "Invito partner" })).toBeVisible();
     await expect(partnerPage.getByText(/ti ha invitato a collaborare/i)).toBeVisible({ timeout: 15_000 });
-    await partnerPage.getByRole("button", { name: "Accetta", exact: true }).click();
+    stage = "invitation_inspected";
     if (needsLogin) {
+      stage = "login_required";
+      const savedResponse = partnerPage.waitForResponse(response => new URL(response.url()).pathname === "/api/invitations/return");
+      await partnerPage.getByRole("button", { name: "Accetta", exact: true }).click();
+      const saved = await savedResponse;
+      ({ httpStatus, applicationCode } = await safeApiDiagnostic(saved));
+      stage = "invitation_return_saved";
       await partnerPage.waitForURL(/\/it\/auth\?next=/);
       await partnerPage.getByLabel("Email", { exact: true }).fill(partnerEmail!);
       await partnerPage.getByLabel("Password", { exact: true }).fill(partnerPassword!);
       await partnerPage.getByRole("button", { name: /accedi/i }).click();
+      stage = "login_submitted";
       await partnerPage.waitForURL(/\/it\/invitation\?token=/, { timeout: 20_000 });
-      await partnerPage.getByRole("button", { name: "Accetta", exact: true }).click();
+      stage = "invitation_resumed";
     }
+    const acceptedResponse = partnerPage.waitForResponse(response => new URL(response.url()).pathname === "/api/invitations/accept");
+    stage = "acceptance_requested";
+    await partnerPage.getByRole("button", { name: "Accetta", exact: true }).click();
+    const accepted = await acceptedResponse;
+    ({ httpStatus, applicationCode } = await safeApiDiagnostic(accepted));
+    stage = "acceptance_responded";
+    expect(httpStatus, `Invitation acceptance API failed with ${applicationCode || "UNKNOWN_CODE"}`).toBe(200);
+    stage = "current_event_updated";
     await partnerPage.waitForURL(/\/it\/dashboard/, { timeout: 20_000 });
+    stage = "dashboard_arrived";
     await expect(partnerPage.getByRole("heading", { name: /dashboard/i })).toBeVisible({ timeout: 15_000 });
   } catch {
-    throw new Error("Partner invitation acceptance failed; invitation details were redacted.");
+    const diagnostic = { failedStage: stage, pathname: safePathname(partnerPage), httpStatus, applicationCode };
+    await attachSanitizedFailure(partnerPage, partnerContext, testInfo, diagnostic);
+    throw new Error(`Partner invitation acceptance failed at ${stage}; HTTP ${httpStatus ?? "unavailable"}; code ${applicationCode ?? "unavailable"}; pathname ${diagnostic.pathname}.`);
   }
 }
 
@@ -252,7 +324,7 @@ test.describe("authenticated partner lifecycle journey", () => {
 
       const firstStartedAt = await sendInvitationFromUi(ownerPage);
       const firstEmail = await invitationLinkAfter(firstStartedAt);
-      await acceptInvitation(partnerPage, firstEmail.href, true);
+      await acceptInvitation(partnerPage, partnerContext, firstEmail.href, true, testInfo);
 
       const partnerCurrent = await appApi<CurrentEventPayload>(partnerPage, "/api/my/current-event");
       expect(partnerCurrent.status).toBe(200);
@@ -314,7 +386,7 @@ test.describe("authenticated partner lifecycle journey", () => {
       } catch {
         throw new Error("Old invitation replay check failed; invitation details were redacted.");
       }
-      await acceptInvitation(partnerPage, secondEmail.href, false);
+      await acceptInvitation(partnerPage, partnerContext, secondEmail.href, false, testInfo);
 
       await partnerPage.goto("/it/profilo");
       const partnerSection = partnerPage.getByRole("region", { name: "Partner dell’evento" });
