@@ -396,9 +396,9 @@ test.describe("authenticated partner lifecycle journey", () => {
       await partnerSection.getByRole("button", { name: "Lascia l’evento", exact: true }).click();
       await partnerPage.waitForURL(/\/it\/(select-event|select-language)/, { timeout: 20_000 });
       await partnerPage.goto("/it/dashboard");
-      await partnerPage.waitForURL(url => !url.pathname.endsWith("/dashboard"), { timeout: 20_000 });
       const leftCurrent = await appApi<CurrentEventPayload>(partnerPage, "/api/my/current-event");
       expect(leftCurrent.body.events.some(event => event.id === qaEvent.eventId)).toBe(false);
+      expect(leftCurrent.body.currentEvent?.eventId).not.toBe(qaEvent.eventId);
       const ownerAfterLeave = await appApi<CurrentEventPayload>(ownerPage, "/api/my/current-event");
       expect(ownerAfterLeave.body.currentEvent?.eventId).toBe(qaEvent.eventId);
       expect(ownerAfterLeave.body.currentEvent?.ownerId).toBe(ownerBefore);
