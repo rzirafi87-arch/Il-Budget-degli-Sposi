@@ -2,6 +2,7 @@ import { getBearer } from "@/lib/apiAuth";
 import {
   FinancialContractError,
   parseBudgetItemCreate,
+  parseBudgetSupplierLink,
   type BudgetItemInsert,
 } from "@/lib/financialContracts";
 import {
@@ -81,6 +82,43 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "BUDGET_ITEM_CREATE_FAILED" }, { status: 500 });
     }
     return NextResponse.json({ item: data?.[0] ?? null });
+  } catch (error) {
+    if (error instanceof FinancialContractError) {
+      return NextResponse.json({ error: error.code }, { status: 400 });
+    }
+    return financialErrorResponse(error);
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const { currentEvent } = await requireFinancialAccess(req, "mutate");
+    const link = parseBudgetSupplierLink(await req.json());
+    const db = getServiceClient();
+
+    if (link.saved_supplier_id) {
+      await requireSameEventSavedSupplier(
+        db,
+        currentEvent.eventId,
+        link.saved_supplier_id,
+      );
+    }
+
+    const { data, error } = await db
+      .from("budget_items")
+      .update({ saved_supplier_id: link.saved_supplier_id })
+      .eq("id", link.id)
+      .eq("event_id", currentEvent.eventId)
+      .select("*")
+      .maybeSingle();
+
+    if (error) {
+      return NextResponse.json({ error: "BUDGET_ITEM_LINK_FAILED" }, { status: 500 });
+    }
+    if (!data) {
+      return NextResponse.json({ error: "BUDGET_ITEM_NOT_FOUND" }, { status: 404 });
+    }
+    return NextResponse.json({ item: data });
   } catch (error) {
     if (error instanceof FinancialContractError) {
       return NextResponse.json({ error: error.code }, { status: 400 });
