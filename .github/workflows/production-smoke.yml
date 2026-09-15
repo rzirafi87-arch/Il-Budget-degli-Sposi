@@ -113,6 +113,8 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Run public, authenticated and partner journeys
         run: npx playwright test --grep-invert '\[M8\]'
+      - name: Run Production-safe Milestone 8 journeys
+        run: npx playwright test --config=playwright.production-m8.config.ts --project=m8-320 --project=m8-430
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
