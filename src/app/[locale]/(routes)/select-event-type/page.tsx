@@ -59,6 +59,7 @@ const STATUS_COPY = {
 export default function SelectEventTypePage() {
   const t = useTranslations();
   const router = useRouter();
+  const createAdditional = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("new") === "1";
   const locale = useLocale();
   const language = (["it", "en", "es", "fr", "de"] as const).find((item) => item === locale) || "it";
   const statusCopy = STATUS_COPY[language];
@@ -84,11 +85,11 @@ export default function SelectEventTypePage() {
           router.replace(`/${locale}/auth`);
           return;
         }
-        if (status.kind === "complete") {
+        if (status.kind === "complete" && !createAdditional) {
           router.replace(`/${locale}/dashboard`);
           return;
         }
-        if (status.kind === "needs-event-selection") {
+        if (status.kind === "needs-event-selection" && !createAdditional) {
           router.replace(`/${locale}/select-event`);
           return;
         }
@@ -98,7 +99,7 @@ export default function SelectEventTypePage() {
     return () => {
       active = false;
     };
-  }, [locale, router]);
+  }, [createAdditional, locale, router]);
 
   useEffect(() => {
     if (!country) return;
@@ -168,7 +169,7 @@ export default function SelectEventTypePage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ eventType: code, country, language: locale }),
+        body: JSON.stringify({ eventType: code, country, language: locale, createAdditional }),
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || !payload.ok) {

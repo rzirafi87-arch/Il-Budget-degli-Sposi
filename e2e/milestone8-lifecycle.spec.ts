@@ -1,0 +1,218 @@
+import { expect, test, type Page } from "@playwright/test";
+import {
+  createQaIdentity,
+  currentEvent,
+  deleteQaIdentity,
+  login,
+  milestone8FixtureReady,
+  renameCurrentEvent,
+  type QaIdentity,
+} from "./helpers/milestone8-fixtures";
+
+const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
+const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
+
+test.use({ trace: "off", screenshot: "off", video: "off" });
+
+async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) {
+  await page.waitForURL(/\/it\/select-language/);
+  await page.getByRole("button", { name: "Italiano", exact: true }).click();
+  await page.waitForURL(/\/it\/select-country/);
+  await page.getByRole("button", { name: /Italia/i }).click();
+  await page.getByRole("button", { name: /avanti/i }).click();
+  await page.waitForURL(/\/it\/select-event-type/);
+  await page.getByRole("button", { name: /matrimonio/i }).click();
+  await page.waitForURL(/\/it\/dashboard/);
+  const resolved = await currentEvent(page);
+  expect(resolved.status).toBe(200);
+  expect(resolved.body.status).toBe("RESOLVED");
+  await renameCurrentEvent(identity, resolved.body.currentEvent.eventId, name);
+  await page.reload();
+  return resolved.body.currentEvent.eventId as string;
+}
+
+async function createAdditionalEvent(page: Page, identity: QaIdentity, name: string) {
+  await page.goto("/it/select-event-type?new=1");
+  await page.getByRole("button", { name: /matrimonio/i }).click();
+  await page.waitForURL(/\/it\/dashboard/);
+  const resolved = await currentEvent(page);
+  await renameCurrentEvent(identity, resolved.body.currentEvent.eventId, name);
+  await page.reload();
+  return resolved.body.currentEvent.eventId as string;
+}
+
+async function logout(page: Page) {
+  await page.goto("/it/profilo");
+  await page.getByRole("button", { name: /^esci$/i }).click();
+  await page.waitForURL(/\/it$/);
+}
+
+async function recoveryLink(identity: QaIdentity, startedAt: number) {
+  const deadline = Date.now() + 60_000;
+  while (Date.now() < deadline) {
+    const listed = await fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: `Bearer ${resendApiKey}` } });
+    if (!listed.ok) throw new Error(`Recovery email lookup failed with HTTP ${listed.status}.`);
+    const body = await listed.json() as { data: Array<{ id: string; to: string[]; subject: string; created_at: string }> };
+    const item = body.data.find(message => Date.parse(message.created_at) >= startedAt && message.to.includes(identity.email) && /reimposta la password/i.test(message.subject));
+    if (item) {
+      const detail = await fetch(`https://api.resend.com/emails/${encodeURIComponent(item.id)}`, { headers: { Authorization: `Bearer ${resendApiKey}` } });
+      const payload = await detail.json() as { html?: string };
+      const hrefs = [...(payload.html || "").matchAll(/href=["']([^"']+)["']/gi)].map(match => match[1].replaceAll("&amp;", "&"));
+      const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
+      if (!link) throw new Error("Recovery email did not contain the real verification callback.");
+      return link;
+    }
+    await new Promise(resolve => setTimeout(resolve, 2_000));
+  }
+  throw new Error("Recovery email was not found within 60 seconds.");
+}
+
+test.describe("[M8] isolated authenticated lifecycle", () => {
+  test.describe.configure({ mode: "serial" });
+
+  test("[M8][reset] real request, email callback, password change and login", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "it-320", "Reset runs once on an isolated identity.");
+    test.skip(!milestone8FixtureReady || !resendApiKey || !baseUrl, "Milestone 8 isolated fixture secrets are required.");
+    test.setTimeout(150_000);
+    const identity = await createQaIdentity("reset");
+    const nextPassword = `${identity.password}-Changed!7`;
+    try {
+      await page.goto("/it/auth");
+      await page.getByRole("button", { name: /password dimenticata/i }).click();
+      await page.getByLabel("Email", { exact: true }).fill(identity.email);
+      const startedAt = Date.now();
+      await page.getByRole("button", { name: /invia istruzioni/i }).click();
+      await expect(page.getByRole("status")).toBeVisible();
+      await page.goto(await recoveryLink(identity, startedAt));
+      await page.waitForURL(/\/it\/reset-password/);
+      await page.getByLabel("Password", { exact: true }).fill(nextPassword);
+      await page.getByRole("button", { name: /aggiorna password/i }).click();
+      await expect(page.getByRole("status")).toBeVisible();
+      await page.waitForURL(/\/it\/auth/);
+      await page.getByLabel("Email", { exact: true }).fill(identity.email);
+      await page.getByLabel("Password", { exact: true }).fill(identity.password);
+      await page.getByRole("button", { name: /accedi/i }).click();
+      await expect(page.getByRole("alert")).toBeVisible();
+      await page.getByLabel("Password", { exact: true }).fill(nextPassword);
+      await page.getByRole("button", { name: /accedi/i }).click();
+      await page.waitForURL(/\/it\/(select-language|dashboard)/);
+    } finally {
+      await deleteQaIdentity(identity);
+    }
+  });
+
+  test("[M8][matrix] real 0 to 1 to N routing, switching, reload and relogin", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "it-320", "The destructive 0/1/N fixture runs once.");
+    test.skip(!milestone8FixtureReady, "Milestone 8 isolated fixture secrets are required.");
+    const identity = await createQaIdentity("matrix");
+    try {
+      await login(page, identity);
+      const firstId = await finishFirstEvent(page, identity, `QA-M8-MATRIX-A-${identity.marker}`);
+      let resolved = await currentEvent(page);
+      expect(resolved.body.events).toHaveLength(1);
+      expect(resolved.body.currentEvent.eventId).toBe(firstId);
+      const secondId = await createAdditionalEvent(page, identity, `QA-M8-MATRIX-B-${identity.marker}`);
+      expect(secondId).not.toBe(firstId);
+      resolved = await currentEvent(page);
+      expect(resolved.body.events).toHaveLength(2);
+      await logout(page);
+      await login(page, identity);
+      await page.waitForURL(/\/it\/select-event/);
+      await page.getByRole("listitem", { name: new RegExp(identity.marker) }).first().click();
+      await page.waitForURL(/\/it\/dashboard/);
+      await page.reload();
+      expect((await currentEvent(page)).body.currentEvent.eventId).toBeTruthy();
+    } finally {
+      await deleteQaIdentity(identity);
+    }
+  });
+
+  test("[M8][responsive][delete] lifecycle dialog at 320 and 430, keyboard and UI deletion", async ({ page }, testInfo) => {
+    test.skip(!["it-320", "it-430"].includes(testInfo.project.name), "Required lifecycle widths are 320 and 430 px.");
+    test.skip(!milestone8FixtureReady, "Milestone 8 isolated fixture secrets are required.");
+    const identity = await createQaIdentity(`delete-${testInfo.project.name}`);
+    const name = `QA-M8-DELETE-${identity.marker}`;
+    try {
+      await login(page, identity);
+      await finishFirstEvent(page, identity, name);
+      for (const colorScheme of ["light", "dark"] as const) {
+        await page.emulateMedia({ colorScheme });
+        await page.goto("/it/profilo");
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+        const trigger = page.getByRole("button", { name: /elimina questo evento/i });
+        await trigger.click();
+        const dialog = page.getByRole("dialog", { name: /eliminazione definitiva/i });
+        await expect(dialog).toBeVisible();
+        await expect(dialog.getByRole("textbox")).toBeFocused();
+        await page.keyboard.press("Escape");
+        await expect(dialog).toHaveCount(0);
+        await expect(trigger).toBeFocused();
+      }
+      await page.getByRole("button", { name: /elimina questo evento/i }).click();
+      const dialog = page.getByRole("dialog", { name: /eliminazione definitiva/i });
+      await dialog.getByRole("textbox").fill(`${name}-altered`);
+      await expect(dialog.getByRole("button", { name: /elimina definitivamente/i })).toBeDisabled();
+      await dialog.getByRole("textbox").fill(name);
+      const response = page.waitForResponse(item => new URL(item.url()).pathname === "/api/event/delete");
+      await dialog.getByRole("button", { name: /elimina definitivamente/i }).click();
+      expect((await response).status()).toBe(200);
+      await page.waitForURL(/\/it\/select-language/);
+      await page.goBack();
+      await expect(page).not.toHaveURL(/\/profilo/);
+    } finally {
+      await deleteQaIdentity(identity);
+    }
+  });
+
+  test("[M8][idea-budget] browser persistence, custom rows, duplicate guard, apply and event isolation", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "it-430", "Idea Budget runs once on the required wide mobile viewport.");
+    test.skip(!milestone8FixtureReady, "Milestone 8 isolated fixture secrets are required.");
+    const identity = await createQaIdentity("idea");
+    const firstName = `QA-M8-IDEA-A-${identity.marker}`;
+    try {
+      await login(page, identity);
+      const firstId = await finishFirstEvent(page, identity, firstName);
+      await page.goto("/it/idea-di-budget");
+      await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
+      await expect(page.locator('input[type="checkbox"]:checked')).toHaveCount(0);
+      const categories = page.locator("article");
+      await categories.nth(0).locator("button[aria-expanded]").click();
+      await categories.nth(1).locator("button[aria-expanded]").click();
+      for (const [articleIndex, amount] of [[0, "811"], [1, "822"]] as const) {
+        const row = categories.nth(articleIndex).locator('input[type="checkbox"]').first().locator("xpath=../..");
+        await row.locator('input[type="checkbox"]').check();
+        await row.getByLabel(/importo/i).fill(amount);
+      }
+      await page.getByRole("button", { name: /^salva$/i }).click();
+      await expect(page.getByRole("status")).not.toBeEmpty();
+      await page.reload();
+      await expect(page.locator('input[type="checkbox"]:checked')).toHaveCount(2);
+      const customMarker = `Voce ${identity.marker}`;
+      page.once("dialog", dialog => dialog.accept(customMarker));
+      await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
+      const custom = page.getByLabel(/nome della voce personalizzata/i);
+      await custom.locator("xpath=../../..").getByLabel(/importo/i).fill("833");
+      page.once("dialog", dialog => dialog.accept(customMarker.toUpperCase()));
+      await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
+      await expect(page.getByRole("status")).toBeVisible();
+      await page.getByRole("button", { name: /^salva$/i }).click();
+      await page.getByRole("button", { name: /applica/i }).click();
+      await expect(page.getByRole("status")).not.toBeEmpty();
+      await page.reload();
+      await expect(page.locator(`input[value="${customMarker}"]`)).toHaveCount(1);
+      const secondId = await createAdditionalEvent(page, identity, `QA-M8-IDEA-B-${identity.marker}`);
+      expect(secondId).not.toBe(firstId);
+      await page.goto("/it/idea-di-budget");
+      await expect(page.locator(`input[value="${customMarker}"]`)).toHaveCount(0);
+      await page.goto("/it/dashboard");
+      const selector = page.locator('select[aria-label*="Cambia evento"]');
+      await selector.selectOption(firstId);
+      await page.getByRole("dialog", { name: /cambiare evento/i }).getByRole("button", { name: /conferma/i }).click();
+      await page.waitForLoadState("domcontentloaded");
+      await page.goto("/it/idea-di-budget");
+      await expect(page.locator(`input[value="${customMarker}"]`)).toHaveCount(1);
+    } finally {
+      await deleteQaIdentity(identity);
+    }
+  });
+});

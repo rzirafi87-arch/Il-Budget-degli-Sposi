@@ -1,9 +1,20 @@
 const mockFrom = jest.fn();
 const mockGetUser = jest.fn();
 const mockResolveCurrentEvent = jest.fn();
+const mockRpc = jest.fn();
+
+jest.mock("next/server", () => ({
+  NextResponse: {
+    json: (body: unknown, init?: { status?: number }) => ({
+      status: init?.status ?? 200,
+      json: async () => body,
+      cookies: { set: jest.fn(), delete: jest.fn() },
+    }),
+  },
+}));
 
 jest.mock("@/lib/supabaseServer", () => ({
-  getServiceClient: () => ({ auth: { getUser: mockGetUser }, from: mockFrom }),
+  getServiceClient: () => ({ auth: { getUser: mockGetUser }, from: mockFrom, rpc: mockRpc }),
 }));
 jest.mock("@/lib/currentEvent", () => ({
   CURRENT_EVENT_COOKIE: "app-current-event",
@@ -15,14 +26,15 @@ describe("direct event creation type guard", () => {
     jest.clearAllMocks();
     mockGetUser.mockResolvedValue({ data: { user: { id: "owner-id" } }, error: null });
     mockResolveCurrentEvent.mockResolvedValue({ status: "NO_EVENT" });
+    mockRpc.mockResolvedValue({ error: null });
   });
 
-  async function post(eventType: unknown, authenticated = true) {
+  async function post(eventType: unknown, authenticated = true, createAdditional = false) {
     const { POST } = await import("../api/event/ensure-default/route");
     return POST({
       url: "http://localhost/api/event/ensure-default",
       headers: new Headers(authenticated ? { authorization: "Bearer token" } : {}),
-      json: async () => ({ eventType }),
+      json: async () => ({ eventType, createAdditional }),
     } as unknown as import("next/server").NextRequest);
   }
 
@@ -63,5 +75,33 @@ describe("direct event creation type guard", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({ eventId: "legacy-event", eventType: "baptism", legacy: true });
     expect(update).not.toHaveBeenCalled();
+  });
+
+  it("creates an additional owner event instead of returning the resolved event", async () => {
+    mockResolveCurrentEvent.mockResolvedValue({
+      status: "RESOLVED",
+      currentEvent: { eventId: "existing-event", eventType: "wedding", accessRole: "owner" },
+    });
+    const single = jest.fn().mockResolvedValue({ data: { id: "new-event" }, error: null });
+    const select = jest.fn(() => ({ single }));
+    const insert = jest.fn(() => ({ select }));
+    mockFrom.mockReturnValue({ insert });
+
+    const response = await post("wedding", true, true);
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ eventId: "new-event", eventType: "wedding" });
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({ owner_id: "owner-id", event_type: "wedding" }));
+  });
+
+  it("rejects additional event creation from a partner-only context", async () => {
+    mockResolveCurrentEvent.mockResolvedValue({
+      status: "RESOLVED",
+      currentEvent: { eventId: "partner-event", eventType: "wedding", accessRole: "partner" },
+    });
+    const response = await post("wedding", true, true);
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ code: "EVENT_CREATE_FORBIDDEN" });
+    expect(mockFrom).not.toHaveBeenCalled();
   });
 });

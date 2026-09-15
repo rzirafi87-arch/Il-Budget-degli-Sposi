@@ -223,7 +223,7 @@ export default function TopBarSelector() {
                   : ""
               }`}
               emoji={eventEmoji}
-              onClick={() => router.push(`/${locale}/select-event-type`)}
+              onClick={() => router.push(`/${locale}/select-event-type?new=1`)}
             />
           </div>
         </div>

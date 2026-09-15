@@ -39,6 +39,8 @@ jobs:
           PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
           PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
           PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
+          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: ${{ secrets.PLAYWRIGHT_QA_EMAIL_DOMAIN }}
         run: |
           test -n "$PLAYWRIGHT_SUPABASE_URL"
           test -n "$PLAYWRIGHT_SUPABASE_ANON_KEY"
@@ -48,6 +50,8 @@ jobs:
           test -n "$PLAYWRIGHT_PARTNER_PASSWORD"
           test -n "$PLAYWRIGHT_RESEND_API_KEY"
           test -n "$PLAYWRIGHT_BASE_URL"
+          test -n "$PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY"
+          test -n "$PLAYWRIGHT_QA_EMAIL_DOMAIN"
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build
@@ -64,6 +68,8 @@ jobs:
           PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
           PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
           PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
+          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: ${{ secrets.PLAYWRIGHT_QA_EMAIL_DOMAIN }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

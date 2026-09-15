@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body: EventCreateBody = await req.json().catch(() => ({}));
+    const createAdditional = body.createAdditional === true;
     const url = new URL(req.url);
     const requestedEventType = body.eventType ?? url.searchParams.get("eventType") ?? "wedding";
     const eventTypeDecision = validateEventTypeForRegistration(requestedEventType);
@@ -41,7 +42,13 @@ export async function POST(req: NextRequest) {
     const userId = userData.user.id;
 
     const resolution = await resolveCurrentEvent(req, userId);
-    if (resolution.status === "RESOLVED") {
+    if (createAdditional && resolution.status === "RESOLVED" && resolution.currentEvent.accessRole !== "owner") {
+      return NextResponse.json({ ok: false, code: "EVENT_CREATE_FORBIDDEN", error: "EVENT_CREATE_FORBIDDEN" }, { status: 403 });
+    }
+    if (createAdditional && resolution.status === "SELECTION_REQUIRED" && !resolution.events.some((event) => event.ownerId === userId)) {
+      return NextResponse.json({ ok: false, code: "EVENT_CREATE_FORBIDDEN", error: "EVENT_CREATE_FORBIDDEN" }, { status: 403 });
+    }
+    if (resolution.status === "RESOLVED" && !createAdditional) {
       const { data: persisted } = await db.from("events").select("language,country,event_type")
         .eq("id", resolution.currentEvent.eventId).maybeSingle();
       const updates: EventUpdate = {};
@@ -66,7 +73,7 @@ export async function POST(req: NextRequest) {
         { status: 200 }
       );
     }
-    if (resolution.status === "SELECTION_REQUIRED") {
+    if (resolution.status === "SELECTION_REQUIRED" && !createAdditional) {
       return NextResponse.json({ ok: false, code: "EVENT_SELECTION_REQUIRED", events: resolution.events }, { status: 409 });
     }
 
