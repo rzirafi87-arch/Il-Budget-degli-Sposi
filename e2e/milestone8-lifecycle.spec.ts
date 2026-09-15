@@ -304,6 +304,8 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await page.getByRole("button", { name: /^salva$/i }).click();
       await expect(page.getByRole("status")).not.toBeEmpty();
       await page.reload();
+      await categories.nth(0).locator("button[aria-expanded]").click();
+      await categories.nth(1).locator("button[aria-expanded]").click();
       await expect(page.locator('input[type="checkbox"]:checked')).toHaveCount(2);
       const customMarker = `Voce ${identity.marker}`;
       page.once("dialog", dialog => dialog.accept(customMarker));

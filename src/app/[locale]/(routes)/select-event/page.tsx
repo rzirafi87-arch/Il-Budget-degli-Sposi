@@ -63,7 +63,8 @@ export default function SelectEventPage() {
       {state === "loading" && <p className="mt-6 text-center text-muted-fg" role="status">{t("switching")}</p>}
       {state === "error" && <div className="mt-6 text-center" role="alert"><p className="text-muted-fg">{t("none")}</p><button type="button" className="app-button app-button--primary mt-4" onClick={() => void load()}>{t("change")}</button></div>}
       {state === "ready" && <div className="mt-8 grid gap-3" role="list">{events.map((event) => (
-        <button key={event.id} type="button" role="listitem" disabled={selecting !== null}
+        <button key={event.id} type="button" role="listitem" aria-label={event.name || event.eventType}
+          data-event-id={event.id} disabled={selecting !== null}
           className="rounded-2xl border border-border bg-card p-5 text-left shadow-soft transition hover:border-primary focus-ring-sage disabled:opacity-60"
           onClick={() => void choose(event.id)}>
           <span className="block font-semibold text-fg">{event.name || event.eventType}</span>
