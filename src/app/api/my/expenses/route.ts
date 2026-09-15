@@ -2,11 +2,13 @@ import { getBearer } from "@/lib/apiAuth";
 import {
   FinancialContractError,
   parseExpenseCreate,
+  parseExpenseSupplierLink,
   type ExpenseInsert,
 } from "@/lib/financialContracts";
 import {
   financialErrorResponse,
   requireFinancialAccess,
+  requireSameEventSavedSupplier,
 } from "@/lib/financialAuthorization";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -211,6 +213,44 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "EXPENSE_CREATE_FAILED" }, { status: 500 });
     }
     return NextResponse.json({ expense: created });
+  } catch (error) {
+    if (error instanceof FinancialContractError) {
+      return NextResponse.json({ error: error.code }, { status: 400 });
+    }
+    return financialErrorResponse(error);
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const { currentEvent } = await requireFinancialAccess(req, "mutate");
+    const link = parseExpenseSupplierLink(await req.json());
+    const db = getServiceClient();
+
+    if (link.savedSupplierId) {
+      await requireSameEventSavedSupplier(
+        db,
+        currentEvent.eventId,
+        link.savedSupplierId,
+      );
+    }
+
+    const { data, error } = await db
+      .from("expenses")
+      .update({ saved_supplier_id: link.savedSupplierId })
+      .eq("id", link.id)
+      .eq("event_id", currentEvent.eventId)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      logger.error("EXPENSES PATCH error", { code: error.code });
+      return NextResponse.json({ error: "EXPENSE_LINK_FAILED" }, { status: 500 });
+    }
+    if (!data) {
+      return NextResponse.json({ error: "EXPENSE_NOT_FOUND" }, { status: 404 });
+    }
+    return NextResponse.json({ expense: data });
   } catch (error) {
     if (error instanceof FinancialContractError) {
       return NextResponse.json({ error: error.code }, { status: 400 });
