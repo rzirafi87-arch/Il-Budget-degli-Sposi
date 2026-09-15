@@ -23,11 +23,11 @@ async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) 
   expect(empty.status).toBe(200);
   expect(empty.body.status).toBe("NO_EVENT");
   await page.goto("/it/select-language");
-  await page.getByRole("button", { name: "Italiano", exact: true }).click();
-  await page.waitForURL(/\/it\/select-country/);
+  await page.getByRole("button", { name: "Italiano", exact: true }).click({ noWaitAfter: true });
+  await expect(page).toHaveURL(/\/it\/select-country/);
   await page.getByRole("button", { name: "Italia", exact: true }).click();
-  await page.getByRole("button", { name: /^avanti$/i }).click();
-  await page.waitForURL(/\/it\/select-event-type/);
+  await page.getByRole("button", { name: /^avanti$/i }).click({ noWaitAfter: true });
+  await expect(page).toHaveURL(/\/it\/select-event-type/);
   await page.getByRole("button", { name: /matrimonio/i }).click();
   await page.waitForURL(/\/it\/dashboard/);
   const resolved = await currentEvent(page);
@@ -128,12 +128,12 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       phase("no-event");
       await page.goto("/it/select-language");
       phase("language");
-      await page.getByRole("button", { name: "Italiano", exact: true }).click();
-      await page.waitForURL(/\/it\/select-country/);
+      await page.getByRole("button", { name: "Italiano", exact: true }).click({ noWaitAfter: true });
+      await expect(page).toHaveURL(/\/it\/select-country/);
       phase("country");
       await page.getByRole("button", { name: "Italia", exact: true }).click();
-      await page.getByRole("button", { name: /^avanti$/i }).click();
-      await page.waitForURL(/\/it\/select-event-type/);
+      await page.getByRole("button", { name: /^avanti$/i }).click({ noWaitAfter: true });
+      await expect(page).toHaveURL(/\/it\/select-event-type/);
       phase("event-type");
       const ensureDefault = page.waitForResponse(response =>
         response.request().method() === "POST"
