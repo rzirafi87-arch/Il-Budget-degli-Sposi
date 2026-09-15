@@ -184,7 +184,12 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await page.waitForURL(/\/it\/auth/);
       await page.getByLabel("Email", { exact: true }).fill(identity.email);
       await page.getByLabel("Password", { exact: true }).fill(identity.password);
+      const oldPasswordResponse = page.waitForResponse(response =>
+        response.request().method() === "POST"
+        && new URL(response.url()).pathname.endsWith("/auth/v1/token")
+      );
       await page.getByRole("button", { name: /accedi/i }).click();
+      expect((await oldPasswordResponse).status()).toBe(400);
       await expect(page.getByRole("alert")).toBeVisible();
       await page.getByLabel("Password", { exact: true }).fill(nextPassword);
       const tokenResponse = page.waitForResponse(response =>
@@ -311,7 +316,8 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       page.once("dialog", dialog => dialog.accept(customMarker));
       await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
       const custom = page.getByLabel(/nome della voce personalizzata/i);
-      const customRow = categories.nth(0).locator("div.rounded-xl").filter({ has: custom });
+      await expect(custom).toHaveValue(customMarker);
+      const customRow = page.getByTestId("budget-custom-row");
       await expect(customRow).toHaveCount(1);
       await customRow.getByLabel(/importo/i).fill("833");
       page.once("dialog", dialog => dialog.accept(customMarker.toUpperCase()));
