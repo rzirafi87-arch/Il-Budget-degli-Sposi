@@ -191,7 +191,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
         response.request().method() === "POST"
         && new URL(response.url()).pathname.endsWith("/auth/v1/token")
       );
-      await page.getByRole("button", { name: /accedi/i }).click();
+      await page.getByRole("button", { name: /accedi/i }).click({ noWaitAfter: true });
       expect((await tokenResponse).status()).toBe(200);
     } finally {
       await deleteQaIdentity(identity);
@@ -215,8 +215,8 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await logout(page);
       await login(page, identity);
       await page.waitForURL(/\/it\/select-event/);
-      await page.getByRole("listitem", { name: new RegExp(identity.marker) }).first().click();
-      await page.waitForURL(/\/it\/dashboard/);
+      await page.getByRole("listitem", { name: new RegExp(identity.marker) }).first().click({ noWaitAfter: true });
+      await expect(page).toHaveURL(/\/it\/dashboard/);
       await page.reload();
       expect((await currentEvent(page)).body.currentEvent.eventId).toBeTruthy();
     } finally {
