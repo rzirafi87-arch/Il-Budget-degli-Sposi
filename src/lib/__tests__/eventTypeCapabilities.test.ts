@@ -54,6 +54,9 @@ describe("event type capabilities", () => {
     expect(moduleForPath("/budget")).toBe("budget");
     expect(moduleForPath("/timeline")).toBe("timeline");
     expect(moduleForPath("/documenti")).toBe("documents");
+    expect(moduleForPath("/invitati")).toBe("guests");
+    expect(moduleForPath("/invitati/tavoli")).toBe("guests");
+    expect(moduleForPath("/invitation")).toBeNull();
   });
 
   it("does not expose untranslated MISSING_MESSAGE content in new capability copy", () => {

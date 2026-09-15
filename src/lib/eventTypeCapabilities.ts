@@ -231,6 +231,8 @@ export const ROUTE_MODULE_RULES: ReadonlyArray<{ prefix: string; module: EventMo
 ];
 
 export function moduleForPath(pathname: string): EventModule | null {
-  return ROUTE_MODULE_RULES.find((rule) => pathname.startsWith(rule.prefix))?.module || null;
+  return ROUTE_MODULE_RULES.find(
+    (rule) => pathname === rule.prefix || pathname.startsWith(`${rule.prefix}/`)
+  )?.module || null;
 }
 import { WEDDING_CAPABILITY_DESCRIPTION } from "@/data/eventCapabilityDescriptions";
