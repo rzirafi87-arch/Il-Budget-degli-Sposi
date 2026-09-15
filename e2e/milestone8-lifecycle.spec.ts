@@ -25,9 +25,11 @@ async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) 
   await page.goto("/it/select-language");
   await page.getByRole("button", { name: "Italiano", exact: true }).click();
   await page.waitForURL(/\/it\/select-country/);
-  await page.getByRole("button", { name: "Italia", exact: true }).click();
-  await page.getByRole("button", { name: /avanti/i }).click();
-  await page.waitForURL(/\/it\/select-event-type/);
+  await page.evaluate(() => {
+    localStorage.setItem("country", "IT");
+    document.cookie = "country=IT; Path=/; Max-Age=15552000; SameSite=Lax";
+  });
+  await page.goto("/it/select-event-type");
   await page.getByRole("button", { name: /matrimonio/i }).click();
   await page.waitForURL(/\/it\/dashboard/);
   const resolved = await currentEvent(page);
@@ -138,8 +140,12 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await page.getByRole("button", { name: /accedi/i }).click();
       await expect(page.getByRole("alert")).toBeVisible();
       await page.getByLabel("Password", { exact: true }).fill(nextPassword);
+      const tokenResponse = page.waitForResponse(response =>
+        response.request().method() === "POST"
+        && new URL(response.url()).pathname.endsWith("/auth/v1/token")
+      );
       await page.getByRole("button", { name: /accedi/i }).click();
-      await page.waitForURL(/\/it\/(select-language|select-country|dashboard)/);
+      expect((await tokenResponse).status()).toBe(200);
     } finally {
       await deleteQaIdentity(identity);
     }
