@@ -139,7 +139,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await expect(page.getByRole("alert")).toBeVisible();
       await page.getByLabel("Password", { exact: true }).fill(nextPassword);
       await page.getByRole("button", { name: /accedi/i }).click();
-      await page.waitForURL(/\/it\/(select-language|dashboard)/);
+      await page.waitForURL(/\/it\/(select-language|select-country|dashboard)/);
     } finally {
       await deleteQaIdentity(identity);
     }
