@@ -100,6 +100,17 @@ describe('API routes', () => {
         from: fromMock,
       }),
     }));
+    jest.doMock('@/lib/financialAuthorization', () => ({
+      requireFinancialAccess: jest.fn(async () => ({
+        userId: 'u1',
+        currentEvent: { eventId: 'evt-1', accessRole: 'owner' },
+      })),
+      requireSameEventSavedSupplier: jest.fn(async () => undefined),
+      financialErrorResponse: jest.fn((error: unknown) => ({
+        status: 500,
+        json: async () => ({ error: String(error) }),
+      })),
+    }));
     const budgetItemsRoute = await import('../api/budget-items/route');
     const body = { name: 'Item', country_code: 'it' };
     const req = { headers: new Headers({ authorization: 'Bearer token' }), json: async () => body };
