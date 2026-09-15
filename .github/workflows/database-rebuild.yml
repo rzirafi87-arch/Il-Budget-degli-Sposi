@@ -194,6 +194,12 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260914150000_branch_48_partner_lifecycle.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_partner_lifecycle.sql
 
+      - name: Apply and verify Branch 48 budget subcategory identity
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260915114500_branch_48_budget_snapshot_casefold.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260915130000_branch_48_subcategory_canonical_identity.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_subcategory_canonical_identity.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci

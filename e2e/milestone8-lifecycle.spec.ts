@@ -16,7 +16,7 @@ const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
 const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
 
-test.use({ trace: "off", screenshot: "off", video: "off" });
+test.use({ trace: "retain-on-failure", screenshot: "only-on-failure", video: "off" });
 
 async function clearOnboardingPreferences(page: Page) {
   await page.evaluate(() => {
@@ -191,8 +191,14 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
         response.request().method() === "POST"
         && new URL(response.url()).pathname.endsWith("/auth/v1/token")
       );
-      await page.getByRole("button", { name: /accedi/i }).evaluate((button: HTMLButtonElement) => button.click());
+      await page.getByRole("button", { name: /accedi/i }).click();
       expect((await tokenResponse).status()).toBe(200);
+      await page.waitForURL(/\/it\/(select-language|select-country|select-event|dashboard)/);
+      const empty = await currentEvent(page);
+      expect(empty.status).toBe(200);
+      expect(empty.body.status).toBe("NO_EVENT");
+      await finishFirstEvent(page, identity, `QA-M8-RESET-${identity.marker}`);
+      await logout(page);
     } finally {
       await deleteQaIdentity(identity);
     }
@@ -215,10 +221,15 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await logout(page);
       await login(page, identity);
       await page.waitForURL(/\/it\/select-event/);
-      await page.getByRole("listitem", { name: new RegExp(identity.marker) }).first().evaluate((button: HTMLButtonElement) => button.click());
+      const selection = page.waitForResponse(response =>
+        response.request().method() === "POST"
+        && new URL(response.url()).pathname === "/api/my/current-event"
+      );
+      await page.getByRole("listitem", { name: `QA-M8-MATRIX-A-${identity.marker}`, exact: true }).click();
+      expect((await selection).status()).toBe(200);
       await expect(page).toHaveURL(/\/it\/dashboard/);
       await page.reload();
-      expect((await currentEvent(page)).body.currentEvent.eventId).toBeTruthy();
+      expect((await currentEvent(page)).body.currentEvent.eventId).toBe(firstId);
     } finally {
       await deleteQaIdentity(identity);
     }
