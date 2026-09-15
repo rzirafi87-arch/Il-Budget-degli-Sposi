@@ -1,4 +1,5 @@
 import { expect, type BrowserContext, type Page, test, type TestInfo } from "@playwright/test";
+import { createClient } from "@supabase/supabase-js";
 
 const ownerEmail = process.env.PLAYWRIGHT_TEST_EMAIL;
 const ownerPassword = process.env.PLAYWRIGHT_TEST_PASSWORD;
@@ -6,6 +7,8 @@ const partnerEmail = process.env.PLAYWRIGHT_PARTNER_EMAIL;
 const partnerPassword = process.env.PLAYWRIGHT_PARTNER_PASSWORD;
 const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
+const serviceRole = process.env.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 const REQUIRED = [
   ["PLAYWRIGHT_TEST_EMAIL", ownerEmail],
@@ -143,6 +146,27 @@ async function appApi<T>(page: Page, path: string, init: { method?: string; body
 
 function normalized(value: string) {
   return value.trim().toLowerCase();
+}
+
+async function cleanupCreatedInvitations(eventId: string | undefined, baselineIds: Set<string>) {
+  if (!eventId || !serviceRole || !supabaseUrl) return;
+  const client = createClient(supabaseUrl, serviceRole, { auth: { persistSession: false, autoRefreshToken: false } });
+  const result = await client.from("event_invitations")
+    .select("id,invited_email_normalized")
+    .eq("event_id", eventId);
+  if (result.error) throw new Error("QA invitation cleanup lookup failed.");
+  const created = (result.data || []).filter(item => !baselineIds.has(item.id));
+  if (created.some(item => normalized(item.invited_email_normalized) !== normalized(partnerEmail!))) {
+    throw new Error("Refusing QA invitation cleanup because a new invitation targets another address.");
+  }
+  if (!created.length) return;
+  const removed = await client.from("event_invitations")
+    .delete()
+    .in("id", created.map(item => item.id))
+    .select("id");
+  if (removed.error || (removed.data || []).length !== created.length) {
+    throw new Error("QA invitation cleanup failed.");
+  }
 }
 
 async function cleanQaRelationship(ownerPage: Page, qaPartnerUserId: string) {
@@ -312,6 +336,8 @@ test.describe("authenticated partner lifecycle journey", () => {
     const partnerContext: BrowserContext = await browser.newContext({ locale: "it-IT", viewport: { width: 390, height: 844 } });
     const ownerPage = await ownerContext.newPage();
     const partnerPage = await partnerContext.newPage();
+    let qaEventId: string | undefined;
+    const baselineInvitationIds = new Set<string>();
 
     try {
       await login(ownerPage, ownerEmail!, ownerPassword!);
@@ -320,6 +346,10 @@ test.describe("authenticated partner lifecycle journey", () => {
       expect(ownerCurrent.body.status).toBe("RESOLVED");
       expect(ownerCurrent.body.currentEvent?.accessRole).toBe("owner");
       const qaEvent = ownerCurrent.body.currentEvent!;
+      qaEventId = qaEvent.eventId;
+      const baselineInvitations = await appApi<{ invitations: Invitation[] }>(ownerPage, "/api/my/event-invitations");
+      expect(baselineInvitations.status).toBe(200);
+      for (const invitation of baselineInvitations.body.invitations) baselineInvitationIds.add(invitation.id);
 
       await login(partnerPage, partnerEmail!, partnerPassword!);
       const qaPartnerUserId = await sessionUserId(partnerPage);
@@ -403,6 +433,7 @@ test.describe("authenticated partner lifecycle journey", () => {
       expect(ownerAfterLeave.body.currentEvent?.eventId).toBe(qaEvent.eventId);
       expect(ownerAfterLeave.body.currentEvent?.ownerId).toBe(ownerBefore);
     } finally {
+      await cleanupCreatedInvitations(qaEventId, baselineInvitationIds);
       await partnerContext.close();
       await ownerContext.close();
     }

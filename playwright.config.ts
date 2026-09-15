@@ -3,6 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 const locales = ["it", "en", "es", "fr", "de"] as const;
 const mobileWidths = [320, 360, 375, 390, 412, 430] as const;
 const externalBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
+const vercelAutomationBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -22,6 +23,9 @@ export default defineConfig({
     actionTimeout: 0,
     trace: "on-first-retry",
     baseURL: externalBaseUrl || "http://127.0.0.1:3000",
+    extraHTTPHeaders: vercelAutomationBypassSecret
+      ? { "x-vercel-protection-bypass": vercelAutomationBypassSecret }
+      : undefined,
     ...devices["Desktop Chrome"],
   },
   projects: locales.flatMap((locale) =>
