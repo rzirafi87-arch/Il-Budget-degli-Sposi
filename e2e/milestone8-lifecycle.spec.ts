@@ -57,6 +57,10 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
     if (inbucketUrl) {
       const mailbox = identity.email.split("@")[0];
       const listed = await fetch(`${inbucketUrl.replace(/\/$/, "")}/api/v1/mailbox/${encodeURIComponent(mailbox)}`);
+      if (listed.status === 404) {
+        await new Promise(resolve => setTimeout(resolve, 1_000));
+        continue;
+      }
       if (!listed.ok) throw new Error(`Local recovery mailbox lookup failed with HTTP ${listed.status}.`);
       const messages = await listed.json() as Array<{ id: string; subject?: string; date?: string }>;
       const item = messages.find(message => (!message.date || Date.parse(message.date) >= startedAt) && /reimposta|reset|password/i.test(message.subject || ""));
@@ -92,8 +96,6 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
 }
 
 test.describe("[M8] isolated authenticated lifecycle", () => {
-  test.describe.configure({ mode: "serial" });
-
   test("[M8][reset] real request, email callback, password change and login", async ({ page }, testInfo) => {
     expect(testInfo.project.name).toBe("m8-320");
     expect(milestone8FixtureReady && Boolean(inbucketUrl || (resendApiKey && baseUrl))).toBe(true);

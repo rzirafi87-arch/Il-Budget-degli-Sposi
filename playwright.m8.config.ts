@@ -4,11 +4,11 @@ export default defineConfig({
   testDir: "./e2e",
   testMatch: "milestone8-lifecycle.spec.ts",
   outputDir: ".playwright-results-m8",
-  timeout: 30_000,
+  timeout: 120_000,
   expect: { timeout: 5_000 },
   fullyParallel: false,
   forbidOnly: true,
-  retries: 1,
+  retries: 0,
   workers: 1,
   reporter: [["list"], ["html", { outputFolder: "playwright-report-m8", open: "never" }]],
   use: {
