@@ -58,6 +58,16 @@ async function createAdditionalEvent(page: Page, identity: QaIdentity, name: str
   return resolved.body.currentEvent.eventId as string;
 }
 
+async function openIdeaBudget(page: Page) {
+  const loaded = page.waitForResponse(response =>
+    response.request().method() === "GET"
+    && new URL(response.url()).pathname === "/api/idea-di-budget"
+  );
+  await page.goto("/it/idea-di-budget");
+  expect((await loaded).status()).toBe(200);
+  await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
+}
+
 async function logout(page: Page) {
   await page.goto("/it/profilo");
   await page.getByRole("button", { name: /^esci$/i }).click();
@@ -278,7 +288,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await dialog.getByRole("button", { name: /elimina definitivamente/i }).click();
       expect((await response).status()).toBe(200);
       await verifyDeletedCascade(eventId, dependencyId);
-      await page.waitForURL(/\/it\/select-language/);
+      await page.waitForURL(/\/it\/select-event-type/);
       await page.goBack();
       await expect(page).not.toHaveURL(/\/profilo/);
     } finally {
@@ -295,8 +305,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
     try {
       await login(page, identity);
       const firstId = await finishFirstEvent(page, identity, firstName);
-      await page.goto("/it/idea-di-budget");
-      await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
+      await openIdeaBudget(page);
       await expect(page.locator('input[type="checkbox"]:checked')).toHaveCount(0);
       const categories = page.locator("article");
       await categories.nth(0).locator("button[aria-expanded]").click();
@@ -331,8 +340,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await expect(page.getByTestId("budget-custom-row").getByLabel(/importo/i)).toHaveValue("833");
       const secondId = await createAdditionalEvent(page, identity, `QA-M8-IDEA-B-${identity.marker}`);
       expect(secondId).not.toBe(firstId);
-      await page.goto("/it/idea-di-budget");
-      await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
+      await openIdeaBudget(page);
       await categories.nth(0).locator("button[aria-expanded]").click();
       await expect(page.getByTestId("budget-custom-row")).toHaveCount(0);
       await logout(page);
@@ -345,8 +353,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await page.getByRole("listitem", { name: firstName, exact: true }).click();
       expect((await selection).status()).toBe(200);
       await page.waitForURL(/\/it\/dashboard/);
-      await page.goto("/it/idea-di-budget");
-      await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
+      await openIdeaBudget(page);
       await categories.nth(0).locator("button[aria-expanded]").click();
       await expect(page.getByTestId("budget-custom-row").getByLabel(/importo/i)).toHaveValue("833");
     } finally {
