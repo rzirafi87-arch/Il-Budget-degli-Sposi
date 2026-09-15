@@ -97,14 +97,16 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Build application against ephemeral Supabase
         run: npm run build
-        env: &local_app_env
+        env:
           NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
       - name: Run five real isolated browser journeys without skips
         run: npx playwright test --config=playwright.m8.config.ts
         env:
-          <<: *local_app_env
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
           PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
       - uses: actions/upload-artifact@v4
         if: failure()
