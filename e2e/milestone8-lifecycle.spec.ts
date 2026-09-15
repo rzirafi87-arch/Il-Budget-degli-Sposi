@@ -19,7 +19,10 @@ const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
 test.use({ trace: "off", screenshot: "off", video: "off" });
 
 async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) {
-  await page.waitForURL(/\/it\/select-language/);
+  const empty = await currentEvent(page);
+  expect(empty.status).toBe(200);
+  expect(empty.body.status).toBe("NO_EVENT");
+  await page.goto("/it/select-language");
   await page.getByRole("button", { name: "Italiano", exact: true }).click();
   await page.waitForURL(/\/it\/select-country/);
   await page.getByRole("button", { name: "Italia", exact: true }).click();
