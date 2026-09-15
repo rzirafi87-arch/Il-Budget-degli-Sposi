@@ -101,8 +101,15 @@ jobs:
           NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
+      - name: Run minimal real onboarding diagnostic first
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-diagnostic
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
       - name: Run five real isolated browser journeys without skips
-        run: npx playwright test --config=playwright.m8.config.ts
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-430
         env:
           NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
           SITE_URL: http://127.0.0.1:3000

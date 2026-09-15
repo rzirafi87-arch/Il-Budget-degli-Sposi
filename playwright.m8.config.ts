@@ -20,6 +20,7 @@ export default defineConfig({
     ...devices["Desktop Chrome"],
   },
   projects: [
+    { name: "m8-diagnostic", grep: /\[M8\]\[diagnostic\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },
     { name: "m8-320", grep: /\[M8\]\[(reset|matrix|responsive-320)\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },
     { name: "m8-430", grep: /\[M8\]\[(responsive-430|idea-budget)\]/, use: { locale: "it", viewport: { width: 430, height: 844 } } },
   ],

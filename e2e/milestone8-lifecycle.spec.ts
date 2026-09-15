@@ -25,11 +25,9 @@ async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) 
   await page.goto("/it/select-language");
   await page.getByRole("button", { name: "Italiano", exact: true }).click();
   await page.waitForURL(/\/it\/select-country/);
-  await page.evaluate(() => {
-    localStorage.setItem("country", "IT");
-    document.cookie = "country=IT; Path=/; Max-Age=15552000; SameSite=Lax";
-  });
-  await page.goto("/it/select-event-type");
+  await page.getByRole("button", { name: "Italia", exact: true }).click();
+  await page.getByRole("button", { name: /^avanti$/i }).click();
+  await page.waitForURL(/\/it\/select-event-type/);
   await page.getByRole("button", { name: /matrimonio/i }).click();
   await page.waitForURL(/\/it\/dashboard/);
   const resolved = await currentEvent(page);
@@ -116,6 +114,43 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
 }
 
 test.describe("[M8] isolated authenticated lifecycle", () => {
+  test("[M8][diagnostic] minimal real onboarding reaches the first dashboard", async ({ page }, testInfo) => {
+    expect(testInfo.project.name).toBe("m8-diagnostic");
+    expect(milestone8FixtureReady).toBe(true);
+    const identity = await createQaIdentity("diagnostic");
+    const phase = (name: string) => console.log(`[M8 diagnostic] ${name}: ${new URL(page.url()).pathname}`);
+    try {
+      await login(page, identity);
+      phase("authenticated");
+      const empty = await currentEvent(page);
+      expect(empty.status).toBe(200);
+      expect(empty.body.status).toBe("NO_EVENT");
+      phase("no-event");
+      await page.goto("/it/select-language");
+      phase("language");
+      await page.getByRole("button", { name: "Italiano", exact: true }).click();
+      await page.waitForURL(/\/it\/select-country/);
+      phase("country");
+      await page.getByRole("button", { name: "Italia", exact: true }).click();
+      await page.getByRole("button", { name: /^avanti$/i }).click();
+      await page.waitForURL(/\/it\/select-event-type/);
+      phase("event-type");
+      const ensureDefault = page.waitForResponse(response =>
+        response.request().method() === "POST"
+        && new URL(response.url()).pathname === "/api/event/ensure-default"
+      );
+      await page.getByRole("button", { name: /matrimonio/i }).click();
+      expect((await ensureDefault).status()).toBe(200);
+      await page.waitForURL(/\/it\/dashboard/);
+      phase("dashboard");
+      const resolved = await currentEvent(page);
+      expect(resolved.status).toBe(200);
+      expect(resolved.body.status).toBe("RESOLVED");
+    } finally {
+      await deleteQaIdentity(identity);
+    }
+  });
+
   test("[M8][reset] real request, email callback, password change and login", async ({ page }, testInfo) => {
     expect(testInfo.project.name).toBe("m8-320");
     expect(milestone8FixtureReady && Boolean(inbucketUrl || (resendApiKey && baseUrl))).toBe(true);
