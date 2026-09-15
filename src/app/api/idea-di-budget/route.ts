@@ -93,11 +93,17 @@ export async function POST(req: NextRequest) {
 
   const eventId = (await requireServerCurrentEvent(userData.user.id)).eventId;
 
-  const { data, error: snapshotError } = await db.rpc("save_budget_idea_snapshot", {
+  const snapshotArgs = {
     p_event_id: eventId,
     p_user_id: userData.user.id,
     p_rows: inputRows,
-  });
+  };
+  let { data, error: snapshotError } = await db.rpc("save_budget_idea_snapshot", snapshotArgs);
+  if (snapshotError?.code === "P0001" && snapshotError.message.includes("SUBCATEGORY_IDENTITY_CONFLICT")) {
+    // A concurrent writer won the database identity reservation.  A new RPC
+    // starts with a fresh snapshot and deterministically reuses that row.
+    ({ data, error: snapshotError } = await db.rpc("save_budget_idea_snapshot", snapshotArgs));
+  }
   if (snapshotError) {
     console.error("IDEA_BUDGET snapshot failed", {
       code: snapshotError.code,

@@ -14,7 +14,7 @@ describe("configurable budget idea", () => {
       { category: "Foto & Video", subcategory: "Servizio fotografico", canonicalKey: "wedding.photo.service" },
       { category: "Cerimonia", subcategory: "Voce speciale", custom: true },
     ];
-    expect(hasBudgetRowDuplicate(rows, { category: "Altro", subcategory: "Foto", canonicalKey: "wedding.photo.service" })).toBe(true);
+    expect(hasBudgetRowDuplicate(rows, { category: "Altro", subcategory: "Foto", canonicalKey: "wedding.photo.service" })).toBe(false);
     expect(hasBudgetRowDuplicate(rows, { category: "Cerimonia", subcategory: "  Vóce SPECIALE ", custom: true })).toBe(true);
     expect(hasBudgetRowDuplicate(rows, { category: "Ricevimento Location", subcategory: "Voce speciale", custom: true })).toBe(false);
     expect(hasBudgetRowDuplicate(rows, { category: "Cerimonia", subcategory: "Seconda voce", custom: true })).toBe(false);

@@ -7,7 +7,10 @@ export function normalizeBudgetLabel(value: string) {
 }
 
 export function hasBudgetRowDuplicate(rows: BudgetIdentityRow[], candidate: BudgetIdentityRow) {
-  if (candidate.canonicalKey) return rows.some((row) => row.canonicalKey === candidate.canonicalKey);
+  if (candidate.canonicalKey) return rows.some((row) =>
+    normalizeBudgetLabel(row.category) === normalizeBudgetLabel(candidate.category)
+    && row.canonicalKey?.trim().toLocaleLowerCase("it") === candidate.canonicalKey?.trim().toLocaleLowerCase("it"),
+  );
   return rows.some((row) =>
     row.custom === true
     && normalizeBudgetLabel(row.category) === normalizeBudgetLabel(candidate.category)

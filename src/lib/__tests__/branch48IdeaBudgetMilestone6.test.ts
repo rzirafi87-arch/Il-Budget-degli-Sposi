@@ -44,6 +44,8 @@ describe("Branch 48 Milestone 6 Idea Budget contract", () => {
     expect(page).toContain('const saveResponse = await request("/api/idea-di-budget"');
     expect(page).toContain('request("/api/idea-di-budget/apply"');
     expect(route).toContain('db.rpc("save_budget_idea_snapshot"');
+    expect(route).toContain('snapshotError?.code === "P0001"');
+    expect(route).toContain("SUBCATEGORY_IDENTITY_CONFLICT");
     expect(apply).toContain('.eq("source", "budget_idea")');
   });
 
