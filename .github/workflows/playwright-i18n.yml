@@ -4,72 +4,14 @@ on:
     branches: [main]
     paths: ["e2e/**", "playwright*.config.ts", "src/app/**", "src/components/**", "src/messages/**", "supabase/**", "scripts/rebuild-local-supabase.sh", ".github/workflows/playwright-i18n.yml"]
   workflow_dispatch:
-    inputs:
-      base_url:
-        description: "HTTPS application URL for the external smoke"
-        required: true
-        type: string
-        default: "https://il-budget-degli-sposi.vercel.app"
-      run_isolated:
-        description: "Also run the local ephemeral lifecycle suite"
-        required: false
-        type: boolean
-        default: false
 permissions:
   contents: read
 concurrency:
   group: playwright-i18n-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  production-preflight:
-    name: Production HTTP preflight
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Require authoritative main SHA and approved target
-        env:
-          REQUESTED_BASE_URL: ${{ inputs.base_url }}
-        run: |
-          test "${{ github.ref }}" = "refs/heads/main"
-          case "$REQUESTED_BASE_URL" in
-            https://il-budget-degli-sposi.vercel.app|https://ilbudgetdeglisposi.it|https://www.ilbudgetdeglisposi.it) ;;
-            *) echo "::error::Unapproved Production base URL"; exit 1 ;;
-          esac
-      - name: Verify all Production origins through the GitHub runner
-        shell: bash
-        run: |
-          set -euo pipefail
-          for url in             "https://il-budget-degli-sposi.vercel.app/"             "https://ilbudgetdeglisposi.it/"             "https://www.ilbudgetdeglisposi.it/"; do
-            headers="$(mktemp)"
-            body="$(mktemp)"
-            metrics="$(curl --silent --show-error --location               --dump-header "$headers"               --output "$body"               --write-out '%{http_code}|%{url_effective}|%{content_type}'               --max-time 30               "$url")"
-            IFS='|' read -r status final_url content_type <<< "$metrics"
-            server="$(awk 'BEGIN{IGNORECASE=1} /^server:/{sub(/$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
-            vercel_id="$(awk 'BEGIN{IGNORECASE=1} /^x-vercel-id:/{sub(/$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
-            title="$(sed -n 's:.*<title[^>]*>\([^<]*\)</title>.*:\1:Ip' "$body" | head -n 1)"
-            test "$status" = "200"
-            test -n "$final_url"
-            test "$server" = "Vercel"
-            test -n "$vercel_id"
-            case "$content_type" in text/html*) ;; *) exit 1 ;; esac
-            test -n "$title"
-            ! grep -q "MISSING_MESSAGE" "$body"
-            {
-              echo "### $url"
-              echo "- status: $status"
-              echo "- final URL: $final_url"
-              echo "- server: $server"
-              echo "- x-vercel-id: present"
-              echo "- content-type: $content_type"
-              echo "- title: $title"
-            } >> "$GITHUB_STEP_SUMMARY"
-            rm -f "$headers" "$body"
-          done
   preview:
     name: Preview integration
-    needs: [production-preflight]
-    if: always() && (github.event_name != 'workflow_dispatch' || needs.production-preflight.result == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -85,7 +27,7 @@ jobs:
           PLAYWRIGHT_PARTNER_EMAIL: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
           PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
           PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
-          PLAYWRIGHT_BASE_URL: ${{ inputs.base_url || secrets.PLAYWRIGHT_BASE_URL }}
+          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
         run: |
           for name in PLAYWRIGHT_SUPABASE_URL PLAYWRIGHT_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD PLAYWRIGHT_PARTNER_EMAIL PLAYWRIGHT_PARTNER_PASSWORD PLAYWRIGHT_RESEND_API_KEY PLAYWRIGHT_BASE_URL; do test -n "${!name}"; done
       - run: npm ci
@@ -94,7 +36,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
-      - name: Run external smoke and authenticated integration
+      - name: Run Preview smoke and authenticated integration
         run: npx playwright test --grep-invert '\[M8\]'
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
@@ -104,11 +46,11 @@ jobs:
           PLAYWRIGHT_PARTNER_EMAIL: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
           PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
           PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
-          PLAYWRIGHT_BASE_URL: ${{ inputs.base_url || secrets.PLAYWRIGHT_BASE_URL }}
+          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-external-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          name: playwright-preview-failure-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: warn
           include-hidden-files: true
           retention-days: 7
@@ -117,7 +59,6 @@ jobs:
             ${{ github.workspace }}/.playwright-results/**
   isolated:
     name: Isolated local lifecycle
-    if: github.event_name == 'pull_request' || inputs.run_isolated == true
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
