@@ -335,8 +335,15 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
       await categories.nth(0).locator("button[aria-expanded]").click();
       await expect(page.getByTestId("budget-custom-row")).toHaveCount(0);
-      await page.goto("/it/select-event");
+      await logout(page);
+      await login(page, identity);
+      await page.waitForURL(/\/it\/select-event/);
+      const selection = page.waitForResponse(response =>
+        response.request().method() === "POST"
+        && new URL(response.url()).pathname === "/api/my/current-event"
+      );
       await page.getByRole("listitem", { name: firstName, exact: true }).click();
+      expect((await selection).status()).toBe(200);
       await page.waitForURL(/\/it\/dashboard/);
       await page.goto("/it/idea-di-budget");
       await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
