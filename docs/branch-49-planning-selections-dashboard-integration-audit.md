@@ -188,3 +188,21 @@ remaining integration to Branch 49. The newer audit governs this branch.
 
 This commit records audit and planning only. Implementation must not start until
 a separate Branch 49 milestone command is authorized. Branch 50 must not start.
+
+## Milestone 1 checkpoint — contracts and authorization
+
+- Added one explicit authorization boundary for every planning-selection read
+  and mutation before any service-client table access.
+- The permission contract mirrors the existing shared-event RLS behavior:
+  active owner, partner and preserved legacy spouse access may read and mutate;
+  unauthenticated, no-event, selection-required and inaccessible-event requests
+  fail before data access.
+- Standardized stable authentication/current-event/internal error codes and
+  removed raw database error details from the affected routes.
+- Added generated-database-type-derived insert/update contracts for churches,
+  locations and suppliers; request-controlled `event_id` remains forbidden.
+- All reads and row mutations remain constrained to the authoritative current
+  event. Cross-event row IDs resolve to 404 without mutation.
+- Added focused tests for the role matrix, 401/404/409/500 contracts, resolver
+  delegation, current-event source assertions and generated payload typing.
+- Schema/migrations: none. Production/DML/event types/UI: unchanged.

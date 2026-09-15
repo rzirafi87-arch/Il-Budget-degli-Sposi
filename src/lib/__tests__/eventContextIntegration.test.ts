@@ -22,8 +22,13 @@ const criticalRoutes = [
 describe("private module event-context integration", () => {
   test.each(criticalRoutes)("%s uses the authoritative resolver", (relativePath) => {
     const source = fs.readFileSync(path.join(root, relativePath), "utf8");
-    expect(source).toMatch(/require(CurrentEvent|ServerCurrentEvent)/);
+    expect(source).toMatch(/require(CurrentEvent|ServerCurrentEvent|PlanningSelectionAccess)/);
     expect(source).not.toMatch(/\.eq\(["']owner_id["'][\s\S]{0,220}\.limit\(1\)/);
+  });
+
+  it("keeps the planning authorization wrapper on the authoritative resolver", () => {
+    const source = fs.readFileSync(path.join(root, "src/lib/planningSelectionAuthorization.ts"), "utf8");
+    expect(source).toContain("requireCurrentEvent(req, userId)");
   });
 
   it("keeps the localized compatibility endpoint current-event aware for authenticated calls", () => {
