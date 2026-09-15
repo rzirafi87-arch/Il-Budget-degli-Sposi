@@ -278,7 +278,7 @@ export default function BudgetIdeaPage() {
             <span className="whitespace-nowrap font-semibold text-rose-700">{money(categoryTotal(category))} <span aria-hidden>⌄</span></span>
           </button>
           {expanded && <div id={`budget-category-${category}`} className="space-y-3 border-t bg-gray-50 p-3 dark:bg-gray-900 sm:p-4">
-            {visible(category).map(({ row, index }) => <div key={row.canonicalKey || `${row.subcategory}-${index}`} className={`rounded-xl border bg-white p-3 dark:bg-gray-950 ${row.enabled ? "border-rose-200 dark:border-rose-700" : "border-gray-200 dark:border-gray-700"}`}>
+            {visible(category).map(({ row, index }) => <div key={row.canonicalKey || `${row.subcategory}-${index}`} data-testid={row.custom ? "budget-custom-row" : undefined} className={`rounded-xl border bg-white p-3 dark:bg-gray-950 ${row.enabled ? "border-rose-200 dark:border-rose-700" : "border-gray-200 dark:border-gray-700"}`}>
               <div className="flex items-start gap-3">
                 <input id={`enabled-${index}`} type="checkbox" checked={row.enabled} onChange={(e) => change(index, { enabled: e.target.checked })} className="mt-1 h-5 w-5 shrink-0" />
                 <label htmlFor={`enabled-${index}`} className="min-w-0 flex-1 font-semibold">{row.custom ? <input aria-label={t("custom.nameAria")} value={row.subcategory} onChange={(e) => change(index, { subcategory: e.target.value })} className="w-full rounded border px-2 py-1" /> : row.subcategory}</label>
