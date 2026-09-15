@@ -311,7 +311,9 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       page.once("dialog", dialog => dialog.accept(customMarker));
       await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
       const custom = page.getByLabel(/nome della voce personalizzata/i);
-      await custom.locator("xpath=../../..").getByLabel(/importo/i).fill("833");
+      const customRow = categories.nth(0).locator("div.rounded-xl").filter({ has: custom });
+      await expect(customRow).toHaveCount(1);
+      await customRow.getByLabel(/importo/i).fill("833");
       page.once("dialog", dialog => dialog.accept(customMarker.toUpperCase()));
       await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
       await expect(page.getByRole("status")).toBeVisible();
