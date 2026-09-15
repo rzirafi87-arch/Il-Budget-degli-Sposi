@@ -51,6 +51,12 @@ function optionalString(value: unknown): string | null | undefined {
   return value;
 }
 
+function optionalNonNullString(value: unknown): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== "string") throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  return value;
+}
+
 function optionalNumber(value: unknown): number | null | undefined {
   if (value === undefined || value === null) return value;
   if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
@@ -80,8 +86,8 @@ export function parseBudgetItemCreate(value: unknown): BudgetItemCreate {
     amount: optionalNumber(input.amount),
     canonical_key: optionalString(input.canonical_key),
     saved_supplier_id: optionalString(input.saved_supplier_id),
-    source: optionalString(input.source),
-    spend_type: optionalString(input.spend_type),
+    source: optionalNonNullString(input.source),
+    spend_type: optionalNonNullString(input.spend_type),
     tradition_id: traditionId as number | null | undefined,
     vendor_id: optionalString(input.vendor_id),
   };
