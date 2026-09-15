@@ -32,6 +32,16 @@ export type ExpenseCreate = {
   fromDashboard: boolean;
 };
 
+export type BudgetSupplierLink = {
+  id: number;
+  saved_supplier_id: string | null;
+};
+
+export type ExpenseSupplierLink = {
+  id: string;
+  savedSupplierId: string | null;
+};
+
 export class FinancialContractError extends Error {
   constructor(readonly code: "INVALID_FINANCIAL_PAYLOAD") {
     super(code);
@@ -60,6 +70,17 @@ function optionalNonNullString(value: unknown): string | undefined {
 function optionalNumber(value: unknown): number | null | undefined {
   if (value === undefined || value === null) return value;
   if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  return value;
+}
+
+function uuidOrNull(value: unknown): string | null {
+  if (value === null) return null;
+  if (
+    typeof value !== "string" ||
+    !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value)
+  ) {
     throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
   }
   return value;
@@ -132,5 +153,30 @@ export function parseExpenseCreate(value: unknown): ExpenseCreate {
     date,
     notes,
     fromDashboard,
+  };
+}
+
+export function parseBudgetSupplierLink(value: unknown): BudgetSupplierLink {
+  const input = record(value);
+  if (!Number.isInteger(input.id) || Number(input.id) <= 0) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  return {
+    id: Number(input.id),
+    saved_supplier_id: uuidOrNull(input.saved_supplier_id),
+  };
+}
+
+export function parseExpenseSupplierLink(value: unknown): ExpenseSupplierLink {
+  const input = record(value);
+  if (
+    typeof input.id !== "string" ||
+    !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(input.id)
+  ) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  return {
+    id: input.id,
+    savedSupplierId: uuidOrNull(input.savedSupplierId),
   };
 }
