@@ -76,9 +76,9 @@ begin
 
   for v in
     select * from (values
-      ('accept_event_invitation','p_token text, p_user_id uuid','uuid',true,'search_path=public, auth, extensions','69675f23b26a1b666c56bee6746dd8fb','05965d69a8e1aea2d42def7fc2bc760d'),
-      ('reject_event_invitation','p_token text, p_user_id uuid','uuid',true,'search_path=public, auth, extensions','d3de85266a7d42a8835113e1fc65d1d0',null),
-      ('rotate_event_invitation_token','p_invitation_id uuid, p_event_id uuid, p_user_id uuid, p_token_hash text, p_expires_at timestamp with time zone','text',true,'search_path=public, auth','8255323fc263ce324c703722736e3a5c',null)
+      ('accept_event_invitation','p_token text, p_user_id uuid','uuid',true,'search_path=public, auth, extensions','caf796687e06f5346003d9373f57cd5c','1fa0b25a5309ad5b96c2b81094ef912f'),
+      ('reject_event_invitation','p_token text, p_user_id uuid','uuid',true,'search_path=public, auth, extensions','79642ff01671051898bf8cc4eadacc81',null),
+      ('rotate_event_invitation_token','p_invitation_id uuid, p_event_id uuid, p_user_id uuid, p_token_hash text, p_expires_at timestamp with time zone','text',true,'search_path=public, auth','dcc38a15a7f3bc5020f5dcc3afb480a8',null)
     ) expected(function_name,identity_args,result_type,security_definer,configuration,body_md5,predecessor_body_md5)
   loop
     if exists (
