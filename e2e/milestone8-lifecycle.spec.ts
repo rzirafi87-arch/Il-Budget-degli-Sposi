@@ -38,7 +38,7 @@ async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) 
   await page.getByRole("button", { name: "Italia", exact: true }).click();
   await page.getByRole("button", { name: /^avanti$/i }).click({ noWaitAfter: true });
   await expect(page).toHaveURL(/\/it\/select-event-type/);
-  await page.getByRole("button", { name: /matrimonio/i }).click();
+  await page.getByRole("button", { name: /^matrimonio disponibile/i }).click();
   await page.waitForURL(/\/it\/dashboard/);
   const resolved = await currentEvent(page);
   expect(resolved.status).toBe(200);
@@ -50,7 +50,7 @@ async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) 
 
 async function createAdditionalEvent(page: Page, identity: QaIdentity, name: string) {
   await page.goto("/it/select-event-type?new=1");
-  await page.getByRole("button", { name: /matrimonio/i }).click();
+  await page.getByRole("button", { name: /^matrimonio disponibile/i }).click();
   await page.waitForURL(/\/it\/dashboard/);
   const resolved = await currentEvent(page);
   await renameCurrentEvent(identity, resolved.body.currentEvent.eventId, name);
@@ -150,7 +150,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
         response.request().method() === "POST"
         && new URL(response.url()).pathname === "/api/event/ensure-default"
       );
-      await page.getByRole("button", { name: /matrimonio/i }).click();
+      await page.getByRole("button", { name: /^matrimonio disponibile/i }).click();
       expect((await ensureDefault).status()).toBe(200);
       await page.waitForURL(/\/it\/dashboard/);
       phase("dashboard");
