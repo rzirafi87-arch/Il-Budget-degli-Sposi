@@ -335,11 +335,9 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
       await categories.nth(0).locator("button[aria-expanded]").click();
       await expect(page.getByTestId("budget-custom-row")).toHaveCount(0);
-      await page.goto("/it/dashboard");
-      const selector = page.locator('select[aria-label*="Cambia evento"]');
-      await selector.selectOption(firstId);
-      await page.getByRole("dialog", { name: /cambiare evento/i }).getByRole("button", { name: /conferma/i }).click();
-      await page.waitForLoadState("domcontentloaded");
+      await page.goto("/it/select-event");
+      await page.getByRole("listitem", { name: firstName, exact: true }).click();
+      await page.waitForURL(/\/it\/dashboard/);
       await page.goto("/it/idea-di-budget");
       await expect(page.getByRole("heading", { name: /idea di budget/i })).toBeVisible();
       await categories.nth(0).locator("button[aria-expanded]").click();
