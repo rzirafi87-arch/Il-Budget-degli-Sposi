@@ -32,6 +32,21 @@ export type ExpenseCreate = {
   fromDashboard: boolean;
 };
 
+export type PaymentReminderRow = Tables["payment_reminders"]["Row"];
+export type PaymentReminderInsert = Tables["payment_reminders"]["Insert"];
+export type PaymentReminderCreate = {
+  expenseId: string;
+  amount: number;
+  dueDate: string;
+  reminderDate: string | null;
+  notes: string | null;
+};
+export type PaymentReminderUpdate = PaymentReminderCreate & {
+  id: string;
+  isPaid: boolean;
+  paidDate: string | null;
+};
+
 export type BudgetSupplierLink = {
   id: number;
   saved_supplier_id: string | null;
@@ -75,8 +90,7 @@ function optionalNumber(value: unknown): number | null | undefined {
   return value;
 }
 
-function uuidOrNull(value: unknown): string | null {
-  if (value === null) return null;
+function uuid(value: unknown): string {
   if (
     typeof value !== "string" ||
     !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value)
@@ -84,6 +98,57 @@ function uuidOrNull(value: unknown): string | null {
     throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
   }
   return value;
+}
+
+function uuidOrNull(value: unknown): string | null {
+  if (value === null) return null;
+  return uuid(value);
+}
+
+function date(value: unknown): string {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.valueOf()) || parsed.toISOString().slice(0, 10) !== value) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  return value;
+}
+
+function dateOrNull(value: unknown): string | null {
+  if (value === null) return null;
+  return date(value);
+}
+
+function reminderAmount(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  return value;
+}
+
+function reminderNotes(value: unknown): string | null {
+  if (value === null) return null;
+  if (typeof value !== "string" || value.length > 1000) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  return value.trim() || null;
+}
+
+function reminderFields(input: Record<string, unknown>): PaymentReminderCreate {
+  const dueDate = date(input.dueDate);
+  const reminderDate = dateOrNull(input.reminderDate);
+  if (reminderDate && reminderDate > dueDate) {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  return {
+    expenseId: uuid(input.expenseId),
+    amount: reminderAmount(input.amount),
+    dueDate,
+    reminderDate,
+    notes: reminderNotes(input.notes),
+  };
 }
 
 export function parseBudgetItemCreate(value: unknown): BudgetItemCreate {
@@ -124,7 +189,7 @@ export function parseExpenseCreate(value: unknown): ExpenseCreate {
   const amount = input.amount;
   const spendType = input.spendType;
   const status = input.status;
-  const date = input.date;
+  const expenseDate = input.date;
   const fromDashboard = input.fromDashboard;
 
   if (
@@ -135,8 +200,8 @@ export function parseExpenseCreate(value: unknown): ExpenseCreate {
     amount < 0 ||
     !["common", "bride", "groom"].includes(String(spendType)) ||
     !["pending", "approved", "rejected"].includes(String(status)) ||
-    typeof date !== "string" ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    typeof expenseDate !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(expenseDate) ||
     typeof fromDashboard !== "boolean"
   ) {
     throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
@@ -150,7 +215,7 @@ export function parseExpenseCreate(value: unknown): ExpenseCreate {
     amount,
     spendType: spendType as ExpenseCreate["spendType"],
     status: status as ExpenseCreate["status"],
-    date,
+    date: expenseDate,
     notes,
     fromDashboard,
   };
@@ -169,14 +234,34 @@ export function parseBudgetSupplierLink(value: unknown): BudgetSupplierLink {
 
 export function parseExpenseSupplierLink(value: unknown): ExpenseSupplierLink {
   const input = record(value);
-  if (
-    typeof input.id !== "string" ||
-    !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(input.id)
-  ) {
+  return {
+    id: uuid(input.id),
+    savedSupplierId: uuidOrNull(input.savedSupplierId),
+  };
+}
+
+export function parsePaymentReminderCreate(value: unknown): PaymentReminderCreate {
+  return reminderFields(record(value));
+}
+
+export function parsePaymentReminderUpdate(value: unknown): PaymentReminderUpdate {
+  const input = record(value);
+  const fields = reminderFields(input);
+  if (typeof input.isPaid !== "boolean") {
+    throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
+  }
+  const paidDate = dateOrNull(input.paidDate);
+  if ((input.isPaid && !paidDate) || (!input.isPaid && paidDate)) {
     throw new FinancialContractError("INVALID_FINANCIAL_PAYLOAD");
   }
   return {
-    id: input.id,
-    savedSupplierId: uuidOrNull(input.savedSupplierId),
+    ...fields,
+    id: uuid(input.id),
+    isPaid: input.isPaid,
+    paidDate,
   };
+}
+
+export function parsePaymentReminderId(value: unknown): string {
+  return uuid(value);
 }
