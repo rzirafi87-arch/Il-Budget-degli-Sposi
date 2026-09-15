@@ -1,6 +1,7 @@
 import { getServiceClient } from "@/lib/supabaseServer";
 import { planningSelectionErrorResponse, requirePlanningSelectionAccess } from "@/lib/planningSelectionAuthorization";
 import type { SavedLocationInsert, SavedLocationUpdate } from "@/lib/planningSelectionContracts";
+import { normalizeBooleanSelectionMutation, withCanonicalPlanningState } from "@/lib/planningSelectionState";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
     const eventId = currentEvent.eventId;
     const { data, error } = await getServiceClient().from("saved_locations").select("id,event_id,location_id,location_role,status,favorite,contacted,visited,shortlisted,selected,personal_notes,contact_notes,quote_amount,quote_currency,quote_received_at,agreed_cost,created_at,updated_at").eq("event_id", eventId).order("created_at", { ascending: true });
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 });
-    return NextResponse.json({ savedLocations: data || [], eventId });
+    return NextResponse.json({ savedLocations: (data || []).map((row) => withCanonicalPlanningState("location", row)), eventId });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     const { data, error } = await db.from("saved_locations").insert(insert).select("id,event_id,location_id,location_role,status,favorite,contacted,visited,shortlisted,selected").single();
     if (error?.code === "23505") return NextResponse.json({ error: "Location already saved for this role" }, { status: 409 });
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_CREATE_FAILED" }, { status: 500 });
-    return NextResponse.json({ savedLocation: data }, { status: 201 });
+    return NextResponse.json({ savedLocation: withCanonicalPlanningState("location", data) }, { status: 201 });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 
@@ -45,9 +46,10 @@ export async function PATCH(req: NextRequest) {
     if (!UUID.test(id)) return NextResponse.json({ error: "Invalid saved location id" }, { status: 400 });
     const eventId = currentEvent.eventId;
     const updates: SavedLocationUpdate = {};
-    for (const key of ["favorite", "contacted", "visited", "shortlisted", "selected"] as const) if (typeof body[key] === "boolean") updates[key] = body[key];
-    if (body.selected === true) updates.status = "selected";
-    if (typeof body.status === "string" && STATUSES.has(body.status)) updates.status = body.status;
+    for (const key of ["favorite", "contacted", "visited", "shortlisted"] as const) if (typeof body[key] === "boolean") updates[key] = body[key];
+    const selection = normalizeBooleanSelectionMutation(body, "considering");
+    if (typeof selection.selected === "boolean") updates.selected = selection.selected;
+    if (selection.status && STATUSES.has(selection.status)) updates.status = selection.status;
     if (typeof body.location_role === "string" && ROLES.has(body.location_role)) updates.location_role = body.location_role;
     for (const key of ["personal_notes", "contact_notes"] as const) if (typeof body[key] === "string") updates[key] = body[key].trim().slice(0, 4000) || null;
     for (const key of ["quote_amount", "agreed_cost"] as const) {
@@ -60,7 +62,7 @@ export async function PATCH(req: NextRequest) {
     if (error?.code === "23505") return NextResponse.json({ error: "Only one location can be selected for each role" }, { status: 409 });
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_UPDATE_FAILED" }, { status: 500 });
     if (!data) return NextResponse.json({ error: "Saved location not found" }, { status: 404 });
-    return NextResponse.json({ savedLocation: data });
+    return NextResponse.json({ savedLocation: withCanonicalPlanningState("location", data) });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 

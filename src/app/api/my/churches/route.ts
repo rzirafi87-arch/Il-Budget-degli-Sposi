@@ -1,6 +1,7 @@
 import { getServiceClient } from "@/lib/supabaseServer";
 import { planningSelectionErrorResponse, requirePlanningSelectionAccess } from "@/lib/planningSelectionAuthorization";
 import type { SavedChurchInsert, SavedChurchUpdate } from "@/lib/planningSelectionContracts";
+import { normalizeBooleanSelectionMutation, withCanonicalPlanningState } from "@/lib/planningSelectionState";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
       .select("id,event_id,church_id,status,favorite,contacted,selected,personal_notes,personal_contact_notes,quoted_price,created_at,updated_at")
       .eq("event_id", eventId).order("created_at", { ascending: true });
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 });
-    return NextResponse.json({ savedChurches: data || [], eventId });
+    return NextResponse.json({ savedChurches: (data || []).map((row) => withCanonicalPlanningState("church", row)), eventId });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
       .select("id,event_id,church_id,status,favorite,contacted,selected").single();
     if (error?.code === "23505") return NextResponse.json({ error: "Church already saved" }, { status: 409 });
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_CREATE_FAILED" }, { status: 500 });
-    return NextResponse.json({ savedChurch: data }, { status: 201 });
+    return NextResponse.json({ savedChurch: withCanonicalPlanningState("church", data) }, { status: 201 });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 
@@ -49,8 +50,9 @@ export async function PATCH(req: NextRequest) {
     const updates: SavedChurchUpdate = {};
     if (typeof body.favorite === "boolean") updates.favorite = body.favorite;
     if (typeof body.contacted === "boolean") updates.contacted = body.contacted;
-    if (typeof body.selected === "boolean") { updates.selected = body.selected; if (body.selected) updates.status = "selected"; }
-    if (typeof body.status === "string" && STATUSES.has(body.status)) updates.status = body.status;
+    const selection = normalizeBooleanSelectionMutation(body, "considering");
+    if (typeof selection.selected === "boolean") updates.selected = selection.selected;
+    if (selection.status && STATUSES.has(selection.status)) updates.status = selection.status;
     if (typeof body.personal_notes === "string") updates.personal_notes = body.personal_notes.trim().slice(0, 4000) || null;
     if (typeof body.personal_contact_notes === "string") updates.personal_contact_notes = body.personal_contact_notes.trim().slice(0, 4000) || null;
     if (body.quoted_price === null) updates.quoted_price = null;
@@ -63,7 +65,7 @@ export async function PATCH(req: NextRequest) {
     if (error?.code === "23505") return NextResponse.json({ error: "Only one church can be selected" }, { status: 409 });
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_UPDATE_FAILED" }, { status: 500 });
     if (!data) return NextResponse.json({ error: "Saved church not found" }, { status: 404 });
-    return NextResponse.json({ savedChurch: data });
+    return NextResponse.json({ savedChurch: withCanonicalPlanningState("church", data) });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 

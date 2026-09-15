@@ -206,3 +206,23 @@ a separate Branch 49 milestone command is authorized. Branch 50 must not start.
 - Added focused tests for the role matrix, 401/404/409/500 contracts, resolver
   delegation, current-event source assertions and generated payload typing.
 - Schema/migrations: none. Production/DML/event types/UI: unchanged.
+
+## Milestone 2 checkpoint — canonical selection states
+
+- Added one shared API state vocabulary: `saved`, `considering`, `selected`
+  and `rejected`; `undecided` is intentionally an aggregate decision state,
+  never a new stored database value.
+- Existing Church/Location lowercase and Supplier uppercase workflow statuses
+  are mapped without backfill, deletion or mutation of legacy rows.
+- Church, Location and Supplier API responses now include additive
+  `planning_state` metadata while preserving every existing response field.
+- The planning-selection read model adds additive current-event decision state
+  for Church and every canonical Location role.
+- Church/Location writes normalize boolean/status combinations so new rows
+  cannot remain `selected=false` with stored status `selected`.
+- Explicit deselection returns to `considering`; discarded/rejected remains a
+  separate terminal planning state. Existing stored values remain readable.
+- Added a pure state-matrix test suite covering every legacy status family,
+  aggregate undecided behavior, non-mutating enrichment and contradictory
+  mutation normalization.
+- Schema/migrations/DML/UI/Production/event types: unchanged.

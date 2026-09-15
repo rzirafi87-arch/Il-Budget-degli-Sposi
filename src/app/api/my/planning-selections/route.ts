@@ -14,6 +14,23 @@ export async function GET(req: NextRequest) {
       db.from("saved_locations").select("location_id,location_role,locations(name)").eq("event_id", event.id).eq("selected", true).order("location_role"),
     ]);
     if (churchError || locationError) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 });
-    return NextResponse.json({ church: savedChurch || null, locations: savedLocations || [], eventType: event.event_type });
+    // Both queries are constrained to selected=true, so the canonical state is
+    // known without loading or reinterpreting any additional stored fields.
+    const church = savedChurch ? { ...savedChurch, planning_state: "selected" as const } : null;
+    const locations = (savedLocations || []).map((row) => ({ ...row, planning_state: "selected" as const }));
+    const locationRoles = ["reception", "ceremony", "accommodation", "party", "other"] as const;
+    const locationsByRole = Object.fromEntries(locationRoles.map((role) => [
+      role,
+      locations.some((row) => row.location_role === role) ? "selected" : "undecided",
+    ]));
+    return NextResponse.json({
+      church,
+      locations,
+      decision: {
+        church: church ? "selected" : "undecided",
+        locationsByRole,
+      },
+      eventType: event.event_type,
+    });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
