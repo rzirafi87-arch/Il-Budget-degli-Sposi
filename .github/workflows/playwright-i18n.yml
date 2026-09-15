@@ -95,7 +95,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
       - name: Run external smoke and authenticated integration
-        run: npx playwright test --grep-invert '\\[M8\\]'
+        run: npx playwright test --grep-invert '\[M8\]'
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
