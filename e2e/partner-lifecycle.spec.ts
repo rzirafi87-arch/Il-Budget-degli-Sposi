@@ -31,6 +31,7 @@ type Member = { id: string; user_id: string; role: string; status: string };
 type Invitation = { id: string; invited_email_normalized: string; status: string };
 type AcceptanceStage =
   | "invitation_open"
+  | "invitation_navigated"
   | "invitation_inspected"
   | "login_required"
   | "invitation_return_saved"
@@ -259,7 +260,10 @@ async function acceptInvitation(partnerPage: Page, partnerContext: BrowserContex
   let httpStatus: number | null = null;
   let applicationCode: string | null = null;
   try {
-    await partnerPage.goto(href);
+    const navigation = await partnerPage.goto(href);
+    httpStatus = navigation?.status() ?? null;
+    stage = "invitation_navigated";
+    expect(safePathname(partnerPage), "Invitation link must remain on its public application route").toBe("/it/invitation");
     await expect(partnerPage.getByRole("heading", { name: "Invito partner" })).toBeVisible();
     await expect(partnerPage.getByText(/ti ha invitato a collaborare/i)).toBeVisible({ timeout: 15_000 });
     stage = "invitation_inspected";

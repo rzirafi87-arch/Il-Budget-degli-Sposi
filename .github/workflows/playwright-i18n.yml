@@ -69,6 +69,7 @@ jobs:
         with:
           name: playwright-failure-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 7
           path: |
             ${{ github.workspace }}/playwright-report/**
