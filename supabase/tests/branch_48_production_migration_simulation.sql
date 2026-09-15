@@ -49,6 +49,8 @@ begin
   if (a.row_count,a.checksum) is distinct from (b.row_count,b.checksum) then
     raise exception 'legacy rows changed: before %/% after %/%',b.row_count,b.checksum,a.row_count,a.checksum;
   end if;
+  raise notice 'BRANCH48_PRODUCTION_SIMULATION legacy_count_before=% legacy_checksum_before=% legacy_count_after=% legacy_checksum_after=%',
+    b.row_count,b.checksum,a.row_count,a.checksum;
 
   begin insert into public.subcategories(category_id,name,canonical_key)
     values(md5('b48-category-1')::uuid,'Nuova etichetta','LEGACY.CANONICAL.1');
