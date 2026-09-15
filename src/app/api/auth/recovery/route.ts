@@ -17,7 +17,8 @@ export async function POST(req: NextRequest) {
     if (localMail) {
       const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       if (!anonKey) throw new Error("Missing local Supabase anonymous key.");
-      await createClient(supabaseUrl, anonKey, { auth: { persistSession: false } }).auth.resetPasswordForEmail(email, { redirectTo });
+      const reset = await createClient(supabaseUrl, anonKey, { auth: { persistSession: false } }).auth.resetPasswordForEmail(email, { redirectTo });
+      if (reset.error) throw reset.error;
     } else {
       const db = getServiceClient();
       const result = await db.auth.admin.generateLink({ type: "recovery", email, options: { redirectTo } });

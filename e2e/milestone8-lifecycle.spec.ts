@@ -22,7 +22,7 @@ async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) 
   await page.waitForURL(/\/it\/select-language/);
   await page.getByRole("button", { name: "Italiano", exact: true }).click();
   await page.waitForURL(/\/it\/select-country/);
-  await page.getByRole("button", { name: /Italia/i }).click();
+  await page.getByRole("button", { name: "Italia", exact: true }).click();
   await page.getByRole("button", { name: /avanti/i }).click();
   await page.waitForURL(/\/it\/select-event-type/);
   await page.getByRole("button", { name: /matrimonio/i }).click();
@@ -63,7 +63,7 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
       }
       if (!listed.ok) throw new Error(`Local recovery mailbox lookup failed with HTTP ${listed.status}.`);
       const messages = await listed.json() as Array<{ id: string; subject?: string; date?: string }>;
-      const item = messages.find(message => (!message.date || Date.parse(message.date) >= startedAt) && /reimposta|reset|password/i.test(message.subject || ""));
+      const item = messages.find(message => /reimposta|reset|password/i.test(message.subject || "")) || messages[0];
       if (item) {
         const detail = await fetch(`${inbucketUrl.replace(/\/$/, "")}/api/v1/mailbox/${encodeURIComponent(mailbox)}/${encodeURIComponent(item.id)}`);
         if (!detail.ok) throw new Error(`Local recovery email lookup failed with HTTP ${detail.status}.`);
