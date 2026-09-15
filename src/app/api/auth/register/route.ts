@@ -4,6 +4,8 @@ import { rateLimitResponse } from "@/lib/publicApiGuard";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { generatePublicId } from "@/lib/publicId";
+import { validateEventTypeForRegistration } from "@/lib/eventTypeCapabilities";
+import { safeInternalPath } from "@/lib/auth";
 export const runtime = "nodejs";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,10 +31,24 @@ export async function POST(req: NextRequest) {
     const password = "password" in body && typeof body.password === "string" ? body.password : "";
     const weddingDate =
       "weddingDate" in body && typeof body.weddingDate === "string" ? body.weddingDate : null;
-    const eventType =
-      "eventType" in body && typeof body.eventType === "string" && body.eventType.trim()
-        ? body.eventType.trim().toLowerCase()
-        : "wedding";
+    const next = safeInternalPath("next" in body && typeof body.next === "string" ? body.next : null, "/it/dashboard");
+    const invitationSignup = /^\/(it|en|es|fr|de)\/invitation\?token=[A-Za-z0-9_-]{32,}$/.test(next);
+    const eventTypeDecision = validateEventTypeForRegistration(
+      "eventType" in body ? body.eventType : "wedding",
+    );
+
+    if (!eventTypeDecision.ok) {
+      const status = eventTypeDecision.reason === "COMING_SOON" ? 409 : 400;
+      return NextResponse.json(
+        {
+          ok: false,
+          code: `EVENT_TYPE_${eventTypeDecision.reason}`,
+          error: "EVENT_TYPE_NOT_AVAILABLE",
+        },
+        { status },
+      );
+    }
+    const eventType = eventTypeDecision.eventType;
 
     if (!EMAIL_PATTERN.test(primaryEmail) || password.length < 10 || password.length > 128) {
       return NextResponse.json(
@@ -48,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     // Generate a real signup-confirmation link. This creates an unconfirmed user
     // without sending Supabase's generic email because delivery is branded below.
-    const callback = `${siteUrl(req)}/auth/callback?next=/it/dashboard`;
+    const callback = `${siteUrl(req)}/auth/callback?next=${encodeURIComponent(next)}`;
     const { data: ownerRes, error: createErr } = await db.auth.admin.generateLink({
       type: "signup",
       email: primaryEmail,
@@ -60,6 +76,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, confirmationRequired: true });
     }
     const ownerId = ownerRes.user.id;
+
+    if (invitationSignup) {
+      try { await sendMail(primaryEmail, "Conferma il tuo account – Il Budget degli Sposi", confirmationTemplate(ownerRes.properties.action_link)); }
+      catch (mlErr) { console.error("REGISTER invitation signup email error type:", mlErr instanceof Error ? mlErr.name : "unknown"); }
+      return NextResponse.json({ ok: true, confirmationRequired: true });
+    }
 
     // 2) Partner opzionale: non condividere mai la password del proprietario.
     if (partnerEmail) {

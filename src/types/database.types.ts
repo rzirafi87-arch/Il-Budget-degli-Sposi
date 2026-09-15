@@ -795,39 +795,54 @@ export type Database = {
         Row: {
           accepted_at: string | null
           created_at: string
+          delivery_error_code: string | null
+          delivery_status: string
           event_id: string
           expires_at: string
           id: string
           invited_by: string
           invited_email_normalized: string
+          last_sent_at: string | null
+          rejected_at: string | null
           revoked_at: string | null
           role: string
+          sent_at: string | null
           status: string
           token_hash: string
         }
         Insert: {
           accepted_at?: string | null
           created_at?: string
+          delivery_error_code?: string | null
+          delivery_status?: string
           event_id: string
           expires_at: string
           id?: string
           invited_by: string
           invited_email_normalized: string
+          last_sent_at?: string | null
+          rejected_at?: string | null
           revoked_at?: string | null
           role?: string
+          sent_at?: string | null
           status?: string
           token_hash: string
         }
         Update: {
           accepted_at?: string | null
           created_at?: string
+          delivery_error_code?: string | null
+          delivery_status?: string
           event_id?: string
           expires_at?: string
           id?: string
           invited_by?: string
           invited_email_normalized?: string
+          last_sent_at?: string | null
+          rejected_at?: string | null
           revoked_at?: string | null
           role?: string
+          sent_at?: string | null
           status?: string
           token_hash?: string
         }
@@ -3509,6 +3524,20 @@ export type Database = {
       regenerate_event_data: { Args: { p_event_id: string }; Returns: string }
       regenerate_event_timeline: {
         Args: { p_event_id: string }
+        Returns: string
+      }
+      reject_event_invitation: {
+        Args: { p_token: string; p_user_id: string }
+        Returns: string
+      }
+      rotate_event_invitation_token: {
+        Args: {
+          p_event_id: string
+          p_expires_at: string
+          p_invitation_id: string
+          p_token_hash: string
+          p_user_id: string
+        }
         Returns: string
       }
       save_budget_idea_snapshot: {

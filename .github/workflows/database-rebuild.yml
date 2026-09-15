@@ -179,10 +179,53 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260913132811_branch_47_partner_collaboration.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_47_partner_collaboration.sql
 
+      - name: Apply and verify Branch 48 lifecycle foundation
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260914110000_branch_48_owner_immutability.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_event_lifecycle.sql
+
+      - name: Apply and verify Branch 48 safe event deletion
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260914114238_branch_48_safe_event_deletion.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_safe_event_deletion.sql
+
+      - name: Apply and verify Branch 48 partner lifecycle
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260914150000_branch_48_partner_lifecycle.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_partner_lifecycle.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_partner_migration_reconciliation.sql
+
+      - name: Apply and verify Branch 48 budget subcategory identity
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260915114500_branch_48_budget_snapshot_casefold.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260915130000_branch_48_subcategory_canonical_identity.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_subcategory_canonical_identity.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260915133000_branch_48_ensure_subcategory_identity.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_ensure_subcategory_identity.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_production_migration_simulation.sql
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
           supabase db lint --local --schema public --level warning --fail-on error
+
+      - name: Verify concurrent subcategory identity writes
+        shell: bash
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into auth.users(id,email) values('48910000-0000-4000-8000-000000000001','branch48-concurrency@example.invalid'); insert into public.events(id,owner_id,event_type) values('48910000-0000-4000-8000-000000000002','48910000-0000-4000-8000-000000000001','wedding'); insert into public.categories(id,event_id,name) values('48910000-0000-4000-8000-000000000003','48910000-0000-4000-8000-000000000002','Concurrency');"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "begin; insert into public.subcategories(category_id,name,canonical_key) values('48910000-0000-4000-8000-000000000003','Concurrent A','branch48.concurrent'); select pg_sleep(2); commit;" &
+          first_pid=$!
+          sleep 0.2
+          set +e
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into public.subcategories(category_id,name,canonical_key) values('48910000-0000-4000-8000-000000000003','Concurrent B','BRANCH48.CONCURRENT');"
+          second_status=$?
+          wait "$first_pid"
+          first_status=$?
+          set -e
+          test "$first_status" -eq 0
+          test "$second_status" -ne 0
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from public.subcategories where category_id='48910000-0000-4000-8000-000000000003' and lower(btrim(canonical_key))='branch48.concurrent'")" = "1"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "delete from auth.users where id='48910000-0000-4000-8000-000000000001';"
 
       - name: Generate current TypeScript types
         run: |

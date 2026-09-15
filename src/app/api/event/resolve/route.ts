@@ -78,5 +78,12 @@ export async function GET(req: NextRequest) {
       has_suppliers: (supplierCount || 0) > 0,
       has_guests: (guestCount || 0) > 0,
     },
+    status: "RESOLVED",
+    onboarding: deriveOnboardingState(ev),
   });
+}
+
+function deriveOnboardingState(event: { language: string | null; country: string | null; event_type: string | null }) {
+  const nextStep = !event.language ? "language" : !event.country ? "country" : !event.event_type ? "event-type" : null;
+  return { complete: nextStep === null, nextStep };
 }

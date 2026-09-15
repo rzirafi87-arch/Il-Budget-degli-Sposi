@@ -15,6 +15,7 @@ import { LoadingState } from "@/components/ui/LoadingState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getOnboardingStatus, OnboardingError } from "@/lib/onboardingClient";
+import { onboardingDestination } from "@/lib/onboardingRouting";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import { useLocale, useTranslations } from "next-intl";
@@ -68,7 +69,7 @@ export default function DashboardPage() {
 
         if (status.kind !== "complete") {
           setRouteStatus("redirecting");
-          const destination = status.kind === "anonymous" ? "/auth" : "/wizard";
+          const destination = onboardingDestination(status);
           router.replace(buildLocalizedPath(locale, destination));
           return;
         }

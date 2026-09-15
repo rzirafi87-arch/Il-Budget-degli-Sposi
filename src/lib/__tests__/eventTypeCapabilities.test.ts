@@ -5,6 +5,8 @@ import {
   isModuleEnabled,
   moduleForPath,
   normalizeEventType,
+  publicEventTypeCapabilities,
+  validateEventTypeForRegistration,
 } from "@/lib/eventTypeCapabilities";
 
 describe("event type capabilities", () => {
@@ -52,11 +54,14 @@ describe("event type capabilities", () => {
     expect(moduleForPath("/budget")).toBe("budget");
     expect(moduleForPath("/timeline")).toBe("timeline");
     expect(moduleForPath("/documenti")).toBe("documents");
+    expect(moduleForPath("/invitati")).toBe("guests");
+    expect(moduleForPath("/invitati/tavoli")).toBe("guests");
+    expect(moduleForPath("/invitation")).toBeNull();
   });
 
   it("does not expose untranslated MISSING_MESSAGE content in new capability copy", () => {
     for (const capability of Object.values(EVENT_TYPE_CAPABILITIES)) {
-      for (const locale of ["it", "en", "es"] as const) {
+      for (const locale of ["it", "en", "es", "fr", "de"] as const) {
         expect(capability.description[locale]).toBeTruthy();
         expect(capability.description[locale]).not.toContain("MISSING_MESSAGE");
       }
@@ -65,10 +70,26 @@ describe("event type capabilities", () => {
 
   it("marks every non-wedding type as not ready", () => {
     for (const [slug, capability] of Object.entries(EVENT_TYPE_CAPABILITIES)) {
-      if (slug === "wedding") continue;
+      if (slug === "wedding" || !capability.publicVisible) continue;
       expect(capability.availabilityStatus).toBe("COMING_SOON");
       expect(isEventTypeReady(slug)).toBe(false);
       expect(capability.enabledModules).toEqual([]);
     }
+    expect(publicEventTypeCapabilities()).toHaveLength(18);
+  });
+
+  it("is the authoritative registration guard", () => {
+    expect(validateEventTypeForRegistration("wedding")).toEqual({ ok: true, eventType: "wedding" });
+    for (const capability of publicEventTypeCapabilities().filter((item) => item.slug !== "wedding")) {
+      expect(validateEventTypeForRegistration(capability.slug)).toEqual({
+        ok: false, eventType: capability.slug, reason: "COMING_SOON",
+      });
+    }
+    expect(validateEventTypeForRegistration("internal-preview")).toEqual({
+      ok: false, eventType: "internal-preview", reason: "INTERNAL_ONLY",
+    });
+    expect(validateEventTypeForRegistration("invented-event")).toEqual({
+      ok: false, eventType: "invented-event", reason: "UNKNOWN",
+    });
   });
 });

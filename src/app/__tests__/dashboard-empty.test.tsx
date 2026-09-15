@@ -16,7 +16,7 @@ describe("ingresso al Wizard", () => {
   });
 
   it("avvia il Wizard per un utente autenticato senza evento", async () => {
-    mockedStatus.mockResolvedValue({ kind: "needs-onboarding", accessToken: "token" });
+    mockedStatus.mockResolvedValue({ kind: "needs-onboarding", accessToken: "token", nextStep: "language" });
     render(<WizardEntryGate locale="it" />);
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/select-language"));
   });

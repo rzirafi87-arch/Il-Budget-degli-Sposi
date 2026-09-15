@@ -15,8 +15,8 @@ describe("approved application flow regressions", () => {
 
   it("does not route configured or multi-event users through select-event-type", () => {
     const wizard = read("src/app/[locale]/(routes)/select-event-type/page.tsx");
-    expect(wizard).toContain('status.kind === "complete" || status.kind === "needs-event-selection"');
-    expect(wizard).toContain('router.replace(`/${locale}/dashboard`)');
+    expect(wizard).toContain('status.kind === "needs-event-selection"');
+    expect(wizard).toContain('router.replace(`/${locale}/select-event`)');
     expect(wizard).not.toContain("TopBarSelector");
   });
 

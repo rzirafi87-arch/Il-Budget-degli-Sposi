@@ -32,6 +32,7 @@ describe("getOnboardingStatus", () => {
     await expect(getOnboardingStatus()).resolves.toEqual({
       kind: "needs-onboarding",
       accessToken: "token",
+      nextStep: "language",
     });
   });
 
@@ -47,6 +48,34 @@ describe("getOnboardingStatus", () => {
       kind: "complete",
       accessToken: "token",
       event,
+    });
+  });
+
+  it("riprende dal primo campo persistito mancante", async () => {
+    getSession.mockResolvedValue({ data: { session: { access_token: "token" } }, error: null });
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        event: { id: "event-id", language: "it", country: null, event_type: "wedding" },
+        onboarding: { complete: false, nextStep: "country" },
+      }),
+    });
+
+    await expect(getOnboardingStatus()).resolves.toEqual({
+      kind: "needs-onboarding", accessToken: "token", nextStep: "country",
+    });
+  });
+
+  it("preserva gli eventi accessibili quando serve una selezione", async () => {
+    const events = [{ id: "event-a" }, { id: "event-b" }];
+    getSession.mockResolvedValue({ data: { session: { access_token: "token" } }, error: null });
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ event: null, status: "SELECTION_REQUIRED", events }),
+    });
+
+    await expect(getOnboardingStatus()).resolves.toEqual({
+      kind: "needs-event-selection", accessToken: "token", events,
     });
   });
 

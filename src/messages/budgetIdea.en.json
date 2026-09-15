@@ -10,7 +10,7 @@
     "spendTypes": {"common": "Municipality", "municipality": "Municipality", "bride": "Bride", "groom": "Groom", "gift": "Gift"},
     "weddingBagIncluded": "Already included in the Wedding Bag · it will only be counted once",
     "summary": {"planned": "Planned total:", "contingency": "Contingency: {amount}", "withContingency": "Total including contingency: {amount}"},
-    "actions": {"save": "Save", "apply": "Apply to Budget", "saving": "Saving…"},
-    "messages": {"saved": "Budget idea saved.", "saveError": "Could not save your budget idea.", "applied": "{count, plural, =0 {No items were applied to your Budget.} one {# item applied to your Budget.} other {# items applied to your Budget.}}", "applyError": "Could not apply the items to your Budget.", "loadError": "Could not load your budget idea."}
+    "actions": {"save": "Save", "apply": "Apply to Budget", "saving": "Saving…", "retry": "Try again"},
+    "messages": {"saved": "Budget idea saved.", "saveError": "Could not save your budget idea.", "applied": "{count, plural, =0 {No items were applied to your Budget.} one {# item applied to your Budget.} other {# items applied to your Budget.}}", "applyError": "Could not apply the items to your Budget.", "loadError": "Could not load your budget idea.", "duplicate": "This item is already in the category."}
   }
 }

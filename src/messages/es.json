@@ -50,7 +50,8 @@
     "actions": {
       "save": "Guardar",
       "apply": "Aplicar al presupuesto",
-      "saving": "Guardando…"
+      "saving": "Guardando…",
+      "retry": "Reintentar"
     },
     "messages": {
       "saved": "Idea de presupuesto guardada.",
@@ -58,7 +59,8 @@
       "applied": "{count, plural, =0 {No se ha aplicado ninguna partida al presupuesto.} one {Se ha aplicado # partida al presupuesto.} other {Se han aplicado # partidas al presupuesto.}}",
       "applyError": "No se han podido aplicar las partidas al presupuesto.",
       "loadError": "No se ha podido cargar la idea de presupuesto.",
-      "applyDone": "Solicitud completada: elementos {count} creados o actualizados."
+      "applyDone": "Solicitud completada: elementos {count} creados o actualizados.",
+      "duplicate": "Esta partida ya está presente en la categoría."
     },
     "buttons": {
       "save": "Guardar idea de presupuesto",
@@ -2496,6 +2498,8 @@
       "deletionFailed": "Solicitud no registrada.",
       "deletionCancelled": "Solicitud cancelada."
     },
+    "partnerLifecycle": {"title":"Invitación de pareja","loading":"Cargando…","invitedBy":"{owner} te invitó a colaborar en {event}.","owner":"El propietario","event":"este evento","accept":"Aceptar","reject":"Rechazar","manageTitle":"Pareja del evento","activeAsPartner":"Participas en este evento como pareja.","activePartner":"Pareja activa","none":"Ninguna pareja vinculada.","partnerEmail":"Email de la pareja","invite":"Invitar pareja","pending":"Invitación pendiente para {email}.","deliveryFailed":"El proveedor no aceptó el email a {email}.","resend":"Reenviar","cancel":"Cancelar invitación","remove":"Eliminar pareja","leave":"Salir del evento","confirmCancel":"¿Cancelar esta invitación?","confirmRemove":"¿Eliminar la pareja del evento?","confirmLeave":"¿Salir de este evento? Perderás el acceso inmediatamente.","sent":"Invitación enviada.","resent":"Invitación reenviada.","cancelled":"Invitación cancelada.","removed":"Pareja eliminada.","left":"Has salido del evento.","genericError":"La operación falló ({code}).","states":{"pending":"Invitación pendiente.","accepted":"Invitación ya aceptada.","rejected":"Invitación rechazada.","revoked":"Invitación cancelada.","expired":"Invitación caducada."}},
+    "eventDeletion": {"title":"Eliminar evento","description":"Elimina definitivamente {event} y todos los datos de planificación vinculados.","open":"Eliminar este evento","confirmTitle":"Eliminar definitivamente el evento","consequences":"Vas a eliminar {event}: presupuesto, gastos, invitados, proveedores guardados, lugares, cronología, citas y Save the Date no podrán recuperarse.","typeName":"Para confirmar, escribe exactamente: {event}","cancel":"Cancelar","confirm":"Eliminar definitivamente","deleting":"Eliminando…","error":"No se pudo eliminar el evento ({code}). Inténtalo de nuevo."},
     "settings": {
       "settings": "Ajustes",
       "language": "Idioma",

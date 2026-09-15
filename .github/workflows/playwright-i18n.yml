@@ -1,64 +1,131 @@
 name: Playwright i18n matrix
-
 on:
   pull_request:
-    branches:
-      - main
-    paths:
-      - "e2e/**"
-      - "playwright.config.ts"
-      - "src/app/**"
-      - "src/components/**"
-      - "src/messages/**"
+    branches: [main]
+    paths: ["e2e/**", "playwright*.config.ts", "src/app/**", "src/components/**", "src/messages/**", "supabase/**", "scripts/rebuild-local-supabase.sh", ".github/workflows/playwright-i18n.yml"]
   workflow_dispatch:
-
 permissions:
   contents: read
-
 concurrency:
   group: playwright-i18n-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  smoke:
+  preview:
+    name: Preview integration
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-      - name: Require authenticated QA secrets
+        with: { node-version: "20", cache: npm }
+      - name: Require Preview integration secrets
         env:
           PLAYWRIGHT_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           PLAYWRIGHT_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
           PLAYWRIGHT_TEST_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
           PLAYWRIGHT_TEST_PASSWORD: ${{ secrets.PLAYWRIGHT_TEST_PASSWORD }}
+          PLAYWRIGHT_PARTNER_EMAIL: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
+          PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
+          PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
           PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
         run: |
-          test -n "$PLAYWRIGHT_SUPABASE_URL"
-          test -n "$PLAYWRIGHT_SUPABASE_ANON_KEY"
-          test -n "$PLAYWRIGHT_TEST_EMAIL"
-          test -n "$PLAYWRIGHT_TEST_PASSWORD"
-          test -n "$PLAYWRIGHT_BASE_URL"
+          for name in PLAYWRIGHT_SUPABASE_URL PLAYWRIGHT_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD PLAYWRIGHT_PARTNER_EMAIL PLAYWRIGHT_PARTNER_PASSWORD PLAYWRIGHT_RESEND_API_KEY PLAYWRIGHT_BASE_URL; do test -n "${!name}"; done
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
-      - run: npm run test:e2e
+      - name: Run Preview smoke and authenticated integration
+        run: npx playwright test --grep-invert '\[M8\]'
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
           PLAYWRIGHT_TEST_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
           PLAYWRIGHT_TEST_PASSWORD: ${{ secrets.PLAYWRIGHT_TEST_PASSWORD }}
+          PLAYWRIGHT_PARTNER_EMAIL: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
+          PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
+          PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
           PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-preview-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 7
           path: |
-            playwright-report/
-            .playwright-results/
+            ${{ github.workspace }}/playwright-report/**
+            ${{ github.workspace }}/.playwright-results/**
+  isolated:
+    name: Isolated local lifecycle
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      SUPABASE_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: npm }
+      - uses: supabase/setup-cli@v1
+        with: { version: 2.116.0 }
+      - name: Start ephemeral Supabase
+        run: |
+          mkdir .supabase-m8
+          cd .supabase-m8
+          supabase init
+          supabase start
+          supabase status -o env > status.env
+          set -a
+          source status.env
+          set +a
+          for value in "$API_URL" "$ANON_KEY" "$SERVICE_ROLE_KEY" "$DB_URL" "$INBUCKET_URL"; do echo "::add-mask::$value"; done
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "PLAYWRIGHT_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "PLAYWRIGHT_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "SUPABASE_SERVICE_ROLE=$SERVICE_ROLE_KEY"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "LOCAL_DATABASE_URL=$DB_URL"
+            echo "PLAYWRIGHT_INBUCKET_URL=$INBUCKET_URL"
+          } >> "$GITHUB_ENV"
+      - name: Rebuild schema from canonical baseline and migrations
+        run: bash scripts/rebuild-local-supabase.sh "$LOCAL_DATABASE_URL"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build application against ephemeral Supabase
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+      - name: Run minimal real onboarding diagnostic first
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-diagnostic
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - name: Run five real isolated browser journeys without skips
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-430
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-isolated-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 7
+          path: |
+            ${{ github.workspace }}/playwright-report-m8/**
+            ${{ github.workspace }}/.playwright-results-m8/**
+      - name: Destroy ephemeral Supabase and fixtures
+        if: always()
+        run: |
+          if test -d .supabase-m8/supabase; then cd .supabase-m8 && supabase stop --no-backup; fi

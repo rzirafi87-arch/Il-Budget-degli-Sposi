@@ -2,14 +2,14 @@
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 type EventSummary = {
   id: string;
   name: string | null;
   eventType: string;
   date: string | null;
-  capability: { availabilityStatus: "READY" | "COMING_SOON" | "BETA" };
+  capability: { availabilityStatus: "READY" | "COMING_SOON" | "INTERNAL_ONLY" };
 };
 
 type Payload = {
@@ -21,6 +21,8 @@ type Payload = {
 export default function CurrentEventSelector() {
   const t = useTranslations("milestone9.currentEvent");
   const id = useId();
+  const selectRef = useRef<HTMLSelectElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
   const [payload, setPayload] = useState<Payload | null>(null);
   const [switching, setSwitching] = useState(false);
   const [pendingEventId, setPendingEventId] = useState<string | null>(null);
@@ -39,6 +41,28 @@ export default function CurrentEventSelector() {
     })();
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    if (!pendingEventId) return;
+    cancelRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !switching) {
+        setPendingEventId(null);
+        requestAnimationFrame(() => selectRef.current?.focus());
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const dialog = cancelRef.current?.closest('[role="dialog"]');
+      const focusable = dialog?.querySelectorAll<HTMLElement>('button:not([disabled]), select:not([disabled]), input:not([disabled])');
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [pendingEventId, switching]);
 
   useEffect(() => {
     const sync = (event: StorageEvent) => {
@@ -85,6 +109,7 @@ export default function CurrentEventSelector() {
     <div className="min-w-0 max-w-48">
       <label className="sr-only" htmlFor={id}>{t("label")}</label>
       <select
+        ref={selectRef}
         id={id}
         aria-label={`${t("label")}. ${t("change")}`}
         className="min-h-10 w-full rounded-xl border border-border bg-card px-3 text-sm font-semibold text-fg shadow-soft-sm focus-ring-sage disabled:cursor-wait disabled:opacity-60"
@@ -109,7 +134,7 @@ export default function CurrentEventSelector() {
             <h2 id={`${id}-switch-title`} className="text-lg font-semibold">{t("confirmTitle")}</h2>
             <p className="mt-2 text-sm text-muted-fg">{t("confirmDescription", { event: pendingEvent.name || pendingEvent.eventType })}</p>
             <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <button type="button" className="app-button app-button-ghost" disabled={switching} onClick={() => setPendingEventId(null)}>{t("cancel")}</button>
+              <button ref={cancelRef} type="button" className="app-button app-button-ghost" disabled={switching} onClick={() => { setPendingEventId(null); requestAnimationFrame(() => selectRef.current?.focus()); }}>{t("cancel")}</button>
               <button type="button" className="app-button app-button-primary" disabled={switching} onClick={confirmSwitch}>{switching ? t("switching") : t("confirm")}</button>
             </div>
           </section>

@@ -9,9 +9,11 @@ export type EventSummary = {
 
 export type OnboardingStatus =
   | { kind: "anonymous" }
-  | { kind: "needs-onboarding"; accessToken: string }
-  | { kind: "needs-event-selection"; accessToken: string }
+  | { kind: "needs-onboarding"; accessToken: string; nextStep: OnboardingStep }
+  | { kind: "needs-event-selection"; accessToken: string; events: EventSummary[] }
   | { kind: "complete"; accessToken: string; event: EventSummary };
+
+export type OnboardingStep = "language" | "country" | "event-type";
 
 export class OnboardingError extends Error {
   constructor(public readonly code: "SESSION_CHECK_FAILED" | "PROJECT_CHECK_FAILED") {
@@ -40,9 +42,19 @@ export async function getOnboardingStatus(): Promise<OnboardingStatus> {
     throw new OnboardingError("PROJECT_CHECK_FAILED");
   }
 
-  const payload = (await response.json()) as { event?: EventSummary | null; status?: string };
-  if (payload.status === "SELECTION_REQUIRED") return { kind: "needs-event-selection", accessToken };
-  if (!payload.event) return { kind: "needs-onboarding", accessToken };
+  const payload = (await response.json()) as {
+    event?: EventSummary | null;
+    events?: EventSummary[];
+    status?: string;
+    onboarding?: { complete: boolean; nextStep: OnboardingStep | null };
+  };
+  if (payload.status === "SELECTION_REQUIRED") {
+    return { kind: "needs-event-selection", accessToken, events: payload.events || [] };
+  }
+  if (!payload.event) return { kind: "needs-onboarding", accessToken, nextStep: "language" };
+  if (payload.onboarding && !payload.onboarding.complete) {
+    return { kind: "needs-onboarding", accessToken, nextStep: payload.onboarding.nextStep || "language" };
+  }
 
   return { kind: "complete", accessToken, event: payload.event };
 }

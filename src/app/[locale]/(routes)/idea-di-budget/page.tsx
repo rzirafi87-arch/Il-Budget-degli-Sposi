@@ -9,7 +9,7 @@ import {
   getWeddingBudgetTaxonomy,
   type WeddingBudgetLocale,
 } from "@/i18n/weddingBudgetTaxonomy";
-import { budgetTotals, matchesBudgetSearch } from "@/lib/budgetIdea";
+import { budgetTotals, hasBudgetRowDuplicate, matchesBudgetSearch } from "@/lib/budgetIdea";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
@@ -112,6 +112,8 @@ export default function BudgetIdeaPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
 
   const money = (value: number) => new Intl.NumberFormat(getIntlLocale(locale), { style: "currency", currency }).format(value || 0);
 
@@ -120,29 +122,33 @@ export default function BudgetIdeaPage() {
     void (async () => {
       setLoading(true);
       setMessage("");
-      const { data } = await getBrowserClient().auth.getSession();
-      const authHeaders: Record<string, string> = data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {};
-      const fallbackType = browserEventType();
+      setLoadError(false);
+      try {
+        const { data } = await getBrowserClient().auth.getSession();
+        const authHeaders: Record<string, string> = data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {};
+        const fallbackType = browserEventType();
 
-      const eventResponse = await fetch("/api/event/resolve", { headers: authHeaders });
-      const eventJson = eventResponse.ok ? await eventResponse.json().catch(() => ({})) : {};
-      const resolvedType = resolveEventType(String(eventJson?.event?.event_type || fallbackType));
-      const resolvedCurrency = String(eventJson?.event?.currency || "EUR").toUpperCase();
-      const resolvedCountry = String(eventJson?.event?.country || "it").toLowerCase();
-      const resolvedConfig = getEventConfig(resolvedType);
-      const base = defaults(resolvedType, localeForBudget);
+        const eventResponse = await fetch("/api/event/resolve", { headers: authHeaders });
+        if (!eventResponse.ok) throw new Error("EVENT_RESOLVE_FAILED");
+        const eventJson = await eventResponse.json();
+        const resolvedType = resolveEventType(String(eventJson?.event?.event_type || fallbackType));
+        const resolvedCurrency = String(eventJson?.event?.currency || "EUR").toUpperCase();
+        const resolvedCountry = String(eventJson?.event?.country || "it").toLowerCase();
+        const resolvedConfig = getEventConfig(resolvedType);
+        const base = defaults(resolvedType, localeForBudget);
 
-      const response = await fetch("/api/idea-di-budget", { headers: authHeaders });
-      const json = response.ok ? await response.json().catch(() => ({ data: [] })) : { data: [] };
-      if (!active) return;
+        const response = await fetch("/api/idea-di-budget", { headers: authHeaders });
+        if (!response.ok) throw new Error("BUDGET_IDEA_LOAD_FAILED");
+        const json = await response.json();
+        if (!active) return;
 
-      setEventType(resolvedType);
-      setCurrency(resolvedCurrency);
-      setCountry(resolvedCountry);
+        setEventType(resolvedType);
+        setCurrency(resolvedCurrency);
+        setCountry(resolvedCountry);
 
-      const saved = Array.isArray(json.data) ? json.data as Array<Record<string, unknown>> : [];
-      const byKey = new Map(base.map((row) => [row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row]));
-      saved.forEach((entry) => {
+        const saved = Array.isArray(json.data) ? json.data as Array<Record<string, unknown>> : [];
+        const byKey = new Map(base.map((row) => [row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row]));
+        saved.forEach((entry) => {
         const isCustom = entry.custom === true;
         const legacyCanonical = isCustom ? undefined : findWeddingBudgetItem(String(entry.category || ""), String(entry.canonicalKey || entry.subcategory || ""));
         const canonicalKey = legacyCanonical?.key || String(entry.canonicalKey || "") || undefined;
@@ -164,14 +170,17 @@ export default function BudgetIdeaPage() {
           notes: String(entry.notes || ""),
           custom: isCustom,
         };
-        if (row.category && row.subcategory) byKey.set(row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row);
-      });
-      setRows([...byKey.values()]);
-      if (!response.ok) setMessage(t("messages.loadError"));
-      setLoading(false);
+          if (row.category && row.subcategory) byKey.set(row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row);
+        });
+        setRows([...byKey.values()]);
+      } catch {
+        if (active) setLoadError(true);
+      } finally {
+        if (active) setLoading(false);
+      }
     })();
     return () => { active = false; };
-  }, [localeForBudget, t]);
+  }, [localeForBudget, loadAttempt]);
 
   const categories = useMemo(() => [...new Set(rows.map((row) => row.category))], [rows]);
   const normalizedQuery = query.trim();
@@ -185,6 +194,11 @@ export default function BudgetIdeaPage() {
   function addCustom(category: string) {
     const label = window.prompt(t("custom.prompt"));
     if (!label?.trim()) return;
+    const duplicate = hasBudgetRowDuplicate(rows, { category, subcategory: label, custom: true });
+    if (duplicate) {
+      setMessage(t("messages.duplicate"));
+      return;
+    }
     setRows((current) => [...current, {
       category,
       categoryLabel: categoryLabel(category),
@@ -228,13 +242,21 @@ export default function BudgetIdeaPage() {
   async function apply() {
     setSaving(true);
     setMessage("");
+    localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
+    const saveResponse = await request("/api/idea-di-budget", canonicalPayload(rows));
+    if (!saveResponse.ok) {
+      setMessage(t("messages.saveError"));
+      setSaving(false);
+      return;
+    }
     const response = await request("/api/idea-di-budget/apply", { country, rows: canonicalPayload(rows) });
     const json = await response.json().catch(() => ({}));
     setMessage(response.ok ? t("messages.applied", { count: Number(json.inserted || 0) }) : t("messages.applyError"));
     setSaving(false);
   }
 
-  if (loading) return <p className="p-6 text-gray-600">{t("loading")}</p>;
+  if (loading) return <p role="status" aria-live="polite" className="p-6 text-gray-600 dark:text-gray-300">{t("loading")}</p>;
+  if (loadError) return <main className="mx-auto max-w-5xl p-6"><div role="alert" className="rounded-xl border border-red-300 bg-red-50 p-5 text-red-900 dark:border-red-700 dark:bg-red-950 dark:text-red-100"><p>{t("messages.loadError")}</p><button type="button" onClick={() => setLoadAttempt((value) => value + 1)} className="mt-4 min-h-11 rounded-full border border-current px-4 font-semibold">{t("actions.retry")}</button></div></main>;
 
   return <main className="mx-auto max-w-5xl space-y-6 px-3 py-5 sm:p-6">
     <header>
@@ -242,7 +264,7 @@ export default function BudgetIdeaPage() {
       <p className="mt-2 text-gray-600">{t("description")}</p>
     </header>
 
-    <section className="grid gap-4 rounded-xl border bg-white p-4 sm:grid-cols-3">
+    <section className="grid gap-4 rounded-xl border bg-white p-4 dark:bg-gray-950 sm:grid-cols-3">
       <label className="font-semibold sm:col-span-2">{t("search.label")}<input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t("search.placeholder")} className="mt-2 min-h-12 w-full rounded-lg border px-3" /></label>
       <label className="font-semibold">{t("contingencyPct")}<input type="number" inputMode="decimal" min="0" max="100" value={contingencyPct} onChange={(e) => setContingencyPct(number(e.target.value))} className="mt-2 min-h-12 w-full rounded-lg border px-3" /></label>
     </section>
@@ -250,17 +272,17 @@ export default function BudgetIdeaPage() {
     <section className="space-y-3">
       {searchedCategories.map((category) => {
         const expanded = normalizedQuery.length > 0 || open.has(category);
-        return <article key={category} className="overflow-hidden rounded-xl border bg-white">
-          <button type="button" aria-expanded={expanded} onClick={() => setOpen((current) => { const next = new Set(current); if (next.has(category)) next.delete(category); else next.add(category); return next; })} className="flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3 text-left">
+        return <article key={category} className="overflow-hidden rounded-xl border bg-white dark:bg-gray-950">
+          <button type="button" aria-expanded={expanded} aria-controls={`budget-category-${category}`} onClick={() => setOpen((current) => { const next = new Set(current); if (next.has(category)) next.delete(category); else next.add(category); return next; })} className="flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3 text-left">
             <span className="font-bold">{categoryLabel(category)}</span>
             <span className="whitespace-nowrap font-semibold text-rose-700">{money(categoryTotal(category))} <span aria-hidden>⌄</span></span>
           </button>
-          {expanded && <div className="space-y-3 border-t bg-gray-50 p-3 sm:p-4">
-            {visible(category).map(({ row, index }) => <div key={row.canonicalKey || `${row.subcategory}-${index}`} className={`rounded-xl border bg-white p-3 ${row.enabled ? "border-rose-200" : "border-gray-200"}`}>
+          {expanded && <div id={`budget-category-${category}`} className="space-y-3 border-t bg-gray-50 p-3 dark:bg-gray-900 sm:p-4">
+            {visible(category).map(({ row, index }) => <div key={row.canonicalKey || `${row.subcategory}-${index}`} data-testid={row.custom ? "budget-custom-row" : undefined} className={`rounded-xl border bg-white p-3 dark:bg-gray-950 ${row.enabled ? "border-rose-200 dark:border-rose-700" : "border-gray-200 dark:border-gray-700"}`}>
               <div className="flex items-start gap-3">
                 <input id={`enabled-${index}`} type="checkbox" checked={row.enabled} onChange={(e) => change(index, { enabled: e.target.checked })} className="mt-1 h-5 w-5 shrink-0" />
                 <label htmlFor={`enabled-${index}`} className="min-w-0 flex-1 font-semibold">{row.custom ? <input aria-label={t("custom.nameAria")} value={row.subcategory} onChange={(e) => change(index, { subcategory: e.target.value })} className="w-full rounded border px-2 py-1" /> : row.subcategory}</label>
-                {row.custom && <button type="button" aria-label={t("custom.deleteAria", { name: row.subcategory })} onClick={() => setRows((current) => current.filter((_, i) => i !== index))} className="rounded px-2 py-1 text-sm font-semibold text-red-700">{t("custom.delete")}</button>}
+                {row.enabled && <button type="button" aria-label={t("custom.deleteAria", { name: row.subcategory })} onClick={() => row.custom ? setRows((current) => current.filter((_, i) => i !== index)) : change(index, { enabled: false, amount: 0, supplier: "", notes: "" })} className="rounded px-2 py-1 text-sm font-semibold text-red-700 dark:text-red-300">{t("custom.delete")}</button>}
               </div>
               {row.enabled && <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-3">
                 <label className="text-sm font-semibold">{t("fields.amount", { currency })}<input type="number" inputMode="decimal" min="0" value={row.amount} onChange={(e) => change(index, { amount: number(e.target.value) })} className="mt-1 min-h-12 w-full rounded-lg border px-3 text-base" /></label>
@@ -273,10 +295,10 @@ export default function BudgetIdeaPage() {
           </div>}
         </article>;
       })}
-      {!searchedCategories.length && <p className="rounded-xl border bg-white p-5">{t("search.empty")}</p>}
+      {!searchedCategories.length && <p className="rounded-xl border bg-white p-5 dark:bg-gray-950">{t("search.empty")}</p>}
     </section>
 
-    <section className="sticky bottom-3 grid gap-3 rounded-xl border bg-white/95 p-4 shadow-lg sm:grid-cols-[1fr_auto_auto] sm:items-center">
+    <section className="sticky bottom-3 grid gap-3 rounded-xl border bg-white/95 p-4 shadow-lg dark:bg-gray-950/95 sm:grid-cols-[1fr_auto_auto] sm:items-center">
       <div>
         <p><strong>{t("summary.planned")}</strong> {money(totals.planned)}</p>
         <p className="text-sm text-gray-600">{t("summary.contingency", { amount: money(totals.contingency) })} · <strong>{t("summary.withContingency", { amount: money(totals.total) })}</strong></p>
