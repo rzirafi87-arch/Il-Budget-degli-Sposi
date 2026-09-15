@@ -34,5 +34,6 @@ for migration in \
   20260914114238_branch_48_safe_event_deletion.sql \
   20260914150000_branch_48_partner_lifecycle.sql \
   20260915114500_branch_48_budget_snapshot_casefold.sql \
-  20260915130000_branch_48_subcategory_canonical_identity.sql
+  20260915130000_branch_48_subcategory_canonical_identity.sql \
+  20260915133000_branch_48_ensure_subcategory_identity.sql
 do apply "supabase/migrations/$migration"; done
