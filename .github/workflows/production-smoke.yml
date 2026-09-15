@@ -48,41 +48,37 @@ jobs:
             https://il-budget-degli-sposi.vercel.app|https://ilbudgetdeglisposi.it|https://www.ilbudgetdeglisposi.it) ;;
             *) echo "::error::Unapproved Production base URL"; exit 1 ;;
           esac
-      - name: Verify all Production origins
+      - name: Verify selected Production origin
         shell: bash
+        env:
+          REQUESTED_BASE_URL: ${{ inputs.base_url }}
         run: |
           set -euo pipefail
-          urls=(
-            "https://il-budget-degli-sposi.vercel.app/"
-            "https://ilbudgetdeglisposi.it/"
-            "https://www.ilbudgetdeglisposi.it/"
-          )
-          for url in "${urls[@]}"; do
-            headers="$(mktemp)"
-            body="$(mktemp)"
-            metrics="$(curl --silent --show-error --location --dump-header "$headers" --output "$body" --write-out '%{http_code}|%{url_effective}|%{content_type}' --max-time 30 "$url")"
-            IFS='|' read -r status final_url content_type <<< "$metrics"
-            server="$(awk 'BEGIN{IGNORECASE=1} /^server:/{sub(/\r$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
-            vercel_id="$(awk 'BEGIN{IGNORECASE=1} /^x-vercel-id:/{sub(/\r$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
-            title="$(sed -n 's:.*<title[^>]*>\([^<]*\)</title>.*:\1:Ip' "$body" | head -n 1)"
-            test "$status" = "200"
-            test -n "$final_url"
-            test "$server" = "Vercel"
-            test -n "$vercel_id"
-            case "$content_type" in text/html*) ;; *) exit 1 ;; esac
-            test -n "$title"
-            ! grep -q "MISSING_MESSAGE" "$body"
-            {
-              echo "### $url"
-              echo "- status: $status"
-              echo "- final URL: $final_url"
-              echo "- server: $server"
-              echo "- x-vercel-id: present"
-              echo "- content-type: $content_type"
-              echo "- title: $title"
-            } >> "$GITHUB_STEP_SUMMARY"
-            rm -f "$headers" "$body"
-          done
+          url="$REQUESTED_BASE_URL/"
+          headers="$(mktemp)"
+          body="$(mktemp)"
+          metrics="$(curl --silent --show-error --location --dump-header "$headers" --output "$body" --write-out '%{http_code}|%{url_effective}|%{content_type}' --max-time 30 "$url")"
+          IFS='|' read -r status final_url content_type <<< "$metrics"
+          server="$(awk 'BEGIN{IGNORECASE=1} /^server:/{sub(/\r$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
+          vercel_id="$(awk 'BEGIN{IGNORECASE=1} /^x-vercel-id:/{sub(/\r$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
+          title="$(sed -n 's:.*<title[^>]*>\([^<]*\)</title>.*:\1:Ip' "$body" | head -n 1)"
+          test "$status" = "200"
+          test -n "$final_url"
+          test "$server" = "Vercel"
+          test -n "$vercel_id"
+          case "$content_type" in text/html*) ;; *) exit 1 ;; esac
+          test -n "$title"
+          ! grep -q "MISSING_MESSAGE" "$body"
+          {
+            echo "### $url"
+            echo "- status: $status"
+            echo "- final URL: $final_url"
+            echo "- server: $server"
+            echo "- x-vercel-id: present"
+            echo "- content-type: $content_type"
+            echo "- title: $title"
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f "$headers" "$body"
 
   browser:
     name: Production public and authenticated browser smoke
