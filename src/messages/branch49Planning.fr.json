@@ -7,6 +7,7 @@
       "selected": "Vous avez confirmé un lieu pour {role}.", "undecided": "Vous n’avez pas encore confirmé de lieu pour {role}.",
       "roles": { "reception": "réception", "ceremony": "cérémonie civile", "accommodation": "hébergement", "party": "fête", "other": "autre usage" }
     },
-    "dashboard": { "label": "Choix principaux de l’événement", "church": "Lieu de cérémonie", "openChurches": "Choisir le lieu", "openLocations": "Choisir le lieu" }
+    "supplier": { "selectedCount": "{count, plural, one {# fournisseur confirmé} other {# fournisseurs confirmés}}", "undecided": "Vous n’avez pas encore confirmé de fournisseur.", "select": "Confirmer le choix", "unselect": "Annuler la confirmation", "saveFirst": "Enregistrez le fournisseur avant de le confirmer", "updateError": "Impossible de mettre à jour l’état du fournisseur." },
+    "dashboard": { "label": "Choix principaux de l’événement", "church": "Lieu de cérémonie", "suppliers": "Fournisseurs", "openChurches": "Choisir le lieu", "openLocations": "Choisir le lieu", "openSuppliers": "Choisir les fournisseurs" }
   }
 }

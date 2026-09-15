@@ -8,18 +8,19 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import type { CatalogSearchResult, CatalogSort } from "@/lib/catalogSearch";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { Heart, Search, Store } from "lucide-react";
+import { CheckCircle2, Heart, Search, Store } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-type Saved = { id:string; supplier_id:string; status:string; favorite:boolean };
+type Saved = { id:string; supplier_id:string; status:string; favorite:boolean; planning_state?:string };
 type Pagination = { page:number; pageSize:number; total:number; totalPages:number };
 const categories = ["Beauty & Benessere","Catering","Location & Catering","Sposa","Foto & Video","Fiori & Decor","Gioiellerie","Inviti & Stationery","Trasporti","Sposo","Musica & Intrattenimento","Viaggio di nozze","Ricevimento Location","Bomboniere & Regali","Fiorai","Musica Ricevimento","Fotografi","fiori"];
 
 export default function SuppliersPage() {
   const t = useTranslations("catalogSearch");
   const ui = useTranslations("milestone8.suppliers");
+  const planningT = useTranslations("branch49Planning");
   const [items,setItems]=useState<CatalogSearchResult[]>([]), [saved,setSaved]=useState<Saved[]>([]);
   const [q,setQ]=useState(""), [category,setCategory]=useState(""), [verification,setVerification]=useState("");
   const [city,setCity]=useState(""), [province,setProvince]=useState(""), [region,setRegion]=useState("");
@@ -28,6 +29,7 @@ export default function SuppliersPage() {
   const [pagination,setPagination]=useState<Pagination>({page:1,pageSize:12,total:0,totalPages:1});
   const [loading,setLoading]=useState(true), [selectedId,setSelectedId]=useState<string|null>(null), [mapMode,setMapMode]=useState(false);
   const [error,setError]=useState<string|null>(null);
+  const [pendingId,setPendingId]=useState<string|null>(null);
 
   async function load(next=page, currentPosition=position, requestedSort=sort) {
     setLoading(true); setError(null);
@@ -55,6 +57,8 @@ export default function SuppliersPage() {
   function located(next:CurrentPosition){setPosition(next);setSort("NEAREST");void load(1,next,"NEAREST");}
   const savedBy=(id:string)=>saved.find(s=>s.supplier_id===id);
   async function toggle(id:string){setError(null);const current=savedBy(id);const {data}=await getBrowserClient().auth.getSession();const token=data.session?.access_token;if(!token){setError(ui("authRequired"));return;}const r=await fetch(current?`/api/my/suppliers?id=${current.id}`:"/api/my/suppliers",{method:current?"DELETE":"POST",headers:{"content-type":"application/json",authorization:`Bearer ${token}`},body:current?undefined:JSON.stringify({supplier_id:id})});if(r.ok){if(current)setSaved(v=>v.filter(s=>s.id!==current.id));else{const j=await r.json();setSaved(v=>[...v,j.savedSupplier]);}}else setError(ui("saveError"));}
+  async function toggleSelection(id:string){const current=savedBy(id);if(!current)return;setPendingId(id);setError(null);try{const {data}=await getBrowserClient().auth.getSession();const token=data.session?.access_token;if(!token){setError(ui("authRequired"));return;}const status=current.status==="SELECTED"?"SAVED":"SELECTED";const response=await fetch("/api/my/suppliers",{method:"PATCH",headers:{"content-type":"application/json",authorization:`Bearer ${token}`},body:JSON.stringify({id:current.id,status})});if(!response.ok){setError(planningT("supplier.updateError"));return;}const body=await response.json();setSaved(value=>value.map(item=>item.id===current.id?body.savedSupplier:item));}finally{setPendingId(null);}}
+  const selectedCount=saved.filter(item=>item.status==="SELECTED").length;
 
   return <section className="space-y-6"><PageHeader eyebrow={ui("eyebrow")} title={ui("title")} description={ui("description")} icon={<Store size={24} aria-hidden/>}/>
     <ContributionPanel entityType="supplier" initialData={{ city, province, region }} />
@@ -69,10 +73,11 @@ export default function SuppliersPage() {
       <div className="flex flex-wrap gap-2 lg:col-span-4"><NearMeButton onPosition={located} label={t("nearMe")} unavailableLabel={t("positionUnavailable")}/>{position?<label className="flex items-center gap-2 text-sm">{t("radius")}<select className="app-select" value={radius} onChange={e=>setRadius(e.target.value)}><option value="10">10 km</option><option value="25">25 km</option><option value="50">50 km</option><option value="100">100 km</option></select></label>:null}<AppButton type="submit"><Search size={16} aria-hidden/> {ui("search")}</AppButton></div>
     </form>
     {error?<p role="alert" className="text-sm text-red-700">{error}</p>:null}
+    <p className="app-card app-card--sm text-sm" aria-live="polite">{selectedCount>0?planningT("supplier.selectedCount",{count:selectedCount}):planningT("supplier.undecided")}</p>
     {items.some(i=>i.latitude!==null)?<div className="flex gap-2 md:hidden"><AppButton variant={!mapMode?"primary":"outline"} onClick={()=>setMapMode(false)}>{t("list")}</AppButton><AppButton variant={mapMode?"primary":"outline"} onClick={()=>setMapMode(true)}>{t("map")}</AppButton></div>:null}
     {mapMode?<CatalogMap results={items} selectedId={selectedId} onSelect={setSelectedId}/>:null}
     <div className="hidden md:block"><CatalogMap results={items} selectedId={selectedId} onSelect={setSelectedId}/></div>
-    {!mapMode?(loading?<p aria-live="polite">{ui("loading")}</p>:items.length===0?<EmptyState icon={<Search/>} title={ui("emptyTitle")} description={ui("emptyDescription")}/>:<ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{items.map(s=><li id={`catalog-${s.id}`} key={s.id} onClick={()=>setSelectedId(s.id)} className={`app-card app-card--md ${selectedId===s.id?"ring-2 ring-[#8d3f63]":""}`}><div className="flex justify-between gap-3"><div><h2 className="font-semibold text-lg">{s.name}</h2>{s.category&&<p className="text-sm capitalize">{ui.has(`categories.${s.category}`) ? ui(`categories.${s.category}`) : s.category.replaceAll("_"," ")}</p>}</div><button onClick={e=>{e.stopPropagation();void toggle(s.id)}} aria-label={savedBy(s.id)?ui("removeSaved"):ui("saveSupplier")} className={savedBy(s.id)?"text-red-600":"text-gray-500"}><Heart fill={savedBy(s.id)?"currentColor":"none"}/></button></div><p className="mt-2 text-sm text-gray-600">{[s.city,s.province,s.region].filter(Boolean).join(", ")}</p><p className="mt-2 text-xs font-semibold">{ui(`verification.${s.verificationStatus}`)}</p>{s.distanceKm!==null?<p className="text-sm">{t("distance",{distance:s.distanceKm})}</p>:position?<p className="text-sm text-gray-500">{t("distanceUnavailable")}</p>:null}<Link className="mt-3 inline-block text-sm underline" href={`fornitori/${s.id}`}>{ui("details")}</Link></li>)}</ul>):null}
+    {!mapMode?(loading?<p aria-live="polite">{ui("loading")}</p>:items.length===0?<EmptyState icon={<Search/>} title={ui("emptyTitle")} description={ui("emptyDescription")}/>:<ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{items.map(s=>{const current=savedBy(s.id);const selected=current?.status==="SELECTED";return <li id={`catalog-${s.id}`} key={s.id} onClick={()=>setSelectedId(s.id)} className={`app-card app-card--md ${selectedId===s.id?"ring-2 ring-[#8d3f63]":""}`}><div className="flex justify-between gap-3"><div><h2 className="font-semibold text-lg">{s.name}</h2>{s.category&&<p className="text-sm capitalize">{ui.has(`categories.${s.category}`) ? ui(`categories.${s.category}`) : s.category.replaceAll("_"," ")}</p>}</div><button onClick={e=>{e.stopPropagation();void toggle(s.id)}} aria-label={current?ui("removeSaved"):ui("saveSupplier")} className={current?"text-red-600":"text-gray-500"}><Heart fill={current?"currentColor":"none"}/></button></div><p className="mt-2 text-sm text-gray-600">{[s.city,s.province,s.region].filter(Boolean).join(", ")}</p><p className="mt-2 text-xs font-semibold">{ui(`verification.${s.verificationStatus}`)}</p>{s.distanceKm!==null?<p className="text-sm">{t("distance",{distance:s.distanceKm})}</p>:position?<p className="text-sm text-gray-500">{t("distanceUnavailable")}</p>:null}<div className="mt-3 flex flex-wrap items-center gap-2"><Link className="text-sm underline" href={`fornitori/${s.id}`}>{ui("details")}</Link>{current?<AppButton variant={selected?"primary":"outline"} size="sm" disabled={pendingId===s.id} onClick={e=>{e.stopPropagation();void toggleSelection(s.id)}}><CheckCircle2 size={16} aria-hidden />{selected?planningT("supplier.unselect"):planningT("supplier.select")}</AppButton>:<span className="text-xs text-muted-fg">{planningT("supplier.saveFirst")}</span>}</div></li>})}</ul>):null}
     <nav className="flex items-center justify-center gap-3" aria-label={ui("pagination")}><AppButton variant="outline" disabled={page<=1} onClick={()=>void load(page-1)}>{ui("previous")}</AppButton><span>{ui("page",{page,total:pagination.totalPages})}</span><AppButton variant="outline" disabled={page>=pagination.totalPages} onClick={()=>void load(page+1)}>{ui("next")}</AppButton></nav>
   </section>;
 }

@@ -244,3 +244,23 @@ a separate Branch 49 milestone command is authorized. Branch 50 must not start.
 - Added complete IT/EN/ES/FR/DE Branch 49 planning vocabulary in isolated
   additive bundles and focused source/schema tests.
 - Schema/migrations/DML/Production/event types: unchanged.
+
+## Milestone 4 checkpoint — Supplier state and progressive setup
+
+- Supplier catalog cards now separate a saved favorite from an explicitly
+  confirmed planning choice; users can confirm or undo confirmation through
+  the existing event-scoped PATCH contract.
+- The accessible live summary reports confirmed supplier count without relying
+  on color, and the action remains usable in the existing responsive card grid.
+- The current-event planning read model now returns selected suppliers and the
+  aggregate supplier decision used by Dashboard.
+- Dashboard includes a supplier decision card linked only to the supplier
+  catalog. No Budget, Timeline, expense or payment relationship is created.
+- Progressive setup now completes the supplier step only when the canonical
+  event-private `saved_suppliers.status = SELECTED` relationship exists; legacy
+  free-text expense supplier names no longer imply a planning decision.
+- Existing Supplier workflow values remain unchanged. Explicit undo returns to
+  `SAVED`; no existing relationship or catalog row is rewritten or deleted.
+- Added complete IT/EN/ES/FR/DE supplier-selection vocabulary and focused tests
+  for transitions, read-model exposure, setup semantics and Dashboard wiring.
+- Schema/migrations/DML/Production/event types: unchanged.

@@ -7,6 +7,7 @@
       "selected": "Sie haben einen Veranstaltungsort für {role} bestätigt.", "undecided": "Sie haben noch keinen Veranstaltungsort für {role} bestätigt.",
       "roles": { "reception": "Empfang", "ceremony": "standesamtliche Zeremonie", "accommodation": "Unterkunft", "party": "Feier", "other": "andere Nutzung" }
     },
-    "dashboard": { "label": "Wichtigste Veranstaltungsentscheidungen", "church": "Ort der Zeremonie", "openChurches": "Ort auswählen", "openLocations": "Veranstaltungsort auswählen" }
+    "supplier": { "selectedCount": "{count, plural, one {# Dienstleister bestätigt} other {# Dienstleister bestätigt}}", "undecided": "Sie haben noch keinen Dienstleister bestätigt.", "select": "Auswahl bestätigen", "unselect": "Bestätigung aufheben", "saveFirst": "Speichern Sie den Dienstleister vor der Bestätigung", "updateError": "Der Dienstleisterstatus konnte nicht aktualisiert werden." },
+    "dashboard": { "label": "Wichtigste Veranstaltungsentscheidungen", "church": "Ort der Zeremonie", "suppliers": "Dienstleister", "openChurches": "Ort auswählen", "openLocations": "Veranstaltungsort auswählen", "openSuppliers": "Dienstleister auswählen" }
   }
 }

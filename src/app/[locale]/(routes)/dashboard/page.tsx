@@ -19,7 +19,7 @@ import { onboardingDestination } from "@/lib/onboardingRouting";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import { useLocale, useTranslations } from "next-intl";
-import { Church, FileText, Landmark, LayoutDashboard, Lightbulb, Plane, RotateCw, Save, Sparkles, Video } from "lucide-react";
+import { Church, FileText, Landmark, LayoutDashboard, Lightbulb, Plane, RotateCw, Save, Sparkles, Store, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
@@ -33,16 +33,19 @@ type PlanningDecision = "undecided" | "selected";
 type PlanningSelections = {
   church: { churches: { name: string } | null } | null;
   locations: Array<{ location_role: string; locations: { name: string } | null }>;
-  decision: { church: PlanningDecision; locationsByRole: Record<LocationRole, PlanningDecision> };
+  suppliers: Array<{ id: string; suppliers: { name: string } | null }>;
+  decision: { church: PlanningDecision; locationsByRole: Record<LocationRole, PlanningDecision>; suppliers: PlanningDecision };
 };
 
 const LOCATION_ROLES: LocationRole[] = ["reception", "ceremony", "accommodation", "party", "other"];
 const EMPTY_PLANNING_SELECTIONS: PlanningSelections = {
   church: null,
   locations: [],
+  suppliers: [],
   decision: {
     church: "undecided",
     locationsByRole: { reception: "undecided", ceremony: "undecided", accommodation: "undecided", party: "undecided", other: "undecided" },
+    suppliers: "undecided",
   },
 };
 
@@ -157,6 +160,7 @@ export default function DashboardPage() {
             if (active && res.ok) setPlanningSelections({
               church: json.church || null,
               locations: json.locations || [],
+              suppliers: json.suppliers || [],
               decision: json.decision || EMPTY_PLANNING_SELECTIONS.decision,
             });
           } catch { /* The catalog cards remain useful as navigation fallback. */ }
@@ -359,6 +363,7 @@ export default function DashboardPage() {
             const decision = planningSelections.decision.locationsByRole[role] || "undecided";
             return <AppCard key={role} padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Landmark size={21} aria-hidden /></span><div className="min-w-0 flex-1"><p className="app-eyebrow">{planningT(`location.roles.${role}`)}</p><h2 className="break-words text-lg">{selected?.locations?.name || planningT("status.undecided")}</h2><p className="mt-1 text-sm text-muted-fg">{planningT(`status.${decision}`)}</p><AppButtonLink href={`/${locale}/location?role=${role}`} variant="secondary" className="mt-3">{planningT("dashboard.openLocations")}</AppButtonLink></div></div></AppCard>;
           })}
+          <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Store size={21} aria-hidden /></span><div className="min-w-0 flex-1"><p className="app-eyebrow">{planningT("dashboard.suppliers")}</p><h2 className="break-words text-lg">{planningSelections.suppliers.length > 0 ? planningT("supplier.selectedCount", { count: planningSelections.suppliers.length }) : planningT("status.undecided")}</h2><p className="mt-1 text-sm text-muted-fg">{planningT(`status.${planningSelections.decision.suppliers || "undecided"}`)}</p><AppButtonLink href={`/${locale}/fornitori`} variant="secondary" className="mt-3">{planningT("dashboard.openSuppliers")}</AppButtonLink></div></div></AppCard>
         </div>
       </section>}
 
