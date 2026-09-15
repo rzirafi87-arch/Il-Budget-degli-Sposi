@@ -60,7 +60,7 @@ export async function login(page: Page, identity: Pick<QaIdentity, "email" | "pa
   );
   await main.getByRole("button", { name: /accedi/i }).click();
   expect((await tokenResponse).status()).toBe(200);
-  await page.waitForURL(/\/it\/(select-language|select-event|dashboard)/);
+  await page.waitForURL(/\/it\/(select-language|select-country|select-event|dashboard)/);
 }
 
 export async function renameCurrentEvent(identity: QaIdentity, eventId: string, name: string) {
