@@ -58,21 +58,36 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
     if (inbucketUrl) {
-      const mailbox = identity.email.split("@")[0];
-      const listed = await fetch(`${inbucketUrl.replace(/\/$/, "")}/api/v1/mailbox/${encodeURIComponent(mailbox)}`);
-      if (listed.status === 404) {
-        await new Promise(resolve => setTimeout(resolve, 1_000));
-        continue;
-      }
+      const root = inbucketUrl.replace(/\/$/, "");
+      const listed = await fetch(`${root}/api/v1/messages`);
       if (!listed.ok) throw new Error(`Local recovery mailbox lookup failed with HTTP ${listed.status}.`);
-      const messages = await listed.json() as Array<{ id: string; subject?: string; date?: string }>;
-      const item = messages.find(message => /reimposta|reset|password/i.test(message.subject || "")) || messages[0];
-      if (item) {
-        const detail = await fetch(`${inbucketUrl.replace(/\/$/, "")}/api/v1/mailbox/${encodeURIComponent(mailbox)}/${encodeURIComponent(item.id)}`);
+      const payload = await listed.json() as {
+        messages?: Array<{
+          ID?: string;
+          id?: string;
+          Subject?: string;
+          subject?: string;
+          Created?: string;
+          created?: string;
+          To?: Array<{ Address?: string }> | string[];
+        }>;
+      };
+      const messages = payload.messages || [];
+      const item = messages.find(message => {
+        const recipients = (message.To || []).map(value => typeof value === "string" ? value : value.Address || "");
+        const created = Date.parse(message.Created || message.created || "");
+        return recipients.includes(identity.email)
+          && (!Number.isFinite(created) || created >= startedAt)
+          && /reimposta|reset|password/i.test(message.Subject || message.subject || "");
+      });
+      const messageId = item?.ID || item?.id;
+      if (messageId) {
+        const detail = await fetch(`${root}/api/v1/message/${encodeURIComponent(messageId)}`);
         if (!detail.ok) throw new Error(`Local recovery email lookup failed with HTTP ${detail.status}.`);
-        const payload = await detail.json() as { body?: { html?: string }; html?: string; HTML?: string };
-        const html = payload.body?.html || payload.html || payload.HTML || "";
-        const hrefs = [...html.matchAll(/href=["']([^"']+)["']/gi)].map(match => match[1].replaceAll("&amp;", "&"));
+        const message = await detail.json() as { HTML?: string; html?: string; Text?: string };
+        const content = message.HTML || message.html || message.Text || "";
+        const hrefs = [...content.matchAll(/href=["']([^"']+)["']/gi)]
+          .map(match => match[1].replaceAll("&amp;", "&"));
         const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
         if (!link) throw new Error("Local recovery email did not contain the real verification callback.");
         return link;
@@ -87,8 +102,8 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
     const item = body.data.find(message => Date.parse(message.created_at) >= startedAt && message.to.includes(identity.email) && /reimposta la password/i.test(message.subject));
     if (item) {
       const detail = await fetch(`https://api.resend.com/emails/${encodeURIComponent(item.id)}`, { headers: { Authorization: `Bearer ${resendApiKey}` } });
-      const payload = await detail.json() as { html?: string };
-      const hrefs = [...(payload.html || "").matchAll(/href=["']([^"']+)["']/gi)].map(match => match[1].replaceAll("&amp;", "&"));
+      const message = await detail.json() as { html?: string };
+      const hrefs = [...(message.html || "").matchAll(/href=["']([^"']+)["']/gi)].map(match => match[1].replaceAll("&amp;", "&"));
       const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
       if (!link) throw new Error("Recovery email did not contain the real verification callback.");
       return link;
