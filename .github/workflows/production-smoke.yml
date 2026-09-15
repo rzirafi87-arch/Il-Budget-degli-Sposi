@@ -1,0 +1,127 @@
+name: Production smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths: [".github/workflows/production-smoke.yml"]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Authoritative HTTPS Production origin"
+        required: true
+        type: choice
+        default: "https://il-budget-degli-sposi.vercel.app"
+        options:
+          - "https://il-budget-degli-sposi.vercel.app"
+          - "https://ilbudgetdeglisposi.it"
+          - "https://www.ilbudgetdeglisposi.it"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Production smoke workflow
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm infrastructure-only validation
+        run: echo "Production smoke workflow parsed successfully."
+
+  preflight:
+    name: Production HTTP preflight
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require main and approved target
+        env:
+          REQUESTED_BASE_URL: ${{ inputs.base_url }}
+        run: |
+          set -euo pipefail
+          test "${{ github.ref }}" = "refs/heads/main"
+          case "$REQUESTED_BASE_URL" in
+            https://il-budget-degli-sposi.vercel.app|https://ilbudgetdeglisposi.it|https://www.ilbudgetdeglisposi.it) ;;
+            *) echo "::error::Unapproved Production base URL"; exit 1 ;;
+          esac
+      - name: Verify all Production origins
+        shell: bash
+        run: |
+          set -euo pipefail
+          urls=(
+            "https://il-budget-degli-sposi.vercel.app/"
+            "https://ilbudgetdeglisposi.it/"
+            "https://www.ilbudgetdeglisposi.it/"
+          )
+          for url in "${urls[@]}"; do
+            headers="$(mktemp)"
+            body="$(mktemp)"
+            metrics="$(curl --silent --show-error --location --dump-header "$headers" --output "$body" --write-out '%{http_code}|%{url_effective}|%{content_type}' --max-time 30 "$url")"
+            IFS='|' read -r status final_url content_type <<< "$metrics"
+            server="$(awk 'BEGIN{IGNORECASE=1} /^server:/{sub(/\r$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
+            vercel_id="$(awk 'BEGIN{IGNORECASE=1} /^x-vercel-id:/{sub(/\r$/,""); value=substr($0,index($0,":")+2)} END{print value}' "$headers")"
+            title="$(sed -n 's:.*<title[^>]*>\([^<]*\)</title>.*:\1:Ip' "$body" | head -n 1)"
+            test "$status" = "200"
+            test -n "$final_url"
+            test "$server" = "Vercel"
+            test -n "$vercel_id"
+            case "$content_type" in text/html*) ;; *) exit 1 ;; esac
+            test -n "$title"
+            ! grep -q "MISSING_MESSAGE" "$body"
+            {
+              echo "### $url"
+              echo "- status: $status"
+              echo "- final URL: $final_url"
+              echo "- server: $server"
+              echo "- x-vercel-id: present"
+              echo "- content-type: $content_type"
+              echo "- title: $title"
+            } >> "$GITHUB_STEP_SUMMARY"
+            rm -f "$headers" "$body"
+          done
+
+  browser:
+    name: Production public and authenticated browser smoke
+    if: github.event_name == 'workflow_dispatch'
+    needs: [preflight]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PLAYWRIGHT_BASE_URL: ${{ inputs.base_url }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
+      PLAYWRIGHT_TEST_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
+      PLAYWRIGHT_TEST_PASSWORD: ${{ secrets.PLAYWRIGHT_TEST_PASSWORD }}
+      PLAYWRIGHT_PARTNER_EMAIL: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
+      PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
+      PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Require configured QA identities
+        run: |
+          set -euo pipefail
+          for name in PLAYWRIGHT_BASE_URL NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD PLAYWRIGHT_PARTNER_EMAIL PLAYWRIGHT_PARTNER_PASSWORD PLAYWRIGHT_RESEND_API_KEY; do
+            test -n "${!name}"
+          done
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run public, authenticated and partner journeys
+        run: npx playwright test --grep-invert '\[M8\]'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: production-smoke-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 7
+          path: |
+            ${{ github.workspace }}/playwright-report/**
+            ${{ github.workspace }}/.playwright-results/**
