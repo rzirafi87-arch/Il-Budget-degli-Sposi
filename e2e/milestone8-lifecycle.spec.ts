@@ -157,6 +157,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       const resolved = await currentEvent(page);
       expect(resolved.status).toBe(200);
       expect(resolved.body.status).toBe("RESOLVED");
+      await renameCurrentEvent(identity, resolved.body.currentEvent.eventId, `QA-M8-DIAGNOSTIC-${identity.marker}`);
     } finally {
       await deleteQaIdentity(identity);
     }
