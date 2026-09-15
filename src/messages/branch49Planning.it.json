@@ -1,0 +1,12 @@
+{
+  "branch49Planning": {
+    "status": { "undecided": "Ancora da scegliere", "selected": "Scelta confermata" },
+    "church": { "summary": "Stato luogo della cerimonia", "selected": "Hai confermato un luogo per la cerimonia.", "undecided": "Non hai ancora confermato il luogo della cerimonia." },
+    "location": {
+      "roleLabel": "Uso della location", "summary": "Stato location per {role}",
+      "selected": "Hai confermato una location per {role}.", "undecided": "Non hai ancora confermato una location per {role}.",
+      "roles": { "reception": "ricevimento", "ceremony": "cerimonia civile", "accommodation": "pernottamento", "party": "festa", "other": "altro utilizzo" }
+    },
+    "dashboard": { "label": "Scelte principali dell’evento", "church": "Luogo della cerimonia", "openChurches": "Scegli il luogo", "openLocations": "Scegli la location" }
+  }
+}

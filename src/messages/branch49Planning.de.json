@@ -1,0 +1,12 @@
+{
+  "branch49Planning": {
+    "status": { "undecided": "Noch auszuwählen", "selected": "Auswahl bestätigt" },
+    "church": { "summary": "Status des Zeremonieorts", "selected": "Sie haben einen Ort für die Zeremonie bestätigt.", "undecided": "Sie haben noch keinen Ort für die Zeremonie bestätigt." },
+    "location": {
+      "roleLabel": "Nutzung des Veranstaltungsorts", "summary": "Status des Veranstaltungsorts für {role}",
+      "selected": "Sie haben einen Veranstaltungsort für {role} bestätigt.", "undecided": "Sie haben noch keinen Veranstaltungsort für {role} bestätigt.",
+      "roles": { "reception": "Empfang", "ceremony": "standesamtliche Zeremonie", "accommodation": "Unterkunft", "party": "Feier", "other": "andere Nutzung" }
+    },
+    "dashboard": { "label": "Wichtigste Veranstaltungsentscheidungen", "church": "Ort der Zeremonie", "openChurches": "Ort auswählen", "openLocations": "Veranstaltungsort auswählen" }
+  }
+}

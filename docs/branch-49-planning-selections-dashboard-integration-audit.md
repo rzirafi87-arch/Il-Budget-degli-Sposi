@@ -226,3 +226,21 @@ a separate Branch 49 milestone command is authorized. Branch 50 must not start.
   aggregate undecided behavior, non-mutating enrichment and contradictory
   mutation normalization.
 - Schema/migrations/DML/UI/Production/event types: unchanged.
+
+## Milestone 3 checkpoint — Church and Location UX with Dashboard
+
+- Added an accessible live decision summary to Church and Location catalogs;
+  users can distinguish a confirmed choice from “still to choose” without
+  relying on color.
+- Location planning now exposes all canonical roles: reception, civil ceremony,
+  accommodation, party and other. Saved/private state is reloaded and isolated
+  whenever the active role changes.
+- New Location saves use the explicitly selected canonical role instead of the
+  previous hardcoded `reception` value.
+- Dashboard now represents the selected/undecided Church and every Location
+  role from the authoritative current-event read model.
+- Cards use responsive 1/2/3-column layouts, wrapping names and stable semantic
+  headings; async decision summaries are announced through `aria-live`.
+- Added complete IT/EN/ES/FR/DE Branch 49 planning vocabulary in isolated
+  additive bundles and focused source/schema tests.
+- Schema/migrations/DML/Production/event types: unchanged.
