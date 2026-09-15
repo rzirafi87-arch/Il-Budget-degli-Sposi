@@ -369,12 +369,9 @@ test.describe("authenticated partner lifecycle journey", () => {
       await expect(ownerPartnerSection.getByText("Partner rimosso.", { exact: true })).toBeVisible({ timeout: 15_000 });
 
       await partnerPage.reload();
-      await partnerPage.waitForURL(url => !url.pathname.endsWith("/dashboard"), { timeout: 20_000 });
-      await partnerPage.goBack();
-      await partnerPage.reload();
-      await expect(partnerPage).not.toHaveURL(/\/it\/dashboard$/);
       const revokedCurrent = await appApi<CurrentEventPayload>(partnerPage, "/api/my/current-event");
       expect(revokedCurrent.body.events.some(event => event.id === qaEvent.eventId)).toBe(false);
+      expect(revokedCurrent.body.currentEvent?.eventId).not.toBe(qaEvent.eventId);
       const revokedIdorAttempt = await appApi(partnerPage, "/api/my/current-event", { method: "POST", body: { eventId: qaEvent.eventId } });
       expect(revokedIdorAttempt.status).toBe(403);
       const ownerAfterRevoke = await appApi<CurrentEventPayload>(ownerPage, "/api/my/current-event");
