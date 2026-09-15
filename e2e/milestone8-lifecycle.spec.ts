@@ -190,7 +190,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       );
       await page.getByRole("button", { name: /accedi/i }).click();
       expect((await oldPasswordResponse).status()).toBe(400);
-      await expect(page.getByRole("alert")).toBeVisible();
+      await expect(page.getByText("Email o password non corretti.", { exact: true })).toBeVisible();
       await page.getByLabel("Password", { exact: true }).fill(nextPassword);
       const tokenResponse = page.waitForResponse(response =>
         response.request().method() === "POST"
@@ -315,7 +315,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       const customMarker = `Voce ${identity.marker}`;
       page.once("dialog", dialog => dialog.accept(customMarker));
       await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
-      const custom = page.getByLabel(/nome della voce personalizzata/i);
+      const custom = page.getByLabel(/nome (?:della )?voce personalizzata/i);
       await expect(custom).toHaveValue(customMarker);
       const customRow = page.getByTestId("budget-custom-row");
       await expect(customRow).toHaveCount(1);
