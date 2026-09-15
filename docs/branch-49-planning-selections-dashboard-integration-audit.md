@@ -264,3 +264,41 @@ a separate Branch 49 milestone command is authorized. Branch 50 must not start.
 - Added complete IT/EN/ES/FR/DE supplier-selection vocabulary and focused tests
   for transitions, read-model exposure, setup semantics and Dashboard wiring.
 - Schema/migrations/DML/Production/event types: unchanged.
+
+## Milestone 5 checkpoint — Integration matrix and release candidate
+
+Release-candidate scope is frozen to the changes documented in Milestones 1–4.
+No additional product behavior, schema object or event type is included.
+
+| Area | Release-candidate assertion | Coverage |
+| --- | --- | --- |
+| Authorization | Owner, active partner and preserved legacy access share the explicit read/mutate contract | authorization unit matrix |
+| Isolation | Every private route resolves and filters the authoritative current event; request-controlled event IDs are forbidden | route contract matrix |
+| Church | Canonical selected/undecided state reaches catalog and Dashboard | state, source and browser suites |
+| Location | Reception, ceremony, accommodation, party and other remain role-isolated | state, UX and read-model suites |
+| Supplier | Saved and SELECTED remain distinct; undo returns to SAVED | state, supplier and setup suites |
+| Setup | Supplier completion derives only from event-private SELECTED relationships | setup integration assertion |
+| Coupling | No Branch 49 write to Budget, Timeline, expenses or payments | integration source guard |
+| Accessibility | Decision summaries are textual/live and controls have accessible names | UX source and browser suites |
+| Responsive | Planning surfaces are covered at 320, 390 and 430 px within the existing full width matrix | Playwright configuration and journeys |
+| i18n | IT/EN/ES/FR/DE expose an identical Branch 49 key and placeholder structure | translation coverage and integration matrix |
+| Schema/data | No Branch 49 migration, backfill or destructive data operation | repository and audit guard |
+
+Release-candidate gates remain ordered: focused Branch 49 tests, TypeScript and
+ESLint, full Jest, build/i18n, Database Rebuild only if pertinent, Playwright,
+Preview, final audit, merge only after explicit authorization, then Production
+smoke. Because Branch 49 contains no migration, a new Database Rebuild is not a
+pertinent release gate; the isolated Playwright job still rebuilds the canonical
+schema before its real browser journeys.
+
+Rollback is a revert of Branch 49 application commits. No data rollback,
+migration reversal or Production cleanup is required. Production remains
+untouched until a separately authorized merge and smoke phase.
+
+Pre-release-candidate local gates: 55 focused Branch 49 tests pass; TypeScript
+passes; ESLint reports zero errors; full Jest passes with 77 suites and 424
+tests; all five locales report 2873/2873 keys with no missing, extra, empty,
+placeholder-mismatched or residual Italian entries; the production build passes
+and generates 486 static pages. The M4 remote baseline is CI #531 PASS,
+Playwright #76 PASS after an unchanged rerun of a transient legacy invitation
+replay failure, and both Vercel Preview deployments READY.
