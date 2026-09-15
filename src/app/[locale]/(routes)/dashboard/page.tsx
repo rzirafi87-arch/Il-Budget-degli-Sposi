@@ -19,7 +19,7 @@ import { onboardingDestination } from "@/lib/onboardingRouting";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import { useLocale, useTranslations } from "next-intl";
-import { Church, FileText, Landmark, LayoutDashboard, Lightbulb, Plane, RotateCw, Save, Sparkles, Video } from "lucide-react";
+import { Church, FileText, Landmark, LayoutDashboard, Lightbulb, Plane, RotateCw, Save, Sparkles, Store, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
@@ -28,7 +28,26 @@ import { useEffect, useMemo, useState } from "react";
 type BudgetItem = { name: string; amount?: number };
 type ChecklistModule = { module_name: string; is_required: boolean };
 type Tradition = { name: string; description: string };
-type PlanningSelections = { church: { churches: { name: string } | null } | null; locations: Array<{ location_role: string; locations: { name: string } | null }> };
+type LocationRole = "reception" | "ceremony" | "accommodation" | "party" | "other";
+type PlanningDecision = "undecided" | "selected";
+type PlanningSelections = {
+  church: { churches: { name: string } | null } | null;
+  locations: Array<{ location_role: string; locations: { name: string } | null }>;
+  suppliers: Array<{ id: string; suppliers: { name: string } | null }>;
+  decision: { church: PlanningDecision; locationsByRole: Record<LocationRole, PlanningDecision>; suppliers: PlanningDecision };
+};
+
+const LOCATION_ROLES: LocationRole[] = ["reception", "ceremony", "accommodation", "party", "other"];
+const EMPTY_PLANNING_SELECTIONS: PlanningSelections = {
+  church: null,
+  locations: [],
+  suppliers: [],
+  decision: {
+    church: "undecided",
+    locationsByRole: { reception: "undecided", ceremony: "undecided", accommodation: "undecided", party: "undecided", other: "undecided" },
+    suppliers: "undecided",
+  },
+};
 
 
 export const dynamic = "force-dynamic";
@@ -37,6 +56,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("runtimeUi.dashboard");
+  const planningT = useTranslations("branch49Planning");
   // All hooks at the top - before any conditional returns
   const [brideBudget, setBrideBudget] = useState<number>(0);
   const [groomBudget, setGroomBudget] = useState<number>(0);
@@ -52,7 +72,7 @@ export default function DashboardPage() {
   const [routeError, setRouteError] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [clientPrefs, setClientPrefs] = useState({ language: "", country: "", eventType: "" });
-  const [planningSelections, setPlanningSelections] = useState<PlanningSelections>({ church: null, locations: [] });
+  const [planningSelections, setPlanningSelections] = useState<PlanningSelections>(EMPTY_PLANNING_SELECTIONS);
 
   const userLang = clientPrefs.language;
   const userCountry = clientPrefs.country;
@@ -137,7 +157,12 @@ export default function DashboardPage() {
           try {
             const res = await fetch("/api/my/planning-selections", { headers, cache: "no-store" });
             const json = await res.json();
-            if (active && res.ok) setPlanningSelections({ church: json.church || null, locations: json.locations || [] });
+            if (active && res.ok) setPlanningSelections({
+              church: json.church || null,
+              locations: json.locations || [],
+              suppliers: json.suppliers || [],
+              decision: json.decision || EMPTY_PLANNING_SELECTIONS.decision,
+            });
           } catch { /* The catalog cards remain useful as navigation fallback. */ }
         }
 
@@ -222,7 +247,7 @@ export default function DashboardPage() {
     return () => {
       active = false;
     };
-  }, [accessToken, userCountry, effectiveEventType, isReady, isWedding]);
+  }, [accessToken, userCountry, effectiveEventType, isReady, isWedding, t]);
 
   // Funzione per salvare il budget in Idea di Budget
   async function handleSaveBudget() {
@@ -330,9 +355,16 @@ export default function DashboardPage() {
 
       <BudgetAdvisor totalBudget={totalBudget} country={countryState} />
 
-      {isWedding && <section className="mb-8 grid gap-4 md:grid-cols-2" aria-label={t("planning.label")}>
-        <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Church size={21} aria-hidden /></span><div className="flex-1"><p className="app-eyebrow">{t("planning.ceremony")}</p><h2 className="text-lg">{planningSelections.church?.churches?.name || t("planning.churchEmpty")}</h2><AppButtonLink href={`/${locale}/chiese`} variant="secondary" className="mt-3">{t("planning.openChurches")}</AppButtonLink></div></div></AppCard>
-        <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Landmark size={21} aria-hidden /></span><div className="flex-1"><p className="app-eyebrow">{t("planning.reception")}</p><h2 className="text-lg">{planningSelections.locations.find((item) => item.location_role === "reception")?.locations?.name || t("planning.locationEmpty")}</h2><AppButtonLink href={`/${locale}/location`} variant="secondary" className="mt-3">{t("planning.openLocations")}</AppButtonLink></div></div></AppCard>
+      {isWedding && <section className="mb-8" aria-label={planningT("dashboard.label")}>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Church size={21} aria-hidden /></span><div className="min-w-0 flex-1"><p className="app-eyebrow">{planningT("dashboard.church")}</p><h2 className="break-words text-lg">{planningSelections.church?.churches?.name || planningT("status.undecided")}</h2><p className="mt-1 text-sm text-muted-fg">{planningT(`status.${planningSelections.decision.church}`)}</p><AppButtonLink href={`/${locale}/chiese`} variant="secondary" className="mt-3">{planningT("dashboard.openChurches")}</AppButtonLink></div></div></AppCard>
+          {LOCATION_ROLES.map((role) => {
+            const selected = planningSelections.locations.find((item) => item.location_role === role);
+            const decision = planningSelections.decision.locationsByRole[role] || "undecided";
+            return <AppCard key={role} padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Landmark size={21} aria-hidden /></span><div className="min-w-0 flex-1"><p className="app-eyebrow">{planningT(`location.roles.${role}`)}</p><h2 className="break-words text-lg">{selected?.locations?.name || planningT("status.undecided")}</h2><p className="mt-1 text-sm text-muted-fg">{planningT(`status.${decision}`)}</p><AppButtonLink href={`/${locale}/location?role=${role}`} variant="secondary" className="mt-3">{planningT("dashboard.openLocations")}</AppButtonLink></div></div></AppCard>;
+          })}
+          <AppCard padding="md"><div className="flex items-start gap-3"><span className="app-page-header__icon"><Store size={21} aria-hidden /></span><div className="min-w-0 flex-1"><p className="app-eyebrow">{planningT("dashboard.suppliers")}</p><h2 className="break-words text-lg">{planningSelections.suppliers.length > 0 ? planningT("supplier.selectedCount", { count: planningSelections.suppliers.length }) : planningT("status.undecided")}</h2><p className="mt-1 text-sm text-muted-fg">{planningT(`status.${planningSelections.decision.suppliers || "undecided"}`)}</p><AppButtonLink href={`/${locale}/fornitori`} variant="secondary" className="mt-3">{planningT("dashboard.openSuppliers")}</AppButtonLink></div></div></AppCard>
+        </div>
       </section>}
 
       {/* Azioni principali: Salva, PDF, Video */}

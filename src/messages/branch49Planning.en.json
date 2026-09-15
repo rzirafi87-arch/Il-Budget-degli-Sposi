@@ -1,0 +1,13 @@
+{
+  "branch49Planning": {
+    "status": { "undecided": "Still to choose", "selected": "Choice confirmed" },
+    "church": { "summary": "Ceremony venue status", "selected": "You have confirmed a ceremony venue.", "undecided": "You have not confirmed a ceremony venue yet." },
+    "location": {
+      "roleLabel": "Venue use", "summary": "Venue status for {role}",
+      "selected": "You have confirmed a venue for {role}.", "undecided": "You have not confirmed a venue for {role} yet.",
+      "roles": { "reception": "reception", "ceremony": "civil ceremony", "accommodation": "accommodation", "party": "party", "other": "other use" }
+    },
+    "supplier": { "selectedCount": "{count, plural, one {# supplier confirmed} other {# suppliers confirmed}}", "undecided": "You have not confirmed a supplier yet.", "select": "Confirm choice", "unselect": "Undo confirmation", "saveFirst": "Save the supplier before confirming it", "updateError": "Unable to update the supplier status." },
+    "dashboard": { "label": "Main event choices", "church": "Ceremony venue", "suppliers": "Suppliers", "openChurches": "Choose venue", "openLocations": "Choose location", "openSuppliers": "Choose suppliers" }
+  }
+}

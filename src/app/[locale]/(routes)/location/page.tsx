@@ -29,11 +29,14 @@ type Location = {
 };
 type SavedLocation = { id: string; location_id: string; location_role: string; status: string; favorite: boolean; selected: boolean };
 type Pagination = { page: number; limit: number; total: number; totalPages: number };
+type LocationRole = "reception" | "ceremony" | "accommodation" | "party" | "other";
 
 const VENUE_TYPES = ["villa", "castle", "hotel", "resort", "restaurant", "reception_hall", "agriturismo", "masseria", "baglio", "estate", "beach", "panoramic", "other"];
+const LOCATION_ROLES: LocationRole[] = ["reception", "ceremony", "accommodation", "party", "other"];
 
 export default function LocationsPage() {
   const t = useTranslations("locationsCatalog");
+  const planningT = useTranslations("branch49Planning");
   const geo = useTranslations("catalogSearch");
   const { showToast } = useToast();
   const country = getUserCountrySafe().toLowerCase();
@@ -53,15 +56,23 @@ export default function LocationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [position, setPosition] = useState<CurrentPosition | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [locationRole, setLocationRole] = useState<LocationRole>("reception");
+
+  useEffect(() => {
+    const requestedRole = new URLSearchParams(window.location.search).get("role");
+    if (requestedRole && LOCATION_ROLES.includes(requestedRole as LocationRole)) {
+      setLocationRole(requestedRole as LocationRole);
+    }
+  }, []);
 
   const loadSaved = useCallback(async (accessToken: string) => {
     const response = await fetch("/api/my/locations", { headers: { Authorization: `Bearer ${accessToken}` }, cache: "no-store" });
     if (!response.ok) return;
     const payload = (await response.json()) as { savedLocations?: SavedLocation[] };
     const map: Record<string, SavedLocation> = {};
-    payload.savedLocations?.filter((item) => item.location_role === "reception").forEach((item) => { map[item.location_id] = item; });
+    payload.savedLocations?.filter((item) => item.location_role === locationRole).forEach((item) => { map[item.location_id] = item; });
     setSaved(map);
-  }, []);
+  }, [locationRole]);
 
   useEffect(() => {
     getOnboardingStatus().then((status) => {
@@ -95,7 +106,7 @@ export default function LocationsPage() {
     if (!token) { showToast(t("authRequired"), "info"); return; }
     setPending((p) => ({ ...p, [location.id]: true }));
     try {
-      const response = await fetch("/api/my/locations", { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ location_id: location.id, location_role: "reception" }) });
+      const response = await fetch("/api/my/locations", { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ location_id: location.id, location_role: locationRole }) });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || t("saveError"));
       setSaved((current) => ({ ...current, [location.id]: payload.savedLocation as SavedLocation }));
@@ -130,10 +141,28 @@ export default function LocationsPage() {
 
   function submitSearch(event: FormEvent) { event.preventDefault(); setPagination((p) => ({ ...p, page: 1 })); setSubmittedQuery(query.trim()); }
 
+  const locationDecision = Object.values(saved).some((item) => item.selected) ? "selected" : "undecided";
+  const roleLabel = planningT(`location.roles.${locationRole}`);
+
   return <section className="space-y-6">
     <PageHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} icon={<Building2 size={24} aria-hidden />} />
     <ImageCarousel images={getPageImages("location", country)} height="280px" />
     <ContributionPanel entityType="location" initialData={{ city, province, region }} />
+    <AppCard padding="md">
+      <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(12rem,18rem)] sm:items-end">
+        <div aria-live="polite">
+          <p className="app-eyebrow">{planningT("location.summary", { role: roleLabel })}</p>
+          <p className="font-semibold">{planningT(`status.${locationDecision}`)}</p>
+          <p className="mt-1 text-sm text-muted-fg">{planningT(`location.${locationDecision}`, { role: roleLabel })}</p>
+        </div>
+        <label className="space-y-1 text-sm font-semibold">
+          <span>{planningT("location.roleLabel")}</span>
+          <select className="app-select w-full" value={locationRole} onChange={(event) => { const nextRole = event.target.value as LocationRole; setSaved({}); setLocationRole(nextRole); window.history.replaceState(null, "", `?role=${nextRole}`); }}>
+            {LOCATION_ROLES.map((role) => <option key={role} value={role}>{planningT(`location.roles.${role}`)}</option>)}
+          </select>
+        </label>
+      </div>
+    </AppCard>
     <AppCard padding="md"><form onSubmit={submitSearch} className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
       <label className="space-y-1 text-sm font-semibold"><span>{t("search")}</span><input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>
       <label className="space-y-1 text-sm font-semibold"><span>{t("city")}</span><input value={city} onChange={(e) => { setCity(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2" /></label>

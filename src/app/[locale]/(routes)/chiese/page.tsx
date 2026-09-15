@@ -61,6 +61,7 @@ function placeTypeKey(placeType: string) {
 
 export default function ChiesePage() {
   const t = useTranslations("suppliersChurches");
+  const planningT = useTranslations("branch49Planning");
   const geo = useTranslations("catalogSearch");
   const { showToast } = useToast();
   const country = getUserCountrySafe().toLowerCase();
@@ -184,12 +185,23 @@ export default function ChiesePage() {
   }
 
   const locationOptions = useMemo(() => Array.from(new Set(churches.map((church) => church.region).filter(Boolean))).sort(), [churches]);
+  const churchDecision = Object.values(saved).some((item) => item.selected) ? "selected" : "undecided";
 
   return (
     <section className="space-y-6">
       <PageHeader eyebrow={t("catalog.eyebrow")} title={t("title")} description={t("description")} icon={<ChurchIcon size={24} aria-hidden />} />
       <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
       <ContributionPanel entityType="church" initialData={{ city, region }} />
+
+      <AppCard padding="md">
+        <div aria-live="polite" className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="app-eyebrow">{planningT("church.summary")}</p>
+            <p className="font-semibold">{planningT(`status.${churchDecision}`)}</p>
+          </div>
+          <p className="text-sm text-muted-fg">{planningT(`church.${churchDecision}`)}</p>
+        </div>
+      </AppCard>
 
       <AppCard padding="md">
         <form onSubmit={submitSearch} className="grid gap-4 md:grid-cols-[2fr_1fr_1fr_1fr_auto]">

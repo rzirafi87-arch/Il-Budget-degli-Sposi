@@ -48,12 +48,13 @@ export async function GET(req: NextRequest) {
 
   const totalSpent = (expenses || []).reduce((sum, exp) => sum + (exp.amount || 0), 0);
 
-  // Conta categorie di interesse per task tracking
-  const { count: supplierCount } = await db
-    .from("expenses")
+  // A supplier setup step is complete only after an explicit event-private
+  // selection. Free-text expense data must not imply a planning decision.
+  const { count: selectedSupplierCount } = await db
+    .from("saved_suppliers")
     .select("*", { count: "exact", head: true })
     .eq("event_id", ev.id)
-    .not("supplier", "is", null);
+    .eq("status", "SELECTED");
 
   const { count: guestCount } = await db
     .from("guests")
@@ -75,7 +76,7 @@ export async function GET(req: NextRequest) {
       currency: ev.currency ?? "EUR",
       wedding_date: card?.wedding_date || null,
       couple_name: couple_name || null,
-      has_suppliers: (supplierCount || 0) > 0,
+      has_suppliers: (selectedSupplierCount || 0) > 0,
       has_guests: (guestCount || 0) > 0,
     },
     status: "RESOLVED",
