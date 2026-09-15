@@ -18,10 +18,20 @@ const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
 
 test.use({ trace: "off", screenshot: "off", video: "off" });
 
+async function clearOnboardingPreferences(page: Page) {
+  await page.evaluate(() => {
+    for (const key of ["language", "country", "eventType"]) {
+      localStorage.removeItem(key);
+      document.cookie = `${key}=; Path=/; Max-Age=0; SameSite=Lax`;
+    }
+  });
+}
+
 async function finishFirstEvent(page: Page, identity: QaIdentity, name: string) {
   const empty = await currentEvent(page);
   expect(empty.status).toBe(200);
   expect(empty.body.status).toBe("NO_EVENT");
+  await clearOnboardingPreferences(page);
   await page.goto("/it/select-language");
   await page.getByRole("button", { name: "Italiano", exact: true }).click({ noWaitAfter: true });
   await expect(page).toHaveURL(/\/it\/select-country/);
@@ -126,6 +136,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       expect(empty.status).toBe(200);
       expect(empty.body.status).toBe("NO_EVENT");
       phase("no-event");
+      await clearOnboardingPreferences(page);
       await page.goto("/it/select-language");
       phase("language");
       await page.getByRole("button", { name: "Italiano", exact: true }).click({ noWaitAfter: true });
