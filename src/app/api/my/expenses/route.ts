@@ -1,15 +1,25 @@
-import { getBearer, requireUser } from "@/lib/apiAuth";
+import { getBearer } from "@/lib/apiAuth";
+import {
+  FinancialContractError,
+  parseExpenseCreate,
+  type ExpenseInsert,
+} from "@/lib/financialContracts";
+import {
+  financialErrorResponse,
+  requireFinancialAccess,
+} from "@/lib/financialAuthorization";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
-import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
+
 export const runtime = "nodejs";
 
-type Expense = {
+type ExpenseResponse = {
   id?: string;
   category: string;
   subcategory: string;
   supplier: string;
+  savedSupplierId: string | null;
   description: string;
   amount: number;
   committed?: number;
@@ -21,51 +31,70 @@ type Expense = {
   fromDashboard: boolean;
 };
 
+type ExpenseQueryRow = {
+  id: string;
+  supplier: string | null;
+  saved_supplier_id: string | null;
+  description: string | null;
+  committed_amount: number | null;
+  paid_amount: number | null;
+  spend_type: string | null;
+  status: string | null;
+  expense_date: string | null;
+  notes: string | null;
+  from_dashboard: boolean | null;
+  subcategory: {
+    name: string | null;
+    category: { name: string | null; event_id: string | null } | null;
+  } | null;
+};
+
 export async function GET(req: NextRequest) {
+  const jwt = getBearer(req);
+  if (!jwt) {
+    return NextResponse.json({
+      expenses: [
+        {
+          id: "demo-1",
+          category: "Location & Catering",
+          subcategory: "Catering / Banqueting",
+          supplier: "Catering Gourmet",
+          savedSupplierId: null,
+          description: "Acconto catering",
+          amount: 2000,
+          spendType: "common",
+          status: "approved",
+          date: "2025-10-15",
+          notes: "Pagato con bonifico",
+          fromDashboard: true,
+        },
+        {
+          id: "demo-2",
+          category: "Foto & Video",
+          subcategory: "Servizio fotografico",
+          supplier: "Studio Foto Arte",
+          savedSupplierId: null,
+          description: "Saldo fotografo",
+          amount: 1500,
+          spendType: "common",
+          status: "pending",
+          date: "2025-10-20",
+          notes: "Da pagare entro fine mese",
+          fromDashboard: true,
+        },
+      ],
+    });
+  }
+
   try {
-    const jwt = getBearer(req);
-    if (!jwt) {
-      return NextResponse.json({
-        expenses: [
-          {
-            id: "demo-1",
-            category: "Location & Catering",
-            subcategory: "Catering / Banqueting",
-            supplier: "Catering Gourmet",
-            description: "Acconto catering",
-            amount: 2000,
-            spendType: "common",
-            status: "approved",
-            date: "2025-10-15",
-            notes: "Pagato con bonifico",
-            fromDashboard: true,
-          },
-          {
-            id: "demo-2",
-            category: "Foto & Video",
-            subcategory: "Servizio fotografico",
-            supplier: "Studio Foto Arte",
-            description: "Saldo fotografo",
-            amount: 1500,
-            spendType: "common",
-            status: "pending",
-            date: "2025-10-20",
-            notes: "Da pagare entro fine mese",
-            fromDashboard: true,
-          },
-        ],
-      });
-    }
-
+    const { currentEvent } = await requireFinancialAccess(req, "read");
     const db = getServiceClient();
-    const { userId } = await requireUser(req);
-    const eventId = (await requireServerCurrentEvent(userId)).eventId;
-
     const { data: expensesData, error } = await db
       .from("expenses")
       .select(`
         id,
         supplier,
+        saved_supplier_id,
         description,
         committed_amount,
         paid_amount,
@@ -79,95 +108,87 @@ export async function GET(req: NextRequest) {
           category:categories(name, event_id)
         )
       `)
-      .eq("event_id", eventId)
+      .eq("event_id", currentEvent.eventId)
       .order("expense_date", { ascending: false });
 
     if (error) {
-      logger.error("EXPENSES GET error", { error });
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      logger.error("EXPENSES GET error", { code: error.code });
+      return NextResponse.json({ error: "EXPENSES_READ_FAILED" }, { status: 500 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const expenses: Expense[] = (expensesData || []).map((e: any) => ({
-      id: e.id,
-      category: e.subcategory?.category?.name || "",
-      subcategory: e.subcategory?.name || "",
-      supplier: e.supplier || "",
-      description: e.description || "",
-      amount: Number(e.paid_amount || e.committed_amount || 0),
-      committed: Number(e.committed_amount || 0),
-      paid: Number(e.paid_amount || 0),
-      spendType: e.spend_type || "common",
-      status: e.status || "pending",
-      date: e.expense_date || new Date().toISOString().split("T")[0],
-      notes: e.notes || "",
-      fromDashboard: e.from_dashboard || false,
+    const rows = (expensesData || []) as unknown as ExpenseQueryRow[];
+    const expenses: ExpenseResponse[] = rows.map((expense) => ({
+      id: expense.id,
+      category: expense.subcategory?.category?.name || "",
+      subcategory: expense.subcategory?.name || "",
+      supplier: expense.supplier || "",
+      savedSupplierId: expense.saved_supplier_id,
+      description: expense.description || "",
+      amount: Number(expense.paid_amount || expense.committed_amount || 0),
+      committed: Number(expense.committed_amount || 0),
+      paid: Number(expense.paid_amount || 0),
+      spendType: (expense.spend_type || "common") as ExpenseResponse["spendType"],
+      status: (expense.status || "pending") as ExpenseResponse["status"],
+      date: expense.expense_date || new Date().toISOString().split("T")[0],
+      notes: expense.notes || "",
+      fromDashboard: expense.from_dashboard || false,
     }));
 
     return NextResponse.json({ expenses });
-  } catch (e: unknown) {
-    const err = e instanceof Error ? e : new Error(String(e));
-    logger.error("EXPENSES GET uncaught", { message: err.message });
-    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
+  } catch (error) {
+    return financialErrorResponse(error);
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await requireUser(req);
-    const body = await req.json();
-    const expense = body as Expense;
+    const { currentEvent } = await requireFinancialAccess(req, "mutate");
+    const expense = parseExpenseCreate(await req.json());
     const db = getServiceClient();
 
-    const eventId = (await requireServerCurrentEvent(userId)).eventId;
-
-    let { data: cat } = await db
+    let { data: category } = await db
       .from("categories")
       .select("id")
-      .eq("event_id", eventId)
+      .eq("event_id", currentEvent.eventId)
       .eq("name", expense.category)
       .single();
 
-    if (!cat) {
-      const { data: newCat } = await db
+    if (!category) {
+      const { data: createdCategory } = await db
         .from("categories")
-        .insert({ event_id: eventId, name: expense.category })
+        .insert({ event_id: currentEvent.eventId, name: expense.category })
         .select("id")
         .single();
-      cat = newCat;
+      category = createdCategory;
     }
-
-    if (!cat?.id) {
+    if (!category?.id) {
       return NextResponse.json({ error: "CATEGORY_CREATE_FAILED" }, { status: 500 });
     }
 
-    const categoryId = cat.id;
-
-    let { data: sub } = await db
+    let { data: subcategory } = await db
       .from("subcategories")
       .select("id")
-      .eq("category_id", categoryId)
+      .eq("category_id", category.id)
       .eq("name", expense.subcategory)
       .single();
 
-    if (!sub) {
-      const { data: newSub } = await db
+    if (!subcategory) {
+      const { data: createdSubcategory } = await db
         .from("subcategories")
-        .insert({ category_id: categoryId, name: expense.subcategory })
+        .insert({ category_id: category.id, name: expense.subcategory })
         .select("id")
         .single();
-      sub = newSub;
+      subcategory = createdSubcategory;
     }
-
-    if (!sub?.id) {
+    if (!subcategory?.id) {
       return NextResponse.json({ error: "SUBCATEGORY_CREATE_FAILED" }, { status: 500 });
     }
 
-    const { data: created, error: insertError } = await db.from("expenses").insert({
-      event_id: eventId,
+    const insert: ExpenseInsert = {
+      event_id: currentEvent.eventId,
       category: expense.category,
       subcategory: expense.subcategory,
-      subcategory_id: sub.id,
+      subcategory_id: subcategory.id,
       supplier: expense.supplier,
       description: expense.description,
       amount: expense.amount,
@@ -178,17 +199,22 @@ export async function POST(req: NextRequest) {
       expense_date: expense.date,
       notes: expense.notes,
       from_dashboard: expense.fromDashboard,
-    }).select().single();
+    };
+    const { data: created, error } = await db
+      .from("expenses")
+      .insert(insert)
+      .select()
+      .single();
 
-    if (insertError) {
-      logger.error("EXPENSES POST error", { error: insertError });
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
+    if (error) {
+      logger.error("EXPENSES POST error", { code: error.code });
+      return NextResponse.json({ error: "EXPENSE_CREATE_FAILED" }, { status: 500 });
     }
-
     return NextResponse.json({ expense: created });
-  } catch (e: unknown) {
-    const err = e instanceof Error ? e : new Error(String(e));
-    logger.error("EXPENSES POST uncaught", { message: err.message });
-    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
+  } catch (error) {
+    if (error instanceof FinancialContractError) {
+      return NextResponse.json({ error: error.code }, { status: 400 });
+    }
+    return financialErrorResponse(error);
   }
 }
