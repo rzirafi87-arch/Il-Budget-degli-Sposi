@@ -47,6 +47,20 @@ test("authenticated wedding journey, event context and logout", async ({ page },
     expect(overflow, `${path} must fit at 390px`).toBe(false);
   }
 
+  for (const width of [320, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 });
+    for (const path of ["budget", "spese"]) {
+      await page.goto(`/it/${path}`);
+      await expect(page.locator("main")).toBeVisible();
+      await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > window.innerWidth + 1,
+      );
+      expect(overflow, `${path} must fit at ${width}px`).toBe(false);
+    }
+  }
+
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/it/profilo");
   await page.getByRole("button", { name: /esci/i }).click();
   await page.waitForURL(/\/it$/);

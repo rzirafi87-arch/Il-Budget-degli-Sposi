@@ -1,39 +1,45 @@
-import { NextRequest, NextResponse } from "next/server";
+import { getBearer } from "@/lib/apiAuth";
+import {
+  FinancialContractError,
+  parseBudgetItemCreate,
+  parseBudgetSupplierLink,
+  type BudgetItemInsert,
+} from "@/lib/financialContracts";
+import {
+  financialErrorResponse,
+  requireFinancialAccess,
+  requireSameEventSavedSupplier,
+} from "@/lib/financialAuthorization";
 import { getServiceClient } from "@/lib/supabaseServer";
-import { requireServerCurrentEvent } from "@/lib/currentEvent";
+import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-// GET: Restituisce tutti i budget_items per una country e/o tradition
 export async function GET(req: NextRequest) {
   const country = req.nextUrl.searchParams.get("country") || "mx";
   const traditionId = req.nextUrl.searchParams.get("tradition_id");
   const db = getServiceClient();
-
-  // Se presente JWT, restituiamo le voci per l'evento dell'utente
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
+  const jwt = getBearer(req);
 
   if (jwt) {
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
+    try {
+      const { currentEvent } = await requireFinancialAccess(req, "read");
+      let userQuery = db
+        .from("budget_items")
+        .select("*")
+        .eq("country_code", country)
+        .eq("event_id", currentEvent.eventId);
+      if (traditionId) userQuery = userQuery.eq("tradition_id", traditionId);
+      const { data, error } = await userQuery;
+      if (error) {
+        return NextResponse.json({ error: "BUDGET_ITEMS_READ_FAILED" }, { status: 500 });
+      }
+      return NextResponse.json({ items: data });
+    } catch (error) {
+      return financialErrorResponse(error);
     }
-
-    const ev = { id: (await requireServerCurrentEvent(userData.user.id)).eventId };
-
-    let userQuery = db
-      .from("budget_items")
-      .select("*")
-      .eq("country_code", country)
-      .eq("event_id", ev.id);
-    if (traditionId) userQuery = userQuery.eq("tradition_id", traditionId);
-    const { data, error } = await userQuery;
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ items: data });
   }
 
-  // Senza JWT: restituiamo solo template pubblici (event_id IS NULL)
   let publicQuery = db
     .from("budget_items")
     .select("*")
@@ -41,37 +47,82 @@ export async function GET(req: NextRequest) {
     .is("event_id", null);
   if (traditionId) publicQuery = publicQuery.eq("tradition_id", traditionId);
   const { data, error } = await publicQuery;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    return NextResponse.json({ error: "BUDGET_ITEMS_READ_FAILED" }, { status: 500 });
+  }
   return NextResponse.json({ items: data });
 }
 
-// POST: Aggiunge un nuovo budget_item
 export async function POST(req: NextRequest) {
-  const db = getServiceClient();
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
+  try {
+    const { currentEvent } = await requireFinancialAccess(req, "mutate");
+    const body: unknown = await req.json();
+    const rows = Array.isArray(body) ? body : [body];
+    if (rows.length === 0 || rows.length > 100) {
+      return NextResponse.json({ error: "INVALID_FINANCIAL_PAYLOAD" }, { status: 400 });
+    }
 
-  if (!jwt) {
-    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
+    const creates = rows.map(parseBudgetItemCreate);
+    const db = getServiceClient();
+    const savedSupplierIds = new Set(
+      creates
+        .map((row) => row.saved_supplier_id)
+        .filter((id): id is string => typeof id === "string" && id.length > 0),
+    );
+    for (const savedSupplierId of savedSupplierIds) {
+      await requireSameEventSavedSupplier(db, currentEvent.eventId, savedSupplierId);
+    }
+
+    const payload: BudgetItemInsert[] = creates.map((row) => ({
+      ...row,
+      event_id: currentEvent.eventId,
+    }));
+    const { data, error } = await db.from("budget_items").insert(payload).select();
+    if (error) {
+      return NextResponse.json({ error: "BUDGET_ITEM_CREATE_FAILED" }, { status: 500 });
+    }
+    return NextResponse.json({ item: data?.[0] ?? null });
+  } catch (error) {
+    if (error instanceof FinancialContractError) {
+      return NextResponse.json({ error: error.code }, { status: 400 });
+    }
+    return financialErrorResponse(error);
   }
+}
 
-  const { data: userData, error: authError } = await db.auth.getUser(jwt);
-  if (authError || !userData?.user) {
-    return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
+export async function PATCH(req: NextRequest) {
+  try {
+    const { currentEvent } = await requireFinancialAccess(req, "mutate");
+    const link = parseBudgetSupplierLink(await req.json());
+    const db = getServiceClient();
+
+    if (link.saved_supplier_id) {
+      await requireSameEventSavedSupplier(
+        db,
+        currentEvent.eventId,
+        link.saved_supplier_id,
+      );
+    }
+
+    const { data, error } = await db
+      .from("budget_items")
+      .update({ saved_supplier_id: link.saved_supplier_id })
+      .eq("id", link.id)
+      .eq("event_id", currentEvent.eventId)
+      .select("*")
+      .maybeSingle();
+
+    if (error) {
+      return NextResponse.json({ error: "BUDGET_ITEM_LINK_FAILED" }, { status: 500 });
+    }
+    if (!data) {
+      return NextResponse.json({ error: "BUDGET_ITEM_NOT_FOUND" }, { status: 404 });
+    }
+    return NextResponse.json({ item: data });
+  } catch (error) {
+    if (error instanceof FinancialContractError) {
+      return NextResponse.json({ error: error.code }, { status: 400 });
+    }
+    return financialErrorResponse(error);
   }
-
-  const body = await req.json();
-
-  const ev = { id: (await requireServerCurrentEvent(userData.user.id)).eventId };
-
-  // Inserisci forzando l'event_id all'evento dell'utente
-  const insert = Array.isArray(body) ? body : [body];
-  const payload = insert.map((row) => ({
-    ...row,
-    event_id: ev.id,
-  }));
-
-  const { data, error } = await db.from("budget_items").insert(payload).select();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ item: data[0] });
 }

@@ -50,6 +50,8 @@ describe("approved application flow regressions", () => {
 
   it("requires event_id for expense creation", () => {
     const expenses = read("src/app/api/my/expenses/route.ts");
-    expect(expenses).toMatch(/from\("expenses"\)\.insert\(\{[\s\S]{0,160}event_id:\s*eventId/);
+    expect(expenses).toContain("const insert: ExpenseInsert");
+    expect(expenses).toContain("event_id: currentEvent.eventId");
+    expect(expenses).toMatch(/from\("expenses"\)[\s\S]{0,120}\.insert\(insert\)/);
   });
 });
