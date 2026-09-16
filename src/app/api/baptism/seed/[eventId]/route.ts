@@ -22,8 +22,8 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ eventId: 
       .eq("id", eventId)
       .single();
 
-    if (evErr || !ev) return NextResponse.json({ error: evErr?.message || "EVENT_NOT_FOUND" }, { status: 404 });
-    if (ev.owner_id !== authData.user.id) return NextResponse.json({ error: "Non autorizzato" }, { status: 403 });
+    if (evErr || !ev) return NextResponse.json({ error: "EVENT_NOT_FOUND" }, { status: 404 });
+    if (ev.owner_id !== authData.user.id) return NextResponse.json({ error: "EVENT_NOT_FOUND" }, { status: 404 });
 
     const url = new URL(_req.url);
     const country = url.searchParams.get('country') || undefined;
@@ -32,11 +32,13 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ eventId: 
   } catch (e: unknown) {
     const err = e instanceof Error ? e : new Error(String(e));
     console.error("/api/baptism/seed error", err);
-    return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
+    return NextResponse.json({ error: "BAPTISM_SEED_FAILED" }, { status: 500 });
   }
 }
 
-export async function GET(req: NextRequest, ctx: { params: Promise<{ eventId: string }> }) {
-  // Convenience for testing with a simple GET
-  return POST(req, ctx);
+export async function GET() {
+  return NextResponse.json(
+    { error: "METHOD_NOT_ALLOWED", allowed: ["POST"] },
+    { status: 405, headers: { Allow: "POST" } },
+  );
 }

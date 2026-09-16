@@ -29,5 +29,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  return POST(req);
+  void req;
+  return NextResponse.json(
+    { error: "METHOD_NOT_ALLOWED", allowed: ["POST"] },
+    { status: 405, headers: { Allow: "POST" } },
+  );
 }
