@@ -211,7 +211,7 @@ export function ExpenseSupplierPaymentControls({
                 </button>
               </fieldset>
 
-              {linkedId ? (
+              {savedSupplierId ? (
                 <form onSubmit={saveReminder} className="space-y-3 border-t border-gray-200 pt-4">
                   <h4 className="font-semibold">{reminder ? t("editReminder") : t("newReminder")}</h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
