@@ -148,6 +148,14 @@ export async function POST(req: NextRequest) {
     const expense = parseExpenseCreate(await req.json());
     const db = getServiceClient();
 
+    if (expense.savedSupplierId) {
+      await requireSameEventSavedSupplier(
+        db,
+        currentEvent.eventId,
+        expense.savedSupplierId,
+      );
+    }
+
     let { data: category } = await db
       .from("categories")
       .select("id")
@@ -201,6 +209,7 @@ export async function POST(req: NextRequest) {
       expense_date: expense.date,
       notes: expense.notes,
       from_dashboard: expense.fromDashboard,
+      saved_supplier_id: expense.savedSupplierId,
     };
     const { data: created, error } = await db
       .from("expenses")
