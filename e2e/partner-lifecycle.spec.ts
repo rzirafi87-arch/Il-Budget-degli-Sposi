@@ -411,12 +411,45 @@ test.describe("authenticated partner lifecycle journey", () => {
       const secondStartedAt = await sendInvitationFromUi(ownerPage);
       const secondEmail = await invitationLinkAfter(secondStartedAt, firstEmail.messageId);
       expect(secondEmail.token !== firstEmail.token, "The second invitation must use a new token").toBe(true);
+
+      const membershipBeforeReplay = await appApi<{ members: Member[]; accessRole: string }>(ownerPage, "/api/my/event-members");
+      expect(membershipBeforeReplay.status).toBe(200);
+      const currentEventBeforeReplay = await appApi<CurrentEventPayload>(partnerPage, "/api/my/current-event");
+      expect(currentEventBeforeReplay.status).toBe(200);
+      const invitationsBeforeReplay = await appApi<{ invitations: Invitation[] }>(ownerPage, "/api/my/event-invitations");
+      expect(invitationsBeforeReplay.status).toBe(200);
+      expect(invitationsBeforeReplay.body.invitations.find(item => item.id === acceptedInvitation!.id)?.status).toBe("accepted");
+
+      const replay = await appApi<{ error?: string }>(partnerPage, "/api/invitations/accept", {
+        method: "POST",
+        body: { token: firstEmail.token },
+      });
+      expect(replay.status, "A consumed invitation must be rejected by the API").toBe(409);
+      expect(replay.body.error, "Anti-replay must expose the stable application code").toBe("INVITATION_ALREADY_USED");
+
+      const membershipAfterReplay = await appApi<{ members: Member[]; accessRole: string }>(ownerPage, "/api/my/event-members");
+      expect(membershipAfterReplay.status).toBe(200);
+      expect(membershipAfterReplay.body).toEqual(membershipBeforeReplay.body);
+      const currentEventAfterReplay = await appApi<CurrentEventPayload>(partnerPage, "/api/my/current-event");
+      expect(currentEventAfterReplay.status).toBe(200);
+      expect(currentEventAfterReplay.body).toEqual(currentEventBeforeReplay.body);
+      const invitationsAfterReplay = await appApi<{ invitations: Invitation[] }>(ownerPage, "/api/my/event-invitations");
+      expect(invitationsAfterReplay.status).toBe(200);
+      expect(invitationsAfterReplay.body).toEqual(invitationsBeforeReplay.body);
+
       try {
+        const inspectionPromise = partnerPage.waitForResponse(response => new URL(response.url()).pathname === "/api/invitations/inspect");
         await partnerPage.goto(firstEmail.href);
-        await expect(partnerPage.getByText("Invito già accettato.", { exact: true })).toBeVisible({ timeout: 15_000 });
+        const inspection = await inspectionPromise;
+        const inspectionBody = await inspection.json().catch(() => ({})) as { invitation?: { status?: string }; error?: string };
+        expect(inspection.status(), `Consumed invitation inspection failed with ${inspectionBody.error || "UNKNOWN_CODE"}`).toBe(200);
+        expect(inspectionBody.invitation?.status).toBe("accepted");
+        await expect(partnerPage.getByRole("status")).toHaveText("Invito già accettato.", { timeout: 15_000 });
       } catch {
-        throw new Error("Old invitation replay check failed; invitation details were redacted.");
+        await partnerPage.evaluate(() => history.replaceState(null, "", location.pathname)).catch(() => undefined);
+        throw new Error("Old invitation replay UI check failed; invitation details were redacted.");
       }
+
       await acceptInvitation(partnerPage, partnerContext, secondEmail.href, false, testInfo);
 
       await partnerPage.goto("/it/profilo");
