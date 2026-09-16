@@ -1,10 +1,11 @@
 import { getServiceClient } from "@/lib/supabaseServer";
-import { requireCurrentEvent } from "@/lib/currentEvent";
+import { apiSecurityErrorResponse, requireEventAccess } from "@/lib/apiSecurity";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   try {
+    const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
     const body = await req.json().catch(() => ({}));
     const total = Number(body?.total_budget);
     const bride = body?.bride_initial_budget !== undefined ? Number(body?.bride_initial_budget) : null;
@@ -18,19 +19,6 @@ export async function POST(req: NextRequest) {
     }
 
     const db = getServiceClient();
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
-    if (!jwt) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-    const { data: userData, error: authError } = await db.auth.getUser(jwt);
-    if (authError || !userData?.user) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
-    const userId = userData.user.id;
-
-    // Update the authoritative current event owned by the user
-    const ev = { id: (await requireCurrentEvent(req, userId)).eventId };
 
     const updateObj: Record<string, unknown> = { total_budget: total };
     if (bride !== null) updateObj.bride_initial_budget = bride;
@@ -40,14 +28,12 @@ export async function POST(req: NextRequest) {
     const { error: e2 } = await db
       .from("events")
       .update(updateObj)
-      .eq("id", ev.id);
+      .eq("id", currentEvent.eventId);
     if (e2) {
-      return NextResponse.json({ error: e2.message }, { status: 500 });
+      return NextResponse.json({ error: "EVENT_BUDGET_UPDATE_FAILED" }, { status: 500 });
     }
     return NextResponse.json({ ok: true, ...updateObj });
-  } catch (e: unknown) {
-    const error = e as Error;
-    console.error("UPDATE-BUDGET Uncaught:", error);
-    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
+  } catch (error: unknown) {
+    return apiSecurityErrorResponse(error, "EVENT_BUDGET_UPDATE_FAILED");
   }
 }

@@ -1,6 +1,6 @@
 # Branch 51 — route and server-action inventory
 
-Generated from source at 2026-09-16T14:38:47.022Z. This inventory covers **140 API route files**. No files containing a top-level `"use server"` directive were present at audit time. Classifications marked `route-specific` or `review` require manual contract validation in Milestones 2–3; they are not assertions of safety.
+Generated from source at 2026-09-16T15:37:56.064Z. This inventory covers **140 API route files**. No files containing a top-level `"use server"` directive were present at audit time. Classifications marked `route-specific` or `review` require manual contract validation in Milestones 2–3; they are not assertions of safety.
 
 | Route | Methods | Auth | Ownership | Event source | Role | Mode | Service role | RLS boundary | IDOR | Canonical status | GET mutation signal |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -21,7 +21,7 @@ Generated from source at 2026-09-16T14:38:47.022Z. This inventory covers **140 A
 | /api/catalog/contributions | GET, POST, PATCH | user | owner | path/query/body or derived | owner | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | review: file contains GET + mutation |
 | /api/catalog/search | GET | public/route-specific | n/a | none | route-specific/n/a | read | no | route-specific/n/a | guarded/n/a | canonical or standalone | no evidence |
 | /api/categories | GET | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read | yes | bypassed; API guard required | review | canonical or standalone | no evidence |
-| /api/ceremony | GET, PUT | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | canonical or standalone | review: file contains GET + mutation |
+| /api/ceremony | GET, PUT | user | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | review: file contains GET + mutation |
 | /api/charity-gala/seed/[eventId] | POST | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | canonical or standalone | no evidence |
 | /api/chat | GET, POST | user | n/a | none | route-specific/n/a | read/write | no | user JWT | guarded/n/a | canonical or standalone | no evidence |
 | /api/checklist-modules | GET, POST | public/route-specific | n/a | none | route-specific/n/a | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | review: file contains GET + mutation |
@@ -41,8 +41,8 @@ Generated from source at 2026-09-16T14:38:47.022Z. This inventory covers **140 A
 | /api/event/ensure-default | POST | public/route-specific | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | review | canonical or standalone | no evidence |
 | /api/event/new | GET | public/route-specific | n/a | none | route-specific/n/a | read | no | route-specific/n/a | guarded/n/a | legacy/overlap candidate | no evidence |
 | /api/event/resolve | GET | public/route-specific | owner+partner | server current-event | owner/partner | read | yes | bypassed; API guard required | review | canonical or standalone | no evidence |
-| /api/event/update-budget | POST | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | legacy/overlap candidate | no evidence |
-| /api/event/update | PATCH | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | legacy/overlap candidate | no evidence |
+| /api/event/update-budget | POST | user | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | guarded/n/a | legacy/overlap candidate | no evidence |
+| /api/event/update | PATCH | user | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | guarded/n/a | legacy/overlap candidate | no evidence |
 | /api/events/baby-shower/get | GET | user | n/a | none | route-specific/n/a | read | yes | bypassed; API guard required | guarded/n/a | legacy/overlap candidate | no evidence |
 | /api/events/baby-shower/init | POST | user | n/a | none | route-specific/n/a | read/write | yes | bypassed; API guard required | guarded/n/a | legacy/overlap candidate | no evidence |
 | /api/events/birthday/get | GET | user | n/a | none | route-specific/n/a | read | yes | bypassed; API guard required | guarded/n/a | legacy/overlap candidate | no evidence |
@@ -101,7 +101,7 @@ Generated from source at 2026-09-16T14:38:47.022Z. This inventory covers **140 A
 | /api/my/favorites | GET, POST, DELETE | user | n/a | none | route-specific/n/a | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | review: file contains GET + mutation |
 | /api/my/fifty-dashboard | GET, POST | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | canonical or standalone | review: file contains GET + mutation |
 | /api/my/gender-reveal-dashboard | GET, POST | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | canonical or standalone | review: file contains GET + mutation |
-| /api/my/gift-list | GET, POST, PUT, DELETE | user | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | canonical or standalone | review: file contains GET + mutation |
+| /api/my/gift-list | GET, POST, PUT, DELETE | user | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | review: file contains GET + mutation |
 | /api/my/graduation-dashboard | GET, POST | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | canonical or standalone | review: file contains GET + mutation |
 | /api/my/guests | GET, POST | user | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | no evidence |
 | /api/my/incomes/[id] | DELETE | user | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | no evidence |
@@ -128,7 +128,7 @@ Generated from source at 2026-09-16T14:38:47.022Z. This inventory covers **140 A
 | /api/retirement/seed/[eventId] | POST | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read/write | yes | bypassed; API guard required | review | canonical or standalone | no evidence |
 | /api/seed/[eventId] | POST | user | owner+partner | server current-event | owner/partner | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | no evidence |
 | /api/share/[token] | GET | public/route-specific | route-specific | path/query/body or derived | route-specific/n/a | read | yes | bypassed; API guard required | review | canonical or standalone | no evidence |
-| /api/share/new | POST | public/route-specific | owner+partner | path/query/body or derived | owner/partner | read/write | yes | bypassed; API guard required | review | canonical or standalone | no evidence |
+| /api/share/new | POST | user | owner | server current-event | owner | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | no evidence |
 | /api/stripe/checkout | POST | public/route-specific | n/a | none | route-specific/n/a | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | no evidence |
 | /api/stripe/webhook | POST | public/route-specific | n/a | none | route-specific/n/a | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | no evidence |
 | /api/subscription-featured | PUT | public/route-specific | n/a | none | route-specific/n/a | read/write | yes | bypassed; API guard required | guarded/n/a | canonical or standalone | no evidence |

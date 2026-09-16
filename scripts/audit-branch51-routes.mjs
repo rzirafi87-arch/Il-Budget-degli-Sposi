@@ -31,17 +31,17 @@ function classify(file, source) {
   const bearerRls = /getBearer\(|createClient\([^)]*bearer|Authorization/.test(source) && !serviceRole;
   const auth = /requireAdminUser/.test(source)
     ? "admin"
-    : /requireUser/.test(source)
+    : /requireUser|requireSession|requireEventAccess|requireEventResource/.test(source)
       ? "user"
       : /CRON_SECRET|x-vercel-cron/.test(source)
         ? "cron"
         : route.startsWith("/api/auth/")
           ? "auth-flow"
           : "public/route-specific";
-  const currentEvent = /requireServerCurrentEvent|resolveCurrentEvent/.test(source);
+  const currentEvent = /requireServerCurrentEvent|resolveCurrentEvent|requireEventAccess/.test(source);
   const explicitEvent = /eventId|event_id/.test(source);
-  const ownerOnly = /requireEventOwner|is_event_owner|\.eq\(["']owner_id["']/.test(source);
-  const memberAccess = /canAccessEvent|can_access_event|event_members|requireFinancialAccess|requirePlanningSelectionAccess/.test(source);
+  const ownerOnly = /requireEventOwner|is_event_owner|\.eq\(["']owner_id["']|requireEventAccess\([^)]*["']owner-only["']/.test(source);
+  const memberAccess = /canAccessEvent|can_access_event|event_members|requireFinancialAccess|requirePlanningSelectionAccess|requireEventAccess/.test(source);
   const ownership = ownerOnly ? "owner" : memberAccess || currentEvent ? "owner+partner" : explicitEvent ? "route-specific" : "n/a";
   const eventSource = currentEvent ? "server current-event" : explicitEvent ? "path/query/body or derived" : "none";
   const write = routeMethods.some((method) => method !== "GET");

@@ -1,74 +1,59 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from "next/server";
-export const runtime = "nodejs";
+import { ApiSecurityError, apiSecurityErrorResponse, parseUuid, requireEventAccess } from "@/lib/apiSecurity";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = "nodejs";
 
 type Body = {
-  event_id?: string;
-  public_id?: string;
-  expires_in_days?: number;
-  token?: string;
+  event_id?: unknown;
+  public_id?: unknown;
+  expires_in_days?: unknown;
 };
+
+type ShareTokenRow = { token: string; expires_at: string };
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json().catch(() => ({}))) as Body;
-
+    const body = (await req.json().catch(() => null)) as Body | null;
+    if (!body || typeof body !== "object") throw new ApiSecurityError("INVALID_SHARE_PAYLOAD", 400);
     const db = getServiceClient();
-    const authHeader = req.headers.get("authorization");
-    const jwt = authHeader?.split(" ")[1];
-    if (!jwt) {
-      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
-    }
-    const { data: authData, error: authErr } = await db.auth.getUser(jwt);
-    if (authErr || !authData?.user) {
-      return NextResponse.json({ error: "Token non valido" }, { status: 401 });
-    }
-    const userId = authData.user.id as string;
-
-    // Resolve event id
-    let eventId = body.event_id || null;
-    if (!eventId && body.public_id) {
-      const { data: evs, error: e1 } = await db
+    let explicitEventId: string | null = null;
+    if (body.event_id !== undefined) {
+      explicitEventId = parseUuid(body.event_id, "INVALID_EVENT_ID");
+    } else if (typeof body.public_id === "string" && body.public_id.trim()) {
+      const { data, error } = await db
         .from("events")
         .select("id")
-        .eq("public_id", body.public_id)
-        .limit(1);
-      if (e1) return NextResponse.json({ error: e1.message }, { status: 500 });
-      eventId = evs?.[0]?.id ?? null;
-    }
-    if (!eventId) {
-      return NextResponse.json({ error: "Specificare event_id o public_id" }, { status: 400 });
-    }
+        .eq("public_id", body.public_id.trim())
+        .maybeSingle();
+      if (error) throw new ApiSecurityError("SHARE_EVENT_LOOKUP_FAILED", 500);
+      if (!data) throw new ApiSecurityError("EVENT_NOT_FOUND", 404);
+      explicitEventId = data.id;
+    } else throw new ApiSecurityError("EVENT_ID_REQUIRED", 400);
 
-    // Authorization: user must be owner/editor of the event
-    const { data: mems, error: mErr } = await db
-      .from("event_members")
-      .select("role")
-      .eq("event_id", eventId)
-      .eq("user_id", userId)
-      .limit(1);
-    if (mErr) return NextResponse.json({ error: mErr.message }, { status: 500 });
-    const role = mems?.[0]?.role as string | undefined;
-    if (!role || (role !== "owner" && role !== "editor")) {
-      return NextResponse.json({ error: "Non autorizzato" }, { status: 403 });
-    }
+    const { currentEvent } = await requireEventAccess(req, "owner-only", explicitEventId);
+    const { data: event, error: eventError } = await db.from("events").select("public_id")
+      .eq("id", currentEvent.eventId).maybeSingle();
+    if (eventError) throw new ApiSecurityError("SHARE_EVENT_LOOKUP_FAILED", 500);
+    if (!event?.public_id) throw new ApiSecurityError("EVENT_NOT_FOUND", 404);
 
     // Create token (RPC ensures uniqueness and returns token + expiry)
-    const expires = typeof body.expires_in_days === "number" ? body.expires_in_days : 7;
+    const expires = body.expires_in_days === undefined ? 7 : Number(body.expires_in_days);
+    if (!Number.isInteger(expires) || expires < 1 || expires > 30) {
+      throw new ApiSecurityError("INVALID_SHARE_EXPIRY", 422);
+    }
     const { data, error } = await db.rpc("create_share_token", {
-      public_id: body.public_id ?? null,
+      public_id: event.public_id,
       expires_in_days: expires,
-      p_token: body.token ?? null,
+      p_token: null,
     });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) throw new ApiSecurityError("SHARE_TOKEN_CREATE_FAILED", 500);
 
     // Supabase returns either object or array depending on function; normalize
-    const row = Array.isArray(data) ? data[0] : (data as any);
-    return NextResponse.json({ token: row?.token, expires_at: row?.expires_at }, { status: 200 });
-  } catch (e: unknown) {
-    const error = e as Error;
-    console.error("SHARE/NEW – Uncaught:", error);
-    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
+    const row = (Array.isArray(data) ? data[0] : data) as ShareTokenRow | null;
+    if (!row?.token || !row.expires_at) throw new ApiSecurityError("SHARE_TOKEN_CREATE_FAILED", 500);
+    return NextResponse.json({ token: row.token, expires_at: row.expires_at });
+  } catch (error) {
+    return apiSecurityErrorResponse(error, "SHARE_TOKEN_CREATE_FAILED");
   }
 }
