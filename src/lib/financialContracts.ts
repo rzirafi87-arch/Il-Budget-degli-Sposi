@@ -192,7 +192,7 @@ export function parseExpenseCreate(value: unknown): ExpenseCreate {
   const status = input.status;
   const expenseDate = input.date;
   const fromDashboard = input.fromDashboard;
-  const savedSupplierId = uuidOrNull(input.savedSupplierId);
+  const savedSupplierId = input.savedSupplierId === undefined ? null : uuidOrNull(input.savedSupplierId);
 
   if (
     !category ||
