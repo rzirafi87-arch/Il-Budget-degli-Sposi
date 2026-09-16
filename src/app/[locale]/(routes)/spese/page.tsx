@@ -11,6 +11,7 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { ExpenseForm } from "@/components/expenses/ExpenseForm";
+import { ExpenseSupplierPaymentControls } from "@/components/expenses/ExpenseSupplierPaymentControls";
 
 const supabase = getBrowserClient();
 
@@ -22,6 +23,7 @@ type Expense = {
   category: string;
   subcategory: string;
   supplier: string;
+  savedSupplierId: string | null;
   description: string;
   amount: number;
   spendType: SpendType;
@@ -185,7 +187,7 @@ export default function SpesePage() {
       <ImageCarousel images={getPageImages("spese", country)} height="280px" />
 
       {message && (
-        <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">
+        <div role="status" aria-live="polite" className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm">
           {message}
         </div>
       )}
@@ -206,7 +208,7 @@ export default function SpesePage() {
       <div className="mb-6">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-[#A3B59D] text-white rounded-lg px-4 py-2 hover:bg-[#8a9d84]"
+          className="min-h-11 rounded-lg bg-[#A3B59D] px-4 py-2 text-white hover:bg-[#8a9d84]"
         >
           {showForm ? t("expensesPage.buttons.cancel") : t("expensesPage.buttons.add")}
         </button>
@@ -279,6 +281,7 @@ export default function SpesePage() {
                         {exp.status === "rejected" && (
                           <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
                         )}
+                        {exp.id ? <ExpenseSupplierPaymentControls expenseId={exp.id} expenseAmount={exp.amount} savedSupplierId={exp.savedSupplierId} onChanged={loadExpenses} /> : null}
                       </dd></div>
                     </dl>
                   </li>
@@ -351,6 +354,7 @@ export default function SpesePage() {
                           {exp.status === "rejected" && (
                             <span className="text-xs text-gray-400">{t("expensesPage.messages.discarded")}</span>
                           )}
+                          {exp.id ? <ExpenseSupplierPaymentControls expenseId={exp.id} expenseAmount={exp.amount} savedSupplierId={exp.savedSupplierId} onChanged={loadExpenses} /> : null}
                         </td>
                       </tr>
                     ))}
