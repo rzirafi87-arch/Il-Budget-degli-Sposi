@@ -73,11 +73,11 @@ export async function requireSameEventSavedSupplier(
   }
 }
 
-export async function requireSameEventLinkedExpense(
+export async function requireSameEventExpense(
   db: ReturnType<typeof getServiceClient>,
   eventId: string,
   expenseId: string,
-): Promise<{ id: string; saved_supplier_id: string }> {
+): Promise<{ id: string; saved_supplier_id: string | null }> {
   const { data, error } = await db
     .from("expenses")
     .select("id,saved_supplier_id")
@@ -91,10 +91,19 @@ export async function requireSameEventLinkedExpense(
   if (!data) {
     throw new FinancialReferenceError("EXPENSE_NOT_FOUND", 404);
   }
-  if (!data.saved_supplier_id) {
+  return data as { id: string; saved_supplier_id: string | null };
+}
+
+export async function requireSameEventLinkedExpense(
+  db: ReturnType<typeof getServiceClient>,
+  eventId: string,
+  expenseId: string,
+): Promise<{ id: string; saved_supplier_id: string }> {
+  const expense = await requireSameEventExpense(db, eventId, expenseId);
+  if (!expense.saved_supplier_id) {
     throw new FinancialReferenceError("EXPENSE_SUPPLIER_LINK_REQUIRED", 409);
   }
-  return data as { id: string; saved_supplier_id: string };
+  return expense as { id: string; saved_supplier_id: string };
 }
 
 export function financialErrorResponse(error: unknown): NextResponse {
