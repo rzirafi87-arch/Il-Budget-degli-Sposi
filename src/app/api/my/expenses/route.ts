@@ -242,6 +242,19 @@ export async function PATCH(req: NextRequest) {
         currentEvent.eventId,
         link.savedSupplierId,
       );
+    } else {
+      const { data: reminder, error: reminderError } = await db
+        .from("payment_reminders")
+        .select("id")
+        .eq("expense_id", link.id)
+        .limit(1)
+        .maybeSingle();
+      if (reminderError) {
+        return NextResponse.json({ error: "PAYMENT_REMINDER_LOOKUP_FAILED" }, { status: 500 });
+      }
+      if (reminder) {
+        return NextResponse.json({ error: "EXPENSE_HAS_PAYMENT_REMINDER" }, { status: 409 });
+      }
     }
 
     const { data, error } = await db
