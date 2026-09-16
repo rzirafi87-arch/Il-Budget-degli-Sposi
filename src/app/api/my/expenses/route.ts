@@ -8,6 +8,7 @@ import {
 import {
   financialErrorResponse,
   requireFinancialAccess,
+  requireSameEventExpense,
   requireSameEventSavedSupplier,
 } from "@/lib/financialAuthorization";
 import { logger } from "@/lib/logger";
@@ -235,6 +236,7 @@ export async function PATCH(req: NextRequest) {
     const { currentEvent } = await requireFinancialAccess(req, "mutate");
     const link = parseExpenseSupplierLink(await req.json());
     const db = getServiceClient();
+    await requireSameEventExpense(db, currentEvent.eventId, link.id);
 
     if (link.savedSupplierId) {
       await requireSameEventSavedSupplier(
