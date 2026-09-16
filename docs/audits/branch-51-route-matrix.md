@@ -1,5 +1,9 @@
 # Branch 51 — route and server-action inventory
 
+## Milestone 3 consolidation annotation
+
+The authoritative Milestone 3 classification, caller audit, parity contracts and deferred items are documented in [`branch-51-milestone-3.md`](./branch-51-milestone-3.md). The six `/api/events/{baby-shower,birthday,engagement-party}/{get,init}` routes now share `src/lib/legacyEventBudget.ts`; the event-creation family keeps `/api/event/ensure-default` as canonical with three thin compatibility aliases. No endpoint was removed because event-create aliases still have active/published callers and the unused budget endpoints remain published compatibility contracts. Event-specific seed routes were not mislabeled as duplicates where their templates or response contracts differ.
+
 Generated from source at 2026-09-16T15:37:56.064Z. This inventory covers **140 API route files**. No files containing a top-level `"use server"` directive were present at audit time. Classifications marked `route-specific` or `review` require manual contract validation in Milestones 2–3; they are not assertions of safety.
 
 | Route | Methods | Auth | Ownership | Event source | Role | Mode | Service role | RLS boundary | IDOR | Canonical status | GET mutation signal |
