@@ -30,6 +30,7 @@ export type ExpenseCreate = {
   date: string;
   notes: string;
   fromDashboard: boolean;
+  savedSupplierId: string | null;
 };
 
 export type PaymentReminderRow = Tables["payment_reminders"]["Row"];
@@ -191,6 +192,7 @@ export function parseExpenseCreate(value: unknown): ExpenseCreate {
   const status = input.status;
   const expenseDate = input.date;
   const fromDashboard = input.fromDashboard;
+  const savedSupplierId = uuidOrNull(input.savedSupplierId);
 
   if (
     !category ||
@@ -218,6 +220,7 @@ export function parseExpenseCreate(value: unknown): ExpenseCreate {
     date: expenseDate,
     notes,
     fromDashboard,
+    savedSupplierId,
   };
 }
 
