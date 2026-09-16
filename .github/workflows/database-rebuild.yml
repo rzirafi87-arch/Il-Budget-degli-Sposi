@@ -205,7 +205,13 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_48_production_migration_simulation.sql
 
       - name: Verify Branch 51 RLS and grant inventory
-        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_51_security_inventory.sql
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_51_security_inventory.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260916193000_branch_51_least_privilege.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_51_least_privilege.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260916193000_branch_51_least_privilege.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_51_least_privilege.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_51_acl_inventory.sql
 
       - name: Lint reconstructed database functions
         run: |

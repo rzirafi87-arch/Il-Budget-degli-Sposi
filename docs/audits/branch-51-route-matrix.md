@@ -1,5 +1,12 @@
 # Branch 51 — route and server-action inventory
 
+## Milestone 4 ACL/RLS annotation
+
+Every route below was rechecked against the Data API ACL/RLS inventory. Browser
+writes are limited to owner-only profile fields; private, administrative,
+lifecycle, cron and catalog-ingestion operations retain the reviewed
+server/service-role boundary. See `branch-51-milestone-4.md`.
+
 ## Milestone 3 consolidation annotation
 
 The authoritative Milestone 3 classification, caller audit, parity contracts and deferred items are documented in [`branch-51-milestone-3.md`](./branch-51-milestone-3.md). The six `/api/events/{baby-shower,birthday,engagement-party}/{get,init}` routes now share `src/lib/legacyEventBudget.ts`; the event-creation family keeps `/api/event/ensure-default` as canonical with three thin compatibility aliases. No endpoint was removed because event-create aliases still have active/published callers and the unused budget endpoints remain published compatibility contracts. Event-specific seed routes were not mislabeled as duplicates where their templates or response contracts differ.
