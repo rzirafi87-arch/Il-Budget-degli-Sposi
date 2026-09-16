@@ -20,6 +20,8 @@ type Totals = { total: 0 | number; common: 0 | number; bride: 0 | number; groom:
 type Row = {
   category: string;
   subcategory: string;
+  supplier: string;
+  savedSupplierId: string | null;
   spend_type: "common" | "bride" | "groom" | "gift";
   payment_method: "common" | "bride" | "groom" | "gift";
   budget: number;
@@ -59,12 +61,14 @@ export default function BudgetPage() {
         ]);
 
         const expensesData = await expensesRes.json();
-        type ExpenseData = { status?: string; category?: string; subcategory?: string; spendType?: string; amount?: number; committed?: number; paid?: number; fromDashboard?: boolean };
+        type ExpenseData = { status?: string; category?: string; subcategory?: string; supplier?: string; savedSupplierId?: string | null; spendType?: string; amount?: number; committed?: number; paid?: number; fromDashboard?: boolean };
         const includedExpenses = (expensesData.expenses || []).filter((exp: ExpenseData) => exp.status !== "rejected");
 
         const budgetRows: Row[] = includedExpenses.map((exp: ExpenseData) => ({
           category: exp.category || "",
           subcategory: exp.subcategory || "",
+          supplier: exp.supplier || "",
+          savedSupplierId: exp.savedSupplierId || null,
           spend_type: (exp.spendType || "common") as "common" | "bride" | "groom" | "gift",
           payment_method: (exp.spendType || "common") as "common" | "bride" | "groom" | "gift",
           budget: Number(exp.committed || exp.amount || 0),
@@ -165,7 +169,48 @@ export default function BudgetPage() {
         </ExportPDFButton>
       </div>
 
-      <div className="app-table-shell">
+      <div className="sm:hidden">
+        {loading ? (
+          <div className="space-y-3 p-4" role="status">
+            <span className="sr-only">{t("budgetPage.loading")}</span>
+            <div className="app-skeleton h-20 w-full" />
+            <div className="app-skeleton h-20 w-full" />
+          </div>
+        ) : rows.length === 0 ? (
+          <EmptyState
+            icon={<Inbox size={26} />}
+            title={t("budgetPage.emptyTitle")}
+            description={t("budgetPage.empty")}
+            action={<AppButtonLink href={`/${locale}/idea-di-budget`}>{t("budgetPage.emptyAction")}</AppButtonLink>}
+          />
+        ) : (
+          <ul className="space-y-3" aria-label={t("budgetPage.approvedExpenses")}>
+            {rows.map((row, index) => (
+              <li key={index} className="min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div className="min-w-0">
+                  <p className="break-words font-semibold">{row.category}</p>
+                  <p className="break-words text-sm text-gray-700">{row.subcategory}</p>
+                  <p className="mt-1 break-words text-sm">
+                    <span className="font-medium">{t("budgetPage.table.supplier")}:</span>{" "}
+                    {row.supplier || t("branch50Financial.noSavedSupplier")}
+                    <span className="ml-2 rounded-full bg-gray-100 px-2 py-1 text-xs">
+                      {row.savedSupplierId ? t("branch50Financial.linked") : t("branch50Financial.unlinked")}
+                    </span>
+                  </p>
+                </div>
+                <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
+                  <div><dt className="text-gray-600">{t("budgetPage.table.budget")}</dt><dd className="font-semibold">{formatEuro(row.budget)}</dd></div>
+                  <div><dt className="text-gray-600">{t("budgetPage.table.paid")}</dt><dd className="font-semibold">{formatEuro(row.paid)}</dd></div>
+                  <div><dt className="text-gray-600">{t("budgetPage.table.residual")}</dt><dd>{formatEuro(row.residual)}</dd></div>
+                  <div><dt className="text-gray-600">{t("budgetPage.table.spendType")}</dt><dd>{row.spend_type === "common" ? t("budgetPage.spendType.common") : row.spend_type === "bride" ? t("budgetPage.spendType.bride") : row.spend_type === "groom" ? t("budgetPage.spendType.groom") : t("budgetPage.spendType.gift")}</dd></div>
+                </dl>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="app-table-shell hidden sm:block">
         <div className="min-w-[980px]">
         <div className="grid grid-cols-10 gap-0 px-6 py-3 text-sm text-gray-900 hidden">
           <div>{t("budgetPage.table.category")}</div>
@@ -217,7 +262,12 @@ export default function BudgetPage() {
                 className="grid grid-cols-10 gap-0 px-6 py-3 text-sm border-t border-gray-50 hover:bg-gray-50/60"
               >
                 <div>{r.category}</div>
-                <div>{r.subcategory}</div>
+                <div>
+                  <span className="block">{r.subcategory}</span>
+                  <span className="mt-1 block break-words text-xs text-gray-600">
+                    {r.supplier || t("branch50Financial.noSavedSupplier")} · {r.savedSupplierId ? t("branch50Financial.linked") : t("branch50Financial.unlinked")}
+                  </span>
+                </div>
                 <div className="capitalize">
                   {isSingleEvent
                     ? t("budgetPage.spendType.common")
