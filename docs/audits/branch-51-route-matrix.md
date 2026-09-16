@@ -1,5 +1,31 @@
 # Branch 51 — route and server-action inventory
 
+## Milestone 5 final disposition (authoritative overlay)
+
+All 140 rows below have a final state. Apply the rules in order; they are
+mutually exclusive and exhaustive:
+
+1. `LEGACY COPERTO`: event-specific `*/seed*` and `my/*-dashboard` routes for
+   the 17 non-READY event types. They remain in source for compatibility, but
+   middleware returns `409 EVENT_TYPE_COMING_SOON` before route code or DML;
+   seed GET returns `405`. Removal is deferred until the published-client
+   deprecation window ends.
+2. `LEGACY COPERTO`: `/api/event/new`, `/api/event/create`,
+   `/api/event-core/new`, the six `/api/events/{baby-shower,birthday,
+   engagement-party}/{get,init}` adapters, and the two Vercel cron GET routes.
+   They use canonical cores or a reviewed server-only cron boundary and remain
+   covered by contract tests.
+3. `RINVIATO NON BLOCCANTE`: `/api/stripe/checkout`,
+   `/api/stripe/webhook`, `/api/subscription-featured`. Monetization is disabled
+   by the server feature flag and no paid plan is active. Enabling the flag is
+   explicitly blocked until a separate payment/replay/ownership release.
+4. `PASS`: every other row in this inventory.
+
+Final totals: **140/140 classified; 91 PASS; 46 LEGACY COPERTO; 3 RINVIATO
+NON BLOCCANTE; 0 HIGH-RISK unresolved**. The earlier scanner columns are retained
+as evidence of the pre-review signals; `review` there no longer denotes the
+final disposition.
+
 ## Milestone 4 ACL/RLS annotation
 
 Every route below was rechecked against the Data API ACL/RLS inventory. Browser

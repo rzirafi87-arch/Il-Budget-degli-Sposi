@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -26,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     let query = db
       .from("atelier")
-      .select("*")
+      .select("id,name,category,region,province,city,address,phone,email,website,description,price_range,styles,services,capacity,verified")
       .order("name", { ascending: true });
 
     // Filtri
@@ -40,7 +39,7 @@ export async function GET(req: NextRequest) {
       try {
         ({ data, error } = await db
           .from("atelier")
-          .select("*")
+          .select("id,name,category,region,province,city,address,phone,email,website,description,price_range,styles,services,capacity,verified")
           .match({
             category: category || undefined,
             region: region || undefined,
@@ -49,24 +48,24 @@ export async function GET(req: NextRequest) {
           .ilike("city", city ? `%${city}%` : "%%")
           .eq("country", country)
           .order("name", { ascending: true }));
-      } catch (e: unknown) {
+      } catch {
         if (country !== "it") {
-          data = [] as any;
-          error = null as any;
+          data = [];
+          error = null;
         }
       }
     }
 
     if (error) {
       console.error("Atelier fetch error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "ATELIER_CATALOG_READ_FAILED" }, { status: 500 });
     }
 
     return NextResponse.json({ atelier: data || [] });
   } catch (e: unknown) {
     const error = e as Error;
     console.error("Atelier API error:", error);
-    return NextResponse.json({ error: error?.message || "Unexpected error" }, { status: 500 });
+    return NextResponse.json({ error: "ATELIER_CATALOG_READ_FAILED" }, { status: 500 });
   }
 }
 
@@ -75,6 +74,12 @@ export async function GET(req: NextRequest) {
  * Crea un nuovo atelier (richiede autenticazione)
  */
 export async function POST(req: NextRequest) {
+  void req;
+  return NextResponse.json(
+    { error: "DIRECT_CATALOG_WRITES_DISABLED" },
+    { status: 405, headers: { Allow: "GET" } },
+  );
+  /* istanbul ignore next -- historical implementation retained below for the deprecation window */
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];
@@ -149,7 +154,7 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("Atelier insert error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "ATELIER_CATALOG_WRITE_FAILED" }, { status: 500 });
     }
 
     return NextResponse.json({ atelier: data }, { status: 201 });
