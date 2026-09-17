@@ -13,15 +13,15 @@ jest.mock("@/lib/supabaseServer", () => ({
 }));
 
 describe("subscription write boundary", () => {
-  it("rejects client-authored completed transactions before database access", async () => {
+  it("rejects client-authored completed transactions while payments are disabled", async () => {
     const { POST } = await import("./subscription-transactions/route");
     const response = await POST({} as never) as unknown as {
       body: unknown;
       status: number;
       headers: Headers;
     };
-    expect(response.status).toBe(405);
-    expect(response.headers.get("allow")).toBe("GET");
-    expect(response.body).toEqual({ error: "SUBSCRIPTION_WRITES_SERVER_ONLY" });
+    expect(response.status).toBe(409);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.body).toEqual({ error: "FEATURE_DISABLED", feature: "payments" });
   });
 });

@@ -3,8 +3,8 @@
 ## Release-candidate decision
 
 All 140 route files are classified by the authoritative overlay in
-`branch-51-route-matrix.md`: 91 PASS, 46 LEGACY COPERTO, 3 RINVIATO NON
-BLOCCANTE, no unresolved HIGH-RISK row.
+`branch-51-route-matrix.md`: 94 PASS/PASS-DISABLED, 46 LEGACY COPERTO, no
+deferred or unresolved HIGH-RISK row.
 
 ## Residual fixes
 
@@ -52,16 +52,24 @@ the same fingerprints and counts; apply the single migration; run ACL/RLS/Data
 API/RPC tests; compare fingerprints and counts; then run authenticated smoke.
 No cleanup or backfill is part of that plan.
 
+The reconciliation checkpoint replaces historical fixed counts with the
+deterministic read-only snapshot in
+`supabase/tests/branch_51_production_snapshot.sql`. The same output must be
+captured immediately before and after Production application.
+
 ## Preserved state
 
-The branch contains no Production mutation. It preserves 326 suppliers, 896
-places of worship, 155 locations, 24 events (including 11 without owner), all
+The branch contains no Production mutation. The reconciled current snapshot is
+326 suppliers, 896 places of worship, 155 locations and 25 events: 11 owner IDs
+do not resolve to Auth and 14 do. It preserves all
 memberships/invitations, Budget, expenses, reminders, Timeline, favourites,
 catalogues/provenance, Matrimonio READY, and every other event type disabled.
 
 ## Residual risk
 
-The three payment-related endpoints are non-blocking only while the server
-payment flag remains disabled. Enabling payments requires a dedicated release
-covering ownership binding, webhook replay/idempotency and transactional state.
-No Release Candidate action enables that flag.
+Monetization is now fail-closed in shared server code and tested with absent and
+configured Stripe secrets. Checkout, webhook, featured subscription and all
+secondary subscription/payment routes return the stable 409 contract before
+provider, database or external side effects. Enabling payments still requires a
+dedicated ownership/replay/idempotency/transactional release; no Release
+Candidate action enables it.

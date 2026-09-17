@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { flags } from "@/config/flags";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/locale";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
@@ -62,11 +63,13 @@ export default function FornitoriDashboardPage() {
       }
 
       // Carica transazioni
-      const resTransactions = await fetch("/api/my/subscription-transactions", { headers });
-      const dataTransactions = await resTransactions.json();
-      
-      if (dataTransactions.transactions) {
-        setTransactions(dataTransactions.transactions);
+      if (flags.payments_stripe) {
+        const resTransactions = await fetch("/api/my/subscription-transactions", { headers });
+        const dataTransactions = await resTransactions.json();
+
+        if (dataTransactions.transactions) {
+          setTransactions(dataTransactions.transactions);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -195,19 +198,29 @@ export default function FornitoriDashboardPage() {
 
         {/* Actions */}
   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Link
-            href="/pacchetti-fornitori"
-            className="p-6 rounded-2xl border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D]/10 transition-all text-center"
-          >
-            <h3 className="font-semibold text-lg mb-2">
-              {profile.subscription_tier === "free" ? t("supplierDashboard.actions.buyPlan") : t("supplierDashboard.actions.changePlan")}
-            </h3>
-            <p className="text-sm text-gray-600">
-              {profile.subscription_tier === "free" 
-                ? t("supplierDashboard.actions.buyPlanDescription")
-                : t("supplierDashboard.actions.changePlanDescription")}
-            </p>
-          </Link>
+          {flags.payments_stripe ? (
+            <Link
+              href="/pacchetti-fornitori"
+              className="p-6 rounded-2xl border-2 border-[#A3B59D] bg-white hover:bg-[#A3B59D]/10 transition-all text-center"
+            >
+              <h3 className="font-semibold text-lg mb-2">
+                {profile.subscription_tier === "free" ? t("supplierDashboard.actions.buyPlan") : t("supplierDashboard.actions.changePlan")}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {profile.subscription_tier === "free"
+                  ? t("supplierDashboard.actions.buyPlanDescription")
+                  : t("supplierDashboard.actions.changePlanDescription")}
+              </p>
+            </Link>
+          ) : (
+            <div
+              aria-disabled="true"
+              className="p-6 rounded-2xl border-2 border-gray-200 bg-gray-50 text-center"
+            >
+              <h3 className="font-semibold text-lg mb-2">{t("supplierDashboard.actions.buyPlan")}</h3>
+              <p className="text-sm text-gray-600">{t("supplierDashboard.actions.manageComingSoon")}</p>
+            </div>
+          )}
 
           <button
             onClick={() => alert(t("supplierDashboard.actions.manageComingSoon"))}

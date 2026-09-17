@@ -70,12 +70,14 @@ privileges or direct technical-table access.
 
 ## Production application plan — not executed
 
-1. Confirm exact Production schema fingerprint and preserved counts.
-2. Capture the deterministic pre-migration inventory.
+1. Confirm exact Production identity and schema fingerprint.
+2. Capture `branch_51_production_snapshot.sql` immediately pre-migration; do
+   not compare against historical fixed counts.
 3. Apply the migration transactionally in a controlled release window.
 4. Diff post-migration inventory and run SQL/Data API/RPC probes.
 5. Deploy the matching application SHA and run authenticated/public smoke tests.
-6. Recheck counts and monitor permission errors.
+6. Capture the same snapshot post-migration and require identical counts and
+   checksums; monitor permission errors.
 7. If a verified caller was omitted, roll forward with one narrow grant; never restore broad defaults.
 
 ## Residual risk for Milestone 5

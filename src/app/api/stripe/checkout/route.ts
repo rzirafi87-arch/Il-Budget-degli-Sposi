@@ -1,14 +1,9 @@
 import { BRAND_NAME } from "@/config/brand";
-import { flags } from "@/config/flags";
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 export const runtime = "nodejs";
-
-// Initialize Stripe using the account's default API version to avoid mismatches
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY)
-  : null;
 
 type CheckoutRequest = {
   tier: "base" | "premium" | "premium_plus";
@@ -19,13 +14,15 @@ type CheckoutRequest = {
 };
 
 export async function POST(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   try {
-    if (!flags.payments_stripe) {
-      return NextResponse.json({ error: "Pagamenti temporaneamente disabilitati" }, { status: 503 });
-    }
-    if (!stripe) {
+    const stripeSecret = process.env.STRIPE_SECRET_KEY;
+    if (!stripeSecret) {
       return NextResponse.json({ error: "Stripe non configurato" }, { status: 503 });
     }
+    const stripe = new Stripe(stripeSecret);
 
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];

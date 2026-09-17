@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function GET(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];

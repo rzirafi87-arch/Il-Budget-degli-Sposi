@@ -15,14 +15,17 @@ mutually exclusive and exhaustive:
    engagement-party}/{get,init}` adapters, and the two Vercel cron GET routes.
    They use canonical cores or a reviewed server-only cron boundary and remain
    covered by contract tests.
-3. `RINVIATO NON BLOCCANTE`: `/api/stripe/checkout`,
-   `/api/stripe/webhook`, `/api/subscription-featured`. Monetization is disabled
-   by the server feature flag and no paid plan is active. Enabling the flag is
-   explicitly blocked until a separate payment/replay/ownership release.
-4. `PASS`: every other row in this inventory.
+3. `PASS/DISABLED`: `/api/stripe/checkout`, `/api/stripe/webhook` and
+   `/api/subscription-featured`. A shared fail-closed server guard returns the
+   tested `409 FEATURE_DISABLED` contract before credentials, Stripe, request
+   parsing, Auth, database access, DML or external effects. The same guard also
+   closes subscription transactions/history/packages, subscription cron and the
+   paid supplier mutation.
+4. `PASS`: every other row in this inventory, including the server-only
+   `POST /api/subscription-transactions` boundary behind the disabled guard.
 
-Final totals: **140/140 classified; 91 PASS; 46 LEGACY COPERTO; 3 RINVIATO
-NON BLOCCANTE; 0 HIGH-RISK unresolved**. The earlier scanner columns are retained
+Final totals: **140/140 classified; 94 PASS/PASS-DISABLED; 46 LEGACY COPERTO;
+0 RINVIATO; 0 HIGH-RISK unresolved**. The earlier scanner columns are retained
 as evidence of the pre-review signals; `review` there no longer denotes the
 final disposition.
 

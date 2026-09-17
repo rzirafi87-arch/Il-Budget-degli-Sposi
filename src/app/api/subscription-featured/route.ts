@@ -1,5 +1,6 @@
 export const runtime = "nodejs";
 
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,6 +16,9 @@ type UpdateFeaturedInput = {
  * Only allowed for Premium/Premium Plus subscribers
  */
 export async function PUT(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
 

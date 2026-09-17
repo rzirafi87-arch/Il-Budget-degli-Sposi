@@ -1,26 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { flags } from "@/config/flags";
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { sendSubscriptionActivated } from "@/lib/emailService";
 import Stripe from "stripe";
 
-// Initialize Stripe using account default API version to avoid mismatches
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY)
-  : null;
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
-
 export async function POST(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   try {
-    if (!flags.payments_stripe) {
-      return NextResponse.json({ error: "Pagamenti temporaneamente disabilitati" }, { status: 503 });
-    }
-    if (!stripe) {
+    const stripeSecret = process.env.STRIPE_SECRET_KEY;
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
+    if (!stripeSecret) {
       return NextResponse.json({ error: "Stripe not configured" }, { status: 503 });
     }
+    const stripe = new Stripe(stripeSecret);
 
     const body = await req.text();
     const signature = req.headers.get("stripe-signature");
@@ -176,4 +172,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error?.message || "Webhook error" }, { status: 500 });
   }
 }
-

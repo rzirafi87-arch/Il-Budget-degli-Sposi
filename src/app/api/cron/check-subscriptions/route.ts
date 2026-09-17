@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { sendSubscriptionExpiryWarning } from "@/lib/emailService";
 
 // Questo endpoint viene chiamato da Vercel Cron
 // Configurazione in vercel.json
 export async function GET(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   try {
     // Verifica secret (due modalità):
     // 1) Authorization: Bearer <CRON_SECRET>  (per run manuali)

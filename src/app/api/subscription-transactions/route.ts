@@ -1,5 +1,6 @@
 export const runtime = "nodejs";
 
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,6 +18,9 @@ type SubscriptionTransactionInput = {
  * Returns user's subscription transactions
  */
 export async function GET(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
 
@@ -80,6 +84,9 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   void req;
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   return NextResponse.json(
     { error: "SUBSCRIPTION_WRITES_SERVER_ONLY" },
     { status: 405, headers: { Allow: "GET" } },

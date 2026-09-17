@@ -4,7 +4,7 @@ export const flags = {
   country_mexico: true,
   country_india: false,
   ai_suggestions: false,
-  payments_stripe: true,
+  payments_stripe: false,
   enable_wedding: true,
   enable_baptism: true,
   enable_communion: true,

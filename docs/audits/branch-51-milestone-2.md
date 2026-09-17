@@ -45,7 +45,7 @@ Milestone 2 hardens authentication, event ownership and IDOR boundaries without 
 
 ## Data and schema preservation
 
-No migration is required for this milestone. No Production DML, migration, grant change, cleanup, backfill or reassignment is performed. The preservation contract remains: 326 suppliers, 896 places of worship, 155 locations, 24 events including 11 ownerless events, and all memberships, invitations, Budget, expenses, reminders, Timeline, favourites and catalogues.
+No migration is required for this milestone. No Production DML, migration, grant change, cleanup, backfill or reassignment is performed. The 24-event/11-absent-Auth-owner figures were this milestone's historical snapshot. The later reconciliation records 25 current events (11 absent-Auth-owner exceptions and 14 resolving owners) and replaces fixed numbers with an immediate pre/post-migration count-and-checksum comparison. All memberships, invitations, Budget, expenses, reminders, Timeline, favourites and catalogues remain protected.
 
 ## Deferred work
 

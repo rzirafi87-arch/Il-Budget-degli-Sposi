@@ -11,7 +11,7 @@
 
 ## Data preservation contract
 
-The work must preserve 326 legacy suppliers, 896 places of worship, 155 locations, 24 events (including 11 without an owner), memberships and invitations, Budget, expenses, reminders, Timeline, favourites, catalogues and provenance, and the `Matrimonio` READY configuration.
+The historical checkpoint was 326 legacy suppliers, 896 places of worship, 155 locations and 24 events (including 11 owner references absent from Auth). The later read-only reconciliation records the current 25-event Production baseline and explains the one legitimate post-snapshot event; future preservation uses the immediate pre/post-migration snapshot rather than fixed historical counts. Memberships and invitations, Budget, expenses, reminders, Timeline, favourites, catalogues/provenance and the `Matrimonio` READY configuration remain protected.
 
 ## Inventory result
 
