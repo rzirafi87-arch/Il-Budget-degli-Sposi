@@ -45,9 +45,10 @@ jobs:
       - name: Resolve exact Vercel Preview for this commit
         env:
           GH_TOKEN: ${{ github.token }}
+          PREVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           for attempt in $(seq 1 60); do
-            deployment_id="$(gh api "/repos/${GITHUB_REPOSITORY}/deployments?sha=${GITHUB_SHA}&environment=Preview%20%E2%80%93%20il-budget-degli-sposi" --jq '.[0].id // empty')"
+            deployment_id="$(gh api "/repos/${GITHUB_REPOSITORY}/deployments?sha=${PREVIEW_SHA}&environment=Preview%20%E2%80%93%20il-budget-degli-sposi" --jq '.[0].id // empty')"
             if test -n "$deployment_id"; then
               preview_url="$(gh api "/repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}/statuses" --jq '[.[] | select(.state == "success" and (.environment_url // "") != "")][0].environment_url // empty')"
               if [[ "$preview_url" =~ ^https://[a-zA-Z0-9.-]+\.vercel\.app$ ]]; then
