@@ -11,7 +11,11 @@ import {
   verifyDeletedCascade,
   type QaIdentity,
 } from "./helpers/milestone8-fixtures";
-import { emailAuditConfigured, waitForTransactionalEmail } from "./helpers/transactional-email-audit";
+import {
+  emailAuditConfigured,
+  resolveTransactionalEmailLink,
+  waitForTransactionalEmail,
+} from "./helpers/transactional-email-audit";
 
 const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
 const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
@@ -121,8 +125,9 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
       subject: /reimposta la password/i,
       timeoutMs: Math.max(1, deadline - Date.now()),
     });
-    const hrefs = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
+    const rawHrefs = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
       .map(match => match[1].replaceAll("&amp;", "&"));
+    const hrefs = await Promise.all(rawHrefs.map(resolveTransactionalEmailLink));
     const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
     if (!link) throw new Error("Recovery email did not contain the real verification callback.");
     return link;

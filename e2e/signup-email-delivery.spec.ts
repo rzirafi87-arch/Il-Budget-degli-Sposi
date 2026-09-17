@@ -1,13 +1,19 @@
 import { createHash, randomBytes } from "node:crypto";
 import { expect, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
-import { emailAuditConfigured, waitForTransactionalEmail } from "./helpers/transactional-email-audit";
+import {
+  emailAuditConfigured,
+  resolveTransactionalEmailLink,
+  waitForTransactionalEmail,
+} from "./helpers/transactional-email-audit";
 
 const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
 const serviceRole = process.env.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY;
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const mailboxBase = process.env.PLAYWRIGHT_SIGNUP_EMAIL_BASE || process.env.PLAYWRIGHT_TEST_EMAIL;
+const mailboxBase = process.env.PLAYWRIGHT_SIGNUP_EMAIL_BASE
+  || process.env.PLAYWRIGHT_PARTNER_EMAIL
+  || process.env.PLAYWRIGHT_TEST_EMAIL;
 
 function uniqueMailbox(base: string) {
   const at = base.lastIndexOf("@");
@@ -25,9 +31,10 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
     subject: "Conferma il tuo account – Il Budget degli Sposi",
     timeoutMs: 120_000,
   });
-  const links = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
+  const rawLinks = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
     .map(match => match[1].replaceAll("&amp;", "&"))
     .filter(value => value.startsWith("https://"));
+  const links = await Promise.all(rawLinks.map(resolveTransactionalEmailLink));
   const verification = links.find(value => {
     try {
       const url = new URL(value);

@@ -57,6 +57,43 @@ export function emailAuditConfigured() {
   return emailAuditMissingConfiguration().length === 0;
 }
 
+function isBrevoTrackingUrl(url: URL) {
+  return url.protocol === "https:"
+    && (url.hostname === "sendibt3.com" || url.hostname.endsWith(".sendibt3.com"))
+    && url.pathname.startsWith("/tr/cl/")
+    && !url.username
+    && !url.password
+    && !url.hash;
+}
+
+export async function resolveTransactionalEmailLink(value: string) {
+  let current: URL;
+  try {
+    current = new URL(value);
+  } catch {
+    return value;
+  }
+  if (configuredProvider() !== "brevo" || !isBrevoTrackingUrl(current)) return current.href;
+
+  for (let hop = 0; hop < 3 && isBrevoTrackingUrl(current); hop += 1) {
+    const response = await fetch(current, {
+      redirect: "manual",
+      signal: AbortSignal.timeout(10_000),
+    });
+    const location = response.headers.get("location");
+    if (![301, 302, 303, 307, 308].includes(response.status) || !location) {
+      throw new Error("QA email tracking link did not resolve safely.");
+    }
+    current = new URL(location, current);
+    if (current.protocol !== "https:" || current.username || current.password || current.hash) {
+      throw new Error("QA email tracking link resolved to an unsafe destination.");
+    }
+  }
+
+  if (isBrevoTrackingUrl(current)) throw new Error("QA email tracking link exceeded the redirect limit.");
+  return current.href;
+}
+
 function configuredProvider(): EmailProvider {
   const missing = emailAuditMissingConfiguration();
   if (missing.length) throw new Error(`QA email audit is missing: ${missing.join(", ")}.`);
@@ -120,7 +157,8 @@ async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Prom
     headers,
   );
   const events = (detail.events || []).map(event => (event.name || "").toLowerCase());
-  if (events.some(event => ["blocked", "hardbounce", "hardbounces", "invalid"].includes(event))) {
+  if (events.some(event => ["blocked", "hardbounce", "hardbounces", "invalid"].includes(event))
+    || (!events.includes("delivered") && events.some(event => ["softbounce", "softbounces"].includes(event)))) {
     throw new Error("QA email reached a terminal delivery failure.");
   }
   if (options.requireDelivered && !events.includes("delivered")) return null;

@@ -1,6 +1,10 @@
 import { expect, type BrowserContext, type Page, test, type TestInfo } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
-import { emailAuditMissingConfiguration, waitForTransactionalEmail } from "./helpers/transactional-email-audit";
+import {
+  emailAuditMissingConfiguration,
+  resolveTransactionalEmailLink,
+  waitForTransactionalEmail,
+} from "./helpers/transactional-email-audit";
 
 const ownerEmail = process.env.PLAYWRIGHT_TEST_EMAIL;
 const ownerPassword = process.env.PLAYWRIGHT_TEST_PASSWORD;
@@ -204,8 +208,9 @@ async function invitationLinkAfter(startedAt: number, previousMessageId?: string
     && value.hostname.startsWith("il-budget-degli-sposi-")
     && value.hostname.endsWith("-rzirafi87-archs-projects.vercel.app")
   );
-  const candidates = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
-    .map(match => match[1].replaceAll("&amp;", "&"))
+  const rawLinks = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
+    .map(match => match[1].replaceAll("&amp;", "&"));
+  const candidates = (await Promise.all(rawLinks.map(resolveTransactionalEmailLink)))
     .map(value => { try { return new URL(value); } catch { return null; } })
     .filter((value): value is URL => value !== null && isApprovedOrigin(value) && value.pathname === "/it/invitation");
   expect(candidates.length, "Email must contain exactly one invitation link on the verified application origin").toBe(1);
