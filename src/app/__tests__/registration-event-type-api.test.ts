@@ -7,6 +7,7 @@ jest.mock("@/lib/authRateLimit", () => ({
 }));
 jest.mock("@/lib/mailer", () => ({
   siteUrl: () => "http://localhost",
+  confirmationSubject: () => "Confirm account",
   confirmationTemplate: () => "confirmation",
   sendMail: jest.fn(async () => undefined),
 }));

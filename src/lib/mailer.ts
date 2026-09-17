@@ -1,30 +1,38 @@
-import { Resend } from "resend";
-
 import {
   BRAND_NAME,
   BRAND_SITE_URL,
 } from "@/config/brand";
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const RESEND_FROM = process.env.RESEND_FROM;
-
-let resend: Resend | null = null;
-if (RESEND_API_KEY) {
-  resend = new Resend(RESEND_API_KEY);
-}
+import { sendTransactionalEmail } from "@/lib/email/sendTransactionalEmail";
 
 export async function sendMail(to: string, subject: string, html: string) {
-  if (!resend || !RESEND_FROM) {
-    throw new Error("EMAIL_PROVIDER_NOT_CONFIGURED");
-  }
-  const { data, error } = await resend.emails.send({
-    from: RESEND_FROM!,
-    to,
-    subject,
-    html,
-  });
-  if (error) throw error;
-  return data;
+  return sendTransactionalEmail({ to, subject, html });
+}
+
+export type EmailLocale = "it" | "en" | "es" | "fr" | "de";
+
+const emailCopy = {
+  it: { confirmSubject: "Conferma il tuo account – Il Budget degli Sposi", confirmTitle: "Conferma il tuo account", confirmBody: "Per completare la registrazione, conferma il tuo indirizzo email.", confirmCta: "Conferma email", resetSubject: "Reimposta la password – Il Budget degli Sposi", resetTitle: "Reimposta la password", resetCta: "Scegli una nuova password", ignore: "Se non hai richiesto questa email, ignorala." },
+  en: { confirmSubject: "Confirm your account – Il Budget degli Sposi", confirmTitle: "Confirm your account", confirmBody: "Confirm your email address to complete registration.", confirmCta: "Confirm email", resetSubject: "Reset your password – Il Budget degli Sposi", resetTitle: "Reset your password", resetCta: "Choose a new password", ignore: "If you did not request this email, ignore it." },
+  es: { confirmSubject: "Confirma tu cuenta – Il Budget degli Sposi", confirmTitle: "Confirma tu cuenta", confirmBody: "Confirma tu dirección de email para completar el registro.", confirmCta: "Confirmar email", resetSubject: "Restablece tu contraseña – Il Budget degli Sposi", resetTitle: "Restablece tu contraseña", resetCta: "Elegir una nueva contraseña", ignore: "Si no solicitaste este email, ignóralo." },
+  fr: { confirmSubject: "Confirmez votre compte – Il Budget degli Sposi", confirmTitle: "Confirmez votre compte", confirmBody: "Confirmez votre adresse e-mail pour terminer l’inscription.", confirmCta: "Confirmer l’e-mail", resetSubject: "Réinitialisez votre mot de passe – Il Budget degli Sposi", resetTitle: "Réinitialisez votre mot de passe", resetCta: "Choisir un nouveau mot de passe", ignore: "Si vous n’avez pas demandé cet e-mail, ignorez-le." },
+  de: { confirmSubject: "Bestätige dein Konto – Il Budget degli Sposi", confirmTitle: "Bestätige dein Konto", confirmBody: "Bestätige deine E-Mail-Adresse, um die Registrierung abzuschließen.", confirmCta: "E-Mail bestätigen", resetSubject: "Passwort zurücksetzen – Il Budget degli Sposi", resetTitle: "Passwort zurücksetzen", resetCta: "Neues Passwort wählen", ignore: "Wenn du diese E-Mail nicht angefordert hast, ignoriere sie." },
+} as const;
+
+const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+}[character]!));
+
+export function emailLocaleFromRequest(request: Request): EmailLocale {
+  const header = request.headers.get("accept-language")?.slice(0, 2).toLowerCase();
+  return header && header in emailCopy ? header as EmailLocale : "it";
+}
+
+export function confirmationSubject(locale: EmailLocale = "it") {
+  return emailCopy[locale].confirmSubject;
+}
+
+export function recoverySubject(locale: EmailLocale = "it") {
+  return emailCopy[locale].resetSubject;
 }
 
 export function siteUrl(request?: Request) {
@@ -59,12 +67,14 @@ export function magicLinkTemplate(link: string) {
   </div>`;
 }
 
-export function confirmationTemplate(link: string) {
+export function confirmationTemplate(link: string, locale: EmailLocale = "it") {
   const brand = process.env.NEXT_PUBLIC_APP_NAME || BRAND_NAME;
-  return `<div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;line-height:1.5;color:#111"><h2>Conferma il tuo account su ${brand}</h2><p>Per completare la registrazione, conferma il tuo indirizzo email.</p><p><a href="${link}" style="display:inline-block;background:#7d5960;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Conferma email</a></p><p style="font-size:12px;color:#666">Se non hai creato questo account, ignora l’email.</p></div>`;
+  const copy = emailCopy[locale];
+  return `<div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;line-height:1.5;color:#111"><h2>${escapeHtml(copy.confirmTitle)} – ${escapeHtml(brand)}</h2><p>${escapeHtml(copy.confirmBody)}</p><p><a href="${escapeHtml(link)}" style="display:inline-block;background:#7d5960;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">${escapeHtml(copy.confirmCta)}</a></p><p style="font-size:12px;color:#666">${escapeHtml(copy.ignore)}</p></div>`;
 }
 
-export function recoveryTemplate(link: string) {
+export function recoveryTemplate(link: string, locale: EmailLocale = "it") {
   const brand = process.env.NEXT_PUBLIC_APP_NAME || BRAND_NAME;
-  return `<div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;line-height:1.5;color:#111"><h2>Reimposta la password di ${brand}</h2><p><a href="${link}" style="display:inline-block;background:#7d5960;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Scegli una nuova password</a></p><p style="font-size:12px;color:#666">Se non hai richiesto il reset, ignora l’email.</p></div>`;
+  const copy = emailCopy[locale];
+  return `<div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;line-height:1.5;color:#111"><h2>${escapeHtml(copy.resetTitle)} – ${escapeHtml(brand)}</h2><p><a href="${escapeHtml(link)}" style="display:inline-block;background:#7d5960;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">${escapeHtml(copy.resetCta)}</a></p><p style="font-size:12px;color:#666">${escapeHtml(copy.ignore)}</p></div>`;
 }

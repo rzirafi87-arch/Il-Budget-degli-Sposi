@@ -1,4 +1,4 @@
-import { confirmationTemplate, sendMail, siteUrl } from "@/lib/mailer";
+import { confirmationSubject, confirmationTemplate, sendMail, siteUrl, type EmailLocale } from "@/lib/mailer";
 import { checkAuthRateLimit } from "@/lib/authRateLimit";
 import { rateLimitResponse } from "@/lib/publicApiGuard";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -129,6 +129,7 @@ export async function POST(req: NextRequest) {
     const weddingDate =
       "weddingDate" in body && typeof body.weddingDate === "string" ? body.weddingDate : null;
     const next = safeInternalPath("next" in body && typeof body.next === "string" ? body.next : null, "/it/dashboard");
+    const locale = (next.match(/^\/(it|en|es|fr|de)(?:\/|$)/)?.[1] || "it") as EmailLocale;
     const invitationSignup = /^\/(it|en|es|fr|de)\/invitation\?token=[A-Za-z0-9_-]{32,}$/.test(next);
     const eventTypeDecision = validateEventTypeForRegistration(
       "eventType" in body ? body.eventType : "wedding",
@@ -193,7 +194,7 @@ export async function POST(req: NextRequest) {
 
     if (invitationSignup) {
       try {
-        await sendMail(primaryEmail, "Conferma il tuo account – Il Budget degli Sposi", confirmationTemplate(ownerRes.properties.action_link));
+        await sendMail(primaryEmail, confirmationSubject(locale), confirmationTemplate(ownerRes.properties.action_link, locale));
       } catch {
         return failAndCompensate(db, registration, primaryEmail, "REGISTRATION_DELIVERY_FAILED", 502);
       }
@@ -235,7 +236,7 @@ export async function POST(req: NextRequest) {
 
     // 5) Send confirmation to owner. Partner invitation remains a distinct flow.
     try {
-      await sendMail(primaryEmail, "Conferma il tuo account – Il Budget degli Sposi", confirmationTemplate(ownerRes.properties.action_link));
+      await sendMail(primaryEmail, confirmationSubject(locale), confirmationTemplate(ownerRes.properties.action_link, locale));
     } catch {
       return failAndCompensate(db, registration, primaryEmail, "REGISTRATION_DELIVERY_FAILED", 502);
     }

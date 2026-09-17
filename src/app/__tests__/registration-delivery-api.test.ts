@@ -6,6 +6,7 @@ jest.mock("@/lib/authRateLimit", () => ({
 }));
 jest.mock("@/lib/mailer", () => ({
   siteUrl: () => "https://app.example.test",
+  confirmationSubject: () => "Confirm account",
   confirmationTemplate: (link: string) => `<a href="${link}">confirm</a>`,
   sendMail: (...args: unknown[]) => mockSendMail(...args),
 }));
