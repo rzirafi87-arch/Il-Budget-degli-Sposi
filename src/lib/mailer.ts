@@ -1,13 +1,12 @@
 import { Resend } from "resend";
 
 import {
-  BRAND_FROM_EMAIL,
   BRAND_NAME,
   BRAND_SITE_URL,
 } from "@/config/brand";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const RESEND_FROM = process.env.RESEND_FROM || BRAND_FROM_EMAIL;
+const RESEND_FROM = process.env.RESEND_FROM;
 
 let resend: Resend | null = null;
 if (RESEND_API_KEY) {
@@ -15,9 +14,8 @@ if (RESEND_API_KEY) {
 }
 
 export async function sendMail(to: string, subject: string, html: string) {
-  if (!resend) {
-    console.warn("Resend non configurato: invio email saltato");
-    return { id: "skipped-local" };
+  if (!resend || !RESEND_FROM) {
+    throw new Error("EMAIL_PROVIDER_NOT_CONFIGURED");
   }
   const { data, error } = await resend.emails.send({
     from: RESEND_FROM!,
