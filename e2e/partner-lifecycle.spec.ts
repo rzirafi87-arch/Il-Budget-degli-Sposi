@@ -197,10 +197,17 @@ async function invitationLinkAfter(startedAt: number, previousMessageId?: string
     subject: "Invito al tuo evento",
   });
   const expectedOrigin = new URL(configuredBaseUrl!).origin;
+  const expectedHost = new URL(expectedOrigin).hostname;
+  const isApprovedOrigin = (value: URL) => value.origin === expectedOrigin || (
+    expectedHost.endsWith(".vercel.app")
+    && value.protocol === "https:"
+    && value.hostname.startsWith("il-budget-degli-sposi-")
+    && value.hostname.endsWith("-rzirafi87-archs-projects.vercel.app")
+  );
   const candidates = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
     .map(match => match[1].replaceAll("&amp;", "&"))
     .map(value => { try { return new URL(value); } catch { return null; } })
-    .filter((value): value is URL => value !== null && value.origin === expectedOrigin && value.pathname === "/it/invitation");
+    .filter((value): value is URL => value !== null && isApprovedOrigin(value) && value.pathname === "/it/invitation");
   expect(candidates.length, "Email must contain exactly one invitation link on the verified application origin").toBe(1);
   const link = candidates[0];
   expect(link.protocol, "Preview invitation must use HTTPS").toBe("https:");

@@ -34,6 +34,12 @@ type BrevoEmailContent = {
   events?: Array<{ name?: string; time?: string }>;
 };
 
+class EmailAuditRateLimitError extends Error {
+  constructor(readonly retryAfterMs: number) {
+    super("QA email audit was rate limited.");
+  }
+}
+
 const provider = process.env.PLAYWRIGHT_EMAIL_PROVIDER?.trim().toLowerCase();
 const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const brevoApiKey = process.env.PLAYWRIGHT_BREVO_API_KEY;
@@ -65,6 +71,13 @@ function matchesSubject(actual: string, expected: string | RegExp) {
 
 async function jsonRequest<T>(url: string, headers: Record<string, string>): Promise<T> {
   const response = await fetch(url, { headers, signal: AbortSignal.timeout(10_000) });
+  if (response.status === 429) {
+    const retryAfterSeconds = Number(response.headers.get("retry-after"));
+    const retryAfterMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+      ? retryAfterSeconds * 1_000
+      : 10_000;
+    throw new EmailAuditRateLimitError(Math.min(retryAfterMs, 30_000));
+  }
   if (!response.ok) throw new Error(`QA email audit failed with HTTP ${response.status}.`);
   return response.json() as Promise<T>;
 }
@@ -91,7 +104,7 @@ async function latestResendEmail(options: WaitForTransactionalEmailOptions): Pro
 
 async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Promise<TransactionalEmail | null> {
   const headers = { "api-key": brevoApiKey!, accept: "application/json" };
-  const query = new URLSearchParams({ email: options.recipient, limit: "100", sort: "desc" });
+  const query = new URLSearchParams({ email: options.recipient, limit: "10", sort: "desc" });
   const listed = await jsonRequest<{ transactionalEmails?: BrevoEmail[] }>(
     `https://api.brevo.com/v3/smtp/emails?${query}`,
     headers,
@@ -120,11 +133,16 @@ export async function waitForTransactionalEmail(
   const selectedProvider = configuredProvider();
   const deadline = Date.now() + (options.timeoutMs ?? 60_000);
   while (Date.now() < deadline) {
-    const message = selectedProvider === "brevo"
-      ? await latestBrevoEmail(options)
-      : await latestResendEmail(options);
-    if (message) return message;
-    await new Promise(resolve => setTimeout(resolve, 2_000));
+    try {
+      const message = selectedProvider === "brevo"
+        ? await latestBrevoEmail(options)
+        : await latestResendEmail(options);
+      if (message) return message;
+      await new Promise(resolve => setTimeout(resolve, selectedProvider === "brevo" ? 5_000 : 2_000));
+    } catch (error) {
+      if (!(error instanceof EmailAuditRateLimitError)) throw error;
+      await new Promise(resolve => setTimeout(resolve, Math.min(error.retryAfterMs, Math.max(1, deadline - Date.now()))));
+    }
   }
   throw new Error("QA transactional email was not available within the allowed interval.");
 }
