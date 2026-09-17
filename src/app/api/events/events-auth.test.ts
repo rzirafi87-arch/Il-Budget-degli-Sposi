@@ -31,13 +31,13 @@ type Budget = {
 type BudgetFilter = { column: string; value: unknown };
 type BudgetQueryRecord = {
   table: string;
-  operation: "select" | "insert";
+  operation: "select" | "insert" | "upsert";
   columns?: string;
   filters: BudgetFilter[];
   values?: Omit<Budget, "id">;
 };
 
-const BUDGET_COLUMNS = "*";
+const BUDGET_COLUMNS = "id,user_id,event_key,currency,lines,created_at,updated_at";
 const initialBudgets: Budget[] = [
   { id: "baby-a", user_id: "user-a", event_key: "baby-shower", currency: "EUR", lines: [] },
   { id: "baby-b", user_id: "user-b", event_key: "baby-shower", currency: "USD", lines: [] },
@@ -72,12 +72,26 @@ function createBudgetQuery() {
       record.values = values;
       return query;
     },
+    upsert(values: Omit<Budget, "id">) {
+      record.operation = "upsert" as const;
+      record.values = values;
+      return query;
+    },
     eq(column: string, value: unknown) {
       record.filters.push({ column, value });
       return query;
     },
     async maybeSingle() {
       budgetQueryLog.push({ ...record, filters: [...record.filters] });
+      if (record.operation === "upsert" && record.values) {
+        const existing = budgets.find((candidate) =>
+          candidate.user_id === record.values?.user_id && candidate.event_key === record.values?.event_key
+        );
+        if (existing) return { data: null, error: null };
+        const row: Budget = { id: `created-${budgets.length + 1}`, ...record.values };
+        budgets.push(row);
+        return { data: selectColumns(row, record.columns), error: null };
+      }
       const row = budgets.find((candidate) =>
         record.filters.every(({ column, value }) => candidate[column as keyof Budget] === value)
       );
@@ -231,7 +245,7 @@ describe("event budget get/init authentication and ownership", () => {
       expectOwnerQuery(budgetQueryLog[0], "user-c", key);
       expect(budgetQueryLog[1]).toEqual({
         table: "budgets",
-        operation: "insert",
+        operation: "upsert",
         columns: BUDGET_COLUMNS,
         filters: [],
         values: { user_id: "user-c", event_key: key, currency: "GBP", lines: [] },

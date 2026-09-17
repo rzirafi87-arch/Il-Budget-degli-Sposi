@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
-import { currentEventErrorResponse, requireCurrentEvent } from "@/lib/currentEvent";
+import { apiSecurityErrorResponse, requireEventAccess } from "@/lib/apiSecurity";
 import type { EventUpdate, EventUpdateBody, WeddingCardInsert, WeddingCardUpdate } from "../lifecycleTypes";
 
 export const runtime = "nodejs";
@@ -9,15 +9,9 @@ const nullableString = (value: unknown): value is string | null =>
   value === null || typeof value === "string";
 
 export async function PATCH(req: NextRequest) {
+  try {
+  const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
   const db = getServiceClient();
-
-  const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
-  const jwt = authHeader?.split(" ")[1];
-  if (!jwt) return NextResponse.json({ error: "Missing JWT" }, { status: 401 });
-
-  const { data: userData, error: authError } = await db.auth.getUser(jwt);
-  if (authError || !userData?.user?.id) return NextResponse.json({ error: "Invalid JWT" }, { status: 401 });
-
   const body: EventUpdateBody = await req.json().catch(() => ({}));
   if (
     (body.name !== undefined && !nullableString(body.name)) ||
@@ -31,18 +25,10 @@ export async function PATCH(req: NextRequest) {
   }
 
   // Find user's event
-  let current;
-  try {
-    current = await requireCurrentEvent(req, userData.user.id);
-  } catch (error) {
-    const mapped = currentEventErrorResponse(error);
-    if (mapped) return NextResponse.json({ error: mapped.error }, { status: mapped.status });
-    throw error;
-  }
   const { data: ev } = await db
     .from("events")
     .select("id, name, currency, total_budget")
-    .eq("id", current.eventId)
+    .eq("id", currentEvent.eventId)
     .maybeSingle();
   if (!ev) return NextResponse.json({ error: "No event" }, { status: 404 });
 
@@ -52,7 +38,7 @@ export async function PATCH(req: NextRequest) {
   if (body.total_budget !== undefined) updates.total_budget = body.total_budget;
   if (Object.keys(updates).length > 0) {
     const { error: upErr } = await db.from("events").update(updates).eq("id", ev.id);
-    if (upErr) return NextResponse.json({ error: upErr.message }, { status: 500 });
+    if (upErr) return NextResponse.json({ error: "EVENT_UPDATE_FAILED" }, { status: 500 });
   }
 
   if (body.wedding_card) {
@@ -73,13 +59,16 @@ export async function PATCH(req: NextRequest) {
     const { data: exists } = await db.from("wedding_cards").select("event_id").eq("event_id", ev.id).maybeSingle();
     if (exists) {
       const { error: wcErr } = await db.from("wedding_cards").update(wcUpdates).eq("event_id", ev.id);
-      if (wcErr) return NextResponse.json({ error: wcErr.message }, { status: 500 });
+      if (wcErr) return NextResponse.json({ error: "EVENT_UPDATE_FAILED" }, { status: 500 });
     } else {
       const wcInsert: WeddingCardInsert = { event_id: ev.id, ...wcUpdates };
       const { error: wcErr } = await db.from("wedding_cards").insert(wcInsert);
-      if (wcErr) return NextResponse.json({ error: wcErr.message }, { status: 500 });
+      if (wcErr) return NextResponse.json({ error: "EVENT_UPDATE_FAILED" }, { status: 500 });
     }
   }
 
   return NextResponse.json({ ok: true });
+  } catch (error) {
+    return apiSecurityErrorResponse(error, "EVENT_UPDATE_FAILED");
+  }
 }

@@ -1,5 +1,6 @@
 export const runtime = "nodejs";
 
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,6 +18,9 @@ type SubscriptionTransactionInput = {
  * Returns user's subscription transactions
  */
 export async function GET(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
 
@@ -38,7 +42,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const userId = userData.user.id;
+    const userId = userData.user!.id;
 
     // Get all transactions for user's suppliers/locations/churches
     const { data: transactions, error } = await db
@@ -79,6 +83,15 @@ export async function GET(req: NextRequest) {
  * Creates a new subscription transaction (after payment)
  */
 export async function POST(req: NextRequest) {
+  void req;
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
+  return NextResponse.json(
+    { error: "SUBSCRIPTION_WRITES_SERVER_ONLY" },
+    { status: 405, headers: { Allow: "GET" } },
+  );
+  /* istanbul ignore next -- historical implementation retained below for the deprecation window */
   const authHeader = req.headers.get("authorization");
   const jwt = authHeader?.split(" ")[1];
 
@@ -100,7 +113,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const userId = userData.user.id;
+    const userId = userData.user!.id;
     const body: SubscriptionTransactionInput = await req.json();
 
     const { entity_type, entity_id, tier, billing_period, payment_provider, payment_id } = body;
@@ -121,7 +134,7 @@ export async function POST(req: NextRequest) {
       .eq("id", entity_id)
       .single();
 
-    if (entityError || !entity || entity.user_id !== userId) {
+    if (entityError || !entity || entity!.user_id !== userId) {
       return NextResponse.json(
         { error: "Entity not found or access denied" },
         { status: 403 }
@@ -142,7 +155,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const amount = billing_period === "monthly" ? pkg.price_monthly : pkg.price_yearly;
+    const amount = billing_period === "monthly" ? pkg!.price_monthly : pkg!.price_yearly;
     const now = new Date();
     const expiresAt = new Date(now);
     

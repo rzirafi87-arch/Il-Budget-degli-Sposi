@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { flags } from "@/config/flags";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -18,13 +19,19 @@ type SubscriptionPackage = {
 
 export default function SubscriptionPricingPage() {
   const t = useTranslations("milestone9.runtime");
+  const payments = useTranslations("milestone9.supplierPackages");
+  const paymentsEnabled = flags.payments_stripe;
   const [packages, setPackages] = useState<SubscriptionPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly");
 
   useEffect(() => {
-    fetchPackages();
-  }, []);
+    if (paymentsEnabled) {
+      fetchPackages();
+    } else {
+      setLoading(false);
+    }
+  }, [paymentsEnabled]);
 
   async function fetchPackages() {
     try {
@@ -78,6 +85,12 @@ export default function SubscriptionPricingPage() {
 
       {/* Billing Toggle */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {!paymentsEnabled && (
+          <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-center text-sm text-amber-900">
+            {payments("maintenance")}
+          </div>
+        )}
+
         <div className="flex items-center justify-center gap-4 mb-12">
           <span className={clsx(
             "text-lg font-medium",
@@ -170,6 +183,8 @@ export default function SubscriptionPricingPage() {
 
                   {/* CTA Button */}
                   <button
+                    aria-disabled={!paymentsEnabled}
+                    disabled={!paymentsEnabled}
                     className={clsx(
                       "w-full py-3 px-6 rounded-lg font-semibold transition-all",
                       pkg.tier === "free"

@@ -1,16 +1,25 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
+
+type ShareEventRow = {
+  id: string;
+  public_id?: string | null;
+  title?: string | null;
+  name?: string | null;
+  is_public?: boolean | null;
+  created_at?: string | null;
+  inserted_at?: string | null;
+  type_id?: string | null;
+};
 
 // Share token resolver: returns event info when token is valid (not expired).
 // Depends on table `event_share_tokens` from the new core schema.
 export async function GET(
   _req: NextRequest,
-  context: { params: Promise<{ token: string }> } | { params: { token: string } }
+  context: { params: Promise<{ token: string }> }
 ) {
-  const params = (context as any)?.params?.then ? await (context as any).params : (context as any).params;
-  const token = params?.token as string | undefined;
+  const { token } = await context.params;
   if (!token) {
     return NextResponse.json({ error: "Missing token" }, { status: 400 });
   }
@@ -29,12 +38,11 @@ export async function GET(
     // Likely the table does not exist if schema not applied yet
     const isMissing = /relation .* does not exist/i.test(tokErr.message || "");
     if (isMissing) {
-      return NextResponse.json(
-        { error: "Missing table event_share_tokens. Run supabase-core-events-schema.sql.", code: "SCHEMA_NOT_APPLIED" },
-        { status: 501 }
-      );
+      console.error("event_share_tokens schema unavailable", tokErr);
+      return NextResponse.json({ error: "SHARE_UNAVAILABLE" }, { status: 503 });
     }
-    return NextResponse.json({ error: tokErr.message }, { status: 500 });
+    console.error("share token lookup failed", tokErr);
+    return NextResponse.json({ error: "SHARE_LOOKUP_FAILED" }, { status: 500 });
   }
 
   if (!tokens || tokens.length === 0) {
@@ -46,18 +54,19 @@ export async function GET(
   // Fetch event minimal information
   const { data: events, error: evErr } = await db
     .from("events")
-    .select("*")
+    .select("id,public_id,title,name,is_public,created_at,inserted_at,type_id")
     .eq("id", t.event_id)
     .limit(1);
 
   if (evErr) {
-    return NextResponse.json({ error: evErr.message }, { status: 500 });
+    console.error("shared event lookup failed", evErr);
+    return NextResponse.json({ error: "SHARE_LOOKUP_FAILED" }, { status: 500 });
   }
   if (!events || events.length === 0) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
-  const ev = events[0] as any;
+  const ev = events[0] as ShareEventRow;
   const payload = {
     id: ev.id,
     public_id: ev.public_id ?? null,

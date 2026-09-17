@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 export async function GET(req: NextRequest) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.split(" ")[1];
@@ -33,19 +37,19 @@ export async function GET(req: NextRequest) {
     // Carica transazioni
     const { data: transactions, error } = await db
       .from("subscription_transactions")
-      .select("*")
+      .select("id,supplier_id,location_id,church_id,tier,amount,currency,billing_period,payment_provider,payment_id,status,starts_at,expires_at,created_at")
       .eq("supplier_id", supplier.id)
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error("SUBSCRIPTION_TRANSACTIONS GET error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "SUBSCRIPTION_TRANSACTIONS_READ_FAILED" }, { status: 500 });
     }
 
     return NextResponse.json({ transactions: transactions || [] });
   } catch (e: unknown) {
     const error = e as Error;
     console.error("SUBSCRIPTION_TRANSACTIONS GET uncaught:", error);
-    return NextResponse.json({ error: error?.message || "Unexpected" }, { status: 500 });
+    return NextResponse.json({ error: "SUBSCRIPTION_TRANSACTIONS_READ_FAILED" }, { status: 500 });
   }
 }

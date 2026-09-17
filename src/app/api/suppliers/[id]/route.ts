@@ -1,6 +1,7 @@
 export const runtime = "nodejs";
 
 import { getBearer } from "@/lib/apiAuth";
+import { requirePaymentsCapability } from "@/lib/monetizationCapability";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -103,6 +104,9 @@ export async function GET(req: NextRequest, ctx: CtxId) {
 }
 
 export async function PUT(req: NextRequest, ctx: CtxId) {
+  const unavailable = requirePaymentsCapability();
+  if (unavailable) return unavailable;
+
   const { id } = await ctx.params;
   const jwt = getBearer(req);
   if (!jwt) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

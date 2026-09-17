@@ -8,13 +8,18 @@ jest.mock('next/server', () => {
     headers.set('location', location);
     return { status: 307, headers };
   };
-  return { NextResponse: { next, redirect } };
+  const json = (body: unknown, init?: { status?: number; headers?: Record<string, string> }) => ({
+    status: init?.status ?? 200,
+    headers: new Headers(init?.headers),
+    json: async () => body,
+  });
+  return { NextResponse: { next, redirect, json } };
 });
 
 import { middleware } from '../../../middleware';
 
 // Minimal shape mock per soddisfare il middleware senza dipendere da Next internals
-type MockNextRequest = { nextUrl: URL & { clone: () => URL }; cookies: { get: (name: string) => { value: string } | undefined } };
+type MockNextRequest = { method: string; nextUrl: URL & { clone: () => URL }; cookies: { get: (name: string) => { value: string } | undefined } };
 
 function makeReq(pathname: string, cookieMap: Record<string, string> = {}): MockNextRequest {
   const base = new URL('http://localhost' + pathname);
@@ -28,7 +33,7 @@ function makeReq(pathname: string, cookieMap: Record<string, string> = {}): Mock
       return cookieMap[name] ? { value: cookieMap[name] } : undefined;
     },
   });
-  return { nextUrl, cookies } as MockNextRequest;
+  return { method: 'GET', nextUrl, cookies } as MockNextRequest;
 }
 
 type MiddlewareResponse = { status: number; headers: Headers };
@@ -76,5 +81,23 @@ describe('middleware redirects onboarding', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const res = middleware(makeReq('/dashboard', { language: 'en' }) as unknown as any) as MiddlewareResponse;
     expect(res.headers.get('location')).toBe('http://localhost/en/dashboard');
+  });
+
+  it.each([
+    '/api/birthday/seed/11111111-1111-4111-8111-111111111111',
+    '/api/my/birthday-dashboard',
+  ])('blocks direct legacy event API access for %s', async (pathname) => {
+    const req = makeReq(pathname);
+    req.method = pathname.includes('/seed/') ? 'POST' : 'GET';
+    const res = middleware(req as never) as MiddlewareResponse & { json: () => Promise<unknown> };
+    expect(res.status).toBe(409);
+    await expect(res.json()).resolves.toEqual({ error: 'EVENT_TYPE_COMING_SOON' });
+  });
+
+  it('keeps legacy seed GET read-only', async () => {
+    const res = middleware(makeReq('/api/baptism/seed') as never) as MiddlewareResponse & { json: () => Promise<unknown> };
+    expect(res.status).toBe(405);
+    expect(res.headers.get('allow')).toBe('POST');
+    await expect(res.json()).resolves.toEqual({ error: 'METHOD_NOT_ALLOWED' });
   });
 });

@@ -30,15 +30,21 @@ function PacchettiContent() {
   const [processingPayment, setProcessingPayment] = useState<string | null>(null);
 
   useEffect(() => {
-    loadPackages();
-
-    const paymentStatus = searchParams.get("payment");
-    if (paymentStatus === "success") {
-      alert(t("paymentSuccess"));
-    } else if (paymentStatus === "cancelled") {
-      alert(t("paymentCancelled"));
+    if (paymentsEnabled) {
+      loadPackages();
+    } else {
+      setLoading(false);
     }
-  }, [searchParams, t]);
+
+    if (paymentsEnabled) {
+      const paymentStatus = searchParams.get("payment");
+      if (paymentStatus === "success") {
+        alert(t("paymentSuccess"));
+      } else if (paymentStatus === "cancelled") {
+        alert(t("paymentCancelled"));
+      }
+    }
+  }, [paymentsEnabled, searchParams, t]);
 
   async function loadPackages() {
     try {
