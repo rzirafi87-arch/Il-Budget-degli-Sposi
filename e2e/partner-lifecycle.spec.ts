@@ -1,11 +1,11 @@
 import { expect, type BrowserContext, type Page, test, type TestInfo } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { emailAuditMissingConfiguration, waitForTransactionalEmail } from "./helpers/transactional-email-audit";
 
 const ownerEmail = process.env.PLAYWRIGHT_TEST_EMAIL;
 const ownerPassword = process.env.PLAYWRIGHT_TEST_PASSWORD;
 const partnerEmail = process.env.PLAYWRIGHT_PARTNER_EMAIL;
 const partnerPassword = process.env.PLAYWRIGHT_PARTNER_PASSWORD;
-const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
 const serviceRole = process.env.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY;
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -15,12 +15,14 @@ const REQUIRED = [
   ["PLAYWRIGHT_TEST_PASSWORD", ownerPassword],
   ["PLAYWRIGHT_PARTNER_EMAIL", partnerEmail],
   ["PLAYWRIGHT_PARTNER_PASSWORD", partnerPassword],
-  ["PLAYWRIGHT_RESEND_API_KEY", resendApiKey],
   ["PLAYWRIGHT_BASE_URL", configuredBaseUrl],
 ] as const;
 
 if (process.env.CI) {
-  const missing = REQUIRED.filter(([, value]) => !value).map(([name]) => name);
+  const missing = [
+    ...REQUIRED.filter(([, value]) => !value).map(([name]) => name),
+    ...emailAuditMissingConfiguration(),
+  ];
   if (missing.length) throw new Error(`Partner QA is missing required environment variables: ${missing.join(", ")}.`);
 }
 
@@ -187,37 +189,15 @@ async function cleanQaRelationship(ownerPage: Page, qaPartnerUserId: string) {
   }
 }
 
-type SentEmail = { id: string; to: string[]; subject: string; created_at: string };
-
-async function resendRequest<T>(path: string): Promise<T> {
-  const response = await fetch(`https://api.resend.com${path}`, {
-    headers: { Authorization: `Bearer ${resendApiKey!}` },
-    signal: AbortSignal.timeout(10_000),
-  });
-  if (!response.ok) throw new Error(`Resend QA read failed with HTTP ${response.status}.`);
-  return response.json() as Promise<T>;
-}
-
 async function invitationLinkAfter(startedAt: number, previousMessageId?: string) {
-  const deadline = Date.now() + 60_000;
-  let message: SentEmail | undefined;
-  while (Date.now() < deadline) {
-    const listed = await resendRequest<{ data: SentEmail[] }>("/emails?limit=100");
-    message = listed.data.find(item =>
-      item.id !== previousMessageId &&
-      item.subject === "Invito al tuo evento" &&
-      Date.parse(item.created_at) >= startedAt &&
-      item.to.some(address => normalized(address) === normalized(partnerEmail!))
-    );
-    if (message) break;
-    await new Promise(resolve => setTimeout(resolve, 2_000));
-  }
-  if (!message) throw new Error("Partner invitation email was not found within 60 seconds.");
-
-  const retrieved = await resendRequest<{ html?: string }>(`/emails/${encodeURIComponent(message.id)}`);
-  if (!retrieved.html) throw new Error("Partner invitation email did not contain HTML.");
+  const message = await waitForTransactionalEmail({
+    previousMessageId,
+    recipient: partnerEmail!,
+    startedAt,
+    subject: "Invito al tuo evento",
+  });
   const expectedOrigin = new URL(configuredBaseUrl!).origin;
-  const candidates = [...retrieved.html.matchAll(/href=["']([^"']+)["']/gi)]
+  const candidates = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
     .map(match => match[1].replaceAll("&amp;", "&"))
     .map(value => { try { return new URL(value); } catch { return null; } })
     .filter((value): value is URL => value !== null && value.origin === expectedOrigin && value.pathname === "/it/invitation");
@@ -327,9 +307,12 @@ async function acceptInvitation(partnerPage: Page, partnerContext: BrowserContex
 test.describe("authenticated partner lifecycle journey", () => {
   test.describe.configure({ mode: "serial" });
 
-  test("real invite, Resend retrieval, isolation, revoke and voluntary leave", async ({ browser }, testInfo) => {
+  test("real invite, provider retrieval, isolation, revoke and voluntary leave", async ({ browser }, testInfo) => {
     test.skip(testInfo.project.name !== "it-390", "Partner lifecycle runs once to prevent duplicate real emails.");
-    test.skip(REQUIRED.some(([, value]) => !value), "Set all partner QA secrets for local execution.");
+    test.skip(
+      REQUIRED.some(([, value]) => !value) || emailAuditMissingConfiguration().length > 0,
+      "Set all partner QA secrets for local execution.",
+    );
     test.setTimeout(240_000);
 
     const ownerContext: BrowserContext = await browser.newContext({ locale: "it-IT", viewport: { width: 390, height: 844 } });

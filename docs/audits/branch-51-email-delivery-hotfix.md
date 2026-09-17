@@ -28,6 +28,13 @@ to build artifacts:
 Existing `RESEND_API_KEY` may remain for rollback history but is inactive while
 Brevo is selected. `onboarding@resend.dev` is not used.
 
+The authenticated Playwright delivery checks use the same explicit selection:
+`PLAYWRIGHT_EMAIL_PROVIDER=brevo` and the server-side GitHub Actions secret
+`PLAYWRIGHT_BREVO_API_KEY`. The test helper reads the message UUID from
+`GET /v3/smtp/emails`, then reads its personalized body and delivery events from
+`GET /v3/smtp/emails/{uuid}`. It does not fall back to Resend when Brevo is
+selected.
+
 ## Delivery contract
 
 `src/lib/email/sendTransactionalEmail.ts` owns provider selection and typed
@@ -60,3 +67,7 @@ Deliverability is lower than with an authenticated project domain. This is a
 documented, non-blocking temporary risk. The permanent remediation is to
 delegate the owned domain to authoritative DNS and authenticate it with SPF,
 DKIM and DMARC before switching the verified sender.
+
+Until that authentication is possible, Brevo may rewrite the visible envelope
+sender to a provider-managed `brevosend.com` subdomain even though the
+configured Gmail sender is individually verified.

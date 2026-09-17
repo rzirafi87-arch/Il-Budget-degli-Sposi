@@ -1,21 +1,13 @@
 import { createHash, randomBytes } from "node:crypto";
 import { expect, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { emailAuditConfigured, waitForTransactionalEmail } from "./helpers/transactional-email-audit";
 
 const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
-const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const serviceRole = process.env.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY;
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const mailboxBase = process.env.PLAYWRIGHT_SIGNUP_EMAIL_BASE || process.env.PLAYWRIGHT_TEST_EMAIL;
-
-type SentEmail = {
-  id: string;
-  to: string[];
-  subject: string;
-  created_at: string;
-  last_event?: string;
-};
 
 function uniqueMailbox(base: string) {
   const at = base.lastIndexOf("@");
@@ -25,47 +17,27 @@ function uniqueMailbox(base: string) {
   return `${local}+b51-${Date.now()}-${randomBytes(4).toString("hex")}@${domain}`;
 }
 
-async function resend<T>(path: string): Promise<T> {
-  const response = await fetch(`https://api.resend.com${path}`, {
-    headers: { Authorization: `Bearer ${resendApiKey!}` },
-    signal: AbortSignal.timeout(10_000),
-  });
-  if (!response.ok) throw new Error(`QA email audit failed with HTTP ${response.status}.`);
-  return response.json() as Promise<T>;
-}
-
 async function deliveredConfirmation(startedAt: number, recipient: string) {
-  const deadline = Date.now() + 120_000;
-  while (Date.now() < deadline) {
-    const listed = await resend<{ data: SentEmail[] }>("/emails?limit=100");
-    const message = listed.data.find(item =>
-      Date.parse(item.created_at) >= startedAt
-      && item.subject === "Conferma il tuo account – Il Budget degli Sposi"
-      && item.to.some(address => address.toLowerCase() === recipient.toLowerCase()));
-    if (message) {
-      const detail = await resend<SentEmail & { html?: string }>(`/emails/${encodeURIComponent(message.id)}`);
-      if (["bounced", "complained", "failed", "canceled"].includes(detail.last_event || "")) {
-        throw new Error("QA confirmation email reached a terminal delivery failure.");
-      }
-      if (detail.last_event === "delivered" && detail.html) {
-        const links = [...detail.html.matchAll(/href=["']([^"']+)["']/gi)]
-          .map(match => match[1].replaceAll("&amp;", "&"))
-          .filter(value => value.startsWith("https://"));
-        const verification = links.find(value => {
-          try {
-            const url = new URL(value);
-            return url.pathname.endsWith("/auth/v1/verify") && url.searchParams.get("type") === "signup";
-          } catch {
-            return false;
-          }
-        });
-        if (!verification) throw new Error("QA confirmation email did not contain a valid verification link.");
-        return verification;
-      }
+  const message = await waitForTransactionalEmail({
+    recipient,
+    requireDelivered: true,
+    startedAt,
+    subject: "Conferma il tuo account – Il Budget degli Sposi",
+    timeoutMs: 120_000,
+  });
+  const links = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
+    .map(match => match[1].replaceAll("&amp;", "&"))
+    .filter(value => value.startsWith("https://"));
+  const verification = links.find(value => {
+    try {
+      const url = new URL(value);
+      return url.pathname.endsWith("/auth/v1/verify") && url.searchParams.get("type") === "signup";
+    } catch {
+      return false;
     }
-    await new Promise(resolve => setTimeout(resolve, 2_000));
-  }
-  throw new Error("QA confirmation email was not delivered within the allowed interval.");
+  });
+  if (!verification) throw new Error("QA confirmation email did not contain a valid verification link.");
+  return verification;
 }
 
 async function followConfirmation(link: string, expectedOrigin: string) {
@@ -94,7 +66,8 @@ async function followConfirmation(link: string, expectedOrigin: string) {
 
 test("real signup email confirmation, login, CurrentEvent, relogin and cleanup", async ({ request }, testInfo) => {
   test.skip(testInfo.project.name !== "it-390", "The destructive Production signup journey runs exactly once.");
-  const missing = [baseUrl, resendApiKey, serviceRole, supabaseUrl, anonKey, mailboxBase].some(value => !value);
+  const missing = [baseUrl, serviceRole, supabaseUrl, anonKey, mailboxBase].some(value => !value)
+    || !emailAuditConfigured();
   test.skip(missing, "Real signup delivery requires the configured QA provider and Supabase secrets.");
   test.setTimeout(240_000);
 

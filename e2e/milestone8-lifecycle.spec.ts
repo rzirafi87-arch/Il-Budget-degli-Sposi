@@ -11,8 +11,8 @@ import {
   verifyDeletedCascade,
   type QaIdentity,
 } from "./helpers/milestone8-fixtures";
+import { emailAuditConfigured, waitForTransactionalEmail } from "./helpers/transactional-email-audit";
 
-const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
 const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
 
@@ -115,20 +115,17 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
       await new Promise(resolve => setTimeout(resolve, 1_000));
       continue;
     }
-    if (!resendApiKey) throw new Error("No recovery mailbox provider is configured.");
-    const listed = await fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: `Bearer ${resendApiKey}` } });
-    if (!listed.ok) throw new Error(`Recovery email lookup failed with HTTP ${listed.status}.`);
-    const body = await listed.json() as { data: Array<{ id: string; to: string[]; subject: string; created_at: string }> };
-    const item = body.data.find(message => Date.parse(message.created_at) >= startedAt && message.to.includes(identity.email) && /reimposta la password/i.test(message.subject));
-    if (item) {
-      const detail = await fetch(`https://api.resend.com/emails/${encodeURIComponent(item.id)}`, { headers: { Authorization: `Bearer ${resendApiKey}` } });
-      const message = await detail.json() as { html?: string };
-      const hrefs = [...(message.html || "").matchAll(/href=["']([^"']+)["']/gi)].map(match => match[1].replaceAll("&amp;", "&"));
-      const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
-      if (!link) throw new Error("Recovery email did not contain the real verification callback.");
-      return link;
-    }
-    await new Promise(resolve => setTimeout(resolve, 2_000));
+    const message = await waitForTransactionalEmail({
+      recipient: identity.email,
+      startedAt,
+      subject: /reimposta la password/i,
+      timeoutMs: Math.max(1, deadline - Date.now()),
+    });
+    const hrefs = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
+      .map(match => match[1].replaceAll("&amp;", "&"));
+    const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
+    if (!link) throw new Error("Recovery email did not contain the real verification callback.");
+    return link;
   }
   throw new Error("Recovery email was not found within 60 seconds.");
 }
@@ -175,7 +172,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
 
   test("[M8][reset] real request, email callback, password change and login", async ({ page }, testInfo) => {
     expect(testInfo.project.name).toBe("m8-320");
-    expect(milestone8FixtureReady && Boolean(inbucketUrl || (resendApiKey && baseUrl))).toBe(true);
+    expect(milestone8FixtureReady && Boolean(inbucketUrl || (emailAuditConfigured() && baseUrl))).toBe(true);
     test.setTimeout(150_000);
     const identity = await createQaIdentity("reset");
     const nextPassword = `${identity.password}-Changed!7`;
