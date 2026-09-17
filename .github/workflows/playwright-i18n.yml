@@ -2,10 +2,21 @@ name: Playwright i18n matrix
 on:
   pull_request:
     branches: [main]
-    paths: ["e2e/**", "playwright*.config.ts", "src/app/**", "src/components/**", "src/messages/**", "supabase/**", "scripts/rebuild-local-supabase.sh", ".github/workflows/playwright-i18n.yml"]
+    paths:
+      [
+        "e2e/**",
+        "playwright*.config.ts",
+        "src/app/**",
+        "src/components/**",
+        "src/messages/**",
+        "supabase/**",
+        "scripts/rebuild-local-supabase.sh",
+        ".github/workflows/playwright-i18n.yml",
+      ]
   workflow_dispatch:
 permissions:
   contents: read
+  deployments: read
 concurrency:
   group: playwright-i18n-${{ github.ref }}
   cancel-in-progress: true
@@ -28,10 +39,26 @@ jobs:
           PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
           PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
           PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
-          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
-          for name in PLAYWRIGHT_SUPABASE_URL PLAYWRIGHT_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD PLAYWRIGHT_PARTNER_EMAIL PLAYWRIGHT_PARTNER_PASSWORD PLAYWRIGHT_RESEND_API_KEY PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY PLAYWRIGHT_BASE_URL VERCEL_AUTOMATION_BYPASS_SECRET; do test -n "${!name}"; done
+          for name in PLAYWRIGHT_SUPABASE_URL PLAYWRIGHT_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD PLAYWRIGHT_PARTNER_EMAIL PLAYWRIGHT_PARTNER_PASSWORD PLAYWRIGHT_RESEND_API_KEY PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY VERCEL_AUTOMATION_BYPASS_SECRET; do test -n "${!name}"; done
+      - name: Resolve exact Vercel Preview for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in $(seq 1 60); do
+            deployment_id="$(gh api "/repos/${GITHUB_REPOSITORY}/deployments?sha=${GITHUB_SHA}&environment=Preview%20%E2%80%93%20il-budget-degli-sposi" --jq '.[0].id // empty')"
+            if test -n "$deployment_id"; then
+              preview_url="$(gh api "/repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}/statuses" --jq '[.[] | select(.state == "success" and (.environment_url // "") != "")][0].environment_url // empty')"
+              if [[ "$preview_url" =~ ^https://[a-zA-Z0-9.-]+\.vercel\.app$ ]]; then
+                echo "PLAYWRIGHT_BASE_URL=$preview_url" >> "$GITHUB_ENV"
+                exit 0
+              fi
+            fi
+            sleep 10
+          done
+          echo "Exact Vercel Preview did not become READY for this commit." >&2
+          exit 1
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build
@@ -50,7 +77,6 @@ jobs:
           PLAYWRIGHT_RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
           PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
           PLAYWRIGHT_SIGNUP_EMAIL_BASE: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
-          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
       - uses: actions/upload-artifact@v4
         if: failure()
