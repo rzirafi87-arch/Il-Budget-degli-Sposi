@@ -58,8 +58,10 @@ export function emailAuditConfigured() {
 }
 
 function isBrevoTrackingUrl(url: URL) {
+  const isKnownTrackingHost = ["sendibt2.com", "sendibt3.com"]
+    .some(domain => url.hostname === domain || url.hostname.endsWith(`.${domain}`));
   return url.protocol === "https:"
-    && (url.hostname === "sendibt3.com" || url.hostname.endsWith(".sendibt3.com"))
+    && isKnownTrackingHost
     && url.pathname.startsWith("/tr/cl/")
     && !url.username
     && !url.password
