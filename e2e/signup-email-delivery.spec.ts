@@ -29,6 +29,7 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
   const message = await waitForTransactionalEmail({
     recipient,
     requireDelivered: true,
+    requireLink: true,
     startedAt,
     subject: "Conferma il tuo account – Il Budget degli Sposi",
     timeoutMs: 120_000,

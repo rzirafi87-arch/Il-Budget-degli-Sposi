@@ -9,6 +9,7 @@ type WaitForTransactionalEmailOptions = {
   previousMessageId?: string;
   recipient: string;
   requireDelivered?: boolean;
+  requireLink?: boolean;
   startedAt: number;
   subject: string | RegExp;
   timeoutMs?: number;
@@ -106,7 +107,17 @@ export function transactionalEmailLinks(body: string) {
   const textUrls = decoded.match(/https?:\/\/[^\s"'<>]+/gi) || [];
   return [...new Set([...hrefs, ...textUrls]
     .map(value => value.replace(/[),.;]+$/, ""))
-    .filter(value => value.startsWith("https://")))];
+    .filter(value => {
+      try {
+        const url = new URL(value);
+        return url.protocol === "https:" || (
+          url.protocol === "http:"
+          && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)
+        );
+      } catch {
+        return false;
+      }
+    }))];
 }
 
 function isBrevoTrackingUrl(url: URL) {
@@ -177,21 +188,25 @@ async function jsonRequest<T>(url: string, headers: Record<string, string>): Pro
 async function latestResendEmail(options: WaitForTransactionalEmailOptions): Promise<TransactionalEmail | null> {
   const headers = { Authorization: `Bearer ${resendApiKey!}` };
   const listed = await jsonRequest<{ data: ResendEmail[] }>("https://api.resend.com/emails?limit=100", headers);
-  const message = listed.data.find(item =>
+  const messages = listed.data.filter(item =>
     item.id !== options.previousMessageId
     && Date.parse(item.created_at) >= options.startedAt
     && matchesSubject(item.subject, options.subject)
     && item.to.some(address => address.toLowerCase() === options.recipient.toLowerCase()));
-  if (!message) return null;
-  const detail = await jsonRequest<ResendEmail & { html?: string }>(
-    `https://api.resend.com/emails/${encodeURIComponent(message.id)}`,
-    headers,
-  );
-  if (["bounced", "complained", "failed", "canceled"].includes(detail.last_event || "")) {
-    throw new Error("QA email reached a terminal delivery failure.");
+  for (const message of messages) {
+    const detail = await jsonRequest<ResendEmail & { html?: string }>(
+      `https://api.resend.com/emails/${encodeURIComponent(message.id)}`,
+      headers,
+    );
+    if (["bounced", "complained", "failed", "canceled"].includes(detail.last_event || "")) {
+      throw new Error("QA email reached a terminal delivery failure.");
+    }
+    if (options.requireDelivered && detail.last_event !== "delivered") continue;
+    if (detail.html && (!options.requireLink || transactionalEmailLinks(detail.html).length > 0)) {
+      return { body: detail.html, id: message.id };
+    }
   }
-  if (options.requireDelivered && detail.last_event !== "delivered") return null;
-  return detail.html ? { body: detail.html, id: message.id } : null;
+  return null;
 }
 
 async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Promise<TransactionalEmail | null> {
@@ -201,29 +216,33 @@ async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Prom
     `https://api.brevo.com/v3/smtp/emails?${query}`,
     headers,
   );
-  const message = (listed.transactionalEmails || []).find(item =>
+  const messages = (listed.transactionalEmails || []).filter(item =>
     item.uuid !== options.previousMessageId
     && Date.parse(item.date) >= options.startedAt
     && matchesSubject(item.subject, options.subject)
     && item.email.toLowerCase() === options.recipient.toLowerCase());
-  if (!message) return null;
-  let detail: BrevoEmailContent;
-  try {
-    detail = await jsonRequest<BrevoEmailContent>(
-      `https://api.brevo.com/v3/smtp/emails/${encodeURIComponent(message.uuid)}`,
-      headers,
-    );
-  } catch (error) {
-    if (error instanceof EmailAuditNotFoundError) return null;
-    throw error;
+  for (const message of messages) {
+    let detail: BrevoEmailContent;
+    try {
+      detail = await jsonRequest<BrevoEmailContent>(
+        `https://api.brevo.com/v3/smtp/emails/${encodeURIComponent(message.uuid)}`,
+        headers,
+      );
+    } catch (error) {
+      if (error instanceof EmailAuditNotFoundError) continue;
+      throw error;
+    }
+    const events = (detail.events || []).map(event => (event.name || "").toLowerCase());
+    if (events.some(event => ["blocked", "hardbounce", "hardbounces", "invalid"].includes(event))
+      || (!events.includes("delivered") && events.some(event => ["softbounce", "softbounces"].includes(event)))) {
+      throw new Error("QA email reached a terminal delivery failure.");
+    }
+    if (options.requireDelivered && !events.includes("delivered")) continue;
+    if (detail.body && (!options.requireLink || transactionalEmailLinks(detail.body).length > 0)) {
+      return { body: detail.body, id: message.uuid };
+    }
   }
-  const events = (detail.events || []).map(event => (event.name || "").toLowerCase());
-  if (events.some(event => ["blocked", "hardbounce", "hardbounces", "invalid"].includes(event))
-    || (!events.includes("delivered") && events.some(event => ["softbounce", "softbounces"].includes(event)))) {
-    throw new Error("QA email reached a terminal delivery failure.");
-  }
-  if (options.requireDelivered && !events.includes("delivered")) return null;
-  return detail.body ? { body: detail.body, id: message.uuid } : null;
+  return null;
 }
 
 export async function waitForTransactionalEmail(

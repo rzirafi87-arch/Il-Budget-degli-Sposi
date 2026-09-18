@@ -20,4 +20,9 @@ describe("transactional email link extraction", () => {
     expect(transactionalEmailLinks('<a href="mailto:qa@example.test">Mail</a> http://app.example.test/path'))
       .toEqual([]);
   });
+
+  it("allows HTTP only for an isolated loopback test server", () => {
+    expect(transactionalEmailLinks("http://127.0.0.1:3000/auth/v1/verify?type=recovery"))
+      .toEqual(["http://127.0.0.1:3000/auth/v1/verify?type=recovery"]);
+  });
 });

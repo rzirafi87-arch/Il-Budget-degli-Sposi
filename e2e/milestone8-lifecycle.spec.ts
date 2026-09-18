@@ -121,6 +121,7 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
     }
     const message = await waitForTransactionalEmail({
       recipient: identity.email,
+      requireLink: true,
       startedAt,
       subject: /reimposta la password/i,
       timeoutMs: Math.max(1, deadline - Date.now()),

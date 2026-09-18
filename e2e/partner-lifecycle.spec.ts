@@ -200,6 +200,7 @@ async function invitationLinkAfter(startedAt: number, previousMessageId?: string
     previousMessageId,
     recipient: partnerEmail!,
     requireDelivered: true,
+    requireLink: true,
     startedAt,
     subject: "Invito al tuo evento",
   });
