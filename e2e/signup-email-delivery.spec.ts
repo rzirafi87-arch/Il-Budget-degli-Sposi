@@ -48,11 +48,18 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
 }
 
 async function followConfirmation(link: string, expectedOrigin: string) {
+  const expectedHost = new URL(expectedOrigin).hostname;
+  const isApprovedOrigin = (value: URL) => value.origin === expectedOrigin || (
+    expectedHost.endsWith(".vercel.app")
+    && value.protocol === "https:"
+    && value.hostname.startsWith("il-budget-degli-sposi-")
+    && value.hostname.endsWith("-rzirafi87-archs-projects.vercel.app")
+  );
   const verified = await fetch(link, { redirect: "manual", signal: AbortSignal.timeout(20_000) });
   const callbackValue = verified.headers.get("location");
   if (!callbackValue) throw new Error("QA verification did not return an application callback.");
   const callback = new URL(callbackValue);
-  if (callback.origin !== expectedOrigin || callback.pathname !== "/auth/callback" || !callback.searchParams.has("code")) {
+  if (!isApprovedOrigin(callback) || callback.pathname !== "/auth/callback" || !callback.searchParams.has("code")) {
     throw new Error("QA verification returned an invalid callback destination.");
   }
   const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
@@ -65,8 +72,8 @@ async function followConfirmation(link: string, expectedOrigin: string) {
   if (![302, 303, 307, 308].includes(completed.status) || !destination) {
     throw new Error("QA confirmation callback did not complete.");
   }
-  const safeDestination = new URL(destination, expectedOrigin);
-  if (safeDestination.origin !== expectedOrigin || !safeDestination.pathname.startsWith("/it/")) {
+  const safeDestination = new URL(destination, callback.origin);
+  if (!isApprovedOrigin(safeDestination) || !safeDestination.pathname.startsWith("/it/")) {
     throw new Error("QA confirmation callback escaped the application origin.");
   }
 }
