@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   emailAuditConfigured,
   resolveTransactionalEmailLink,
+  transactionalEmailLinkMetadata,
   waitForTransactionalEmail,
 } from "./helpers/transactional-email-audit";
 
@@ -45,7 +46,9 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
       return false;
     }
   });
-  if (!verification) throw new Error("QA confirmation email did not contain a valid verification link.");
+  if (!verification) {
+    throw new Error(`QA confirmation email did not contain a valid verification link. Metadata: ${JSON.stringify(transactionalEmailLinkMetadata(links))}`);
+  }
   return verification;
 }
 

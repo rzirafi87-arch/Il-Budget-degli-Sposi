@@ -40,6 +40,12 @@ class EmailAuditRateLimitError extends Error {
   }
 }
 
+class EmailAuditNotFoundError extends Error {
+  constructor() {
+    super("QA email audit detail is not available yet.");
+  }
+}
+
 const provider = process.env.PLAYWRIGHT_EMAIL_PROVIDER?.trim().toLowerCase();
 const resendApiKey = process.env.PLAYWRIGHT_RESEND_API_KEY;
 const brevoApiKey = process.env.PLAYWRIGHT_BREVO_API_KEY;
@@ -55,6 +61,21 @@ export function emailAuditMissingConfiguration() {
 
 export function emailAuditConfigured() {
   return emailAuditMissingConfiguration().length === 0;
+}
+
+export function transactionalEmailLinkMetadata(values: string[]) {
+  return values.slice(0, 10).map(value => {
+    try {
+      const url = new URL(value);
+      return {
+        origin: url.origin,
+        pathname: url.pathname,
+        queryKeys: [...url.searchParams.keys()].sort(),
+      };
+    } catch {
+      return { invalid: true };
+    }
+  });
 }
 
 function isBrevoTrackingUrl(url: URL) {
@@ -117,6 +138,7 @@ async function jsonRequest<T>(url: string, headers: Record<string, string>): Pro
       : 10_000;
     throw new EmailAuditRateLimitError(Math.min(retryAfterMs, 30_000));
   }
+  if (response.status === 404) throw new EmailAuditNotFoundError();
   if (!response.ok) throw new Error(`QA email audit failed with HTTP ${response.status}.`);
   return response.json() as Promise<T>;
 }
@@ -154,10 +176,16 @@ async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Prom
     && matchesSubject(item.subject, options.subject)
     && item.email.toLowerCase() === options.recipient.toLowerCase());
   if (!message) return null;
-  const detail = await jsonRequest<BrevoEmailContent>(
-    `https://api.brevo.com/v3/smtp/emails/${encodeURIComponent(message.uuid)}`,
-    headers,
-  );
+  let detail: BrevoEmailContent;
+  try {
+    detail = await jsonRequest<BrevoEmailContent>(
+      `https://api.brevo.com/v3/smtp/emails/${encodeURIComponent(message.uuid)}`,
+      headers,
+    );
+  } catch (error) {
+    if (error instanceof EmailAuditNotFoundError) return null;
+    throw error;
+  }
   const events = (detail.events || []).map(event => (event.name || "").toLowerCase());
   if (events.some(event => ["blocked", "hardbounce", "hardbounces", "invalid"].includes(event))
     || (!events.includes("delivered") && events.some(event => ["softbounce", "softbounces"].includes(event)))) {

@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   emailAuditMissingConfiguration,
   resolveTransactionalEmailLink,
+  transactionalEmailLinkMetadata,
   waitForTransactionalEmail,
 } from "./helpers/transactional-email-audit";
 
@@ -197,6 +198,7 @@ async function invitationLinkAfter(startedAt: number, previousMessageId?: string
   const message = await waitForTransactionalEmail({
     previousMessageId,
     recipient: partnerEmail!,
+    requireDelivered: true,
     startedAt,
     subject: "Invito al tuo evento",
   });
@@ -210,10 +212,14 @@ async function invitationLinkAfter(startedAt: number, previousMessageId?: string
   );
   const rawLinks = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
     .map(match => match[1].replaceAll("&amp;", "&"));
-  const candidates = (await Promise.all(rawLinks.map(resolveTransactionalEmailLink)))
+  const resolvedLinks = await Promise.all(rawLinks.map(resolveTransactionalEmailLink));
+  const candidates = resolvedLinks
     .map(value => { try { return new URL(value); } catch { return null; } })
     .filter((value): value is URL => value !== null && isApprovedOrigin(value) && value.pathname === "/it/invitation");
-  expect(candidates.length, "Email must contain exactly one invitation link on the verified application origin").toBe(1);
+  expect(
+    candidates.length,
+    `Email must contain exactly one invitation link on the verified application origin. Metadata: ${JSON.stringify(transactionalEmailLinkMetadata(resolvedLinks))}`,
+  ).toBe(1);
   const link = candidates[0];
   expect(link.protocol, "Preview invitation must use HTTPS").toBe("https:");
   expect(link.username).toBe("");
