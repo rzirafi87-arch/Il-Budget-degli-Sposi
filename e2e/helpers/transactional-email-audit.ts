@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 type EmailProvider = "brevo" | "resend";
 
 type TransactionalEmail = {
@@ -7,7 +9,11 @@ type TransactionalEmail = {
 
 type EmailAuditCandidateDiagnostic = {
   body: "missing" | "empty" | "1-1024" | "1025-4096" | "4097-16384" | "over-16384";
+  decodedVariantCount: number;
   delivery: "delivered" | "pending" | "terminal";
+  hrefSyntaxCount: number;
+  httpSyntaxCount: number;
+  httpsSyntaxCount: number;
   linkCount: number;
 };
 
@@ -97,7 +103,7 @@ export function transactionalEmailLinkMetadata(values: string[]) {
   });
 }
 
-function decodeEmailMarkup(value: string) {
+function decodeTransferAndEntities(value: string) {
   const quotedPrintable = /=3d|=\r?\n/i.test(value)
     ? value
       .replace(/=\r?\n/g, "")
@@ -111,18 +117,54 @@ function decodeEmailMarkup(value: string) {
       .replace(/&#x0*26;/gi, "&")
       .replace(/&quot;/gi, '"')
       .replace(/&#0*39;/gi, "'")
-      .replace(/&#x0*27;/gi, "'");
+      .replace(/&#x0*27;/gi, "'")
+      .replace(/&colon;/gi, ":")
+      .replace(/&#0*58;/gi, ":")
+      .replace(/&#x0*3a;/gi, ":");
     if (next === decoded) break;
     decoded = next;
   }
   return decoded;
 }
 
+function unescapeSerializedMarkup(value: string) {
+  return value
+    .replace(/\\u([0-9a-f]{4})/gi, (_match, hex: string) => String.fromCharCode(Number.parseInt(hex, 16)))
+    .replace(/\\x([0-9a-f]{2})/gi, (_match, hex: string) => String.fromCharCode(Number.parseInt(hex, 16)))
+    .replace(/\\(["'\\/])/g, "$1")
+    .replace(/\\[rnt]/g, " ");
+}
+
+function decodeBase64Candidate(value: string) {
+  const compact = value.replace(/\s/g, "");
+  if (compact.length < 16 || compact.length % 4 !== 0 || !/^[a-z0-9+/]+={0,2}$/i.test(compact)) return null;
+  const decoded = Buffer.from(compact, "base64").toString("utf8");
+  return /(?:href\s*=|https?:\/\/|<a\b|<html\b)/i.test(decoded) ? decoded : null;
+}
+
+function emailMarkupVariants(value: string) {
+  const variants = new Set<string>();
+  const add = (candidate: string) => {
+    const normalized = decodeTransferAndEntities(unescapeSerializedMarkup(candidate));
+    if (normalized) variants.add(normalized);
+  };
+  add(value);
+
+  const mimeBase64 = /content-transfer-encoding\s*:\s*base64[^\r\n]*\r?\n(?:[^\r\n]*\r?\n)*?\r?\n([a-z0-9+/=\r\n]+)/gi;
+  for (const match of value.matchAll(mimeBase64)) {
+    const decoded = decodeBase64Candidate(match[1]);
+    if (decoded) add(decoded);
+  }
+  const wholeBody = decodeBase64Candidate(value);
+  if (wholeBody) add(wholeBody);
+  return [...variants];
+}
+
 export function transactionalEmailLinks(body: string) {
-  const decoded = decodeEmailMarkup(body);
-  const hrefs = [...decoded.matchAll(/\bhref\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi)]
-    .map(match => match[1] || match[2] || match[3] || "");
-  const textUrls = decoded.match(/https?:\/\/[^\s"'<>]+/gi) || [];
+  const variants = emailMarkupVariants(body);
+  const hrefs = variants.flatMap(decoded => [...decoded.matchAll(/\bhref\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi)]
+    .map(match => match[1] || match[2] || match[3] || ""));
+  const textUrls = variants.flatMap(decoded => decoded.match(/https?:\/\/[^\s"'<>]+/gi) || []);
   return [...new Set([...hrefs, ...textUrls]
     .map(value => value.replace(/[),.;]+$/, ""))
     .filter(value => {
@@ -154,9 +196,15 @@ export function transactionalEmailBodyDiagnostic(
           : length <= 16_384
             ? "4097-16384"
             : "over-16384";
+  const variants = body ? emailMarkupVariants(body) : [];
+  const syntax = variants.join("\n");
   return {
     body: bodyBucket,
+    decodedVariantCount: Math.min(variants.length, 10),
     delivery,
+    hrefSyntaxCount: Math.min((syntax.match(/\bhref\s*=/gi) || []).length, 10),
+    httpSyntaxCount: Math.min((syntax.match(/http:\/\//gi) || []).length, 10),
+    httpsSyntaxCount: Math.min((syntax.match(/https:\/\//gi) || []).length, 10),
     linkCount: Math.min(body ? transactionalEmailLinks(body).length : 0, 10),
   };
 }
