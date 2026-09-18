@@ -78,6 +78,37 @@ export function transactionalEmailLinkMetadata(values: string[]) {
   });
 }
 
+function decodeEmailMarkup(value: string) {
+  const quotedPrintable = /=3d|=\r?\n/i.test(value)
+    ? value
+      .replace(/=\r?\n/g, "")
+      .replace(/=([0-9a-f]{2})/gi, (_match, hex: string) => String.fromCharCode(Number.parseInt(hex, 16)))
+    : value;
+  let decoded = quotedPrintable;
+  for (let pass = 0; pass < 3; pass += 1) {
+    const next = decoded
+      .replace(/&amp;/gi, "&")
+      .replace(/&#0*38;/gi, "&")
+      .replace(/&#x0*26;/gi, "&")
+      .replace(/&quot;/gi, '"')
+      .replace(/&#0*39;/gi, "'")
+      .replace(/&#x0*27;/gi, "'");
+    if (next === decoded) break;
+    decoded = next;
+  }
+  return decoded;
+}
+
+export function transactionalEmailLinks(body: string) {
+  const decoded = decodeEmailMarkup(body);
+  const hrefs = [...decoded.matchAll(/\bhref\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi)]
+    .map(match => match[1] || match[2] || match[3] || "");
+  const textUrls = decoded.match(/https?:\/\/[^\s"'<>]+/gi) || [];
+  return [...new Set([...hrefs, ...textUrls]
+    .map(value => value.replace(/[),.;]+$/, ""))
+    .filter(value => value.startsWith("https://")))];
+}
+
 function isBrevoTrackingUrl(url: URL) {
   const isKnownTrackingHost = ["sendibt2.com", "sendibt3.com"]
     .some(domain => url.hostname === domain || url.hostname.endsWith(`.${domain}`));

@@ -14,6 +14,7 @@ import {
 import {
   emailAuditConfigured,
   resolveTransactionalEmailLink,
+  transactionalEmailLinks,
   waitForTransactionalEmail,
 } from "./helpers/transactional-email-audit";
 
@@ -110,8 +111,7 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
         if (!detail.ok) throw new Error(`Local recovery email lookup failed with HTTP ${detail.status}.`);
         const message = await detail.json() as { HTML?: string; html?: string; Text?: string };
         const content = message.HTML || message.html || message.Text || "";
-        const hrefs = [...content.matchAll(/href=["']([^"']+)["']/gi)]
-          .map(match => match[1].replaceAll("&amp;", "&"));
+        const hrefs = transactionalEmailLinks(content);
         const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
         if (!link) throw new Error("Local recovery email did not contain the real verification callback.");
         return link;
@@ -125,8 +125,7 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
       subject: /reimposta la password/i,
       timeoutMs: Math.max(1, deadline - Date.now()),
     });
-    const rawHrefs = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
-      .map(match => match[1].replaceAll("&amp;", "&"));
+    const rawHrefs = transactionalEmailLinks(message.body);
     const hrefs = await Promise.all(rawHrefs.map(resolveTransactionalEmailLink));
     const link = hrefs.find(href => href.includes("/auth/v1/verify") && href.includes("type=recovery"));
     if (!link) throw new Error("Recovery email did not contain the real verification callback.");

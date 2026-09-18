@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   emailAuditConfigured,
   resolveTransactionalEmailLink,
+  transactionalEmailLinks,
   transactionalEmailLinkMetadata,
   waitForTransactionalEmail,
 } from "./helpers/transactional-email-audit";
@@ -32,9 +33,7 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
     subject: "Conferma il tuo account – Il Budget degli Sposi",
     timeoutMs: 120_000,
   });
-  const rawLinks = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
-    .map(match => match[1].replaceAll("&amp;", "&"))
-    .filter(value => value.startsWith("https://"));
+  const rawLinks = transactionalEmailLinks(message.body);
   const links = await Promise.all(rawLinks.map(resolveTransactionalEmailLink));
   const verification = links.find(value => {
     try {

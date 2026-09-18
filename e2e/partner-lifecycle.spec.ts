@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   emailAuditMissingConfiguration,
   resolveTransactionalEmailLink,
+  transactionalEmailLinks,
   transactionalEmailLinkMetadata,
   waitForTransactionalEmail,
 } from "./helpers/transactional-email-audit";
@@ -210,8 +211,7 @@ async function invitationLinkAfter(startedAt: number, previousMessageId?: string
     && value.hostname.startsWith("il-budget-degli-sposi-")
     && value.hostname.endsWith("-rzirafi87-archs-projects.vercel.app")
   );
-  const rawLinks = [...message.body.matchAll(/href=["']([^"']+)["']/gi)]
-    .map(match => match[1].replaceAll("&amp;", "&"));
+  const rawLinks = transactionalEmailLinks(message.body);
   const resolvedLinks = await Promise.all(rawLinks.map(resolveTransactionalEmailLink));
   const candidates = resolvedLinks
     .map(value => { try { return new URL(value); } catch { return null; } })
