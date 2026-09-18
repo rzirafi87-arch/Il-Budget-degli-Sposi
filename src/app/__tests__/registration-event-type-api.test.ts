@@ -1,11 +1,13 @@
 const insert = jest.fn();
 const mockGetServiceClient = jest.fn();
+const mockGenerateLink = jest.fn();
 
 jest.mock("@/lib/authRateLimit", () => ({
   checkAuthRateLimit: async () => ({ allowed: true, resetAt: Date.now() + 1000 }),
 }));
 jest.mock("@/lib/mailer", () => ({
   siteUrl: () => "http://localhost",
+  confirmationSubject: () => "Confirm account",
   confirmationTemplate: () => "confirmation",
   sendMail: jest.fn(async () => undefined),
 }));
@@ -15,16 +17,25 @@ jest.mock("@/lib/supabaseServer", () => ({ getServiceClient: () => mockGetServic
 describe("registration API event type guard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGenerateLink.mockImplementation(async (input: { email: string; options?: { data?: Record<string, unknown> } }) => ({
+      data: {
+        user: {
+          id: "owner-id",
+          email: input.email,
+          created_at: new Date().toISOString(),
+          user_metadata: input.options?.data,
+        },
+        properties: { action_link: "http://localhost/confirm", hashed_token: "signup-hash" },
+      },
+      error: null,
+    }));
     insert.mockImplementation((payload) => ({
       select: () => ({ single: async () => ({ data: { id: "event-id" }, error: null }) }),
       payload,
     }));
     mockGetServiceClient.mockReturnValue({
       auth: { admin: {
-        generateLink: async () => ({
-          data: { user: { id: "owner-id" }, properties: { action_link: "http://localhost/confirm" } },
-          error: null,
-        }),
+        generateLink: mockGenerateLink,
         inviteUserByEmail: jest.fn(),
         deleteUser: jest.fn(),
       } },

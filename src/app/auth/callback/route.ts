@@ -7,9 +7,15 @@ export async function GET(request: NextRequest) {
   const next = safeInternalPath(url.searchParams.get("next"), "/it/auth?confirmed=1");
   const redirect = NextResponse.redirect(new URL(next, url.origin));
   const code = url.searchParams.get("code");
-  if (!code) return NextResponse.redirect(new URL("/it/auth?authError=invalid_link", url.origin));
+  const tokenHash = url.searchParams.get("token_hash");
+  const type = url.searchParams.get("type");
+  if (!code && (!tokenHash || type !== "signup")) {
+    return NextResponse.redirect(new URL("/it/auth?authError=invalid_link", url.origin));
+  }
   const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { cookies: { getAll: () => request.cookies.getAll(), setAll: cookies => cookies.forEach(({ name, value, options }) => redirect.cookies.set(name, value, options)) } });
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { error } = code
+    ? await supabase.auth.exchangeCodeForSession(code)
+    : await supabase.auth.verifyOtp({ token_hash: tokenHash!, type: "signup" });
   if (error) return NextResponse.redirect(new URL("/it/auth?authError=invalid_link", url.origin));
   return redirect;
 }

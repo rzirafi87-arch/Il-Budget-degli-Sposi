@@ -1,7 +1,7 @@
-import { siteUrl } from "@/lib/mailer";
+import { confirmationSubject, confirmationTemplate, emailLocaleFromRequest, sendMail, siteUrl } from "@/lib/mailer";
 import { checkAuthRateLimit } from "@/lib/authRateLimit";
 import { rateLimitResponse } from "@/lib/publicApiGuard";
-import { createClient } from "@supabase/supabase-js";
+import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -13,11 +13,17 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
   if (EMAIL.test(email)) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (url && key) {
-      const db = createClient(url, key, { auth: { persistSession: false } });
-      await db.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${siteUrl(req)}/auth/callback?next=/it/dashboard` } });
+    const db = getServiceClient();
+    const locale = emailLocaleFromRequest(req);
+    const redirectTo = `${siteUrl(req)}/auth/callback?next=/${locale}/dashboard`;
+    const { data: users } = await db.auth.admin.listUsers({ page: 1, perPage: 200 });
+    const user = users?.users.find(candidate => candidate.email?.toLowerCase() === email);
+    if (user && !user.email_confirmed_at) {
+      const result = await db.auth.admin.generateLink({ type: "magiclink", email, options: { redirectTo } });
+      const link = result.data?.properties?.action_link;
+      if (!result.error && link) {
+        await sendMail(email, confirmationSubject(locale), confirmationTemplate(link, locale)).catch(() => undefined);
+      }
     }
   }
   return NextResponse.json({ ok: true, message: "Se l’account può essere confermato, riceverai una nuova email." });

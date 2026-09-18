@@ -1,4 +1,4 @@
-import { recoveryTemplate, sendMail, siteUrl } from "@/lib/mailer";
+import { emailLocaleFromRequest, recoverySubject, recoveryTemplate, sendMail, siteUrl } from "@/lib/mailer";
 import { checkAuthRateLimit } from "@/lib/authRateLimit";
 import { rateLimitResponse } from "@/lib/publicApiGuard";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
   if (!limit.allowed) return rateLimitResponse(limit.resetAt);
   const body = await req.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
+  const locale = emailLocaleFromRequest(req);
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
     const localMail = process.env.PLAYWRIGHT_LOCAL_SUPABASE === "1" && /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(supabaseUrl);
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
       const db = getServiceClient();
       const result = await db.auth.admin.generateLink({ type: "recovery", email, options: { redirectTo } });
       const link = result.data?.properties?.action_link;
-      if (!result.error && link) await sendMail(email, "Reimposta la password – Il Budget degli Sposi", recoveryTemplate(link)).catch(() => undefined);
+      if (!result.error && link) await sendMail(email, recoverySubject(locale), recoveryTemplate(link, locale)).catch(() => undefined);
     }
   }
   return NextResponse.json({ ok: true, message: "Se l’indirizzo è associato a un account, riceverai le istruzioni." });
