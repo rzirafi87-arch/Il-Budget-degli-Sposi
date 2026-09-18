@@ -38,7 +38,9 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
   const verification = links.find(value => {
     try {
       const url = new URL(value);
-      return url.pathname.endsWith("/auth/v1/verify") && url.searchParams.get("type") === "signup";
+      return url.pathname === "/auth/callback"
+        && url.searchParams.get("type") === "signup"
+        && Boolean(url.searchParams.get("token_hash"));
     } catch {
       return false;
     }
@@ -55,11 +57,11 @@ async function followConfirmation(link: string, expectedOrigin: string) {
     && value.hostname.startsWith("il-budget-degli-sposi-")
     && value.hostname.endsWith("-rzirafi87-archs-projects.vercel.app")
   );
-  const verified = await fetch(link, { redirect: "manual", signal: AbortSignal.timeout(20_000) });
-  const callbackValue = verified.headers.get("location");
-  if (!callbackValue) throw new Error("QA verification did not return an application callback.");
-  const callback = new URL(callbackValue);
-  if (!isApprovedOrigin(callback) || callback.pathname !== "/auth/callback" || !callback.searchParams.has("code")) {
+  const callback = new URL(link);
+  if (!isApprovedOrigin(callback)
+    || callback.pathname !== "/auth/callback"
+    || callback.searchParams.get("type") !== "signup"
+    || !callback.searchParams.has("token_hash")) {
     throw new Error("QA verification returned an invalid callback destination.");
   }
   const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;

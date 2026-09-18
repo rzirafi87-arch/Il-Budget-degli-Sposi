@@ -82,7 +82,7 @@ function createHarness(options: {
           const existing = [...users.values()].find(user => user.email === input.email);
           if (existing) {
             return {
-              data: { user: existing, properties: { action_link: "https://auth.example.test/existing-secret" } },
+              data: { user: existing, properties: { action_link: "https://auth.example.test/existing-secret", hashed_token: "existing-hash" } },
               error: null,
             };
           }
@@ -95,7 +95,7 @@ function createHarness(options: {
           users.set(user.id, user);
           profiles.add(user.id);
           return {
-            data: { user, properties: { action_link: "https://auth.example.test/token-secret" } },
+            data: { user, properties: { action_link: "https://auth.example.test/token-secret", hashed_token: "signup-hash" } },
             error: null,
           };
         }),
@@ -182,6 +182,10 @@ describe("registration delivery compensation", () => {
     expect(harness.users.size).toBe(1);
     expect(harness.events.size).toBe(1);
     expect(mockSendMail).toHaveBeenCalledTimes(1);
+    expect(mockSendMail.mock.calls[0]?.[2]).toContain(
+      "https://app.example.test/auth/callback?next=%2Fit%2Fdashboard&token_hash=signup-hash&type=signup",
+    );
+    expect(mockSendMail.mock.calls[0]?.[2]).not.toContain("auth.example.test/token-secret");
   });
 
   it.each([

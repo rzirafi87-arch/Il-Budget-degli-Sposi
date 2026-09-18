@@ -1,6 +1,7 @@
 const mockExchangeCodeForSession = jest.fn();
+const mockVerifyOtp = jest.fn();
 const mockCreateServerClient = jest.fn(() => ({
-  auth: { exchangeCodeForSession: mockExchangeCodeForSession },
+  auth: { exchangeCodeForSession: mockExchangeCodeForSession, verifyOtp: mockVerifyOtp },
 }));
 
 jest.mock("@supabase/ssr", () => ({
@@ -28,6 +29,26 @@ describe("PKCE auth callback", () => {
     expect(response.status).toBe(302);
     expect(String(response.headers.get("location"))).toBe("https://app.example.test/en/dashboard");
     expect(mockExchangeCodeForSession).toHaveBeenCalledWith("valid-code");
+  });
+
+  it("verifies a signup token hash and preserves a safe internal destination", async () => {
+    mockVerifyOtp.mockResolvedValue({ error: null });
+    const { GET } = await import("../auth/callback/route");
+    const response = await GET(request("https://app.example.test/auth/callback?token_hash=hashed-token&type=signup&next=%2Fit%2Fdashboard"));
+    expect(response.status).toBe(302);
+    expect(String(response.headers.get("location"))).toBe("https://app.example.test/it/dashboard");
+    expect(mockVerifyOtp).toHaveBeenCalledWith({ token_hash: "hashed-token", type: "signup" });
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["wrong type", "https://app.example.test/auth/callback?token_hash=hashed-token&type=recovery"],
+    ["missing hash", "https://app.example.test/auth/callback?type=signup"],
+  ])("rejects a signup token with %s", async (_kind, url) => {
+    const { GET } = await import("../auth/callback/route");
+    const response = await GET(request(url));
+    expect(String(response.headers.get("location"))).toBe("https://app.example.test/it/auth?authError=invalid_link");
+    expect(mockVerifyOtp).not.toHaveBeenCalled();
   });
 
   it.each([

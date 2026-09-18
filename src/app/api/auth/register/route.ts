@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
         data: { [REGISTRATION_MARKER_KEY]: requestId },
       },
     });
-    if (createErr || !ownerRes.user || !ownerRes.properties?.action_link) {
+    if (createErr || !ownerRes.user || !ownerRes.properties?.hashed_token) {
       console.error("REGISTER create owner error code:", createErr?.code || "missing_signup_link");
       return NextResponse.json(
         { ok: true, code: "REGISTRATION_PENDING", confirmationRequired: true },
@@ -192,9 +192,16 @@ export async function POST(req: NextRequest) {
     }
     activeRegistration = registration;
 
+    // Admin-generated action links complete with an implicit-flow URL fragment,
+    // which a server callback cannot read. Send the hashed OTP to our callback
+    // instead so it can verify the signup without exposing a session in the URL.
+    const confirmationUrl = new URL(callback);
+    confirmationUrl.searchParams.set("token_hash", ownerRes.properties.hashed_token);
+    confirmationUrl.searchParams.set("type", "signup");
+
     if (invitationSignup) {
       try {
-        await sendMail(primaryEmail, confirmationSubject(locale), confirmationTemplate(ownerRes.properties.action_link, locale));
+        await sendMail(primaryEmail, confirmationSubject(locale), confirmationTemplate(confirmationUrl.href, locale));
       } catch {
         return failAndCompensate(db, registration, primaryEmail, "REGISTRATION_DELIVERY_FAILED", 502);
       }
@@ -236,7 +243,7 @@ export async function POST(req: NextRequest) {
 
     // 5) Send confirmation to owner. Partner invitation remains a distinct flow.
     try {
-      await sendMail(primaryEmail, confirmationSubject(locale), confirmationTemplate(ownerRes.properties.action_link, locale));
+      await sendMail(primaryEmail, confirmationSubject(locale), confirmationTemplate(confirmationUrl.href, locale));
     } catch {
       return failAndCompensate(db, registration, primaryEmail, "REGISTRATION_DELIVERY_FAILED", 502);
     }

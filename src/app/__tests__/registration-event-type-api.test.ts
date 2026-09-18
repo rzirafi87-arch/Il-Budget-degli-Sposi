@@ -25,7 +25,7 @@ describe("registration API event type guard", () => {
           created_at: new Date().toISOString(),
           user_metadata: input.options?.data,
         },
-        properties: { action_link: "http://localhost/confirm" },
+        properties: { action_link: "http://localhost/confirm", hashed_token: "signup-hash" },
       },
       error: null,
     }));
