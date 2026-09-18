@@ -5,6 +5,24 @@ type TransactionalEmail = {
   id: string;
 };
 
+type EmailAuditCandidateDiagnostic = {
+  body: "missing" | "empty" | "1-1024" | "1025-4096" | "4097-16384" | "over-16384";
+  delivery: "delivered" | "pending" | "terminal";
+  linkCount: number;
+};
+
+type EmailAuditLookupDiagnostic = {
+  candidates: EmailAuditCandidateDiagnostic[];
+  detailNotFoundCount: number;
+  listedCount: number;
+  matchedCount: number;
+};
+
+type EmailAuditLookupResult = {
+  diagnostic: EmailAuditLookupDiagnostic;
+  message: TransactionalEmail | null;
+};
+
 type WaitForTransactionalEmailOptions = {
   previousMessageId?: string;
   recipient: string;
@@ -120,6 +138,29 @@ export function transactionalEmailLinks(body: string) {
     }))];
 }
 
+export function transactionalEmailBodyDiagnostic(
+  body: string | undefined,
+  delivery: EmailAuditCandidateDiagnostic["delivery"],
+): EmailAuditCandidateDiagnostic {
+  const length = body?.length || 0;
+  const bodyBucket = body === undefined
+    ? "missing"
+    : length === 0
+      ? "empty"
+      : length <= 1_024
+        ? "1-1024"
+        : length <= 4_096
+          ? "1025-4096"
+          : length <= 16_384
+            ? "4097-16384"
+            : "over-16384";
+  return {
+    body: bodyBucket,
+    delivery,
+    linkCount: Math.min(body ? transactionalEmailLinks(body).length : 0, 10),
+  };
+}
+
 function isBrevoTrackingUrl(url: URL) {
   const isKnownTrackingHost = ["sendibt2.com", "sendibt3.com"]
     .some(domain => url.hostname === domain || url.hostname.endsWith(`.${domain}`));
@@ -185,7 +226,7 @@ async function jsonRequest<T>(url: string, headers: Record<string, string>): Pro
   return response.json() as Promise<T>;
 }
 
-async function latestResendEmail(options: WaitForTransactionalEmailOptions): Promise<TransactionalEmail | null> {
+async function latestResendEmail(options: WaitForTransactionalEmailOptions): Promise<EmailAuditLookupResult> {
   const headers = { Authorization: `Bearer ${resendApiKey!}` };
   const listed = await jsonRequest<{ data: ResendEmail[] }>("https://api.resend.com/emails?limit=100", headers);
   const messages = listed.data.filter(item =>
@@ -193,34 +234,62 @@ async function latestResendEmail(options: WaitForTransactionalEmailOptions): Pro
     && Date.parse(item.created_at) >= options.startedAt
     && matchesSubject(item.subject, options.subject)
     && item.to.some(address => address.toLowerCase() === options.recipient.toLowerCase()));
+  const diagnostic: EmailAuditLookupDiagnostic = {
+    candidates: [],
+    detailNotFoundCount: 0,
+    listedCount: listed.data.length,
+    matchedCount: messages.length,
+  };
   for (const message of messages) {
-    const detail = await jsonRequest<ResendEmail & { html?: string }>(
-      `https://api.resend.com/emails/${encodeURIComponent(message.id)}`,
-      headers,
-    );
-    if (["bounced", "complained", "failed", "canceled"].includes(detail.last_event || "")) {
+    let detail: ResendEmail & { html?: string };
+    try {
+      detail = await jsonRequest<ResendEmail & { html?: string }>(
+        `https://api.resend.com/emails/${encodeURIComponent(message.id)}`,
+        headers,
+      );
+    } catch (error) {
+      if (error instanceof EmailAuditNotFoundError) {
+        diagnostic.detailNotFoundCount += 1;
+        continue;
+      }
+      throw error;
+    }
+    const terminal = ["bounced", "complained", "failed", "canceled"].includes(detail.last_event || "");
+    const delivered = detail.last_event === "delivered";
+    diagnostic.candidates.push(transactionalEmailBodyDiagnostic(
+      detail.html,
+      terminal ? "terminal" : delivered ? "delivered" : "pending",
+    ));
+    if (terminal) {
       throw new Error("QA email reached a terminal delivery failure.");
     }
-    if (options.requireDelivered && detail.last_event !== "delivered") continue;
+    if (options.requireDelivered && !delivered) continue;
     if (detail.html && (!options.requireLink || transactionalEmailLinks(detail.html).length > 0)) {
-      return { body: detail.html, id: message.id };
+      return { diagnostic, message: { body: detail.html, id: message.id } };
     }
   }
-  return null;
+  return { diagnostic, message: null };
 }
 
-async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Promise<TransactionalEmail | null> {
+async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Promise<EmailAuditLookupResult> {
   const headers = { "api-key": brevoApiKey!, accept: "application/json" };
   const query = new URLSearchParams({ email: options.recipient, limit: "10", sort: "desc" });
   const listed = await jsonRequest<{ transactionalEmails?: BrevoEmail[] }>(
     `https://api.brevo.com/v3/smtp/emails?${query}`,
     headers,
   );
-  const messages = (listed.transactionalEmails || []).filter(item =>
+  const listedMessages = listed.transactionalEmails || [];
+  const messages = listedMessages.filter(item =>
     item.uuid !== options.previousMessageId
     && Date.parse(item.date) >= options.startedAt
     && matchesSubject(item.subject, options.subject)
     && item.email.toLowerCase() === options.recipient.toLowerCase());
+  const diagnostic: EmailAuditLookupDiagnostic = {
+    candidates: [],
+    detailNotFoundCount: 0,
+    listedCount: listedMessages.length,
+    matchedCount: messages.length,
+  };
   for (const message of messages) {
     let detail: BrevoEmailContent;
     try {
@@ -229,20 +298,29 @@ async function latestBrevoEmail(options: WaitForTransactionalEmailOptions): Prom
         headers,
       );
     } catch (error) {
-      if (error instanceof EmailAuditNotFoundError) continue;
+      if (error instanceof EmailAuditNotFoundError) {
+        diagnostic.detailNotFoundCount += 1;
+        continue;
+      }
       throw error;
     }
     const events = (detail.events || []).map(event => (event.name || "").toLowerCase());
-    if (events.some(event => ["blocked", "hardbounce", "hardbounces", "invalid"].includes(event))
-      || (!events.includes("delivered") && events.some(event => ["softbounce", "softbounces"].includes(event)))) {
+    const delivered = events.includes("delivered");
+    const terminal = events.some(event => ["blocked", "hardbounce", "hardbounces", "invalid"].includes(event))
+      || (!delivered && events.some(event => ["softbounce", "softbounces"].includes(event)));
+    diagnostic.candidates.push(transactionalEmailBodyDiagnostic(
+      detail.body,
+      terminal ? "terminal" : delivered ? "delivered" : "pending",
+    ));
+    if (terminal) {
       throw new Error("QA email reached a terminal delivery failure.");
     }
-    if (options.requireDelivered && !events.includes("delivered")) continue;
+    if (options.requireDelivered && !delivered) continue;
     if (detail.body && (!options.requireLink || transactionalEmailLinks(detail.body).length > 0)) {
-      return { body: detail.body, id: message.uuid };
+      return { diagnostic, message: { body: detail.body, id: message.uuid } };
     }
   }
-  return null;
+  return { diagnostic, message: null };
 }
 
 export async function waitForTransactionalEmail(
@@ -250,17 +328,44 @@ export async function waitForTransactionalEmail(
 ): Promise<TransactionalEmail> {
   const selectedProvider = configuredProvider();
   const deadline = Date.now() + (options.timeoutMs ?? 60_000);
+  const diagnostic = {
+    candidateStates: new Set<string>(),
+    detailNotFoundCount: 0,
+    maxListedCount: 0,
+    maxMatchedCount: 0,
+    polls: 0,
+    rateLimitedCount: 0,
+  };
   while (Date.now() < deadline) {
     try {
-      const message = selectedProvider === "brevo"
+      const result = selectedProvider === "brevo"
         ? await latestBrevoEmail(options)
         : await latestResendEmail(options);
-      if (message) return message;
+      diagnostic.polls += 1;
+      diagnostic.detailNotFoundCount += result.diagnostic.detailNotFoundCount;
+      diagnostic.maxListedCount = Math.max(diagnostic.maxListedCount, result.diagnostic.listedCount);
+      diagnostic.maxMatchedCount = Math.max(diagnostic.maxMatchedCount, result.diagnostic.matchedCount);
+      for (const candidate of result.diagnostic.candidates) {
+        diagnostic.candidateStates.add(JSON.stringify(candidate));
+      }
+      if (result.message) return result.message;
       await new Promise(resolve => setTimeout(resolve, selectedProvider === "brevo" ? 5_000 : 2_000));
     } catch (error) {
       if (!(error instanceof EmailAuditRateLimitError)) throw error;
+      diagnostic.rateLimitedCount += 1;
       await new Promise(resolve => setTimeout(resolve, Math.min(error.retryAfterMs, Math.max(1, deadline - Date.now()))));
     }
   }
-  throw new Error("QA transactional email was not available within the allowed interval.");
+  const safeDiagnostic = {
+    provider: selectedProvider,
+    requireDelivered: Boolean(options.requireDelivered),
+    requireLink: Boolean(options.requireLink),
+    polls: diagnostic.polls,
+    rateLimitedCount: diagnostic.rateLimitedCount,
+    maxListedCount: diagnostic.maxListedCount,
+    maxMatchedCount: diagnostic.maxMatchedCount,
+    detailNotFoundCount: diagnostic.detailNotFoundCount,
+    candidateStates: [...diagnostic.candidateStates].slice(0, 10).map(value => JSON.parse(value)),
+  };
+  throw new Error(`QA transactional email was not available within the allowed interval. Diagnostic: ${JSON.stringify(safeDiagnostic)}`);
 }

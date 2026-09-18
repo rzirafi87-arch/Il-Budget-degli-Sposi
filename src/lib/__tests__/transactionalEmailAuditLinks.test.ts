@@ -1,4 +1,7 @@
-import { transactionalEmailLinks } from "../../../e2e/helpers/transactional-email-audit";
+import {
+  transactionalEmailBodyDiagnostic,
+  transactionalEmailLinks,
+} from "../../../e2e/helpers/transactional-email-audit";
 
 describe("transactional email link extraction", () => {
   it("extracts and decodes a normal HTML anchor", () => {
@@ -24,5 +27,28 @@ describe("transactional email link extraction", () => {
   it("allows HTTP only for an isolated loopback test server", () => {
     expect(transactionalEmailLinks("http://127.0.0.1:3000/auth/v1/verify?type=recovery"))
       .toEqual(["http://127.0.0.1:3000/auth/v1/verify?type=recovery"]);
+  });
+
+  it("reduces provider bodies to diagnostics without content, addresses, URLs or tokens", () => {
+    const body = '<a href="https://secret.example.test/it/invitation?token=super-secret">qa@example.test</a>';
+    const diagnostic = transactionalEmailBodyDiagnostic(body, "delivered");
+    const serialized = JSON.stringify(diagnostic);
+
+    expect(diagnostic).toEqual({ body: "1-1024", delivery: "delivered", linkCount: 1 });
+    expect(serialized).not.toContain("qa@example.test");
+    expect(serialized).not.toContain("secret.example.test");
+    expect(serialized).not.toContain("super-secret");
+  });
+
+  it("distinguishes unavailable, empty and oversized provider bodies without preserving content", () => {
+    expect(transactionalEmailBodyDiagnostic(undefined, "pending")).toEqual({
+      body: "missing", delivery: "pending", linkCount: 0,
+    });
+    expect(transactionalEmailBodyDiagnostic("", "pending")).toEqual({
+      body: "empty", delivery: "pending", linkCount: 0,
+    });
+    expect(transactionalEmailBodyDiagnostic("x".repeat(16_385), "terminal")).toEqual({
+      body: "over-16384", delivery: "terminal", linkCount: 0,
+    });
   });
 });
