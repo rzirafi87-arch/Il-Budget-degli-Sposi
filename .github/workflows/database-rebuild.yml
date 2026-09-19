@@ -11,6 +11,11 @@ on:
       - 'scripts/datasets/locations-italy-openstreetmap.json'
       - 'scripts/lib/italian-catalog-datasets.test.mjs'
       - 'scripts/import-catalog.mjs'
+      - 'scripts/run-pgtap.mjs'
+      - 'scripts/test-pgtap-runner-integration.mjs'
+      - 'scripts/lib/pgtap-runner.mjs'
+      - 'scripts/lib/pgtap-runner.test.mjs'
+      - 'scripts/fixtures/pgtap-runner/**'
       - 'src/i18n/**'
       - 'middleware.ts'
       - '.github/workflows/database-rebuild.yml'
@@ -146,10 +151,6 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260909040500_branch_41_budget_items_spend_type.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260909042500_branch_41_budget_snapshot.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260909044000_branch_41_budget_snapshot_variable_fix.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_guest_snapshot.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_user_favorites.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_budget_apply.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_budget_snapshot.sql
 
       - name: Verify Branch 42 catalog datasets
         run: |
@@ -161,7 +162,6 @@ jobs:
         run: |
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260910140052_branch_43_wedding_ux_ceremony_flexibility.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260910203000_branch_43_budget_item_origin.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_43_ceremony_budget.sql
 
       - name: Apply and verify Branch 44 catalog moderation
         run: |
@@ -216,6 +216,28 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_51_production_snapshot.sql > /tmp/branch-51-snapshot-after.json
           diff -u /tmp/branch-51-snapshot-before.json /tmp/branch-51-snapshot-after.json
 
+      - name: Apply and verify Branch 52 Milestone 2 snapshots
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m2-before.json
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260919161056_branch_52_event_catalog_snapshots.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260919161056_branch_52_event_catalog_snapshots.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m2-after.json
+          diff -u /tmp/branch-52-m2-before.json /tmp/branch-52-m2-after.json
+
+      - name: Verify pgTAP runner positive and negative contracts
+        run: |
+          set -Eeuo pipefail
+          node --test scripts/lib/pgtap-runner.test.mjs
+          node scripts/test-pgtap-runner-integration.mjs
+
+      - name: Run every pgTAP suite with TAP enforcement
+        run: |
+          set -Eeuo pipefail
+          node scripts/run-pgtap.mjs \
+            --manifest supabase/tests/pgtap-suites.txt \
+            --database-url-env LOCAL_DATABASE_URL
+
       - name: Lint reconstructed database functions
         run: |
           cd .supabase-ci
@@ -238,6 +260,25 @@ jobs:
           test "$second_status" -ne 0
           test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from public.subcategories where category_id='48910000-0000-4000-8000-000000000003' and lower(btrim(canonical_key))='branch48.concurrent'")" = "1"
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "delete from auth.users where id='48910000-0000-4000-8000-000000000001';"
+
+      - name: Verify concurrent private catalog retries
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into auth.users(id,email) values('52210000-0000-4000-8000-000000000001','branch52-concurrency@example.invalid'); insert into public.events(id,owner_id,event_type) values('52210000-0000-4000-8000-000000000002','52210000-0000-4000-8000-000000000001','wedding');"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "begin; insert into public.event_private_catalog_records(event_id,entity_type,client_key,snapshot_data,snapshot_fingerprint,created_by) values('52210000-0000-4000-8000-000000000002','supplier','52210000-0000-4000-8000-000000000003','{\"name\":\"Concurrent private\"}','0000000000000000000000000000000000000000000000000000000000000000','52210000-0000-4000-8000-000000000001'); select pg_sleep(2); commit;" &
+          first_pid=$!
+          sleep 0.2
+          set +e
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into public.event_private_catalog_records(event_id,entity_type,client_key,snapshot_data,snapshot_fingerprint,created_by) values('52210000-0000-4000-8000-000000000002','supplier','52210000-0000-4000-8000-000000000003','{\"name\":\"Concurrent retry\"}','0000000000000000000000000000000000000000000000000000000000000000','52210000-0000-4000-8000-000000000001');"
+          second_status=$?
+          wait "$first_pid"
+          first_status=$?
+          set -e
+          test "$first_status" -eq 0
+          test "$second_status" -ne 0
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from public.event_private_catalog_records where event_id='52210000-0000-4000-8000-000000000002' and client_key='52210000-0000-4000-8000-000000000003'")" = "1"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "delete from auth.users where id='52210000-0000-4000-8000-000000000001';"
 
       - name: Generate current TypeScript types
         run: |

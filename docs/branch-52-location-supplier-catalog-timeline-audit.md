@@ -1,0 +1,521 @@
+# Branch 52 — Location, supplier, private catalog & timeline integration
+
+## Stato e confini
+
+Branch 52 è avviato esclusivamente in audit. Questo documento non introduce
+funzionalità, migration, DML, fixture, backfill o modifiche a Production.
+
+- Branch: `branch-52-location-supplier-catalog-timeline`
+- Base autorevole: `08c7f95c380d1a307a6cc8746f7bfbb57e20c27a`
+- Production: `dpl_CNhPuEc32DMVQ23C7mKG6iZyxacB`, `READY` sullo stesso SHA
+- Production smoke #31: 37 PASS, 0 FAIL, 87 skip selettivi
+- Event type: solo `wedding` / Matrimonio è `READY`
+- Costo aggiuntivo: 0 €
+- Snapshot Production read-only: 2026-09-19 08:18:15–08:24:07 UTC
+
+### Scope
+
+1. Location ↔ Fornitore, distinguendo associazioni globali da associazioni
+   private dell'evento.
+2. Cataloghi globali ↔ elementi salvati o privati, snapshot, override,
+   preferiti, deduplica e provenienza.
+3. Fornitore ↔ Timeline, appuntamenti, scadenze e navigazione.
+4. Owner, partner attivo/revocato, estraneo, anonimo, CurrentEvent e IDOR.
+5. UX desktop/mobile 320–430 px, light/dark, IT/EN/ES/FR/DE, stati e
+   accessibilità.
+
+### Fuori scope
+
+- notifiche avanzate, scadenze automatiche dei pagamenti e automazioni
+  avanzate Timeline (Branch 53);
+- nuovi event type, monetizzazione, Stripe, marketplace, AI, dominio o email;
+- classificazione/cleanup degli owner legacy assenti da Auth;
+- riscrittura, deduplica distruttiva o backfill dei cataloghi reali;
+- Branch 53 o successivi.
+
+## Preflight
+
+| Controllo | Esito | Evidenza |
+|---|---|---|
+| `origin/main` | PASS | `08c7f95c380d1a307a6cc8746f7bfbb57e20c27a` verificato prima della creazione |
+| PR #64 / #65 / #66 | PASS | tutte `MERGED`; #66 produce lo SHA autorevole |
+| Production | PASS | Vercel `READY`, target `production`, commit `08c7f95...` |
+| Smoke #31 | PASS | 33 test principali + 4 M8; 87 skip selettivi |
+| CI main #598 | PASS | run `35430297383` sullo SHA autorevole |
+| Migration history | PASS | Production termina con `20260916193000_branch_51_least_privilege`; nessuna migration Branch 52 |
+| Working tree | PASS | copia pulita separata; le due copie precedenti con modifiche estranee non sono state toccate |
+| Branch 52 / Branch 53 preesistenti | PASS | assenti prima della creazione |
+
+La versione remota registrata per l'ultima migration usa il timestamp di
+applicazione `20260917102836` e conserva nel nome il filename canonico
+`20260916193000_branch_51_least_privilege`. È lo stato già applicato e
+verificato di Branch 51, non una migration Branch 52 pendente.
+
+## Inventario tecnico
+
+### Modello dati
+
+| Area | Oggetti correnti | Contratto corrente |
+|---|---|---|
+| Cataloghi globali | `churches`, `locations`, `suppliers` | Lettura pubblica; scrittura applicativa diretta disabilitata. Identità tramite UUID, campi normalizzati, `google_place_id` e `(source, external_id)` quando disponibili. |
+| Stato privato evento | `saved_churches`, `saved_locations`, `saved_suppliers` | FK al catalogo globale, FK evento `ON DELETE CASCADE`, unicità per evento/elemento; note, stato, selezione e dati commerciali privati. |
+| Preferiti | `user_favorites`; flag `favorite` nelle tre `saved_*` | `user_favorites` è user-global e non event-scoped; i flag `saved_*` sono event-scoped. I due modelli non sono riconciliati. |
+| Location ↔ Fornitore globale | `supplier_locations` | PK `(supplier_id, location_id, relationship_type)`; tipi `works_at`, `preferred_supplier`, `internal_supplier`, `external_allowed`, `recommended`, `historic_relationship`; lettura pubblica, scrittura service-role. |
+| Location ↔ Fornitore privato | nessun oggetto | Non esiste un'associazione modificabile per evento tra `saved_locations` e `saved_suppliers`. |
+| Timeline canonica | `timeline_items` | Event-scoped; contiene `saved_supplier_id` FK `ON DELETE SET NULL` e indice dedicato. |
+| Timeline legacy/template | `event_timelines`, `user_event_timeline` | Tabelle presenti ma vuote in Production; la UI corrente usa `timeline_items`. |
+| Appuntamenti | `appointments` | Event-scoped e protetto; nessun riferimento a fornitore salvato. |
+| Finanza fornitore | `budget_items.saved_supplier_id`, `expenses.saved_supplier_id`, `payment_reminders.expense_id` | Collegamento stesso-evento già implementato nelle API Branch 50; FK fornitore `ON DELETE SET NULL`. |
+| Provenienza | campi `source*` sui cataloghi + `catalog_provenance` | Provenienza globale server-only; nessuno snapshot di provenienza sulle `saved_*`. |
+
+### Constraint, indici, trigger e cancellazioni
+
+- `saved_suppliers`: unique `(event_id, supplier_id)`; FK catalogo
+  `ON DELETE RESTRICT`; FK evento `ON DELETE CASCADE`.
+- `saved_locations`: unique `(event_id, location_id, location_role)`; una sola
+  selezionata per `(event_id, location_role)`; FK catalogo `RESTRICT`; evento
+  `CASCADE`.
+- `saved_churches`: unique `(event_id, church_id)`; una sola selezionata per
+  evento; FK catalogo `RESTRICT`; evento `CASCADE`.
+- `supplier_locations`: FK globali entrambe `ON DELETE CASCADE`; nessun
+  `event_id`.
+- `timeline_items.saved_supplier_id`, `budget_items.saved_supplier_id` ed
+  `expenses.saved_supplier_id`: FK verso `saved_suppliers`, `ON DELETE SET NULL`.
+- `appointments.event_id` e `timeline_items.event_id`: `ON DELETE CASCADE`.
+- I trigger di normalizzazione/`updated_at` sono presenti sui cataloghi e sulle
+  relazioni salvate. Non esiste un trigger che provi l'appartenenza allo stesso
+  evento di una relazione Location ↔ Fornitore perché tale relazione privata
+  non esiste ancora.
+
+### RLS, grant e funzioni
+
+- Tutte le tabelle coinvolte hanno RLS attiva.
+- Cataloghi globali e `supplier_locations`: solo `SELECT` a `anon` e
+  `authenticated`; privilegi completi soltanto a `service_role`.
+- `catalog_provenance`: nessun grant a `anon`/`authenticated`; service-role
+  only.
+- `saved_*`, `timeline_items`, `appointments`, Budget/spese: CRUD a
+  `authenticated` più policy basate su `can_access_event(event_id)`.
+- `user_favorites`: CRUD per `authenticated`, policy `auth.uid() = user_id`;
+  non è event-scoped.
+- `can_access_event(uuid)` e `is_event_owner(uuid)` sono `SECURITY DEFINER`,
+  hanno `search_path` fissato, verificano `auth.uid()` e non sono eseguibili da
+  `PUBLIC`/`anon`. Sono concessi a `authenticated`; `service_role` mantiene il
+  proprio accesso amministrativo.
+- Il fallback email legacy in `can_access_event` è disabilitato appena esiste
+  una membership canonica per quell'utente/evento; una membership revocata o
+  lasciata non può ricadere nel fallback.
+
+### Route, UI, hook e chiamanti
+
+| Tipo | Percorsi |
+|---|---|
+| Ricerca catalogo canonica | `/api/catalog/search`; wrapper `/api/churches`, `/api/locations`, `/api/suppliers` |
+| Stato privato canonico | `/api/my/churches`, `/api/my/locations`, `/api/my/suppliers`, `/api/my/planning-selections` |
+| Preferiti | `/api/my/favorites`, `useFavorites`, pagina `/[locale]/preferiti` |
+| Timeline | `/api/my/timeline`, pagina `/[locale]/timeline` |
+| Appuntamenti | `/api/my/appointments`, `/api/my/appointments/[id]`, pagina `/[locale]/documenti/appuntamenti` |
+| Finanza | `/api/budget-items`, `/api/my/expenses`, `/api/payment-reminders`, controlli Budget/Spese |
+| Catalog UI | `/[locale]/chiese`, `/[locale]/location`, `/[locale]/fornitori`, `/[locale]/fornitori/[id]` |
+| Alias/legacy | `/[locale]/ricevimento/location` re-esporta Location; restano route appuntamenti non localizzate e copie `/it`/`en`; le pagine categoria fornitore usano `user_favorites`, non `saved_suppliers` |
+
+`CurrentEvent` è risolto da `event_members` attive, owner e fallback legacy; il
+cookie HTTP-only è soltanto un hint e viene accettato solo se l'evento compare
+nel set accessibile. Le API private ignorano `event_id` dal body/query e
+derivano l'evento dal contesto server. Le mutazioni di risorse filtrano sia
+`id` sia `event_id`.
+
+### Debito statico rilevante
+
+- `select("*")` resta in `/api/my/suppliers` e `/api/my/favorites`; il resto
+  delle route private principali usa proiezioni esplicite.
+- `useFavorites` e varie pagine ricavano inline la sessione browser e inviano
+  manualmente il bearer token; le API usano comunque `requireUser`.
+- `/api/my/favorites` non valida UUID, rating, lunghezze o esistenza/tipo del
+  record globale e restituisce messaggi DB grezzi.
+- `/api/my/timeline` non espone né accetta `saved_supplier_id`, benché schema,
+  FK e indice esistano; validazione UUID e limiti payload sono incompleti.
+- `/api/my/appointments` non collega fornitori; GET anonimo restituisce demo e
+  gli errori CurrentEvent sono appiattiti in 500.
+- `/api/suppliers/[id]` seleziona `photo_urls`, `video_urls` e `discount_info`,
+  colonne assenti dallo schema Production e dai tipi generati. Il dettaglio
+  fornitore reale è quindi un blocco funzionale da correggere prima
+  dell'integrazione Branch 52.
+
+## Flussi correnti
+
+1. **Globale → salvato privato:** ricerca pubblica → POST `/api/my/<entity>` →
+   validazione UUID/esistenza globale → insert `saved_*` con `event_id` server.
+   Vengono salvati riferimento e campi privati, non uno snapshot del catalogo.
+2. **Privato → evento:** tutte le `saved_*` hanno `event_id`; Dashboard legge
+   solo selezioni dell'evento corrente. Eliminazione evento rimuove le righe in
+   cascata.
+3. **Location → Fornitore:** solo schema globale `supplier_locations`, vuoto in
+   Production e senza API/UI dedicata. Nessun flusso privato event-scoped.
+4. **Fornitore → Budget/spesa:** implementato; ogni riferimento viene verificato
+   nello stesso evento prima della scrittura. La rimozione del fornitore
+   salvato scollega Budget/spesa/timeline con `SET NULL`; promemoria legati alla
+   spesa impediscono unlink non sicuri.
+5. **Fornitore → Timeline:** predisposto soltanto nello schema tramite
+   `timeline_items.saved_supplier_id`; API e UI non lo usano.
+6. **Cambio/rimozione CurrentEvent:** cambio cookie ricarica le pagine; le API
+   rivalutano l'accesso. Eliminazione evento cancella il cookie o seleziona il
+   successivo accessibile.
+7. **Revoca partner:** `event_members.status` non attivo rimuove immediatamente
+   l'evento dal resolver e dalle policy. I token restano autenticati ma non
+   autorizzati alle righe dell'evento.
+
+## Baseline Production read-only
+
+Fingerprint: MD5 deterministico degli hash delle righe `to_jsonb`, ordinati;
+serve solo come confronto di preservazione, non come obiettivo da ripristinare.
+
+| Relazione | Righe | Fingerprint | Ultima modifica disponibile |
+|---|---:|---|---|
+| `events` | 26 | `0973ac2396ddff6abb3590e6a1490fcb` | 2026-09-19 06:45:43 UTC |
+| `event_members` | 22 | `3dbf4b65643f606102f77701699005ec` | 2026-09-19 07:53:51 UTC |
+| `suppliers` | 326 | `4d3bd2874d8031de2f68fb9b8f5c3b86` | 2026-08-30 18:35:45 UTC |
+| `locations` | 155 | `8523cd712229d2c4d69fd8a6470a375c` | 2026-09-10 08:30:22 UTC |
+| `churches` | 896 | `6933d39c916d32c79dd886fe42cc0a7a` | 2026-09-09 21:12:06 UTC |
+| `saved_suppliers` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `saved_locations` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `saved_churches` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `user_favorites` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `supplier_locations` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `timeline_items` | 166 | `c78cba187dd781f06487da948c4ffb93` | 2025-11-04 10:27:14 UTC |
+| `appointments` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `event_timelines` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `user_event_timeline` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+| `catalog_provenance` | 922 | `796fb7bcdbb206beb02a07fa34198e15` | 2026-09-10 08:30:22 UTC |
+| `budget_items` | 15 | `ae15d8745a8ddc2a172094c99f35e543` | campo timestamp assente |
+| `expenses` | 610 | `63736c8e7700e35b43f19cfff0a3b76a` | 2026-09-19 06:46:58 UTC |
+| `payment_reminders` | 0 | `d41d8cd98f00b204e9800998ecf8427e` | — |
+
+Riconciliazione:
+
+- owner assenti da `auth.users`: 11; owner presenti: 15;
+- membership: 21 attive, 1 `left`, 0 revocate; 0 riferimenti a evento/utente
+  mancante;
+- residui QA Branch 51: 0 utenti Auth, 0 profili, 0 eventi posseduti, 0
+  membership;
+- link fornitore: 0 Timeline, 0 Budget, 0 spese; nessun riferimento rotto;
+- provenienza: 895 chiese, 27 location, 0 fornitori; nessun
+  `catalog_provenance.entity_id` nullo;
+- record senza riga `catalog_provenance`: 1 chiesa, 128 location, 326 fornitori;
+- tutti i cataloghi hanno `normalized_name`; gruppi omonimi per identità debole
+  `(normalized_name, country_code, city)`: chiese 0, location 0, fornitori 117.
+  Non sono classificati automaticamente come duplicati da eliminare.
+
+I numeri sono uno snapshot, non un target da ripristinare. Qualunque futura
+migration deve acquisire un nuovo pre/post snapshot e preservare i dati
+presenti in quel momento.
+
+## Matrice funzionale finale
+
+Legenda stato: **IMPLEMENTATO**, **PREDISPOSTO**, **DA MODIFICARE**,
+**RINVIATO**, **FUORI SCOPE**.
+
+| ID / requisito | Stato | Evidenza e comportamento attuale | Rischio | Intervento minimo / milestone | Migration | Test richiesti | Dati da preservare |
+|---|---|---|---|---|---|---|---|
+| R01 Cataloghi globali church/location/supplier | IMPLEMENTATO | Migration B26–B32; API catalog/search; lettura pubblica con proiezioni | Basso | Conservare il read model / M1 | No | unit route + Data API anon/auth | Tutti i record globali e UUID |
+| R02 Salvataggio event-scoped dei tre cataloghi | IMPLEMENTATO | `saved_*`, route `/api/my/*`, `event_id` server-side | Medio: supplier usa `select(*)` | Proiezione esplicita / M1 | No | unit contratti; SQL RLS; PW owner/partner | Stato, note, selezione, importi |
+| R03 Snapshot del globale al salvataggio | DA MODIFICARE | `saved_*` conserva solo FK e campi privati | Alto: mutazioni globali cambiano retroattivamente la vista privata | Aggiungere snapshot versionato e fingerprint origine / M2 | Sì | unit serializer; SQL default/backfill-safe; PW visualizzazione | FK e campi privati esistenti |
+| R04 Override privati senza mutare il globale | PREDISPOSTO | note/status/importi privati esistono; non esiste override strutturato di nome/contatti | Medio | Override allowlisted separato dallo snapshot / M2 | Sì | unit merge; SQL isolamento; PW edit/reset | Valori globali e note correnti |
+| R05 Record interamente privati | DA MODIFICARE | FK globali `NOT NULL`; impossibile salvare un'entità solo evento | Alto | Modello additivo privato o FK nullable con XOR + identità privata / M2 | Sì | unit identità; SQL FK/check/RLS; PW CRUD | Nessuna conversione dei cataloghi reali |
+| R06 Deduplica/identità canonica | PREDISPOSTO | normalizzazione, source/external ID e Google ID; saved uniqueness per UUID | Alto sui 326 fornitori legacy con 117 gruppi omonimi | Non deduplicare Production; definire chiave privata e test collisioni / M2 | Possibile | unit dedup; SQL unique parziali; PW conflitto | 326 fornitori invariati |
+| R07 Provenienza globale e privata | PREDISPOSTO | source fields + 922 provenance; nessuna provenance nello snapshot privato | Medio/alto: cataloghi legacy senza provenance table | Copiare evidenza disponibile nello snapshot senza backfill globale / M2 | Sì | unit provenance; SQL immutable snapshot | 922 righe e source fields |
+| R08 Preferiti user-global | IMPLEMENTATO | `user_favorites`, RLS per `user_id`; non concede accesso ai cataloghi | Medio: item polymorphic senza FK/validazione | Validare tipo/UUID/esistenza, proiezione/errori / M1 | No | unit input/IDOR; SQL RLS; PW add/remove | Eventuali preferiti creati dopo snapshot |
+| R09 Preferiti event-scoped | PREDISPOSTO | flag `favorite` nelle `saved_*`, separato da `user_favorites` | Alto: doppio significato e UI incoerente | Dichiarare user-global discovery vs event shortlist; non fondere implicitamente / M2 | No o Sì secondo contratto | unit mapping; SQL isolamento; PW cambio evento | Entrambi i modelli senza perdita |
+| R10 Location ↔ Fornitore globale | PREDISPOSTO | `supplier_locations`, tipi e provenienza presenti; 0 righe, nessuna API/UI | Medio | Read API esplicita e visualizzazione; write solo pipeline/admin / M3 | No | unit read; Data API read-only; PW dettaglio location | Tabella e tipi correnti |
+| R11 Fornitore interno/consigliato dalla location | PREDISPOSTO | enum globale contiene `internal_supplier`, `preferred_supplier`, `recommended` | Medio | Esporre label/provenienza senza inventare righe / M3 | No | unit enum; PW filtri/badge | Nessun seed fittizio |
+| R12 Associazione Location ↔ Fornitore privata evento | DA MODIFICARE | nessuna relazione tra `saved_locations` e `saved_suppliers` | Alto | Tabella event-scoped con prova same-event, tipo, origine e note / M3 | Sì | unit API; SQL owner/partner/revoked/IDOR; PW CRUD | saved rows e UUID globali |
+| R13 Modifica/rimozione associazione | DA MODIFICARE | nessuna API/UI privata | Alto | PATCH/DELETE filtrati per evento e risorsa / M3 | Con R12 | unit allowlist; SQL RLS; PW edit/remove | Nessuna cancellazione dei cataloghi |
+| R14 Fornitore ↔ Budget/spesa | IMPLEMENTATO | FK e API B50 con guard same-event | Basso | Regressione soltanto / M6 | No | unit esistenti + SQL FK + PW link/unlink | 15 Budget, 610 spese |
+| R15 Fornitore ↔ Timeline schema | PREDISPOSTO | `timeline_items.saved_supplier_id`, FK SET NULL, indice | Medio | Nessuna nuova colonna Timeline / M4 | No | SQL FK/RLS; unit same-event | 166 Timeline invariati |
+| R16 Fornitore ↔ Timeline API/UI | DA MODIFICARE | route non legge/scrive il riferimento; nessuna navigazione | Alto | Proiezione, input UUID/null, guard same-event, link bidirezionali / M4 | No | unit route; SQL IDOR; PW supplier↔task | Titoli/date/completamento esistenti |
+| R17 Fornitore ↔ appuntamento | DA MODIFICARE | `appointments` non ha supplier FK | Medio | FK opzionale a `saved_suppliers` + guard same-event / M4 | Sì | unit; SQL FK/RLS; PW create/delete/nav | Appuntamenti futuri |
+| R18 Scadenze/attività manuali | PREDISPOSTO | `due_date`, `days_before`, appuntamenti e attività manuali esistono | Medio | Integrare senza automazione / M4 | No | unit date; PW stati | 166 Timeline |
+| R19 Notifiche/scadenze automatiche pagamenti | RINVIATO | nessuna automazione autorizzata | — | Branch 53 | No in B52 | Solo predisposizione contrattuale | Payment reminders invariati |
+| R20 Automazioni avanzate Timeline | RINVIATO | fuori dal contratto B52 | — | Branch 53 | No in B52 | Nessun test B52 salvo non-regressione | Timeline invariata |
+| R21 Owner e partner attivo | IMPLEMENTATO | `can_access_event`, `requirePlanningSelectionAccess`, CurrentEvent | Medio: service role richiede guard esplicita ovunque | Riutilizzare helper condivisi / M1-M6 | No | unit ruoli; SQL/Data API; PW owner/partner | Membership |
+| R22 Partner revocato/left | IMPLEMENTATO | membership non attiva esclusa; fallback legacy bloccato dalla presenza canonica | Basso | Regressione dedicata / M6 | No | SQL + PW revoca durante sessione | 1 membership `left` |
+| R23 Estraneo e anonimo | IMPLEMENTATO | privato 401/404/no row; globali leggibili | Medio: GET favorites/timeline/appuntamenti anonimi usa empty/demo 200 | Uniformare contratto API privato / M1 | No | unit 401; Data API anon; PW redirect | Cataloghi pubblici |
+| R24 CurrentEvent manipolato | IMPLEMENTATO | cookie accettato solo se evento nel set accessibile | Basso | Regressione su tutte le nuove route / M6 | No | unit + PW cookie tamper | Cookie/selection UX |
+| R25 `event_id`/resource ID alterati | IMPLEMENTATO PARZIALE → DA MODIFICARE | route saved/finanza filtrano evento; favorites non è event-scoped; timeline valida poco gli ID | Medio | UUID, allowlist, same-event guard per nuove relazioni / M1-M4 | No | unit IDOR; SQL; PW cross-event | Risorse evento |
+| R26 Eliminazione evento | IMPLEMENTATO | CASCADE per saved/timeline/appointments; link supplier finanziari SET NULL quando si rimuove il saved supplier | Medio per nuove tabelle | Definire CASCADE nuove relazioni e test snapshot / M3-M6 | Sì con nuove tabelle | SQL delete lifecycle; PW delete event | Conteggi/fingerprint pre/post mirati |
+| R27 UX 320–430 px | PREDISPOSTO | componenti responsive; smoke attuale verifica Location/Fornitori a 390, Budget/Spese a 320/390/430 | Medio | Estendere matrix a 320/390/430 per tutti i flussi B52 / M5 | No | PW overflow/azioni/dialog | UX attuale |
+| R28 Light/dark | DA MODIFICARE | le sei pagine B52 non contengono varianti `dark:` dedicate | Medio/alto leggibilità | Token/superfici dark e test contrasto / M5 | No | unit classi minime; PW light/dark | Tema globale |
+| R29 IT/EN/ES/FR/DE | IMPLEMENTATO per baseline, DA ESTENDERE per B52 | 2.906 chiavi per locale, 0 missing/extra/placeholder/residui | Basso | Aggiungere chiavi identiche per le nuove UI / M5 | No | Jest coverage; PW locale matrix | Dizionari esistenti |
+| R30 Loading/empty/error/retry | DA MODIFICARE | loading/empty diffusi; retry esplicito solo Chiese; error handling incoerente | Medio | State component condivisi e retry non distruttivo / M5 | No | unit stati; PW network fail/retry | Nessun dato cancellato su retry |
+| R31 Tastiera/screen reader | PREDISPOSTO | diversi `aria-*`; Preferiti e Timeline hanno copertura semantica ridotta | Medio | focus, live regions, nomi accessibili, tastiera / M5 | No | Testing Library + axe se disponibile; PW keyboard | Label tradotte |
+| R32 Dettaglio fornitore | DA MODIFICARE — BLOCCANTE | API richiede 3 colonne inesistenti in Production | Alto: profilo reale non caricabile | Allineare proiezione e tipi allo schema reale prima dell'integrazione / M1 | No | unit schema contract; PW dettaglio reale | 326 fornitori invariati |
+| R33 Gate DB affidabile | IMPLEMENTATO — M0 CHIUSA | Database Rebuild #258 usa il runner TAP, esegue 5 suite/50 assertion e prova 6 casi controllati; ogni non-PASS termina non-zero | Basso: manifest e parser sono regressioni permanenti | Conservare manifest, prove negative e riepilogo nei log / M0 | No | workflow negativo/positivo PASS | Nessuna modifica Production |
+| R34 Nuovi event type | FUORI SCOPE | `wedding` unico READY; altri 17 COMING_SOON | Critico se alterato | Nessuna modifica / tutti i milestone | No | test capability esistenti | Config invariata |
+
+## Baseline tecnica
+
+| Gate | Esito | Dettaglio |
+|---|---|---|
+| TypeScript | PASS | `tsc --noEmit` |
+| ESLint | PASS con warning | 0 errori, 16 warning preesistenti |
+| Jest | PASS | 93 suite, 566 test |
+| Build | PASS | Next.js 16.3.3, 487/487 pagine |
+| i18n IT/EN/ES/FR/DE | PASS | 2.906 chiavi/locale; zero missing, extra, empty, placeholder mismatch e residui italiani |
+| Catalog test | PASS | 33 test |
+| Import dry-run | PASS | Chiese 10/10 valide; Location 5/5 valide; supplier pilot input 0, nessuna scrittura |
+| UTF-8 | PASS | nessun byte invalido |
+| Mojibake | PASS | semantic scan |
+| Secret/config scan | PASS | nessun pattern segreto; JSON config validi |
+| Build-time validation | PASS | ripetuta dal `prebuild` |
+| Italian runtime extra | FINDING non bloccante | scanner opzionale segnala la stringa tecnica `POST` come falso positivo italiano |
+| Database Rebuild effimero | WORKFLOW PASS con finding bloccante | run #257, SHA `658318b...`; tree identico a `08c7f95...`; tutte le fasi completate, ma un'asserzione pgTAP stampa `not ok` senza fallire il job |
+| Schema lint | PASS | `No schema errors found` nel rebuild #257 |
+| RLS/Data API esistenti | PASS con limite del gate TAP | inventario Branch 51, test B25–B51 e tipi generati completati |
+| Playwright Preview | PASS | run #135, tree identico; 32 PASS / 87 skip |
+| Playwright isolato | PASS | 1 diagnostico + 5 journey, 0 skip |
+| Production smoke | PASS | #31: 37 PASS / 0 FAIL / 87 skip |
+
+Lo SHA `658318b5fc631dc0aae93f6083066c8aaf084cde` e il merge main
+`08c7f95c...` hanno lo stesso tree Git
+`31c639f52d0754adb730c698e9b31eb5937131ca`; i run Rebuild/Playwright sono
+quindi applicabili byte-per-byte alla baseline funzionale corrente.
+
+## Milestone proposte
+
+### M0 — Rendere affidabile il gate SQL — CHIUSA
+
+Checkpoint: 2026-09-19. Commit di implementazione verificato:
+`a608b71b04efc0cb8fc395787617656c374c9fb9`.
+
+#### Diagnosi e contratto autorevole
+
+- causa **A + F**: aspettativa pgTAP obsoleta sulla rappresentazione del
+  default e runner TAP difettoso;
+- Database Rebuild #257 eseguiva le suite con `psql -f`: `psql` restituiva 0
+  perché non c'erano errori SQL, anche se `finish()` riportava
+  `# Looks like you failed 1 test of 2`;
+- assertion errata: `col_default_is(..., '''common''::text', ...)`; il log
+  mostrava `have: common`, `want: 'common'::text`;
+- contratto corretto: valore di default logico esatto `common`. La migration
+  Branch 41 dichiara `text not null default 'common'`, i tipi generati rendono
+  `spend_type` obbligatorio in lettura e opzionale in insert, l'API applica il
+  fallback `common`, il test Jest vincola migration e payload e la metadata
+  Production read-only conferma `text`, `NOT NULL`, default SQL
+  `'common'::text`;
+- nessuna migration, modifica schema, DML o adeguamento dei dati è necessaria.
+
+`pg_prove` non è presente nell'ambiente ed è distribuito separatamente da
+pgTAP. È stato quindi introdotto un runner TAP equivalente senza nuove
+dipendenze, con `psql --set ON_ERROR_STOP=1`, esecuzione senza pipeline,
+manifest completo e validazione di:
+
+- `not ok` e `Bail out!`;
+- piano assente, multiplo, vuoto o non rispettato;
+- conteggio e numerazione delle assertion;
+- errore/exit code `psql`;
+- file mancante, non dichiarato, privo di piano o non eseguito;
+- numero di suite selezionate ed effettivamente completate.
+
+Il workflow usa `set -Eeuo pipefail` negli step del runner e stampa file,
+suite, assertion, PASS/FAIL, bailout ed exit code finale senza esporre la
+connection string.
+
+#### Prove e gate
+
+| Gate | Esito M0 | Evidenza |
+|---|---|---|
+| Test unitari runner | PASS | 11 test: protocollo valido, `not ok`, bailout, piano mancante/incompleto, numerazione, file senza test/non dichiarato ed exit `psql` |
+| Prove controllate su Supabase effimero | PASS | 6/6: PASS→0; `not ok`, errore SQL, piano incompleto, nessun test e bailout→non-zero |
+| Suite pgTAP normale | PASS | 5 suite, 50 assertion, 50 PASS, 0 FAIL, 0 bailout; tutti i file del manifest eseguiti |
+| `branch_41_budget_apply.sql` | PASS | 2/2 assertion con valore atteso `common` |
+| Rebuild/idempotenza/RLS/Data API/RPC | PASS | Database Rebuild #258, tutti gli step Branch 25–51 e doppia applicazione Branch 51 completati |
+| Schema lint | PASS | `No schema errors found` |
+| Tipi Supabase | PASS | generazione e diff contro `src/types/database.types.ts` senza differenze |
+| Jest | PASS | 93 suite, 566 test |
+| TypeScript | PASS | `tsc --noEmit` |
+| ESLint | PASS con warning | 0 errori, 16 warning preesistenti |
+| Catalog test | PASS | 33 test |
+| Build | PASS | Next.js 16.3.3, 487/487 pagine |
+| Secret/config/UTF-8/mojibake | PASS | nessun segreto o errore di configurazione/codifica |
+| CI remoto | PASS | #600 |
+| Preview Vercel | READY | `dpl_8fjG4wVVS3Z6nu3hkSGFcV2HUHSB`, SHA esatto |
+| Playwright isolato | PASS | diagnostico + 5 journey reali, nessuno skip |
+| Playwright Preview | FINDING FUORI M0 | #136 e retry: 31 PASS, 2 FAIL, 87 skip; `REGISTRATION_DELIVERY_FAILED` e invito partner non apparso, senza modifiche ai flussi email/partner |
+
+Il failure Preview è stato riprodotto al retry ed è separato dalle modifiche
+M0, che riguardano esclusivamente workflow, runner e assertion SQL. Non è stato
+corretto perché richiederebbe interventi sul provider email o sul flusso
+partner fuori dallo scope autorizzato.
+
+Main resta `08c7f95c380d1a307a6cc8746f7bfbb57e20c27a`; Production resta
+`dpl_CNhPuEc32DMVQ23C7mKG6iZyxacB`, `READY` sullo stesso SHA. Nessuna
+migration è stata creata o applicata, la PR #67 resta OPEN/DRAFT, M1 non è
+iniziata e il costo aggiuntivo è 0 €.
+
+### M1 — Contratti API e dettaglio fornitore
+
+- `/api/suppliers/[id]` è allineata alle sole colonne reali del catalogo e
+  rifiuta le scritture dirette; il placeholder demo e i campi inesistenti
+  `photo_urls`, `video_urls`, `discount_info` sono rimossi;
+- `/api/my/suppliers` usa proiezioni esplicite tipizzate per lista, dettaglio,
+  creazione e aggiornamento; non usa `select(*)` né `as any`;
+- UUID, `resource_id`, enum, valuta, importi, note e payload sono allowlisted;
+  `event_id`, `owner_id` e campi estranei sono rifiutati e l'evento è sempre
+  derivato dal CurrentEvent server-side;
+- owner e partner attivo possono leggere e mutare; partner revocato, estraneo
+  e anonimo sono fermati prima del service client; risorsa assente o di altro
+  evento restituisce lo stesso `SAVED_SUPPLIER_NOT_FOUND` 404;
+- il dettaglio UI usa soltanto `suppliers` e `saved_suppliers`, con loading,
+  not-found, errore, retry, salvataggio, selezione e note private esistenti.
+
+Nessuna migration prevista.
+
+Checkpoint M1: nessuna migration o scrittura catalogo, nessuna associazione
+Location–Fornitore, snapshot, override o record private-only introdotti. I test
+mirati sono 38/38 PASS e Jest completo è 586/586 PASS; TypeScript, ESLint e
+build sono PASS (restano 16 warning ESLint preesistenti, zero errori).
+
+### M2 — Elementi privati, snapshot, override e preferiti
+
+#### Modello autorevole e invarianti
+
+| Concetto | Identità e persistenza | Mutabilità / accesso |
+|---|---|---|
+| Record globale | `churches`, `locations`, `suppliers`; UUID canonico e provenienza correnti | Pubblico in lettura; scrittura solo pipeline/server secondo i contratti esistenti |
+| Globale salvato nell'evento | riga `saved_*` con FK globale ed `event_id` | Stato, note, importi e shortlist restano condivisi tra owner e partner attivo |
+| Snapshot event-scoped | sei colonne additive su ogni `saved_*`: payload, versione 1, timestamp, SHA-256, provenienza sicura e override separato | Creato atomicamente dal trigger al nuovo salvataggio; identità, payload, versione, timestamp, fingerprint e provenienza sono immutabili |
+| Override privato | `private_overrides` sulla riga `saved_*` | Solo campi descrittivi allowlisted; mai UUID, source/provenance, verifica, analytics o timestamp globali |
+| Record completamente privato | `event_private_catalog_records`, FK evento `ON DELETE CASCADE`, `entity_type`, `client_key`, snapshot base e override | Owner e partner attivo; snapshot/identità immutabili; `client_key` rende retry e concorrenza idempotenti senza fondere record omonimi |
+| Preferito user-global | `user_favorites(user_id,item_type,item_id)` | Preferenza personale trasversale a 0/1/N eventi; non concede accesso a eventi o record privati |
+| Preferito event-scoped | flag `favorite` nelle tre `saved_*` | Shortlist condivisa del solo CurrentEvent; non viene sincronizzata o fusa implicitamente con `user_favorites` |
+
+La precedenza di lettura è deterministica:
+
+1. override privato;
+2. snapshot immutabile;
+3. catalogo globale come fallback esclusivamente per campi mancanti e righe
+   legacy con snapshot `NULL`.
+
+Campi copiati nel payload snapshot:
+
+- comuni: UUID origine, nome, indirizzo/località/nazione, contatti, descrizione,
+  coordinate e campi pubblici di source/verifica;
+- chiesa: tipo, denominazione/religione, sottotipo, capienza, disponibilità
+  cerimonia, accessibilità e parcheggio;
+- location: tipo/sottotipo, capienze, alloggio, catering, spazi,
+  accessibilità/parcheggio e fascia prezzo/valuta;
+- fornitore: categoria/sottocategoria, canali social, area/regioni servite,
+  disponibilità trasferta e fascia prezzo/valuta;
+- provenienza: riepilogo pubblico del record e delle fonti pipeline, senza
+  copiare metadata tecnici arbitrari o alterare `catalog_provenance`.
+
+Allowlist override: gli stessi soli campi descrittivi sopra, esclusi `id`,
+`source*`, `external_id`, `verification_status`, `google_place_id`,
+fingerprint, timestamp e campi tecnici. Tipi, lunghezze, coordinate, valuta,
+importi e array sono validati sia dall'API sia dai constraint database.
+
+#### Comportamenti limite
+
+- Aggiornamento globale: i nuovi risultati pubblici cambiano, lo snapshot
+  evento no.
+- Rimozione/non disponibilità globale: la FK `RESTRICT` impedisce una
+  cancellazione fisica finché esiste un salvataggio; una rimozione logica resta
+  leggibile dallo snapshot.
+- Legacy: nessun backfill. Le righe `saved_*` preesistenti restano valide con
+  snapshot `NULL` e fallback globale.
+- Salvataggio ripetuto/concorrenza: le unique esistenti dei `saved_*` e la
+  unique `(event_id,entity_type,client_key)` dei privati impediscono doppioni;
+  le API restituiscono la risorsa esistente come successo idempotente.
+- Omonimi: non esiste unique su nome/città. Due entità reali omonime restano
+  distinte; la deduplica riguarda solo UUID globale o `client_key` di retry.
+- Cambio evento/CurrentEvent alterato: l'API ignora `event_id` client e filtra
+  sempre evento e risorsa sul contesto server autorevole.
+- Eliminazione evento: CASCADE elimina `saved_*` e privati dell'evento; gli
+  oggetti globali e `user_favorites` restano invariati.
+- Partner revocato/left, estraneo e anonimo: esclusi da CurrentEvent, API e
+  RLS; owner e partner attivo condividono lettura e mutazioni evento.
+
+#### Migration M2
+
+`20260919161056_branch_52_event_catalog_snapshots.sql` è schema-only e
+idempotente: nuove colonne con `NULL`/default sicuro, nuova tabella, constraint,
+indici, policy e trigger. Non contiene cleanup, backfill, deduplica o DML sui
+dati applicativi; non rende nullable FK esistenti e non sostituisce UUID.
+La funzione privilegiata che legge `catalog_provenance` vive nello schema
+non esposto `private`, con `search_path` fissato e nessun EXECUTE a
+`PUBLIC`/`anon`/`authenticated`.
+
+### M3 — Location ↔ Fornitore
+
+- esporre associazioni globali `supplier_locations` in sola lettura;
+- introdurre associazioni private event-scoped con vincolo same-event;
+- CRUD limitato a owner/partner attivo, provenienza e tipi allowlisted;
+- UX Location e Fornitore con modifica/rimozione.
+
+Migration necessaria solo per la relazione privata.
+
+### M4 — Fornitore ↔ Timeline e appuntamenti
+
+- usare il FK Timeline già esistente con guard same-event;
+- aggiungere il riferimento opzionale agli appuntamenti se approvato;
+- navigazione bidirezionale e stati manuali;
+- nessuna notifica o scadenza automatica.
+
+Migration necessaria solo per `appointments.saved_supplier_id`.
+
+### M5 — UX, localizzazione e accessibilità
+
+- 320/390/430 px e desktop;
+- light/dark;
+- IT/EN/ES/FR/DE;
+- loading/empty/error/retry;
+- tastiera, focus, live regions e screen reader.
+
+Nessuna migration.
+
+### M6 — Matrice sicurezza e Release Candidate
+
+- unit test contratti e IDOR;
+- SQL/RLS/Data API per owner, partner attivo/revocato, estraneo e anonimo;
+- CurrentEvent/event/resource tamper, delete event e revoke partner;
+- Playwright completo su Preview;
+- confronto nuovo snapshot Production read-only;
+- stop prima di migration/deploy Production, Ready o merge.
+
+## Rischi
+
+### Bloccanti prima dell'implementazione funzionale
+
+1. Il gate Database Rebuild non trasforma automaticamente un fallimento pgTAP
+   in job failure.
+2. Il dettaglio fornitore è disallineato dallo schema Production.
+3. Il modello snapshot/private-only/override deve essere approvato prima di
+   creare una migration; non è sicuro inferirlo dai campi correnti.
+
+### Non bloccanti per l'audit
+
+- 16 warning ESLint preesistenti;
+- falso positivo `POST` nello scanner runtime italiano opzionale;
+- route/appuntamenti legacy duplicate;
+- assenza di dark-mode dedicato e copertura Playwright incompleta sulle pagine
+  B52;
+- cataloghi legacy privi di `catalog_provenance` strutturata: devono essere
+  preservati, non corretti nel Branch 52.
+
+## Dati da preservare
+
+- 26 eventi, 22 membership e 11 owner legacy assenti da Auth;
+- ogni riga e UUID dei 326 fornitori, 155 location e 896 chiese;
+- 922 record di provenienza e tutti i campi `source*` dei cataloghi;
+- 166 Timeline, 15 Budget, 610 spese e relative identità;
+- qualunque `saved_*`, preferito, associazione, appuntamento o promemoria che
+  venga creato dopo questo snapshot;
+- membership revocate/left, inviti, cookie CurrentEvent e comportamento di
+  cancellazione;
+- Matrimonio unico READY e monetizzazione fail-closed.
+
+## Stop
+
+Nessuna implementazione è iniziata. Nessuna migration è stata creata o
+applicata. Production, main, cataloghi e provider esterni restano invariati.
+La PR deve restare Draft.

@@ -47,6 +47,21 @@ test("authenticated wedding journey, event context and logout", async ({ page },
     expect(overflow, `${path} must fit at 390px`).toBe(false);
   }
 
+  const catalogResponse = await page.request.get("/api/catalog/search?entityType=supplier&pageSize=1");
+  expect(catalogResponse.status()).toBe(200);
+  const catalog = await catalogResponse.json() as { results: Array<{ id: string; name: string }> };
+  expect(catalog.results).not.toHaveLength(0);
+  const realSupplier = catalog.results[0];
+  const detailResponse = page.waitForResponse(response =>
+    response.request().method() === "GET"
+    && new URL(response.url()).pathname === `/api/suppliers/${realSupplier.id}`
+  );
+  await page.goto(`/it/fornitori/${realSupplier.id}`);
+  expect((await detailResponse).status()).toBe(200);
+  await expect(page.getByRole("heading", { name: realSupplier.name, exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /per il tuo matrimonio/i })).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/fornitore demo|MISSING_MESSAGE/i);
+
   for (const width of [320, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     for (const path of ["budget", "spese"]) {

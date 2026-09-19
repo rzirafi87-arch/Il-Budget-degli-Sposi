@@ -1,12 +1,134 @@
-import { getServiceClient } from "@/lib/supabaseServer";
 import { planningSelectionErrorResponse, requirePlanningSelectionAccess } from "@/lib/planningSelectionAuthorization";
-import type { SavedSupplierInsert, SavedSupplierUpdate } from "@/lib/planningSelectionContracts";
+import type { SavedSupplierInsert } from "@/lib/planningSelectionContracts";
 import { withCanonicalPlanningState } from "@/lib/planningSelectionState";
+import { getServiceClient } from "@/lib/supabaseServer";
+import { isSnapshotSchemaUnavailable, resolveCatalogRecord } from "@/lib/catalogSnapshotContracts";
+import {
+  isUuid,
+  parseCreateSupplierPayload,
+  parseSavedSupplierMutation,
+  SAVED_SUPPLIER_LEGACY_PROJECTION,
+  SAVED_SUPPLIER_LEGACY_WITH_NAME_PROJECTION,
+  SAVED_SUPPLIER_PROJECTION,
+  SAVED_SUPPLIER_WITH_NAME_PROJECTION,
+} from "@/lib/supplierContracts";
 import { NextRequest, NextResponse } from "next/server";
+
 export const runtime = "nodejs";
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const STATUSES = new Set(["DISCOVERED","SAVED","CONTACTED","QUOTE_REQUESTED","QUOTE_RECEIVED","SHORTLISTED","SELECTED","REJECTED"]);
-export async function GET(req: NextRequest) { try { const { currentEvent } = await requirePlanningSelectionAccess(req, "read"); const eventId = currentEvent.eventId; const { data, error } = await getServiceClient().from("saved_suppliers").select("*, supplier:suppliers(id,name)").eq("event_id", eventId).order("created_at"); if (error) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 }); return NextResponse.json({ savedSuppliers: (data || []).map((row) => withCanonicalPlanningState("supplier", row)), eventId }); } catch (error) { return planningSelectionErrorResponse(error); } }
-export async function POST(req: NextRequest) { try { const { currentEvent } = await requirePlanningSelectionAccess(req, "mutate"); const body = await req.json() as { supplier_id?: string }; if (!body.supplier_id || !UUID.test(body.supplier_id)) return NextResponse.json({ error: "Invalid supplier id" }, { status: 400 }); const eventId = currentEvent.eventId; const db = getServiceClient(); const { data: supplier, error: supplierError } = await db.from("suppliers").select("id").eq("id", body.supplier_id).maybeSingle(); if (supplierError) return NextResponse.json({ error: "PLANNING_SELECTION_LOOKUP_FAILED" }, { status: 500 }); if (!supplier) return NextResponse.json({ error: "Supplier not found" }, { status: 404 }); const insert: SavedSupplierInsert = { event_id: eventId, supplier_id: body.supplier_id }; const { data, error } = await db.from("saved_suppliers").insert(insert).select("*").single(); if (error?.code === "23505") return NextResponse.json({ error: "Supplier already saved" }, { status: 409 }); if (error) return NextResponse.json({ error: "PLANNING_SELECTION_CREATE_FAILED" }, { status: 500 }); return NextResponse.json({ savedSupplier: withCanonicalPlanningState("supplier", data) }, { status: 201 }); } catch (error) { return planningSelectionErrorResponse(error); } }
-export async function PATCH(req: NextRequest) { try { const { currentEvent } = await requirePlanningSelectionAccess(req, "mutate"); const body = await req.json() as Record<string, unknown>; const id = typeof body.id === "string" ? body.id : ""; if (!UUID.test(id)) return NextResponse.json({ error: "Invalid saved supplier id" }, { status: 400 }); const eventId = currentEvent.eventId; const update: SavedSupplierUpdate = {}; if (typeof body.status === "string" && STATUSES.has(body.status)) update.status = body.status; for (const k of ["favorite","deposit_paid","contract_signed"] as const) if (typeof body[k] === "boolean") update[k] = body[k]; for (const k of ["personal_notes","contact_notes"] as const) if (typeof body[k] === "string") update[k] = body[k].trim().slice(0,4000) || null; for (const k of ["quote_amount","agreed_amount","deposit_amount","balance_amount"] as const) { if (body[k] === null) update[k] = null; else if (typeof body[k] === "number" && Number.isFinite(body[k]) && body[k] >= 0) update[k] = body[k]; } if (typeof body.currency === "string" && /^[A-Za-z]{3}$/.test(body.currency)) update.currency = body.currency.toUpperCase(); if (!Object.keys(update).length) return NextResponse.json({ error: "No valid updates" }, { status: 400 }); const { data, error } = await getServiceClient().from("saved_suppliers").update(update).eq("id", id).eq("event_id", eventId).select("*").maybeSingle(); if (error) return NextResponse.json({ error:"PLANNING_SELECTION_UPDATE_FAILED" }, { status:500 }); if (!data) return NextResponse.json({ error:"Saved supplier not found" }, { status:404 }); return NextResponse.json({ savedSupplier:withCanonicalPlanningState("supplier", data) }); } catch (error) { return planningSelectionErrorResponse(error); } }
-export async function DELETE(req: NextRequest) { try { const { currentEvent } = await requirePlanningSelectionAccess(req, "mutate"); const id = req.nextUrl.searchParams.get("id") || ""; if (!UUID.test(id)) return NextResponse.json({ error:"Invalid saved supplier id" }, { status:400 }); const eventId = currentEvent.eventId; const { data,error } = await getServiceClient().from("saved_suppliers").delete().eq("id",id).eq("event_id",eventId).select("id").maybeSingle(); if (error) return NextResponse.json({ error:"PLANNING_SELECTION_DELETE_FAILED" }, { status:500 }); if (!data) return NextResponse.json({ error:"Saved supplier not found" }, { status:404 }); return NextResponse.json({ ok:true }); } catch (error) { return planningSelectionErrorResponse(error); } }
+
+async function readJson(request: NextRequest): Promise<unknown> {
+  try { return await request.json(); } catch { return null; }
+}
+
+function withResolvedSupplier<T extends Record<string, unknown> & { status: string; selected?: boolean }>(row: T) {
+  const supplier = Array.isArray(row.supplier) ? row.supplier[0] : row.supplier;
+  return {
+    ...withCanonicalPlanningState("supplier", row),
+    resolved_record: resolveCatalogRecord(supplier, row.catalog_snapshot, row.private_overrides),
+  };
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const { currentEvent } = await requirePlanningSelectionAccess(req, "read");
+    const eventId = currentEvent.eventId;
+    const resourceId = req.nextUrl.searchParams.get("resource_id");
+    const db = getServiceClient();
+
+    if (resourceId !== null) {
+      if (!isUuid(resourceId)) return NextResponse.json({ error: "INVALID_RESOURCE_ID" }, { status: 400 });
+      const primary = await db.from("saved_suppliers")
+        .select(SAVED_SUPPLIER_WITH_NAME_PROJECTION)
+        .eq("id", resourceId).eq("event_id", eventId).maybeSingle();
+      const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+        ? await db.from("saved_suppliers").select(SAVED_SUPPLIER_LEGACY_WITH_NAME_PROJECTION)
+          .eq("id", resourceId).eq("event_id", eventId).maybeSingle()
+        : primary;
+      if (error) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 });
+      if (!data) return NextResponse.json({ error: "SAVED_SUPPLIER_NOT_FOUND" }, { status: 404 });
+      return NextResponse.json({ savedSupplier: withResolvedSupplier(data), eventId });
+    }
+
+    const primary = await db.from("saved_suppliers")
+      .select(SAVED_SUPPLIER_WITH_NAME_PROJECTION)
+      .eq("event_id", eventId).order("created_at", { ascending: true });
+    const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+      ? await db.from("saved_suppliers").select(SAVED_SUPPLIER_LEGACY_WITH_NAME_PROJECTION)
+        .eq("event_id", eventId).order("created_at", { ascending: true })
+      : primary;
+    if (error) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 });
+    return NextResponse.json({
+      savedSuppliers: (data ?? []).map((row) => withResolvedSupplier(row)),
+      eventId,
+    });
+  } catch (error) { return planningSelectionErrorResponse(error); }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const { currentEvent } = await requirePlanningSelectionAccess(req, "mutate");
+    const parsed = parseCreateSupplierPayload(await readJson(req));
+    if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
+    const eventId = currentEvent.eventId;
+    const db = getServiceClient();
+    const { data: supplier, error: supplierError } = await db.from("suppliers")
+      .select("id").eq("id", parsed.value.supplier_id).maybeSingle();
+    if (supplierError) return NextResponse.json({ error: "PLANNING_SELECTION_LOOKUP_FAILED" }, { status: 500 });
+    if (!supplier) return NextResponse.json({ error: "SUPPLIER_NOT_FOUND" }, { status: 404 });
+
+    const insert: SavedSupplierInsert = { event_id: eventId, supplier_id: parsed.value.supplier_id };
+    const primary = await db.from("saved_suppliers").insert(insert)
+      .select(SAVED_SUPPLIER_PROJECTION).single();
+    const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+      ? await db.from("saved_suppliers").insert(insert).select(SAVED_SUPPLIER_LEGACY_PROJECTION).single()
+      : primary;
+    if (error?.code === "23505") {
+      const existingPrimary = await db.from("saved_suppliers")
+        .select(SAVED_SUPPLIER_PROJECTION)
+        .eq("event_id", eventId).eq("supplier_id", parsed.value.supplier_id).maybeSingle();
+      const { data: existing, error: existingError } = isSnapshotSchemaUnavailable(existingPrimary.error)
+        ? await db.from("saved_suppliers").select(SAVED_SUPPLIER_LEGACY_PROJECTION)
+          .eq("event_id", eventId).eq("supplier_id", parsed.value.supplier_id).maybeSingle()
+        : existingPrimary;
+      if (existingError || !existing) return NextResponse.json({ error: "PLANNING_SELECTION_CREATE_FAILED" }, { status: 500 });
+      return NextResponse.json({ savedSupplier: withResolvedSupplier(existing), idempotent: true });
+    }
+    if (error) return NextResponse.json({ error: "PLANNING_SELECTION_CREATE_FAILED" }, { status: 500 });
+    return NextResponse.json({ savedSupplier: withResolvedSupplier(data), idempotent: false }, { status: 201 });
+  } catch (error) { return planningSelectionErrorResponse(error); }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const { currentEvent } = await requirePlanningSelectionAccess(req, "mutate");
+    const parsed = parseSavedSupplierMutation(await readJson(req));
+    if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
+    const db = getServiceClient();
+    const primary = await db.from("saved_suppliers")
+      .update(parsed.value.update)
+      .eq("id", parsed.value.resourceId).eq("event_id", currentEvent.eventId)
+      .select(SAVED_SUPPLIER_PROJECTION).maybeSingle();
+    const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+      ? await db.from("saved_suppliers").update(parsed.value.update)
+        .eq("id", parsed.value.resourceId).eq("event_id", currentEvent.eventId)
+        .select(SAVED_SUPPLIER_LEGACY_PROJECTION).maybeSingle()
+      : primary;
+    if (error) return NextResponse.json({ error: "PLANNING_SELECTION_UPDATE_FAILED" }, { status: 500 });
+    if (!data) return NextResponse.json({ error: "SAVED_SUPPLIER_NOT_FOUND" }, { status: 404 });
+    return NextResponse.json({ savedSupplier: withResolvedSupplier(data) });
+  } catch (error) { return planningSelectionErrorResponse(error); }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { currentEvent } = await requirePlanningSelectionAccess(req, "mutate");
+    const resourceId = req.nextUrl.searchParams.get("resource_id");
+    if (!isUuid(resourceId)) return NextResponse.json({ error: "INVALID_RESOURCE_ID" }, { status: 400 });
+    const { data, error } = await getServiceClient().from("saved_suppliers").delete()
+      .eq("id", resourceId).eq("event_id", currentEvent.eventId)
+      .select("id").maybeSingle();
+    if (error) return NextResponse.json({ error: "PLANNING_SELECTION_DELETE_FAILED" }, { status: 500 });
+    if (!data) return NextResponse.json({ error: "SAVED_SUPPLIER_NOT_FOUND" }, { status: 404 });
+    return NextResponse.json({ ok: true });
+  } catch (error) { return planningSelectionErrorResponse(error); }
+}
