@@ -33,7 +33,9 @@ for (const width of [320, 430] as const) {
       await expect(associations.getByRole("link", { name: fixture.supplierName, exact: true })).toBeVisible();
       await expect(associations.getByText("Nessuna associazione privata per questo elemento.", { exact: true })).toBeVisible();
 
-      await associations.getByLabel("Fornitore", { exact: true }).selectOption(`saved:${fixture.savedSupplierId}`);
+      await associations.getByLabel("Fornitore", { exact: true }).selectOption({
+        label: `${fixture.supplierName} — snapshot globale salvato`,
+      });
       await associations.getByLabel("Note private", { exact: true }).last().fill("QA-M3 nota iniziale");
       const createResponse = page.waitForResponse(response =>
         response.request().method() === "POST"
