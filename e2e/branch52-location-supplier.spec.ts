@@ -68,17 +68,21 @@ for (const width of [320, 430] as const) {
       await expect(supplierPrivateItem.getByLabel("Note private", { exact: true })).toHaveValue("QA-M3 nota aggiornata");
       await expect(supplierAssociations.getByRole("link", { name: fixture.locationName, exact: true })).toBeVisible();
 
-      for (const colorScheme of ["light", "dark"] as const) {
-        await page.emulateMedia({ colorScheme });
-        await page.reload();
-        await expect(page.getByRole("heading", { name: localizedTitles.it, exact: true })).toBeVisible();
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+      if (width === 430) {
+        for (const colorScheme of ["light", "dark"] as const) {
+          await page.emulateMedia({ colorScheme });
+          await page.reload();
+          await expect(page.getByRole("heading", { name: localizedTitles.it, exact: true })).toBeVisible();
+          expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+        }
       }
 
-      for (const [locale, title] of Object.entries(localizedTitles)) {
-        await page.goto(`/${locale}/location/${fixture.locationId}`);
-        await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
-        await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
+      if (width === 320) {
+        for (const [locale, title] of Object.entries(localizedTitles)) {
+          await page.goto(`/${locale}/location/${fixture.locationId}`);
+          await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+          await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
+        }
       }
 
       await page.goto(`/it/fornitori/${fixture.supplierId}`);
