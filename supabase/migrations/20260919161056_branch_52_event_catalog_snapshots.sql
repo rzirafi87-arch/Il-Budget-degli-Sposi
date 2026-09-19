@@ -295,17 +295,17 @@ begin
     or new.catalog_snapshot_captured_at is distinct from old.catalog_snapshot_captured_at
     or new.catalog_snapshot_fingerprint is distinct from old.catalog_snapshot_fingerprint
     or new.catalog_provenance_snapshot is distinct from old.catalog_provenance_snapshot
-    or case tg_table_name
+    or (case tg_table_name
       when 'saved_churches' then to_jsonb(new) -> 'church_id'
       when 'saved_locations' then to_jsonb(new) -> 'location_id'
       when 'saved_suppliers' then to_jsonb(new) -> 'supplier_id'
       else null
-    end is distinct from case tg_table_name
+    end) is distinct from (case tg_table_name
       when 'saved_churches' then to_jsonb(old) -> 'church_id'
       when 'saved_locations' then to_jsonb(old) -> 'location_id'
       when 'saved_suppliers' then to_jsonb(old) -> 'supplier_id'
       else null
-    end
+    end)
   then
     raise exception 'saved catalog identity and snapshot are immutable' using errcode = '23514';
   end if;
