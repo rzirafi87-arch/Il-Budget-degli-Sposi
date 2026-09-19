@@ -249,7 +249,7 @@ Legenda stato: **IMPLEMENTATO**, **PREDISPOSTO**, **DA MODIFICARE**,
 | R30 Loading/empty/error/retry | DA MODIFICARE | loading/empty diffusi; retry esplicito solo Chiese; error handling incoerente | Medio | State component condivisi e retry non distruttivo / M5 | No | unit stati; PW network fail/retry | Nessun dato cancellato su retry |
 | R31 Tastiera/screen reader | PREDISPOSTO | diversi `aria-*`; Preferiti e Timeline hanno copertura semantica ridotta | Medio | focus, live regions, nomi accessibili, tastiera / M5 | No | Testing Library + axe se disponibile; PW keyboard | Label tradotte |
 | R32 Dettaglio fornitore | DA MODIFICARE — BLOCCANTE | API richiede 3 colonne inesistenti in Production | Alto: profilo reale non caricabile | Allineare proiezione e tipi allo schema reale prima dell'integrazione / M1 | No | unit schema contract; PW dettaglio reale | 326 fornitori invariati |
-| R33 Gate DB affidabile | DA MODIFICARE — BLOCCANTE | Database Rebuild #257 è verde ma logga un pgTAP `not ok` in `branch_41_budget_apply.sql` | Alto: falso PASS delle regression SQL | Correggere assertion e far fallire workflow su TAP failure (`pg_prove` o equivalente) / M0 | No | workflow negativo/positivo | Nessuna modifica Production |
+| R33 Gate DB affidabile | IMPLEMENTATO — M0 CHIUSA | Database Rebuild #258 usa il runner TAP, esegue 5 suite/50 assertion e prova 6 casi controllati; ogni non-PASS termina non-zero | Basso: manifest e parser sono regressioni permanenti | Conservare manifest, prove negative e riepilogo nei log / M0 | No | workflow negativo/positivo PASS | Nessuna modifica Production |
 | R34 Nuovi event type | FUORI SCOPE | `wedding` unico READY; altri 17 COMING_SOON | Critico se alterato | Nessuna modifica / tutti i milestone | No | test capability esistenti | Config invariata |
 
 ## Baseline tecnica
@@ -282,13 +282,75 @@ quindi applicabili byte-per-byte alla baseline funzionale corrente.
 
 ## Milestone proposte
 
-### M0 — Rendere affidabile il gate SQL
+### M0 — Rendere affidabile il gate SQL — CHIUSA
 
-- correggere l'asserzione default di `branch_41_budget_apply.sql`;
-- eseguire pgTAP con un runner che fallisca su `not ok`;
-- rieseguire Database Rebuild e schema lint.
+Checkpoint: 2026-09-19. Commit di implementazione verificato:
+`a608b71b04efc0cb8fc395787617656c374c9fb9`.
 
-Nessuna migration Production.
+#### Diagnosi e contratto autorevole
+
+- causa **A + F**: aspettativa pgTAP obsoleta sulla rappresentazione del
+  default e runner TAP difettoso;
+- Database Rebuild #257 eseguiva le suite con `psql -f`: `psql` restituiva 0
+  perché non c'erano errori SQL, anche se `finish()` riportava
+  `# Looks like you failed 1 test of 2`;
+- assertion errata: `col_default_is(..., '''common''::text', ...)`; il log
+  mostrava `have: common`, `want: 'common'::text`;
+- contratto corretto: valore di default logico esatto `common`. La migration
+  Branch 41 dichiara `text not null default 'common'`, i tipi generati rendono
+  `spend_type` obbligatorio in lettura e opzionale in insert, l'API applica il
+  fallback `common`, il test Jest vincola migration e payload e la metadata
+  Production read-only conferma `text`, `NOT NULL`, default SQL
+  `'common'::text`;
+- nessuna migration, modifica schema, DML o adeguamento dei dati è necessaria.
+
+`pg_prove` non è presente nell'ambiente ed è distribuito separatamente da
+pgTAP. È stato quindi introdotto un runner TAP equivalente senza nuove
+dipendenze, con `psql --set ON_ERROR_STOP=1`, esecuzione senza pipeline,
+manifest completo e validazione di:
+
+- `not ok` e `Bail out!`;
+- piano assente, multiplo, vuoto o non rispettato;
+- conteggio e numerazione delle assertion;
+- errore/exit code `psql`;
+- file mancante, non dichiarato, privo di piano o non eseguito;
+- numero di suite selezionate ed effettivamente completate.
+
+Il workflow usa `set -Eeuo pipefail` negli step del runner e stampa file,
+suite, assertion, PASS/FAIL, bailout ed exit code finale senza esporre la
+connection string.
+
+#### Prove e gate
+
+| Gate | Esito M0 | Evidenza |
+|---|---|---|
+| Test unitari runner | PASS | 11 test: protocollo valido, `not ok`, bailout, piano mancante/incompleto, numerazione, file senza test/non dichiarato ed exit `psql` |
+| Prove controllate su Supabase effimero | PASS | 6/6: PASS→0; `not ok`, errore SQL, piano incompleto, nessun test e bailout→non-zero |
+| Suite pgTAP normale | PASS | 5 suite, 50 assertion, 50 PASS, 0 FAIL, 0 bailout; tutti i file del manifest eseguiti |
+| `branch_41_budget_apply.sql` | PASS | 2/2 assertion con valore atteso `common` |
+| Rebuild/idempotenza/RLS/Data API/RPC | PASS | Database Rebuild #258, tutti gli step Branch 25–51 e doppia applicazione Branch 51 completati |
+| Schema lint | PASS | `No schema errors found` |
+| Tipi Supabase | PASS | generazione e diff contro `src/types/database.types.ts` senza differenze |
+| Jest | PASS | 93 suite, 566 test |
+| TypeScript | PASS | `tsc --noEmit` |
+| ESLint | PASS con warning | 0 errori, 16 warning preesistenti |
+| Catalog test | PASS | 33 test |
+| Build | PASS | Next.js 16.3.3, 487/487 pagine |
+| Secret/config/UTF-8/mojibake | PASS | nessun segreto o errore di configurazione/codifica |
+| CI remoto | PASS | #600 |
+| Preview Vercel | READY | `dpl_8fjG4wVVS3Z6nu3hkSGFcV2HUHSB`, SHA esatto |
+| Playwright isolato | PASS | diagnostico + 5 journey reali, nessuno skip |
+| Playwright Preview | FINDING FUORI M0 | #136 e retry: 31 PASS, 2 FAIL, 87 skip; `REGISTRATION_DELIVERY_FAILED` e invito partner non apparso, senza modifiche ai flussi email/partner |
+
+Il failure Preview è stato riprodotto al retry ed è separato dalle modifiche
+M0, che riguardano esclusivamente workflow, runner e assertion SQL. Non è stato
+corretto perché richiederebbe interventi sul provider email o sul flusso
+partner fuori dallo scope autorizzato.
+
+Main resta `08c7f95c380d1a307a6cc8746f7bfbb57e20c27a`; Production resta
+`dpl_CNhPuEc32DMVQ23C7mKG6iZyxacB`, `READY` sullo stesso SHA. Nessuna
+migration è stata creata o applicata, la PR #67 resta OPEN/DRAFT, M1 non è
+iniziata e il costo aggiuntivo è 0 €.
 
 ### M1 — Contratti API e dettaglio fornitore
 
@@ -383,4 +445,3 @@ Nessuna migration.
 Nessuna implementazione è iniziata. Nessuna migration è stata creata o
 applicata. Production, main, cataloghi e provider esterni restano invariati.
 La PR deve restare Draft.
-
