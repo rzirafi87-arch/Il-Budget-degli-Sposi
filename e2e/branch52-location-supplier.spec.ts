@@ -33,13 +33,9 @@ for (const width of [320, 430] as const) {
       await expect(associations.getByRole("link", { name: fixture.supplierName, exact: true })).toBeVisible();
       await expect(associations.getByText("Nessuna associazione privata per questo elemento.", { exact: true })).toBeVisible();
 
-      const supplierSelect = associations.getByLabel("Fornitore", { exact: true });
-      await supplierSelect.evaluate((node: HTMLSelectElement) => {
-        const firstAssociation = node.options.item(1);
-        if (!firstAssociation) throw new Error("M3 association option is missing.");
-        node.value = firstAssociation.value;
-        node.dispatchEvent(new Event("change", { bubbles: true }));
-      });
+      const supplierSelect = associations.getByTestId("association-counterpart-select");
+      await expect(supplierSelect).toHaveAccessibleName("Fornitore");
+      await supplierSelect.selectOption({ index: 1 }, { timeout: 10_000 });
       await expect(supplierSelect).not.toHaveValue("");
       await associations.getByLabel("Note private", { exact: true }).last().fill("QA-M3 nota iniziale");
       const createResponse = page.waitForResponse(response =>
