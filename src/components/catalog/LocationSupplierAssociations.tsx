@@ -270,18 +270,18 @@ export function LocationSupplierAssociations({ side, catalogId, eventEndpoint }:
                 {privateItems.map((item) => {
                   const target = privateCounterpart(item, side);
                   const edit = editable[item.id] ?? { relationshipType: item.relationshipType, privateNotes: item.privateNotes ?? "" };
-                  return <li key={item.id} className="rounded-xl border border-border bg-bg p-3">
+                  return <li key={item.id} data-testid={`private-association-${item.id}`} className="rounded-xl border border-border bg-bg p-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       {target.catalogId ? <Link className="font-semibold text-primary underline-offset-4 hover:underline" href={counterpartLink(target.catalogId)}>{target.name || t("unnamed")}</Link> : <span className="font-semibold text-fg">{target.name || t("unnamed")}</span>}
                       <span className="rounded-full bg-secondary/15 px-2.5 py-1 text-xs font-semibold text-fg">{t("privateBadge")}</span>
                     </div>
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       <label className="text-sm font-medium text-fg"><span>{t("relationshipType")}</span><select className="app-select mt-1 w-full" value={edit.relationshipType} onChange={(event) => setEditable((current) => ({ ...current, [item.id]: { ...edit, relationshipType: event.target.value as LocationSupplierRelationshipType } }))}>{LOCATION_SUPPLIER_RELATIONSHIP_TYPES.map((type) => <option key={type} value={type}>{t(`types.${type}`)}</option>)}</select></label>
-                      <label className="text-sm font-medium text-fg"><span>{t("notes")}</span><textarea className="app-input mt-1 min-h-20 w-full" maxLength={4000} value={edit.privateNotes} onChange={(event) => setEditable((current) => ({ ...current, [item.id]: { ...edit, privateNotes: event.target.value } }))}/></label>
+                      <label className="text-sm font-medium text-fg"><span>{t("notes")}</span><textarea data-testid="association-private-notes" className="app-input mt-1 min-h-20 w-full" maxLength={4000} value={edit.privateNotes} onChange={(event) => setEditable((current) => ({ ...current, [item.id]: { ...edit, privateNotes: event.target.value } }))}/></label>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <AppButton variant="outline" disabled={Boolean(pendingAction)} onClick={() => void updateAssociation(item.id)}>{t("saveChanges")}</AppButton>
-                      <AppButton variant="ghost" disabled={Boolean(pendingAction)} onClick={() => void removeAssociation(item.id)}><Trash2 size={16} aria-hidden />{t("remove")}</AppButton>
+                      <AppButton data-testid="association-save" variant="outline" disabled={Boolean(pendingAction)} onClick={() => void updateAssociation(item.id)}>{t("saveChanges")}</AppButton>
+                      <AppButton data-testid="association-remove" variant="ghost" disabled={Boolean(pendingAction)} onClick={() => void removeAssociation(item.id)}><Trash2 size={16} aria-hidden />{t("remove")}</AppButton>
                     </div>
                   </li>;
                 })}
