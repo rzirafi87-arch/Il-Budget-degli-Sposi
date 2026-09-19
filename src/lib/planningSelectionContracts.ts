@@ -6,7 +6,7 @@ export type SavedChurchRow = Tables["saved_churches"]["Row"];
 export type SavedChurchInsert = Pick<Tables["saved_churches"]["Insert"], "event_id" | "church_id">;
 export type SavedChurchUpdate = Pick<
   Tables["saved_churches"]["Update"],
-  "favorite" | "contacted" | "selected" | "status" | "personal_notes" | "personal_contact_notes" | "quoted_price"
+  "favorite" | "contacted" | "selected" | "status" | "personal_notes" | "personal_contact_notes" | "quoted_price" | "private_overrides"
 >;
 
 export type SavedLocationRow = Tables["saved_locations"]["Row"];
@@ -25,6 +25,7 @@ export type SavedLocationUpdate = Pick<
   | "quote_amount"
   | "agreed_cost"
   | "quote_currency"
+  | "private_overrides"
 >;
 
 export type SavedSupplierRow = Tables["saved_suppliers"]["Row"];
@@ -42,4 +43,5 @@ export type SavedSupplierUpdate = Pick<
   | "deposit_amount"
   | "balance_amount"
   | "currency"
+  | "private_overrides"
 >;

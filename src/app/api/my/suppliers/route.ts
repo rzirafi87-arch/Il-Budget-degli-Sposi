@@ -2,10 +2,13 @@ import { planningSelectionErrorResponse, requirePlanningSelectionAccess } from "
 import type { SavedSupplierInsert } from "@/lib/planningSelectionContracts";
 import { withCanonicalPlanningState } from "@/lib/planningSelectionState";
 import { getServiceClient } from "@/lib/supabaseServer";
+import { isSnapshotSchemaUnavailable, resolveCatalogRecord } from "@/lib/catalogSnapshotContracts";
 import {
   isUuid,
   parseCreateSupplierPayload,
   parseSavedSupplierMutation,
+  SAVED_SUPPLIER_LEGACY_PROJECTION,
+  SAVED_SUPPLIER_LEGACY_WITH_NAME_PROJECTION,
   SAVED_SUPPLIER_PROJECTION,
   SAVED_SUPPLIER_WITH_NAME_PROJECTION,
 } from "@/lib/supplierContracts";
@@ -17,6 +20,14 @@ async function readJson(request: NextRequest): Promise<unknown> {
   try { return await request.json(); } catch { return null; }
 }
 
+function withResolvedSupplier<T extends Record<string, unknown> & { status: string; selected?: boolean }>(row: T) {
+  const supplier = Array.isArray(row.supplier) ? row.supplier[0] : row.supplier;
+  return {
+    ...withCanonicalPlanningState("supplier", row),
+    resolved_record: resolveCatalogRecord(supplier, row.catalog_snapshot, row.private_overrides),
+  };
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { currentEvent } = await requirePlanningSelectionAccess(req, "read");
@@ -26,20 +37,28 @@ export async function GET(req: NextRequest) {
 
     if (resourceId !== null) {
       if (!isUuid(resourceId)) return NextResponse.json({ error: "INVALID_RESOURCE_ID" }, { status: 400 });
-      const { data, error } = await db.from("saved_suppliers")
+      const primary = await db.from("saved_suppliers")
         .select(SAVED_SUPPLIER_WITH_NAME_PROJECTION)
         .eq("id", resourceId).eq("event_id", eventId).maybeSingle();
+      const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+        ? await db.from("saved_suppliers").select(SAVED_SUPPLIER_LEGACY_WITH_NAME_PROJECTION)
+          .eq("id", resourceId).eq("event_id", eventId).maybeSingle()
+        : primary;
       if (error) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 });
       if (!data) return NextResponse.json({ error: "SAVED_SUPPLIER_NOT_FOUND" }, { status: 404 });
-      return NextResponse.json({ savedSupplier: withCanonicalPlanningState("supplier", data), eventId });
+      return NextResponse.json({ savedSupplier: withResolvedSupplier(data), eventId });
     }
 
-    const { data, error } = await db.from("saved_suppliers")
+    const primary = await db.from("saved_suppliers")
       .select(SAVED_SUPPLIER_WITH_NAME_PROJECTION)
       .eq("event_id", eventId).order("created_at", { ascending: true });
+    const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+      ? await db.from("saved_suppliers").select(SAVED_SUPPLIER_LEGACY_WITH_NAME_PROJECTION)
+        .eq("event_id", eventId).order("created_at", { ascending: true })
+      : primary;
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_READ_FAILED" }, { status: 500 });
     return NextResponse.json({
-      savedSuppliers: (data ?? []).map((row) => withCanonicalPlanningState("supplier", row)),
+      savedSuppliers: (data ?? []).map((row) => withResolvedSupplier(row)),
       eventId,
     });
   } catch (error) { return planningSelectionErrorResponse(error); }
@@ -58,11 +77,24 @@ export async function POST(req: NextRequest) {
     if (!supplier) return NextResponse.json({ error: "SUPPLIER_NOT_FOUND" }, { status: 404 });
 
     const insert: SavedSupplierInsert = { event_id: eventId, supplier_id: parsed.value.supplier_id };
-    const { data, error } = await db.from("saved_suppliers").insert(insert)
+    const primary = await db.from("saved_suppliers").insert(insert)
       .select(SAVED_SUPPLIER_PROJECTION).single();
-    if (error?.code === "23505") return NextResponse.json({ error: "SUPPLIER_ALREADY_SAVED" }, { status: 409 });
+    const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+      ? await db.from("saved_suppliers").insert(insert).select(SAVED_SUPPLIER_LEGACY_PROJECTION).single()
+      : primary;
+    if (error?.code === "23505") {
+      const existingPrimary = await db.from("saved_suppliers")
+        .select(SAVED_SUPPLIER_PROJECTION)
+        .eq("event_id", eventId).eq("supplier_id", parsed.value.supplier_id).maybeSingle();
+      const { data: existing, error: existingError } = isSnapshotSchemaUnavailable(existingPrimary.error)
+        ? await db.from("saved_suppliers").select(SAVED_SUPPLIER_LEGACY_PROJECTION)
+          .eq("event_id", eventId).eq("supplier_id", parsed.value.supplier_id).maybeSingle()
+        : existingPrimary;
+      if (existingError || !existing) return NextResponse.json({ error: "PLANNING_SELECTION_CREATE_FAILED" }, { status: 500 });
+      return NextResponse.json({ savedSupplier: withResolvedSupplier(existing), idempotent: true });
+    }
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_CREATE_FAILED" }, { status: 500 });
-    return NextResponse.json({ savedSupplier: withCanonicalPlanningState("supplier", data) }, { status: 201 });
+    return NextResponse.json({ savedSupplier: withResolvedSupplier(data), idempotent: false }, { status: 201 });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 
@@ -71,13 +103,19 @@ export async function PATCH(req: NextRequest) {
     const { currentEvent } = await requirePlanningSelectionAccess(req, "mutate");
     const parsed = parseSavedSupplierMutation(await readJson(req));
     if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
-    const { data, error } = await getServiceClient().from("saved_suppliers")
+    const db = getServiceClient();
+    const primary = await db.from("saved_suppliers")
       .update(parsed.value.update)
       .eq("id", parsed.value.resourceId).eq("event_id", currentEvent.eventId)
       .select(SAVED_SUPPLIER_PROJECTION).maybeSingle();
+    const { data, error } = isSnapshotSchemaUnavailable(primary.error)
+      ? await db.from("saved_suppliers").update(parsed.value.update)
+        .eq("id", parsed.value.resourceId).eq("event_id", currentEvent.eventId)
+        .select(SAVED_SUPPLIER_LEGACY_PROJECTION).maybeSingle()
+      : primary;
     if (error) return NextResponse.json({ error: "PLANNING_SELECTION_UPDATE_FAILED" }, { status: 500 });
     if (!data) return NextResponse.json({ error: "SAVED_SUPPLIER_NOT_FOUND" }, { status: 404 });
-    return NextResponse.json({ savedSupplier: withCanonicalPlanningState("supplier", data) });
+    return NextResponse.json({ savedSupplier: withResolvedSupplier(data) });
   } catch (error) { return planningSelectionErrorResponse(error); }
 }
 

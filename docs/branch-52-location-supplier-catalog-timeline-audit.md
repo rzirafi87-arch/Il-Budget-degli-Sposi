@@ -377,13 +377,73 @@ build sono PASS (restano 16 warning ESLint preesistenti, zero errori).
 
 ### M2 — Elementi privati, snapshot, override e preferiti
 
-- approvare un modello additivo per globale, privato-only, snapshot immutabile,
-  override allowlisted e provenienza;
-- mantenere `user_favorites` user-global e `saved_*.favorite` event-scoped,
-  oppure migrare esplicitamente senza fusione implicita;
-- non riscrivere/deduplicare cataloghi reali.
+#### Modello autorevole e invarianti
 
-Migration necessaria; snapshot pre/post obbligatorio.
+| Concetto | Identità e persistenza | Mutabilità / accesso |
+|---|---|---|
+| Record globale | `churches`, `locations`, `suppliers`; UUID canonico e provenienza correnti | Pubblico in lettura; scrittura solo pipeline/server secondo i contratti esistenti |
+| Globale salvato nell'evento | riga `saved_*` con FK globale ed `event_id` | Stato, note, importi e shortlist restano condivisi tra owner e partner attivo |
+| Snapshot event-scoped | sei colonne additive su ogni `saved_*`: payload, versione 1, timestamp, SHA-256, provenienza sicura e override separato | Creato atomicamente dal trigger al nuovo salvataggio; identità, payload, versione, timestamp, fingerprint e provenienza sono immutabili |
+| Override privato | `private_overrides` sulla riga `saved_*` | Solo campi descrittivi allowlisted; mai UUID, source/provenance, verifica, analytics o timestamp globali |
+| Record completamente privato | `event_private_catalog_records`, FK evento `ON DELETE CASCADE`, `entity_type`, `client_key`, snapshot base e override | Owner e partner attivo; snapshot/identità immutabili; `client_key` rende retry e concorrenza idempotenti senza fondere record omonimi |
+| Preferito user-global | `user_favorites(user_id,item_type,item_id)` | Preferenza personale trasversale a 0/1/N eventi; non concede accesso a eventi o record privati |
+| Preferito event-scoped | flag `favorite` nelle tre `saved_*` | Shortlist condivisa del solo CurrentEvent; non viene sincronizzata o fusa implicitamente con `user_favorites` |
+
+La precedenza di lettura è deterministica:
+
+1. override privato;
+2. snapshot immutabile;
+3. catalogo globale come fallback esclusivamente per campi mancanti e righe
+   legacy con snapshot `NULL`.
+
+Campi copiati nel payload snapshot:
+
+- comuni: UUID origine, nome, indirizzo/località/nazione, contatti, descrizione,
+  coordinate e campi pubblici di source/verifica;
+- chiesa: tipo, denominazione/religione, sottotipo, capienza, disponibilità
+  cerimonia, accessibilità e parcheggio;
+- location: tipo/sottotipo, capienze, alloggio, catering, spazi,
+  accessibilità/parcheggio e fascia prezzo/valuta;
+- fornitore: categoria/sottocategoria, canali social, area/regioni servite,
+  disponibilità trasferta e fascia prezzo/valuta;
+- provenienza: riepilogo pubblico del record e delle fonti pipeline, senza
+  copiare metadata tecnici arbitrari o alterare `catalog_provenance`.
+
+Allowlist override: gli stessi soli campi descrittivi sopra, esclusi `id`,
+`source*`, `external_id`, `verification_status`, `google_place_id`,
+fingerprint, timestamp e campi tecnici. Tipi, lunghezze, coordinate, valuta,
+importi e array sono validati sia dall'API sia dai constraint database.
+
+#### Comportamenti limite
+
+- Aggiornamento globale: i nuovi risultati pubblici cambiano, lo snapshot
+  evento no.
+- Rimozione/non disponibilità globale: la FK `RESTRICT` impedisce una
+  cancellazione fisica finché esiste un salvataggio; una rimozione logica resta
+  leggibile dallo snapshot.
+- Legacy: nessun backfill. Le righe `saved_*` preesistenti restano valide con
+  snapshot `NULL` e fallback globale.
+- Salvataggio ripetuto/concorrenza: le unique esistenti dei `saved_*` e la
+  unique `(event_id,entity_type,client_key)` dei privati impediscono doppioni;
+  le API restituiscono la risorsa esistente come successo idempotente.
+- Omonimi: non esiste unique su nome/città. Due entità reali omonime restano
+  distinte; la deduplica riguarda solo UUID globale o `client_key` di retry.
+- Cambio evento/CurrentEvent alterato: l'API ignora `event_id` client e filtra
+  sempre evento e risorsa sul contesto server autorevole.
+- Eliminazione evento: CASCADE elimina `saved_*` e privati dell'evento; gli
+  oggetti globali e `user_favorites` restano invariati.
+- Partner revocato/left, estraneo e anonimo: esclusi da CurrentEvent, API e
+  RLS; owner e partner attivo condividono lettura e mutazioni evento.
+
+#### Migration M2
+
+`20260919161056_branch_52_event_catalog_snapshots.sql` è schema-only e
+idempotente: nuove colonne con `NULL`/default sicuro, nuova tabella, constraint,
+indici, policy e trigger. Non contiene cleanup, backfill, deduplica o DML sui
+dati applicativi; non rende nullable FK esistenti e non sostituisce UUID.
+La funzione privilegiata che legge `catalog_provenance` vive nello schema
+non esposto `private`, con `search_path` fissato e nessun EXECUTE a
+`PUBLIC`/`anon`/`authenticated`.
 
 ### M3 — Location ↔ Fornitore
 

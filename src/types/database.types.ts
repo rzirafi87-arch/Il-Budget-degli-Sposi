@@ -897,6 +897,59 @@ export type Database = {
           },
         ]
       }
+      event_private_catalog_records: {
+        Row: {
+          client_key: string
+          created_at: string
+          created_by: string | null
+          entity_type: string
+          event_id: string
+          id: string
+          override_data: Json
+          snapshot_captured_at: string
+          snapshot_data: Json
+          snapshot_fingerprint: string
+          snapshot_version: number
+          updated_at: string
+        }
+        Insert: {
+          client_key: string
+          created_at?: string
+          created_by?: string | null
+          entity_type: string
+          event_id: string
+          id?: string
+          override_data?: Json
+          snapshot_captured_at?: string
+          snapshot_data: Json
+          snapshot_fingerprint: string
+          snapshot_version?: number
+          updated_at?: string
+        }
+        Update: {
+          client_key?: string
+          created_at?: string
+          created_by?: string | null
+          entity_type?: string
+          event_id?: string
+          id?: string
+          override_data?: Json
+          snapshot_captured_at?: string
+          snapshot_data?: Json
+          snapshot_fingerprint?: string
+          snapshot_version?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_private_catalog_records_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_timeline_translations: {
         Row: {
           description: string | null
@@ -2045,6 +2098,11 @@ export type Database = {
       }
       saved_churches: {
         Row: {
+          catalog_provenance_snapshot: Json | null
+          catalog_snapshot: Json | null
+          catalog_snapshot_captured_at: string | null
+          catalog_snapshot_fingerprint: string | null
+          catalog_snapshot_version: number | null
           church_id: string
           contacted: boolean
           created_at: string
@@ -2053,12 +2111,18 @@ export type Database = {
           id: string
           personal_contact_notes: string | null
           personal_notes: string | null
+          private_overrides: Json
           quoted_price: number | null
           selected: boolean
           status: string
           updated_at: string
         }
         Insert: {
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           church_id: string
           contacted?: boolean
           created_at?: string
@@ -2067,12 +2131,18 @@ export type Database = {
           id?: string
           personal_contact_notes?: string | null
           personal_notes?: string | null
+          private_overrides?: Json
           quoted_price?: number | null
           selected?: boolean
           status?: string
           updated_at?: string
         }
         Update: {
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           church_id?: string
           contacted?: boolean
           created_at?: string
@@ -2081,6 +2151,7 @@ export type Database = {
           id?: string
           personal_contact_notes?: string | null
           personal_notes?: string | null
+          private_overrides?: Json
           quoted_price?: number | null
           selected?: boolean
           status?: string
@@ -2106,6 +2177,11 @@ export type Database = {
       saved_locations: {
         Row: {
           agreed_cost: number | null
+          catalog_provenance_snapshot: Json | null
+          catalog_snapshot: Json | null
+          catalog_snapshot_captured_at: string | null
+          catalog_snapshot_fingerprint: string | null
+          catalog_snapshot_version: number | null
           contact_notes: string | null
           contacted: boolean
           created_at: string
@@ -2115,6 +2191,7 @@ export type Database = {
           location_id: string
           location_role: string
           personal_notes: string | null
+          private_overrides: Json
           quote_amount: number | null
           quote_currency: string | null
           quote_received_at: string | null
@@ -2126,6 +2203,11 @@ export type Database = {
         }
         Insert: {
           agreed_cost?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contacted?: boolean
           created_at?: string
@@ -2135,6 +2217,7 @@ export type Database = {
           location_id: string
           location_role?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           quote_currency?: string | null
           quote_received_at?: string | null
@@ -2146,6 +2229,11 @@ export type Database = {
         }
         Update: {
           agreed_cost?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contacted?: boolean
           created_at?: string
@@ -2155,6 +2243,7 @@ export type Database = {
           location_id?: string
           location_role?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           quote_currency?: string | null
           quote_received_at?: string | null
@@ -2192,6 +2281,11 @@ export type Database = {
         Row: {
           agreed_amount: number | null
           balance_amount: number | null
+          catalog_provenance_snapshot: Json | null
+          catalog_snapshot: Json | null
+          catalog_snapshot_captured_at: string | null
+          catalog_snapshot_fingerprint: string | null
+          catalog_snapshot_version: number | null
           contact_notes: string | null
           contract_signed: boolean
           created_at: string
@@ -2202,6 +2296,7 @@ export type Database = {
           favorite: boolean
           id: string
           personal_notes: string | null
+          private_overrides: Json
           quote_amount: number | null
           status: string
           supplier_id: string
@@ -2210,6 +2305,11 @@ export type Database = {
         Insert: {
           agreed_amount?: number | null
           balance_amount?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contract_signed?: boolean
           created_at?: string
@@ -2220,6 +2320,7 @@ export type Database = {
           favorite?: boolean
           id?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           status?: string
           supplier_id: string
@@ -2228,6 +2329,11 @@ export type Database = {
         Update: {
           agreed_amount?: number | null
           balance_amount?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contract_signed?: boolean
           created_at?: string
@@ -2238,6 +2344,7 @@ export type Database = {
           favorite?: boolean
           id?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           status?: string
           supplier_id?: string

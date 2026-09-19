@@ -1,4 +1,5 @@
 import type { Database } from "@/types/database.types";
+import { parseCatalogOverrides, SUPPLIER_SNAPSHOT_SOURCE_PROJECTION } from "@/lib/catalogSnapshotContracts";
 
 type SupplierTable = Database["public"]["Tables"]["suppliers"];
 type SavedSupplierTable = Database["public"]["Tables"]["saved_suppliers"];
@@ -20,7 +21,9 @@ export type SavedSupplierDetail = Pick<
   | "id" | "event_id" | "supplier_id" | "status" | "favorite"
   | "personal_notes" | "contact_notes" | "quote_amount" | "agreed_amount"
   | "deposit_amount" | "balance_amount" | "currency" | "deposit_paid"
-  | "contract_signed" | "created_at" | "updated_at"
+  | "contract_signed" | "created_at" | "updated_at" | "catalog_snapshot"
+  | "catalog_snapshot_version" | "catalog_snapshot_captured_at"
+  | "catalog_snapshot_fingerprint" | "catalog_provenance_snapshot" | "private_overrides"
 >;
 
 export const SUPPLIER_DETAIL_COLUMNS = [
@@ -39,11 +42,15 @@ export const SAVED_SUPPLIER_COLUMNS = [
   "id", "event_id", "supplier_id", "status", "favorite", "personal_notes",
   "contact_notes", "quote_amount", "agreed_amount", "deposit_amount",
   "balance_amount", "currency", "deposit_paid", "contract_signed",
-  "created_at", "updated_at",
+  "created_at", "updated_at", "catalog_snapshot", "catalog_snapshot_version",
+  "catalog_snapshot_captured_at", "catalog_snapshot_fingerprint",
+  "catalog_provenance_snapshot", "private_overrides",
 ] as const satisfies readonly (keyof SavedSupplierDetail)[];
 
-export const SAVED_SUPPLIER_PROJECTION = "id,event_id,supplier_id,status,favorite,personal_notes,contact_notes,quote_amount,agreed_amount,deposit_amount,balance_amount,currency,deposit_paid,contract_signed,created_at,updated_at";
-export const SAVED_SUPPLIER_WITH_NAME_PROJECTION = "id,event_id,supplier_id,status,favorite,personal_notes,contact_notes,quote_amount,agreed_amount,deposit_amount,balance_amount,currency,deposit_paid,contract_signed,created_at,updated_at,supplier:suppliers(id,name)";
+export const SAVED_SUPPLIER_PROJECTION = "id,event_id,supplier_id,status,favorite,personal_notes,contact_notes,quote_amount,agreed_amount,deposit_amount,balance_amount,currency,deposit_paid,contract_signed,created_at,updated_at,catalog_snapshot,catalog_snapshot_version,catalog_snapshot_captured_at,catalog_snapshot_fingerprint,catalog_provenance_snapshot,private_overrides";
+export const SAVED_SUPPLIER_LEGACY_PROJECTION = "id,event_id,supplier_id,status,favorite,personal_notes,contact_notes,quote_amount,agreed_amount,deposit_amount,balance_amount,currency,deposit_paid,contract_signed,created_at,updated_at";
+export const SAVED_SUPPLIER_WITH_NAME_PROJECTION = `${SAVED_SUPPLIER_PROJECTION},supplier:suppliers(${SUPPLIER_SNAPSHOT_SOURCE_PROJECTION})`;
+export const SAVED_SUPPLIER_LEGACY_WITH_NAME_PROJECTION = `${SAVED_SUPPLIER_LEGACY_PROJECTION},supplier:suppliers(${SUPPLIER_SNAPSHOT_SOURCE_PROJECTION})`;
 
 export const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const SUPPLIER_STATUSES = [
@@ -55,7 +62,7 @@ const STATUS_SET = new Set<string>(SUPPLIER_STATUSES);
 const MUTABLE_KEYS = new Set([
   "resource_id", "status", "favorite", "personal_notes", "contact_notes",
   "quote_amount", "agreed_amount", "deposit_amount", "balance_amount",
-  "currency", "deposit_paid", "contract_signed",
+  "currency", "deposit_paid", "contract_signed", "private_overrides",
 ]);
 const MONEY_KEYS = ["quote_amount", "agreed_amount", "deposit_amount", "balance_amount"] as const;
 const BOOLEAN_KEYS = ["favorite", "deposit_paid", "contract_signed"] as const;
@@ -68,6 +75,7 @@ export type SavedSupplierMutation = Pick<
   | "status" | "favorite" | "personal_notes" | "contact_notes"
   | "quote_amount" | "agreed_amount" | "deposit_amount" | "balance_amount"
   | "currency" | "deposit_paid" | "contract_signed"
+  | "private_overrides"
 >;
 
 type ValidationResult<T> = { ok: true; value: T } | { ok: false; error: string };
@@ -131,6 +139,12 @@ export function parseSavedSupplierMutation(
       return { ok: false, error: "INVALID_SUPPLIER_CURRENCY" };
     }
     update.currency = typeof value.currency === "string" ? value.currency.toUpperCase() : null;
+  }
+
+  if (value.private_overrides !== undefined) {
+    const override = parseCatalogOverrides("supplier", value.private_overrides);
+    if (!override.ok) return override;
+    update.private_overrides = override.value;
   }
 
   if (Object.keys(update).length === 0) return { ok: false, error: "EMPTY_SAVED_SUPPLIER_UPDATE" };
