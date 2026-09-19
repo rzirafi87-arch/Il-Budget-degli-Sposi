@@ -25,7 +25,7 @@ function uniqueMailbox(base: string) {
   return `${local}+b51-${Date.now()}-${randomBytes(4).toString("hex")}@${domain}`;
 }
 
-async function deliveredConfirmation(startedAt: number, recipient: string) {
+async function deliveredConfirmation(startedAt: number, recipient: string, expectedType: "signup" | "email" = "signup") {
   const message = await waitForTransactionalEmail({
     recipient,
     requireDelivered: true,
@@ -40,7 +40,7 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
     try {
       const url = new URL(value);
       return url.pathname === "/auth/callback"
-        && url.searchParams.get("type") === "signup"
+        && url.searchParams.get("type") === expectedType
         && Boolean(url.searchParams.get("token_hash"));
     } catch {
       return false;
@@ -52,7 +52,7 @@ async function deliveredConfirmation(startedAt: number, recipient: string) {
   return verification;
 }
 
-async function followConfirmation(link: string, expectedOrigin: string) {
+async function followConfirmation(link: string, expectedOrigin: string, expectedType: "signup" | "email" = "signup") {
   const expectedHost = new URL(expectedOrigin).hostname;
   const isApprovedOrigin = (value: URL) => value.origin === expectedOrigin || (
     expectedHost.endsWith(".vercel.app")
@@ -63,7 +63,7 @@ async function followConfirmation(link: string, expectedOrigin: string) {
   const callback = new URL(link);
   if (!isApprovedOrigin(callback)
     || callback.pathname !== "/auth/callback"
-    || callback.searchParams.get("type") !== "signup"
+    || callback.searchParams.get("type") !== expectedType
     || !callback.searchParams.has("token_hash")) {
     throw new Error("QA verification returned an invalid callback destination.");
   }
@@ -122,8 +122,14 @@ test("real signup email confirmation, login, CurrentEvent, relogin and cleanup",
     expect(beforeConfirmation.data.session).toBeNull();
     expect(beforeConfirmation.error?.message.toLowerCase()).toContain("email not confirmed");
 
-    const verificationLink = await deliveredConfirmation(startedAt, email);
-    await followConfirmation(verificationLink, new URL(baseUrl!).origin);
+    await deliveredConfirmation(startedAt, email);
+    const resendStartedAt = Date.now();
+    const resent = await request.post("/api/auth/resend", { data: { email } });
+    expect(resent.status()).toBe(200);
+    expect(await resent.json()).toMatchObject({ ok: true });
+
+    const verificationLink = await deliveredConfirmation(resendStartedAt, email, "email");
+    await followConfirmation(verificationLink, new URL(baseUrl!).origin, "email");
 
     const confirmed = await admin.auth.admin.getUserById(ownerId);
     expect(confirmed.data.user?.email_confirmed_at).toBeTruthy();

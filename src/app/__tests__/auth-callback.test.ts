@@ -41,6 +41,15 @@ describe("PKCE auth callback", () => {
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
   });
 
+  it("verifies a resent magic-link token hash", async () => {
+    mockVerifyOtp.mockResolvedValue({ error: null });
+    const { GET } = await import("../auth/callback/route");
+    const response = await GET(request("https://app.example.test/auth/callback?token_hash=resent-token&type=email&next=%2Fit%2Fdashboard"));
+    expect(response.status).toBe(302);
+    expect(String(response.headers.get("location"))).toBe("https://app.example.test/it/dashboard");
+    expect(mockVerifyOtp).toHaveBeenCalledWith({ token_hash: "resent-token", type: "email" });
+  });
+
   it.each([
     ["wrong type", "https://app.example.test/auth/callback?token_hash=hashed-token&type=recovery"],
     ["missing hash", "https://app.example.test/auth/callback?type=signup"],
