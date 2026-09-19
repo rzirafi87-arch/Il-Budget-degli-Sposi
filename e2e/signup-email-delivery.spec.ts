@@ -122,7 +122,13 @@ test("real signup email confirmation, login, CurrentEvent, relogin and cleanup",
     expect(beforeConfirmation.data.session).toBeNull();
     expect(beforeConfirmation.error?.message.toLowerCase()).toContain("email not confirmed");
 
-    const verificationLink = await deliveredConfirmation(startedAt, email);
+    await deliveredConfirmation(startedAt, email);
+    const resendStartedAt = Date.now();
+    const resent = await request.post("/api/auth/resend", { data: { email } });
+    expect(resent.status()).toBe(200);
+    expect(await resent.json()).toMatchObject({ ok: true });
+
+    const verificationLink = await deliveredConfirmation(resendStartedAt, email);
     await followConfirmation(verificationLink, new URL(baseUrl!).origin);
 
     const confirmed = await admin.auth.admin.getUserById(ownerId);
