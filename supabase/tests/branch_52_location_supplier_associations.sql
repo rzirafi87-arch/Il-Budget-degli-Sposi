@@ -3,7 +3,7 @@ create extension if not exists pgtap with schema extensions;
 begin;
 set local role postgres;
 set local search_path = extensions, public, pg_catalog;
-select plan(47);
+select plan(48);
 
 select has_table('public', 'event_location_supplier_links', 'private association table exists');
 select ok((select relrowsecurity from pg_class where oid='public.event_location_supplier_links'::regclass),'private association table has RLS');
@@ -11,6 +11,7 @@ select is((select count(*)::int from pg_policies where schemaname='public' and t
 select ok(not has_table_privilege('anon','public.event_location_supplier_links','select'),'anonymous cannot read private associations');
 select ok(has_table_privilege('authenticated','public.event_location_supplier_links','select'),'authenticated role can read rows allowed by RLS');
 select ok(not has_column_privilege('authenticated','public.event_location_supplier_links','event_id','update'),'authenticated cannot rewrite association event');
+select ok(not has_column_privilege('authenticated','public.event_location_supplier_links','created_by','update'),'authenticated cannot rewrite association creator');
 select ok(has_column_privilege('authenticated','public.event_location_supplier_links','private_notes','update'),'authenticated may update private notes through RLS');
 select ok(has_table_privilege('anon','public.supplier_locations','select'),'global associations remain publicly readable');
 select ok(not has_table_privilege('anon','public.supplier_locations','insert'),'anonymous cannot create global associations');

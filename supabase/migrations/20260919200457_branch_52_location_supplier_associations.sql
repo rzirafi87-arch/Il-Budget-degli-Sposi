@@ -108,7 +108,9 @@ begin
     or new.private_location_id is distinct from old.private_location_id
     or new.saved_supplier_id is distinct from old.saved_supplier_id
     or new.private_supplier_id is distinct from old.private_supplier_id
-    or new.created_by is distinct from old.created_by
+    -- Preserve provenance for every ordinary update while allowing the
+    -- declared auth.users FK action to clear a deleted creator safely.
+    or (new.created_by is distinct from old.created_by and new.created_by is not null)
     or new.created_at is distinct from old.created_at
   then
     raise exception 'private association identity is immutable' using errcode = '23514';
