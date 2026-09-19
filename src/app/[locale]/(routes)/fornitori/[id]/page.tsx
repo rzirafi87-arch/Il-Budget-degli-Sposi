@@ -1,372 +1,211 @@
 "use client";
 
+import { AppButton } from "@/components/ui/AppButton";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import Image from "next/image";
+import type { SupplierDetail } from "@/lib/supplierContracts";
+import { ArrowLeft, CheckCircle2, ExternalLink, Heart, MapPin, RefreshCw } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
-type SupplierView = {
+type SavedSupplier = {
   id: string;
-  name: string;
-  category: string | null;
-  region: string;
-  province: string;
-  city: string;
-  address: string | null;
-  phone: string | null;
-  email: string | null;
-  website: string | null;
-  verified: boolean;
-  description: string | null;
-  photo_urls: string[] | null;
-  video_urls: string[] | null;
-  discount_info: string | null;
-  canEdit?: boolean;
+  supplier_id: string;
+  status: string;
+  favorite: boolean;
+  personal_notes: string | null;
+  contact_notes: string | null;
+  planning_state?: string;
 };
 
-export default function SupplierPublicPage() {
+type ViewState =
+  | { kind: "loading" }
+  | { kind: "not-found" }
+  | { kind: "error" }
+  | { kind: "ready"; supplier: SupplierDetail; saved: SavedSupplier | null; authenticated: boolean };
+
+export default function SupplierDetailPage() {
   const t = useTranslations("milestone8.supplierProfile");
+  const locale = useLocale();
   const params = useParams<{ id: string }>();
-  const supplierId = useMemo(() => (Array.isArray(params.id) ? params.id[0] : params.id), [params.id]);
+  const supplierId = useMemo(() => Array.isArray(params.id) ? params.id[0] : params.id, [params.id]);
+  const [state, setState] = useState<ViewState>({ kind: "loading" });
+  const [mutationPending, setMutationPending] = useState(false);
+  const [mutationError, setMutationError] = useState(false);
+  const [notes, setNotes] = useState("");
 
-  const [data, setData] = useState<SupplierView | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
-
-  // Editable state
-  const [description, setDescription] = useState("");
-  const [photosInput, setPhotosInput] = useState("");
-  const [videosInput, setVideosInput] = useState("");
-  const [discount, setDiscount] = useState("");
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      const supabase = getBrowserClient();
-      const { data: sessionData } = await supabase.auth.getSession();
-      const jwt = sessionData?.session?.access_token;
-      const headers: HeadersInit = {};
-      if (jwt) headers["Authorization"] = `Bearer ${jwt}`;
-      const res = await fetch(`/api/suppliers/${supplierId}`, { headers });
-      const json: SupplierView = await res.json();
-      if (!alive) return;
-      setData(json);
-      setDescription(json.description ?? "");
-      setPhotosInput((json.photo_urls ?? []).join("\n"));
-      setVideosInput((json.video_urls ?? []).join("\n"));
-      setDiscount(json.discount_info ?? "");
-      setLoading(false);
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [supplierId]);
-
-  const photos = useMemo(
-    () => (photosInput ? photosInput.split(/\n|,\s*/).map((s) => s.trim()).filter(Boolean) : []),
-    [photosInput]
-  );
-  const videos = useMemo(
-    () => (videosInput ? videosInput.split(/\n|,\s*/).map((s) => s.trim()).filter(Boolean) : []),
-    [videosInput]
-  );
-
-  async function onSave() {
-    setSaving(true);
+  const load = useCallback(async () => {
+    setState({ kind: "loading" });
+    setMutationError(false);
     try {
-      const supabase = getBrowserClient();
-      const { data: sessionData } = await supabase.auth.getSession();
-      const jwt = sessionData?.session?.access_token;
-      const headers: HeadersInit = { "Content-Type": "application/json" };
-      if (jwt) headers["Authorization"] = `Bearer ${jwt}`;
-      const res = await fetch(`/api/suppliers/${supplierId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({
-          description,
-          photo_urls: photos,
-          video_urls: videos,
-          discount_info: discount,
-        }),
-      });
-      if (!res.ok) {
-        throw new Error(t("errors.save"));
-      }
-      setData((prev) => (prev ? { ...prev, description, photo_urls: photos, video_urls: videos, discount_info: discount } : prev));
-    } catch (e) {
-      console.error(e);
-      alert((e as Error).message);
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function onFilesSelected(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    try {
-      setUploading(true);
-      const supabase = getBrowserClient();
-      // ensure auth for upload
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData?.session) {
-        alert(t("errors.authUpload"));
+      const publicResponse = await fetch(`/api/suppliers/${supplierId}`, { cache: "no-store" });
+      if (publicResponse.status === 404) {
+        setState({ kind: "not-found" });
         return;
       }
+      if (!publicResponse.ok) throw new Error("SUPPLIER_DETAIL_READ_FAILED");
+      const publicBody = await publicResponse.json() as { supplier: SupplierDetail };
 
-      const bucket = supabase.storage.from("suppliers");
-      const newUrls: string[] = [];
-      for (const file of Array.from(files)) {
-        const cleanName = file.name.replace(/[^a-zA-Z0-9_.-]/g, "_");
-        const path = `supplier/${supplierId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${cleanName}`;
-        const { error: upErr } = await bucket.upload(path, file, { cacheControl: "3600", upsert: false });
-        if (upErr) throw upErr;
-        const { data: pub } = bucket.getPublicUrl(path);
-        if (pub?.publicUrl) newUrls.push(pub.publicUrl);
-      }
-
-      // Merge and persist immediately
-      const merged = [...photos, ...newUrls];
-      setPhotosInput(merged.join("\n"));
-
-      // Persist via API
-      const headers: HeadersInit = { "Content-Type": "application/json" };
-      const jwt = sessionData.session.access_token;
-      if (jwt) headers["Authorization"] = `Bearer ${jwt}`;
-      const res = await fetch(`/api/suppliers/${supplierId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ photo_urls: merged }),
-      });
-      if (!res.ok) {
-        throw new Error(t("errors.saveImages"));
-      }
-      setData((prev) => (prev ? { ...prev, photo_urls: merged } : prev));
-    } catch (err) {
-      console.error(err);
-      alert((err as Error).message);
-    } finally {
-      setUploading(false);
-      // reset input so same files can be reselected if needed
-      (e.target as HTMLInputElement).value = "";
-    }
-  }
-
-  async function removePhoto(url: string) {
-    if (!data?.canEdit) return;
-    const supabase = getBrowserClient();
-    try {
-      // Try to delete from Supabase Storage if the URL belongs to our public bucket
-      const marker = "/storage/v1/object/public/";
-      const idx = url.indexOf(marker);
-      if (idx !== -1) {
-        const sub = url.slice(idx + marker.length); // e.g., suppliers/supplier/.../file.jpg
-        const [bucketId, ...rest] = sub.split("/");
-        const objectPath = rest.join("/");
-        if (bucketId === "suppliers" && objectPath) {
-          await supabase.storage.from("suppliers").remove([objectPath]);
+      const { data: sessionData } = await getBrowserClient().auth.getSession();
+      const token = sessionData.session?.access_token;
+      let saved: SavedSupplier | null = null;
+      if (token) {
+        const privateResponse = await fetch("/api/my/suppliers", {
+          cache: "no-store",
+          headers: { authorization: `Bearer ${token}` },
+        });
+        if (privateResponse.ok) {
+          const privateBody = await privateResponse.json() as { savedSuppliers?: SavedSupplier[] };
+          saved = privateBody.savedSuppliers?.find((item) => item.supplier_id === supplierId) ?? null;
         }
       }
 
-      // Update DB list regardless (also handles external URLs)
-      const newList = (data.photo_urls ?? []).filter((u) => u !== url);
-      const { data: sessionData } = await supabase.auth.getSession();
-      const headers: HeadersInit = { "Content-Type": "application/json" };
-      const jwt = sessionData?.session?.access_token;
-      if (jwt) headers["Authorization"] = `Bearer ${jwt}`;
-      const res = await fetch(`/api/suppliers/${supplierId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ photo_urls: newList }),
+      setNotes(saved?.personal_notes ?? "");
+      setState({ kind: "ready", supplier: publicBody.supplier, saved, authenticated: Boolean(token) });
+    } catch {
+      setState({ kind: "error" });
+    }
+  }, [supplierId]);
+
+  useEffect(() => { void load(); }, [load]);
+
+  async function mutateSavedSupplier(action: "save" | "remove" | "select" | "notes") {
+    if (state.kind !== "ready") return;
+    setMutationPending(true);
+    setMutationError(false);
+    try {
+      const { data } = await getBrowserClient().auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) throw new Error("AUTHENTICATION_REQUIRED");
+
+      const saved = state.saved;
+      const method = action === "save" ? "POST" : action === "remove" ? "DELETE" : "PATCH";
+      const url = action === "remove" && saved
+        ? `/api/my/suppliers?resource_id=${saved.id}`
+        : "/api/my/suppliers";
+      const body = action === "save"
+        ? { supplier_id: supplierId }
+        : action === "select" && saved
+          ? { resource_id: saved.id, status: saved.status === "SELECTED" ? "SAVED" : "SELECTED" }
+          : action === "notes" && saved
+            ? { resource_id: saved.id, personal_notes: notes }
+            : undefined;
+      const response = await fetch(url, {
+        method,
+        headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+        body: body ? JSON.stringify(body) : undefined,
       });
-      if (!res.ok) {
-        throw new Error(t("errors.removeImage"));
+      if (!response.ok) throw new Error("SAVED_SUPPLIER_MUTATION_FAILED");
+
+      if (action === "remove") {
+        setNotes("");
+        setState({ ...state, saved: null });
+      } else {
+        const result = await response.json() as { savedSupplier: SavedSupplier };
+        setNotes(result.savedSupplier.personal_notes ?? "");
+        setState({ ...state, saved: result.savedSupplier });
       }
-      setData((prev) => (prev ? { ...prev, photo_urls: newList } : prev));
-      setPhotosInput(newList.join("\n"));
-    } catch (e) {
-      console.error(e);
-      alert((e as Error).message);
+    } catch {
+      setMutationError(true);
+    } finally {
+      setMutationPending(false);
     }
   }
 
-  function renderVideo(url: string, idx: number) {
-    const isYouTube = /youtu\.?be/.test(url);
-    if (isYouTube) {
-      // Basic YouTube embed
-  const videoIdMatch = url.match(/(?:v=|be\/)\s*([^&?\/]*)/);
-      const videoId = videoIdMatch?.[1] || "";
-      const embedSrc = `https://www.youtube.com/embed/${videoId}`;
-      return (
-        <iframe
-          key={`vid-${idx}`}
-          className="w-full aspect-video rounded-lg border"
-          src={embedSrc}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-        />
-      );
-    }
-    return (
-      <a key={`vid-${idx}`} href={url} target="_blank" rel="noreferrer" className="text-[#A3B59D] underline">
-        {t("watchVideo", { number: idx + 1 })}
-      </a>
-    );
-  }
+  if (state.kind === "loading") return <p className="py-10 text-gray-600" aria-live="polite">{t("loading")}</p>;
+  if (state.kind === "not-found") return (
+    <section className="app-card app-card--md space-y-4">
+      <h1 className="font-serif text-2xl">{t("notFound")}</h1>
+      <Link href={`/${locale}/fornitori`} className="inline-flex items-center gap-2 underline"><ArrowLeft size={16}/>{t("back")}</Link>
+    </section>
+  );
+  if (state.kind === "error") return (
+    <section className="app-card app-card--md space-y-4" role="alert">
+      <h1 className="font-serif text-2xl">{t("loadError")}</h1>
+      <AppButton onClick={() => void load()}><RefreshCw size={16}/>{t("retry")}</AppButton>
+    </section>
+  );
 
-  if (loading) {
-    return <div className="py-10 text-gray-500">{t("loading")}</div>;
-  }
-  if (!data) {
-    return <div className="py-10 text-red-600">{t("notFound")}</div>;
-  }
+  const { supplier, saved, authenticated } = state;
+  const address = supplier.address_line ?? supplier.address;
+  const location = [supplier.city, supplier.province, supplier.region, supplier.country].filter(Boolean).join(", ");
+  const socialLinks = [
+    ["Instagram", supplier.instagram_url],
+    ["Facebook", supplier.facebook_url],
+    ["TikTok", supplier.tiktok_url],
+  ].filter((entry): entry is [string, string] => Boolean(entry[1]));
 
   return (
-    <section className="pt-6">
-      <h1 className="font-serif text-3xl mb-1">{data.name}</h1>
-      <p className="text-gray-600 mb-4">
-        {data.category ?? t("supplier")} · {data.city} ({data.province}) · {data.region}
-      </p>
-
-      {/* Public details */}
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          {/* Galleria immagini */}
-          {photos.length > 0 && (
-            <div className="mb-6 grid grid-cols-2 md:grid-cols-3 gap-3">
-              {photos.map((src, i) => (
-                <div key={`img-${i}`} className="relative w-full h-40 group">
-                  <Image
-                    src={src}
-                    alt={t("photoAlt", { number: i + 1, name: data.name })}
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 33vw"
-                    className="object-cover rounded-lg border"
-                    unoptimized
-                  />
-                  {data.canEdit && (
-                    <button
-                      onClick={() => removePhoto(src)}
-                      className="absolute top-2 right-2 px-2 py-1 text-xs rounded bg-red-600 text-white opacity-0 group-hover:opacity-100 transition"
-                      title={t("deletePhoto")}
-                    >
-                      {t("delete")}
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Descrizione */}
-          <div className="mb-6">
-            <h2 className="font-semibold text-lg mb-2">{t("description")}</h2>
-            <p className="whitespace-pre-wrap text-gray-800 bg-white/60 rounded-xl p-4 border">
-              {description || t("noDescription")}
-            </p>
+    <section className="space-y-6">
+      <Link href={`/${locale}/fornitori`} className="inline-flex items-center gap-2 text-sm underline"><ArrowLeft size={16}/>{t("back")}</Link>
+      <header className="app-card app-card--md">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#8d3f63]">{supplier.category ?? t("supplier")}</p>
+            <h1 className="mt-1 font-serif text-3xl">{supplier.name}</h1>
+            {supplier.subcategory ? <p className="mt-1 text-gray-600">{supplier.subcategory}</p> : null}
           </div>
+          {supplier.verified ? <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-sm text-green-800"><CheckCircle2 size={16}/>{t("verified")}</span> : null}
+        </div>
+        {location ? <p className="mt-4 flex items-center gap-2 text-gray-700"><MapPin size={17}/>{location}</p> : null}
+      </header>
 
-          {/* Video */}
-          {videos.length > 0 && (
-            <div className="mb-6">
-              <h2 className="font-semibold text-lg mb-2">{t("video")}</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {videos.map((v, idx) => renderVideo(v, idx))}
-              </div>
-            </div>
-          )}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <article className="app-card app-card--md">
+            <h2 className="font-semibold text-lg">{t("description")}</h2>
+            <p className="mt-3 whitespace-pre-wrap text-gray-700">{supplier.description || t("noDescription")}</p>
+          </article>
+          <article className="app-card app-card--md">
+            <h2 className="font-semibold text-lg">{t("services")}</h2>
+            <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+              {supplier.service_area ? <div><dt className="text-sm text-gray-500">{t("serviceArea")}</dt><dd>{supplier.service_area}</dd></div> : null}
+              {supplier.regions_served?.length ? <div><dt className="text-sm text-gray-500">{t("regionsServed")}</dt><dd>{supplier.regions_served.join(", ")}</dd></div> : null}
+              {supplier.travel_available !== null ? <div><dt className="text-sm text-gray-500">{t("travel")}</dt><dd>{supplier.travel_available ? t("yes") : t("no")}</dd></div> : null}
+              {supplier.google_rating !== null ? <div><dt className="text-sm text-gray-500">{t("rating")}</dt><dd>{supplier.google_rating} ({supplier.google_rating_count ?? 0})</dd></div> : null}
+            </dl>
+            {!supplier.service_area && !supplier.regions_served?.length && supplier.travel_available === null && supplier.google_rating === null
+              ? <p className="mt-3 text-gray-600">{t("detailsEmpty")}</p> : null}
+          </article>
         </div>
 
-        {/* Sidebar contatti / sconti */}
-        <aside className="lg:col-span-1 space-y-4">
-          <div className="rounded-xl border p-4 bg-white/70">
-            <h3 className="font-semibold mb-2">{t("contacts")}</h3>
-            <ul className="text-sm text-gray-700 space-y-1">
-              {data.address && <li>📍 {data.address}</li>}
-              {data.phone && <li>📞 {data.phone}</li>}
-              {data.email && <li>✉️ {data.email}</li>}
-              {data.website && (
-                <li>
-                  🌐 <a href={data.website} className="text-[#A3B59D] underline" target="_blank" rel="noreferrer">{t("website")}</a>
-                </li>
-              )}
+        <aside className="space-y-6">
+          <section className="app-card app-card--md">
+            <h2 className="font-semibold text-lg">{t("contacts")}</h2>
+            <ul className="mt-3 space-y-2 text-sm">
+              {address ? <li>{address}</li> : null}
+              {supplier.phone ? <li><a className="underline" href={`tel:${supplier.phone}`}>{supplier.phone}</a></li> : null}
+              {supplier.email ? <li><a className="underline" href={`mailto:${supplier.email}`}>{supplier.email}</a></li> : null}
+              {supplier.website ? <li><a className="inline-flex items-center gap-1 underline" href={supplier.website} target="_blank" rel="noreferrer">{t("website")}<ExternalLink size={14}/></a></li> : null}
+              {socialLinks.map(([label, url]) => <li key={label}><a className="underline" href={url} target="_blank" rel="noreferrer">{label}</a></li>)}
             </ul>
-          </div>
+            {!address && !supplier.phone && !supplier.email && !supplier.website && socialLinks.length === 0
+              ? <p className="mt-3 text-gray-600">{t("contactsEmpty")}</p> : null}
+          </section>
 
-          {(discount || data.discount_info) && (
-            <div className="rounded-xl border p-4 bg-[#A3B59D]/10 border-[#A3B59D]/40">
-              <h3 className="font-semibold mb-2">🎁 {t("discounts")}</h3>
-              <p className="text-sm text-gray-800 whitespace-pre-wrap">{discount || data.discount_info}</p>
-            </div>
-          )}
+          <section className="app-card app-card--md">
+            <h2 className="font-semibold text-lg">{t("eventSection")}</h2>
+            {!authenticated ? <p className="mt-3 text-sm text-gray-600">{t("signInToSave")}</p> : saved ? (
+              <div className="mt-3 space-y-4">
+                <p className="text-sm">{t("savedStatus", { status: saved.status })}</p>
+                <div className="flex flex-wrap gap-2">
+                  <AppButton disabled={mutationPending} onClick={() => void mutateSavedSupplier("select")}>
+                    <CheckCircle2 size={16}/>{saved.status === "SELECTED" ? t("unselect") : t("select")}
+                  </AppButton>
+                  <AppButton variant="outline" disabled={mutationPending} onClick={() => void mutateSavedSupplier("remove")}>{t("removeSaved")}</AppButton>
+                </div>
+                <label className="block text-sm font-semibold" htmlFor="supplier-notes">{t("privateNotes")}</label>
+                <textarea id="supplier-notes" className="app-input min-h-28 w-full" maxLength={4000} value={notes} onChange={(event) => setNotes(event.target.value)}/>
+                <AppButton variant="outline" disabled={mutationPending || notes === (saved.personal_notes ?? "")} onClick={() => void mutateSavedSupplier("notes")}>{t("saveNotes")}</AppButton>
+              </div>
+            ) : (
+              <AppButton className="mt-3" disabled={mutationPending} onClick={() => void mutateSavedSupplier("save")}><Heart size={16}/>{t("saveSupplier")}</AppButton>
+            )}
+            {mutationError ? <p className="mt-3 text-sm text-red-700" role="alert">{t("mutationError")}</p> : null}
+          </section>
         </aside>
       </div>
-
-      {/* Editor per il proprietario */}
-      {data.canEdit && (
-        <div className="mt-10 p-6 rounded-2xl border-2 border-dashed border-[#A3B59D]/40 bg-white/70">
-          <h2 className="font-semibold text-xl mb-4">{t("editPage")}</h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <label className="block text-sm font-semibold">{t("description")}</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={8}
-                className="w-full border rounded-lg p-3"
-                placeholder={t("descriptionPlaceholder")}
-              />
-
-              <label className="block text-sm font-semibold">{t("discounts")}</label>
-              <textarea
-                value={discount}
-                onChange={(e) => setDiscount(e.target.value)}
-                rows={4}
-                className="w-full border rounded-lg p-3"
-                placeholder={t("discountPlaceholder")}
-              />
-            </div>
-
-            <div className="space-y-3">
-              <label className="block text-sm font-semibold">{t("uploadPhotos")}</label>
-              <input type="file" accept="image/*" multiple onChange={onFilesSelected} className="block w-full" />
-              {uploading && <div className="text-sm text-gray-500">{t("uploading")}</div>}
-
-              <label className="block text-sm font-semibold">{t("photosOnePerLine")}</label>
-              <textarea
-                value={photosInput}
-                onChange={(e) => setPhotosInput(e.target.value)}
-                rows={8}
-                className="w-full border rounded-lg p-3 font-mono text-xs"
-                placeholder="https://.../foto1.jpg\nhttps://.../foto2.jpg"
-              />
-
-              <label className="block text-sm font-semibold">{t("videosOnePerLine")}</label>
-              <textarea
-                value={videosInput}
-                onChange={(e) => setVideosInput(e.target.value)}
-                rows={6}
-                className="w-full border rounded-lg p-3 font-mono text-xs"
-                placeholder="https://youtu.be/xyz\nhttps://.../video.mp4"
-              />
-            </div>
-          </div>
-
-          <div className="mt-6 flex gap-3">
-            <button
-              onClick={onSave}
-              disabled={saving}
-              className="px-5 py-2 rounded-lg bg-[#A3B59D] text-white font-semibold hover:opacity-90 disabled:opacity-50"
-            >
-              {saving ? t("saving") : t("saveChanges")}
-            </button>
-            <p className="text-sm text-gray-500 self-center">{t("publicChanges")}</p>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

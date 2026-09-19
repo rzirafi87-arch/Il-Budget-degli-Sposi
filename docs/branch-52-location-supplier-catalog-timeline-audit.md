@@ -354,12 +354,26 @@ iniziata e il costo aggiuntivo è 0 €.
 
 ### M1 — Contratti API e dettaglio fornitore
 
-- allineare `/api/suppliers/[id]` allo schema reale;
-- proiezioni esplicite al posto dei `select(*)` nello scope;
-- UUID, enum, rating, lunghezze e error code stabili;
-- uniformare 401/404/409 CurrentEvent e mantenere service-role dietro guard.
+- `/api/suppliers/[id]` è allineata alle sole colonne reali del catalogo e
+  rifiuta le scritture dirette; il placeholder demo e i campi inesistenti
+  `photo_urls`, `video_urls`, `discount_info` sono rimossi;
+- `/api/my/suppliers` usa proiezioni esplicite tipizzate per lista, dettaglio,
+  creazione e aggiornamento; non usa `select(*)` né `as any`;
+- UUID, `resource_id`, enum, valuta, importi, note e payload sono allowlisted;
+  `event_id`, `owner_id` e campi estranei sono rifiutati e l'evento è sempre
+  derivato dal CurrentEvent server-side;
+- owner e partner attivo possono leggere e mutare; partner revocato, estraneo
+  e anonimo sono fermati prima del service client; risorsa assente o di altro
+  evento restituisce lo stesso `SAVED_SUPPLIER_NOT_FOUND` 404;
+- il dettaglio UI usa soltanto `suppliers` e `saved_suppliers`, con loading,
+  not-found, errore, retry, salvataggio, selezione e note private esistenti.
 
 Nessuna migration prevista.
+
+Checkpoint M1: nessuna migration o scrittura catalogo, nessuna associazione
+Location–Fornitore, snapshot, override o record private-only introdotti. I test
+mirati sono 38/38 PASS e Jest completo è 586/586 PASS; TypeScript, ESLint e
+build sono PASS (restano 16 warning ESLint preesistenti, zero errori).
 
 ### M2 — Elementi privati, snapshot, override e preferiti
 
