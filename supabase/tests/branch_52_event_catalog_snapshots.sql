@@ -45,7 +45,7 @@ select is((select catalog_snapshot->>'name' from public.saved_suppliers where id
 select is((select name from public.suppliers where id='52200000-0000-4000-8000-000000000020'),'Changed Global Supplier','simulated global update is isolated from snapshot');
 
 set local role authenticated;
-select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000001","email":"owner52m2@example.invalid","role":"authenticated"}',true);
 select lives_ok($q$update public.saved_suppliers set private_overrides='{"name":"Private Name"}'::jsonb where id='52200000-0000-4000-8000-000000000030'$q$,'owner may apply an allowlisted override');
 select is((select private_overrides->>'name' from public.saved_suppliers where id='52200000-0000-4000-8000-000000000030'),'Private Name','override is stored only on saved row');
 select throws_ok($q$update public.saved_suppliers set private_overrides='{"source":"forged"}'::jsonb where id='52200000-0000-4000-8000-000000000030'$q$,'23514',null,'provenance field is forbidden in private override');
@@ -59,16 +59,16 @@ select throws_ok($q$insert into public.event_private_catalog_records(event_id,en
 select matches((select snapshot_fingerprint from public.event_private_catalog_records where client_key='52200000-0000-4000-8000-000000000040'),'^[a-f0-9]{64}$','private-only snapshot receives server fingerprint');
 select throws_ok($q$update public.event_private_catalog_records set snapshot_data='{"name":"forged"}' where client_key='52200000-0000-4000-8000-000000000040'$q$,'23514',null,'private-only base snapshot is immutable');
 
-select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000002","role":"authenticated"}',true);
+select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000002","email":"partner52m2@example.invalid","role":"authenticated"}',true);
 select is((select count(*)::int from public.event_private_catalog_records where event_id='52200000-0000-4000-8000-000000000010'),2,'active partner reads event private records');
 select lives_ok($q$update public.event_private_catalog_records set override_data='{"phone":"+39 123"}' where client_key='52200000-0000-4000-8000-000000000040'$q$,'active partner updates allowlisted override');
 select is((select snapshot_data->>'name' from public.event_private_catalog_records where client_key='52200000-0000-4000-8000-000000000040'),'Same Private Name','partner override leaves snapshot unchanged');
 
-select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000003","role":"authenticated"}',true);
+select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000003","email":"revoked52m2@example.invalid","role":"authenticated"}',true);
 select is((select count(*)::int from public.event_private_catalog_records where event_id='52200000-0000-4000-8000-000000000010'),0,'revoked partner cannot read event private records');
 select throws_ok($q$insert into public.event_private_catalog_records(event_id,entity_type,client_key,snapshot_data,snapshot_fingerprint,created_by) values('52200000-0000-4000-8000-000000000010','church','52200000-0000-4000-8000-000000000042','{"name":"Denied"}','0000000000000000000000000000000000000000000000000000000000000000','52200000-0000-4000-8000-000000000003')$q$,'42501',null,'revoked partner cannot create private records');
 
-select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000004","role":"authenticated"}',true);
+select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000004","email":"stranger52m2@example.invalid","role":"authenticated"}',true);
 select is((select count(*)::int from public.event_private_catalog_records where event_id='52200000-0000-4000-8000-000000000010'),0,'stranger cannot enumerate private records');
 
 set local role postgres;
