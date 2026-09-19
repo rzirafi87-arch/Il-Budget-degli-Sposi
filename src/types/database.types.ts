@@ -3527,6 +3527,10 @@ export type Database = {
         Returns: string
       }
       can_access_event: { Args: { p_event_id: string }; Returns: boolean }
+      catalog_payload_has_only_allowed_keys: {
+        Args: { entity_type_value: string; payload: Json; payload_kind: string }
+        Returns: boolean
+      }
       check_table_availability: {
         Args: { p_table_id: string }
         Returns: boolean
