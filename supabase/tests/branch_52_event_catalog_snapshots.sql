@@ -3,7 +3,7 @@ create extension if not exists pgtap with schema extensions;
 begin;
 set local role postgres;
 set local search_path = extensions, public, pg_catalog;
-select plan(37);
+select plan(38);
 
 select has_table('public', 'event_private_catalog_records', 'private-only event catalog table exists');
 select is((select count(*)::int from information_schema.columns where table_schema='public' and table_name='saved_churches' and column_name in ('catalog_snapshot','catalog_snapshot_version','catalog_snapshot_captured_at','catalog_snapshot_fingerprint','catalog_provenance_snapshot','private_overrides')),6,'saved churches has six additive snapshot columns');
@@ -58,7 +58,10 @@ select lives_ok($q$insert into public.event_private_catalog_records(event_id,ent
 select is((select count(*)::int from public.event_private_catalog_records where event_id='52200000-0000-4000-8000-000000000010'),2,'distinct private identities are not merged');
 select throws_ok($q$insert into public.event_private_catalog_records(event_id,entity_type,client_key,snapshot_data,snapshot_fingerprint,created_by) values('52200000-0000-4000-8000-000000000010','supplier','52200000-0000-4000-8000-000000000040','{"name":"Retry"}','0000000000000000000000000000000000000000000000000000000000000000','52200000-0000-4000-8000-000000000001')$q$,'23505',null,'same idempotency key cannot create a duplicate');
 select matches((select snapshot_fingerprint from public.event_private_catalog_records where client_key='52200000-0000-4000-8000-000000000040'),'^[a-f0-9]{64}$','private-only snapshot receives server fingerprint');
-select throws_ok($q$update public.event_private_catalog_records set snapshot_data='{"name":"forged"}' where client_key='52200000-0000-4000-8000-000000000040'$q$,'23514',null,'private-only base snapshot is immutable');
+select throws_ok($q$update public.event_private_catalog_records set snapshot_data='{"name":"forged"}' where client_key='52200000-0000-4000-8000-000000000040'$q$,'42501',null,'authenticated cannot target the private-only base snapshot column');
+set local role postgres;
+select throws_ok($q$update public.event_private_catalog_records set snapshot_data='{"name":"forged"}' where client_key='52200000-0000-4000-8000-000000000040'$q$,'23514',null,'private-only base snapshot remains immutable at the service boundary');
+set local role authenticated;
 
 select set_config('request.jwt.claims','{"sub":"52200000-0000-4000-8000-000000000002","email":"partner52m2@example.invalid","role":"authenticated"}',true);
 select is((select count(*)::int from public.event_private_catalog_records where event_id='52200000-0000-4000-8000-000000000010'),2,'active partner reads event private records');
