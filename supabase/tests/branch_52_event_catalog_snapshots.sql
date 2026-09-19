@@ -3,7 +3,7 @@ create extension if not exists pgtap with schema extensions;
 begin;
 set local role postgres;
 set local search_path = extensions, public, pg_catalog;
-select plan(36);
+select plan(37);
 
 select has_table('public', 'event_private_catalog_records', 'private-only event catalog table exists');
 select is((select count(*)::int from information_schema.columns where table_schema='public' and table_name='saved_churches' and column_name in ('catalog_snapshot','catalog_snapshot_version','catalog_snapshot_captured_at','catalog_snapshot_fingerprint','catalog_provenance_snapshot','private_overrides')),6,'saved churches has six additive snapshot columns');
@@ -12,6 +12,7 @@ select is((select count(*)::int from information_schema.columns where table_sche
 select ok((select relrowsecurity from pg_class where oid='public.event_private_catalog_records'::regclass),'private-only records have RLS');
 select is((select count(*)::int from pg_policies where schemaname='public' and tablename='event_private_catalog_records'),4,'private-only table has four event policies');
 select ok(not has_table_privilege('anon','public.event_private_catalog_records','select'),'anonymous has no private catalog access');
+select ok(not has_column_privilege('authenticated','public.event_private_catalog_records','created_by','update'),'authenticated cannot rewrite private-record creator');
 select is((select count(*)::int from information_schema.columns where table_schema='public' and table_name='user_favorites' and column_name='event_id'),0,'user favorites remain user-global');
 
 insert into auth.users(id,instance_id,aud,role,email,encrypted_password,email_confirmed_at,created_at,updated_at) values

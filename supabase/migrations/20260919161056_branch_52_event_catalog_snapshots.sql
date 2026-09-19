@@ -397,7 +397,6 @@ begin
       or new.snapshot_version is distinct from old.snapshot_version
       or new.snapshot_captured_at is distinct from old.snapshot_captured_at
       or new.snapshot_fingerprint is distinct from old.snapshot_fingerprint
-      or new.created_by is distinct from old.created_by
       or new.created_at is distinct from old.created_at
     then
       raise exception 'private catalog identity and snapshot are immutable' using errcode = '23514';
@@ -440,7 +439,8 @@ create policy event_private_catalog_records_delete_event
   using (public.can_access_event(event_id));
 
 revoke all on table public.event_private_catalog_records from public, anon;
-grant select, insert, update, delete on table public.event_private_catalog_records to authenticated;
+grant select, insert, delete on table public.event_private_catalog_records to authenticated;
+grant update (override_data) on table public.event_private_catalog_records to authenticated;
 grant all on table public.event_private_catalog_records to service_role;
 
 comment on column public.saved_churches.catalog_snapshot is
