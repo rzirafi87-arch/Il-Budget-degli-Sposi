@@ -117,6 +117,19 @@
       "saveChanges": "Enregistrer les modifications",
       "publicChanges": "Les modifications sont visibles par tous."
     },
+    "locationProfile": {
+      "loading": "Chargement du lieu…", "notFound": "Lieu introuvable.", "back": "Retour aux lieux", "loadError": "Impossible de charger le lieu.", "retry": "Réessayer", "verified": "Vérifié",
+      "description": "Description", "noDescription": "Ce lieu n’a pas encore de description.", "featuresTitle": "Services et caractéristiques", "featuresEmpty": "Aucune caractéristique supplémentaire disponible.", "capacity": "Jusqu’à {count} invités",
+      "features": { "accommodation": "Hébergement disponible", "internalCatering": "Traiteur interne", "externalCatering": "Traiteur externe autorisé", "parking": "Parking", "accessibility": "Accessibilité", "outdoor": "Espaces extérieurs", "indoor": "Espaces intérieurs" },
+      "contacts": "Contacts", "website": "Site web", "contactsEmpty": "Aucun contact public disponible.", "eventSection": "Pour votre mariage", "role": "Rôle du lieu", "signInToSave": "Connectez-vous pour enregistrer ce lieu dans votre événement.", "select": "Sélectionner", "unselect": "Désélectionner", "removeSaved": "Retirer des favoris", "saveLocation": "Enregistrer le lieu", "mutationError": "Impossible de mettre à jour le lieu enregistré."
+    },
+    "associations": {
+      "title": "Lieux et prestataires associés", "description": { "location": "Consultez les prestataires associés à ce lieu et gérez les liens privés de votre événement.", "supplier": "Consultez les lieux associés à ce prestataire et gérez les liens privés de votre événement." },
+      "globalTitle": "Associations vérifiées", "privateTitle": "Associations privées de l’événement", "loading": "Chargement des associations…", "retry": "Réessayer", "globalError": "Impossible de charger les associations vérifiées.", "globalEmpty": "Aucune association vérifiée disponible.", "globalBadge": "Globale", "privateError": "Impossible de mettre à jour les associations privées.", "privateEmpty": "Aucune association privée pour cet élément.", "privateBadge": "Privée", "signIn": "Connectez-vous pour voir et gérer les associations privées de l’événement.",
+      "saveFirst": { "location": "Enregistrez ce lieu dans l’événement avant de créer une association privée.", "supplier": "Enregistrez ce prestataire dans l’événement avant de créer une association privée." },
+      "unnamed": "Élément sans nom", "relationshipType": "Type de relation", "notes": "Notes privées", "saveChanges": "Enregistrer", "remove": "Supprimer", "addTitle": "Ajouter une association", "noOptions": { "location": "Enregistrez ou créez un lieu privé à associer.", "supplier": "Enregistrez ou créez un prestataire privé à associer." }, "choose": { "location": "Lieu", "supplier": "Prestataire" }, "choosePlaceholder": "Sélectionnez un élément", "savedScope": "snapshot global enregistré", "privateScope": "fiche privée", "add": "Ajouter",
+      "types": { "works_at": "Travaille dans ce lieu", "preferred_supplier": "Prestataire privilégié", "internal_supplier": "Prestataire interne", "external_allowed": "Prestataire externe autorisé", "recommended": "Recommandé", "historic_relationship": "Relation historique" }
+    },
     "favorites": {
       "unknownCity": "Lieu indisponible",
       "loading": "Chargement…",

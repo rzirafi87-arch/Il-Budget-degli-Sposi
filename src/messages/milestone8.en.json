@@ -117,6 +117,19 @@
       "saveChanges": "Save changes",
       "publicChanges": "Changes are visible to everyone."
     },
+    "locationProfile": {
+      "loading": "Loading venue…", "notFound": "Venue not found.", "back": "Back to venues", "loadError": "Unable to load the venue.", "retry": "Try again", "verified": "Verified",
+      "description": "Description", "noDescription": "This venue has no description yet.", "featuresTitle": "Services and features", "featuresEmpty": "No additional features are available.", "capacity": "Up to {count} guests",
+      "features": { "accommodation": "Accommodation available", "internalCatering": "In-house catering", "externalCatering": "External catering allowed", "parking": "Parking", "accessibility": "Accessibility", "outdoor": "Outdoor spaces", "indoor": "Indoor spaces" },
+      "contacts": "Contacts", "website": "Website", "contactsEmpty": "No public contacts are available.", "eventSection": "For your wedding", "role": "Venue role", "signInToSave": "Sign in to save this venue to your event.", "select": "Select", "unselect": "Unselect", "removeSaved": "Remove from saved", "saveLocation": "Save venue", "mutationError": "Unable to update the saved venue."
+    },
+    "associations": {
+      "title": "Connected venues and suppliers", "description": { "location": "View suppliers associated with this venue and manage your event’s private links.", "supplier": "View venues associated with this supplier and manage your event’s private links." },
+      "globalTitle": "Curated associations", "privateTitle": "Private event associations", "loading": "Loading associations…", "retry": "Try again", "globalError": "Unable to load curated associations.", "globalEmpty": "No curated associations are available.", "globalBadge": "Global", "privateError": "Unable to update private associations.", "privateEmpty": "No private association for this item.", "privateBadge": "Private", "signIn": "Sign in to view and manage private event associations.",
+      "saveFirst": { "location": "Save this venue to the event before creating a private association.", "supplier": "Save this supplier to the event before creating a private association." },
+      "unnamed": "Unnamed item", "relationshipType": "Relationship type", "notes": "Private notes", "saveChanges": "Save changes", "remove": "Remove", "addTitle": "Add association", "noOptions": { "location": "Save or create a private venue to connect it.", "supplier": "Save or create a private supplier to connect it." }, "choose": { "location": "Venue", "supplier": "Supplier" }, "choosePlaceholder": "Select an item", "savedScope": "saved global snapshot", "privateScope": "private record", "add": "Add",
+      "types": { "works_at": "Works at the venue", "preferred_supplier": "Preferred supplier", "internal_supplier": "In-house supplier", "external_allowed": "External supplier allowed", "recommended": "Recommended", "historic_relationship": "Historic relationship" }
+    },
     "favorites": {
       "unknownCity": "Location unavailable",
       "loading": "Loading…",

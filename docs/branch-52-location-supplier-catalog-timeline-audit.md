@@ -447,12 +447,66 @@ non esposto `private`, con `search_path` fissato e nessun EXECUTE a
 
 ### M3 — Location ↔ Fornitore
 
-- esporre associazioni globali `supplier_locations` in sola lettura;
-- introdurre associazioni private event-scoped con vincolo same-event;
-- CRUD limitato a owner/partner attivo, provenienza e tipi allowlisted;
-- UX Location e Fornitore con modifica/rimozione.
+#### Contratto dati approvato prima dell'implementazione
 
-Migration necessaria solo per la relazione privata.
+Le associazioni globali e private restano due concetti distinti e non vengono
+fuse, copiate o inferite:
+
+| Ambito | Identità | Scrittura | Cancellazione |
+|---|---|---|---|
+| Globale curato | `supplier_locations(supplier_id,location_id,relationship_type)` tra UUID canonici di `suppliers` e `locations` | Solo pipeline/service role; il client normale conserva esclusivamente `SELECT` | Segue le FK globali esistenti; nessun dato viene creato o modificato da M3 |
+| Privato evento | Nuova riga `event_location_supplier_links` con `event_id`, un solo endpoint location e un solo endpoint supplier | Owner e partner attivo del CurrentEvent; API e RLS verificano lo stesso evento | `CASCADE` con l'evento o con uno dei soli endpoint privati collegati; i cataloghi globali non sono toccati |
+
+Ogni endpoint privato usa una XOR esplicita:
+
+- location: `saved_location_id` **oppure** `private_location_id`;
+- fornitore: `saved_supplier_id` **oppure** `private_supplier_id`.
+
+Le quattro combinazioni lecite sono quindi globale salvato ↔ globale salvato,
+globale salvato ↔ private-only, private-only ↔ globale salvato e private-only
+↔ private-only. Per i record globali l'associazione punta alla riga `saved_*`,
+non direttamente al catalogo: questo conserva snapshot, override e identità
+event-scoped della Milestone 2. Per i record private-only punta a
+`event_private_catalog_records` con `entity_type` vincolato rispettivamente a
+`location` o `supplier`.
+
+L'appartenenza allo stesso evento è provata da FK composite, non inferita dal
+client: ogni riferimento include `event_id`; i riferimenti private-only
+includono anche il tipo entità costante. Il client non può cambiare evento,
+endpoint, creatore o provenienza dopo l'inserimento.
+
+Il tipo di relazione riusa esattamente l'allowlist globale esistente:
+`works_at`, `preferred_supplier`, `internal_supplier`, `external_allowed`,
+`recommended`, `historic_relationship`. Sono ammesse note private fino a 4.000
+caratteri. La provenienza privata è rappresentata da `created_by` e dalla
+tabella event-scoped; non viene inventato un campo source e non viene copiata
+la provenance globale. Non è introdotto un ordinamento manuale: l'ordine
+deterministico è `created_at,id`.
+
+L'unicità è `(event_id, endpoint location, endpoint supplier,
+relationship_type)` per ciascuna delle quattro combinazioni. Quattro indici
+unique parziali rendono idempotenti retry e richieste concorrenti; la stessa
+coppia può conservare tipi di relazione diversi come nel catalogo globale.
+
+#### Contratto API e sicurezza
+
+- endpoint pubblico tipizzato: elenco globale filtrato per UUID location e/o
+  fornitore; POST/PATCH/DELETE non disponibili;
+- endpoint privato tipizzato: elenco, creazione, aggiornamento di soli
+  `relationship_type`/`private_notes` ed eliminazione;
+- `event_id`, `owner_id`, `created_by` e campi endpoint non allowlisted sono
+  rifiutati; il CurrentEvent server-side è sempre autorevole;
+- UUID, enum, lunghezze e forma XOR sono validati prima del database;
+- risorsa privata assente, cancellata o appartenente ad altro evento produce
+  un 404 uniforme senza enumerazione; duplicato incompatibile produce 409;
+- RLS e grant Data API applicano least privilege anche se la route server usa
+  il service role dopo la guard esplicita owner/partner attivo;
+- nessuna migration o DML Production, nessun backfill e nessuna associazione
+  globale o privata generata automaticamente.
+
+Migration necessaria esclusivamente per `event_location_supplier_links` e per
+le chiavi candidate composite richieste dalle FK same-event. Deve essere
+additiva, schema-only, idempotente e riapplicabile dopo M2.
 
 ### M4 — Fornitore ↔ Timeline e appuntamenti
 

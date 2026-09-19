@@ -1,6 +1,7 @@
 "use client";
 
 import { AppButton } from "@/components/ui/AppButton";
+import { LocationSupplierAssociations } from "@/components/catalog/LocationSupplierAssociations";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import type { SupplierDetail } from "@/lib/supplierContracts";
 import { ArrowLeft, CheckCircle2, ExternalLink, Heart, MapPin, RefreshCw } from "lucide-react";
@@ -113,7 +114,7 @@ export default function SupplierDetailPage() {
     }
   }
 
-  if (state.kind === "loading") return <p className="py-10 text-gray-600" aria-live="polite">{t("loading")}</p>;
+  if (state.kind === "loading") return <p className="py-10 text-muted-fg" aria-live="polite">{t("loading")}</p>;
   if (state.kind === "not-found") return (
     <section className="app-card app-card--md space-y-4">
       <h1 className="font-serif text-2xl">{t("notFound")}</h1>
@@ -143,30 +144,30 @@ export default function SupplierDetailPage() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-[#8d3f63]">{supplier.category ?? t("supplier")}</p>
-            <h1 className="mt-1 font-serif text-3xl">{supplier.name}</h1>
-            {supplier.subcategory ? <p className="mt-1 text-gray-600">{supplier.subcategory}</p> : null}
+            <h1 className="mt-1 font-serif text-3xl text-fg">{supplier.name}</h1>
+            {supplier.subcategory ? <p className="mt-1 text-muted-fg">{supplier.subcategory}</p> : null}
           </div>
-          {supplier.verified ? <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-sm text-green-800"><CheckCircle2 size={16}/>{t("verified")}</span> : null}
+          {supplier.verified ? <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-sm text-green-800 dark:bg-green-950 dark:text-green-200"><CheckCircle2 size={16}/>{t("verified")}</span> : null}
         </div>
-        {location ? <p className="mt-4 flex items-center gap-2 text-gray-700"><MapPin size={17}/>{location}</p> : null}
+        {location ? <p className="mt-4 flex items-center gap-2 text-muted-fg"><MapPin size={17}/>{location}</p> : null}
       </header>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <article className="app-card app-card--md">
             <h2 className="font-semibold text-lg">{t("description")}</h2>
-            <p className="mt-3 whitespace-pre-wrap text-gray-700">{supplier.description || t("noDescription")}</p>
+            <p className="mt-3 whitespace-pre-wrap text-muted-fg">{supplier.description || t("noDescription")}</p>
           </article>
           <article className="app-card app-card--md">
             <h2 className="font-semibold text-lg">{t("services")}</h2>
             <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-              {supplier.service_area ? <div><dt className="text-sm text-gray-500">{t("serviceArea")}</dt><dd>{supplier.service_area}</dd></div> : null}
-              {supplier.regions_served?.length ? <div><dt className="text-sm text-gray-500">{t("regionsServed")}</dt><dd>{supplier.regions_served.join(", ")}</dd></div> : null}
-              {supplier.travel_available !== null ? <div><dt className="text-sm text-gray-500">{t("travel")}</dt><dd>{supplier.travel_available ? t("yes") : t("no")}</dd></div> : null}
-              {supplier.google_rating !== null ? <div><dt className="text-sm text-gray-500">{t("rating")}</dt><dd>{supplier.google_rating} ({supplier.google_rating_count ?? 0})</dd></div> : null}
+              {supplier.service_area ? <div><dt className="text-sm text-muted-fg">{t("serviceArea")}</dt><dd>{supplier.service_area}</dd></div> : null}
+              {supplier.regions_served?.length ? <div><dt className="text-sm text-muted-fg">{t("regionsServed")}</dt><dd>{supplier.regions_served.join(", ")}</dd></div> : null}
+              {supplier.travel_available !== null ? <div><dt className="text-sm text-muted-fg">{t("travel")}</dt><dd>{supplier.travel_available ? t("yes") : t("no")}</dd></div> : null}
+              {supplier.google_rating !== null ? <div><dt className="text-sm text-muted-fg">{t("rating")}</dt><dd>{supplier.google_rating} ({supplier.google_rating_count ?? 0})</dd></div> : null}
             </dl>
             {!supplier.service_area && !supplier.regions_served?.length && supplier.travel_available === null && supplier.google_rating === null
-              ? <p className="mt-3 text-gray-600">{t("detailsEmpty")}</p> : null}
+              ? <p className="mt-3 text-muted-fg">{t("detailsEmpty")}</p> : null}
           </article>
         </div>
 
@@ -181,12 +182,12 @@ export default function SupplierDetailPage() {
               {socialLinks.map(([label, url]) => <li key={label}><a className="underline" href={url} target="_blank" rel="noreferrer">{label}</a></li>)}
             </ul>
             {!address && !supplier.phone && !supplier.email && !supplier.website && socialLinks.length === 0
-              ? <p className="mt-3 text-gray-600">{t("contactsEmpty")}</p> : null}
+              ? <p className="mt-3 text-muted-fg">{t("contactsEmpty")}</p> : null}
           </section>
 
           <section className="app-card app-card--md">
             <h2 className="font-semibold text-lg">{t("eventSection")}</h2>
-            {!authenticated ? <p className="mt-3 text-sm text-gray-600">{t("signInToSave")}</p> : saved ? (
+            {!authenticated ? <p className="mt-3 text-sm text-muted-fg">{t("signInToSave")}</p> : saved ? (
               <div className="mt-3 space-y-4">
                 <p className="text-sm">{t("savedStatus", { status: saved.status })}</p>
                 <div className="flex flex-wrap gap-2">
@@ -202,10 +203,15 @@ export default function SupplierDetailPage() {
             ) : (
               <AppButton className="mt-3" disabled={mutationPending} onClick={() => void mutateSavedSupplier("save")}><Heart size={16}/>{t("saveSupplier")}</AppButton>
             )}
-            {mutationError ? <p className="mt-3 text-sm text-red-700" role="alert">{t("mutationError")}</p> : null}
+            {mutationError ? <p className="mt-3 text-sm text-red-700 dark:text-red-300" role="alert">{t("mutationError")}</p> : null}
           </section>
         </aside>
       </div>
+      <LocationSupplierAssociations
+        side="supplier"
+        catalogId={supplier.id}
+        eventEndpoint={saved ? { scope: "saved", resourceId: saved.id } : null}
+      />
     </section>
   );
 }

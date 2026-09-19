@@ -225,6 +225,15 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m2-after.json
           diff -u /tmp/branch-52-m2-before.json /tmp/branch-52-m2-after.json
 
+      - name: Apply and verify Branch 52 Milestone 3 associations
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m3-before.json
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260919200457_branch_52_location_supplier_associations.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260919200457_branch_52_location_supplier_associations.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m3-after.json
+          diff -u /tmp/branch-52-m3-before.json /tmp/branch-52-m3-after.json
+
       - name: Verify pgTAP runner positive and negative contracts
         run: |
           set -Eeuo pipefail
@@ -279,6 +288,25 @@ jobs:
           test "$second_status" -ne 0
           test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from public.event_private_catalog_records where event_id='52210000-0000-4000-8000-000000000002' and client_key='52210000-0000-4000-8000-000000000003'")" = "1"
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "delete from auth.users where id='52210000-0000-4000-8000-000000000001';"
+
+      - name: Verify concurrent Location-Supplier association writes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into auth.users(id,email) values('52310000-0000-4000-8000-000000000001','branch52-m3-concurrency@example.invalid'); insert into public.events(id,owner_id,event_type) values('52310000-0000-4000-8000-000000000002','52310000-0000-4000-8000-000000000001','wedding'); insert into public.locations(id,name,region,province,city,country_code,location_type,source,external_id) values('52310000-0000-4000-8000-000000000003','M3 concurrent location','Lazio','RM','Roma','it','villa','admin_import','m3-concurrent-location'); insert into public.suppliers(id,name,region,province,city,country_code,category,source,external_id) values('52310000-0000-4000-8000-000000000004','M3 concurrent supplier','Lazio','RM','Roma','it','catering','admin_import','m3-concurrent-supplier'); insert into public.saved_locations(id,event_id,location_id) values('52310000-0000-4000-8000-000000000005','52310000-0000-4000-8000-000000000002','52310000-0000-4000-8000-000000000003'); insert into public.saved_suppliers(id,event_id,supplier_id) values('52310000-0000-4000-8000-000000000006','52310000-0000-4000-8000-000000000002','52310000-0000-4000-8000-000000000004');"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "begin; insert into public.event_location_supplier_links(event_id,saved_location_id,saved_supplier_id,relationship_type,created_by) values('52310000-0000-4000-8000-000000000002','52310000-0000-4000-8000-000000000005','52310000-0000-4000-8000-000000000006','recommended','52310000-0000-4000-8000-000000000001'); select pg_sleep(2); commit;" &
+          first_pid=$!
+          sleep 0.2
+          set +e
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into public.event_location_supplier_links(event_id,saved_location_id,saved_supplier_id,relationship_type,created_by) values('52310000-0000-4000-8000-000000000002','52310000-0000-4000-8000-000000000005','52310000-0000-4000-8000-000000000006','recommended','52310000-0000-4000-8000-000000000001');"
+          second_status=$?
+          wait "$first_pid"
+          first_status=$?
+          set -e
+          test "$first_status" -eq 0
+          test "$second_status" -ne 0
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from public.event_location_supplier_links where event_id='52310000-0000-4000-8000-000000000002' and relationship_type='recommended'")" = "1"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "delete from auth.users where id='52310000-0000-4000-8000-000000000001';"
 
       - name: Generate current TypeScript types
         run: |

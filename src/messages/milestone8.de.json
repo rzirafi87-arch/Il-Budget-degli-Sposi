@@ -117,6 +117,19 @@
       "saveChanges": "Änderungen speichern",
       "publicChanges": "Die Änderungen sind für alle sichtbar."
     },
+    "locationProfile": {
+      "loading": "Location wird geladen…", "notFound": "Location nicht gefunden.", "back": "Zurück zu den Locations", "loadError": "Die Location konnte nicht geladen werden.", "retry": "Erneut versuchen", "verified": "Verifiziert",
+      "description": "Beschreibung", "noDescription": "Für diese Location gibt es noch keine Beschreibung.", "featuresTitle": "Leistungen und Merkmale", "featuresEmpty": "Keine zusätzlichen Merkmale verfügbar.", "capacity": "Bis zu {count} Gäste",
+      "features": { "accommodation": "Unterkunft verfügbar", "internalCatering": "Internes Catering", "externalCatering": "Externes Catering erlaubt", "parking": "Parkplätze", "accessibility": "Barrierefreiheit", "outdoor": "Außenbereiche", "indoor": "Innenbereiche" },
+      "contacts": "Kontakte", "website": "Website", "contactsEmpty": "Keine öffentlichen Kontakte verfügbar.", "eventSection": "Für eure Hochzeit", "role": "Rolle der Location", "signInToSave": "Melde dich an, um diese Location für dein Event zu speichern.", "select": "Auswählen", "unselect": "Auswahl aufheben", "removeSaved": "Aus Gespeicherten entfernen", "saveLocation": "Location speichern", "mutationError": "Die gespeicherte Location konnte nicht aktualisiert werden."
+    },
+    "associations": {
+      "title": "Verknüpfte Locations und Dienstleister", "description": { "location": "Zeigt Dienstleister dieser Location und verwaltet private Verknüpfungen eures Events.", "supplier": "Zeigt Locations dieses Dienstleisters und verwaltet private Verknüpfungen eures Events." },
+      "globalTitle": "Kuratierte Verknüpfungen", "privateTitle": "Private Event-Verknüpfungen", "loading": "Verknüpfungen werden geladen…", "retry": "Erneut versuchen", "globalError": "Kuratierte Verknüpfungen konnten nicht geladen werden.", "globalEmpty": "Keine kuratierten Verknüpfungen verfügbar.", "globalBadge": "Global", "privateError": "Private Verknüpfungen konnten nicht aktualisiert werden.", "privateEmpty": "Keine private Verknüpfung für diesen Eintrag.", "privateBadge": "Privat", "signIn": "Melde dich an, um private Event-Verknüpfungen zu sehen und zu verwalten.",
+      "saveFirst": { "location": "Speichere diese Location im Event, bevor du eine private Verknüpfung erstellst.", "supplier": "Speichere diesen Dienstleister im Event, bevor du eine private Verknüpfung erstellst." },
+      "unnamed": "Eintrag ohne Namen", "relationshipType": "Beziehungsart", "notes": "Private Notizen", "saveChanges": "Änderungen speichern", "remove": "Entfernen", "addTitle": "Verknüpfung hinzufügen", "noOptions": { "location": "Speichere oder erstelle eine private Location zum Verknüpfen.", "supplier": "Speichere oder erstelle einen privaten Dienstleister zum Verknüpfen." }, "choose": { "location": "Location", "supplier": "Dienstleister" }, "choosePlaceholder": "Eintrag auswählen", "savedScope": "gespeicherter globaler Snapshot", "privateScope": "privater Eintrag", "add": "Hinzufügen",
+      "types": { "works_at": "Arbeitet in der Location", "preferred_supplier": "Bevorzugter Dienstleister", "internal_supplier": "Interner Dienstleister", "external_allowed": "Externer Dienstleister erlaubt", "recommended": "Empfohlen", "historic_relationship": "Historische Beziehung" }
+    },
     "favorites": {
       "unknownCity": "Ort nicht verfügbar",
       "loading": "Wird geladen…",

@@ -856,6 +856,90 @@ export type Database = {
           },
         ]
       }
+      event_location_supplier_links: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          event_id: string
+          id: string
+          private_location_entity_type: string | null
+          private_location_id: string | null
+          private_notes: string | null
+          private_supplier_entity_type: string | null
+          private_supplier_id: string | null
+          relationship_type: string
+          saved_location_id: string | null
+          saved_supplier_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          event_id: string
+          id?: string
+          private_location_entity_type?: string | null
+          private_location_id?: string | null
+          private_notes?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
+          relationship_type: string
+          saved_location_id?: string | null
+          saved_supplier_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          event_id?: string
+          id?: string
+          private_location_entity_type?: string | null
+          private_location_id?: string | null
+          private_notes?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
+          relationship_type?: string
+          saved_location_id?: string | null
+          saved_supplier_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_location_supplier_links_event_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_private_location_event_type_fkey"
+            columns: ["private_location_id", "event_id", "private_location_entity_type"]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id", "entity_type"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_private_supplier_event_type_fkey"
+            columns: ["private_supplier_id", "event_id", "private_supplier_entity_type"]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id", "entity_type"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_saved_location_event_fkey"
+            columns: ["saved_location_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_locations"
+            referencedColumns: ["id", "event_id"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_saved_supplier_event_fkey"
+            columns: ["saved_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
+            referencedColumns: ["id", "event_id"]
+          },
+        ]
+      }
       event_members: {
         Row: {
           accepted_at: string | null
