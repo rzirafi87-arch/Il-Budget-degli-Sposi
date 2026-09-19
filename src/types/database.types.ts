@@ -912,14 +912,22 @@ export type Database = {
           },
           {
             foreignKeyName: "event_location_supplier_links_private_location_event_type_fkey"
-            columns: ["private_location_id", "event_id", "private_location_entity_type"]
+            columns: [
+              "private_location_id",
+              "event_id",
+              "private_location_entity_type",
+            ]
             isOneToOne: false
             referencedRelation: "event_private_catalog_records"
             referencedColumns: ["id", "event_id", "entity_type"]
           },
           {
             foreignKeyName: "event_location_supplier_links_private_supplier_event_type_fkey"
-            columns: ["private_supplier_id", "event_id", "private_supplier_entity_type"]
+            columns: [
+              "private_supplier_id",
+              "event_id",
+              "private_supplier_entity_type",
+            ]
             isOneToOne: false
             referencedRelation: "event_private_catalog_records"
             referencedColumns: ["id", "event_id", "entity_type"]
@@ -3611,6 +3619,10 @@ export type Database = {
         Returns: string
       }
       can_access_event: { Args: { p_event_id: string }; Returns: boolean }
+      can_manage_event_location_supplier_links: {
+        Args: { p_event_id: string }
+        Returns: boolean
+      }
       catalog_payload_has_only_allowed_keys: {
         Args: { entity_type_value: string; payload: Json; payload_kind: string }
         Returns: boolean
