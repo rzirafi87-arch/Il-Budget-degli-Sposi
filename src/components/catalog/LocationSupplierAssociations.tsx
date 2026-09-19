@@ -241,7 +241,7 @@ export function LocationSupplierAssociations({ side, catalogId, eventEndpoint }:
             <span>{t("globalError")}</span><AppButton variant="outline" onClick={() => void loadGlobal()}><RefreshCw size={16} aria-hidden />{t("retry")}</AppButton>
           </div>
         ) : globalItems.length === 0 ? <p className="text-sm text-muted-fg">{t("globalEmpty")}</p> : (
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul data-testid="global-associations-list" className="grid gap-3 sm:grid-cols-2">
             {globalItems.map((item) => {
               const target = globalCounterpart(item, side);
               return <li key={`${item.location_id}:${item.supplier_id}:${item.relationship_type}`} className="rounded-xl border border-border bg-bg p-3">

@@ -68,7 +68,7 @@ for (const width of [320, 430] as const) {
       const supplierPrivateItem = supplierAssociations.getByTestId(`private-association-${createdBody.association.id}`);
       await expect(supplierPrivateItem).toContainText(fixture.locationName);
       await expect(supplierPrivateItem.getByTestId("association-private-notes")).toHaveValue("QA-M3 nota aggiornata");
-      await expect(supplierAssociations.getByRole("link", { name: fixture.locationName, exact: true })).toBeVisible();
+      await expect(supplierAssociations.getByTestId("global-associations-list").getByRole("link", { name: fixture.locationName, exact: true })).toBeVisible();
       console.info(`[M3-${width}] inverse view complete`);
 
       if (width === 430) {
