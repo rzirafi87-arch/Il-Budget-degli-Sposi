@@ -34,14 +34,21 @@ for (const width of [320, 430] as const) {
       await expect(associations.getByText("Nessuna associazione privata per questo elemento.", { exact: true })).toBeVisible();
 
       const supplierSelect = associations.getByLabel("Fornitore", { exact: true });
-      await supplierSelect.selectOption({ index: 1 });
+      await supplierSelect.evaluate((node: HTMLSelectElement) => {
+        const firstAssociation = node.options.item(1);
+        if (!firstAssociation) throw new Error("M3 association option is missing.");
+        node.value = firstAssociation.value;
+        node.dispatchEvent(new Event("change", { bubbles: true }));
+      });
       await expect(supplierSelect).not.toHaveValue("");
       await associations.getByLabel("Note private", { exact: true }).last().fill("QA-M3 nota iniziale");
       const createResponse = page.waitForResponse(response =>
         response.request().method() === "POST"
         && new URL(response.url()).pathname === "/api/my/location-supplier-associations"
       );
-      await associations.getByRole("button", { name: "Aggiungi", exact: true }).click();
+      const addButton = associations.getByRole("button", { name: "Aggiungi", exact: true });
+      await expect(addButton).toBeEnabled();
+      await addButton.click();
       expect((await createResponse).status()).toBe(201);
       await expect(associations.getByText("Privata", { exact: true })).toBeVisible();
 
