@@ -7,10 +7,9 @@ select plan(2);
 
 select has_column('public', 'budget_items', 'spend_type', 'applied budget contributor exists');
 select col_default_is(
-  'public', 'budget_items', 'spend_type', '''common''::text',
+  'public', 'budget_items', 'spend_type', 'common',
   'legacy applied rows receive the common contributor'
 );
 
 select * from finish();
 rollback;
-

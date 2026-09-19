@@ -11,6 +11,11 @@ on:
       - 'scripts/datasets/locations-italy-openstreetmap.json'
       - 'scripts/lib/italian-catalog-datasets.test.mjs'
       - 'scripts/import-catalog.mjs'
+      - 'scripts/run-pgtap.mjs'
+      - 'scripts/test-pgtap-runner-integration.mjs'
+      - 'scripts/lib/pgtap-runner.mjs'
+      - 'scripts/lib/pgtap-runner.test.mjs'
+      - 'scripts/fixtures/pgtap-runner/**'
       - 'src/i18n/**'
       - 'middleware.ts'
       - '.github/workflows/database-rebuild.yml'
@@ -146,10 +151,6 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260909040500_branch_41_budget_items_spend_type.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260909042500_branch_41_budget_snapshot.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260909044000_branch_41_budget_snapshot_variable_fix.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_guest_snapshot.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_user_favorites.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_budget_apply.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_41_budget_snapshot.sql
 
       - name: Verify Branch 42 catalog datasets
         run: |
@@ -161,7 +162,6 @@ jobs:
         run: |
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260910140052_branch_43_wedding_ux_ceremony_flexibility.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260910203000_branch_43_budget_item_origin.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_43_ceremony_budget.sql
 
       - name: Apply and verify Branch 44 catalog moderation
         run: |
@@ -215,6 +215,19 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/branch_51_acl_inventory.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_51_production_snapshot.sql > /tmp/branch-51-snapshot-after.json
           diff -u /tmp/branch-51-snapshot-before.json /tmp/branch-51-snapshot-after.json
+
+      - name: Verify pgTAP runner positive and negative contracts
+        run: |
+          set -Eeuo pipefail
+          node --test scripts/lib/pgtap-runner.test.mjs
+          node scripts/test-pgtap-runner-integration.mjs
+
+      - name: Run every pgTAP suite with TAP enforcement
+        run: |
+          set -Eeuo pipefail
+          node scripts/run-pgtap.mjs \
+            --manifest supabase/tests/pgtap-suites.txt \
+            --database-url-env LOCAL_DATABASE_URL
 
       - name: Lint reconstructed database functions
         run: |
