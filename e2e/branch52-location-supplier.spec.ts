@@ -47,6 +47,7 @@ for (const width of [320, 430] as const) {
       await addButton.click();
       expect((await createResponse).status()).toBe(201);
       await expect(associations.getByText("Privata", { exact: true })).toBeVisible();
+      console.info(`[M3-${width}] create complete`);
 
       const privateItem = associations.getByRole("listitem")
         .filter({ hasText: fixture.supplierName })
@@ -58,6 +59,7 @@ for (const width of [320, 430] as const) {
       );
       await privateItem.getByRole("button", { name: "Salva modifiche", exact: true }).click();
       expect((await updateResponse).status()).toBe(200);
+      console.info(`[M3-${width}] update complete`);
 
       await page.goto(`/it/fornitori/${fixture.supplierId}`);
       await expect(page.getByRole("heading", { name: fixture.supplierName, exact: true })).toBeVisible();
@@ -67,6 +69,7 @@ for (const width of [320, 430] as const) {
         .filter({ hasText: "Privata" });
       await expect(supplierPrivateItem.getByLabel("Note private", { exact: true })).toHaveValue("QA-M3 nota aggiornata");
       await expect(supplierAssociations.getByRole("link", { name: fixture.locationName, exact: true })).toBeVisible();
+      console.info(`[M3-${width}] inverse view complete`);
 
       if (width === 430) {
         for (const colorScheme of ["light", "dark"] as const) {
@@ -84,6 +87,7 @@ for (const width of [320, 430] as const) {
           await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
         }
       }
+      console.info(`[M3-${width}] display matrix complete`);
 
       await page.goto(`/it/fornitori/${fixture.supplierId}`);
       const deleteResponse = page.waitForResponse(response =>
@@ -93,9 +97,14 @@ for (const width of [320, 430] as const) {
       await page.getByRole("region", { name: localizedTitles.it }).getByRole("button", { name: "Rimuovi", exact: true }).click();
       expect((await deleteResponse).status()).toBe(200);
       await expect(page.getByText("Nessuna associazione privata per questo elemento.", { exact: true })).toBeVisible();
+      console.info(`[M3-${width}] delete complete`);
     } finally {
-      if (fixture) await deleteLocationSupplierFixture(fixture);
+      if (fixture) {
+        await deleteLocationSupplierFixture(fixture);
+        console.info(`[M3-${width}] fixture cleanup complete`);
+      }
       await deleteQaIdentity(identity);
+      console.info(`[M3-${width}] identity cleanup complete`);
     }
   });
 }
