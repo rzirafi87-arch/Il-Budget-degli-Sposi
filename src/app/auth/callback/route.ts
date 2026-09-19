@@ -9,13 +9,14 @@ export async function GET(request: NextRequest) {
   const code = url.searchParams.get("code");
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");
-  if (!code && (!tokenHash || type !== "signup")) {
+  const otpType = type === "signup" || type === "email" ? type : null;
+  if (!code && (!tokenHash || !otpType)) {
     return NextResponse.redirect(new URL("/it/auth?authError=invalid_link", url.origin));
   }
   const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { cookies: { getAll: () => request.cookies.getAll(), setAll: cookies => cookies.forEach(({ name, value, options }) => redirect.cookies.set(name, value, options)) } });
   const { error } = code
     ? await supabase.auth.exchangeCodeForSession(code)
-    : await supabase.auth.verifyOtp({ token_hash: tokenHash!, type: "signup" });
+    : await supabase.auth.verifyOtp({ token_hash: tokenHash!, type: otpType! });
   if (error) return NextResponse.redirect(new URL("/it/auth?authError=invalid_link", url.origin));
   return redirect;
 }
