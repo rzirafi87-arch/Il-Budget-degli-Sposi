@@ -1,0 +1,30 @@
+{
+  "branch52M4": {
+    "timeline": {
+      "imported": "Checklist salvata.", "saveError": "Impossibile salvare l’attività. I dati inseriti sono rimasti nel modulo.", "created": "Attività aggiunta.",
+      "linked": "Fornitore collegato.", "unlinked": "Collegamento rimosso.", "updated": "Attività aggiornata.", "updateError": "Impossibile aggiornare l’attività.",
+      "confirmDelete": "Eliminare l’attività “{title}”?", "deleted": "Attività eliminata.", "deleteError": "Impossibile eliminare l’attività.",
+      "loadError": "Impossibile caricare Timeline e fornitori.", "retry": "Riprova", "filterSupplier": "Filtra per fornitore", "allSuppliers": "Tutti i fornitori",
+      "addTitle": "Aggiungi un’attività manuale", "taskTitle": "Titolo", "description": "Descrizione", "category": "Categoria", "monthsBefore": "Mesi prima dell’evento",
+      "supplier": "Fornitore facoltativo", "searchSupplier": "Cerca fornitore", "noSupplier": "Nessun fornitore", "savedSupplier": "Salvato", "privateSupplier": "Privato",
+      "add": "Aggiungi attività", "markIncomplete": "Segna come da completare", "markComplete": "Segna come completata", "linkedSupplier": "Fornitore:",
+      "deleteNamed": "Elimina {title}", "changeSupplier": "Modifica fornitore", "empty": "Nessuna attività corrisponde ai filtri."
+    },
+    "appointments": {
+      "eyebrow": "Organizzazione manuale", "title": "Appuntamenti", "description": "Crea e collega manualmente appuntamenti ai fornitori del tuo evento.",
+      "saved": "Appuntamento aggiunto.", "saveError": "Impossibile salvare. I dati inseriti sono rimasti nel modulo.", "linked": "Fornitore collegato.", "unlinked": "Collegamento rimosso.", "updateError": "Impossibile aggiornare l’appuntamento.",
+      "confirmDelete": "Eliminare l’appuntamento “{title}”?", "deleted": "Appuntamento eliminato.", "deleteError": "Impossibile eliminare l’appuntamento.",
+      "addTitle": "Nuovo appuntamento", "formTitle": "Titolo", "date": "Data", "location": "Luogo", "notes": "Note", "supplier": "Fornitore facoltativo",
+      "searchSupplier": "Cerca fornitore", "noSupplier": "Nessun fornitore", "savedSupplier": "Salvato", "privateSupplier": "Privato", "add": "Aggiungi appuntamento",
+      "listTitle": "I tuoi appuntamenti", "filterSupplier": "Fornitore", "allSuppliers": "Tutti", "loading": "Caricamento appuntamenti…", "loadError": "Impossibile caricare appuntamenti e fornitori.", "retry": "Riprova", "empty": "Nessun appuntamento corrisponde ai filtri.",
+      "dateValue": "Data: {date}", "linkedSupplier": "Fornitore:", "deleteNamed": "Elimina {title}", "delete": "Elimina", "changeSupplier": "Modifica fornitore"
+    },
+    "inverse": {
+      "title": "Timeline e appuntamenti", "saveFirst": "Salva prima il fornitore nell’evento per collegare attività e appuntamenti.", "loading": "Caricamento collegamenti…", "error": "Impossibile caricare i collegamenti.", "retry": "Riprova",
+      "timelineTitle": "Attività Timeline", "openTimeline": "Apri Timeline", "timelineEmpty": "Nessuna attività collegata.", "appointmentsTitle": "Appuntamenti", "openAppointments": "Apri appuntamenti", "appointmentsEmpty": "Nessun appuntamento collegato."
+    },
+    "privateSupplier": {
+      "loading": "Caricamento fornitore privato…", "notFound": "Fornitore privato non trovato.", "back": "Torna ai fornitori", "error": "Impossibile caricare il fornitore privato.", "retry": "Riprova", "unnamed": "Fornitore senza nome", "badge": "Fornitore privato dell’evento", "details": "Dettagli", "detailsEmpty": "Nessun dettaglio aggiuntivo.", "phone": "Telefono", "email": "Email", "city": "Città"
+    }
+  }
+}

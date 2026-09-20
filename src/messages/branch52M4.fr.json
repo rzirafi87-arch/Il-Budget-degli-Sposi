@@ -1,0 +1,30 @@
+{
+  "branch52M4": {
+    "timeline": {
+      "imported": "Checklist enregistrée.", "saveError": "Impossible d’enregistrer la tâche. Les données du formulaire sont conservées.", "created": "Tâche ajoutée.",
+      "linked": "Prestataire associé.", "unlinked": "Association supprimée.", "updated": "Tâche mise à jour.", "updateError": "Impossible de mettre à jour la tâche.",
+      "confirmDelete": "Supprimer la tâche « {title} » ?", "deleted": "Tâche supprimée.", "deleteError": "Impossible de supprimer la tâche.",
+      "loadError": "Impossible de charger la chronologie et les prestataires.", "retry": "Réessayer", "filterSupplier": "Filtrer par prestataire", "allSuppliers": "Tous les prestataires",
+      "addTitle": "Ajouter une tâche manuelle", "taskTitle": "Titre", "description": "Description", "category": "Catégorie", "monthsBefore": "Mois avant l’événement",
+      "supplier": "Prestataire facultatif", "searchSupplier": "Rechercher un prestataire", "noSupplier": "Aucun prestataire", "savedSupplier": "Enregistré", "privateSupplier": "Privé",
+      "add": "Ajouter la tâche", "markIncomplete": "Marquer comme à faire", "markComplete": "Marquer comme terminée", "linkedSupplier": "Prestataire :",
+      "deleteNamed": "Supprimer {title}", "changeSupplier": "Modifier le prestataire", "empty": "Aucune tâche ne correspond aux filtres."
+    },
+    "appointments": {
+      "eyebrow": "Organisation manuelle", "title": "Rendez-vous", "description": "Créez manuellement des rendez-vous et associez-les aux prestataires de votre événement.",
+      "saved": "Rendez-vous ajouté.", "saveError": "Impossible d’enregistrer. Les données du formulaire sont conservées.", "linked": "Prestataire associé.", "unlinked": "Association supprimée.", "updateError": "Impossible de mettre à jour le rendez-vous.",
+      "confirmDelete": "Supprimer le rendez-vous « {title} » ?", "deleted": "Rendez-vous supprimé.", "deleteError": "Impossible de supprimer le rendez-vous.",
+      "addTitle": "Nouveau rendez-vous", "formTitle": "Titre", "date": "Date", "location": "Lieu", "notes": "Notes", "supplier": "Prestataire facultatif",
+      "searchSupplier": "Rechercher un prestataire", "noSupplier": "Aucun prestataire", "savedSupplier": "Enregistré", "privateSupplier": "Privé", "add": "Ajouter le rendez-vous",
+      "listTitle": "Vos rendez-vous", "filterSupplier": "Prestataire", "allSuppliers": "Tous", "loading": "Chargement des rendez-vous…", "loadError": "Impossible de charger les rendez-vous et prestataires.", "retry": "Réessayer", "empty": "Aucun rendez-vous ne correspond aux filtres.",
+      "dateValue": "Date : {date}", "linkedSupplier": "Prestataire :", "deleteNamed": "Supprimer {title}", "delete": "Supprimer", "changeSupplier": "Modifier le prestataire"
+    },
+    "inverse": {
+      "title": "Chronologie et rendez-vous", "saveFirst": "Enregistrez d’abord le prestataire dans l’événement pour associer des tâches et rendez-vous.", "loading": "Chargement des associations…", "error": "Impossible de charger les associations.", "retry": "Réessayer",
+      "timelineTitle": "Tâches de la chronologie", "openTimeline": "Ouvrir la chronologie", "timelineEmpty": "Aucune tâche associée.", "appointmentsTitle": "Rendez-vous", "openAppointments": "Ouvrir les rendez-vous", "appointmentsEmpty": "Aucun rendez-vous associé."
+    },
+    "privateSupplier": {
+      "loading": "Chargement du prestataire privé…", "notFound": "Prestataire privé introuvable.", "back": "Retour aux prestataires", "error": "Impossible de charger le prestataire privé.", "retry": "Réessayer", "unnamed": "Prestataire sans nom", "badge": "Prestataire privé de l’événement", "details": "Détails", "detailsEmpty": "Aucun détail supplémentaire.", "phone": "Téléphone", "email": "E-mail", "city": "Ville"
+    }
+  }
+}

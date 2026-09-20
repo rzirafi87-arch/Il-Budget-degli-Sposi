@@ -2,6 +2,7 @@
 
 import { AppButton } from "@/components/ui/AppButton";
 import { LocationSupplierAssociations } from "@/components/catalog/LocationSupplierAssociations";
+import { SupplierWorkSummary } from "@/components/suppliers/SupplierWorkSummary";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import type { SupplierDetail } from "@/lib/supplierContracts";
 import { ArrowLeft, CheckCircle2, ExternalLink, Heart, MapPin, RefreshCw } from "lucide-react";
@@ -212,6 +213,7 @@ export default function SupplierDetailPage() {
         catalogId={supplier.id}
         eventEndpoint={saved ? { scope: "saved", resourceId: saved.id } : null}
       />
+      <SupplierWorkSummary endpoint={saved ? { scope: "saved", resourceId: saved.id } : null} />
     </section>
   );
 }

@@ -234,6 +234,15 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m3-after.json
           diff -u /tmp/branch-52-m3-before.json /tmp/branch-52-m3-after.json
 
+      - name: Apply and verify Branch 52 Milestone 4 supplier work links
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m4-before.json
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260920072942_branch_52_supplier_timeline_appointments.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260920072942_branch_52_supplier_timeline_appointments.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m4-after.json
+          diff -u /tmp/branch-52-m4-before.json /tmp/branch-52-m4-after.json
+
       - name: Verify pgTAP runner positive and negative contracts
         run: |
           set -Eeuo pipefail
@@ -307,6 +316,25 @@ jobs:
           test "$second_status" -ne 0
           test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from public.event_location_supplier_links where event_id='52310000-0000-4000-8000-000000000002' and relationship_type='recommended'")" = "1"
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "delete from auth.users where id='52310000-0000-4000-8000-000000000001';"
+
+      - name: Verify concurrent supplier work create keys
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into auth.users(id,email) values('52410000-0000-4000-8000-000000000001','branch52-m4-concurrency@example.invalid'); insert into public.events(id,owner_id,event_type) values('52410000-0000-4000-8000-000000000002','52410000-0000-4000-8000-000000000001','wedding');"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "begin; insert into public.timeline_items(event_id,client_key,title) values('52410000-0000-4000-8000-000000000002','52410000-0000-4000-8000-000000000003','Concurrent M4 create'); select pg_sleep(2); commit;" &
+          first_pid=$!
+          sleep 0.2
+          set +e
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "insert into public.timeline_items(event_id,client_key,title) values('52410000-0000-4000-8000-000000000002','52410000-0000-4000-8000-000000000003','Concurrent M4 retry');"
+          second_status=$?
+          wait "$first_pid"
+          first_status=$?
+          set -e
+          test "$first_status" -eq 0
+          test "$second_status" -ne 0
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from public.timeline_items where event_id='52410000-0000-4000-8000-000000000002' and client_key='52410000-0000-4000-8000-000000000003'")" = "1"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -c "delete from auth.users where id='52410000-0000-4000-8000-000000000001';"
 
       - name: Generate current TypeScript types
         run: |

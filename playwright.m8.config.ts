@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["milestone8-lifecycle.spec.ts", "branch52-location-supplier.spec.ts"],
+  testMatch: ["milestone8-lifecycle.spec.ts", "branch52-location-supplier.spec.ts", "branch52-supplier-work.spec.ts"],
   outputDir: ".playwright-results-m8",
   timeout: 120_000,
   expect: { timeout: 5_000 },
@@ -21,8 +21,8 @@ export default defineConfig({
   },
   projects: [
     { name: "m8-diagnostic", grep: /\[M8\]\[diagnostic\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },
-    { name: "m8-320", grep: /\[M8\]\[(reset|matrix|responsive-320)\]|\[M3\]\[associations-320\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },
-    { name: "m8-430", grep: /\[M8\]\[(responsive-430|idea-budget)\]|\[M3\]\[associations-430\]/, use: { locale: "it", viewport: { width: 430, height: 844 } } },
+    { name: "m8-320", grep: /\[M8\]\[(reset|matrix|responsive-320)\]|\[M3\]\[associations-320\]|\[M4\]\[supplier-work-320\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },
+    { name: "m8-430", grep: /\[M8\]\[(responsive-430|idea-budget)\]|\[M3\]\[associations-430\]|\[M4\]\[supplier-work-430\]/, use: { locale: "it", viewport: { width: 430, height: 844 } } },
   ],
   webServer: {
     command: "npm run start -- -H 127.0.0.1",

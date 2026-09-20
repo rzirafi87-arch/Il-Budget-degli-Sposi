@@ -67,7 +67,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
       - name: Run Preview smoke and authenticated integration
-        run: npx playwright test --workers=1 --grep-invert '\[M8\]|\[M3\]'
+        run: npx playwright test --workers=1 --grep-invert '\[M8\]|\[M3\]|\[M4\]'
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
@@ -141,7 +141,7 @@ jobs:
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
           PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
-      - name: Run five real isolated browser journeys without skips
+      - name: Run real isolated browser journeys without skips
         run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-430
         env:
           NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000

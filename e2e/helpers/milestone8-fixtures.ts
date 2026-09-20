@@ -167,6 +167,8 @@ export async function createLocationSupplierFixture(identity: QaIdentity): Promi
 export async function deleteLocationSupplierFixture(fixture: LocationSupplierFixture) {
   const client = admin();
   const deletions = [
+    await client.from("timeline_items").delete().eq("event_id", fixture.eventId),
+    await client.from("appointments").delete().eq("event_id", fixture.eventId),
     await client.from("event_location_supplier_links").delete().eq("event_id", fixture.eventId),
     await client.from("saved_locations").delete().eq("id", fixture.savedLocationId).eq("event_id", fixture.eventId),
     await client.from("saved_suppliers").delete().eq("id", fixture.savedSupplierId).eq("event_id", fixture.eventId),
@@ -176,7 +178,9 @@ export async function deleteLocationSupplierFixture(fixture: LocationSupplierFix
     await client.from("locations").delete().eq("id", fixture.locationId),
   ];
   if (deletions.some(item => item.error)) throw new Error("M3 QA fixture cleanup failed.");
-  const [links, savedLocations, savedSuppliers, privateRows, globalLinks, suppliers, locations] = await Promise.all([
+  const [timeline, appointments, links, savedLocations, savedSuppliers, privateRows, globalLinks, suppliers, locations] = await Promise.all([
+    client.from("timeline_items").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
+    client.from("appointments").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
     client.from("event_location_supplier_links").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
     client.from("saved_locations").select("id", { count: "exact", head: true }).eq("id", fixture.savedLocationId),
     client.from("saved_suppliers").select("id", { count: "exact", head: true }).eq("id", fixture.savedSupplierId),
@@ -185,7 +189,7 @@ export async function deleteLocationSupplierFixture(fixture: LocationSupplierFix
     client.from("suppliers").select("id", { count: "exact", head: true }).eq("id", fixture.supplierId),
     client.from("locations").select("id", { count: "exact", head: true }).eq("id", fixture.locationId),
   ]);
-  const residue = [links, savedLocations, savedSuppliers, privateRows, globalLinks, suppliers, locations]
+  const residue = [timeline, appointments, links, savedLocations, savedSuppliers, privateRows, globalLinks, suppliers, locations]
     .reduce((total, result) => total + (result.count ?? 0), 0);
   if (residue !== 0) throw new Error(`M3 QA fixture residue count is ${residue}.`);
 }

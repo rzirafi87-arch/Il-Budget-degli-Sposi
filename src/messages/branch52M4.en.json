@@ -1,0 +1,30 @@
+{
+  "branch52M4": {
+    "timeline": {
+      "imported": "Checklist saved.", "saveError": "Unable to save the task. Your form data was preserved.", "created": "Task added.",
+      "linked": "Supplier linked.", "unlinked": "Supplier link removed.", "updated": "Task updated.", "updateError": "Unable to update the task.",
+      "confirmDelete": "Delete the task “{title}”?", "deleted": "Task deleted.", "deleteError": "Unable to delete the task.",
+      "loadError": "Unable to load the Timeline and suppliers.", "retry": "Retry", "filterSupplier": "Filter by supplier", "allSuppliers": "All suppliers",
+      "addTitle": "Add a manual task", "taskTitle": "Title", "description": "Description", "category": "Category", "monthsBefore": "Months before the event",
+      "supplier": "Optional supplier", "searchSupplier": "Search suppliers", "noSupplier": "No supplier", "savedSupplier": "Saved", "privateSupplier": "Private",
+      "add": "Add task", "markIncomplete": "Mark as incomplete", "markComplete": "Mark as complete", "linkedSupplier": "Supplier:",
+      "deleteNamed": "Delete {title}", "changeSupplier": "Change supplier", "empty": "No tasks match the filters."
+    },
+    "appointments": {
+      "eyebrow": "Manual planning", "title": "Appointments", "description": "Manually create appointments and link them to suppliers in your event.",
+      "saved": "Appointment added.", "saveError": "Unable to save. Your form data was preserved.", "linked": "Supplier linked.", "unlinked": "Supplier link removed.", "updateError": "Unable to update the appointment.",
+      "confirmDelete": "Delete the appointment “{title}”?", "deleted": "Appointment deleted.", "deleteError": "Unable to delete the appointment.",
+      "addTitle": "New appointment", "formTitle": "Title", "date": "Date", "location": "Location", "notes": "Notes", "supplier": "Optional supplier",
+      "searchSupplier": "Search suppliers", "noSupplier": "No supplier", "savedSupplier": "Saved", "privateSupplier": "Private", "add": "Add appointment",
+      "listTitle": "Your appointments", "filterSupplier": "Supplier", "allSuppliers": "All", "loading": "Loading appointments…", "loadError": "Unable to load appointments and suppliers.", "retry": "Retry", "empty": "No appointments match the filters.",
+      "dateValue": "Date: {date}", "linkedSupplier": "Supplier:", "deleteNamed": "Delete {title}", "delete": "Delete", "changeSupplier": "Change supplier"
+    },
+    "inverse": {
+      "title": "Timeline and appointments", "saveFirst": "Save this supplier to the event before linking tasks and appointments.", "loading": "Loading links…", "error": "Unable to load the links.", "retry": "Retry",
+      "timelineTitle": "Timeline tasks", "openTimeline": "Open Timeline", "timelineEmpty": "No linked tasks.", "appointmentsTitle": "Appointments", "openAppointments": "Open appointments", "appointmentsEmpty": "No linked appointments."
+    },
+    "privateSupplier": {
+      "loading": "Loading private supplier…", "notFound": "Private supplier not found.", "back": "Back to suppliers", "error": "Unable to load the private supplier.", "retry": "Retry", "unnamed": "Unnamed supplier", "badge": "Private event supplier", "details": "Details", "detailsEmpty": "No additional details.", "phone": "Phone", "email": "Email", "city": "City"
+    }
+  }
+}

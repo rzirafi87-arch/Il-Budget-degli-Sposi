@@ -135,37 +135,49 @@ export type Database = {
       appointments: {
         Row: {
           appointment_date: string
+          client_key: string | null
           event_id: string
           id: string
           inserted_at: string
           location: string | null
           notes: string | null
+          private_supplier_entity_type: string | null
+          private_supplier_id: string | null
           reminder_48h_sent: boolean
           reminder_7d_sent: boolean
+          saved_supplier_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
           appointment_date: string
+          client_key?: string | null
           event_id: string
           id?: string
           inserted_at?: string
           location?: string | null
           notes?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
           reminder_48h_sent?: boolean
           reminder_7d_sent?: boolean
+          saved_supplier_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           appointment_date?: string
+          client_key?: string | null
           event_id?: string
           id?: string
           inserted_at?: string
           location?: string | null
           notes?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
           reminder_48h_sent?: boolean
           reminder_7d_sent?: boolean
+          saved_supplier_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -176,6 +188,24 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_private_supplier_event_type_fkey"
+            columns: [
+              "private_supplier_id",
+              "event_id",
+              "private_supplier_entity_type",
+            ]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id", "entity_type"]
+          },
+          {
+            foreignKeyName: "appointments_saved_supplier_event_fkey"
+            columns: ["saved_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
+            referencedColumns: ["id", "event_id"]
           },
         ]
       }
@@ -3042,6 +3072,7 @@ export type Database = {
       timeline_items: {
         Row: {
           category: string | null
+          client_key: string | null
           completed: boolean | null
           days_before: number | null
           description: string | null
@@ -3051,12 +3082,15 @@ export type Database = {
           id: string
           inserted_at: string | null
           phase: string | null
+          private_supplier_entity_type: string | null
+          private_supplier_id: string | null
           saved_supplier_id: string | null
           title: string
           updated_at: string | null
         }
         Insert: {
           category?: string | null
+          client_key?: string | null
           completed?: boolean | null
           days_before?: number | null
           description?: string | null
@@ -3066,12 +3100,15 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
           saved_supplier_id?: string | null
           title: string
           updated_at?: string | null
         }
         Update: {
           category?: string | null
+          client_key?: string | null
           completed?: boolean | null
           days_before?: number | null
           description?: string | null
@@ -3081,6 +3118,8 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
           saved_supplier_id?: string | null
           title?: string
           updated_at?: string | null
@@ -3094,11 +3133,29 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "timeline_items_private_supplier_event_type_fkey"
+            columns: [
+              "private_supplier_id",
+              "event_id",
+              "private_supplier_entity_type",
+            ]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id", "entity_type"]
+          },
+          {
             foreignKeyName: "timeline_items_saved_supplier_id_fkey"
             columns: ["saved_supplier_id"]
             isOneToOne: false
             referencedRelation: "saved_suppliers"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timeline_items_saved_supplier_event_fkey"
+            columns: ["saved_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
+            referencedColumns: ["id", "event_id"]
           },
         ]
       }

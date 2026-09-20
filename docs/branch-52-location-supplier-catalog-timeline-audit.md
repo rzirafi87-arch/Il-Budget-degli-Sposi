@@ -510,12 +510,92 @@ additiva, schema-only, idempotente e riapplicabile dopo M2.
 
 ### M4 — Fornitore ↔ Timeline e appuntamenti
 
-- usare il FK Timeline già esistente con guard same-event;
-- aggiungere il riferimento opzionale agli appuntamenti se approvato;
-- navigazione bidirezionale e stati manuali;
-- nessuna notifica o scadenza automatica.
+#### Contratto autorevole adottato prima dell'implementazione
 
-Migration necessaria solo per `appointments.saved_supplier_id`.
+Timeline e appuntamenti restano risorse autonome event-scoped. Il collegamento
+al fornitore è facoltativo e usa lo stesso modello a due endpoint introdotto da
+M2–M3, senza modificare cataloghi globali o snapshot:
+
+| Stato del collegamento | Riferimento persistito | Regola |
+|---|---|---|
+| Nessun fornitore | entrambi gli endpoint `NULL` | comportamento storico pienamente valido |
+| Globale salvato | `saved_supplier_id` → `saved_suppliers(id,event_id)` | il fornitore globale deve essere già salvato nell'evento; nessun salvataggio implicito |
+| Private-only | `private_supplier_id` → `event_private_catalog_records(id,event_id,entity_type='supplier')` | il record privato deve appartenere allo stesso evento e avere tipo `supplier` |
+
+Gli endpoint sono esclusivi: al massimo uno tra `saved_supplier_id` e
+`private_supplier_id` può essere valorizzato. `event_id`, identità della
+risorsa, owner e creatore non sono mai accettati dal payload. Il CurrentEvent
+risolto server-side determina l'evento e ogni lettura/mutazione filtra sia
+l'identità della risorsa sia l'evento. `event_id` e `client_key` diventano
+immutabili anche sulla Data API mediante trigger, così una UPDATE diretta non
+può spostare la risorsa tra eventi né riciclare una chiave idempotente.
+
+Il FK Timeline esistente verso il solo `saved_supplier_id` viene conservato
+per compatibilità ma non è sufficiente: non rappresenta i fornitori
+private-only e, da solo, non prova l'appartenenza allo stesso evento. M4 usa
+quindi le chiavi candidate composite già introdotte da M3 e aggiunge:
+
+- `timeline_items.private_supplier_id` e il tipo costante generato
+  `private_supplier_entity_type='supplier'`;
+- FK composite same-event per entrambi gli endpoint Timeline;
+- `appointments.saved_supplier_id`, `appointments.private_supplier_id` e il
+  tipo costante generato;
+- FK composite same-event per entrambi gli endpoint appuntamento;
+- check XOR nullable e indici parziali di lettura per evento/fornitore;
+- `client_key uuid` nullable su entrambe le risorse, con unicità
+  `(event_id,client_key)`: le righe storiche restano `NULL`, mentre ogni nuova
+  creazione manuale invia una chiave stabile conservata dal client fino al
+  successo.
+
+La migration è strettamente additiva e schema-only: nessun backfill, cleanup,
+deduplica, associazione inferita o DML applicativo. Le righe esistenti restano
+senza fornitore e continuano a funzionare. Non vengono modificati UUID,
+snapshot M2, provenance, associazioni M3 o record globali.
+
+#### Ciclo di vita e cancellazioni
+
+- scollegamento manuale: imposta entrambi gli endpoint a `NULL` e non elimina
+  Timeline, appuntamento, fornitore o catalogo globale;
+- eliminazione di un `saved_supplier` o di un fornitore private-only: `ON
+  DELETE SET NULL` sul solo endpoint interessato; attività e appuntamenti
+  restano invariati;
+- eliminazione evento: i `CASCADE` event-scoped esistenti eliminano Timeline e
+  appuntamenti; gli endpoint fornitore decadono con le risorse dell'evento e i
+  cataloghi globali restano invariati;
+- revoca/uscita partner: nessuna modifica ai dati; accesso immediatamente
+  negato dal resolver e dalle policy esistenti;
+- cambio CurrentEvent: le API rileggono esclusivamente il nuovo evento; un ID
+  della risorsa o del fornitore appartenente a un altro evento produce 404
+  uniforme senza enumerazione.
+
+#### Contratto API, concorrenza e navigazione
+
+- payload discriminato `supplier: {scope:'saved'|'private',resource_id:UUID}`
+  oppure `supplier:null`; UUID, forma, allowlist, date, numeri e lunghezze sono
+  validati prima del database;
+- `POST`/`PUT` Timeline e `POST`/`PATCH` appuntamenti restituiscono la risorsa
+  proiettata esplicitamente con il fornitore risolto; `DELETE` elimina solo la
+  risorsa richiesta;
+- ripetere o eseguire in concorrenza lo stesso link/unlink è idempotente:
+  l'ultimo aggiornamento completo imposta una sola coppia di endpoint e i
+  vincoli impediscono stati misti o cross-event; per le creazioni manuali la
+  coppia `(event_id,client_key)` rende idempotenti anche retry e richieste
+  concorrenti, mentre i controlli UI impediscono il doppio invio locale;
+- l'elenco dei fornitori selezionabili contiene esclusivamente
+  `saved_suppliers` e fornitori private-only del CurrentEvent, con ricerca
+  client accessibile per elenchi ampi;
+- Timeline e appuntamenti espongono filtro manuale e link al dettaglio del
+  fornitore; i dettagli del fornitore globale salvato e private-only espongono
+  le attività e gli appuntamenti collegati con link inversi;
+- service role resta esclusivamente server-side dopo guard esplicita;
+  Data API continua a essere protetta da RLS e FK same-event;
+- errori pubblici stabili: 400 input, 401 autenticazione, 403 ruolo non
+  ammesso, 404 risorsa/endpoint non accessibile, 409 selezione evento o
+  conflitto coerente, 500 sanitizzato.
+
+Nessuna creazione automatica di attività, notifica, email, reminder, scadenza
+o sincronizzazione calendario è introdotta. Le colonne reminder appuntamento e
+il cron preesistente non vengono invocati o estesi da M4.
 
 ### M5 — UX, localizzazione e accessibilità
 
