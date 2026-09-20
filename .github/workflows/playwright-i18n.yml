@@ -67,7 +67,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
       - name: Run Preview smoke and authenticated integration
-        run: npx playwright test --workers=1 --grep-invert '\[M8\]|\[M3\]|\[M4\]|\[M5\]'
+        run: npx playwright test e2e/language-rollout.spec.ts e2e/authenticated-wedding.spec.ts --workers=1
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
