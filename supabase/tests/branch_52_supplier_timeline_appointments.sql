@@ -11,12 +11,12 @@ select has_column('public','timeline_items','private_supplier_id','Timeline has 
 select has_column('public','appointments','client_key','appointments have idempotency key');
 select has_column('public','appointments','saved_supplier_id','appointments have saved supplier endpoint');
 select has_column('public','appointments','private_supplier_id','appointments have private supplier endpoint');
-select has_check('public','timeline_items','timeline_items_supplier_xor_check','Timeline has nullable XOR constraint');
-select has_check('public','appointments','appointments_supplier_xor_check','appointments have nullable XOR constraint');
-select has_fk('public','timeline_items','timeline_items_saved_supplier_event_fkey','Timeline saved supplier proves same event');
-select has_fk('public','timeline_items','timeline_items_private_supplier_event_fkey','Timeline private supplier proves same event');
-select has_fk('public','appointments','appointments_saved_supplier_event_fkey','appointment saved supplier proves same event');
-select has_fk('public','appointments','appointments_private_supplier_event_fkey','appointment private supplier proves same event');
+select ok(exists(select 1 from pg_constraint where conrelid='public.timeline_items'::regclass and conname='timeline_items_supplier_xor_check' and contype='c'),'Timeline has nullable XOR constraint');
+select ok(exists(select 1 from pg_constraint where conrelid='public.appointments'::regclass and conname='appointments_supplier_xor_check' and contype='c'),'appointments have nullable XOR constraint');
+select ok(exists(select 1 from pg_constraint where conrelid='public.timeline_items'::regclass and conname='timeline_items_saved_supplier_event_fkey' and contype='f'),'Timeline saved supplier proves same event');
+select ok(exists(select 1 from pg_constraint where conrelid='public.timeline_items'::regclass and conname='timeline_items_private_supplier_event_fkey' and contype='f'),'Timeline private supplier proves same event');
+select ok(exists(select 1 from pg_constraint where conrelid='public.appointments'::regclass and conname='appointments_saved_supplier_event_fkey' and contype='f'),'appointment saved supplier proves same event');
+select ok(exists(select 1 from pg_constraint where conrelid='public.appointments'::regclass and conname='appointments_private_supplier_event_fkey' and contype='f'),'appointment private supplier proves same event');
 select ok((select relrowsecurity from pg_class where oid='public.timeline_items'::regclass),'Timeline RLS remains enabled');
 select ok((select relrowsecurity from pg_class where oid='public.appointments'::regclass),'appointment RLS remains enabled');
 select ok(not has_table_privilege('anon','public.timeline_items','select'),'anonymous cannot read Timeline');
@@ -25,8 +25,8 @@ select ok(has_table_privilege('authenticated','public.timeline_items','update'),
 select ok(has_table_privilege('authenticated','public.appointments','update'),'authenticated appointment writes remain RLS-governed');
 select ok((select indisunique from pg_index where indexrelid='public.timeline_items_event_client_key_uidx'::regclass),'Timeline client key is unique per event');
 select ok((select indisunique from pg_index where indexrelid='public.appointments_event_client_key_uidx'::regclass),'appointment client key is unique per event');
-select has_trigger('public','timeline_items','timeline_items_supplier_work_identity_immutable','Timeline identity has an immutable trigger');
-select has_trigger('public','appointments','appointments_supplier_work_identity_immutable','appointment identity has an immutable trigger');
+select ok(exists(select 1 from pg_trigger where tgrelid='public.timeline_items'::regclass and tgname='timeline_items_supplier_work_identity_immutable' and not tgisinternal),'Timeline identity has an immutable trigger');
+select ok(exists(select 1 from pg_trigger where tgrelid='public.appointments'::regclass and tgname='appointments_supplier_work_identity_immutable' and not tgisinternal),'appointment identity has an immutable trigger');
 
 insert into auth.users(id,instance_id,aud,role,email,encrypted_password,email_confirmed_at,created_at,updated_at) values
 ('52400000-0000-4000-8000-000000000001','00000000-0000-0000-0000-000000000000','authenticated','authenticated','owner52m4@example.invalid','',now(),now(),now()),
