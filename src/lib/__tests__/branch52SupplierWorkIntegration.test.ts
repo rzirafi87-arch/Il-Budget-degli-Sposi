@@ -19,7 +19,8 @@ describe("Branch 52 M4 integration boundaries", () => {
     expect(migration).toContain("timeline_items_supplier_xor_check");
     expect(migration).toContain("appointments_supplier_xor_check");
     expect(migration).toContain("foreign key (saved_supplier_id, event_id)");
-    expect(migration).toContain("foreign key (private_supplier_id, event_id, private_supplier_entity_type)");
+    expect(migration).toContain("foreign key (private_supplier_id, event_id)");
+    expect(migration).toContain("enforce_supplier_work_private_supplier_type");
     expect(migration).toContain("on delete set null (saved_supplier_id)");
     expect(migration).toContain("on delete set null (private_supplier_id)");
     expect(migration).not.toMatch(/\binsert\s+into\s+public\.(timeline_items|appointments|suppliers|saved_suppliers)/i);

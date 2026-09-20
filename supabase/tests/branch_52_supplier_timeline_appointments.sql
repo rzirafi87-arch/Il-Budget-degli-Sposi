@@ -14,9 +14,9 @@ select has_column('public','appointments','private_supplier_id','appointments ha
 select has_constraint('public','timeline_items','timeline_items_supplier_xor_check','Timeline has nullable XOR constraint');
 select has_constraint('public','appointments','appointments_supplier_xor_check','appointments have nullable XOR constraint');
 select has_constraint('public','timeline_items','timeline_items_saved_supplier_event_fkey','Timeline saved supplier proves same event');
-select has_constraint('public','timeline_items','timeline_items_private_supplier_event_type_fkey','Timeline private supplier proves same event and type');
+select has_constraint('public','timeline_items','timeline_items_private_supplier_event_fkey','Timeline private supplier proves same event');
 select has_constraint('public','appointments','appointments_saved_supplier_event_fkey','appointment saved supplier proves same event');
-select has_constraint('public','appointments','appointments_private_supplier_event_type_fkey','appointment private supplier proves same event and type');
+select has_constraint('public','appointments','appointments_private_supplier_event_fkey','appointment private supplier proves same event');
 select ok((select relrowsecurity from pg_class where oid='public.timeline_items'::regclass),'Timeline RLS remains enabled');
 select ok((select relrowsecurity from pg_class where oid='public.appointments'::regclass),'appointment RLS remains enabled');
 select ok(not has_table_privilege('anon','public.timeline_items','select'),'anonymous cannot read Timeline');

@@ -520,7 +520,7 @@ M2–M3, senza modificare cataloghi globali o snapshot:
 |---|---|---|
 | Nessun fornitore | entrambi gli endpoint `NULL` | comportamento storico pienamente valido |
 | Globale salvato | `saved_supplier_id` → `saved_suppliers(id,event_id)` | il fornitore globale deve essere già salvato nell'evento; nessun salvataggio implicito |
-| Private-only | `private_supplier_id` → `event_private_catalog_records(id,event_id,entity_type='supplier')` | il record privato deve appartenere allo stesso evento e avere tipo `supplier` |
+| Private-only | `private_supplier_id` → `event_private_catalog_records(id,event_id)` + trigger tipo | il record privato deve appartenere allo stesso evento e avere `entity_type='supplier'` |
 
 Gli endpoint sono esclusivi: al massimo uno tra `saved_supplier_id` e
 `private_supplier_id` può essere valorizzato. `event_id`, identità della
@@ -535,11 +535,11 @@ per compatibilità ma non è sufficiente: non rappresenta i fornitori
 private-only e, da solo, non prova l'appartenenza allo stesso evento. M4 usa
 quindi le chiavi candidate composite già introdotte da M3 e aggiunge:
 
-- `timeline_items.private_supplier_id` e il tipo costante generato
-  `private_supplier_entity_type='supplier'`;
+- `timeline_items.private_supplier_id`, FK composita same-event e trigger di
+  validazione del tipo `supplier`;
 - FK composite same-event per entrambi gli endpoint Timeline;
-- `appointments.saved_supplier_id`, `appointments.private_supplier_id` e il
-  tipo costante generato;
+- `appointments.saved_supplier_id`, `appointments.private_supplier_id`, FK
+  composite same-event e lo stesso trigger di tipo;
 - FK composite same-event per entrambi gli endpoint appuntamento;
 - check XOR nullable e indici parziali di lettura per evento/fornitore;
 - `client_key uuid` nullable su entrambe le risorse, con unicità

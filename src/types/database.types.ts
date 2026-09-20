@@ -141,7 +141,6 @@ export type Database = {
           inserted_at: string
           location: string | null
           notes: string | null
-          private_supplier_entity_type: string | null
           private_supplier_id: string | null
           reminder_48h_sent: boolean
           reminder_7d_sent: boolean
@@ -157,7 +156,6 @@ export type Database = {
           inserted_at?: string
           location?: string | null
           notes?: string | null
-          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           reminder_48h_sent?: boolean
           reminder_7d_sent?: boolean
@@ -173,7 +171,6 @@ export type Database = {
           inserted_at?: string
           location?: string | null
           notes?: string | null
-          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           reminder_48h_sent?: boolean
           reminder_7d_sent?: boolean
@@ -190,15 +187,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "appointments_private_supplier_event_type_fkey"
-            columns: [
-              "private_supplier_id",
-              "event_id",
-              "private_supplier_entity_type",
-            ]
+            foreignKeyName: "appointments_private_supplier_event_fkey"
+            columns: ["private_supplier_id", "event_id"]
             isOneToOne: false
             referencedRelation: "event_private_catalog_records"
-            referencedColumns: ["id", "event_id", "entity_type"]
+            referencedColumns: ["id", "event_id"]
           },
           {
             foreignKeyName: "appointments_saved_supplier_event_fkey"
@@ -895,7 +888,6 @@ export type Database = {
           private_location_entity_type: string | null
           private_location_id: string | null
           private_notes: string | null
-          private_supplier_entity_type: string | null
           private_supplier_id: string | null
           relationship_type: string
           saved_location_id: string | null
@@ -910,7 +902,6 @@ export type Database = {
           private_location_entity_type?: string | null
           private_location_id?: string | null
           private_notes?: string | null
-          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           relationship_type: string
           saved_location_id?: string | null
@@ -925,7 +916,6 @@ export type Database = {
           private_location_entity_type?: string | null
           private_location_id?: string | null
           private_notes?: string | null
-          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           relationship_type?: string
           saved_location_id?: string | null
@@ -3082,7 +3072,6 @@ export type Database = {
           id: string
           inserted_at: string | null
           phase: string | null
-          private_supplier_entity_type: string | null
           private_supplier_id: string | null
           saved_supplier_id: string | null
           title: string
@@ -3100,7 +3089,6 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
-          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           saved_supplier_id?: string | null
           title: string
@@ -3118,7 +3106,6 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
-          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           saved_supplier_id?: string | null
           title?: string
@@ -3133,15 +3120,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "timeline_items_private_supplier_event_type_fkey"
-            columns: [
-              "private_supplier_id",
-              "event_id",
-              "private_supplier_entity_type",
-            ]
+            foreignKeyName: "timeline_items_private_supplier_event_fkey"
+            columns: ["private_supplier_id", "event_id"]
             isOneToOne: false
             referencedRelation: "event_private_catalog_records"
-            referencedColumns: ["id", "event_id", "entity_type"]
+            referencedColumns: ["id", "event_id"]
           },
           {
             foreignKeyName: "timeline_items_saved_supplier_id_fkey"
