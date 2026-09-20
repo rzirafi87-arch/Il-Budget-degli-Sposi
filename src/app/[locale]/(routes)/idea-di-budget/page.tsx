@@ -1,7 +1,7 @@
 "use client";
 
 import { DEFAULT_EVENT_TYPE, getEventConfig, resolveEventType } from "@/constants/eventConfigs";
-import { WEDDING_BUDGET_TAXONOMY, findWeddingBudgetItem } from "@/constants/budgetCategories";
+import { WEDDING_BUDGET_TAXONOMY, resolveWeddingBudgetIdentity } from "@/constants/budgetCategories";
 import { getIntlLocale } from "@/i18n/localeFormat";
 import {
   getLocalizedWeddingBudgetItem,
@@ -149,8 +149,13 @@ export default function BudgetIdeaPage() {
         const saved = Array.isArray(json.data) ? json.data as Array<Record<string, unknown>> : [];
         const byKey = new Map(base.map((row) => [row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row]));
         saved.forEach((entry) => {
-        const isCustom = entry.custom === true;
-        const legacyCanonical = isCustom ? undefined : findWeddingBudgetItem(String(entry.category || ""), String(entry.canonicalKey || entry.subcategory || ""));
+        const legacyIdentity = resolveWeddingBudgetIdentity(
+          String(entry.category || ""),
+          String(entry.subcategory || ""),
+          String(entry.canonicalKey || "") || undefined,
+          entry.custom === true,
+        );
+        const legacyCanonical = legacyIdentity.item;
         const canonicalKey = legacyCanonical?.key || String(entry.canonicalKey || "") || undefined;
         const localized = canonicalKey && resolvedType === "wedding" ? getLocalizedWeddingBudgetItem(canonicalKey, localeForBudget) : undefined;
         const canonicalCategory = localized?.canonicalCategory || legacyCanonical?.category || String(entry.category || "");
@@ -159,7 +164,7 @@ export default function BudgetIdeaPage() {
           canonicalKey,
           category: canonicalCategory,
           categoryLabel: resolvedType === "wedding" ? (localized?.categoryLabel || getWeddingBudgetCategoryLabel(canonicalCategory, localeForBudget)) : canonicalCategory,
-          subcategory: isCustom ? String(entry.subcategory || "") : (localized?.label || legacyCanonical?.label || String(entry.subcategory || "")),
+          subcategory: legacyIdentity.custom ? String(entry.subcategory || "") : (localized?.label || legacyCanonical?.label || String(entry.subcategory || "")),
           aliases: localized?.searchAliases || legacyCanonical?.aliases,
           contexts: localized?.presentationContexts || legacyCanonical?.contexts,
           package: localized?.package || legacyCanonical?.package,
@@ -168,7 +173,7 @@ export default function BudgetIdeaPage() {
           enabled: entry.enabled !== false,
           supplier: String(entry.supplier || ""),
           notes: String(entry.notes || ""),
-          custom: isCustom,
+          custom: legacyIdentity.custom,
         };
           if (row.category && row.subcategory) byKey.set(row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row);
         });
@@ -231,28 +236,39 @@ export default function BudgetIdeaPage() {
   }
 
   async function save() {
+    if (saving) return;
     setSaving(true);
     setMessage("");
-    localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
-    const response = await request("/api/idea-di-budget", canonicalPayload(rows));
-    setMessage(response.ok ? t("messages.saved") : t("messages.saveError"));
-    setSaving(false);
+    try {
+      localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
+      const response = await request("/api/idea-di-budget", canonicalPayload(rows));
+      setMessage(response.ok ? t("messages.saved") : t("messages.saveError"));
+    } catch {
+      setMessage(t("messages.saveError"));
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function apply() {
+    if (saving) return;
     setSaving(true);
     setMessage("");
-    localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
-    const saveResponse = await request("/api/idea-di-budget", canonicalPayload(rows));
-    if (!saveResponse.ok) {
-      setMessage(t("messages.saveError"));
+    try {
+      localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
+      const saveResponse = await request("/api/idea-di-budget", canonicalPayload(rows));
+      if (!saveResponse.ok) {
+        setMessage(t("messages.saveError"));
+        return;
+      }
+      const response = await request("/api/idea-di-budget/apply", { country, rows: canonicalPayload(rows) });
+      const json = await response.json().catch(() => ({}));
+      setMessage(response.ok ? t("messages.applied", { count: Number(json.inserted || 0) }) : t("messages.applyError"));
+    } catch {
+      setMessage(t("messages.applyError"));
+    } finally {
       setSaving(false);
-      return;
     }
-    const response = await request("/api/idea-di-budget/apply", { country, rows: canonicalPayload(rows) });
-    const json = await response.json().catch(() => ({}));
-    setMessage(response.ok ? t("messages.applied", { count: Number(json.inserted || 0) }) : t("messages.applyError"));
-    setSaving(false);
   }
 
   if (loading) return <p role="status" aria-live="polite" className="p-6 text-gray-600 dark:text-gray-300">{t("loading")}</p>;

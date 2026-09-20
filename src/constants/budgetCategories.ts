@@ -226,6 +226,12 @@ const normalizeTaxonomyText = (value: string) => value
 
 const itemId = (category: string, label: string) => `${category}\u0000${label}`;
 const SPECIAL_ITEMS: Record<string, Partial<WeddingBudgetItem>> = {
+  [itemId("Cerimonia", "Chiesa / Comune")]: {
+    key: "wedding.cerimonia.chiesa.comune",
+    label: "Costi del luogo della cerimonia",
+    aliases: ["Chiesa / Comune", "Chiesa/Comune", "Chiesa", "Comune", "Luogo della cerimonia"],
+    contexts: ["Cerimonia"],
+  },
   [itemId("Wedding Bag", "Libretto della messa o del rito")]: {
     key: "wedding.ceremony.booklet",
     label: "Libretto della cerimonia",
@@ -243,6 +249,11 @@ const SPECIAL_ITEMS: Record<string, Partial<WeddingBudgetItem>> = {
     key: "wedding.stationery.place-card",
     aliases: ["Segnaposti", "Tableau / segnaposto"],
     contexts: ["Inviti & Stationery", "Fiori & Decor"],
+  },
+  [itemId("Sposa", "Make-up artist")]: {
+    key: "wedding.sposa.make.up.artist",
+    aliases: ["Truccatrice", "Sposa make-up", "Make-up sposa", "Trucco sposa", "Makeup sposa"],
+    contexts: ["Sposa", "Beauty & Benessere"],
   },
 };
 
@@ -285,6 +296,12 @@ export function findWeddingBudgetItem(category: string, label: string) {
     (item.category === category || item.contexts.includes(category))
     && [item.label, ...item.aliases].some((candidate) => normalizeTaxonomyText(candidate) === normalized)
   ));
+}
+
+/** Resolves known legacy/custom-looking labels without rewriting persisted rows. */
+export function resolveWeddingBudgetIdentity(category: string, label: string, canonicalKey?: string, custom = false) {
+  const item = findWeddingBudgetItem(category, canonicalKey || label);
+  return { item, custom: custom && !item };
 }
 
 export const BAPTISM_BUDGET_CATEGORIES = templateToMap(

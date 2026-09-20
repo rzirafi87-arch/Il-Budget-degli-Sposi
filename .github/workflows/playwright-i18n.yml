@@ -67,7 +67,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
       - name: Run Preview smoke and authenticated integration
-        run: npx playwright test --workers=1 --grep-invert '\[M8\]|\[M3\]|\[M4\]'
+        run: npx playwright test --workers=1 --grep-invert '\[M8\]|\[M3\]|\[M4\]|\[M5\]'
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
@@ -148,6 +148,14 @@ jobs:
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
           PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: milestone-5-mobile-screenshots-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
+          path: ${{ github.workspace }}/.playwright-results-m8/**/m5-guests-*.png
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
