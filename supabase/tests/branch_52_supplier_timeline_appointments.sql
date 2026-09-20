@@ -11,12 +11,12 @@ select has_column('public','timeline_items','private_supplier_id','Timeline has 
 select has_column('public','appointments','client_key','appointments have idempotency key');
 select has_column('public','appointments','saved_supplier_id','appointments have saved supplier endpoint');
 select has_column('public','appointments','private_supplier_id','appointments have private supplier endpoint');
-select has_constraint('public','timeline_items','timeline_items_supplier_xor_check','Timeline has nullable XOR constraint');
-select has_constraint('public','appointments','appointments_supplier_xor_check','appointments have nullable XOR constraint');
-select has_constraint('public','timeline_items','timeline_items_saved_supplier_event_fkey','Timeline saved supplier proves same event');
-select has_constraint('public','timeline_items','timeline_items_private_supplier_event_fkey','Timeline private supplier proves same event');
-select has_constraint('public','appointments','appointments_saved_supplier_event_fkey','appointment saved supplier proves same event');
-select has_constraint('public','appointments','appointments_private_supplier_event_fkey','appointment private supplier proves same event');
+select has_check('public','timeline_items','timeline_items_supplier_xor_check','Timeline has nullable XOR constraint');
+select has_check('public','appointments','appointments_supplier_xor_check','appointments have nullable XOR constraint');
+select has_fk('public','timeline_items','timeline_items_saved_supplier_event_fkey','Timeline saved supplier proves same event');
+select has_fk('public','timeline_items','timeline_items_private_supplier_event_fkey','Timeline private supplier proves same event');
+select has_fk('public','appointments','appointments_saved_supplier_event_fkey','appointment saved supplier proves same event');
+select has_fk('public','appointments','appointments_private_supplier_event_fkey','appointment private supplier proves same event');
 select ok((select relrowsecurity from pg_class where oid='public.timeline_items'::regclass),'Timeline RLS remains enabled');
 select ok((select relrowsecurity from pg_class where oid='public.appointments'::regclass),'appointment RLS remains enabled');
 select ok(not has_table_privilege('anon','public.timeline_items','select'),'anonymous cannot read Timeline');
