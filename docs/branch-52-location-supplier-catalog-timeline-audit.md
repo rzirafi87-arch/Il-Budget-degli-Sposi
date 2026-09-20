@@ -597,44 +597,73 @@ Nessuna creazione automatica di attività, notifica, email, reminder, scadenza
 o sincronizzazione calendario è introdotta. Le colonne reminder appuntamento e
 il cron preesistente non vengono invocati o estesi da M4.
 
-### M5 — UX, localizzazione e accessibilità
+## Implementazione Milestone 4
 
-- 320/390/430 px e desktop;
-- light/dark;
-- IT/EN/ES/FR/DE;
-- loading/empty/error/retry;
-- tastiera, focus, live regions e screen reader.
+Il contratto sopra è stato implementato esclusivamente nel perimetro M4. Non
+sono stati avviati Milestone 5, Milestone 6 o Branch 53: accessibilità,
+localizzazione, responsive e sicurezza citate qui sono soltanto i gate
+obbligatori richiesti per M4.
 
-Nessuna migration.
+### Superficie applicativa
 
-### M6 — Matrice sicurezza e Release Candidate
+- API tipizzate `supplier-options`, Timeline e appuntamenti con proiezioni
+  esplicite, validazione UUID/payload, autorizzazione server-side e risposte
+  400/401/403/404/409 sanitizzate;
+- creazione, modifica, filtro, scollegamento e navigazione diretta/inversa per
+  Timeline e appuntamenti;
+- selettore accessibile e ricercabile, stati loading/empty/error/retry,
+  conservazione dei dati inseriti dopo un errore, protezione dal doppio invio,
+  annunci live e tastiera;
+- dettagli inversi sia per fornitore globale salvato sia per private-only;
+- unico routing localizzato per gli appuntamenti, senza entrypoint statici
+  legacy concorrenti;
+- messaggi IT/EN/ES/FR/DE e resa light/dark a 320 e 430 px.
 
-- unit test contratti e IDOR;
-- SQL/RLS/Data API per owner, partner attivo/revocato, estraneo e anonimo;
-- CurrentEvent/event/resource tamper, delete event e revoke partner;
-- Playwright completo su Preview;
-- confronto nuovo snapshot Production read-only;
-- stop prima di migration/deploy Production, Ready o merge.
+### Matrice autorizzativa verificata
 
-## Rischi
+| Attore/caso | Esito |
+| --- | --- |
+| Owner del CurrentEvent | CRUD consentito |
+| Partner attivo | CRUD consentito secondo il contratto planning condiviso |
+| Partner revoked/left | negato immediatamente, dati invariati |
+| Estraneo o anonimo | negato senza enumerazione |
+| Autenticato senza evento / senza CurrentEvent valido | negato; selezione evento richiesta |
+| CurrentEvent manipolato / `event_id` alterato | nessun privilegio; evento ricavato server-side |
+| Supplier, Timeline o appuntamento cross-event | respinto; 404 uniforme alle API e vincoli/RLS nella Data API |
+| Fornitore eliminato o non accessibile | nuovo collegamento respinto; link esistente azzerato da FK solo se eliminato |
+| Service role | esclusivamente server-side |
 
-### Bloccanti prima dell'implementazione funzionale
+### Gate dell'implementazione `8bc994cef3c0fa2a80f8d1075fe45047de112e82`
 
-1. Il gate Database Rebuild non trasforma automaticamente un fallimento pgTAP
-   in job failure.
-2. Il dettaglio fornitore è disallineato dallo schema Production.
-3. Il modello snapshot/private-only/override deve essere approvato prima di
-   creare una migration; non è sicuro inferirlo dai campi correnti.
+- CI #628 PASS: UTF-8/config/secrets, ESLint (0 errori, 16 warning
+  preesistenti), TypeScript, Build e Jest completo 104 suite / 655 test;
+- i18n PASS: 3.082 messaggi per ciascuna lingua, 0 missing, extra, empty,
+  placeholder mismatch o residui italiani;
+- Database Rebuild #286 PASS su database effimero: M2, M3 e M4 applicate e
+  riapplicate in ordine; snapshot M2 invariato; schema lint senza errori; tipi
+  Supabase correnti; test di concorrenza PASS;
+- pgTAP runner PASS (11 test e 6/6 casi controllati); tutte le suite pgTAP
+  PASS, 8 suite / 200 asserzioni, incluse le 64/64 M4;
+- Playwright isolato autenticato PASS senza skip: diagnostica 1/1 e lifecycle
+  9/9; i journey M4 320/430 completano CRUD, viste inverse, matrice di
+  visualizzazione, light/dark e cleanup fixture/identità;
+- Preview Vercel esatta READY: `dpl_CPAjZLjbSWqRsyDEfPHiUAQqixNm` sullo SHA
+  sopra; Playwright Preview PASS con 33 test eseguiti e 87 skip condizionali
+  della matrice generale. La suite Preview usa lo schema remoto volutamente non
+  migrato e lascia i journey M2–M4 al database effimero ricostruito, senza
+  sostituirli con mock;
+- Production smoke #50 PASS come validazione infrastructure-only; i job browser
+  e HTTP Production sono volutamente skipped e non costituiscono un gate M4.
 
-### Non bloccanti per l'audit
+### Rischi residui non bloccanti
 
 - 16 warning ESLint preesistenti;
 - falso positivo `POST` nello scanner runtime italiano opzionale;
-- route/appuntamenti legacy duplicate;
-- assenza di dark-mode dedicato e copertura Playwright incompleta sulle pagine
-  B52;
-- cataloghi legacy privi di `catalog_provenance` strutturata: devono essere
-  preservati, non corretti nel Branch 52.
+- cataloghi legacy privi di `catalog_provenance` strutturata: restano
+  preservati e non sono stati corretti nel Branch 52;
+- M2, M3 e M4 restano intenzionalmente non applicate in Production, quindi la
+  Preview remota collegata a quello schema non può eseguire i journey M4: la
+  copertura end-to-end M4 autorevole è l'ambiente effimero ricostruito.
 
 ## Dati da preservare
 
@@ -648,8 +677,10 @@ Nessuna migration.
   cancellazione;
 - Matrimonio unico READY e monetizzazione fail-closed.
 
-## Stop
+## Stop Milestone 4
 
-Nessuna implementazione è iniziata. Nessuna migration è stata creata o
-applicata. Production, main, cataloghi e provider esterni restano invariati.
-La PR deve restare Draft.
+M4 è conclusa. La migration M4 è stata applicata soltanto su database
+effimeri; M2, M3 e M4 non sono state applicate in Production. Nessun DML,
+cleanup o backfill è stato eseguito in Production. Main, cataloghi globali,
+snapshot/provenance e provider esterni restano invariati. La PR #67 resta
+OPEN/DRAFT; nessun merge. Milestone 5–6 e Branch 53 non sono iniziati.
