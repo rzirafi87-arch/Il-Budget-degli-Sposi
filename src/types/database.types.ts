@@ -888,6 +888,7 @@ export type Database = {
           private_location_entity_type: string | null
           private_location_id: string | null
           private_notes: string | null
+          private_supplier_entity_type: string | null
           private_supplier_id: string | null
           relationship_type: string
           saved_location_id: string | null
@@ -902,6 +903,7 @@ export type Database = {
           private_location_entity_type?: string | null
           private_location_id?: string | null
           private_notes?: string | null
+          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           relationship_type: string
           saved_location_id?: string | null
@@ -916,6 +918,7 @@ export type Database = {
           private_location_entity_type?: string | null
           private_location_id?: string | null
           private_notes?: string | null
+          private_supplier_entity_type?: string | null
           private_supplier_id?: string | null
           relationship_type?: string
           saved_location_id?: string | null
@@ -3127,18 +3130,18 @@ export type Database = {
             referencedColumns: ["id", "event_id"]
           },
           {
-            foreignKeyName: "timeline_items_saved_supplier_id_fkey"
-            columns: ["saved_supplier_id"]
-            isOneToOne: false
-            referencedRelation: "saved_suppliers"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "timeline_items_saved_supplier_event_fkey"
             columns: ["saved_supplier_id", "event_id"]
             isOneToOne: false
             referencedRelation: "saved_suppliers"
             referencedColumns: ["id", "event_id"]
+          },
+          {
+            foreignKeyName: "timeline_items_saved_supplier_id_fkey"
+            columns: ["saved_supplier_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
+            referencedColumns: ["id"]
           },
         ]
       }
