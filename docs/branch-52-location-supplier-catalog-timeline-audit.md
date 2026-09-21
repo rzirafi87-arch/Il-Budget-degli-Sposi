@@ -684,3 +684,94 @@ effimeri; M2, M3 e M4 non sono state applicate in Production. Nessun DML,
 cleanup o backfill è stato eseguito in Production. Main, cataloghi globali,
 snapshot/provenance e provider esterni restano invariati. La PR #67 resta
 OPEN/DRAFT; nessun merge. Milestone 5–6 e Branch 53 non sono iniziati.
+
+## Hotfix conclusiva del Production smoke Branch 52
+
+Il precedente stop M4 è superato dal merge della PR #67. Il riferimento
+immutabile di partenza di questa hotfix è `main`
+`eb34063b4b5fb9e687e1b3b2a2589c219fc7ea47`, tree
+`b5ecca049b34722002308d0442a729134a6731d9`, già servito READY dal deployment
+Production `dpl_379nMxch6V6taBSD35ea8L8gtVny`. Il Production smoke #56 ha
+superato il preflight HTTP ma si è fermato con 33 PASS, 120 FAIL e 87 skip;
+il gruppo M8 non è stato eseguito. Migration M2 38/38, M3 48/48 e M4 64/64,
+rollback sicurezza 150/150, FK 91/91 e assenza fixture applicative erano già
+PASS.
+
+### Causa e correzione limitata
+
+La causa dei 120 FAIL era esclusivamente la raccolta degli spec isolati M4,
+M5 e M6 attraverso i 30 progetti standard: per esempio `de-430` eseguiva test
+che dichiarano obbligatoriamente `m8-430`. La configurazione standard ora
+ignora esattamente i cinque file isolati Branch 52; la configurazione
+Production dedicata raccoglie tutti e soli i 12 journey obbligatori, una volta
+ciascuno, sui progetti `m8-320`, `m8-390` e `m8-430`.
+
+Il gate automatizzato esegue `playwright test --list --reporter=json` prima
+del browser e fallisce se cambia una delle seguenti invarianti:
+
+- matrice standard: 120 casi raccolti, quattro journey su 30 progetti
+  IT/EN/ES/FR/DE;
+- Branch 52: 12 journey raccolti una volta, 0 attraverso progetti standard;
+- nessun journey obbligatorio mancante e nessuna duplicazione;
+- service-role rimossa esplicitamente dall'ambiente del processo Chromium e
+  disponibile soltanto al test runner Node per fixture marcate e cleanup.
+
+Le identità temporanee ora portano insieme `qa_scope`, `qa_run_id` e
+`qa_marker`; email, eventi e risorse derivate incorporano il run marker. Il
+Production smoke acquisisce una baseline completa di `rate_limit_buckets` ed
+`event_members`, riconcilia prima di cancellare e usa soltanto chiavi esatte.
+Qualunque riga non-QA cambiata, firma bucket inattesa, timestamp fuori
+finestra o classificazione membership C/D causa STOP prima del cleanup.
+
+### Riconciliazione del run #56
+
+I quattro bucket aggiunti dal run `35606256571` sono le sole righe nella
+finestra 13:32:22–13:37:02 UTC e coincidono con le chiamate osservate nei log:
+
+| Identità tecnica | Chiave SHA-256 | Conteggio | `window_started_at` UTC |
+| --- | --- | ---: | --- |
+| register | `5f3d3d992c096f03fc05b6f153402515af1267bdea9add311f1987b87f8274e3` | 1 | 2026-09-21 13:33:38.802426 |
+| partner-invite | `7ebd1be2739ab82c29011d7143155a2c57821b02b60ed99e94876d521ffb699f` | 2 | 2026-09-21 13:33:50.282042 |
+| invitation-inspect | `6f19afdd62a19c495d8fc8d6cac670cb7dd2244f8e721f264b6fd7b650f88a43` | 4 | 2026-09-21 13:34:28.262066 |
+| resend-confirmation | `bb5a15e65b97b6345ab4bf12b2afaac6b267784f15b405836cb8218905188622` | 1 | 2026-09-21 13:34:38.873093 |
+
+Il preflight ha verificato 326 righe totali, quattro match esatti, 322 righe
+non target, 0 FK referenti, 0 trigger utente e fingerprint non target
+`43a62c8601389cb95b4fb6e7dd1a62fb`. La cancellazione è autorizzata solo dopo
+la scadenza delle finestre endpoint e deve lasciare le 322 righe non-QA
+byte-identiche.
+
+Alle 14:34:57 UTC tutte le finestre erano scadute. La transazione fail-closed
+ha cancellato le sole quattro tuple complete sopra elencate: conteggio finale
+322, bucket #56 residui 0 e fingerprint delle righe non-QA ancora
+`43a62c8601389cb95b4fb6e7dd1a62fb`. Nessun'altra tabella è stata oggetto di
+DML.
+
+La membership persistente QA è classificata **B**. Prima e dopo il lifecycle
+restano invariati `id=5de753c6-c6c8-46c4-906b-4d74e3f90499`,
+`event_id=c3dd9a31-5e21-421f-997c-667765a79e07`,
+`user_id=09170166-8a3b-4e1e-8c1c-7702fe715b72`, `role=partner`, `status=left`
+e `created_at=2026-09-15 04:42:25.541957 UTC`. Il fingerprint JSON dei campi
+funzionali è `dc828808573b207ac5ba691a02ad83e8`. Soltanto l'audit tecnico del
+lifecycle è avanzato: `accepted_at` da 2026-09-20 09:54:31.759091 a
+2026-09-21 13:35:48.373585 UTC e `updated_at` da
+2026-09-20 09:54:38.840000 a 2026-09-21 13:35:55.268000 UTC. La riga non
+viene riscritta.
+
+### Gate hotfix prima della pubblicazione
+
+- isolamento/guardie: 8/8 test Node PASS e raccolta 120 standard + 12 isolati
+  PASS;
+- Jest completo: 106 suite, 667 test, 0 fail, 0 skip;
+- i18n: 3.095 messaggi per ciascuna delle cinque lingue, zero differenze;
+- TypeScript PASS; ESLint PASS con 0 errori e 16 warning baseline; Build PASS;
+- UTF-8, mojibake, config e secret scan PASS;
+- nessuna modifica UI/API/schema/migration;
+- la configurazione Preview raccoglie esattamente 30 controlli pubblici
+  GET-only (cinque lingue per sei viewport) e rifiuta qualsiasi spec
+  autenticato o mutante; i lifecycle autenticati restano confinati al
+  Supabase effimero locale, quindi la Preview non esegue DML remoto.
+
+La chiusura resta bloccata fino a CI, Database Rebuild/pgTAP, Playwright
+isolato, Preview read-only, merge, Production READY sul nuovo SHA e nuovo
+Production smoke interamente PASS. Branch 53 resta non iniziato.

@@ -1,12 +1,21 @@
 import { defineConfig, devices } from "@playwright/test";
+import { browserProcessEnv } from "./playwright.browser-env";
 
 const locales = ["it", "en", "es", "fr", "de"] as const;
 const mobileWidths = [320, 360, 375, 390, 412, 430] as const;
 const externalBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
 const vercelAutomationBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+const branch52IsolatedSpecs = [
+  "milestone8-lifecycle.spec.ts",
+  "branch52-location-supplier.spec.ts",
+  "branch52-supplier-work.spec.ts",
+  "branch52-milestone5-ux.spec.ts",
+  "branch52-security-matrix.spec.ts",
+];
 
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: branch52IsolatedSpecs,
   outputDir: ".playwright-results",
   timeout: 30 * 1000,
   expect: {
@@ -22,6 +31,7 @@ export default defineConfig({
   use: {
     actionTimeout: 0,
     trace: "on-first-retry",
+    launchOptions: { env: browserProcessEnv() },
     baseURL: externalBaseUrl || "http://127.0.0.1:3000",
     extraHTTPHeaders: vercelAutomationBypassSecret
       ? { "x-vercel-protection-bypass": vercelAutomationBypassSecret }

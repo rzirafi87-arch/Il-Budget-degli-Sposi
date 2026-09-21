@@ -75,6 +75,7 @@
     "test": "jest",
     "test:pgtap-runner": "node --test scripts/lib/pgtap-runner.test.mjs",
     "test:e2e": "playwright test",
+    "test:production-smoke-isolation": "node --test scripts/lib/playwright-project-isolation.test.mjs scripts/lib/production-smoke-integrity.test.mjs && node scripts/verify-playwright-project-isolation.mjs",
     "check:mojibake": "node scripts/check-mojibake.mjs",
     "audit:italian-runtime": "node scripts/check-italian-runtime.mjs",
     "test:italian-runtime": "node --test scripts/lib/italian-runtime-scanner.test.mjs",

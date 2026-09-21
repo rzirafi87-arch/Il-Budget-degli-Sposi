@@ -3,7 +3,19 @@ name: Production smoke
 on:
   pull_request:
     branches: [main]
-    paths: [".github/workflows/production-smoke.yml"]
+    paths:
+      - ".github/workflows/production-smoke.yml"
+      - "playwright.config.ts"
+      - "playwright.m8.config.ts"
+      - "playwright.production-m8.config.ts"
+      - "playwright.browser-env.ts"
+      - "e2e/**"
+      - "scripts/verify-playwright-project-isolation.mjs"
+      - "scripts/production-smoke-integrity.mjs"
+      - "scripts/lib/playwright-project-isolation*"
+      - "scripts/lib/production-smoke-integrity*"
+      - "package.json"
+      - "package-lock.json"
   workflow_dispatch:
     inputs:
       base_url:
@@ -29,8 +41,14 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Confirm infrastructure-only validation
-        run: echo "Production smoke workflow parsed successfully."
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: Verify exact Playwright project collection and cleanup guards
+        run: npm run test:production-smoke-isolation
 
   preflight:
     name: Production HTTP preflight
@@ -97,9 +115,12 @@ jobs:
       PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
       PLAYWRIGHT_EMAIL_PROVIDER: brevo
       PLAYWRIGHT_BREVO_API_KEY: ${{ secrets.PLAYWRIGHT_BREVO_API_KEY }}
-      PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
       PLAYWRIGHT_SIGNUP_EMAIL_BASE: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
       PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.production.invalid
+      PLAYWRIGHT_QA_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      PLAYWRIGHT_PERSISTENT_MEMBERSHIP_ID: 5de753c6-c6c8-46c4-906b-4d74e3f90499
+      PLAYWRIGHT_PERSISTENT_EVENT_ID: c3dd9a31-5e21-421f-997c-667765a79e07
+      PLAYWRIGHT_PERSISTENT_PARTNER_USER_ID: 09170166-8a3b-4e1e-8c1c-7702fe715b72
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -107,17 +128,43 @@ jobs:
           node-version: "20"
           cache: npm
       - name: Require configured QA identities
+        env:
+          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           set -euo pipefail
           for name in PLAYWRIGHT_BASE_URL NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD PLAYWRIGHT_PARTNER_EMAIL PLAYWRIGHT_PARTNER_PASSWORD PLAYWRIGHT_BREVO_API_KEY PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY PLAYWRIGHT_QA_EMAIL_DOMAIN; do
             test -n "${!name}"
           done
       - run: npm ci
+      - name: Verify expected collection before browser execution
+        run: npm run test:production-smoke-isolation
+      - name: Snapshot Production integrity
+        id: integrity-baseline
+        env:
+          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/production-smoke-integrity.mjs snapshot
       - run: npx playwright install --with-deps chromium
       - name: Run public, authenticated and partner journeys
-        run: npx playwright test --grep-invert '\[M8\]|\[M3\]'
+        env:
+          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+        run: npx playwright test --config=playwright.config.ts
       - name: Run Production-safe Milestone 8 journeys
-        run: npx playwright test --config=playwright.production-m8.config.ts --project=m8-320 --project=m8-430
+        env:
+          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+        run: npx playwright test --config=playwright.production-m8.config.ts --project=m8-320 --project=m8-390 --project=m8-430
+      - name: Reconcile exact QA buckets and persistent membership
+        if: always() && steps.integrity-baseline.outcome == 'success'
+        env:
+          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/production-smoke-integrity.mjs reconcile
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-smoke-integrity-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 30
+          path: ${{ github.workspace }}/.production-smoke-integrity-summary.json
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
