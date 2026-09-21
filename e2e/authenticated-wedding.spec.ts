@@ -87,4 +87,10 @@ test("authenticated wedding journey, event context and logout", async ({ page },
   await auth.getByLabel("Password", { exact: true }).fill(password!);
   await auth.getByRole("button", { name: /accedi/i }).click();
   await page.waitForURL(/\/it\/(dashboard|select-event)/);
+
+  // Revoke the relogin session as well, so the remote read-only journey leaves
+  // no persistent QA session or refresh token behind.
+  await page.goto("/it/profilo");
+  await page.getByRole("button", { name: /esci/i }).click();
+  await page.waitForURL(/\/it$/);
 });
