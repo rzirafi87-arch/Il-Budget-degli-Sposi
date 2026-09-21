@@ -29,3 +29,9 @@ test("ignores implementation strings and test-only files", () => {
   assert.deepEqual(scanSource(`function View(){return <><span>{t("nonInvited.confetti")}</span><a href={\`/\${locale}/invitati\`}>x</a><Export filename="invitati" /></>}`), []);
   assert.deepEqual(scanSource(`function View(){return <Carousel images={getPageImages("invitati", country)} />}`), []);
 });
+
+test("distinguishes an HTTP POST method from user-facing text", () => {
+  const implementation = `function View(){return <button onClick={() => fetch("/api/invitati", {method:"POST"})}>x</button>}`;
+  assert.deepEqual(scanSource(implementation), []);
+  assert.deepEqual(scanSource(`function View(){return <span>POST</span>}`).map(item => item.text), ["POST"]);
+});

@@ -8,7 +8,7 @@ if (process.env.CI && (!email || !password)) {
 }
 
 test("authenticated wedding journey, event context and logout", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "it-390", "One authenticated browser is sufficient; the full width matrix runs in language-rollout.spec.ts.");
+  test.skip(!["it-390", "it-390-authenticated-readonly"].includes(testInfo.project.name), "One authenticated browser is sufficient; the full width matrix runs in language-rollout.spec.ts.");
   test.skip(!email || !password, "Set PLAYWRIGHT_TEST_EMAIL and PLAYWRIGHT_TEST_PASSWORD for local authenticated QA.");
 
   if (process.env.PLAYWRIGHT_BASE_URL?.includes("_vercel_share=")) {

@@ -35,13 +35,9 @@ jobs:
           PLAYWRIGHT_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
           PLAYWRIGHT_TEST_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
           PLAYWRIGHT_TEST_PASSWORD: ${{ secrets.PLAYWRIGHT_TEST_PASSWORD }}
-          PLAYWRIGHT_PARTNER_EMAIL: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
-          PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
-          PLAYWRIGHT_BREVO_API_KEY: ${{ secrets.PLAYWRIGHT_BREVO_API_KEY }}
-          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
-          for name in PLAYWRIGHT_SUPABASE_URL PLAYWRIGHT_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD PLAYWRIGHT_PARTNER_EMAIL PLAYWRIGHT_PARTNER_PASSWORD PLAYWRIGHT_BREVO_API_KEY PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY VERCEL_AUTOMATION_BYPASS_SECRET; do test -n "${!name}"; done
+          for name in PLAYWRIGHT_SUPABASE_URL PLAYWRIGHT_SUPABASE_ANON_KEY PLAYWRIGHT_TEST_EMAIL PLAYWRIGHT_TEST_PASSWORD VERCEL_AUTOMATION_BYPASS_SECRET; do test -n "${!name}"; done
       - name: Resolve exact Vercel Preview for this commit
         env:
           GH_TOKEN: ${{ github.token }}
@@ -67,18 +63,12 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
       - name: Run Preview smoke and authenticated integration
-        run: npx playwright test e2e/language-rollout.spec.ts e2e/authenticated-wedding.spec.ts --workers=1
+        run: npx playwright test --config=playwright.preview-readonly.config.ts --workers=1
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PLAYWRIGHT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}
           PLAYWRIGHT_TEST_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_EMAIL }}
           PLAYWRIGHT_TEST_PASSWORD: ${{ secrets.PLAYWRIGHT_TEST_PASSWORD }}
-          PLAYWRIGHT_PARTNER_EMAIL: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
-          PLAYWRIGHT_PARTNER_PASSWORD: ${{ secrets.PLAYWRIGHT_PARTNER_PASSWORD }}
-          PLAYWRIGHT_EMAIL_PROVIDER: brevo
-          PLAYWRIGHT_BREVO_API_KEY: ${{ secrets.PLAYWRIGHT_BREVO_API_KEY }}
-          PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
-          PLAYWRIGHT_SIGNUP_EMAIL_BASE: ${{ secrets.PLAYWRIGHT_PARTNER_EMAIL }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -142,7 +132,7 @@ jobs:
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
           PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
       - name: Run real isolated browser journeys without skips
-        run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-430
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-390 --project=m8-430
         env:
           NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
           SITE_URL: http://127.0.0.1:3000
