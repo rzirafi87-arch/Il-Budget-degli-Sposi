@@ -64,6 +64,7 @@ function verifyProductionRecoveryAndCleanupContracts() {
   const lifecycle = readFileSync(path.join(root, "e2e/milestone8-lifecycle.spec.ts"), "utf8");
   const integrity = readFileSync(path.join(root, "scripts/production-smoke-integrity.mjs"), "utf8");
   for (const required of [
+    'process.env.PLAYWRIGHT_LOCAL_SUPABASE === "1" ? "http://127.0.0.1:3000" : undefined',
     'await page.goto(callback, { waitUntil: "commit" })',
     'url.origin === redirect.origin',
     'const isLocalRecovery = Boolean(inbucketUrl)',

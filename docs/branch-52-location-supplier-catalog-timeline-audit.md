@@ -837,3 +837,19 @@ non iniziato.
 - La verifica successiva ha trovato il teardown completato senza DML manuale: identità/profilo del run 0, bucket del run 0, Auth/profili 15 e `rate_limit_buckets` 322. Il fingerprint delle 322 righe non-QA è tornato byte-identico a `511eb84dc9754bf2443c59efb532a427b8e0d7d5535b40799cec8d52825997bc`.
 - Correzione limitata al test harness: callback attesa fino al primo commit, verifica dell'origine e della sessione, navigazione esplicita alla route reset sulla stessa origine; cleanup ownership aggiornato a `inserted_at` con contratto automatico.
 - Branch 53 resta non iniziato. Branch 52 non è dichiarato chiuso fino a nuovo smoke completamente PASS e integrità finale.
+
+## Playwright isolato #173 checkpoint
+
+Il primo gate Playwright isolato della PR follow-up ha fallito soltanto il
+journey reset-password prima di aprire la callback: il workflow locale espone
+`PLAYWRIGHT_LOCAL_SUPABASE=1` e serve l'applicazione su
+`http://127.0.0.1:3000`, ma non definisce `PLAYWRIGHT_BASE_URL`. Il test
+richiedeva erroneamente quest'ultima variabile anche nel percorso Supabase
+effimero locale.
+
+Il test harness ora usa l'origine locale deterministica esclusivamente quando
+`PLAYWRIGHT_LOCAL_SUPABASE` vale esattamente `1`; in Production continua a
+richiedere `PLAYWRIGHT_BASE_URL` esplicito. Il contratto di isolamento verifica
+automaticamente questo fallback. Nessuna configurazione applicativa, UI, API,
+schema o migration è modificata. La PR resta Draft fino alla ripetizione di
+tutti i gate sul nuovo commit.

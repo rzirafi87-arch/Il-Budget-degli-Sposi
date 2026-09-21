@@ -18,7 +18,8 @@ import {
   waitForTransactionalEmail,
 } from "./helpers/transactional-email-audit";
 
-const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
+const baseUrl = process.env.PLAYWRIGHT_BASE_URL
+  || (process.env.PLAYWRIGHT_LOCAL_SUPABASE === "1" ? "http://127.0.0.1:3000" : undefined);
 const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
 const supabaseUrl = process.env.PLAYWRIGHT_SUPABASE_URL;
 const canonicalVercelOrigin = "https://il-budget-degli-sposi-rzirafi87-archs-projects.vercel.app";
