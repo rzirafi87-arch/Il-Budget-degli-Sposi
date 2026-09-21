@@ -15,6 +15,8 @@
 /.playwright-results/
 /playwright-report/
 /test-results/.last-run.json
+/.production-smoke-integrity-baseline.json
+/.production-smoke-integrity-summary.json
 
 # next.js
 /.next/

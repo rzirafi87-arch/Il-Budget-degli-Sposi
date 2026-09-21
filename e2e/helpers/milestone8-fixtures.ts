@@ -5,6 +5,11 @@ import { randomUUID } from "node:crypto";
 const url = process.env.PLAYWRIGHT_SUPABASE_URL;
 const serviceRole = process.env.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY;
 const emailDomain = process.env.PLAYWRIGHT_QA_EMAIL_DOMAIN;
+const qaRunId = (process.env.PLAYWRIGHT_QA_RUN_ID || "local")
+  .toLowerCase()
+  .replace(/[^a-z0-9-]+/g, "-")
+  .replace(/^-+|-+$/g, "");
+const qaScope = "branch-52-production-smoke";
 
 export const milestone8FixtureReady = Boolean(url && serviceRole && emailDomain);
 
@@ -39,14 +44,14 @@ function admin(): SupabaseClient {
 export async function createQaIdentity(label: string): Promise<QaIdentity> {
   if (!emailDomain) throw new Error("PLAYWRIGHT_QA_EMAIL_DOMAIN is required.");
   const nonce = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-  const marker = `qa-m8-${label}-${nonce}`;
+  const marker = `qa-b52-${qaRunId}-${label}-${nonce}`;
   const email = `${marker}@${emailDomain}`;
   const password = `M8-${nonce}-Initial!9`;
   const { data, error } = await admin().auth.admin.createUser({
     email,
     password,
     email_confirm: true,
-    user_metadata: { qa_marker: marker, qa_scope: "branch-48-milestone-8" },
+    user_metadata: { qa_marker: marker, qa_run_id: qaRunId, qa_scope: qaScope },
   });
   if (error || !data.user) throw new Error(`QA identity creation failed: ${error?.name || "UNKNOWN"}`);
   return { id: data.user.id, email, password, marker };
@@ -55,7 +60,10 @@ export async function createQaIdentity(label: string): Promise<QaIdentity> {
 export async function deleteQaIdentity(identity: QaIdentity) {
   const client = admin();
   const { data, error } = await client.auth.admin.getUserById(identity.id);
-  if (error || data.user?.user_metadata?.qa_marker !== identity.marker) {
+  if (error
+    || data.user?.user_metadata?.qa_marker !== identity.marker
+    || data.user?.user_metadata?.qa_run_id !== qaRunId
+    || data.user?.user_metadata?.qa_scope !== qaScope) {
     throw new Error("Refusing QA cleanup because the identity marker does not match.");
   }
   const { data: owned, error: ownedError } = await client.from("events").select("id,name,owner_id").eq("owner_id", identity.id);

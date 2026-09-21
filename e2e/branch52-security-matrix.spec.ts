@@ -111,7 +111,7 @@ test("[M6][security-matrix] real authorization, IDOR, snapshot, favorites, retry
     expect(ownerContext.body.currentEvent.eventId).toBe(eventId);
     expect(ownerContext.body.currentEvent.accessRole).toBe("owner");
 
-    await page.context().addCookies([{ name: "app-current-event", value: otherEventId, url: "http://127.0.0.1:3000", httpOnly: true, sameSite: "Lax" }]);
+    await page.context().addCookies([{ name: "app-current-event", value: otherEventId, url: new URL(page.url()).origin, httpOnly: true, sameSite: "Lax" }]);
     const tamperedContext = await currentEvent(page);
     expect(tamperedContext.body.currentEvent.eventId).toBe(eventId);
     expect(tamperedContext.body.staleSelection).toBe(true);

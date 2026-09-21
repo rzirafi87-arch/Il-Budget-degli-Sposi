@@ -16,13 +16,17 @@ const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const mailboxBase = process.env.PLAYWRIGHT_SIGNUP_EMAIL_BASE
   || process.env.PLAYWRIGHT_PARTNER_EMAIL
   || process.env.PLAYWRIGHT_TEST_EMAIL;
+const qaRunId = (process.env.PLAYWRIGHT_QA_RUN_ID || "local")
+  .toLowerCase()
+  .replace(/[^a-z0-9-]+/g, "-")
+  .replace(/^-+|-+$/g, "");
 
 function uniqueMailbox(base: string) {
   const at = base.lastIndexOf("@");
   if (at <= 0) throw new Error("QA signup mailbox is invalid.");
   const local = base.slice(0, at).split("+")[0];
   const domain = base.slice(at + 1);
-  return `${local}+b51-${Date.now()}-${randomBytes(4).toString("hex")}@${domain}`;
+  return `${local}+b52-${qaRunId}-${Date.now()}-${randomBytes(4).toString("hex")}@${domain}`;
 }
 
 async function deliveredConfirmation(startedAt: number, recipient: string, expectedType: "signup" | "email" = "signup") {

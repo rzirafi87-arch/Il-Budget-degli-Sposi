@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { browserProcessEnv } from "./playwright.browser-env";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -17,6 +18,7 @@ export default defineConfig({
     screenshot: "off",
     video: "off",
     baseURL: "http://127.0.0.1:3000",
+    launchOptions: { env: browserProcessEnv() },
     ...devices["Desktop Chrome"],
   },
   projects: [

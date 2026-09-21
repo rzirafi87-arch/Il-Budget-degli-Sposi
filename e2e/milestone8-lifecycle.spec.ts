@@ -137,7 +137,7 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
 
 test.describe("[M8] isolated authenticated lifecycle", () => {
   test("[M8][diagnostic] minimal real onboarding reaches the first dashboard", async ({ page }, testInfo) => {
-    expect(testInfo.project.name).toBe("m8-diagnostic");
+    expect(["m8-diagnostic", "m8-320"]).toContain(testInfo.project.name);
     expect(milestone8FixtureReady).toBe(true);
     const identity = await createQaIdentity("diagnostic");
     const phase = (name: string) => console.log(`[M8 diagnostic] ${name}: ${new URL(page.url()).pathname}`);
