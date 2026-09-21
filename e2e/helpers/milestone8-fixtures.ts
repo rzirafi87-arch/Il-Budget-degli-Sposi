@@ -324,6 +324,30 @@ export async function login(page: Page, identity: Pick<QaIdentity, "email" | "pa
   await page.waitForURL(/\/it\/(select-language|select-country|select-event|dashboard)/);
 }
 
+export async function waitForPublicCatalogFixture(
+  page: Page,
+  entity: "location" | "supplier",
+  id: string,
+  expectedName: string,
+) {
+  const segment = entity === "location" ? "locations" : "suppliers";
+  await expect.poll(async () => {
+    const response = await page.request.get(`/api/${segment}/${id}?qa_readiness=${Date.now()}`, {
+      headers: { "cache-control": "no-cache" },
+    });
+    if (response.status() !== 200) return { status: response.status(), name: "" };
+    const body = await response.json() as { location?: { name?: string }; supplier?: { name?: string } };
+    return {
+      status: response.status(),
+      name: entity === "location" ? body.location?.name ?? "" : body.supplier?.name ?? "",
+    };
+  }, {
+    message: `${entity} fixture must be readable through the public Production API before UI navigation`,
+    timeout: 30_000,
+    intervals: [1_000, 2_000, 3_000],
+  }).toEqual({ status: 200, name: expectedName });
+}
+
 export async function renameCurrentEvent(identity: QaIdentity, eventId: string, name: string) {
   expect(name.startsWith("QA-M8-")).toBe(true);
   const { data, error } = await admin().from("events").update({ name }).eq("id", eventId).eq("owner_id", identity.id).select("id,name,owner_id").single();

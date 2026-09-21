@@ -116,3 +116,27 @@ export function verifyRateLimitRestoration(baselineRows, restoredRows) {
   if (fingerprint(before) !== fingerprint(after)) fail("Non-QA rate-limit buckets are not byte-identical after cleanup.");
   return fingerprint(after);
 }
+
+export function planQaIdentityCleanup(users, { runId, emailDomain, capturedAt, reconciledAt }) {
+  if (!/^[0-9]+-[0-9]+$/.test(runId)) fail("QA identity cleanup requires an exact GitHub run and attempt.");
+  if (!/^[a-z0-9.-]+$/i.test(emailDomain)) fail("QA identity cleanup requires an exact email domain.");
+  const lowerBound = Date.parse(capturedAt) - 5_000;
+  const upperBound = Date.parse(reconciledAt) + 5_000;
+  const prefix = `qa-b52-${runId}-`;
+  const candidates = users.filter(user => user.user_metadata?.qa_run_id === runId).map(user => {
+    const marker = user.user_metadata?.qa_marker;
+    const createdAt = Date.parse(user.created_at || "");
+    if (!/^[0-9a-f-]{36}$/i.test(user.id || "")) fail("A QA identity candidate has an invalid technical id.");
+    if (user.user_metadata?.qa_scope !== "branch-52-production-smoke") fail("A QA identity candidate has an invalid scope.");
+    if (typeof marker !== "string" || !marker.startsWith(prefix)) fail("A QA identity candidate has an invalid run marker.");
+    if (user.email !== `${marker}@${emailDomain}`) fail("A QA identity candidate email does not match its exact marker and domain.");
+    if (!Number.isFinite(createdAt) || createdAt < lowerBound || createdAt > upperBound) {
+      fail("A QA identity candidate falls outside the controlled smoke window.");
+    }
+    return { id: user.id, email: user.email, created_at: user.created_at, marker };
+  });
+  return {
+    candidates: sorted(candidates),
+    candidateFingerprint: fingerprint(sorted(candidates)),
+  };
+}
