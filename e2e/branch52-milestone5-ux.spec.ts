@@ -16,8 +16,8 @@ test.setTimeout(240_000);
 async function assertGuestLayout(page: Page, fixture: GuestUxFixture) {
   const primary = page.getByTestId(`mobile-guest-${fixture.primaryGuestId}`);
   const secondary = page.getByTestId(`mobile-guest-${fixture.secondaryGuestId}`);
-  await expect(primary).toBeVisible();
-  await expect(secondary).toBeVisible();
+  await expect(primary).toBeVisible({ timeout: 20_000 });
+  await expect(secondary).toBeVisible({ timeout: 20_000 });
   await expect(primary.locator("textarea").first()).toHaveValue(fixture.primaryName);
   await expect(primary.locator("textarea").first()).toHaveAccessibleName(new RegExp(fixture.primaryName));
   await expect(primary.locator("select").first()).toHaveAccessibleName(new RegExp(fixture.primaryName));

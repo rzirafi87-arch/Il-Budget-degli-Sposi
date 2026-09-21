@@ -6,6 +6,7 @@ import {
   deleteQaIdentity,
   login,
   milestone8FixtureReady,
+  waitForPublicCatalogFixture,
   type LocationSupplierFixture,
 } from "./helpers/milestone8-fixtures";
 
@@ -26,6 +27,7 @@ for (const width of [320, 430] as const) {
     try {
       fixture = await createLocationSupplierFixture(identity);
       await login(page, identity);
+      await waitForPublicCatalogFixture(page, "location", fixture.locationId, fixture.locationName);
       await page.goto(`/it/location/${fixture.locationId}`);
       await expect(page.getByRole("heading", { name: fixture.locationName, exact: true })).toBeVisible();
       const associations = page.getByRole("region", { name: localizedTitles.it });
@@ -62,6 +64,7 @@ for (const width of [320, 430] as const) {
       expect((await updateResponse).status()).toBe(200);
       console.info(`[M3-${width}] update complete`);
 
+      await waitForPublicCatalogFixture(page, "supplier", fixture.supplierId, fixture.supplierName);
       await page.goto(`/it/fornitori/${fixture.supplierId}`);
       await expect(page.getByRole("heading", { name: fixture.supplierName, exact: true })).toBeVisible();
       const supplierAssociations = page.getByRole("region", { name: localizedTitles.it });

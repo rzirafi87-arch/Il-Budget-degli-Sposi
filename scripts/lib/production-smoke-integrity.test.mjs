@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   classifyPersistentMembership,
+  planQaIdentityCleanup,
   planRateLimitCleanup,
   verifyRateLimitRestoration,
 } from "./production-smoke-integrity.mjs";
@@ -50,4 +51,48 @@ test("stops before cleanup when a non-QA bucket changed", () => {
     () => planRateLimitCleanup(baseline, current, "2026-09-21T13:29:59Z", "2026-09-21T13:40:01Z"),
     /Non-QA rate-limit bucket/,
   );
+});
+
+test("attributes only exact run-scoped QA identities inside the smoke window", () => {
+  const runId = "35615793263-1";
+  const marker = `qa-b52-${runId}-reset-1234-abcd`;
+  const plan = planQaIdentityCleanup([{
+    id: "196afefb-585d-4c94-a548-b75b78fadb89",
+    email: `${marker}@qa.production.invalid`,
+    created_at: "2026-09-21T15:05:08.659Z",
+    user_metadata: { qa_scope: "branch-52-production-smoke", qa_run_id: runId, qa_marker: marker },
+  }], {
+    runId,
+    emailDomain: "qa.production.invalid",
+    capturedAt: "2026-09-21T15:00:00Z",
+    reconciledAt: "2026-09-21T15:10:00Z",
+  });
+  assert.equal(plan.candidates.length, 1);
+  assert.equal(plan.candidates[0].marker, marker);
+});
+
+test("refuses QA identities with a mismatched domain, scope, marker, or timestamp", () => {
+  const runId = "35615793263-1";
+  const marker = `qa-b52-${runId}-reset-1234-abcd`;
+  const base = {
+    id: "196afefb-585d-4c94-a548-b75b78fadb89",
+    email: `${marker}@real.example`,
+    created_at: "2026-09-21T15:05:08.659Z",
+    user_metadata: { qa_scope: "branch-52-production-smoke", qa_run_id: runId, qa_marker: marker },
+  };
+  const options = {
+    runId,
+    emailDomain: "qa.production.invalid",
+    capturedAt: "2026-09-21T15:00:00Z",
+    reconciledAt: "2026-09-21T15:10:00Z",
+  };
+  assert.throws(() => planQaIdentityCleanup([base], options), /email/);
+  assert.throws(() => planQaIdentityCleanup([{ ...base, email: `${marker}@qa.production.invalid`, user_metadata: { ...base.user_metadata, qa_scope: "other" } }], options), /scope/);
+  const wrongMarker = `qa-b52-99999999999-1-reset-1234-abcd`;
+  assert.throws(() => planQaIdentityCleanup([{
+    ...base,
+    email: `${wrongMarker}@qa.production.invalid`,
+    user_metadata: { ...base.user_metadata, qa_marker: wrongMarker },
+  }], options), /run marker/);
+  assert.throws(() => planQaIdentityCleanup([{ ...base, email: `${marker}@qa.production.invalid`, created_at: "2026-09-20T15:05:08.659Z" }], options), /window/);
 });

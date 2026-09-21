@@ -37,13 +37,26 @@ function verifyBrowserSecretIsolation() {
   const helper = readFileSync(path.join(root, "playwright.browser-env.ts"), "utf8");
   const standard = readFileSync(path.join(root, "playwright.config.ts"), "utf8");
   const production = readFileSync(path.join(root, "playwright.production-m8.config.ts"), "utf8");
+  const workflow = readFileSync(path.join(root, ".github/workflows/production-smoke.yml"), "utf8");
   if (!helper.includes('"PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY"')) {
     throw new Error("The Chromium environment does not explicitly remove the Playwright service-role key.");
+  }
+  if (!helper.includes('"VERCEL_AUTOMATION_BYPASS_SECRET"')) {
+    throw new Error("The Chromium process environment does not remove the Vercel automation bypass secret.");
   }
   for (const [name, source] of [["standard", standard], ["Branch 52", production]]) {
     if (!source.includes("launchOptions: { env: browserProcessEnv() }")) {
       throw new Error(`${name} Playwright configuration does not sanitize the Chromium process environment.`);
     }
+  }
+  if (!production.includes('"x-vercel-protection-bypass": vercelAutomationBypassSecret')) {
+    throw new Error("The Branch 52 configuration does not authorize protected recovery redirects.");
+  }
+  for (const required of [
+    "PLAYWRIGHT_SUPABASE_ANON_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_ANON_KEY }}",
+    "VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}",
+  ]) {
+    if (!workflow.includes(required)) throw new Error(`Production smoke workflow is missing ${required.split(":")[0]}.`);
   }
 }
 
@@ -62,6 +75,7 @@ const lines = [
   "- Branch 52 collected by standard projects: 0",
   "- duplicate mandatory journeys: 0",
   "- Chromium service-role exposure: 0",
+  "- protected recovery redirect and security-matrix environment: configured",
   `- Preview read-only: ${preview.previewCases} public GET-only cases across ${preview.previewProjects} projects; authenticated/mutating specs: 0`,
 ];
 console.log(lines.join("\n"));

@@ -6,6 +6,7 @@ import {
   deleteQaIdentity,
   login,
   milestone8FixtureReady,
+  waitForPublicCatalogFixture,
   type LocationSupplierFixture,
 } from "./helpers/milestone8-fixtures";
 
@@ -87,9 +88,12 @@ for (const width of [320, 430] as const) {
       await expect(privateSummary.getByText(taskTitle, { exact: true })).toBeVisible();
       await expect(privateSummary.getByRole("link", { name: "Apri Timeline", exact: true })).toBeVisible();
 
+      await waitForPublicCatalogFixture(page, "supplier", fixture.supplierId, fixture.supplierName);
       await page.goto(`/it/fornitori/${fixture.supplierId}`);
       const savedSummary = page.getByTestId("supplier-work-summary");
-      await expect(savedSummary.getByText(appointmentTitle, { exact: true })).toBeVisible();
+      const appointmentSummary = savedSummary.getByRole("listitem").filter({ hasText: appointmentTitle });
+      await expect(appointmentSummary).toBeVisible();
+      await expect(appointmentSummary).toContainText(appointmentTitle);
       await expect(savedSummary.getByRole("link", { name: "Apri appuntamenti", exact: true })).toBeVisible();
 
       if (width === 430) {

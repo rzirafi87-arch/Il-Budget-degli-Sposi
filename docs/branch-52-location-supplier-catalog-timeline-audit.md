@@ -775,3 +775,54 @@ viene riscritta.
 La chiusura resta bloccata fino a CI, Database Rebuild/pgTAP, Playwright
 isolato, Preview read-only, merge, Production READY sul nuovo SHA e nuovo
 Production smoke interamente PASS. Branch 53 resta non iniziato.
+
+### Follow-up controllato dopo il Production smoke #59
+
+La PR hotfix #68 è stata unita nel commit
+`810f0790877e5a5fbc85ea4f55ca3e476b8abac6` e il deployment Production
+`dpl_BDsUYwiaYn1e8cDaukKjpNTuz2Dg` è risultato READY sullo stesso SHA. Il
+Production smoke #59 ha dimostrato che l'isolamento è corretto prima
+dell'esecuzione: 120 casi standard, 12 journey Branch 52, zero raccolte tramite
+progetti standard, zero duplicazioni e zero service-role nel processo
+Chromium. Il gruppo standard ha concluso 33 PASS / 0 FAIL / 87 skip
+condizionali; il gruppo M8 si è fermato a 6 PASS / 6 FAIL / 0 skip.
+
+Le sei cause sono limitate all'infrastruttura del test e non richiedono alcuna
+modifica applicativa:
+
+- la security matrix leggeva `PLAYWRIGHT_SUPABASE_ANON_KEY`, mentre il workflow
+  esportava soltanto l'alias `NEXT_PUBLIC_SUPABASE_ANON_KEY`;
+- il callback reale di password recovery reindirizzava all'hostname canonico
+  protetto Vercel senza che la configurazione M8 propagasse il bypass;
+- tre letture immediatamente successive alla creazione fixture hanno incontrato
+  la latenza della lettura Production o del caricamento client oltre il timeout
+  di cinque secondi;
+- il riepilogo appuntamento espone titolo e data nello stesso `listitem`, quindi
+  il selettore testuale `exact` non rappresentava il contratto accessibile.
+
+Il follow-up aggiunge gli alias mancanti, usa il bypass soltanto come header
+Playwright e lo rimuove dall'ambiente Chromium, attende esplicitamente la
+leggibilità pubblica della fixture prima della navigazione, usa attese remote
+limitate e seleziona il `listitem` dell'appuntamento senza indebolire le
+asserzioni. Nessun test è rimosso, duplicato o convertito in skip.
+
+La riconciliazione del run `35615793263-1` ha rimosso cinque bucket tecnici
+esatti e ha ripristinato 322 righe; il fingerprint non-QA prima/dopo è
+`511eb84dc9754bf2443c59efb532a427b8e0d7d5535b40799cec8d52825997bc`.
+La membership persistente resta classificata B, 22 righe, stato funzionale
+iniziale ripristinato e fingerprint delle 21 righe non target invariato
+`30992144c7031ed02d6e64f53af74ae4ac00188ca1c070fa62618846fb12664c`.
+
+Il controllo indipendente post-run ha inoltre trovato una sola identità
+incompleta del journey reset, interrotto dal timeout prima del `finally`:
+`196afefb-585d-4c94-a548-b75b78fadb89`, email e metadata esatti del run #59,
+creata alle 15:05:08 UTC. Tutti i riferimenti applicativi e Storage erano zero.
+La sola identità Auth e il profilo dipendente sono stati eliminati con un
+predicato esatto su ID, email, timestamp, scope, run e marker; Auth e profili
+sono tornati a 15 e i residui del run #59 a zero. Il reconciler ora inventaria,
+ri-verifica e rimuove anche eventuali identità del solo run corrente rimaste
+dopo un timeout, fallendo chiuso su dominio, scope, marker o finestra diversi.
+
+La chiusura resta bloccata fino al follow-up PR, ai gate completi, al nuovo
+merge/deployment e a un Production smoke integralmente PASS. Branch 53 resta
+non iniziato.
