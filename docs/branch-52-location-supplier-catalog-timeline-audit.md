@@ -766,7 +766,11 @@ viene riscritta.
 - i18n: 3.095 messaggi per ciascuna delle cinque lingue, zero differenze;
 - TypeScript PASS; ESLint PASS con 0 errori e 16 warning baseline; Build PASS;
 - UTF-8, mojibake, config e secret scan PASS;
-- nessuna modifica UI/API/schema/migration e nessun DML Preview.
+- nessuna modifica UI/API/schema/migration;
+- la configurazione Preview raccoglie esattamente 30 controlli pubblici
+  GET-only (cinque lingue per sei viewport) e rifiuta qualsiasi spec
+  autenticato o mutante; i lifecycle autenticati restano confinati al
+  Supabase effimero locale, quindi la Preview non esegue DML remoto.
 
 La chiusura resta bloccata fino a CI, Database Rebuild/pgTAP, Playwright
 isolato, Preview read-only, merge, Production READY sul nuovo SHA e nuovo

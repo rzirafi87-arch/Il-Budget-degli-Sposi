@@ -21,6 +21,8 @@ export const STANDARD_PROJECTS = Object.freeze(
   locales.flatMap(locale => widths.map(width => `${locale}-${width}`)),
 );
 
+export const PREVIEW_READ_ONLY_SPEC_FILE = "language-rollout.spec.ts";
+
 export const ISOLATED_JOURNEYS = Object.freeze([
   ["milestone8-lifecycle.spec.ts", "[M8][diagnostic]", "m8-320"],
   ["milestone8-lifecycle.spec.ts", "[M8][reset]", "m8-320"],
@@ -123,5 +125,33 @@ export function verifyProjectIsolation(standardReport, isolatedReport) {
     standardProjects: new Set(standard.map(entry => entry.project)).size,
     isolatedJourneys: isolated.length,
     isolatedProjects: [...new Set(isolated.map(entry => entry.project))].sort(),
+  };
+}
+
+export function verifyPreviewReadOnlyCollection(previewReport) {
+  const preview = collectionEntries(previewReport);
+  const standardProjects = new Set(STANDARD_PROJECTS);
+
+  assertNoDuplicates(preview, "Preview read-only collection");
+  requireCondition(
+    preview.length === STANDARD_PROJECTS.length,
+    `Preview read-only collection must contain 30 GET-only project cases; found ${preview.length}.`,
+  );
+  requireCondition(
+    preview.every(entry => entry.file === PREVIEW_READ_ONLY_SPEC_FILE),
+    "Preview read-only collection contains an authenticated or mutating spec.",
+  );
+  requireCondition(
+    preview.every(entry => standardProjects.has(entry.project)),
+    "Preview read-only collection contains an unexpected Playwright project.",
+  );
+  requireCondition(
+    STANDARD_PROJECTS.every(project => preview.some(entry => entry.project === project)),
+    "Preview read-only collection is missing a required locale/viewport project.",
+  );
+
+  return {
+    previewCases: preview.length,
+    previewProjects: new Set(preview.map(entry => entry.project)).size,
   };
 }

@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   ISOLATED_JOURNEYS,
+  PREVIEW_READ_ONLY_SPEC_FILE,
   STANDARD_PROJECTS,
   STANDARD_SPEC_FILES,
+  verifyPreviewReadOnlyCollection,
   verifyProjectIsolation,
 } from "./playwright-project-isolation.mjs";
 
@@ -53,4 +55,29 @@ test("rejects isolated specs in the standard collection", () => {
   const { standard, isolated } = validEntries();
   standard[0] = { ...standard[0], file: isolated[0].file };
   assert.throws(() => verifyProjectIsolation(report(standard), report(isolated)), /non-standard or Branch 52 spec/);
+});
+
+test("accepts exactly the 30 public GET-only Preview cases", () => {
+  const preview = STANDARD_PROJECTS.map(project => ({
+    file: PREVIEW_READ_ONLY_SPEC_FILE,
+    title: "localized mobile and accessibility smoke",
+    project,
+  }));
+  assert.deepEqual(verifyPreviewReadOnlyCollection(report(preview)), {
+    previewCases: 30,
+    previewProjects: 30,
+  });
+});
+
+test("rejects authenticated or mutating specs from Preview", () => {
+  const preview = STANDARD_PROJECTS.map(project => ({
+    file: PREVIEW_READ_ONLY_SPEC_FILE,
+    title: "localized mobile and accessibility smoke",
+    project,
+  }));
+  preview[0] = { ...preview[0], file: "authenticated-wedding.spec.ts" };
+  assert.throws(
+    () => verifyPreviewReadOnlyCollection(report(preview)),
+    /authenticated or mutating spec/,
+  );
 });

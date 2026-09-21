@@ -32,10 +32,5 @@ export default defineConfig({
       testMatch: /language-rollout\.spec\.ts/,
       use: { locale, viewport: { width, height: 844 } },
     }))),
-    {
-      name: "it-390-authenticated-readonly",
-      testMatch: /authenticated-wedding\.spec\.ts/,
-      use: { locale: "it", viewport: { width: 390, height: 844 } },
-    },
   ],
 });

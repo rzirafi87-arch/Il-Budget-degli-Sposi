@@ -2,7 +2,10 @@ import { spawnSync } from "node:child_process";
 import { appendFileSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { verifyProjectIsolation } from "./lib/playwright-project-isolation.mjs";
+import {
+  verifyPreviewReadOnlyCollection,
+  verifyProjectIsolation,
+} from "./lib/playwright-project-isolation.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const playwrightCli = path.join(root, "node_modules", "@playwright", "test", "cli.js");
@@ -49,6 +52,9 @@ const result = verifyProjectIsolation(
   collect("playwright.config.ts"),
   collect("playwright.production-m8.config.ts"),
 );
+const preview = verifyPreviewReadOnlyCollection(
+  collect("playwright.preview-readonly.config.ts"),
+);
 const lines = [
   "Production smoke Playwright collection: PASS",
   `- standard: ${result.standardCases} project cases across ${result.standardProjects} IT/EN/ES/FR/DE projects`,
@@ -56,6 +62,7 @@ const lines = [
   "- Branch 52 collected by standard projects: 0",
   "- duplicate mandatory journeys: 0",
   "- Chromium service-role exposure: 0",
+  `- Preview read-only: ${preview.previewCases} public GET-only cases across ${preview.previewProjects} projects; authenticated/mutating specs: 0`,
 ];
 console.log(lines.join("\n"));
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### ${lines.join("\n")}\n`);
