@@ -66,11 +66,11 @@ async function deleteQaRunIdentities(plan, capturedAt, reconciledAt) {
   const lowerBound = Date.parse(capturedAt) - 5_000;
   const upperBound = Date.parse(reconciledAt) + 5_000;
   for (const identity of plan.candidates) {
-    const owned = await client.from("events").select("id,owner_id,name,created_at").eq("owner_id", identity.id);
+    const owned = await client.from("events").select("id,owner_id,name,inserted_at").eq("owner_id", identity.id);
     if (owned.error) throw new Error("QA identity event ownership verification failed.");
     for (const event of owned.data || []) {
-      const createdAt = Date.parse(event.created_at || "");
-      if (event.owner_id !== identity.id || !Number.isFinite(createdAt) || createdAt < lowerBound || createdAt > upperBound) {
+      const insertedAt = Date.parse(event.inserted_at || "");
+      if (event.owner_id !== identity.id || !Number.isFinite(insertedAt) || insertedAt < lowerBound || insertedAt > upperBound) {
         throw new Error("Refusing QA identity cleanup because an owned event is outside the controlled smoke window.");
       }
       const removed = await client.from("events").delete().eq("id", event.id).eq("owner_id", identity.id).select("id").single();
