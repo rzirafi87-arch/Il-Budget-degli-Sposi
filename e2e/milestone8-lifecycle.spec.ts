@@ -18,8 +18,11 @@ import {
   waitForTransactionalEmail,
 } from "./helpers/transactional-email-audit";
 
-const baseUrl = process.env.PLAYWRIGHT_BASE_URL;
+const baseUrl = process.env.PLAYWRIGHT_BASE_URL
+  || (process.env.PLAYWRIGHT_LOCAL_SUPABASE === "1" ? "http://127.0.0.1:3000" : undefined);
 const inbucketUrl = process.env.PLAYWRIGHT_INBUCKET_URL;
+const supabaseUrl = process.env.PLAYWRIGHT_SUPABASE_URL;
+const canonicalVercelOrigin = "https://il-budget-degli-sposi-rzirafi87-archs-projects.vercel.app";
 
 test.use({ trace: "retain-on-failure", screenshot: "only-on-failure", video: "off" });
 
@@ -135,6 +138,41 @@ async function recoveryLink(identity: QaIdentity, startedAt: number) {
   throw new Error("Recovery email was not found within 60 seconds.");
 }
 
+async function followRecoveryCallback(page: Page, callback: string) {
+  if (!baseUrl || !supabaseUrl) throw new Error("The Production recovery origins are unavailable.");
+  const callbackUrl = new URL(callback);
+  expect(callbackUrl.origin).toBe(new URL(supabaseUrl).origin);
+  expect(callbackUrl.pathname).toBe("/auth/v1/verify");
+  expect(callbackUrl.searchParams.get("type")).toBe("recovery");
+  expect(callbackUrl.searchParams.get("token")).toMatch(/^[a-z0-9_-]+$/i);
+
+  const redirectValue = callbackUrl.searchParams.get("redirect_to");
+  expect(redirectValue).toBeTruthy();
+  const redirect = new URL(redirectValue as string);
+  const baseOrigin = new URL(baseUrl);
+  const isLocalRecovery = Boolean(inbucketUrl);
+  const approvedOrigins = new Set([
+    baseOrigin.origin,
+    ...(isLocalRecovery ? [] : [canonicalVercelOrigin]),
+  ]);
+  expect(redirect.protocol).toBe(isLocalRecovery ? baseOrigin.protocol : "https:");
+  expect(approvedOrigins.has(redirect.origin)).toBe(true);
+
+  // The real Production email currently returns to the canonical Vercel origin.
+  // Wait only for its first committed document so client-side onboarding redirects
+  // cannot keep page.goto pending until the whole test timeout expires.
+  await page.goto(callback, { waitUntil: "commit" });
+  await page.waitForURL(url => (
+    url.origin === redirect.origin
+    && /^\/it\/(wizard|select-language|select-country|select-event-type|dashboard|reset-password)$/.test(url.pathname)
+  ), { timeout: 30_000 });
+  await page.waitForFunction(() => (
+    Object.keys(window.localStorage).some(key => /^sb-.*-auth-token$/.test(key))
+  ));
+  await page.goto(new URL("/it/reset-password", redirect).toString());
+  await expect(page).toHaveURL(/\/it\/reset-password/);
+}
+
 test.describe("[M8] isolated authenticated lifecycle", () => {
   test("[M8][diagnostic] minimal real onboarding reaches the first dashboard", async ({ page }, testInfo) => {
     expect(["m8-diagnostic", "m8-320"]).toContain(testInfo.project.name);
@@ -188,12 +226,13 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       const startedAt = Date.now();
       await page.getByRole("button", { name: /invia istruzioni/i }).click();
       await expect(page.getByRole("status")).toBeVisible();
-      await page.goto(await recoveryLink(identity, startedAt));
-      await page.waitForURL(/\/it\/reset-password/);
+      await followRecoveryCallback(page, await recoveryLink(identity, startedAt));
       await page.getByLabel("Password", { exact: true }).fill(nextPassword);
       await page.getByRole("button", { name: /aggiorna password/i }).click();
       await expect(page.getByRole("status")).toBeVisible();
       await page.waitForURL(/\/it\/auth/);
+      await page.goto(new URL("/it/auth", baseUrl as string).toString());
+      expect(new URL(page.url()).origin).toBe(new URL(baseUrl as string).origin);
       await page.getByLabel("Email", { exact: true }).fill(identity.email);
       await page.getByLabel("Password", { exact: true }).fill(identity.password);
       const oldPasswordResponse = page.waitForResponse(response =>

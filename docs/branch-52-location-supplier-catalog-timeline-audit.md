@@ -826,3 +826,30 @@ dopo un timeout, fallendo chiuso su dominio, scope, marker o finestra diversi.
 La chiusura resta bloccata fino al follow-up PR, ai gate completi, al nuovo
 merge/deployment e a un Production smoke integralmente PASS. Branch 53 resta
 non iniziato.
+
+## Production smoke #61 checkpoint
+
+- Head verificato: `ad7ed1dae7e210f04cc8d8f0b7b90b311c015774`; deployment Production `dpl_GVu48Te59ddehYHKubse61onsG3N` READY sullo SHA esatto.
+- HTTP preflight e matrice standard: PASS; raccolta preventiva: 120 casi standard + 12 journey M8, senza leakage o duplicazioni.
+- M8: 11 PASS / 1 FAIL / 0 skip. Il solo reset-password ha raggiunto la callback reale e la sessione autenticata, ma `page.goto` è rimasto in attesa durante i redirect client-side dell'onboarding fino al timeout.
+- Il reconciler si è fermato prima di qualsiasi delete perché la verifica degli eventi QA interrogava `events.created_at`; lo schema autorevole usa `events.inserted_at`.
+- Inventario post-run in sola lettura: una sola identità/profilo con run marker esatto `35620141619-1`, zero eventi posseduti, cinque bucket tecnici con firma esatta `[1,1,1,2,4]`, 22 membership persistenti. Nessuna cancellazione eseguita dal reconciler fallito.
+- La verifica successiva ha trovato il teardown completato senza DML manuale: identità/profilo del run 0, bucket del run 0, Auth/profili 15 e `rate_limit_buckets` 322. Il fingerprint delle 322 righe non-QA è tornato byte-identico a `511eb84dc9754bf2443c59efb532a427b8e0d7d5535b40799cec8d52825997bc`.
+- Correzione limitata al test harness: callback attesa fino al primo commit, verifica dell'origine e della sessione, navigazione esplicita alla route reset sulla stessa origine; cleanup ownership aggiornato a `inserted_at` con contratto automatico.
+- Branch 53 resta non iniziato. Branch 52 non è dichiarato chiuso fino a nuovo smoke completamente PASS e integrità finale.
+
+## Playwright isolato #173 checkpoint
+
+Il primo gate Playwright isolato della PR follow-up ha fallito soltanto il
+journey reset-password prima di aprire la callback: il workflow locale espone
+`PLAYWRIGHT_LOCAL_SUPABASE=1` e serve l'applicazione su
+`http://127.0.0.1:3000`, ma non definisce `PLAYWRIGHT_BASE_URL`. Il test
+richiedeva erroneamente quest'ultima variabile anche nel percorso Supabase
+effimero locale.
+
+Il test harness ora usa l'origine locale deterministica esclusivamente quando
+`PLAYWRIGHT_LOCAL_SUPABASE` vale esattamente `1`; in Production continua a
+richiedere `PLAYWRIGHT_BASE_URL` esplicito. Il contratto di isolamento verifica
+automaticamente questo fallback. Nessuna configurazione applicativa, UI, API,
+schema o migration è modificata. La PR resta Draft fino alla ripetizione di
+tutti i gate sul nuovo commit.

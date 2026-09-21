@@ -60,7 +60,34 @@ function verifyBrowserSecretIsolation() {
   }
 }
 
+function verifyProductionRecoveryAndCleanupContracts() {
+  const lifecycle = readFileSync(path.join(root, "e2e/milestone8-lifecycle.spec.ts"), "utf8");
+  const integrity = readFileSync(path.join(root, "scripts/production-smoke-integrity.mjs"), "utf8");
+  for (const required of [
+    'process.env.PLAYWRIGHT_LOCAL_SUPABASE === "1" ? "http://127.0.0.1:3000" : undefined',
+    'await page.goto(callback, { waitUntil: "commit" })',
+    'url.origin === redirect.origin',
+    'const isLocalRecovery = Boolean(inbucketUrl)',
+    'isLocalRecovery ? baseOrigin.protocol : "https:"',
+    '/^sb-.*-auth-token$/',
+    'new URL("/it/reset-password", redirect)',
+    'new URL("/it/auth", baseUrl as string)',
+  ]) {
+    if (!lifecycle.includes(required)) throw new Error(`Production recovery flow is missing ${required}.`);
+  }
+  for (const required of [
+    'select("id,owner_id,name,inserted_at")',
+    'Date.parse(event.inserted_at || "")',
+  ]) {
+    if (!integrity.includes(required)) throw new Error(`Production identity cleanup is missing ${required}.`);
+  }
+  if (integrity.includes('select("id,owner_id,name,created_at")')) {
+    throw new Error("Production identity cleanup still queries the non-existent events.created_at column.");
+  }
+}
+
 verifyBrowserSecretIsolation();
+verifyProductionRecoveryAndCleanupContracts();
 const result = verifyProjectIsolation(
   collect("playwright.config.ts"),
   collect("playwright.production-m8.config.ts"),
