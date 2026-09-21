@@ -8,7 +8,7 @@ if (process.env.CI && (!email || !password)) {
 }
 
 test("authenticated wedding journey, event context and logout", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "it-390", "One authenticated browser is sufficient; the full width matrix runs in language-rollout.spec.ts.");
+  test.skip(!["it-390", "it-390-authenticated-readonly"].includes(testInfo.project.name), "One authenticated browser is sufficient; the full width matrix runs in language-rollout.spec.ts.");
   test.skip(!email || !password, "Set PLAYWRIGHT_TEST_EMAIL and PLAYWRIGHT_TEST_PASSWORD for local authenticated QA.");
 
   if (process.env.PLAYWRIGHT_BASE_URL?.includes("_vercel_share=")) {
@@ -47,6 +47,21 @@ test("authenticated wedding journey, event context and logout", async ({ page },
     expect(overflow, `${path} must fit at 390px`).toBe(false);
   }
 
+  const catalogResponse = await page.request.get("/api/catalog/search?entityType=supplier&pageSize=1");
+  expect(catalogResponse.status()).toBe(200);
+  const catalog = await catalogResponse.json() as { results: Array<{ id: string; name: string }> };
+  expect(catalog.results).not.toHaveLength(0);
+  const realSupplier = catalog.results[0];
+  const detailResponse = page.waitForResponse(response =>
+    response.request().method() === "GET"
+    && new URL(response.url()).pathname === `/api/suppliers/${realSupplier.id}`
+  );
+  await page.goto(`/it/fornitori/${realSupplier.id}`);
+  expect((await detailResponse).status()).toBe(200);
+  await expect(page.getByRole("heading", { name: realSupplier.name, exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /per il tuo matrimonio/i })).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/fornitore demo|MISSING_MESSAGE/i);
+
   for (const width of [320, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     for (const path of ["budget", "spese"]) {
@@ -72,4 +87,10 @@ test("authenticated wedding journey, event context and logout", async ({ page },
   await auth.getByLabel("Password", { exact: true }).fill(password!);
   await auth.getByRole("button", { name: /accedi/i }).click();
   await page.waitForURL(/\/it\/(dashboard|select-event)/);
+
+  // Revoke the relogin session as well, so the remote read-only journey leaves
+  // no persistent QA session or refresh token behind.
+  await page.goto("/it/profilo");
+  await page.getByRole("button", { name: /esci/i }).click();
+  await page.waitForURL(/\/it$/);
 });

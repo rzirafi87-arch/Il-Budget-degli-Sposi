@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { expect, type Page } from "@playwright/test";
+import { randomUUID } from "node:crypto";
 
 const url = process.env.PLAYWRIGHT_SUPABASE_URL;
 const serviceRole = process.env.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY;
@@ -8,6 +9,27 @@ const emailDomain = process.env.PLAYWRIGHT_QA_EMAIL_DOMAIN;
 export const milestone8FixtureReady = Boolean(url && serviceRole && emailDomain);
 
 export type QaIdentity = { id: string; email: string; password: string; marker: string };
+export type LocationSupplierFixture = {
+  eventId: string;
+  locationId: string;
+  supplierId: string;
+  savedLocationId: string;
+  savedSupplierId: string;
+  privateLocationId: string;
+  privateSupplierId: string;
+  locationName: string;
+  supplierName: string;
+  privateSupplierName: string;
+};
+export type GuestUxFixture = {
+  eventId: string;
+  familyId: string;
+  primaryGuestId: string;
+  secondaryGuestId: string;
+  primaryName: string;
+  secondaryName: string;
+  familyName: string;
+};
 
 function admin(): SupabaseClient {
   if (!url || !serviceRole) throw new Error("Milestone 8 fixture administration is unavailable.");
@@ -47,6 +69,237 @@ export async function deleteQaIdentity(identity: QaIdentity) {
   }
   const result = await client.auth.admin.deleteUser(identity.id);
   if (result.error) throw new Error(`QA identity cleanup failed: ${result.error.name}`);
+}
+
+export async function createLocationSupplierFixture(identity: QaIdentity): Promise<LocationSupplierFixture> {
+  const client = admin();
+  const suffix = identity.marker.slice(-18);
+  const fixture: LocationSupplierFixture = {
+    eventId: randomUUID(),
+    locationId: randomUUID(),
+    supplierId: randomUUID(),
+    savedLocationId: randomUUID(),
+    savedSupplierId: randomUUID(),
+    privateLocationId: randomUUID(),
+    privateSupplierId: randomUUID(),
+    locationName: `QA-M3 Location ${suffix}`,
+    supplierName: `QA-M3 Supplier ${suffix}`,
+    privateSupplierName: `QA-M3 Private Supplier ${suffix}`,
+  };
+  const event = await client.from("events").insert({
+    id: fixture.eventId,
+    owner_id: identity.id,
+    name: `QA-M8-M3-${identity.marker}`,
+    event_type: "wedding",
+    language: "it",
+    country: "IT",
+  }).select("id,owner_id,name").single();
+  if (event.error || event.data?.owner_id !== identity.id) throw new Error("M3 QA event creation failed.");
+  const membership = await client.from("event_members").upsert({
+    event_id: fixture.eventId,
+    user_id: identity.id,
+    role: "owner",
+    status: "active",
+  }, { onConflict: "event_id,user_id" });
+  if (membership.error) throw new Error("M3 QA owner membership creation failed.");
+  const location = await client.from("locations").insert({
+    id: fixture.locationId,
+    name: fixture.locationName,
+    region: "Lazio",
+    province: "RM",
+    city: "Roma",
+    country_code: "it",
+    location_type: "villa",
+    source: "admin_import",
+    external_id: `qa-m3-location-${fixture.locationId}`,
+    verification_status: "VERIFIED",
+    confidence_score: 100,
+  });
+  if (location.error) throw new Error(`M3 QA location creation failed: ${location.error.code || "UNKNOWN"}`);
+  const supplier = await client.from("suppliers").insert({
+    id: fixture.supplierId,
+    name: fixture.supplierName,
+    region: "Lazio",
+    province: "RM",
+    city: "Roma",
+    country_code: "it",
+    category: "catering",
+    source: "admin_import",
+    external_id: `qa-m3-supplier-${fixture.supplierId}`,
+    verification_status: "VERIFIED",
+    confidence_score: 100,
+  });
+  if (supplier.error) throw new Error(`M3 QA supplier creation failed: ${supplier.error.code || "UNKNOWN"}`);
+  const globalLink = await client.from("supplier_locations").insert({
+    supplier_id: fixture.supplierId,
+    location_id: fixture.locationId,
+    relationship_type: "works_at",
+    source: "branch52_playwright",
+  });
+  if (globalLink.error) throw new Error("M3 QA curated association creation failed.");
+  const savedLocation = await client.from("saved_locations").insert({
+    id: fixture.savedLocationId,
+    event_id: fixture.eventId,
+    location_id: fixture.locationId,
+    location_role: "reception",
+  });
+  const savedSupplier = await client.from("saved_suppliers").insert({
+    id: fixture.savedSupplierId,
+    event_id: fixture.eventId,
+    supplier_id: fixture.supplierId,
+  });
+  if (savedLocation.error || savedSupplier.error) throw new Error("M3 QA saved catalog fixture creation failed.");
+  const privateRows = await client.from("event_private_catalog_records").insert([
+    {
+      id: fixture.privateLocationId,
+      event_id: fixture.eventId,
+      entity_type: "location",
+      client_key: randomUUID(),
+      snapshot_data: { name: `QA-M3 Private Location ${suffix}` },
+      snapshot_fingerprint: "0".repeat(64),
+      created_by: identity.id,
+    },
+    {
+      id: fixture.privateSupplierId,
+      event_id: fixture.eventId,
+      entity_type: "supplier",
+      client_key: randomUUID(),
+      snapshot_data: { name: fixture.privateSupplierName },
+      snapshot_fingerprint: "0".repeat(64),
+      created_by: identity.id,
+    },
+  ]);
+  if (privateRows.error) throw new Error("M3 QA private catalog fixture creation failed.");
+  return fixture;
+}
+
+export async function deleteLocationSupplierFixture(fixture: LocationSupplierFixture) {
+  const client = admin();
+  const deletions = [
+    await client.from("timeline_items").delete().eq("event_id", fixture.eventId),
+    await client.from("appointments").delete().eq("event_id", fixture.eventId),
+    await client.from("event_location_supplier_links").delete().eq("event_id", fixture.eventId),
+    await client.from("saved_locations").delete().eq("id", fixture.savedLocationId).eq("event_id", fixture.eventId),
+    await client.from("saved_suppliers").delete().eq("id", fixture.savedSupplierId).eq("event_id", fixture.eventId),
+    await client.from("event_private_catalog_records").delete().eq("event_id", fixture.eventId),
+    await client.from("supplier_locations").delete().eq("supplier_id", fixture.supplierId).eq("location_id", fixture.locationId),
+    await client.from("suppliers").delete().eq("id", fixture.supplierId),
+    await client.from("locations").delete().eq("id", fixture.locationId),
+  ];
+  if (deletions.some(item => item.error)) throw new Error("M3 QA fixture cleanup failed.");
+  const [timeline, appointments, links, savedLocations, savedSuppliers, privateRows, globalLinks, suppliers, locations] = await Promise.all([
+    client.from("timeline_items").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
+    client.from("appointments").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
+    client.from("event_location_supplier_links").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
+    client.from("saved_locations").select("id", { count: "exact", head: true }).eq("id", fixture.savedLocationId),
+    client.from("saved_suppliers").select("id", { count: "exact", head: true }).eq("id", fixture.savedSupplierId),
+    client.from("event_private_catalog_records").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
+    client.from("supplier_locations").select("supplier_id", { count: "exact", head: true }).eq("supplier_id", fixture.supplierId),
+    client.from("suppliers").select("id", { count: "exact", head: true }).eq("id", fixture.supplierId),
+    client.from("locations").select("id", { count: "exact", head: true }).eq("id", fixture.locationId),
+  ]);
+  const residue = [timeline, appointments, links, savedLocations, savedSuppliers, privateRows, globalLinks, suppliers, locations]
+    .reduce((total, result) => total + (result.count ?? 0), 0);
+  if (residue !== 0) throw new Error(`M3 QA fixture residue count is ${residue}.`);
+}
+
+export async function createGuestUxFixture(identity: QaIdentity): Promise<GuestUxFixture> {
+  const client = admin();
+  const suffix = identity.marker.slice(-12);
+  const fixture: GuestUxFixture = {
+    eventId: randomUUID(),
+    familyId: randomUUID(),
+    primaryGuestId: randomUUID(),
+    secondaryGuestId: randomUUID(),
+    primaryName: `Ángelica Maria Della Rovere Fernández-Wittgenstein ${suffix}`,
+    secondaryName: `João Étienne Müller de la Cruz ${suffix}`,
+    familyName: `Famiglia De Santis-Rodríguez von Hohenlohe ${suffix}`,
+  };
+
+  const event = await client.from("events").insert({
+    id: fixture.eventId,
+    owner_id: identity.id,
+    name: `QA-M8-M5-${identity.marker}`,
+    event_type: "wedding",
+    language: "it",
+    country: "IT",
+  }).select("id,owner_id,name").single();
+  if (event.error || event.data?.owner_id !== identity.id) throw new Error("M5 QA event creation failed.");
+
+  const membership = await client.from("event_members").upsert({
+    event_id: fixture.eventId,
+    user_id: identity.id,
+    role: "owner",
+    status: "active",
+  }, { onConflict: "event_id,user_id" });
+  if (membership.error) throw new Error("M5 QA owner membership creation failed.");
+
+  const family = await client.from("family_groups").insert({
+    id: fixture.familyId,
+    event_id: fixture.eventId,
+    family_name: fixture.familyName,
+    notes: "QA-M5 long family",
+  });
+  if (family.error) throw new Error(`M5 QA family creation failed: ${family.error.code || "UNKNOWN"}`);
+
+  const guests = await client.from("guests").insert([
+    {
+      id: fixture.primaryGuestId,
+      event_id: fixture.eventId,
+      name: fixture.primaryName,
+      guest_type: "bride",
+      family_group_id: fixture.familyId,
+      is_main_contact: true,
+      attending: true,
+      rsvp_received: true,
+      menu_preferences: ["vegetariano"],
+      receives_bomboniera: true,
+      allergies_intolerances: "Crème fraîche, arachidi e glutine",
+      notes: "QA-M5 primary guest",
+    },
+    {
+      id: fixture.secondaryGuestId,
+      event_id: fixture.eventId,
+      name: fixture.secondaryName,
+      guest_type: "common",
+      family_group_id: null,
+      is_main_contact: false,
+      attending: true,
+      rsvp_received: false,
+      menu_preferences: [],
+      receives_bomboniera: false,
+      allergies_intolerances: "",
+      notes: "QA-M5 no family",
+    },
+  ]);
+  if (guests.error) throw new Error(`M5 QA guest creation failed: ${guests.error.code || "UNKNOWN"}`);
+
+  const mainContact = await client.from("family_groups")
+    .update({ main_contact_guest_id: fixture.primaryGuestId })
+    .eq("id", fixture.familyId)
+    .eq("event_id", fixture.eventId);
+  if (mainContact.error) throw new Error("M5 QA main-contact assignment failed.");
+  return fixture;
+}
+
+export async function deleteGuestUxFixture(fixture: GuestUxFixture) {
+  const client = admin();
+  const familyReset = await client.from("family_groups")
+    .update({ main_contact_guest_id: null })
+    .eq("id", fixture.familyId)
+    .eq("event_id", fixture.eventId);
+  const guests = await client.from("guests").delete().eq("event_id", fixture.eventId);
+  const family = await client.from("family_groups").delete().eq("id", fixture.familyId).eq("event_id", fixture.eventId);
+  if (familyReset.error || guests.error || family.error) throw new Error("M5 QA fixture cleanup failed.");
+
+  const [guestResidue, familyResidue] = await Promise.all([
+    client.from("guests").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
+    client.from("family_groups").select("id", { count: "exact", head: true }).eq("event_id", fixture.eventId),
+  ]);
+  const residue = (guestResidue.count ?? 0) + (familyResidue.count ?? 0);
+  if (guestResidue.error || familyResidue.error || residue !== 0) {
+    throw new Error(`M5 QA fixture residue count is ${residue}.`);
+  }
 }
 
 export async function login(page: Page, identity: Pick<QaIdentity, "email" | "password">) {

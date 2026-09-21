@@ -1,10 +1,11 @@
 import { apiSecurityErrorResponse, requireEventAccess } from "@/lib/apiSecurity";
+import { CEREMONY_TYPES, canonicalCeremonyPlaceKind, isCeremonyPlaceAllowed, type CeremonyType } from "@/lib/ceremonyHierarchy";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-const CEREMONY_TYPES = new Set(["civil", "religious", "other", "undecided"]);
+const CEREMONY_TYPE_SET = new Set<string>(CEREMONY_TYPES);
 const RELIGIONS = new Set(["catholic", "christian_non_catholic", "islamic", "jewish", "hindu", "buddhist", "other", "unspecified"]);
 
 export async function GET(req: NextRequest) {
@@ -24,8 +25,13 @@ export async function PUT(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
   const ceremonyType = typeof body.ceremony_type === "string" ? body.ceremony_type : "undecided";
   const religion = typeof body.religion === "string" && body.religion ? body.religion : null;
-  if (!CEREMONY_TYPES.has(ceremonyType) || (religion && !RELIGIONS.has(religion))) {
+  if (!CEREMONY_TYPE_SET.has(ceremonyType) || (religion && !RELIGIONS.has(religion))) {
     return NextResponse.json({ error: "Invalid ceremony classification" }, { status: 400 });
+  }
+  const typedCeremonyType = ceremonyType as CeremonyType;
+  const ceremonyPlaceKind = canonicalCeremonyPlaceKind(body.ceremony_place_kind);
+  if (!isCeremonyPlaceAllowed(typedCeremonyType, ceremonyPlaceKind)) {
+    return NextResponse.json({ error: "CEREMONY_PLACE_KIND_INVALID" }, { status: 400 });
   }
   const clean = (value: unknown, max = 240) => typeof value === "string" ? value.trim().slice(0, max) || null : null;
   const payload = {
@@ -33,9 +39,9 @@ export async function PUT(req: NextRequest) {
     ceremony_type: ceremonyType,
     religion: ceremonyType === "religious" ? religion ?? "unspecified" : null,
     denomination: ceremonyType === "religious" ? clean(body.denomination) : null,
-    ceremony_place_kind: clean(body.ceremony_place_kind, 80),
-    ceremony_place_name: clean(body.ceremony_place_name),
-    ceremony_place_address: clean(body.ceremony_place_address, 500),
+    ceremony_place_kind: typedCeremonyType === "undecided" ? null : clean(ceremonyPlaceKind, 80),
+    ceremony_place_name: typedCeremonyType === "undecided" ? null : clean(body.ceremony_place_name),
+    ceremony_place_address: typedCeremonyType === "undecided" ? null : clean(body.ceremony_place_address, 500),
     ceremony_officiant: clean(body.ceremony_officiant),
   };
   const { error } = await getServiceClient().from("wedding_cards").upsert(payload, { onConflict: "event_id" });

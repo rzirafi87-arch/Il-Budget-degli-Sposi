@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import ExportButton from "@/components/ExportButton";
+import { GuestMobileCard, type GuestMenuPreference } from "@/components/guests/GuestMobileCard";
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
 import { getUserCountrySafe } from "@/constants/geo";
@@ -16,7 +17,7 @@ import { Plus, Trash2, Users, X } from "lucide-react";
 
 const supabase = getBrowserClient();
 
-type MenuPreference = "carne" | "pesce" | "baby" | "animazione" | "vegetariano" | "posto_tavolo";
+type MenuPreference = GuestMenuPreference;
 
 type Guest = {
   id?: string;
@@ -66,6 +67,7 @@ export default function InvitatiPage() {
   const [showFamilyModal, setShowFamilyModal] = useState(false);
   const [newFamilyName, setNewFamilyName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const country = getUserCountrySafe();
@@ -74,6 +76,7 @@ export default function InvitatiPage() {
   // Table arrangement state
   const [tables, setTables] = useState<Table[]>([]);
   const [loadingTables, setLoadingTables] = useState(true);
+  const [tablesError, setTablesError] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -81,8 +84,11 @@ export default function InvitatiPage() {
   }, []);
 
   const loadTables = async () => {
+    setLoadingTables(true);
+    setTablesError(false);
     try {
       const res = await fetch("/api/my/tables");
+      if (!res.ok) throw new Error("TABLES_LOAD_FAILED");
       const json = await res.json();
       setTables((json.tables || []).map((t: Record<string, unknown>) => ({
         totalSeats: Number(t.totalSeats || 0),
@@ -90,12 +96,15 @@ export default function InvitatiPage() {
       })));
     } catch (e) {
       console.error(e);
+      setTablesError(true);
     } finally {
       setLoadingTables(false);
     }
   };
 
   const loadData = async () => {
+    setLoading(true);
+    setLoadError(false);
     try {
       const { data } = await supabase.auth.getSession();
       const jwt = data.session?.access_token;
@@ -103,6 +112,7 @@ export default function InvitatiPage() {
       if (jwt) headers.Authorization = `Bearer ${jwt}`;
 
       const res = await fetch("/api/my/guests", { headers });
+      if (!res.ok) throw new Error("GUESTS_LOAD_FAILED");
       const json = await res.json();
 
       setGuests(json.guests || []);
@@ -111,6 +121,7 @@ export default function InvitatiPage() {
       setDefaultRsvpDeadline(json.defaultRsvpDeadline || "");
     } catch (err) {
       console.error("Errore caricamento invitati:", err);
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -253,6 +264,7 @@ export default function InvitatiPage() {
   };
 
   const saveData = async () => {
+    if (saving) return;
     setSaving(true);
     setMessage(null);
     try {
@@ -311,6 +323,23 @@ export default function InvitatiPage() {
     return <LoadingState label={t("loading")} cards={4} />;
   }
 
+  if (loadError) {
+    return (
+      <section>
+        <PageHeader
+          eyebrow={t("header.eyebrow")}
+          title={t("title")}
+          description={t("header.description")}
+          icon={<Users size={24} aria-hidden />}
+        />
+        <div className="app-card app-card--md space-y-4" role="alert">
+          <p className="text-red-700 dark:text-red-300">{t("errors.GUEST_LOAD_FAILED")}</p>
+          <AppButton type="button" onClick={() => void loadData()}>{t("actions.retry")}</AppButton>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section>
       <PageHeader
@@ -324,7 +353,7 @@ export default function InvitatiPage() {
       <div className="mb-6 flex gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label={t("tabs.label")}>
         <button
           onClick={() => setActiveTab("guests")}
-          className={`flex-1 rounded-lg px-4 py-2.5 font-semibold transition-colors ${activeTab === "guests" ? "bg-white text-fg shadow-soft-sm" : "text-muted-fg hover:text-fg"}`}
+          className={`min-h-11 flex-1 rounded-lg px-4 py-2.5 font-semibold transition-colors ${activeTab === "guests" ? "bg-bg text-fg shadow-soft-sm" : "text-muted-fg hover:text-fg"}`}
           role="tab"
           aria-selected={activeTab === "guests"}
         >
@@ -332,7 +361,7 @@ export default function InvitatiPage() {
         </button>
         <button
           onClick={() => setActiveTab("tables")}
-          className={`flex-1 rounded-lg px-4 py-2.5 font-semibold transition-colors ${activeTab === "tables" ? "bg-white text-fg shadow-soft-sm" : "text-muted-fg hover:text-fg"}`}
+          className={`min-h-11 flex-1 rounded-lg px-4 py-2.5 font-semibold transition-colors ${activeTab === "tables" ? "bg-bg text-fg shadow-soft-sm" : "text-muted-fg hover:text-fg"}`}
           role="tab"
           aria-selected={activeTab === "tables"}
         >
@@ -353,7 +382,7 @@ export default function InvitatiPage() {
         <ImageCarousel images={getPageImages("invitati", country)} height="280px" />
 
       {message && (
-        <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm">{message}</div>
+        <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-100" role="status">{message}</div>
       )}
 
       <PageInfoNote
@@ -371,77 +400,78 @@ export default function InvitatiPage() {
       />
 
       {/* Deadline RSVP Globale */}
-      <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="app-card app-card--md mb-6">
+        <label className="app-label mb-2 block" htmlFor="guest-default-rsvp-deadline">
           {t("rsvpDeadline")}
         </label>
         <input
           type="date"
-          className="border border-gray-300 rounded px-4 py-2 w-full max-w-xs"
+          id="guest-default-rsvp-deadline"
+          className="app-input min-h-11 w-full max-w-xs"
           value={defaultRsvpDeadline}
           onChange={(e) => setDefaultRsvpDeadline(e.target.value)}
         />
       </div>
 
       {/* Statistiche */}
-      <div className="mb-6 p-6 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
+      <div className="app-card app-card--md mb-6">
         <h3 className="font-semibold text-lg mb-4">{t("summary.title")}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div className="p-3 bg-pink-50 rounded-lg border border-pink-200">
-            <div className="text-gray-800 font-semibold">{t("guestTypes.bride")}</div>
-            <div className="text-2xl font-bold text-pink-600">{totalByType.bride}</div>
+          <div className="rounded-lg border border-pink-200 bg-pink-50 p-3 dark:border-pink-800 dark:bg-pink-950">
+            <div className="font-semibold text-fg">{t("guestTypes.bride")}</div>
+            <div className="text-2xl font-bold text-pink-700 dark:text-pink-300">{totalByType.bride}</div>
           </div>
-          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="text-gray-800 font-semibold">{t("guestTypes.groom")}</div>
-            <div className="text-2xl font-bold text-blue-600">{totalByType.groom}</div>
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-950">
+            <div className="font-semibold text-fg">{t("guestTypes.groom")}</div>
+            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">{totalByType.groom}</div>
           </div>
-          <div className="p-3 bg-gray-50 rounded-lg border border-gray-300">
-            <div className="text-gray-800 font-semibold">{t("guestTypes.common")}</div>
-            <div className="text-2xl font-bold text-gray-700">{totalByType.common}</div>
+          <div className="rounded-lg border border-border bg-muted p-3">
+            <div className="font-semibold text-fg">{t("guestTypes.common")}</div>
+            <div className="text-2xl font-bold text-fg">{totalByType.common}</div>
           </div>
-          <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-            <div className="text-gray-800 font-semibold">{t("summary.attendees")}</div>
-            <div className="text-2xl font-bold text-green-600">{totalGuests}</div>
+          <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950">
+            <div className="font-semibold text-fg">{t("summary.attendees")}</div>
+            <div className="text-2xl font-bold text-green-700 dark:text-green-300">{totalGuests}</div>
           </div>
         </div>
 
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
-          <div className="flex justify-between p-2 bg-gray-50 rounded">
+          <div className="flex justify-between rounded bg-muted p-2 text-fg">
             <span>🥩 {t("menu.meat")}:</span>
             <span className="font-semibold">{menuCounts.carne}</span>
           </div>
-          <div className="flex justify-between p-2 bg-gray-50 rounded">
+          <div className="flex justify-between rounded bg-muted p-2 text-fg">
             <span>🐟 {t("menu.fish")}:</span>
             <span className="font-semibold">{menuCounts.pesce}</span>
           </div>
-          <div className="flex justify-between p-2 bg-gray-50 rounded">
+          <div className="flex justify-between rounded bg-muted p-2 text-fg">
             <span>👶 {t("menu.child")}:</span>
             <span className="font-semibold">{menuCounts.baby}</span>
           </div>
-          <div className="flex justify-between p-2 bg-gray-50 rounded">
+          <div className="flex justify-between rounded bg-muted p-2 text-fg">
             <span>🎪 {t("menu.entertainment")}:</span>
             <span className="font-semibold">{menuCounts.animazione}</span>
           </div>
-          <div className="flex justify-between p-2 bg-gray-50 rounded">
+          <div className="flex justify-between rounded bg-muted p-2 text-fg">
             <span>🥗 {t("menu.vegetarian")}:</span>
             <span className="font-semibold">{menuCounts.vegetariano}</span>
           </div>
-          <div className="flex justify-between p-2 bg-gray-50 rounded">
+          <div className="flex justify-between rounded bg-muted p-2 text-fg">
             <span>💺 {t("menu.seat")}:</span>
             <span className="font-semibold">{menuCounts.posto_tavolo}</span>
           </div>
         </div>
 
-        <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+        <div className="mt-4 rounded-lg border border-purple-200 bg-purple-50 p-3 dark:border-purple-800 dark:bg-purple-950">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-800 font-semibold">🎁 {t("summary.favours")}:</span>
-            <span className="font-bold text-purple-600">{totalBomboniere}</span>
+            <span className="font-semibold text-fg">🎁 {t("summary.favours")}:</span>
+            <span className="font-bold text-purple-700 dark:text-purple-300">{totalBomboniere}</span>
           </div>
         </div>
-        <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+        <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-800 font-semibold">{t("summary.allergies")}:</span>
-            <span className="font-bold text-amber-700">{totalAllergies}</span>
+            <span className="font-semibold text-fg">{t("summary.allergies")}:</span>
+            <span className="font-bold text-amber-800 dark:text-amber-200">{totalAllergies}</span>
           </div>
         </div>
       </div>
@@ -449,7 +479,7 @@ export default function InvitatiPage() {
       {/* Gestione Famiglie */}
       <div className="app-card app-card--md mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg text-gray-900">{t("sections.familyGroups")}</h3>
+          <h3 className="text-lg font-bold text-fg">{t("sections.familyGroups")}</h3>
           <AppButton
             onClick={() => setShowFamilyModal(true)}
             size="sm"
@@ -457,11 +487,11 @@ export default function InvitatiPage() {
             <Plus size={17} aria-hidden /> {t("families.add")}
           </AppButton>
         </div>
-  <p className="text-xs text-gray-600 mb-3">
+  <p className="mb-3 text-xs text-muted-fg">
           {t("families.helper")} <strong className="text-purple-700">💡 {t("families.tipLabel")}</strong> {t("families.tip")}
   </p>
         {familyGroups.length === 0 ? (
-          <div className="text-center text-gray-500 py-4">{t("families.empty")}</div>
+          <div className="py-4 text-center text-muted-fg">{t("families.empty")}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {familyGroups.map((family) => {
@@ -470,11 +500,11 @@ export default function InvitatiPage() {
                 const familyMembersExcluded = familyMembers.filter(g => g.excludeFromFamilyTable);
               const mainContact = familyMembers.find(g => g.isMainContact);
               return (
-                <div key={family.id} className="p-4 bg-white rounded-lg border-2 border-purple-300 shadow-sm">
+                <div key={family.id} className="rounded-lg border-2 border-purple-300 bg-bg p-4 shadow-sm dark:border-purple-700">
                   <div className="flex justify-between items-start mb-2">
                     <input
                       type="text"
-                      className="font-bold text-gray-800 border-b-2 border-transparent hover:border-purple-300 focus:border-purple-500 focus:outline-none bg-transparent flex-1 mr-2"
+                      className="mr-2 min-h-11 flex-1 border-b-2 border-transparent bg-transparent font-bold text-fg hover:border-purple-300 focus:border-purple-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       value={family.familyName}
                       onChange={(e) => updateFamilyName(family.id, e.target.value)}
                       placeholder={t("families.name")}
@@ -488,7 +518,7 @@ export default function InvitatiPage() {
                       ?
                     </button>
                   </div>
-                  <div className="text-xs text-gray-600">
+                  <div className="text-xs text-muted-fg">
                     <div className="mb-1">👤 {t("families.contact")}: {mainContact?.name || t("families.unassigned")}</div>
                       <div className="flex justify-between items-center">
                         <span>👥 {t("summary.total")}: {familyMembers.length}</span>
@@ -512,12 +542,12 @@ export default function InvitatiPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]" role="presentation">
           <div className="app-card app-card--lg max-h-[min(90vh,42rem)] w-full max-w-md overflow-y-auto shadow-soft-xl" role="dialog" aria-modal="true" aria-labelledby="family-modal-title">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h3 id="family-modal-title" className="font-bold text-xl text-gray-900">{t("families.createTitle")}</h3>
+              <h3 id="family-modal-title" className="text-xl font-bold text-fg">{t("families.createTitle")}</h3>
               <button type="button" className="app-button app-button--ghost app-button--icon" onClick={() => { setShowFamilyModal(false); setNewFamilyName(""); }} aria-label={t("actions.closeDialog")}>
                 <X size={20} aria-hidden />
               </button>
             </div>
-            <label htmlFor="new-family-name" className="block text-sm font-medium text-gray-700 mb-2">{t("families.name")}</label>
+            <label htmlFor="new-family-name" className="app-label mb-2 block">{t("families.name")}</label>
             <input
               type="text"
               className="app-input mb-4"
@@ -567,7 +597,25 @@ export default function InvitatiPage() {
           </div>
         </div>
 
-        <div className="app-table-shell">
+        {guests.length === 0 ? (
+          <div className="app-card app-card--md py-8 text-center text-muted-fg">{t("list.empty")}</div>
+        ) : (
+          <div className="space-y-3 md:hidden" data-testid="mobile-guest-list">
+            {guests.map((guest) => (
+              <GuestMobileCard
+                key={guest.id}
+                guest={guest}
+                families={familyGroups}
+                onChange={(field, value) => updateGuest(guest.id, field, value)}
+                onChangeMultiple={(updates) => updateGuestMultiple(guest.id, updates)}
+                onToggleMenu={(preference) => toggleMenuPreference(guest.id, preference)}
+                onDelete={() => deleteGuest(guest.id)}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="app-table-shell hidden md:block" data-testid="desktop-guest-table">
           <table className="app-table text-xs">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
@@ -587,14 +635,7 @@ export default function InvitatiPage() {
               </tr>
             </thead>
             <tbody>
-              {guests.length === 0 ? (
-                <tr>
-                    <td colSpan={13} className="px-6 py-8 text-center text-gray-500">
-                    {t("list.empty")}
-                  </td>
-                </tr>
-              ) : (
-                guests.map((guest) => (
+              {guests.map((guest) => (
                   <tr key={guest.id} className="border-b border-gray-50 hover:bg-gray-50/60">
                     <td className="px-3 py-2">
                       <input
@@ -603,6 +644,7 @@ export default function InvitatiPage() {
                         value={guest.name}
                         onChange={(e) => updateGuest(guest.id, "name", e.target.value)}
                         placeholder={t("list.namePlaceholder")}
+                        aria-label={t("fieldLabels.name", {name: guest.name || t("list.guestFallback")})}
                       />
                     </td>
                     <td className="px-2 py-2">
@@ -610,6 +652,7 @@ export default function InvitatiPage() {
                         className="border border-gray-200 rounded px-1 py-1 w-full text-xs"
                         value={guest.guestType}
                         onChange={(e) => updateGuest(guest.id, "guestType", e.target.value)}
+                        aria-label={t("fieldLabels.type", {name: guest.name || t("list.guestFallback")})}
                       >
                         <option value="common">{t("guestTypes.common")}</option>
                         <option value="bride">{t("guestTypes.bride")}</option>
@@ -628,6 +671,7 @@ export default function InvitatiPage() {
                             familyGroupName: family?.familyName
                           });
                         }}
+                        aria-label={t("fieldLabels.family", {name: guest.name || t("list.guestFallback")})}
                       >
                         <option value="">{t("families.none")}</option>
                         {familyGroups.map(f => (
@@ -744,8 +788,7 @@ export default function InvitatiPage() {
                       </button>
                     </td>
                   </tr>
-                ))
-              )}
+                ))}
             </tbody>
           </table>
         </div>
@@ -840,13 +883,14 @@ export default function InvitatiPage() {
 
       {/* Pulsante Salva */}
       <div className="flex justify-end">
-        <button
+        <AppButton
+          type="button"
           onClick={saveData}
           disabled={saving}
-          className="px-6 py-3 bg-[#A3B59D] text-white rounded-lg hover:bg-[#8fa085] disabled:opacity-50 font-semibold"
+          loading={saving}
         >
           {saving ? t("actions.saving") : t("actions.saveAll")}
-        </button>
+        </AppButton>
       </div>
     </>
   );
@@ -859,7 +903,11 @@ export default function InvitatiPage() {
     const availableSeats = totalSeats - assignedSeats;
 
     if (loadingTables) {
-      return <p className="text-gray-500">{t("tables.loading")}</p>;
+      return <p className="text-gray-500" role="status" aria-live="polite">{t("tables.loading")}</p>;
+    }
+
+    if (tablesError) {
+      return <div className="app-card app-card--md space-y-4" role="alert"><p className="text-red-700 dark:text-red-300">{t("tables.loadError")}</p><AppButton type="button" onClick={() => void loadTables()}>{t("actions.retry")}</AppButton></div>;
     }
 
     return (

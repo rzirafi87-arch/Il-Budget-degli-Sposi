@@ -1,0 +1,30 @@
+{
+  "branch52M4": {
+    "timeline": {
+      "imported": "Checkliste gespeichert.", "saveError": "Die Aufgabe konnte nicht gespeichert werden. Die Formulardaten bleiben erhalten.", "created": "Aufgabe hinzugefügt.",
+      "linked": "Dienstleister verknüpft.", "unlinked": "Verknüpfung entfernt.", "updated": "Aufgabe aktualisiert.", "updateError": "Die Aufgabe konnte nicht aktualisiert werden.",
+      "confirmDelete": "Aufgabe „{title}“ löschen?", "deleted": "Aufgabe gelöscht.", "deleteError": "Die Aufgabe konnte nicht gelöscht werden.",
+      "loadError": "Timeline und Dienstleister konnten nicht geladen werden.", "retry": "Erneut versuchen", "filterSupplier": "Nach Dienstleister filtern", "allSuppliers": "Alle Dienstleister",
+      "addTitle": "Manuelle Aufgabe hinzufügen", "taskTitle": "Titel", "description": "Beschreibung", "category": "Kategorie", "monthsBefore": "Monate vor der Veranstaltung",
+      "supplier": "Optionaler Dienstleister", "searchSupplier": "Dienstleister suchen", "noSupplier": "Kein Dienstleister", "savedSupplier": "Gespeichert", "privateSupplier": "Privat",
+      "add": "Aufgabe hinzufügen", "markIncomplete": "Als offen markieren", "markComplete": "Als erledigt markieren", "linkedSupplier": "Dienstleister:",
+      "deleteNamed": "{title} löschen", "changeSupplier": "Dienstleister ändern", "empty": "Keine Aufgabe entspricht den Filtern."
+    },
+    "appointments": {
+      "eyebrow": "Manuelle Planung", "title": "Termine", "description": "Erstellen Sie Termine manuell und verknüpfen Sie sie mit Dienstleistern Ihrer Veranstaltung.",
+      "saved": "Termin hinzugefügt.", "saveError": "Speichern nicht möglich. Die Formulardaten bleiben erhalten.", "linked": "Dienstleister verknüpft.", "unlinked": "Verknüpfung entfernt.", "updateError": "Der Termin konnte nicht aktualisiert werden.",
+      "confirmDelete": "Termin „{title}“ löschen?", "deleted": "Termin gelöscht.", "deleteError": "Der Termin konnte nicht gelöscht werden.",
+      "addTitle": "Neuer Termin", "formTitle": "Titel", "date": "Datum", "location": "Ort", "notes": "Notizen", "supplier": "Optionaler Dienstleister",
+      "searchSupplier": "Dienstleister suchen", "noSupplier": "Kein Dienstleister", "savedSupplier": "Gespeichert", "privateSupplier": "Privat", "add": "Termin hinzufügen",
+      "listTitle": "Ihre Termine", "filterSupplier": "Dienstleister", "allSuppliers": "Alle", "loading": "Termine werden geladen…", "loadError": "Termine und Dienstleister konnten nicht geladen werden.", "retry": "Erneut versuchen", "empty": "Kein Termin entspricht den Filtern.",
+      "dateValue": "Datum: {date}", "linkedSupplier": "Dienstleister:", "deleteNamed": "{title} löschen", "delete": "Löschen", "changeSupplier": "Dienstleister ändern"
+    },
+    "inverse": {
+      "title": "Timeline und Termine", "saveFirst": "Speichern Sie den Dienstleister zuerst in der Veranstaltung, um Aufgaben und Termine zu verknüpfen.", "loading": "Verknüpfungen werden geladen…", "error": "Verknüpfungen konnten nicht geladen werden.", "retry": "Erneut versuchen",
+      "timelineTitle": "Timeline-Aufgaben", "openTimeline": "Timeline öffnen", "timelineEmpty": "Keine verknüpften Aufgaben.", "appointmentsTitle": "Termine", "openAppointments": "Termine öffnen", "appointmentsEmpty": "Keine verknüpften Termine."
+    },
+    "privateSupplier": {
+      "loading": "Privater Dienstleister wird geladen…", "notFound": "Privater Dienstleister nicht gefunden.", "back": "Zurück zu Dienstleistern", "error": "Der private Dienstleister konnte nicht geladen werden.", "retry": "Erneut versuchen", "unnamed": "Unbenannter Dienstleister", "badge": "Privater Veranstaltungsdienstleister", "details": "Details", "detailsEmpty": "Keine weiteren Details.", "phone": "Telefon", "email": "E-Mail", "city": "Stadt"
+    }
+  }
+}

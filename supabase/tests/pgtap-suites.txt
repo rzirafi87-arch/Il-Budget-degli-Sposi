@@ -1,0 +1,9 @@
+# Every pgTAP suite under supabase/tests must be listed here.
+supabase/tests/branch_41_guest_snapshot.sql
+supabase/tests/branch_41_user_favorites.sql
+supabase/tests/branch_41_budget_apply.sql
+supabase/tests/branch_41_budget_snapshot.sql
+supabase/tests/branch_43_ceremony_budget.sql
+supabase/tests/branch_52_event_catalog_snapshots.sql
+supabase/tests/branch_52_location_supplier_associations.sql
+supabase/tests/branch_52_supplier_timeline_appointments.sql

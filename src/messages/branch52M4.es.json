@@ -1,0 +1,30 @@
+{
+  "branch52M4": {
+    "timeline": {
+      "imported": "Lista guardada.", "saveError": "No se pudo guardar la tarea. Los datos del formulario se conservaron.", "created": "Tarea añadida.",
+      "linked": "Proveedor vinculado.", "unlinked": "Vínculo eliminado.", "updated": "Tarea actualizada.", "updateError": "No se pudo actualizar la tarea.",
+      "confirmDelete": "¿Eliminar la tarea “{title}”?", "deleted": "Tarea eliminada.", "deleteError": "No se pudo eliminar la tarea.",
+      "loadError": "No se pudieron cargar la cronología y los proveedores.", "retry": "Reintentar", "filterSupplier": "Filtrar por proveedor", "allSuppliers": "Todos los proveedores",
+      "addTitle": "Añadir una tarea manual", "taskTitle": "Título", "description": "Descripción", "category": "Categoría", "monthsBefore": "Meses antes del evento",
+      "supplier": "Proveedor opcional", "searchSupplier": "Buscar proveedores", "noSupplier": "Sin proveedor", "savedSupplier": "Guardado", "privateSupplier": "Privado",
+      "add": "Añadir tarea", "markIncomplete": "Marcar como pendiente", "markComplete": "Marcar como completada", "linkedSupplier": "Proveedor:",
+      "deleteNamed": "Eliminar {title}", "changeSupplier": "Cambiar proveedor", "empty": "Ninguna tarea coincide con los filtros."
+    },
+    "appointments": {
+      "eyebrow": "Planificación manual", "title": "Citas", "description": "Crea citas manualmente y vincúlalas a los proveedores de tu evento.",
+      "saved": "Cita añadida.", "saveError": "No se pudo guardar. Los datos del formulario se conservaron.", "linked": "Proveedor vinculado.", "unlinked": "Vínculo eliminado.", "updateError": "No se pudo actualizar la cita.",
+      "confirmDelete": "¿Eliminar la cita “{title}”?", "deleted": "Cita eliminada.", "deleteError": "No se pudo eliminar la cita.",
+      "addTitle": "Nueva cita", "formTitle": "Título", "date": "Fecha", "location": "Lugar", "notes": "Notas", "supplier": "Proveedor opcional",
+      "searchSupplier": "Buscar proveedores", "noSupplier": "Sin proveedor", "savedSupplier": "Guardado", "privateSupplier": "Privado", "add": "Añadir cita",
+      "listTitle": "Tus citas", "filterSupplier": "Proveedor", "allSuppliers": "Todos", "loading": "Cargando citas…", "loadError": "No se pudieron cargar las citas y los proveedores.", "retry": "Reintentar", "empty": "Ninguna cita coincide con los filtros.",
+      "dateValue": "Fecha: {date}", "linkedSupplier": "Proveedor:", "deleteNamed": "Eliminar {title}", "delete": "Eliminar", "changeSupplier": "Cambiar proveedor"
+    },
+    "inverse": {
+      "title": "Cronología y citas", "saveFirst": "Guarda primero el proveedor en el evento para vincular tareas y citas.", "loading": "Cargando vínculos…", "error": "No se pudieron cargar los vínculos.", "retry": "Reintentar",
+      "timelineTitle": "Tareas de la cronología", "openTimeline": "Abrir cronología", "timelineEmpty": "No hay tareas vinculadas.", "appointmentsTitle": "Citas", "openAppointments": "Abrir citas", "appointmentsEmpty": "No hay citas vinculadas."
+    },
+    "privateSupplier": {
+      "loading": "Cargando proveedor privado…", "notFound": "Proveedor privado no encontrado.", "back": "Volver a proveedores", "error": "No se pudo cargar el proveedor privado.", "retry": "Reintentar", "unnamed": "Proveedor sin nombre", "badge": "Proveedor privado del evento", "details": "Detalles", "detailsEmpty": "Sin detalles adicionales.", "phone": "Teléfono", "email": "Correo", "city": "Ciudad"
+    }
+  }
+}

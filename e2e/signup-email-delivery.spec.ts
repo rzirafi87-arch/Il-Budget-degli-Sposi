@@ -153,32 +153,43 @@ test("real signup email confirmation, login, CurrentEvent, relogin and cleanup",
     expect(secondLogin.data.session?.user.id).toBe(ownerId);
     expect((await secondClient.auth.signOut()).error).toBeNull();
   } finally {
-    if (eventId && ownerId) {
-      const owned = await admin.from("events").select("id,owner_id").eq("id", eventId).maybeSingle();
-      if (owned.data?.owner_id !== ownerId) throw new Error("Refusing QA cleanup for an unowned event.");
-      const removedEvent = await admin.from("events").delete().eq("id", eventId).eq("owner_id", ownerId).select("id");
-      if (removedEvent.error || removedEvent.data?.length !== 1) throw new Error("QA event cleanup failed.");
+    let cleanupOwnerId = ownerId;
+    if (eventId && !cleanupOwnerId) {
+      const owned = await admin.from("events").select("owner_id").eq("id", eventId).maybeSingle();
+      if (owned.error) throw new Error("QA event cleanup owner lookup failed.");
+      cleanupOwnerId = owned.data?.owner_id;
     }
-    if (ownerId) {
-      const owner = await admin.auth.admin.getUserById(ownerId);
+    if (eventId && !cleanupOwnerId) {
+      throw new Error("QA event cleanup owner is unavailable.");
+    }
+    if (cleanupOwnerId) {
+      const owner = await admin.auth.admin.getUserById(cleanupOwnerId);
       const marker = owner.data.user?.user_metadata?.registration_request_id;
       const expectedEmailHash = createHash("sha256").update(email).digest("hex");
       const actualEmailHash = owner.data.user?.email
         ? createHash("sha256").update(owner.data.user.email.toLowerCase()).digest("hex")
         : "";
       if (!marker || actualEmailHash !== expectedEmailHash) throw new Error("Refusing QA cleanup for an unverified owner.");
-      const removedOwner = await admin.auth.admin.deleteUser(ownerId, false);
+    }
+    if (eventId && cleanupOwnerId) {
+      const owned = await admin.from("events").select("id,owner_id").eq("id", eventId).maybeSingle();
+      if (owned.data?.owner_id !== cleanupOwnerId) throw new Error("Refusing QA cleanup for an unowned event.");
+      const removedEvent = await admin.from("events").delete().eq("id", eventId).eq("owner_id", cleanupOwnerId).select("id");
+      if (removedEvent.error || removedEvent.data?.length !== 1) throw new Error("QA event cleanup failed.");
+    }
+    if (cleanupOwnerId) {
+      const removedOwner = await admin.auth.admin.deleteUser(cleanupOwnerId, false);
       if (removedOwner.error) throw new Error("QA owner cleanup failed.");
     }
     if (eventId) {
       const eventAfter = await admin.from("events").select("id").eq("id", eventId).maybeSingle();
       expect(eventAfter.data).toBeNull();
     }
-    if (ownerId) {
+    if (cleanupOwnerId) {
       const [ownerAfter, profileAfter, membershipAfter] = await Promise.all([
-        admin.auth.admin.getUserById(ownerId),
-        admin.from("profiles").select("id").eq("id", ownerId).maybeSingle(),
-        admin.from("event_members").select("id").eq("user_id", ownerId).maybeSingle(),
+        admin.auth.admin.getUserById(cleanupOwnerId),
+        admin.from("profiles").select("id").eq("id", cleanupOwnerId).maybeSingle(),
+        admin.from("event_members").select("id").eq("user_id", cleanupOwnerId).maybeSingle(),
       ]);
       expect(ownerAfter.data.user).toBeNull();
       expect(profileAfter.data).toBeNull();

@@ -30,7 +30,7 @@ const CATEGORY_LABELS: Record<WeddingBudgetLocale, Record<string, string>> = {
 const LABELS: Record<Exclude<WeddingBudgetLocale, "it">, readonly string[]> = {
   en: [
     "Guest / Parent Attire","Bridesmaid Accessories","Witness / Attendant Accessories","Wedding Rings","Engagement Ring","Other Accessories",
-    "Church / Civil Ceremony Venue","Ceremony Flowers","Church Cleaning","Gift Basket","Documents & Paperwork","Fees / Donations","Doves for the Exit","Toast Bottle","Toast Glasses","Ceremony Package",
+    "Ceremony Venue Costs","Ceremony Flowers","Church Cleaning","Gift Basket","Documents & Paperwork","Fees / Donations","Doves for the Exit","Toast Bottle","Toast Glasses","Ceremony Package",
     "Tissues","Rice or Petals","Ceremony Booklet","Sweets or Mints","Fan","Soap Bubbles","Emergency Kit","Mini Bottle of Water","Mosquito Repellent",
     "Traditional Fireworks","Spark Fountains","Fireworks Display","Sparklers for Guests","Sky Lantern Release","Fireworks Package",
     "Bouquet","Boutonniere","Centerpieces","Decorations","Candles","Seating Chart","Vase & Structure Rental","Florist Package","Corsage","Decorative Lighting",
@@ -56,7 +56,7 @@ const LABELS: Record<Exclude<WeddingBudgetLocale, "it">, readonly string[]> = {
   ],
   es: [
     "Vestuario de invitados / Padres","Accesorios de damas de honor","Accesorios de testigos","Alianzas","Anillo de compromiso","Otros accesorios",
-    "Iglesia / Registro civil","Flores para la ceremonia","Limpieza de la iglesia","Cesta de ofrendas","Documentos y trámites","Tasas / Donativos","Palomas a la salida","Botella para el brindis","Copas para el brindis","Paquete de ceremonia",
+    "Gastos del lugar de la ceremonia","Flores para la ceremonia","Limpieza de la iglesia","Cesta de ofrendas","Documentos y trámites","Tasas / Donativos","Palomas a la salida","Botella para el brindis","Copas para el brindis","Paquete de ceremonia",
     "Pañuelos","Arroz o pétalos","Libreto de la ceremonia","Caramelos o mentas","Abanico","Pompas de jabón","Kit de emergencia","Botellita de agua","Repelente de mosquitos",
     "Fuegos artificiales tradicionales","Fuentes luminosas","Espectáculo de fuegos artificiales","Bengalas para invitados","Suelta de farolillos","Paquete de fuegos artificiales",
     "Ramo","Prendido","Centros de mesa","Decoración","Velas","Plan de mesas","Alquiler de jarrones y estructuras","Paquete de floristería","Corsage","Iluminación decorativa",
@@ -82,7 +82,7 @@ const LABELS: Record<Exclude<WeddingBudgetLocale, "it">, readonly string[]> = {
   ],
   fr: [
     "Tenues des invités / Parents","Accessoires des demoiselles d’honneur","Accessoires des témoins","Alliances","Bague de fiançailles","Autres accessoires",
-    "Église / Mairie","Fleurs de cérémonie","Nettoyage de l’église","Panier d’offrandes","Documents et démarches","Frais / Dons","Colombes à la sortie","Bouteille pour le toast","Verres pour le toast","Forfait cérémonie",
+    "Frais du lieu de cérémonie","Fleurs de cérémonie","Nettoyage de l’église","Panier d’offrandes","Documents et démarches","Frais / Dons","Colombes à la sortie","Bouteille pour le toast","Verres pour le toast","Forfait cérémonie",
     "Mouchoirs","Riz ou pétales","Livret de cérémonie","Bonbons ou pastilles","Éventail","Bulles de savon","Kit de secours","Mini-bouteille d’eau","Répulsif anti-moustiques",
     "Feux d’artifice traditionnels","Fontaines lumineuses","Spectacle pyrotechnique","Cierges magiques pour les invités","Lâcher de lanternes","Forfait feux d’artifice",
     "Bouquet","Boutonnière","Centres de table","Décoration","Bougies","Plan de table","Location de vases et structures","Forfait fleuriste","Corsage","Éclairage décoratif",
@@ -108,7 +108,7 @@ const LABELS: Record<Exclude<WeddingBudgetLocale, "it">, readonly string[]> = {
   ],
   de: [
     "Outfits für Gäste / Eltern","Accessoires für Brautjungfern","Accessoires für Trauzeugen","Eheringe","Verlobungsring","Weitere Accessoires",
-    "Kirche / Standesamt","Blumenschmuck für die Trauung","Kirchenreinigung","Gabenkorb","Dokumente und Formalitäten","Gebühren / Spenden","Tauben beim Auszug","Flasche für den Toast","Gläser für den Toast","Trauungspaket",
+    "Kosten des Trauorts","Blumenschmuck für die Trauung","Kirchenreinigung","Gabenkorb","Dokumente und Formalitäten","Gebühren / Spenden","Tauben beim Auszug","Flasche für den Toast","Gläser für den Toast","Trauungspaket",
     "Taschentücher","Reis oder Blütenblätter","Trauheft","Bonbons oder Minzpastillen","Fächer","Seifenblasen","Notfallset","Mini-Wasserflasche","Mückenspray",
     "Klassisches Feuerwerk","Leuchtfontänen","Feuerwerksshow","Wunderkerzen für Gäste","Himmelslaternen","Feuerwerkspaket",
     "Brautstrauß","Ansteckblume","Tischdekoration","Dekoration","Kerzen","Sitzplan","Vasen- und Strukturverleih","Floristikpaket","Corsage","Stimmungsbeleuchtung",
@@ -135,6 +135,13 @@ const LABELS: Record<Exclude<WeddingBudgetLocale, "it">, readonly string[]> = {
 };
 
 const SPECIAL_ALIASES: Partial<Record<string, Partial<Record<WeddingBudgetLocale, readonly string[]>>>> = {
+  "wedding.cerimonia.chiesa.comune": {
+    it: ["Chiesa / Comune", "Chiesa/Comune", "Chiesa", "Comune", "Luogo della cerimonia"],
+    en: ["Church / Civil Ceremony Venue", "Church", "Town Hall", "Ceremony Venue"],
+    es: ["Iglesia / Registro civil", "Iglesia", "Registro civil", "Lugar de la ceremonia"],
+    fr: ["Église / Mairie", "Église", "Mairie", "Lieu de cérémonie"],
+    de: ["Kirche / Standesamt", "Kirche", "Standesamt", "Trauort"],
+  },
   "wedding.ceremony.booklet": {
     it: ["Libretto Messa", "Libretti Messa", "Libretto della messa", "Libretto della messa o del rito", "Libretti cerimonia"],
     en: ["Booklet", "Ceremony Booklet", "Wedding Ceremony Booklet", "Order of Service"],
@@ -149,7 +156,7 @@ const SPECIAL_ALIASES: Partial<Record<string, Partial<Record<WeddingBudgetLocale
     it: ["Segnaposto", "Segnaposti", "Tableau / segnaposto"], en: ["Place Card", "Place Cards"], es: ["Marcasitio", "Marcasitios", "Tarjeta de mesa"], fr: ["Marque-place", "Marque-places"], de: ["Platzkarte", "Platzkarten"],
   },
   "wedding.sposa.make.up.artist": {
-    en: ["Makeup", "Make-up", "Makeup Artist", "Make-up Artist", "Bridal Makeup", "Bridal Make-up"], es: ["Maquillaje", "Maquillador", "Maquilladora", "Maquillaje de novia"], fr: ["Maquillage", "Maquilleur", "Maquilleuse", "Maquillage mariée"], de: ["Make-up", "Braut-Make-up", "Visagist", "Visagistin"],
+    it: ["Truccatrice", "Sposa make-up", "Make-up sposa", "Trucco sposa", "Makeup sposa"], en: ["Makeup", "Make-up", "Makeup Artist", "Make-up Artist", "Bridal Makeup", "Bridal Make-up"], es: ["Maquillaje", "Maquillador", "Maquilladora", "Maquillaje de novia"], fr: ["Maquillage", "Maquilleur", "Maquilleuse", "Maquillage mariée"], de: ["Make-up", "Braut-Make-up", "Visagist", "Visagistin"],
   },
   "wedding.foto.video.servizio.fotografico": {
     en: ["Photographer", "Photography", "Wedding Photographer"], es: ["Fotógrafo", "Fotógrafa", "Fotografía de boda"], fr: ["Photographe", "Photographie de mariage"], de: ["Fotograf", "Fotografin", "Hochzeitsfotograf"],

@@ -35,5 +35,9 @@ for migration in \
   20260914150000_branch_48_partner_lifecycle.sql \
   20260915114500_branch_48_budget_snapshot_casefold.sql \
   20260915130000_branch_48_subcategory_canonical_identity.sql \
-  20260915133000_branch_48_ensure_subcategory_identity.sql
+  20260915133000_branch_48_ensure_subcategory_identity.sql \
+  20260916193000_branch_51_least_privilege.sql \
+  20260919161056_branch_52_event_catalog_snapshots.sql \
+  20260919200457_branch_52_location_supplier_associations.sql \
+  20260920072942_branch_52_supplier_timeline_appointments.sql
 do apply "supabase/migrations/$migration"; done

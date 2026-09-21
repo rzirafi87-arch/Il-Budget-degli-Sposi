@@ -1,199 +1,111 @@
-import { getBearer, requireUser } from "@/lib/apiAuth";
+import {
+  planningSelectionErrorResponse,
+  requirePlanningSelectionAccess,
+} from "@/lib/planningSelectionAuthorization";
+import {
+  parseAppointmentCreatePayload,
+  parseSupplierFilter,
+  supplierFilterColumns,
+  supplierReferenceColumns,
+} from "@/lib/supplierWorkContracts";
+import {
+  APPOINTMENT_PROJECTION,
+  loadSupplierOptions,
+  serializeAppointment,
+  supplierReferenceExists,
+  type AppointmentRow,
+} from "@/lib/supplierWorkData";
 import { getServiceClient } from "@/lib/supabaseServer";
-import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { NextRequest, NextResponse } from "next/server";
-import type { SupabaseClient } from "@supabase/supabase-js";
-
-type WeddingAgendaParams = {
-  country?: string;
-  event?: string;
-};
-
-type WeddingAgendaRow = {
-  timeline: string[] | null;
-  location_styles?: string[] | null;
-  country_name?: string | null;
-};
-
-function formatDate(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function formatTime(date: Date) {
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${hours}:${minutes}`;
-}
-
-async function buildWeddingAgenda(
-  client: SupabaseClient,
-  params: WeddingAgendaParams = {},
-): Promise<Appointment[]> {
-  const country = (params.country || "IT").toUpperCase();
-  const event = params.event || "matrimonio";
-
-  try {
-    const { data, error } = await client
-      .schema("app")
-      .from("v_country_event_wedding")
-      .select("timeline, location_styles, country_name")
-      .eq("iso2", country)
-      .eq("event_slug", event)
-      .limit(1);
-
-    if (error) {
-      console.error("appointments GET – fallback wedding agenda error", error);
-      return demoAppointments();
-    }
-
-    const row = (data?.[0] ?? null) as WeddingAgendaRow | null;
-    const timeline = Array.isArray(row?.timeline)
-      ? row!.timeline.filter((step): step is string => typeof step === "string" && step.trim().length > 0)
-      : [];
-
-    if (timeline.length === 0) {
-      return demoAppointments();
-    }
-
-    const locationStyles = Array.isArray(row?.location_styles)
-      ? row!.location_styles.filter((loc): loc is string => typeof loc === "string" && loc.trim().length > 0)
-      : [];
-
-    const baseDate = new Date();
-    baseDate.setDate(baseDate.getDate() + 30);
-    baseDate.setHours(11, 0, 0, 0);
-
-    const contextNote = row?.country_name
-      ? `Ispirato a un matrimonio in ${row.country_name}`
-      : "Esempio di agenda per il matrimonio";
-
-    return timeline.map((step, index) => {
-      const entryDate = new Date(baseDate.getTime());
-      const offsetHours = index * 2;
-      const offsetMinutes = index % 2 === 0 ? 0 : 30;
-      entryDate.setHours(baseDate.getHours() + offsetHours, offsetMinutes, 0, 0);
-
-      const location = locationStyles[index] ?? locationStyles[locationStyles.length - 1] ?? undefined;
-
-      return {
-        title: step,
-        date: formatDate(entryDate),
-        location,
-        notes: `${contextNote}. Orario indicativo: ${formatTime(entryDate)}`,
-      };
-    });
-  } catch (err) {
-    console.error("appointments GET – unexpected fallback error", err);
-    return demoAppointments();
-  }
-}
-
-function demoAppointments(): Appointment[] {
-  const inTenDays = new Date();
-  inTenDays.setDate(inTenDays.getDate() + 10);
-  const inTwentyDays = new Date();
-  inTwentyDays.setDate(inTwentyDays.getDate() + 20);
-
-  return [
-    {
-      title: "Sopralluogo Location",
-      date: formatDate(inTenDays),
-      location: "Villa Aurora",
-      notes: "Confermare capienza e menu",
-    },
-    {
-      title: "Prova Abito",
-      date: formatDate(inTwentyDays),
-      location: "Atelier Roma",
-      notes: "Portare scarpe definitive",
-    },
-  ];
-}
+import { randomUUID } from "node:crypto";
 
 export const runtime = "nodejs";
 
-type Appointment = {
-  id?: string;
-  title: string;
-  date: string; // YYYY-MM-DD
-  location?: string;
-  notes?: string;
-};
+async function readJson(request: NextRequest): Promise<unknown> {
+  try { return await request.json(); } catch { return null; }
+}
 
-export async function GET(req: NextRequest) {
-  const jwt = getBearer(req);
+function databaseError(error: { code?: string } | null, operation: string) {
+  if (error?.code === "23503") return NextResponse.json({ error: "SUPPLIER_LINK_NOT_FOUND" }, { status: 404 });
+  if (error?.code === "23514") return NextResponse.json({ error: "INVALID_SUPPLIER_LINK" }, { status: 400 });
+  if (error?.code === "23505") return NextResponse.json({ error: "APPOINTMENT_CONFLICT" }, { status: 409 });
+  return NextResponse.json({ error: operation }, { status: 500 });
+}
 
-  if (!jwt) {
-    const db = getServiceClient();
-    const appointments = await buildWeddingAgenda(db);
-    return NextResponse.json({ appointments });
-  }
-
+export async function GET(request: NextRequest) {
   try {
-    const db = getServiceClient();
-    const { userId } = await requireUser(req);
-
-    // Resolve the authoritative current event
-    const ev = { id: (await requireServerCurrentEvent(userId)).eventId };
-
-    const { data, error } = await db
-      .from("appointments")
-      .select("id, title, appointment_date, location, notes")
-      .eq("event_id", ev.id)
-      .order("appointment_date", { ascending: true });
-
-    if (error) return NextResponse.json({ code: "APPOINTMENTS_LOAD_FAILED" }, { status: 500 });
-
-    const result: Appointment[] = (data || []).map((a: { id: string; title: string; appointment_date: string; location?: string | null; notes?: string | null; }) => ({
-      id: a.id,
-      title: a.title,
-      date: a.appointment_date,
-      location: a.location || "",
-      notes: a.notes || "",
-    }));
-
-    if (result.length === 0) {
-      const appointments = await buildWeddingAgenda(db);
-      return NextResponse.json({ appointments });
+    const { currentEvent } = await requirePlanningSelectionAccess(request, "read");
+    const filter = parseSupplierFilter(request.nextUrl.searchParams);
+    if (!filter.ok) return NextResponse.json({ error: filter.error }, { status: 400 });
+    if (filter.value) {
+      const exists = await supplierReferenceExists(getServiceClient(), currentEvent.eventId, {
+        scope: filter.value.scope,
+        resource_id: filter.value.resourceId,
+      });
+      if (!exists) return NextResponse.json({ error: "SUPPLIER_LINK_NOT_FOUND" }, { status: 404 });
     }
-
-    return NextResponse.json({ appointments: result });
-  } catch (e: unknown) {
-    console.error("appointments GET failed", e);
-    return NextResponse.json({ code: "APPOINTMENTS_LOAD_FAILED" }, { status: 500 });
+    let query = getServiceClient().from("appointments")
+      .select(APPOINTMENT_PROJECTION)
+      .eq("event_id", currentEvent.eventId);
+    if (filter.value) {
+      const supplierFilter = supplierFilterColumns(filter.value);
+      query = query.eq(supplierFilter.column, supplierFilter.value);
+    }
+    const [{ data, error }, options] = await Promise.all([
+      query.order("appointment_date", { ascending: true }).order("id", { ascending: true }),
+      loadSupplierOptions(getServiceClient(), currentEvent.eventId),
+    ]);
+    if (error) return NextResponse.json({ error: "APPOINTMENTS_LOAD_FAILED" }, { status: 500 });
+    return NextResponse.json({
+      appointments: ((data ?? []) as AppointmentRow[]).map((row) => serializeAppointment(row, options)),
+      eventId: currentEvent.eventId,
+    });
+  } catch (error) {
+    if (error instanceof Error && ["SUPPLIER_OPTIONS_READ_FAILED", "SUPPLIER_LINK_LOOKUP_FAILED"].includes(error.message)) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return planningSelectionErrorResponse(error);
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { userId } = await requireUser(req);
-    const body = (await req.json()) as Appointment;
-
-    if (!body.title || !body.date) {
-      return NextResponse.json({ code: "APPOINTMENT_REQUIRED_FIELDS" }, { status: 400 });
+    const { currentEvent } = await requirePlanningSelectionAccess(request, "mutate");
+    const parsed = parseAppointmentCreatePayload(await readJson(request));
+    if (!parsed.ok) {
+      if (parsed.error === "APPOINTMENT_REQUIRED_FIELDS") {
+        return NextResponse.json({ error: parsed.error, code: "APPOINTMENT_REQUIRED_FIELDS" }, { status: 400 });
+      }
+      return NextResponse.json({ error: parsed.error }, { status: 400 });
     }
-
     const db = getServiceClient();
-
-    // Resolve the authoritative current event
-    const ev = { id: (await requireServerCurrentEvent(userId)).eventId };
-
-    const { error } = await db.from("appointments").insert({
-      event_id: ev.id,
-      title: body.title,
-      appointment_date: body.date,
-      location: body.location || null,
-      notes: body.notes || null,
-    });
-
-    if (error) return NextResponse.json({ code: "APPOINTMENT_SAVE_FAILED" }, { status: 500 });
-
-    return NextResponse.json({ ok: true });
-  } catch (e: unknown) {
-    console.error("appointments POST failed", e);
-    return NextResponse.json({ code: "APPOINTMENT_SAVE_FAILED" }, { status: 500 });
+    if (parsed.value.supplier && !(await supplierReferenceExists(db, currentEvent.eventId, parsed.value.supplier))) {
+      return NextResponse.json({ error: "SUPPLIER_LINK_NOT_FOUND" }, { status: 404 });
+    }
+    const { supplier, ...fields } = parsed.value;
+    const clientKey = fields.client_key ?? randomUUID();
+    const { error } = await db.from("appointments")
+      .upsert({
+        event_id: currentEvent.eventId,
+        ...fields,
+        client_key: clientKey,
+        ...supplierReferenceColumns(supplier),
+      }, { onConflict: "event_id,client_key", ignoreDuplicates: true });
+    if (error) return databaseError(error, "APPOINTMENT_SAVE_FAILED");
+    const { data, error: readError } = await db.from("appointments")
+      .select(APPOINTMENT_PROJECTION)
+      .eq("event_id", currentEvent.eventId)
+      .eq("client_key", clientKey)
+      .single();
+    if (readError || !data) return NextResponse.json({ error: "APPOINTMENT_SAVE_FAILED" }, { status: 500 });
+    const options = await loadSupplierOptions(db, currentEvent.eventId);
+    return NextResponse.json({
+      appointment: serializeAppointment(data as AppointmentRow, options),
+    }, { status: 201 });
+  } catch (error) {
+    if (error instanceof Error && ["SUPPLIER_OPTIONS_READ_FAILED", "SUPPLIER_LINK_LOOKUP_FAILED"].includes(error.message)) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return planningSelectionErrorResponse(error);
   }
 }

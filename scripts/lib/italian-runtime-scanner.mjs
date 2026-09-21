@@ -8,6 +8,7 @@ const uiAttributes = new Set(["alt", "aria-label", "aria-description", "aria-des
 const implementationAttributes = new Set(["filename"]);
 const uiCalls = new Set(["alert", "confirm", "prompt", "setError", "setMessage", "showToast"]);
 const implementationCalls = new Set(["getPageImages"]);
+const httpMethods = new Set(["CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"]);
 const uiProperties = new Set(["alt", "ariaLabel", "breadcrumb", "description", "empty", "error", "eyebrow", "helper", "label", "placeholder", "tab", "title", "tooltip"]);
 const uiCollectionNames = /(?:breadcrumbs?|columns?|headers?|labels?|menu|options?|statuses|tabs?|tooltips?)$/i;
 const italian = /\b(?:accedi|aggiungi|allergi[ae]|annulla|apri|assegna|azioni|bombonier[ae]|caricamento|cerca|chiudi|comun[ei]|conferma|confermat[ao]|confetti|contatto|continua|crea|data|devi|elimina|errore|evento|famigli[ae]|fornitore|impossibile|impostazioni|invit(?:at[ioe]?|o|a)|matrimonio|modifica|nessun[ao]?|nome|note|partecipa|persona|posti?|preferenze|profilo|ricevuta|rifiutat[ao]|riprova|richiesta|risposta|salva|salvataggio|scegli|segnalat[ae]|seleziona|senza|spesa|spos[ao]|tavol[oi]|totale|verifica)\b/i;
@@ -36,6 +37,13 @@ function isTranslationCall(node) {
   return ts.isPropertyAccessExpression(expression) && ts.isIdentifier(expression.expression) && expression.expression.text === "t";
 }
 function propertyName(node) { return node?.name && (ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)) ? node.name.text : ""; }
+function isHttpMethodValue(node, text) {
+  const assignment = node.parent;
+  return ts.isPropertyAssignment(assignment)
+    && assignment.initializer === node
+    && propertyName(assignment) === "method"
+    && httpMethods.has(text.toUpperCase());
+}
 function variableName(node) {
   let current = node.parent;
   while (current && !ts.isStatement(current) && !ts.isSourceFile(current)) current = current.parent;
@@ -80,7 +88,7 @@ export function scanSource(sourceText, file = "fixture.tsx") {
   const findings = [];
   function visit(node) {
     const text = textValue(node);
-    const auditable = text && italian.test(text) && !invariant.has(text) && !stableCode.test(text) && !implementationString.test(text) && !sql.test(text);
+    const auditable = text && italian.test(text) && !invariant.has(text) && !stableCode.test(text) && !implementationString.test(text) && !sql.test(text) && !isHttpMethodValue(node, text);
     const audit = auditable ? uiContext(node) : null;
     if (audit) {
       const point = source.getLineAndCharacterOfPosition(node.getStart(source));

@@ -27,6 +27,21 @@ jest.mock("@/lib/currentEvent", () => ({
   })),
 }));
 
+jest.mock("@/lib/planningSelectionAuthorization", () => ({
+  requirePlanningSelectionAccess: jest.fn(async () => ({
+    userId: "user-a",
+    currentEvent: { eventId: "event-a" },
+  })),
+  planningSelectionErrorResponse: jest.fn(() => ({
+    json: async () => ({ error: "PLANNING_SELECTION_FAILED" }),
+    status: 500,
+  })),
+}));
+
+const APPOINTMENT_A = "11111111-1111-4111-8111-111111111111";
+const APPOINTMENT_B = "22222222-2222-4222-8222-222222222222";
+const MISSING_APPOINTMENT = "33333333-3333-4333-8333-333333333333";
+
 type Table = "expenses" | "incomes" | "appointments" | "events";
 type Operation = "select" | "update" | "delete";
 type Filter = { column: string; value: unknown };
@@ -72,8 +87,8 @@ const initialRows: Record<Table, Row[]> = {
     { id: "income-b", event_id: "event-b" },
   ],
   appointments: [
-    { id: "appointment-a", event_id: "event-a" },
-    { id: "appointment-b", event_id: "event-b" },
+    { id: APPOINTMENT_A, event_id: "event-a" },
+    { id: APPOINTMENT_B, event_id: "event-b" },
   ],
 };
 
@@ -235,23 +250,23 @@ describe("IDOR protection for resource routes", () => {
     const route = await import("./appointments/[id]/route");
     const response = await route.DELETE(
       { headers: new Headers({ authorization: "Bearer token-a" }) } as unknown as import("next/server").NextRequest,
-      { params: Promise.resolve({ id: "appointment-b" }) }
+      { params: Promise.resolve({ id: APPOINTMENT_B }) }
     );
 
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ error: "Not found" });
     expectFilters(findQuery("appointments", "select", "id"), [
-      ["id", "appointment-b"],
+      ["id", APPOINTMENT_B],
       ["event_id", "event-a"],
     ]);
     expect(findQuery("appointments", "delete")).toBeUndefined();
-    expect(rows.appointments.some((row) => row.id === "appointment-b")).toBe(true);
+    expect(rows.appointments.some((row) => row.id === APPOINTMENT_B)).toBe(true);
   });
 
   it.each([
     ["expense", "expenses", "missing-expense"],
     ["income", "incomes", "missing-income"],
-    ["appointment", "appointments", "missing-appointment"],
+    ["appointment", "appointments", MISSING_APPOINTMENT],
   ] as const)("returns 404 and makes no changes for a missing %s ID", async (_name, table, id) => {
     let response: { status: number; json: () => Promise<unknown> };
 
@@ -338,19 +353,19 @@ describe("IDOR protection for resource routes", () => {
     const route = await import("./appointments/[id]/route");
     const response = await route.DELETE(
       { headers: new Headers({ authorization: "Bearer token-a" }) } as unknown as import("next/server").NextRequest,
-      { params: Promise.resolve({ id: "appointment-a" }) }
+      { params: Promise.resolve({ id: APPOINTMENT_A }) }
     );
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ ok: true });
     expectFilters(findQuery("appointments", "select", "id"), [
-      ["id", "appointment-a"],
+      ["id", APPOINTMENT_A],
       ["event_id", "event-a"],
     ]);
     expectFilters(findQuery("appointments", "delete"), [
-      ["id", "appointment-a"],
+      ["id", APPOINTMENT_A],
       ["event_id", "event-a"],
     ]);
-    expect(rows.appointments.some((row) => row.id === "appointment-a")).toBe(false);
+    expect(rows.appointments.some((row) => row.id === APPOINTMENT_A)).toBe(false);
   });
 });

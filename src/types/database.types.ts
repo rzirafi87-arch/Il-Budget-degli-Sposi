@@ -135,37 +135,46 @@ export type Database = {
       appointments: {
         Row: {
           appointment_date: string
+          client_key: string | null
           event_id: string
           id: string
           inserted_at: string
           location: string | null
           notes: string | null
+          private_supplier_id: string | null
           reminder_48h_sent: boolean
           reminder_7d_sent: boolean
+          saved_supplier_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
           appointment_date: string
+          client_key?: string | null
           event_id: string
           id?: string
           inserted_at?: string
           location?: string | null
           notes?: string | null
+          private_supplier_id?: string | null
           reminder_48h_sent?: boolean
           reminder_7d_sent?: boolean
+          saved_supplier_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           appointment_date?: string
+          client_key?: string | null
           event_id?: string
           id?: string
           inserted_at?: string
           location?: string | null
           notes?: string | null
+          private_supplier_id?: string | null
           reminder_48h_sent?: boolean
           reminder_7d_sent?: boolean
+          saved_supplier_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -176,6 +185,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_private_supplier_event_fkey"
+            columns: ["private_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id"]
+          },
+          {
+            foreignKeyName: "appointments_saved_supplier_event_fkey"
+            columns: ["saved_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
+            referencedColumns: ["id", "event_id"]
           },
         ]
       }
@@ -856,6 +879,98 @@ export type Database = {
           },
         ]
       }
+      event_location_supplier_links: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          event_id: string
+          id: string
+          private_location_entity_type: string | null
+          private_location_id: string | null
+          private_notes: string | null
+          private_supplier_entity_type: string | null
+          private_supplier_id: string | null
+          relationship_type: string
+          saved_location_id: string | null
+          saved_supplier_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          event_id: string
+          id?: string
+          private_location_entity_type?: string | null
+          private_location_id?: string | null
+          private_notes?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
+          relationship_type: string
+          saved_location_id?: string | null
+          saved_supplier_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          event_id?: string
+          id?: string
+          private_location_entity_type?: string | null
+          private_location_id?: string | null
+          private_notes?: string | null
+          private_supplier_entity_type?: string | null
+          private_supplier_id?: string | null
+          relationship_type?: string
+          saved_location_id?: string | null
+          saved_supplier_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_location_supplier_links_event_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_private_location_event_type_fkey"
+            columns: [
+              "private_location_id",
+              "event_id",
+              "private_location_entity_type",
+            ]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id", "entity_type"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_private_supplier_event_type_fkey"
+            columns: [
+              "private_supplier_id",
+              "event_id",
+              "private_supplier_entity_type",
+            ]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id", "entity_type"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_saved_location_event_fkey"
+            columns: ["saved_location_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_locations"
+            referencedColumns: ["id", "event_id"]
+          },
+          {
+            foreignKeyName: "event_location_supplier_links_saved_supplier_event_fkey"
+            columns: ["saved_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
+            referencedColumns: ["id", "event_id"]
+          },
+        ]
+      }
       event_members: {
         Row: {
           accepted_at: string | null
@@ -890,6 +1005,59 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "event_members_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_private_catalog_records: {
+        Row: {
+          client_key: string
+          created_at: string
+          created_by: string | null
+          entity_type: string
+          event_id: string
+          id: string
+          override_data: Json
+          snapshot_captured_at: string
+          snapshot_data: Json
+          snapshot_fingerprint: string
+          snapshot_version: number
+          updated_at: string
+        }
+        Insert: {
+          client_key: string
+          created_at?: string
+          created_by?: string | null
+          entity_type: string
+          event_id: string
+          id?: string
+          override_data?: Json
+          snapshot_captured_at?: string
+          snapshot_data: Json
+          snapshot_fingerprint: string
+          snapshot_version?: number
+          updated_at?: string
+        }
+        Update: {
+          client_key?: string
+          created_at?: string
+          created_by?: string | null
+          entity_type?: string
+          event_id?: string
+          id?: string
+          override_data?: Json
+          snapshot_captured_at?: string
+          snapshot_data?: Json
+          snapshot_fingerprint?: string
+          snapshot_version?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_private_catalog_records_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
@@ -2045,6 +2213,11 @@ export type Database = {
       }
       saved_churches: {
         Row: {
+          catalog_provenance_snapshot: Json | null
+          catalog_snapshot: Json | null
+          catalog_snapshot_captured_at: string | null
+          catalog_snapshot_fingerprint: string | null
+          catalog_snapshot_version: number | null
           church_id: string
           contacted: boolean
           created_at: string
@@ -2053,12 +2226,18 @@ export type Database = {
           id: string
           personal_contact_notes: string | null
           personal_notes: string | null
+          private_overrides: Json
           quoted_price: number | null
           selected: boolean
           status: string
           updated_at: string
         }
         Insert: {
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           church_id: string
           contacted?: boolean
           created_at?: string
@@ -2067,12 +2246,18 @@ export type Database = {
           id?: string
           personal_contact_notes?: string | null
           personal_notes?: string | null
+          private_overrides?: Json
           quoted_price?: number | null
           selected?: boolean
           status?: string
           updated_at?: string
         }
         Update: {
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           church_id?: string
           contacted?: boolean
           created_at?: string
@@ -2081,6 +2266,7 @@ export type Database = {
           id?: string
           personal_contact_notes?: string | null
           personal_notes?: string | null
+          private_overrides?: Json
           quoted_price?: number | null
           selected?: boolean
           status?: string
@@ -2106,6 +2292,11 @@ export type Database = {
       saved_locations: {
         Row: {
           agreed_cost: number | null
+          catalog_provenance_snapshot: Json | null
+          catalog_snapshot: Json | null
+          catalog_snapshot_captured_at: string | null
+          catalog_snapshot_fingerprint: string | null
+          catalog_snapshot_version: number | null
           contact_notes: string | null
           contacted: boolean
           created_at: string
@@ -2115,6 +2306,7 @@ export type Database = {
           location_id: string
           location_role: string
           personal_notes: string | null
+          private_overrides: Json
           quote_amount: number | null
           quote_currency: string | null
           quote_received_at: string | null
@@ -2126,6 +2318,11 @@ export type Database = {
         }
         Insert: {
           agreed_cost?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contacted?: boolean
           created_at?: string
@@ -2135,6 +2332,7 @@ export type Database = {
           location_id: string
           location_role?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           quote_currency?: string | null
           quote_received_at?: string | null
@@ -2146,6 +2344,11 @@ export type Database = {
         }
         Update: {
           agreed_cost?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contacted?: boolean
           created_at?: string
@@ -2155,6 +2358,7 @@ export type Database = {
           location_id?: string
           location_role?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           quote_currency?: string | null
           quote_received_at?: string | null
@@ -2192,6 +2396,11 @@ export type Database = {
         Row: {
           agreed_amount: number | null
           balance_amount: number | null
+          catalog_provenance_snapshot: Json | null
+          catalog_snapshot: Json | null
+          catalog_snapshot_captured_at: string | null
+          catalog_snapshot_fingerprint: string | null
+          catalog_snapshot_version: number | null
           contact_notes: string | null
           contract_signed: boolean
           created_at: string
@@ -2202,6 +2411,7 @@ export type Database = {
           favorite: boolean
           id: string
           personal_notes: string | null
+          private_overrides: Json
           quote_amount: number | null
           status: string
           supplier_id: string
@@ -2210,6 +2420,11 @@ export type Database = {
         Insert: {
           agreed_amount?: number | null
           balance_amount?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contract_signed?: boolean
           created_at?: string
@@ -2220,6 +2435,7 @@ export type Database = {
           favorite?: boolean
           id?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           status?: string
           supplier_id: string
@@ -2228,6 +2444,11 @@ export type Database = {
         Update: {
           agreed_amount?: number | null
           balance_amount?: number | null
+          catalog_provenance_snapshot?: Json | null
+          catalog_snapshot?: Json | null
+          catalog_snapshot_captured_at?: string | null
+          catalog_snapshot_fingerprint?: string | null
+          catalog_snapshot_version?: number | null
           contact_notes?: string | null
           contract_signed?: boolean
           created_at?: string
@@ -2238,6 +2459,7 @@ export type Database = {
           favorite?: boolean
           id?: string
           personal_notes?: string | null
+          private_overrides?: Json
           quote_amount?: number | null
           status?: string
           supplier_id?: string
@@ -2843,6 +3065,7 @@ export type Database = {
       timeline_items: {
         Row: {
           category: string | null
+          client_key: string | null
           completed: boolean | null
           days_before: number | null
           description: string | null
@@ -2852,12 +3075,14 @@ export type Database = {
           id: string
           inserted_at: string | null
           phase: string | null
+          private_supplier_id: string | null
           saved_supplier_id: string | null
           title: string
           updated_at: string | null
         }
         Insert: {
           category?: string | null
+          client_key?: string | null
           completed?: boolean | null
           days_before?: number | null
           description?: string | null
@@ -2867,12 +3092,14 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
+          private_supplier_id?: string | null
           saved_supplier_id?: string | null
           title: string
           updated_at?: string | null
         }
         Update: {
           category?: string | null
+          client_key?: string | null
           completed?: boolean | null
           days_before?: number | null
           description?: string | null
@@ -2882,6 +3109,7 @@ export type Database = {
           id?: string
           inserted_at?: string | null
           phase?: string | null
+          private_supplier_id?: string | null
           saved_supplier_id?: string | null
           title?: string
           updated_at?: string | null
@@ -2893,6 +3121,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timeline_items_private_supplier_event_fkey"
+            columns: ["private_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "event_private_catalog_records"
+            referencedColumns: ["id", "event_id"]
+          },
+          {
+            foreignKeyName: "timeline_items_saved_supplier_event_fkey"
+            columns: ["saved_supplier_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "saved_suppliers"
+            referencedColumns: ["id", "event_id"]
           },
           {
             foreignKeyName: "timeline_items_saved_supplier_id_fkey"
@@ -3420,6 +3662,14 @@ export type Database = {
         Returns: string
       }
       can_access_event: { Args: { p_event_id: string }; Returns: boolean }
+      can_manage_event_location_supplier_links: {
+        Args: { p_event_id: string }
+        Returns: boolean
+      }
+      catalog_payload_has_only_allowed_keys: {
+        Args: { entity_type_value: string; payload: Json; payload_kind: string }
+        Returns: boolean
+      }
       check_table_availability: {
         Args: { p_table_id: string }
         Returns: boolean
