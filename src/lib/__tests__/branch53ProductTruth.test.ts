@@ -30,6 +30,7 @@ describe("Branch 53.0 product truth guardrail", () => {
     expect(source).toContain('fetch("/api/my/documents"');
     expect(source).not.toContain("URL.createObjectURL(file)");
     expect(source).not.toContain("Simulazione upload");
+    expect(source).not.toContain("SUPABASE_SERVICE_ROLE");
   });
 
   it("disables video generation until it exists", () => {

@@ -243,6 +243,12 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m4-after.json
           diff -u /tmp/branch-52-m4-before.json /tmp/branch-52-m4-after.json
 
+      - name: Apply Branch 53 persistent event documents
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922190000_branch_53_event_documents.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922190000_branch_53_event_documents.sql
+
       - name: Verify pgTAP runner positive and negative contracts
         run: |
           set -Eeuo pipefail

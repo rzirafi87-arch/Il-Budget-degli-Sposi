@@ -39,5 +39,6 @@ for migration in \
   20260916193000_branch_51_least_privilege.sql \
   20260919161056_branch_52_event_catalog_snapshots.sql \
   20260919200457_branch_52_location_supplier_associations.sql \
-  20260920072942_branch_52_supplier_timeline_appointments.sql
+  20260920072942_branch_52_supplier_timeline_appointments.sql \
+  20260922190000_branch_53_event_documents.sql
 do apply "supabase/migrations/$migration"; done

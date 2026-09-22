@@ -89,7 +89,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const jwt = getBearer(req);
   let currentEvent;
   try { ({ currentEvent } = await requireEventAccess(req, "owner-or-partner")); }
   catch (error) { return apiSecurityErrorResponse(error, "GIFT_LIST_UPDATE_FAILED"); }
@@ -138,7 +137,6 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const jwt = getBearer(req);
   let currentEvent;
   try { ({ currentEvent } = await requireEventAccess(req, "owner-or-partner")); }
   catch (error) { return apiSecurityErrorResponse(error, "GIFT_LIST_DELETE_FAILED"); }

@@ -15,6 +15,12 @@ presentare una CTA operativa.
 | Save the Date video | alert “coming soon” dietro CTA operativa | CTA disabilitata e marcata non disponibile | fuori Branch 53 |
 | Contatto pubblico | successo demo/best-effort senza coda reale | `503 CONTACT_UNAVAILABLE`, nessun falso successo | Branch 56 |
 
+## Feedback differito al Branch 54
+
+- Eseguire un audit visuale e UX prima di qualunque redesign per ridurre i pattern percepiti come generici o “creati dall'IA”: gerarchia, spaziatura, tipografia, densità delle card, copy, micro-interazioni, coerenza dei componenti e personalità di brand.
+- Aggiungere un controllo accessibile mostra/nascondi password a login, registrazione, reset password e agli eventuali altri campi password, con `aria-label`, uso da tastiera, stato comprensibile agli screen reader e test mobile.
+- Questi interventi non appartengono al Branch 53 e non devono essere implementati in questa PR.
+
 ## Regole di gate
 
 1. Nessuna risposta `demo:true` o ID `demo-*` nelle superfici del Branch 53.
