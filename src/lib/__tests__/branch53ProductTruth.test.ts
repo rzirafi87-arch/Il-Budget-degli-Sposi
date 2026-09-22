@@ -15,13 +15,15 @@ describe("Branch 53.0 product truth guardrail", () => {
   it("removes anonymous gift-list demo behavior", () => {
     const source = read("src/app/api/my/gift-list/route.ts");
     expect(source.match(/requireEventAccess\(req, "owner-or-partner"\)/g)).toHaveLength(4);
+    expect(source).toContain('.from("gift_list_items")');
+    expect(source).not.toContain('.from("gift_list")');
     expect(source).not.toContain("Demo-first");
     expect(source).not.toContain("demo-");
   });
 
   it("does not return demo tables to anonymous users", () => {
     const source = read("src/app/api/my/tables/route.ts");
-    expect(source.match(/requireEventAccess\(req, "owner-or-partner"\)/g)).toHaveLength(2);
+    expect(source.match(/requireEventAccess\(req, "owner-or-partner"\)/g)).toHaveLength(3);
     expect(source).not.toContain("Demo mode");
   });
 

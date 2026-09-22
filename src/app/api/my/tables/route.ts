@@ -1,151 +1,218 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from "next/server";
-import { getServiceClient } from "@/lib/supabaseServer";
-import { logger } from "@/lib/logger";
-import { apiSecurityErrorResponse, requireEventAccess } from "@/lib/apiSecurity";
-
 export const runtime = "nodejs";
 
-// GET: Carica tavoli e invitati disponibili
+import { apiSecurityErrorResponse, parseUuid, requireEventAccess } from "@/lib/apiSecurity";
+import { logger } from "@/lib/logger";
+import { getServiceClient } from "@/lib/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
+
+type AssignmentInput = { guestId?: unknown; seatNumber?: unknown };
+type TableInput = {
+  id?: unknown;
+  tableNumber?: unknown;
+  tableName?: unknown;
+  tableType?: unknown;
+  totalSeats?: unknown;
+  notes?: unknown;
+  assignedGuests?: unknown;
+};
+type AssignmentRow = {
+  id: string;
+  guest_id: string;
+  seat_number: number | null;
+  guests: { id: string; name: string } | { id: string; name: string }[] | null;
+};
+type TableRow = {
+  id: string;
+  table_number: number;
+  table_name: string | null;
+  table_type: string;
+  total_seats: number;
+  notes: string | null;
+  table_assignments: AssignmentRow[] | null;
+};
+type GuestRow = {
+  id: string;
+  name: string;
+  guest_type: string;
+  exclude_from_family_table: boolean | null;
+  family_group_id: string | null;
+  family_groups: { family_name: string } | { family_name: string }[] | null;
+};
+
+function relationOne<T>(value: T | T[] | null): T | null {
+  return Array.isArray(value) ? value[0] || null : value;
+}
+
+class TablePlanError extends Error {
+  constructor(readonly code: string) {
+    super(code);
+  }
+}
+
+function integer(value: unknown, min: number, max: number, code: string) {
+  const parsed = typeof value === "number" ? value : Number(value);
+  if (!Number.isInteger(parsed) || parsed < min || parsed > max) throw new TablePlanError(code);
+  return parsed;
+}
+
+function text(value: unknown, max: number, code: string, required = false) {
+  if (value === undefined || value === null || value === "") {
+    if (required) throw new TablePlanError(code);
+    return null;
+  }
+  if (typeof value !== "string" || value.trim().length > max) throw new TablePlanError(code);
+  if (required && !value.trim()) throw new TablePlanError(code);
+  return value.trim() || null;
+}
+
+function validatePlan(body: unknown) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) throw new TablePlanError("TABLE_PLAN_INVALID");
+  const payload = body as { tables?: unknown; replace?: unknown };
+  if (!Array.isArray(payload.tables) || payload.tables.length > 200) throw new TablePlanError("TABLE_PLAN_INVALID");
+
+  const tableIds = new Set<string>();
+  const tableNumbers = new Set<number>();
+  const guestIds = new Set<string>();
+  const tables = payload.tables.map((raw) => {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new TablePlanError("TABLE_INVALID");
+    const table = raw as TableInput;
+    const id = table.id ? parseUuid(table.id, "INVALID_TABLE_ID") : undefined;
+    if (id && tableIds.has(id)) throw new TablePlanError("DUPLICATE_TABLE_ID");
+    if (id) tableIds.add(id);
+
+    const tableNumber = integer(table.tableNumber, 1, 10_000, "TABLE_NUMBER_INVALID");
+    if (tableNumbers.has(tableNumber)) throw new TablePlanError("DUPLICATE_TABLE_NUMBER");
+    tableNumbers.add(tableNumber);
+    const totalSeats = integer(table.totalSeats, 1, 100, "TABLE_CAPACITY_INVALID");
+    const assigned = table.assignedGuests === undefined ? [] : table.assignedGuests;
+    if (!Array.isArray(assigned) || assigned.length > totalSeats) throw new TablePlanError("TABLE_CAPACITY_EXCEEDED");
+    const seatNumbers = new Set<number>();
+    const assignedGuests = assigned.map((rawAssignment, index) => {
+      if (!rawAssignment || typeof rawAssignment !== "object" || Array.isArray(rawAssignment)) throw new TablePlanError("TABLE_ASSIGNMENT_INVALID");
+      const assignment = rawAssignment as AssignmentInput;
+      const guestId = parseUuid(assignment.guestId, "INVALID_GUEST_ID");
+      if (guestIds.has(guestId)) throw new TablePlanError("GUEST_ALREADY_ASSIGNED");
+      guestIds.add(guestId);
+      const seatNumber = assignment.seatNumber === undefined || assignment.seatNumber === null
+        ? index + 1
+        : integer(assignment.seatNumber, 1, totalSeats, "TABLE_SEAT_INVALID");
+      if (seatNumbers.has(seatNumber)) throw new TablePlanError("TABLE_SEAT_DUPLICATE");
+      seatNumbers.add(seatNumber);
+      return { guestId, seatNumber };
+    });
+
+    return {
+      ...(id ? { id } : {}),
+      tableNumber,
+      tableName: text(table.tableName, 255, "TABLE_NAME_INVALID"),
+      tableType: text(table.tableType, 50, "TABLE_TYPE_INVALID") || "round",
+      totalSeats,
+      notes: text(table.notes, 2000, "TABLE_NOTES_INVALID"),
+      assignedGuests,
+    };
+  });
+  return { tables, replace: payload.replace === true };
+}
+
+function validationResponse(error: unknown) {
+  if (error instanceof TablePlanError) return NextResponse.json({ error: error.code }, { status: 400 });
+  return null;
+}
+
 export async function GET(req: NextRequest) {
-  let eventId: string;
   try {
     const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
-    eventId = currentEvent.eventId;
+    const db = getServiceClient();
+    const [{ data: rawTables, error: tablesError }, { data: rawGuests, error: guestsError }] = await Promise.all([
+      db.from("tables").select(`
+        id, table_number, table_name, table_type, total_seats, notes,
+        table_assignments (id, guest_id, seat_number, guests (id, name))
+      `).eq("event_id", currentEvent.eventId).order("table_number"),
+      db.from("guests").select(`
+        id, name, guest_type, exclude_from_family_table, family_group_id,
+        family_groups (family_name)
+      `).eq("event_id", currentEvent.eventId).eq("attending", true).order("name"),
+    ]);
+
+    if (tablesError || guestsError) {
+      logger.error("TABLES_READ_FAILED", { tables: tablesError?.code, guests: guestsError?.code });
+      return NextResponse.json({ error: "TABLES_READ_FAILED" }, { status: 500 });
+    }
+
+    const tables = ((rawTables || []) as TableRow[]).map((table) => ({
+      id: table.id,
+      tableNumber: table.table_number,
+      tableName: table.table_name,
+      tableType: table.table_type,
+      totalSeats: table.total_seats,
+      notes: table.notes || "",
+      assignedGuests: (table.table_assignments || []).map((assignment) => ({
+        id: assignment.id,
+        guestId: assignment.guest_id,
+        guestName: relationOne(assignment.guests)?.name || null,
+        seatNumber: assignment.seat_number,
+      })),
+    }));
+    const assigned = new Set(tables.flatMap((table) => table.assignedGuests.map((guest) => guest.guestId)));
+    const availableGuests = ((rawGuests || []) as GuestRow[])
+      .filter((guest) => !assigned.has(guest.id))
+      .map((guest) => ({
+        id: guest.id,
+        name: guest.name,
+        guestType: guest.guest_type,
+        excludeFromFamilyTable: guest.exclude_from_family_table === true,
+        familyGroupId: guest.family_group_id,
+        familyName: relationOne(guest.family_groups)?.family_name || null,
+      }));
+    return NextResponse.json({ tables, availableGuests });
   } catch (error) {
     return apiSecurityErrorResponse(error, "TABLES_READ_FAILED");
   }
-
-  const db = getServiceClient();
-
-  // Carica tavoli con le assegnazioni
-  const { data: tablesData } = await db
-    .from("tables")
-    .select(`
-      id,
-      table_number,
-      table_name,
-      table_type,
-      total_seats,
-      notes,
-      table_assignments (
-        id,
-        guest_id,
-        seat_number,
-        guests (
-          id,
-          name
-        )
-      )
-    `)
-    .eq("event_id", eventId)
-    .order("table_number");
-
-  const tables = (tablesData || []).map((t: any) => ({
-    id: t.id,
-    tableNumber: t.table_number,
-    tableName: t.table_name || null,
-    tableType: t.table_type,
-    totalSeats: t.total_seats,
-    notes: t.notes || "",
-    assignedGuests: (t.table_assignments || []).map((ta: any) => ({
-      id: ta.id,
-      guestId: ta.guest_id,
-      guestName: ta.guests?.name || null,
-      seatNumber: ta.seat_number,
-    })),
-  }));
-
-  // Carica invitati confermati non ancora assegnati
-  const assignedGuestIds = tables.flatMap((t: any) => 
-    t.assignedGuests.map((ag: any) => ag.guestId)
-  );
-
-  const { data: guestsData } = await db
-    .from("guests")
-    .select(`
-      id,
-      name,
-      guest_type,
-      exclude_from_family_table,
-      family_group_id,
-      family_groups (
-        family_name
-      )
-    `)
-    .eq("event_id", eventId)
-    .eq("attending", true)
-    .not("id", "in", `(${assignedGuestIds.join(",") || "''"})`);
-
-  const availableGuests = (guestsData || []).map((g: any) => ({
-    id: g.id,
-    name: g.name,
-    guestType: g.guest_type,
-    excludeFromFamilyTable: g.exclude_from_family_table === true,
-    familyGroupId: g.family_group_id,
-    familyName: g.family_groups?.family_name,
-  }));
-
-  return NextResponse.json({
-    tables,
-    availableGuests,
-  });
 }
 
-// POST: Salva tavoli e assegnazioni
 export async function POST(req: NextRequest) {
-  let eventId: string;
+  try {
+    const { userId, currentEvent } = await requireEventAccess(req, "owner-or-partner");
+    const plan = validatePlan(await req.json());
+    const { data, error } = await getServiceClient().rpc("save_event_table_plan", {
+      p_event_id: currentEvent.eventId,
+      p_actor_id: userId,
+      p_tables: plan.tables,
+      p_replace: plan.replace,
+    });
+    if (error) {
+      logger.error("TABLES_SAVE_FAILED", { code: error.code, message: error.message });
+      const status = error.code === "23505" || error.code === "23514" ? 409 : 500;
+      return NextResponse.json({ error: status === 409 ? "TABLE_SAVE_CONFLICT" : "TABLES_SAVE_FAILED" }, { status });
+    }
+    return NextResponse.json({ success: true, result: data });
+  } catch (error) {
+    const invalid = validationResponse(error);
+    return invalid || apiSecurityErrorResponse(error, "TABLES_SAVE_FAILED");
+  }
+}
+
+export const PUT = POST;
+export const PATCH = POST;
+
+export async function DELETE(req: NextRequest) {
   try {
     const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
-    eventId = currentEvent.eventId;
-  } catch (error) {
-    return apiSecurityErrorResponse(error, "TABLES_SAVE_FAILED");
-  }
-
-  const db = getServiceClient();
-
-  const { tables } = await req.json();
-
-  // Elimina tutti i tavoli esistenti per questo evento (CASCADE eliminerà anche le assegnazioni)
-  await db.from("tables").delete().eq("event_id", eventId);
-
-  // Inserisci nuovi tavoli
-  for (const table of tables) {
-    const { data: newTable, error: tableError } = await db
+    const tableId = parseUuid(new URL(req.url).searchParams.get("id"), "INVALID_TABLE_ID");
+    const { data, error } = await getServiceClient()
       .from("tables")
-      .insert({
-        event_id: eventId,
-        table_number: table.tableNumber,
-        table_name: table.tableName,
-        table_type: table.tableType,
-        total_seats: table.totalSeats,
-        notes: table.notes,
-      })
-      .select()
-      .single();
-
-    if (tableError || !newTable) {
-      logger.error("Errore inserimento tavolo", { error: tableError });
-      continue;
+      .delete()
+      .eq("id", tableId)
+      .eq("event_id", currentEvent.eventId)
+      .select("id")
+      .maybeSingle();
+    if (error) {
+      logger.error("TABLE_DELETE_FAILED", { code: error.code });
+      return NextResponse.json({ error: "TABLE_DELETE_FAILED" }, { status: 500 });
     }
-
-    // Inserisci assegnazioni per questo tavolo
-    if (table.assignedGuests && table.assignedGuests.length > 0) {
-      const assignments = table.assignedGuests.map((ag: any) => ({
-        table_id: newTable.id,
-        guest_id: ag.guestId,
-        seat_number: ag.seatNumber,
-      }));
-
-      const { error: assignError } = await db
-        .from("table_assignments")
-        .insert(assignments);
-
-      if (assignError) {
-        logger.error("Errore inserimento assegnazioni", { error: assignError });
-      }
-    }
+    if (!data) return NextResponse.json({ error: "TABLE_NOT_FOUND" }, { status: 404 });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return apiSecurityErrorResponse(error, "TABLE_DELETE_FAILED");
   }
-
-  return NextResponse.json({ success: true });
 }

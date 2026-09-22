@@ -6,16 +6,20 @@
       "dashboard": "Volver al panel",
       "weddingOnly": "La lista solo está disponible para bodas. Selecciona “Boda” para activarla.",
       "added": "¡Añadido a la lista!",
+      "updated": "¡Regalo actualizado!",
+      "deleted": "Regalo eliminado.",
+      "operationError": "La operación ha fallado. Inténtalo de nuevo.",
+      "confirmDelete": "¿Eliminar este regalo de la lista?",
       "errors": {
         "generic": "Error",
         "network": "Error de red"
       },
       "info": {
         "title": "Crea tu lista de bodas moderna",
-        "description": "Crea una lista con aportaciones para el viaje, experiencias, un fondo común o regalos tradicionales.",
+        "description": "Planifica deseos, experiencias y regalos. La lista es solo informativa y no recauda dinero ni gestiona compras.",
         "tips": {
-          "honeymoon": "Permite que los invitados contribuyan a la luna de miel",
-          "cash": "El fondo común ofrece la máxima flexibilidad",
+          "honeymoon": "Anota ideas e importes orientativos para la luna de miel",
+          "cash": "Usa el presupuesto común solo como recordatorio informativo",
           "links": "Añade enlaces para indicar exactamente qué comprar",
           "purchased": "Marca los regalos recibidos para evitar duplicados",
           "priority": "Las prioridades indican lo que más deseáis"
@@ -28,6 +32,7 @@
         }
       },
       "addGift": "Añadir regalo",
+      "editGift": "Editar regalo",
       "fields": {
         "type": "Tipo",
         "name": "Nombre",
@@ -40,8 +45,8 @@
         "notesPlaceholder": "Notas opcionales"
       },
       "types": {
-        "honeymoon": "Aportación para luna de miel",
-        "cash": "Fondo común",
+        "honeymoon": "Idea para la luna de miel",
+        "cash": "Presupuesto común (informativo)",
         "experiences": "Experiencias (cenas, spa, tours)",
         "furniture": "Muebles",
         "appliances": "Electrodomésticos",
@@ -58,10 +63,15 @@
       },
       "statuses": {
         "wanted": "Deseado",
+        "received": "Recibido",
         "purchased": "Comprado"
       },
       "saving": "Guardando…",
       "add": "+ Añadir",
+      "saveChanges": "Guardar cambios",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar",
       "loading": "Cargando…",
       "empty": "No hay elementos"
     },

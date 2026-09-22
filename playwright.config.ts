@@ -11,6 +11,7 @@ const branch52IsolatedSpecs = [
   "branch52-supplier-work.spec.ts",
   "branch52-milestone5-ux.spec.ts",
   "branch52-security-matrix.spec.ts",
+  "branch53-persistence.spec.ts",
 ];
 
 export default defineConfig({

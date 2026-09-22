@@ -6,16 +6,20 @@
       "dashboard": "Back to Dashboard",
       "weddingOnly": "The Wedding Gift List is available only for Wedding events. Select “Wedding” to enable it.",
       "added": "Added to the list!",
+      "updated": "Gift updated!",
+      "deleted": "Gift deleted.",
+      "operationError": "The operation failed. Try again.",
+      "confirmDelete": "Delete this gift from the list?",
       "errors": {
         "generic": "Error",
         "network": "Network error"
       },
       "info": {
         "title": "Create your modern wedding gift list",
-        "description": "Create a list with honeymoon contributions, experiences, a cash fund or traditional gifts.",
+        "description": "Plan wishes, experiences, and gifts. This list is informational only and does not collect money or manage purchases.",
         "tips": {
-          "honeymoon": "Let guests contribute to your honeymoon",
-          "cash": "A cash fund offers maximum flexibility",
+          "honeymoon": "Record ideas and indicative amounts for your honeymoon",
+          "cash": "Use a shared budget only as an informational reminder",
           "links": "Add links to show exactly what to buy",
           "purchased": "Mark received gifts to avoid duplicates",
           "priority": "Priorities show what you want most"
@@ -28,6 +32,7 @@
         }
       },
       "addGift": "Add gift",
+      "editGift": "Edit gift",
       "fields": {
         "type": "Type",
         "name": "Name",
@@ -40,8 +45,8 @@
         "notesPlaceholder": "Optional notes"
       },
       "types": {
-        "honeymoon": "Honeymoon contribution",
-        "cash": "Cash fund",
+        "honeymoon": "Honeymoon idea",
+        "cash": "Shared budget (informational)",
         "experiences": "Experiences (dinners, spa, tours)",
         "furniture": "Furniture",
         "appliances": "Appliances",
@@ -58,10 +63,15 @@
       },
       "statuses": {
         "wanted": "Wanted",
+        "received": "Received",
         "purchased": "Purchased"
       },
       "saving": "Saving…",
       "add": "+ Add",
+      "saveChanges": "Save changes",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
       "loading": "Loading…",
       "empty": "No items in the list"
     },

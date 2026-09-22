@@ -249,6 +249,18 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922190000_branch_53_event_documents.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922190000_branch_53_event_documents.sql
 
+      - name: Apply Branch 53 persistent gift list
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922204756_branch_53_gift_list_items.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922204756_branch_53_gift_list_items.sql
+
+      - name: Apply Branch 53 transactional table plans
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
+
       - name: Verify pgTAP runner positive and negative contracts
         run: |
           set -Eeuo pipefail

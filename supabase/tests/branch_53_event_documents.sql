@@ -141,8 +141,11 @@ select throws_ok(
   $q$insert into public.event_documents(event_id,created_by,original_name,object_path,category,mime_type,file_size) values('53100000-0000-4000-8000-000000000010','53100000-0000-4000-8000-000000000003','revoked.pdf','53100000-0000-4000-8000-000000000010/revoked/revoked.pdf','generic','application/pdf',1)$q$,
   '42501', null, 'revoked partner cannot insert metadata'
 );
+with deleted as (
+  delete from public.event_documents where id = '53100000-0000-4000-8000-000000000022' returning 1
+)
 select is(
-  (with deleted as (delete from public.event_documents where id = '53100000-0000-4000-8000-000000000022' returning 1) select count(*)::int from deleted),
+  (select count(*)::int from deleted),
   0,
   'revoked partner cannot delete metadata'
 );

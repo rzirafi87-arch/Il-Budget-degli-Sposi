@@ -6,16 +6,20 @@
       "dashboard": "Zurück zum Dashboard",
       "weddingOnly": "Die Liste ist nur für Hochzeiten verfügbar. Wähle „Hochzeit“, um sie zu aktivieren.",
       "added": "Zur Liste hinzugefügt!",
+      "updated": "Geschenk aktualisiert!",
+      "deleted": "Geschenk gelöscht.",
+      "operationError": "Der Vorgang ist fehlgeschlagen. Bitte erneut versuchen.",
+      "confirmDelete": "Dieses Geschenk aus der Liste löschen?",
       "errors": {
         "generic": "Fehler",
         "network": "Netzwerkfehler"
       },
       "info": {
         "title": "Erstellt eure moderne Hochzeitsgeschenkliste",
-        "description": "Erstellt eine Liste mit Beiträgen zur Reise, Erlebnissen, einer gemeinsamen Kasse oder traditionellen Geschenken.",
+        "description": "Plant Wünsche, Erlebnisse und Geschenke. Diese Liste dient nur zur Information und nimmt weder Geld noch Käufe entgegen.",
         "tips": {
-          "honeymoon": "Ermöglicht euren Gästen, zur Hochzeitsreise beizutragen",
-          "cash": "Eine gemeinsame Kasse bietet maximale Flexibilität",
+          "honeymoon": "Notiert Ideen und Richtbeträge für eure Hochzeitsreise",
+          "cash": "Nutzt das gemeinsame Budget nur als informativen Merkzettel",
           "links": "Fügt Links hinzu, um genau zu zeigen, was gekauft werden soll",
           "purchased": "Markiert erhaltene Geschenke, um Duplikate zu vermeiden",
           "priority": "Prioritäten zeigen, was ihr euch am meisten wünscht"
@@ -28,6 +32,7 @@
         }
       },
       "addGift": "Geschenk hinzufügen",
+      "editGift": "Geschenk bearbeiten",
       "fields": {
         "type": "Art",
         "name": "Name",
@@ -40,8 +45,8 @@
         "notesPlaceholder": "Optionale Notizen"
       },
       "types": {
-        "honeymoon": "Beitrag zur Hochzeitsreise",
-        "cash": "Gemeinsame Kasse",
+        "honeymoon": "Idee für die Hochzeitsreise",
+        "cash": "Gemeinsames Budget (informativ)",
         "experiences": "Erlebnisse (Dinner, Spa, Touren)",
         "furniture": "Möbel",
         "appliances": "Haushaltsgeräte",
@@ -58,10 +63,15 @@
       },
       "statuses": {
         "wanted": "Gewünscht",
+        "received": "Erhalten",
         "purchased": "Gekauft"
       },
       "saving": "Wird gespeichert…",
       "add": "+ Hinzufügen",
+      "saveChanges": "Änderungen speichern",
+      "cancel": "Abbrechen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
       "loading": "Wird geladen…",
       "empty": "Keine Einträge"
     },

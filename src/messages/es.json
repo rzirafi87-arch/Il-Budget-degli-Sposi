@@ -995,6 +995,14 @@
       "pageTitle": "Distribución de mesas",
       "back": "Volver a invitados",
       "autoAssign": "Asignar automáticamente por familia",
+      "addTable": "Añadir mesa",
+      "tableNumber": "Número de mesa",
+      "tableName": "Nombre de la mesa",
+      "capacity": "Capacidad",
+      "deleteTable": "Eliminar",
+      "confirmDelete": "¿Eliminar esta mesa y liberar a los invitados asignados?",
+      "assignGuest": "Asignar un invitado",
+      "unassign": "Quitar",
       "noGuests": "No hay invitados disponibles para asignar.",
       "withoutFamily": "Sin familia",
       "namedTable": "Mesa {label}",
@@ -1013,6 +1021,7 @@
       "save": "Guardar distribución",
       "errors": {
         "TABLE_SAVE_FAILED": "No se pudieron guardar las mesas.",
+        "TABLE_SAVE_CONFLICT": "La distribución no es válida. Revisa capacidades, asientos e invitados duplicados.",
         "TABLE_NETWORK_ERROR": "Error de red al guardar."
       }
     }
