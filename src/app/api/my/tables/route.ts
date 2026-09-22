@@ -19,7 +19,6 @@ type AssignmentRow = {
   id: string;
   guest_id: string;
   seat_number: number | null;
-  guests: { id: string; name: string } | { id: string; name: string }[] | null;
 };
 type TableRow = {
   id: string;
@@ -37,6 +36,7 @@ type GuestRow = {
   exclude_from_family_table: boolean | null;
   family_group_id: string | null;
   family_groups: { family_name: string } | { family_name: string }[] | null;
+  attending: boolean | null;
 };
 
 function relationOne<T>(value: T | T[] | null): T | null {
@@ -126,12 +126,12 @@ export async function GET(req: NextRequest) {
     const [{ data: rawTables, error: tablesError }, { data: rawGuests, error: guestsError }] = await Promise.all([
       db.from("tables").select(`
         id, table_number, table_name, table_type, total_seats, notes,
-        table_assignments (id, guest_id, seat_number, guests (id, name))
+        table_assignments (id, guest_id, seat_number)
       `).eq("event_id", currentEvent.eventId).order("table_number"),
       db.from("guests").select(`
-        id, name, guest_type, exclude_from_family_table, family_group_id,
+        id, name, guest_type, attending, exclude_from_family_table, family_group_id,
         family_groups!guests_family_group_id_fkey (family_name)
-      `).eq("event_id", currentEvent.eventId).eq("attending", true).order("name"),
+      `).eq("event_id", currentEvent.eventId).order("name"),
     ]);
 
     if (tablesError || guestsError) {
@@ -139,6 +139,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "TABLES_READ_FAILED" }, { status: 500 });
     }
 
+    const guests = (rawGuests || []) as GuestRow[];
+    const sameEventGuestNames = new Map(guests.map((guest) => [guest.id, guest.name]));
     const tables = ((rawTables || []) as TableRow[]).map((table) => ({
       id: table.id,
       tableNumber: table.table_number,
@@ -149,13 +151,13 @@ export async function GET(req: NextRequest) {
       assignedGuests: (table.table_assignments || []).map((assignment) => ({
         id: assignment.id,
         guestId: assignment.guest_id,
-        guestName: relationOne(assignment.guests)?.name || null,
+        guestName: sameEventGuestNames.get(assignment.guest_id) || null,
         seatNumber: assignment.seat_number,
       })),
     }));
     const assigned = new Set(tables.flatMap((table) => table.assignedGuests.map((guest) => guest.guestId)));
-    const availableGuests = ((rawGuests || []) as GuestRow[])
-      .filter((guest) => !assigned.has(guest.id))
+    const availableGuests = guests
+      .filter((guest) => guest.attending === true && !assigned.has(guest.id))
       .map((guest) => ({
         id: guest.id,
         name: guest.name,

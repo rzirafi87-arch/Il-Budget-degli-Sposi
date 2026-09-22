@@ -155,6 +155,8 @@ describe("/api/my/tables transactional contracts", () => {
     expect(source).toContain('.from("tables")');
     expect(source).toContain('.from("guests")');
     expect(source).toContain("family_groups!guests_family_group_id_fkey");
+    expect(source).toContain("sameEventGuestNames");
+    expect(source).not.toContain("seat_number, guests");
     expect(source).toContain('.rpc("save_event_table_plan"');
     expect(source).not.toContain("service_role");
   });
