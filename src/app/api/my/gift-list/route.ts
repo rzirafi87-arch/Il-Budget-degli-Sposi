@@ -1,6 +1,5 @@
 export const runtime = "nodejs";
 
-import { getBearer } from "@/lib/apiAuth";
 import { apiSecurityErrorResponse, parseUuid, requireEventAccess } from "@/lib/apiSecurity";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -23,10 +22,6 @@ type GiftItem = {
 };
 
 export async function GET(req: NextRequest) {
-  const jwt = getBearer(req);
-  // Demo-first: unauthenticated returns placeholder
-  if (!jwt) return NextResponse.json({ items: [] });
-
   try {
   const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
   const db = getServiceClient();
@@ -48,7 +43,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const jwt = getBearer(req);
   let body: GiftItem;
   try {
     body = await req.json();
@@ -59,12 +53,6 @@ export async function POST(req: NextRequest) {
   // Minimal validation
   if (!body?.name || !body?.type) {
     return NextResponse.json({ error: "'name' e 'type' sono obbligatori" }, { status: 400 });
-  }
-
-  // Demo-first: allow unauthenticated but do not persist
-  if (!jwt) {
-    const item = { ...body, id: `demo-${Date.now()}` };
-    return NextResponse.json({ item }, { status: 201 });
   }
 
   let access;
@@ -102,10 +90,6 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const jwt = getBearer(req);
-  if (!jwt) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
   let currentEvent;
   try { ({ currentEvent } = await requireEventAccess(req, "owner-or-partner")); }
   catch (error) { return apiSecurityErrorResponse(error, "GIFT_LIST_UPDATE_FAILED"); }
@@ -155,10 +139,6 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const jwt = getBearer(req);
-  if (!jwt) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
   let currentEvent;
   try { ({ currentEvent } = await requireEventAccess(req, "owner-or-partner")); }
   catch (error) { return apiSecurityErrorResponse(error, "GIFT_LIST_DELETE_FAILED"); }
