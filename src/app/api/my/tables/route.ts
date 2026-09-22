@@ -130,7 +130,7 @@ export async function GET(req: NextRequest) {
       `).eq("event_id", currentEvent.eventId).order("table_number"),
       db.from("guests").select(`
         id, name, guest_type, exclude_from_family_table, family_group_id,
-        family_groups (family_name)
+        family_groups!guests_family_group_id_fkey (family_name)
       `).eq("event_id", currentEvent.eventId).eq("attending", true).order("name"),
     ]);
 

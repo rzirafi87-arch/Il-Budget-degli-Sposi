@@ -154,6 +154,7 @@ describe("/api/my/tables transactional contracts", () => {
     const source = fs.readFileSync(__filename.replace(/route\.test\.ts$/, "route.ts"), "utf8");
     expect(source).toContain('.from("tables")');
     expect(source).toContain('.from("guests")');
+    expect(source).toContain("family_groups!guests_family_group_id_fkey");
     expect(source).toContain('.rpc("save_event_table_plan"');
     expect(source).not.toContain("service_role");
   });
