@@ -51,7 +51,8 @@
         "quotes": "Presupuestos",
         "contracts": "Contratos",
         "storage": "Espacio usado"
-      }
+      },
+      "unavailable": "La carga de documentos no está disponible temporalmente: el almacenamiento seguro se activará en Branch 53.1."
     }
   }
 }
