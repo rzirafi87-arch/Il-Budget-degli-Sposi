@@ -25,10 +25,9 @@ describe("Branch 53.0 product truth guardrail", () => {
     expect(source).not.toContain("Demo mode");
   });
 
-  it("disables the client-only document upload simulation", () => {
+  it("does not regress to client-only document persistence", () => {
     const source = read("src/app/[locale]/(routes)/documenti/page.tsx");
-    expect(source).toContain('t("unavailable")');
-    expect(source).toContain('aria-disabled="true"');
+    expect(source).toContain('fetch("/api/my/documents"');
     expect(source).not.toContain("URL.createObjectURL(file)");
     expect(source).not.toContain("Simulazione upload");
   });
