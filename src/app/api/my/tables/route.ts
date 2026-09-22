@@ -1,33 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServer";
-import { requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
-import { requireServerCurrentEvent } from "@/lib/currentEvent";
+import { apiSecurityErrorResponse, requireEventAccess } from "@/lib/apiSecurity";
 
 export const runtime = "nodejs";
 
 // GET: Carica tavoli e invitati disponibili
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const jwt = authHeader?.split(" ")[1];
-
-  if (!jwt) {
-    // Demo mode: restituisci dati vuoti
-    return NextResponse.json({
-      tables: [],
-      availableGuests: [],
-    });
+  let eventId: string;
+  try {
+    const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
+    eventId = currentEvent.eventId;
+  } catch (error) {
+    return apiSecurityErrorResponse(error, "TABLES_READ_FAILED");
   }
 
   const db = getServiceClient();
-  const { data: userData, error: userError } = await db.auth.getUser(jwt);
-  if (userError) {
-    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
-  }
-  const userId = userData.user.id;
-
-  const eventId = (await requireServerCurrentEvent(userId)).eventId;
 
   // Carica tavoli con le assegnazioni
   const { data: tablesData } = await db
@@ -105,10 +94,15 @@ export async function GET(req: NextRequest) {
 
 // POST: Salva tavoli e assegnazioni
 export async function POST(req: NextRequest) {
-  const db = getServiceClient();
-  const { userId } = await requireUser(req);
+  let eventId: string;
+  try {
+    const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
+    eventId = currentEvent.eventId;
+  } catch (error) {
+    return apiSecurityErrorResponse(error, "TABLES_SAVE_FAILED");
+  }
 
-  const eventId = (await requireServerCurrentEvent(userId)).eventId;
+  const db = getServiceClient();
 
   const { tables } = await req.json();
 
