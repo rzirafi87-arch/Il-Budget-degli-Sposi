@@ -51,7 +51,8 @@
         "quotes": "Devis",
         "contracts": "Contrats",
         "storage": "Espace utilisé"
-      }
+      },
+      "unavailable": "L’import de documents est temporairement indisponible : le stockage sécurisé sera activé dans le Branch 53.1."
     }
   }
 }
