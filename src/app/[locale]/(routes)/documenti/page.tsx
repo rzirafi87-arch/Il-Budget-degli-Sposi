@@ -27,31 +27,7 @@ export default function DocumentiPage() {
   const locale = useLocale();
   const t = useTranslations("milestone7.documents");
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [filter, setFilter] = useState<string>("all");
-
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    setUploading(true);
-    
-    // Simulazione upload (in produzione: Supabase Storage)
-    setTimeout(() => {
-      const newDocs: Document[] = Array.from(files).map((file, idx) => ({
-        id: `doc-${Date.now()}-${idx}`,
-        name: file.name,
-        category: "generic",
-        supplier: t("unassigned"),
-        fileUrl: URL.createObjectURL(file),
-        fileSize: file.size,
-        uploadedAt: new Date().toISOString(),
-      }));
-      
-      setDocuments([...newDocs, ...documents]);
-      setUploading(false);
-    }, 1500);
-  };
 
   const deleteDocument = (id: string) => {
     if (!window.confirm(t("confirmDelete"))) return;
@@ -109,14 +85,14 @@ export default function DocumentiPage() {
             type="file"
             multiple
             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-            onChange={handleUpload}
             className="hidden"
-            disabled={uploading}
+            disabled
+            aria-disabled="true"
           />
           <div className="text-center">
             <UploadCloud className="mx-auto mb-3 text-primary" size={42} strokeWidth={1.6} aria-hidden />
             <h3 className="font-bold text-lg text-gray-800 mb-2">
-              {uploading ? t("uploading") : t("upload")}
+              {t("unavailable")}
             </h3>
             <p className="text-sm text-gray-600 mb-4">
               {t("uploadHelper")}
