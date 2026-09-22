@@ -51,7 +51,8 @@
         "quotes": "Preventivi",
         "contracts": "Contratti",
         "storage": "Spazio usato"
-      }
+      },
+      "unavailable": "Caricamento documenti temporaneamente non disponibile: lo storage sicuro sarà attivato nel Branch 53.1."
     }
   }
 }
