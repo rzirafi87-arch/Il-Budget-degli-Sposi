@@ -22,7 +22,7 @@ const criticalRoutes = [
 describe("private module event-context integration", () => {
   test.each(criticalRoutes)("%s uses the authoritative resolver", (relativePath) => {
     const source = fs.readFileSync(path.join(root, relativePath), "utf8");
-    expect(source).toMatch(/require(CurrentEvent|ServerCurrentEvent|PlanningSelectionAccess|FinancialAccess)/);
+    expect(source).toMatch(/require(CurrentEvent|ServerCurrentEvent|EventAccess|PlanningSelectionAccess|FinancialAccess)/);
     expect(source).not.toMatch(/\.eq\(["']owner_id["'][\s\S]{0,220}\.limit\(1\)/);
   });
 
