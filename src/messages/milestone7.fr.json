@@ -52,7 +52,11 @@
         "contracts": "Contrats",
         "storage": "Espace utilisé"
       },
-      "unavailable": "L’import de documents est temporairement indisponible : le stockage sécurisé sera activé dans le Branch 53.1."
+      "unavailable": "L’import de documents est temporairement indisponible : le stockage sécurisé sera activé dans le Branch 53.1.",
+      "uploadFormatsSecure": "PDF, JPG, PNG • 10 Mo maximum par fichier • Archives privées",
+      "loading": "Chargement des documents…",
+      "operationError": "L’opération a échoué. Réessayez.",
+      "retry": "Réessayer"
     }
   }
 }
