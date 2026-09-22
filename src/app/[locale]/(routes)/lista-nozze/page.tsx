@@ -178,8 +178,9 @@ export default function ListaNozzePage() {
         <h3 className="font-semibold mb-3">{t(editingId ? "editGift" : "addGift")}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.type")}</label>
+            <label htmlFor="gift-type" className="block text-sm font-medium mb-1">{t("fields.type")}</label>
             <select
+              id="gift-type"
               className="border rounded px-3 py-2 w-full"
               value={newItem.type}
               onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
@@ -190,8 +191,9 @@ export default function ListaNozzePage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.name")}</label>
+            <label htmlFor="gift-name" className="block text-sm font-medium mb-1">{t("fields.name")}</label>
             <input
+              id="gift-name"
               className="border rounded px-3 py-2 w-full"
               value={newItem.name}
               onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
@@ -199,8 +201,9 @@ export default function ListaNozzePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.price")}</label>
+            <label htmlFor="gift-price" className="block text-sm font-medium mb-1">{t("fields.price")}</label>
             <input
+              id="gift-price"
               type="number"
               className="border rounded px-3 py-2 w-full"
               value={newItem.price || ""}
@@ -208,8 +211,9 @@ export default function ListaNozzePage() {
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">Link</label>
+            <label htmlFor="gift-url" className="block text-sm font-medium mb-1">Link</label>
             <input
+              id="gift-url"
               className="border rounded px-3 py-2 w-full"
               value={newItem.url}
               onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
@@ -217,8 +221,9 @@ export default function ListaNozzePage() {
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">{t("fields.description")}</label>
+            <label htmlFor="gift-description" className="block text-sm font-medium mb-1">{t("fields.description")}</label>
             <textarea
+              id="gift-description"
               className="border rounded px-3 py-2 w-full"
               rows={2}
               value={newItem.description}
@@ -226,8 +231,9 @@ export default function ListaNozzePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.priority")}</label>
+            <label htmlFor="gift-priority" className="block text-sm font-medium mb-1">{t("fields.priority")}</label>
             <select
+              id="gift-priority"
               className="border rounded px-3 py-2 w-full"
               value={newItem.priority}
               onChange={(e) => setNewItem({ ...newItem, priority: e.target.value as GiftItem["priority"] })}
@@ -238,8 +244,9 @@ export default function ListaNozzePage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.status")}</label>
+            <label htmlFor="gift-status" className="block text-sm font-medium mb-1">{t("fields.status")}</label>
             <select
+              id="gift-status"
               className="border rounded px-3 py-2 w-full"
               value={newItem.status}
               onChange={(e) => setNewItem({ ...newItem, status: e.target.value as GiftItem["status"] })}
@@ -249,8 +256,9 @@ export default function ListaNozzePage() {
             </select>
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">{t("fields.notes")}</label>
+            <label htmlFor="gift-notes" className="block text-sm font-medium mb-1">{t("fields.notes")}</label>
             <input
+              id="gift-notes"
               className="border rounded px-3 py-2 w-full"
               value={newItem.notes}
               onChange={(e) => setNewItem({ ...newItem, notes: e.target.value })}

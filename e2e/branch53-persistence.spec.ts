@@ -99,9 +99,9 @@ test("[B53][persistence-mobile] documents, gifts and tables persist for owner an
     await expect(page.getByText(documentName, { exact: true })).toHaveCount(0);
 
     await page.goto("/it/lista-nozze");
-    const giftCreate = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/my/gift-list");
     await page.getByLabel("Nome", { exact: true }).fill(giftName);
     await page.getByLabel("Prezzo stimato (€)", { exact: true }).fill("500");
+    const giftCreate = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/my/gift-list");
     await page.getByRole("button", { name: "+ Aggiungi", exact: true }).click();
     const giftCreateResponse = await giftCreate;
     expect(giftCreateResponse.status()).toBe(201);
