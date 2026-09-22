@@ -52,7 +52,11 @@
         "contracts": "Contratos",
         "storage": "Espacio usado"
       },
-      "unavailable": "La carga de documentos no está disponible temporalmente: el almacenamiento seguro se activará en Branch 53.1."
+      "unavailable": "La carga de documentos no está disponible temporalmente: el almacenamiento seguro se activará en Branch 53.1.",
+      "uploadFormatsSecure": "PDF, JPG, PNG • Máximo 10 MB por archivo • Archivo privado",
+      "loading": "Cargando documentos…",
+      "operationError": "La operación ha fallado. Inténtalo de nuevo.",
+      "retry": "Reintentar"
     }
   }
 }
