@@ -66,7 +66,7 @@ select throws_ok(
 insert into public.table_assignments(table_id,guest_id,seat_number) values
 ('53300000-0000-4000-8000-000000000030','53300000-0000-4000-8000-000000000021',2);
 select throws_ok(
-  $q$insert into public.table_assignments(table_id,guest_id,seat_number) values('53300000-0000-4000-8000-000000000030','53300000-0000-4000-8000-000000000022',1)$q$,
+  $q$insert into public.table_assignments(table_id,guest_id,seat_number) values('53300000-0000-4000-8000-000000000030','53300000-0000-4000-8000-000000000022',null)$q$,
   '23514', 'TABLE_CAPACITY_EXCEEDED', 'table capacity cannot be exceeded'
 );
 select throws_ok(
