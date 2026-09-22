@@ -51,7 +51,8 @@
         "quotes": "Angebote",
         "contracts": "Verträge",
         "storage": "Belegter Speicher"
-      }
+      },
+      "unavailable": "Der Dokument-Upload ist vorübergehend nicht verfügbar: Der sichere Speicher wird in Branch 53.1 aktiviert."
     }
   }
 }
