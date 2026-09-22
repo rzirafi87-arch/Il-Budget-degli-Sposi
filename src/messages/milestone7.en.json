@@ -51,7 +51,8 @@
         "quotes": "Quotes",
         "contracts": "Contracts",
         "storage": "Storage used"
-      }
+      },
+      "unavailable": "Document upload is temporarily unavailable: secure storage will be enabled in Branch 53.1."
     }
   }
 }
