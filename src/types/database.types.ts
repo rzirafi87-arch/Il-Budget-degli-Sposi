@@ -814,6 +814,53 @@ export type Database = {
           },
         ]
       }
+      event_documents: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          event_id: string
+          file_size: number
+          id: string
+          mime_type: string
+          notes: string | null
+          object_path: string
+          original_name: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          event_id: string
+          file_size: number
+          id?: string
+          mime_type: string
+          notes?: string | null
+          object_path: string
+          original_name: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          event_id?: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          notes?: string | null
+          object_path?: string
+          original_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_documents_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_invitations: {
         Row: {
           accepted_at: string | null
@@ -1569,6 +1616,62 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "i18n_locales"
             referencedColumns: ["code"]
+          },
+        ]
+      }
+      gift_list_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_id: string
+          id: string
+          name: string
+          note: string | null
+          priority: string
+          status: string
+          target_amount: number | null
+          type: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_id: string
+          id?: string
+          name: string
+          note?: string | null
+          priority?: string
+          status?: string
+          target_amount?: number | null
+          type: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_id?: string
+          id?: string
+          name?: string
+          note?: string | null
+          priority?: string
+          status?: string
+          target_amount?: number | null
+          type?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_list_items_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -3802,6 +3905,15 @@ export type Database = {
           p_guests: Json
           p_non_invited: Json
           p_user_id: string
+        }
+        Returns: Json
+      }
+      save_event_table_plan: {
+        Args: {
+          p_actor_id: string
+          p_event_id: string
+          p_replace?: boolean
+          p_tables: Json
         }
         Returns: Json
       }

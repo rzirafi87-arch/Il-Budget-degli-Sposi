@@ -30,8 +30,7 @@ export default function Footer() {
     ja: "イタリアのカップルのために❤️を込めて",
     ar: "صُنع بحب ❤️ للأزواج الإيطاليين",
   };
-  const currentLang = typeof document !== "undefined" ? document.documentElement.lang : "it";
-  const madeWithLove = loveByLocale[currentLang] || t("madeWithLove", { default: "Made with ❤️ for Italian couples" });
+  const madeWithLove = loveByLocale[locale] || t("madeWithLove", { default: "Made with ❤️ for Italian couples" });
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

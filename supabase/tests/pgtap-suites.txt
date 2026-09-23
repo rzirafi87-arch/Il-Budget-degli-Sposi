@@ -7,3 +7,6 @@ supabase/tests/branch_43_ceremony_budget.sql
 supabase/tests/branch_52_event_catalog_snapshots.sql
 supabase/tests/branch_52_location_supplier_associations.sql
 supabase/tests/branch_52_supplier_timeline_appointments.sql
+supabase/tests/branch_53_event_documents.sql
+supabase/tests/branch_53_gift_list_items.sql
+supabase/tests/branch_53_transactional_tables.sql

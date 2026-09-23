@@ -33,8 +33,7 @@ export default function CresimaNav() {
           return (
             <li key={it.href}>
               <Link
-                href={it.href}
-                locale={locale}
+                href={`/${locale}${it.href}`}
                 className={`px-4 py-2 rounded-full border text-sm transition-colors font-medium ${
                   active
                     ? "text-white border-transparent shadow-sm"

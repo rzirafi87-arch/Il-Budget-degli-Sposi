@@ -2,6 +2,7 @@
 
 import PageInfoNote from "@/components/PageInfoNote";
 import { formatCurrency } from "@/lib/locale";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -11,74 +12,92 @@ type GiftItem = {
   type: string;
   name: string;
   description?: string;
-  price?: number;
+  price?: number | null;
   url?: string;
-  priority?: "alta" | "media" | "bassa";
-  status?: "desiderato" | "acquistato";
+  priority?: "high" | "medium" | "low";
+  status?: "wanted" | "received" | "archived";
   notes?: string;
 };
 
 const GIFT_TYPES = ["honeymoon", "cash", "experiences", "furniture", "appliances", "luxury", "charity", "vouchers", "smartHome", "other"] as const;
-const GIFT_TYPE_VALUES: Record<(typeof GIFT_TYPES)[number], string> = {
-  honeymoon: "Contributo viaggio di nozze", cash: "Cassa comune", experiences: "Esperienze (cene, spa, tour)",
-  furniture: "Arredamento", appliances: "Elettrodomestici", luxury: "Beni di lusso", charity: "Beneficenza",
-  vouchers: "Buoni regalo", smartHome: "Tech & Smart Home", other: "Altro",
-};
 
 export default function ListaNozzePage() {
   const locale = useLocale();
   const t = useTranslations("milestone9.giftList");
+  const supabase = getBrowserClient();
   const eventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isWedding = eventType === "wedding";
   const [items, setItems] = useState<GiftItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   const [newItem, setNewItem] = useState<GiftItem>({
-    type: GIFT_TYPE_VALUES.honeymoon,
+    type: "honeymoon",
     name: "",
     description: "",
     price: undefined,
     url: "",
-    priority: "media",
-    status: "desiderato",
+    priority: "medium",
+    status: "wanted",
     notes: "",
   });
 
+  async function bearer() {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) throw new Error("AUTHENTICATION_REQUIRED");
+    return token;
+  }
+
+  async function loadItems() {
+    setLoading(true);
+    setMessage(null);
+    try {
+      const token = await bearer();
+      const res = await fetch("/api/my/gift-list", {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "GIFT_LIST_READ_FAILED");
+      setItems(json.items || []);
+    } catch {
+      setMessage(t("operationError"));
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/my/gift-list");
-        const json = await res.json();
-        setItems(json.items || []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    })();
+    void loadItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const addItem = async () => {
+  const saveItem = async () => {
     setSaving(true);
     setMessage(null);
     try {
+      const token = await bearer();
       const res = await fetch("/api/my/gift-list", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newItem),
+        method: editingId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ...newItem, id: editingId || undefined }),
       });
       if (!res.ok) {
         const j = await res.json();
         setMessage(`${j.error || t("errors.generic")}`);
       } else {
         const j = await res.json();
-        setItems((prev) => [j.item, ...prev]);
-        setMessage(t("added"));
+        setItems((prev) => editingId
+          ? prev.map((item) => item.id === editingId ? j.item : item)
+          : [j.item, ...prev]);
+        setMessage(t(editingId ? "updated" : "added"));
+        setEditingId(null);
         setNewItem({
-          type: GIFT_TYPE_VALUES.honeymoon, name: "", description: "", price: undefined, url: "",
-          priority: "media", status: "desiderato", notes: "",
+          type: "honeymoon", name: "", description: "", price: undefined, url: "",
+          priority: "medium", status: "wanted", notes: "",
         });
         setTimeout(() => setMessage(null), 2500);
       }
@@ -89,11 +108,41 @@ export default function ListaNozzePage() {
     }
   };
 
+  const startEdit = (item: GiftItem) => {
+    setEditingId(item.id || null);
+    setNewItem({ ...item, price: item.price ?? undefined });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setNewItem({ type: "honeymoon", name: "", description: "", price: undefined, url: "", priority: "medium", status: "wanted", notes: "" });
+  };
+
+  const deleteItem = async (id: string) => {
+    if (!window.confirm(t("confirmDelete"))) return;
+    setMessage(null);
+    try {
+      const token = await bearer();
+      const res = await fetch(`/api/my/gift-list?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "GIFT_LIST_DELETE_FAILED");
+      setItems((current) => current.filter((item) => item.id !== id));
+      if (editingId === id) cancelEdit();
+      setMessage(t("deleted"));
+    } catch {
+      setMessage(t("operationError"));
+    }
+  };
+
   return (
     <section className="pt-6">
-      <div className="flex items-start justify-between mb-2">
+      <div className="mb-2 flex flex-col items-start justify-between gap-3 sm:flex-row">
         <h2 className="font-serif text-3xl">{t("title")}</h2>
-        <div className="flex gap-2">
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
           {isWedding && (
             <Link href={`/${locale}/entrate`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white border-gray-300 hover:bg-gray-50">{t("income")}</Link>
           )}
@@ -126,23 +175,25 @@ export default function ListaNozzePage() {
 
       {isWedding && (
       <div className="mb-6 p-5 rounded-2xl border border-gray-200 bg-white/70 shadow-sm">
-        <h3 className="font-semibold mb-3">{t("addGift")}</h3>
+        <h3 className="font-semibold mb-3">{t(editingId ? "editGift" : "addGift")}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.type")}</label>
+            <label htmlFor="gift-type" className="block text-sm font-medium mb-1">{t("fields.type")}</label>
             <select
+              id="gift-type"
               className="border rounded px-3 py-2 w-full"
               value={newItem.type}
               onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
             >
               {GIFT_TYPES.map((key) => (
-                <option key={key} value={GIFT_TYPE_VALUES[key]}>{t(`types.${key}`)}</option>
+                <option key={key} value={key}>{t(`types.${key}`)}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.name")}</label>
+            <label htmlFor="gift-name" className="block text-sm font-medium mb-1">{t("fields.name")}</label>
             <input
+              id="gift-name"
               className="border rounded px-3 py-2 w-full"
               value={newItem.name}
               onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
@@ -150,8 +201,9 @@ export default function ListaNozzePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.price")}</label>
+            <label htmlFor="gift-price" className="block text-sm font-medium mb-1">{t("fields.price")}</label>
             <input
+              id="gift-price"
               type="number"
               className="border rounded px-3 py-2 w-full"
               value={newItem.price || ""}
@@ -159,8 +211,9 @@ export default function ListaNozzePage() {
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">Link</label>
+            <label htmlFor="gift-url" className="block text-sm font-medium mb-1">Link</label>
             <input
+              id="gift-url"
               className="border rounded px-3 py-2 w-full"
               value={newItem.url}
               onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
@@ -168,8 +221,9 @@ export default function ListaNozzePage() {
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">{t("fields.description")}</label>
+            <label htmlFor="gift-description" className="block text-sm font-medium mb-1">{t("fields.description")}</label>
             <textarea
+              id="gift-description"
               className="border rounded px-3 py-2 w-full"
               rows={2}
               value={newItem.description}
@@ -177,31 +231,34 @@ export default function ListaNozzePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.priority")}</label>
+            <label htmlFor="gift-priority" className="block text-sm font-medium mb-1">{t("fields.priority")}</label>
             <select
+              id="gift-priority"
               className="border rounded px-3 py-2 w-full"
               value={newItem.priority}
               onChange={(e) => setNewItem({ ...newItem, priority: e.target.value as GiftItem["priority"] })}
             >
-              <option value="alta">{t("priorities.high")}</option>
-              <option value="media">{t("priorities.medium")}</option>
-              <option value="bassa">{t("priorities.low")}</option>
+              <option value="high">{t("priorities.high")}</option>
+              <option value="medium">{t("priorities.medium")}</option>
+              <option value="low">{t("priorities.low")}</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">{t("fields.status")}</label>
+            <label htmlFor="gift-status" className="block text-sm font-medium mb-1">{t("fields.status")}</label>
             <select
+              id="gift-status"
               className="border rounded px-3 py-2 w-full"
               value={newItem.status}
               onChange={(e) => setNewItem({ ...newItem, status: e.target.value as GiftItem["status"] })}
             >
-              <option value="desiderato">{t("statuses.wanted")}</option>
-              <option value="acquistato">{t("statuses.purchased")}</option>
+              <option value="wanted">{t("statuses.wanted")}</option>
+              <option value="received">{t("statuses.received")}</option>
             </select>
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-medium mb-1">{t("fields.notes")}</label>
+            <label htmlFor="gift-notes" className="block text-sm font-medium mb-1">{t("fields.notes")}</label>
             <input
+              id="gift-notes"
               className="border rounded px-3 py-2 w-full"
               value={newItem.notes}
               onChange={(e) => setNewItem({ ...newItem, notes: e.target.value })}
@@ -211,12 +268,17 @@ export default function ListaNozzePage() {
         </div>
         <div className="mt-4">
           <button
-            onClick={addItem}
-            disabled={saving}
+            onClick={saveItem}
+            disabled={saving || !newItem.name.trim()}
             className="bg-[#A3B59D] text-white rounded-lg px-6 py-2 hover:bg-[#8a9d84] disabled:opacity-50"
           >
-            {saving ? t("saving") : t("add")}
+            {saving ? t("saving") : t(editingId ? "saveChanges" : "add")}
           </button>
+          {editingId && (
+            <button type="button" onClick={cancelEdit} className="ml-2 rounded-lg border px-6 py-2 hover:bg-gray-50">
+              {t("cancel")}
+            </button>
+          )}
         </div>
   </div>
   )}
@@ -228,10 +290,10 @@ export default function ListaNozzePage() {
       ) : (
         <div className="grid gap-4">
           {items.map((it) => (
-            <div key={it.id || it.name + it.type} className="rounded-xl border bg-white/70 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div data-testid={it.id ? `gift-item-${it.id}` : undefined} key={it.id || it.name + it.type} className="rounded-xl border bg-white/70 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <div className="font-semibold">{it.name}</div>
-                <div className="text-sm text-gray-600">{it.type} · {it.priority}</div>
+                <div className="text-sm text-gray-600">{t(`types.${it.type}`)} · {t(`priorities.${it.priority}`)}</div>
                 {it.description && (
                   <div className="text-sm text-gray-700 mt-1">{it.description}</div>
                 )}
@@ -239,11 +301,17 @@ export default function ListaNozzePage() {
                   <a className="text-sm text-blue-600 underline" href={it.url} target="_blank" rel="noreferrer">Link</a>
                 )}
               </div>
-              <div className="text-right">
+              <div className="flex flex-col items-start gap-2 sm:items-end">
                 {typeof it.price === "number" && (
                   <div className="font-bold">{formatCurrency(it.price)}</div>
                 )}
-                <div className="text-xs text-gray-500 mt-1">{it.status === "acquistato" ? t("statuses.purchased") : t("statuses.wanted")}</div>
+                <div className="text-xs text-gray-500">{t(`statuses.${it.status}`)}</div>
+                {it.id && (
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => startEdit(it)} className="rounded border px-3 py-1 text-sm hover:bg-gray-50">{t("edit")}</button>
+                    <button type="button" onClick={() => void deleteItem(it.id!)} className="rounded border border-red-200 px-3 py-1 text-sm text-red-700 hover:bg-red-50">{t("delete")}</button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -252,4 +320,3 @@ export default function ListaNozzePage() {
     </section>
   );
 }
-

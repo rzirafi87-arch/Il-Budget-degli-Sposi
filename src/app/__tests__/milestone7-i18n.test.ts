@@ -9,8 +9,9 @@ describe("Milestone 7 runtime localization", () => {
   test("documents uses translated presentation strings and preserves filenames", () => {
     const source = read("src/app/[locale]/(routes)/documenti/page.tsx");
     expect(source).toContain('useTranslations("milestone7.documents")');
-    expect(source).toContain("name: file.name");
-    expect(source).toContain("{doc.name}");
+    expect(source).toContain('form.append("file", files[index])');
+    expect(source).toContain("{document.name}");
+    expect(read("src/app/api/my/documents/route.ts")).toContain("original_name: value.name.trim()");
     for (const locale of locales) {
       const messages = JSON.parse(read(`src/messages/milestone7.${locale}.json`));
       expect(messages.milestone7.documents.categories.generic).toBeTruthy();

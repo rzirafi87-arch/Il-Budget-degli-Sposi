@@ -3,6 +3,8 @@ import test from "node:test";
 import {
   ISOLATED_JOURNEYS,
   PREVIEW_READ_ONLY_SPEC_FILE,
+  PREVIEW_RUNTIME_PROJECTS,
+  PREVIEW_RUNTIME_SPEC_FILE,
   STANDARD_PROJECTS,
   STANDARD_SPEC_FILES,
   verifyPreviewReadOnlyCollection,
@@ -57,24 +59,32 @@ test("rejects isolated specs in the standard collection", () => {
   assert.throws(() => verifyProjectIsolation(report(standard), report(isolated)), /non-standard or Branch 52 spec/);
 });
 
-test("accepts exactly the 30 public GET-only Preview cases", () => {
-  const preview = STANDARD_PROJECTS.map(project => ({
+test("accepts exactly the 50 public non-mutating Preview cases", () => {
+  const preview = [...STANDARD_PROJECTS.map(project => ({
     file: PREVIEW_READ_ONLY_SPEC_FILE,
     title: "localized mobile and accessibility smoke",
     project,
-  }));
+  })), ...PREVIEW_RUNTIME_PROJECTS.map(project => ({
+    file: PREVIEW_RUNTIME_SPEC_FILE,
+    title: "runtime locale switch",
+    project,
+  }))];
   assert.deepEqual(verifyPreviewReadOnlyCollection(report(preview)), {
-    previewCases: 30,
-    previewProjects: 30,
+    previewCases: 50,
+    previewProjects: 50,
   });
 });
 
 test("rejects authenticated or mutating specs from Preview", () => {
-  const preview = STANDARD_PROJECTS.map(project => ({
+  const preview = [...STANDARD_PROJECTS.map(project => ({
     file: PREVIEW_READ_ONLY_SPEC_FILE,
     title: "localized mobile and accessibility smoke",
     project,
-  }));
+  })), ...PREVIEW_RUNTIME_PROJECTS.map(project => ({
+    file: PREVIEW_RUNTIME_SPEC_FILE,
+    title: "runtime locale switch",
+    project,
+  }))];
   preview[0] = { ...preview[0], file: "authenticated-wedding.spec.ts" };
   assert.throws(
     () => verifyPreviewReadOnlyCollection(report(preview)),

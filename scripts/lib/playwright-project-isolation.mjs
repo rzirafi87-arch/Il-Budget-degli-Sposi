@@ -22,6 +22,10 @@ export const STANDARD_PROJECTS = Object.freeze(
 );
 
 export const PREVIEW_READ_ONLY_SPEC_FILE = "language-rollout.spec.ts";
+export const PREVIEW_RUNTIME_SPEC_FILE = "i18n-runtime.spec.ts";
+export const PREVIEW_RUNTIME_PROJECTS = Object.freeze(
+  locales.flatMap(locale => [320, 390, 430, "desktop"].map(viewport => `runtime-${locale}-${viewport}`)),
+);
 
 export const ISOLATED_JOURNEYS = Object.freeze([
   ["milestone8-lifecycle.spec.ts", "[M8][diagnostic]", "m8-320"],
@@ -131,23 +135,32 @@ export function verifyProjectIsolation(standardReport, isolatedReport) {
 export function verifyPreviewReadOnlyCollection(previewReport) {
   const preview = collectionEntries(previewReport);
   const standardProjects = new Set(STANDARD_PROJECTS);
+  const runtimeProjects = new Set(PREVIEW_RUNTIME_PROJECTS);
 
   assertNoDuplicates(preview, "Preview read-only collection");
   requireCondition(
-    preview.length === STANDARD_PROJECTS.length,
-    `Preview read-only collection must contain 30 GET-only project cases; found ${preview.length}.`,
+    preview.length === STANDARD_PROJECTS.length + PREVIEW_RUNTIME_PROJECTS.length,
+    `Preview read-only collection must contain 50 non-mutating project cases; found ${preview.length}.`,
   );
   requireCondition(
-    preview.every(entry => entry.file === PREVIEW_READ_ONLY_SPEC_FILE),
+    preview.every(entry => entry.file === PREVIEW_READ_ONLY_SPEC_FILE || entry.file === PREVIEW_RUNTIME_SPEC_FILE),
     "Preview read-only collection contains an authenticated or mutating spec.",
   );
   requireCondition(
-    preview.every(entry => standardProjects.has(entry.project)),
+    preview.every(entry => standardProjects.has(entry.project) || runtimeProjects.has(entry.project)),
     "Preview read-only collection contains an unexpected Playwright project.",
   );
   requireCondition(
     STANDARD_PROJECTS.every(project => preview.some(entry => entry.project === project)),
     "Preview read-only collection is missing a required locale/viewport project.",
+  );
+  requireCondition(
+    PREVIEW_RUNTIME_PROJECTS.every(project => preview.some(entry => entry.project === project && entry.file === PREVIEW_RUNTIME_SPEC_FILE)),
+    "Preview read-only collection is missing a required runtime locale/viewport project.",
+  );
+  requireCondition(
+    preview.every(entry => entry.file === PREVIEW_RUNTIME_SPEC_FILE ? runtimeProjects.has(entry.project) : standardProjects.has(entry.project)),
+    "Preview read-only spec was collected by the wrong project family.",
   );
 
   return {

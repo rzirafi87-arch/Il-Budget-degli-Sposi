@@ -144,17 +144,6 @@ export default function PartecipazionePage() {
     }
   }
 
-  async function handleGenerateVideo() {
-    setGenerating(true);
-    try {
-      alert(
-        t("videoComingSoon"),
-      );
-    } finally {
-      setGenerating(false);
-    }
-  }
-
   const videoProps = {
     bride: config.bride_name,
     groom: config.groom_name,
@@ -383,11 +372,13 @@ export default function PartecipazionePage() {
               {generating ? t("generating") : `📄 ${t("generatePdf")}`}
             </button>
             <button
-              onClick={handleGenerateVideo}
-              disabled={generating || !config.bride_name || !config.groom_name}
-              className="flex-1 bg-pink-600 text-white py-3 px-6 rounded font-semibold hover:bg-pink-700 disabled:opacity-50"
+              type="button"
+              disabled
+              aria-disabled="true"
+              title={t("videoComingSoon")}
+              className="flex-1 bg-pink-600 text-white py-3 px-6 rounded font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {generating ? t("generating") : `🎬 ${t("generateVideo")}`}
+              🎬 {t("videoComingSoon")}
             </button>
           </div>
 

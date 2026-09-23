@@ -1,0 +1,46 @@
+{
+  "landing": {
+    "hero": {
+      "proofs": [
+        "Auf Smartphones nutzbar",
+        "Daten jederzeit änderbar",
+        "Keine Installation erforderlich"
+      ]
+    },
+    "features": {
+      "items": [
+        { "title": "Budget", "description": "Behalte geplante Beträge, Ausgaben und Zahlungen im Blick." },
+        { "title": "Gäste", "description": "Organisiere die Gästeliste, Zusagen und die Tischordnung." },
+        { "title": "Dienstleister", "description": "Sammle Kontakte, Informationen und Aufgaben rund um deine Dienstleister." },
+        { "title": "Locations", "description": "Bewerte und speichere Informationen zu den Locations, die dich interessieren." },
+        { "title": "Zeremonie", "description": "Organisiere wichtige Informationen für Kirche und Zeremonie." },
+        { "title": "Zeitplan", "description": "Verfolge Fristen und Aufgaben während der gesamten Planung." },
+        { "title": "Checkliste", "description": "Verwandle alle offenen Aufgaben in klare, überschaubare Schritte." },
+        { "title": "Dokumente", "description": "Bewahre Dateien, Angebote und wichtige Angaben übersichtlich auf." }
+      ]
+    },
+    "how": {
+      "steps": [
+        { "title": "Erstelle dein Projekt", "description": "Melde dich an oder registriere dich und füge die ersten Informationen zu deiner Hochzeit hinzu." },
+        { "title": "Organisiere, was zählt", "description": "Richte Budget, Gäste, Aufgaben, Dienstleister und Dokumente ein." },
+        { "title": "Verfolge deinen Fortschritt", "description": "Finde alles im Dashboard und aktualisiere die Informationen jederzeit." }
+      ]
+    },
+    "benefits": {
+      "items": [
+        { "title": "Übersichtlichere Kosten", "description": "Vergleiche deine Planung mit den bereits getätigten Ausgaben." },
+        { "title": "Gemeinsame Organisation", "description": "Bewahre wichtige Informationen in einem gemeinsamen Arbeitsbereich auf." },
+        { "title": "Ein geführter Ablauf", "description": "Dashboard, Zeitplan und Checklisten helfen dir, die nächsten Schritte im Blick zu behalten." }
+      ]
+    },
+    "faq": {
+      "items": [
+        { "question": "Was ist Il Budget degli Sposi?", "answer": "Eine Webanwendung, mit der du Budget, Gäste, Aufgaben, Dienstleister und Dokumente rund um deine Hochzeit organisieren kannst." },
+        { "question": "Muss ich etwas installieren?", "answer": "Nein. Du kannst die Anwendung direkt im Browser auf Computer, Tablet und Smartphone nutzen." },
+        { "question": "Kann ich Angaben später ändern?", "answer": "Ja. Die Projektinformationen können während der gesamten Planung aktualisiert werden." },
+        { "question": "Kann ich Budget und Gäste am selben Ort verwalten?", "answer": "Ja. Budget, Gäste und alle anderen verfügbaren Bereiche gehören zum selben Arbeitsbereich." },
+        { "question": "Wie werden meine Daten verarbeitet?", "answer": "Der Zugriff auf persönliche Bereiche erfordert eine Anmeldung. Einzelheiten zur Verarbeitung und zu deinen Rechten findest du in der Datenschutzerklärung." }
+      ]
+    }
+  }
+}
