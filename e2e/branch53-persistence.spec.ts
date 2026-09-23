@@ -38,6 +38,18 @@ async function browserApi<T>(page: Page, path: string, init: RequestInit = {}): 
   }, { path, init });
 }
 
+async function browserSessionUserId(page: Page): Promise<string | null> {
+  return page.evaluate(() => {
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index);
+      if (!key?.startsWith("sb-") || !key.endsWith("-auth-token")) continue;
+      const value = JSON.parse(localStorage.getItem(key) || "null") as { user?: { id?: string } } | null;
+      if (value?.user?.id) return value.user.id;
+    }
+    return null;
+  });
+}
+
 test("[B53][persistence-mobile] documents, gifts and tables persist for owner and partner", async ({ page }, testInfo) => {
   expect(testInfo.project.name).toBe("m8-390");
   expect(milestone8FixtureReady && supabaseUrl && serviceRole).toBeTruthy();
@@ -79,6 +91,57 @@ test("[B53][persistence-mobile] documents, gifts and tables persist for owner an
     expect(guests.error).toBeNull();
 
     await loginAs(page, owner);
+
+    await page.goto("/it/dashboard?runtime=i18n#overview");
+    await expect(page.locator("html")).toHaveAttribute("lang", "it");
+    await expect(page.locator("html")).toHaveAttribute("data-runtime-locale", "it");
+    await expect(page.getByText("Budget, attività e prossimi passi: tutto ciò che serve per organizzare con serenità.", { exact: true })).toBeVisible();
+    expect(await browserSessionUserId(page)).toBe(owner.id);
+    const eventBeforeSwitch = await browserApi<{ event: { id: string } }>(page, "/api/event/resolve");
+    expect(eventBeforeSwitch.status).toBe(200);
+    expect(eventBeforeSwitch.body.event.id).toBe(eventId);
+
+    const settings = page.locator('[aria-controls="quick-settings-dialog"]:visible');
+    await settings.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await Promise.all([
+      page.waitForURL(url => url.pathname === "/en/dashboard" && url.search === "?runtime=i18n" && url.hash === "#overview"),
+      page.locator("#quick-settings-language").selectOption("en"),
+    ]);
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator("html")).toHaveAttribute("data-runtime-locale", "en");
+    await expect(page.getByText("Budget, tasks and next steps: everything you need to plan with confidence.", { exact: true })).toBeVisible();
+    expect(await browserSessionUserId(page)).toBe(owner.id);
+    await page.reload();
+    await expect(page).toHaveURL(/\/en\/dashboard\?runtime=i18n#overview$/);
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+
+    await page.getByRole("button", { name: "Dashboard", exact: true }).click();
+    await page.getByRole("link", { name: "Documents", exact: true }).click();
+    await expect(page).toHaveURL(/\/en\/documenti$/);
+    await expect(page.getByRole("heading", { name: "Documents and quotes", exact: true })).toBeVisible();
+    await page.goBack();
+    await expect(page).toHaveURL(/\/en\/dashboard\?runtime=i18n#overview$/);
+    await page.goForward();
+    await expect(page).toHaveURL(/\/en\/documenti$/);
+
+    const documentTitles = {
+      it: "Documenti e preventivi",
+      en: "Documents and quotes",
+      es: "Documentos y presupuestos",
+      fr: "Documents et devis",
+      de: "Dokumente und Angebote",
+    } as const;
+    for (const [runtimeLocale, title] of Object.entries(documentTitles)) {
+      await page.goto(`/${runtimeLocale}/documenti`);
+      await expect(page.locator("html")).toHaveAttribute("lang", runtimeLocale);
+      await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+      expect(await browserSessionUserId(page)).toBe(owner.id);
+    }
+    const eventAfterSwitch = await browserApi<{ event: { id: string } }>(page, "/api/event/resolve");
+    expect(eventAfterSwitch.status).toBe(200);
+    expect(eventAfterSwitch.body.event.id).toBe(eventId);
 
     await page.goto("/it/documenti");
     const upload = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/my/documents");

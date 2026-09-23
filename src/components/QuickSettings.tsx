@@ -8,13 +8,18 @@ import { Settings, X } from "lucide-react";
 import React from "react";
 import { useTheme, type ThemePreference } from "@/components/ThemeProvider";
 import { isSelectableLocale } from "@/i18n/languageCapabilities";
-import { useTranslations } from "next-intl";
+import { localizedHref } from "@/i18n/runtimeRouting";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function QuickSettings() {
   const t = useTranslations("runtimeUi.settings");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const { preference, setPreference } = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [lang, setLang] = React.useState<string>("it");
+  const [lang, setLang] = React.useState<string>(locale);
   const [country, setCountry] = React.useState<string>("it");
   const [eventType, setEventType] = React.useState<string>("wedding");
 
@@ -23,8 +28,6 @@ export default function QuickSettings() {
   React.useEffect(() => {
     const cookie = (name: string) =>
       document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]+)"))?.[1];
-    const candidateLanguage = localStorage.getItem("language") || cookie("language") || "it";
-    const storedLanguage = isSelectableLocale(candidateLanguage) ? candidateLanguage : "it";
     let storedCountry = localStorage.getItem("country") || cookie("country") || "it";
     if (storedCountry === "uk") {
       storedCountry = "gb";
@@ -32,10 +35,10 @@ export default function QuickSettings() {
       localStorage.setItem("country", "gb");
     }
     const storedEventType = normalizeEventType(localStorage.getItem("eventType") || cookie("eventType") || "wedding");
-    setLang(storedLanguage);
+    setLang(locale);
     setCountry(storedCountry);
     setEventType(storedEventType);
-  }, []);
+  }, [locale]);
 
   React.useEffect(() => {
     const handler: EventListener = () => setOpen(true);
@@ -49,11 +52,16 @@ export default function QuickSettings() {
   }
 
   function applyChanges() {
-    if (!isSelectableLocale(lang)) return;
-    persist("language", lang);
     persist("country", country);
-    const currentLocale = document.documentElement?.lang || "it";
-    window.location.href = `/${currentLocale || "it"}/dashboard`;
+    setOpen(false);
+  }
+
+  function changeLanguage(nextLocale: string) {
+    if (!isSelectableLocale(nextLocale)) return;
+    persist("language", nextLocale);
+    setLang(nextLocale);
+    setOpen(false);
+    router.push(localizedHref(pathname || `/${locale}`, nextLocale, window.location.search, window.location.hash));
   }
 
   return (
@@ -111,7 +119,7 @@ export default function QuickSettings() {
 
             <div className="app-field">
               <label className="app-label" htmlFor="quick-settings-language">{t("language")}</label>
-              <select id="quick-settings-language" className="app-select" value={lang} onChange={(event) => setLang(event.target.value)}>
+              <select id="quick-settings-language" className="app-select focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" value={lang} onChange={(event) => changeLanguage(event.target.value)}>
                 {LANGS.map((item) => (
                   <option key={item.slug} value={item.slug} disabled={!item.available}>
                     {item.emoji} {item.label} {!item.available ? `(${t("comingSoon")})` : ""}

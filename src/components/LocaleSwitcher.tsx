@@ -1,13 +1,12 @@
 "use client";
 
-import { type EventType, type Locale } from "@/lib/i18n";
-import { useLocale } from "@/providers/LocaleProvider";
+import { localizedHref } from "@/i18n/runtimeRouting";
 import { usePathname, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 export default function LocaleSwitcher() {
-  const { locale, setLocale, country, setCountry, eventType, setEventType } = useLocale();
+  const locale = useLocale();
   const t = useTranslations("runtimeUi.shared");
   const pathname = usePathname();
   const router = useRouter();
@@ -17,6 +16,13 @@ export default function LocaleSwitcher() {
   const [events, setEvents] = useState<{ code: string; name: string; description?: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [country, setCountry] = useState("");
+  const [eventType, setEventType] = useState("");
+
+  useEffect(() => {
+    setCountry(localStorage.getItem("country") || "");
+    setEventType(localStorage.getItem("eventType") || "");
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -43,13 +49,17 @@ export default function LocaleSwitcher() {
     return () => { active = false; };
   }, [t]);
 
-  function switchLocale(next: Locale) {
+  function persistPreference(name: "country" | "eventType", value: string) {
+    localStorage.setItem(name, value);
+    document.cookie = `${name}=${value}; Path=/; Max-Age=31536000; SameSite=Lax`;
+  }
+
+  function switchLocale(next: string) {
     if (!locales.some((candidate) => candidate.code === next && candidate.selectable)) return;
     if (next === locale) return;
-    const segments = pathname.split("/");
-    segments[1] = next;
-    setLocale(next);
-    router.push(segments.join("/") || "/");
+    localStorage.setItem("language", next);
+    document.cookie = `language=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
+    router.push(localizedHref(pathname || "/", next, window.location.search, window.location.hash));
   }
 
   if (loading) return <div className="text-sage-600">{t("loadingOptions")}</div>;
@@ -57,7 +67,7 @@ export default function LocaleSwitcher() {
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
-      <select value={locale} onChange={(e) => switchLocale(e.target.value as Locale)} className="border rounded-lg px-3 py-2">
+      <select value={locale} onChange={(e) => switchLocale(e.target.value)} className="border rounded-lg px-3 py-2">
         {locales.map((l) => (
           <option key={l.code} value={l.code} dir={l.rtl ? "rtl" : undefined} disabled={!l.selectable}>
             {l.native_name || l.name || l.code.toUpperCase()}{!l.selectable ? ` (${t("comingSoon")})` : ""}
@@ -65,7 +75,7 @@ export default function LocaleSwitcher() {
         ))}
       </select>
 
-      <select value={country ?? ""} onChange={(e) => setCountry(e.target.value || undefined)} className="border rounded-lg px-3 py-2">
+      <select value={country} onChange={(e) => { setCountry(e.target.value); persistPreference("country", e.target.value); }} className="border rounded-lg px-3 py-2">
         <option value="">— {t("country")} —</option>
         {countries.map(c => (
           <option key={c.code} value={c.code}>
@@ -74,7 +84,7 @@ export default function LocaleSwitcher() {
         ))}
       </select>
 
-      <select value={eventType ?? ""} onChange={(e) => setEventType(e.target.value as EventType)} className="border rounded-lg px-3 py-2">
+      <select value={eventType} onChange={(e) => { setEventType(e.target.value); persistPreference("eventType", e.target.value); }} className="border rounded-lg px-3 py-2">
         <option value="">— {t("event")} —</option>
         {events.map(e => (
           <option key={e.code} value={e.code}>

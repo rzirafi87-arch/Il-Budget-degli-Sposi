@@ -1,6 +1,5 @@
 "use client";
 
-import { locales } from "@/i18n/config";
 import { COUNTRIES, EVENTS, LANGS } from "@/lib/loadConfigs";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname as nextUsePathname } from "next/navigation";
@@ -12,6 +11,7 @@ function usePathname() {
 }
 import React from "react";
 import { isSelectableLocale } from "@/i18n/languageCapabilities";
+import { localizedHref } from "@/i18n/runtimeRouting";
 
 const EVENT_EMOJIS: Record<string, string> = {
   wedding: "💍",
@@ -134,17 +134,7 @@ export default function TopBarSelector() {
     localStorage.setItem("language", newLang);
     document.cookie = `language=${newLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
     setLang(newLang);
-    const segments = pathname ? pathname.split("/").filter(Boolean) : [];
-    if (segments.length === 0) {
-      router.push(`/${newLang}`);
-      return;
-    }
-    if (locales.includes(segments[0] as (typeof locales)[number])) {
-      segments[0] = newLang;
-    } else {
-      segments.unshift(newLang);
-    }
-    router.push(`/${segments.join("/")}` || `/${newLang}`);
+    router.push(localizedHref(pathname || "/", newLang, window.location.search, window.location.hash));
   }
 
   const currentLang = LANGS.find((l) => l.slug === lang);
@@ -195,7 +185,7 @@ export default function TopBarSelector() {
                 {languageFlag}
               </span>
               <div>
-                <div className="text-xs text-gray-500">Lingua</div>
+                <div className="text-xs text-gray-500">{t("header.language")}</div>
                 <select
                   className="text-sm font-semibold text-gray-800 rounded border px-2 py-1"
                   value={lang}
@@ -210,7 +200,7 @@ export default function TopBarSelector() {
               </div>
             </div>
             <Label
-              title="Nazione"
+              title={t("runtimeUi.shared.country")}
               value={currentCountry?.label || country.toUpperCase()}
               emoji={countryFlag}
               onClick={() => router.push(`/${locale}/select-country`)}

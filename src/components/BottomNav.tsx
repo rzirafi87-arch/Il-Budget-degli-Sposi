@@ -67,8 +67,7 @@ export default function BottomNav({ items, showOnDesktop = false }: BottomNavPro
           return (
               <Link
                 key={item.href}
-                href={item.href}
-                locale={locale}
+                href={`/${locale}${item.href.startsWith("/") ? item.href : `/${item.href}`}`}
                 className={clsx(
                   "flex flex-col items-center justify-center",
                   "min-w-[60px] py-2 px-3 rounded-lg",
