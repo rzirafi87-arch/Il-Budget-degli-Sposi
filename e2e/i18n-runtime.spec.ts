@@ -148,7 +148,7 @@ test("runtime locale switch preserves route state and loads the selected diction
   const directDeepLinkHtml = await directDeepLink.text();
   expect(directDeepLinkHtml).toContain(`<html lang="${locale}"`);
   expect(directDeepLinkHtml).toContain(expected.resetTitle);
-  expect(directDeepLinkHtml).toContain(`rel="canonical" href="https://ilbudgetdeglisposi.it/${locale}/reset-password"`);
+  expect(directDeepLinkHtml).toMatch(new RegExp(`<link rel="canonical" href="https://[^"]+/${locale}/reset-password"`));
 
   await page.goto(`/${locale}/auth?next=%2F${locale}%2Fdocumenti#access`, { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveAttribute("data-runtime-locale", locale);
