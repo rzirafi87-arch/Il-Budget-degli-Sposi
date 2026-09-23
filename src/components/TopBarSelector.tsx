@@ -11,7 +11,7 @@ function usePathname() {
 }
 import React from "react";
 import { isSelectableLocale } from "@/i18n/languageCapabilities";
-import { localizedHref } from "@/i18n/runtimeRouting";
+import { pushLocalizedRoute } from "@/i18n/runtimeRouting";
 
 const EVENT_EMOJIS: Record<string, string> = {
   wedding: "💍",
@@ -134,7 +134,7 @@ export default function TopBarSelector() {
     localStorage.setItem("language", newLang);
     document.cookie = `language=${newLang}; Path=/; Max-Age=15552000; SameSite=Lax`;
     setLang(newLang);
-    router.push(localizedHref(pathname || "/", newLang, window.location.search, window.location.hash));
+    pushLocalizedRoute(router, pathname || "/", newLang, window.location.search, window.location.hash);
   }
 
   const currentLang = LANGS.find((l) => l.slug === lang);

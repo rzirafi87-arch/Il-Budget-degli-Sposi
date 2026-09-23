@@ -185,3 +185,19 @@ test("runtime locale switch preserves route state and loads the selected diction
   expect(hydrationErrors, `${locale}/${viewport} hydration errors`).toEqual([]);
   expect(consoleErrors.filter(message => !/favicon/i.test(message)), `${locale}/${viewport} console errors`).toEqual([]);
 });
+
+test("successive locale switches preserve the query and exactly one hash", async ({ page }, testInfo) => {
+  const { locale, viewport } = runtimeProject(testInfo.project.name);
+  test.skip(locale !== "it" || viewport !== "desktop", "One desktop journey covers the shared switcher state.");
+
+  await primeProtectedPreview(page);
+  await page.goto("/it/reset-password?runtime=successive#password", { waitUntil: "domcontentloaded" });
+
+  for (const nextLocale of ["en", "es", "fr", "de", "it"] as const) {
+    await page.locator("button:has(svg.lucide-settings):visible").last().click();
+    await page.locator("#quick-settings-language").selectOption(nextLocale);
+    await page.waitForURL(url => url.pathname === `/${nextLocale}/reset-password`);
+    await expect(page.locator("html")).toHaveAttribute("lang", nextLocale);
+    await expect(page).toHaveURL(new RegExp(`/${nextLocale}/reset-password\\?runtime=successive#password$`));
+  }
+});

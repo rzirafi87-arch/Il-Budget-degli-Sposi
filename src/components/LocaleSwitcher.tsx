@@ -1,6 +1,6 @@
 "use client";
 
-import { localizedHref } from "@/i18n/runtimeRouting";
+import { localizedHref, pushLocalizedRoute } from "@/i18n/runtimeRouting";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -59,7 +59,7 @@ export default function LocaleSwitcher() {
     if (next === locale) return;
     localStorage.setItem("language", next);
     document.cookie = `language=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
-    router.push(localizedHref(pathname || "/", next, window.location.search, window.location.hash));
+    pushLocalizedRoute(router, pathname || "/", next as Parameters<typeof localizedHref>[1], window.location.search, window.location.hash);
   }
 
   if (loading) return <div className="text-sage-600">{t("loadingOptions")}</div>;

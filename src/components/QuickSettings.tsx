@@ -8,7 +8,7 @@ import { Settings, X } from "lucide-react";
 import React from "react";
 import { useTheme, type ThemePreference } from "@/components/ThemeProvider";
 import { isSelectableLocale } from "@/i18n/languageCapabilities";
-import { localizedHref } from "@/i18n/runtimeRouting";
+import { pushLocalizedRoute } from "@/i18n/runtimeRouting";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -61,7 +61,7 @@ export default function QuickSettings() {
     persist("language", nextLocale);
     setLang(nextLocale);
     setOpen(false);
-    router.push(localizedHref(pathname || `/${locale}`, nextLocale, window.location.search, window.location.hash));
+    pushLocalizedRoute(router, pathname || `/${locale}`, nextLocale, window.location.search, window.location.hash);
   }
 
   return (

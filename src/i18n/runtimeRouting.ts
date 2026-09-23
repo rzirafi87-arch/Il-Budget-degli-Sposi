@@ -30,3 +30,40 @@ export function persistLocalePreference(locale: Locale): void {
   window.localStorage.setItem("language", locale);
   window.document.cookie = `language=${locale}; Path=/; Max-Age=31536000; SameSite=Lax`;
 }
+
+type ClientRouter = {
+  push(href: string, options?: { scroll?: boolean }): void;
+};
+
+/**
+ * Navigate through the App Router while restoring the fragment on the final
+ * history entry. Passing an already-active fragment to router.push repeatedly
+ * can make production Next.js append it (for example #password#password).
+ */
+export function pushLocalizedRoute(
+  router: ClientRouter,
+  pathname: string,
+  locale: Locale,
+  search = "",
+  hash = "",
+): void {
+  const target = new URL(localizedHref(pathname, locale, search, hash), window.location.origin);
+  const routeWithoutHash = `${target.pathname}${target.search}`;
+
+  router.push(routeWithoutHash, { scroll: false });
+  if (!target.hash) return;
+
+  const restoreHash = (attempt = 0) => {
+    if (window.location.pathname === target.pathname && window.location.search === target.search) {
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${target.pathname}${target.search}${target.hash}`,
+      );
+      return;
+    }
+    if (attempt < 120) window.requestAnimationFrame(() => restoreHash(attempt + 1));
+  };
+
+  window.requestAnimationFrame(() => restoreHash());
+}

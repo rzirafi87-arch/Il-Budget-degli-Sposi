@@ -1,7 +1,7 @@
 "use client";
 
 import { visibleLanguages } from "@/i18n/languageCapabilities";
-import { localizedHref, persistLocalePreference } from "@/i18n/runtimeRouting";
+import { localizedHref, persistLocalePreference, pushLocalizedRoute } from "@/i18n/runtimeRouting";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -15,7 +15,7 @@ export default function LanguageSwitcher() {
 
   const changeLang = (locale: string) => {
     persistLocalePreference(locale);
-    router.push(localizedHref(pathname || "/", locale as Parameters<typeof localizedHref>[1], window.location.search, window.location.hash));
+    pushLocalizedRoute(router, pathname || "/", locale as Parameters<typeof localizedHref>[1], window.location.search, window.location.hash);
   };
 
   return (
