@@ -34,6 +34,7 @@ insert into public.guests(id,event_id,name,guest_type,attending) values
 ('53300000-0000-4000-8000-000000000020','53300000-0000-4000-8000-000000000010','Guest A1','common',true),
 ('53300000-0000-4000-8000-000000000021','53300000-0000-4000-8000-000000000010','Guest A2','common',true),
 ('53300000-0000-4000-8000-000000000022','53300000-0000-4000-8000-000000000010','Guest A3','common',true),
+('53300000-0000-4000-8000-000000000024','53300000-0000-4000-8000-000000000010','Guest A4','common',true),
 ('53300000-0000-4000-8000-000000000023','53300000-0000-4000-8000-000000000011','Guest B1','common',true);
 
 select lives_ok(
@@ -76,7 +77,7 @@ select throws_ok(
 insert into public.table_assignments(table_id,guest_id,seat_number) values
 ('53300000-0000-4000-8000-000000000031','53300000-0000-4000-8000-000000000022',1);
 select throws_ok(
-  $q$insert into public.table_assignments(table_id,guest_id,seat_number) values('53300000-0000-4000-8000-000000000031','53300000-0000-4000-8000-000000000020',1)$q$,
+  $q$insert into public.table_assignments(table_id,guest_id,seat_number) values('53300000-0000-4000-8000-000000000031','53300000-0000-4000-8000-000000000024',1)$q$,
   '23514', 'TABLE_SEAT_DUPLICATE', 'one table seat cannot be assigned twice'
 );
 select throws_ok(

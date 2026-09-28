@@ -38,13 +38,13 @@ select ok(
 );
 select is(
   (select count(*)::int from pg_policies where schemaname = 'public' and tablename = 'event_documents'),
-  3,
-  'event documents has select, insert and delete policies'
+  1,
+  'event documents exposes only its event-scoped select policy'
 );
 select ok(not has_table_privilege('anon', 'public.event_documents', 'select'), 'anonymous has no document read grant');
 select ok(not has_table_privilege('anon', 'public.event_documents', 'insert'), 'anonymous has no document insert grant');
 select ok(not has_table_privilege('anon', 'public.event_documents', 'delete'), 'anonymous has no document delete grant');
-select ok(not has_table_privilege('authenticated', 'public.event_documents', 'update'), 'authenticated users cannot update immutable metadata');
+select ok(not has_table_privilege('authenticated', 'public.event_documents', 'insert,update,delete'), 'authenticated users cannot mutate server-controlled metadata directly');
 select is((select public from storage.buckets where id = 'event-documents'), false, 'document bucket is private');
 select is((select file_size_limit from storage.buckets where id = 'event-documents'), 10485760::bigint, 'document bucket enforces 10 MB');
 select is(
@@ -54,8 +54,8 @@ select is(
 );
 select is(
   (select count(*)::int from pg_policies where schemaname = 'storage' and tablename = 'objects' and policyname like 'event_documents_storage_%'),
-  3,
-  'storage has event-scoped select, insert and delete policies'
+  1,
+  'storage exposes only its event-scoped select policy'
 );
 select is(
   (select count(*)::int from pg_policies
@@ -63,8 +63,8 @@ select is(
      and policyname like 'event_documents_storage_%'
      and coalesce(qual, with_check, '') like '%can_access_event%'
      and coalesce(qual, with_check, '') like '%foldername%'),
-  3,
-  'every document storage policy derives access from the event path prefix'
+  1,
+  'the document storage read policy derives access from the event path prefix'
 );
 
 insert into auth.users(id,instance_id,aud,role,email,encrypted_password,email_confirmed_at,created_at,updated_at) values
@@ -94,11 +94,13 @@ select throws_ok(
 
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"53100000-0000-4000-8000-000000000001","email":"owner53docs@example.invalid","role":"authenticated"}',true);
-select lives_ok(
+select throws_ok(
   $q$insert into public.event_documents(id,event_id,created_by,original_name,object_path,category,mime_type,file_size) values('53100000-0000-4000-8000-000000000020','53100000-0000-4000-8000-000000000010','53100000-0000-4000-8000-000000000001','owner.pdf','53100000-0000-4000-8000-000000000010/53100000-0000-4000-8000-000000000020/owner.pdf','contract','application/pdf',1024)$q$,
-  'owner inserts document metadata'
+  '42501', null, 'owner cannot insert server-controlled metadata directly'
 );
-select is((select count(*)::int from public.event_documents where event_id = '53100000-0000-4000-8000-000000000010'), 1, 'owner reads same-event metadata');
+select is((select count(*)::int from public.event_documents where event_id = '53100000-0000-4000-8000-000000000010'), 0, 'denied owner insert creates no metadata');
+
+set local role postgres;
 select throws_ok(
   $q$insert into public.event_documents(event_id,created_by,original_name,object_path,category,mime_type,file_size) values('53100000-0000-4000-8000-000000000010','53100000-0000-4000-8000-000000000001','bad.exe','53100000-0000-4000-8000-000000000010/bad/bad.exe','generic','application/octet-stream',1)$q$,
   '23514', null, 'invalid MIME is rejected by the database'
@@ -111,23 +113,25 @@ select throws_ok(
   $q$insert into public.event_documents(event_id,created_by,original_name,object_path,category,mime_type,file_size) values('53100000-0000-4000-8000-000000000010','53100000-0000-4000-8000-000000000001','wrong.pdf','53100000-0000-4000-8000-000000000011/wrong/wrong.pdf','generic','application/pdf',1)$q$,
   '23514', null, 'object path must start with its event id'
 );
-select lives_ok(
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"53100000-0000-4000-8000-000000000001","email":"owner53docs@example.invalid","role":"authenticated"}',true);
+select throws_ok(
   $q$delete from public.event_documents where id = '53100000-0000-4000-8000-000000000020'$q$,
-  'owner deletes same-event metadata'
+  '42501', null, 'owner cannot delete server-controlled metadata directly'
 );
-select is((select count(*)::int from public.event_documents where id = '53100000-0000-4000-8000-000000000020'), 0, 'owner deletion removes metadata');
+select is((select count(*)::int from public.event_documents where id = '53100000-0000-4000-8000-000000000020'), 0, 'denied owner mutation leaves no metadata');
 
 select set_config('request.jwt.claims','{"sub":"53100000-0000-4000-8000-000000000002","email":"partner53docs@example.invalid","role":"authenticated"}',true);
-select lives_ok(
+select throws_ok(
   $q$insert into public.event_documents(id,event_id,created_by,original_name,object_path,category,mime_type,file_size) values('53100000-0000-4000-8000-000000000021','53100000-0000-4000-8000-000000000010','53100000-0000-4000-8000-000000000002','partner.png','53100000-0000-4000-8000-000000000010/53100000-0000-4000-8000-000000000021/partner.png','receipt','image/png',2048)$q$,
-  'active partner inserts same-event metadata'
+  '42501', null, 'active partner cannot insert server-controlled metadata directly'
 );
-select is((select count(*)::int from public.event_documents where id = '53100000-0000-4000-8000-000000000021'), 1, 'active partner reads same-event metadata');
-select lives_ok(
+select is((select count(*)::int from public.event_documents where id = '53100000-0000-4000-8000-000000000021'), 0, 'denied partner insert creates no metadata');
+select throws_ok(
   $q$delete from public.event_documents where id = '53100000-0000-4000-8000-000000000021'$q$,
-  'active partner deletes same-event metadata'
+  '42501', null, 'active partner cannot delete server-controlled metadata directly'
 );
-select is((select count(*)::int from public.event_documents where id = '53100000-0000-4000-8000-000000000021'), 0, 'partner deletion removes metadata');
+select is((select count(*)::int from public.event_documents where id = '53100000-0000-4000-8000-000000000021'), 0, 'denied partner deletion leaves metadata unchanged');
 
 set local role postgres;
 insert into public.event_documents(id,event_id,created_by,original_name,object_path,category,mime_type,file_size) values
@@ -141,13 +145,9 @@ select throws_ok(
   $q$insert into public.event_documents(event_id,created_by,original_name,object_path,category,mime_type,file_size) values('53100000-0000-4000-8000-000000000010','53100000-0000-4000-8000-000000000003','revoked.pdf','53100000-0000-4000-8000-000000000010/revoked/revoked.pdf','generic','application/pdf',1)$q$,
   '42501', null, 'revoked partner cannot insert metadata'
 );
-with deleted as (
-  delete from public.event_documents where id = '53100000-0000-4000-8000-000000000022' returning 1
-)
-select is(
-  (select count(*)::int from deleted),
-  0,
-  'revoked partner cannot delete metadata'
+select throws_ok(
+  $q$delete from public.event_documents where id = '53100000-0000-4000-8000-000000000022'$q$,
+  '42501', null, 'revoked partner cannot delete metadata'
 );
 
 select set_config('request.jwt.claims','{"sub":"53100000-0000-4000-8000-000000000004","email":"stranger53docs@example.invalid","role":"authenticated"}',true);

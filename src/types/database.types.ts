@@ -3777,6 +3777,19 @@ export type Database = {
         Args: { p_table_id: string }
         Returns: boolean
       }
+      claim_expired_event_document_uploads: {
+        Args: { p_actor_id: string; p_event_id: string; p_limit?: number }
+        Returns: Json
+      }
+      complete_event_document_upload_cleanup: {
+        Args: {
+          p_actor_id: string
+          p_event_id: string
+          p_object_path: string
+          p_reservation_id: string
+        }
+        Returns: Json
+      }
       consume_rate_limit: {
         Args: { p_key: string; p_limit: number; p_window_seconds: number }
         Returns: {
@@ -3788,6 +3801,16 @@ export type Database = {
       ensure_subcategory: {
         Args: { p_category: string; p_name: string }
         Returns: undefined
+      }
+      finalize_event_document_upload: {
+        Args: {
+          p_actor_id: string
+          p_event_id: string
+          p_file_size: number
+          p_object_path: string
+          p_reservation_id: string
+        }
+        Returns: Json
       }
       find_or_create_place: {
         Args: {
@@ -3882,6 +3905,29 @@ export type Database = {
       reject_event_invitation: {
         Args: { p_token: string; p_user_id: string }
         Returns: string
+      }
+      release_event_document_upload: {
+        Args: {
+          p_actor_id: string
+          p_event_id: string
+          p_object_path: string
+          p_reservation_id: string
+        }
+        Returns: Json
+      }
+      reserve_event_document_upload: {
+        Args: {
+          p_actor_id: string
+          p_category: string
+          p_event_id: string
+          p_file_size: number
+          p_idempotency_key: string
+          p_mime_type: string
+          p_notes?: string
+          p_original_name: string
+          p_ttl_seconds?: number
+        }
+        Returns: Json
       }
       rotate_event_invitation_token: {
         Args: {

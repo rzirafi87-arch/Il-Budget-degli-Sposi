@@ -10,3 +10,4 @@ supabase/tests/branch_52_supplier_timeline_appointments.sql
 supabase/tests/branch_53_event_documents.sql
 supabase/tests/branch_53_gift_list_items.sql
 supabase/tests/branch_53_transactional_tables.sql
+supabase/tests/branch_53_atomic_integrity.sql
