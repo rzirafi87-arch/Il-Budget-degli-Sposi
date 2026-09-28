@@ -13,6 +13,8 @@ on:
       - 'scripts/import-catalog.mjs'
       - 'scripts/run-pgtap.mjs'
       - 'scripts/test-pgtap-runner-integration.mjs'
+      - 'scripts/test-branch53-concurrency.sh'
+      - 'scripts/test-branch53-red-team.sh'
       - 'scripts/lib/pgtap-runner.mjs'
       - 'scripts/lib/pgtap-runner.test.mjs'
       - 'scripts/fixtures/pgtap-runner/**'
@@ -261,8 +263,17 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
 
+      - name: Apply Branch 53 atomic integrity reimplementation
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
+
+      - name: Red-team Branch 53 locking and idempotency
+        run: ./scripts/test-branch53-red-team.sh "$LOCAL_DATABASE_URL"
 
       - name: Verify pgTAP runner positive and negative contracts
         run: |

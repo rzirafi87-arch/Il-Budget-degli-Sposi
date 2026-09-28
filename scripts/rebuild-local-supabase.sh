@@ -42,5 +42,6 @@ for migration in \
   20260920072942_branch_52_supplier_timeline_appointments.sql \
   20260922190000_branch_53_event_documents.sql \
   20260922204756_branch_53_gift_list_items.sql \
-  20260922210136_branch_53_transactional_tables.sql
+  20260922210136_branch_53_transactional_tables.sql \
+  20260927134918_branch_53_atomic_integrity_reimplementation.sql
 do apply "supabase/migrations/$migration"; done
