@@ -113,6 +113,7 @@ describe("/api/my/documents contracts", () => {
     const response = await GET({} as NextRequest);
     expect(response.status).toBe(200);
     expect(query.eq).toHaveBeenCalledWith("event_id", eventId);
+    expect(query.eq).toHaveBeenCalledWith("deletion_state", "active");
     await expect(response.json()).resolves.toMatchObject({ documents: [{ name: "contratto.pdf", fileSize: 3 }] });
   });
 

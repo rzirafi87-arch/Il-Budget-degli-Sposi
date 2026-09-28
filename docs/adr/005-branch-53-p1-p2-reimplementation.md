@@ -1,10 +1,46 @@
 # ADR 005 — Branch 53 P1/P2 spec-driven reimplementation
 
-- Status: implemented; remote RC verification pending
+- Status: targeted remediation in progress after Final Release Readiness STOP
 - Date: 2026-09-28
 - Red baseline: `16c84b335b4ef2fba705344000681ca64fdcc8d4`
 - Base: `main@7aaf48c0736fa50187864145f1d7d41fc1265014`
-- Scope: only the nine open P1/P2 findings on PR #71
+- Scope: the original nine findings plus only the two new P1/P2 review findings
+
+## Targeted remediation after Final Release Readiness
+
+The independent readiness review found two additional violations on
+`babf949aa784e552d387c3e01f6637229e6d746c`:
+
+1. `DELETE /api/my/tables` bypasses `save_event_table_plan`'s event-row lock by
+   deleting through PostgREST. A table delete and a plan save for the same event
+   therefore do not have a single observable serialization order.
+2. document deletion removes the Storage object before securing any durable
+   database state. If the later metadata delete fails, active metadata points to
+   irreversibly missing content and no retry state identifies the partial work.
+
+The remediation adds no distributed transaction and keeps the established lock
+order. Its invariants are:
+
+- every table-plan mutation locks `public.events` first, then the target child;
+- table delete is a server-only, event-scoped, idempotent RPC using the same
+  owner/partner/legacy resolver as plan save;
+- document delete first persists an event-scoped tombstone and a private ledger
+  row in one short transaction;
+- active document reads and signed downloads exclude tombstoned metadata;
+- Storage deletion happens only after the tombstone transaction commits and
+  while no PostgreSQL lock is held;
+- finalization is a separate short transaction which verifies actor, event,
+  document, operation, immutable object key, and Storage absence before deleting
+  metadata and marking the ledger complete;
+- duplicate, concurrent, or post-timeout retries reuse the document ID as the
+  deletion intention and converge on the same ledger operation;
+- any Storage or finalization failure returns an explicit retryable pending
+  result while the metadata remains non-active and recoverable by retry.
+
+The rejected alternatives are application mutexes, deleting metadata before a
+durable ledger exists, and pretending that PostgreSQL and Storage share an
+atomic transaction. All schema changes must be an additive migration; the four
+published Branch 53 changes and earlier migrations remain byte-identical.
 
 ## Context and verified baseline
 

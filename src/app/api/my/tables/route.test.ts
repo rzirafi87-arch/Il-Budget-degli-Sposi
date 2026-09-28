@@ -73,23 +73,6 @@ function tablePlan(overrides: Record<string, unknown> = {}) {
   };
 }
 
-function deleteQuery(data: { id: string } | null) {
-  const filters: Array<[string, unknown]> = [];
-  type DeleteQuery = {
-    delete: jest.Mock<DeleteQuery, []>;
-    eq: jest.Mock<DeleteQuery, [string, unknown]>;
-    select: jest.Mock<DeleteQuery, []>;
-    maybeSingle: jest.Mock<Promise<{ data: { id: string } | null; error: null }>, []>;
-  };
-  const query: DeleteQuery = {
-    delete: jest.fn(() => query),
-    eq: jest.fn((column: string, value: unknown) => { filters.push([column, value]); return query; }),
-    select: jest.fn(() => query),
-    maybeSingle: jest.fn(async () => ({ data, error: null })),
-  };
-  return { query, filters };
-}
-
 describe("/api/my/tables transactional contracts", () => {
   beforeEach(() => {
     accessMode = "owner";
@@ -189,19 +172,38 @@ describe("/api/my/tables transactional contracts", () => {
     await expect(response.json()).resolves.toEqual({ error: "TABLE_SAVE_CONFLICT" });
   });
 
-  it("deletes one explicitly scoped same-event table", async () => {
-    const { query, filters } = deleteQuery({ id: tableId });
-    mockFrom.mockReturnValue(query);
+  it.each(["owner", "partner", "legacy"] as const)("serializes an authorized %s delete through the event-locked RPC", async (mode) => {
+    accessMode = mode;
+    mockRpc.mockResolvedValue({ data: { status: "deleted" }, error: null });
     const response = await DELETE(request("DELETE", undefined, `?id=${tableId}`));
     expect(response.status).toBe(200);
-    expect(filters).toEqual([["id", tableId], ["event_id", eventId]]);
+    expect(mockRpc).toHaveBeenCalledWith("delete_event_table", {
+      p_event_id: eventId,
+      p_actor_id: mode === "partner" ? partnerId : mode === "legacy" ? legacyId : ownerId,
+      p_table_id: tableId,
+    });
+    expect(mockFrom).not.toHaveBeenCalled();
   });
 
-  it("returns 404 when an explicitly scoped table is not in the event", async () => {
-    const { query } = deleteQuery(null);
-    mockFrom.mockReturnValue(query);
+  it("treats a duplicate delete as an idempotent success", async () => {
+    mockRpc.mockResolvedValue({ data: { status: "already_deleted" }, error: null });
+    const response = await DELETE(request("DELETE", undefined, `?id=${tableId}`));
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ success: true, idempotent: true });
+  });
+
+  it.each(["anonymous", "revoked", "stranger"] as const)("denies %s before a table delete", async (mode) => {
+    accessMode = mode;
+    const response = await DELETE(request("DELETE", undefined, `?id=${tableId}`));
+    expect(response.status).toBe(mode === "anonymous" ? 401 : 404);
+    expect(mockRpc).not.toHaveBeenCalled();
+  });
+
+  it("does not expose a cross-event table through the delete route", async () => {
+    mockRpc.mockResolvedValue({ data: null, error: { code: "42501", message: "TABLE_EVENT_MISMATCH" } });
     const response = await DELETE(request("DELETE", undefined, `?id=${tableId}`));
     expect(response.status).toBe(404);
+    await expect(response.json()).resolves.toEqual({ error: "TABLE_NOT_FOUND" });
   });
 
   it("uses the existing schema and the server-only atomic RPC", () => {
@@ -214,6 +216,8 @@ describe("/api/my/tables transactional contracts", () => {
     expect(source).toContain("familyGroupId");
     expect(source).not.toContain("seat_number, guests");
     expect(source).toContain('.rpc("save_event_table_plan"');
+    expect(source).toContain('.rpc("delete_event_table"');
+    expect(source).not.toContain('.from("tables")\n      .delete()');
     expect(source).not.toContain("service_role");
   });
 });

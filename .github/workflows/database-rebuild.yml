@@ -15,6 +15,7 @@ on:
       - 'scripts/test-pgtap-runner-integration.mjs'
       - 'scripts/test-branch53-concurrency.sh'
       - 'scripts/test-branch53-red-team.sh'
+      - 'scripts/test-branch53-delete-remediation.sh'
       - 'scripts/lib/pgtap-runner.mjs'
       - 'scripts/lib/pgtap-runner.test.mjs'
       - 'scripts/fixtures/pgtap-runner/**'
@@ -274,6 +275,9 @@ jobs:
 
       - name: Red-team Branch 53 locking and idempotency
         run: ./scripts/test-branch53-red-team.sh "$LOCAL_DATABASE_URL"
+
+      - name: Verify Branch 53 targeted delete remediation
+        run: ./scripts/test-branch53-delete-remediation.sh "$LOCAL_DATABASE_URL"
 
       - name: Verify pgTAP runner positive and negative contracts
         run: |
