@@ -151,7 +151,12 @@ function validationResponse(error: unknown) {
 }
 
 async function readBody(req: NextRequest): Promise<GiftListInput> {
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    throw new GiftValidationError("INVALID_JSON");
+  }
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     throw new GiftValidationError("INVALID_JSON");
   }

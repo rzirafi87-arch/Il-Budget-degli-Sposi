@@ -64,6 +64,7 @@
       "statuses": {
         "wanted": "Wanted",
         "received": "Received",
+        "archived": "Archived",
         "purchased": "Purchased"
       },
       "saving": "Saving…",

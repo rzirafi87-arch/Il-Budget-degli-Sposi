@@ -185,6 +185,23 @@ describe("/api/my/gift-list persistent CRUD", () => {
     await expect(response.json()).resolves.toMatchObject({ item: { id: itemA, name: "Viaggio", status: "received" } });
   });
 
+  it("returns stable INVALID_JSON for malformed JSON instead of a server error", async () => {
+    const malformed = {
+      method: "POST",
+      url: "http://localhost/api/my/gift-list",
+      json: jest.fn(async () => { throw new SyntaxError("Unexpected token"); }),
+    } as unknown as NextRequest;
+    const response = await POST(malformed);
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({ error: "INVALID_JSON" });
+  });
+
+  it("persists and returns the archived state", async () => {
+    const response = await PATCH(request("PATCH", { id: itemA, status: "archived" }));
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({ item: { id: itemA, status: "archived" } });
+  });
+
   it("returns 404 for a cross-event update and leaves the row unchanged", async () => {
     const response = await PUT(request("PUT", { ...valid, id: itemB, name: "Tampered" }));
     expect(response.status).toBe(404);

@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { randomUUID } from "node:crypto";
-import { apiSecurityErrorResponse, requireEventAccess } from "@/lib/apiSecurity";
+import { apiSecurityErrorResponse, parseUuid, requireEventAccess } from "@/lib/apiSecurity";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
@@ -42,16 +42,104 @@ function serializeDocument(row: EventDocumentRow) {
   };
 }
 
-function safeStorageName(name: string) {
-  const cleaned = name
-    .normalize("NFKC")
-    .replace(/[\\/\u0000-\u001f\u007f]+/g, "-")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-zA-Z0-9._-]/g, "_")
-    .replace(/_{2,}/g, "_")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 120);
-  return cleaned || "document";
+type UploadReservation = {
+  reservationId: string;
+  documentId: string;
+  objectPath: string;
+  fileSize: number;
+  status: "active" | "finalized";
+  expiresAt: string;
+};
+
+type ExpiredReservation = { reservationId: string; objectPath: string };
+
+function uploadErrorResponse(error: { code?: string; message?: string } | null) {
+  const message = error?.message || "";
+  if (message.includes("EVENT_DOCUMENT_QUOTA_EXCEEDED")) {
+    return NextResponse.json({ error: "EVENT_DOCUMENT_QUOTA_EXCEEDED" }, { status: 413 });
+  }
+  if (message.includes("DOCUMENT_IDEMPOTENCY_CONFLICT")) {
+    return NextResponse.json({ error: "DOCUMENT_IDEMPOTENCY_CONFLICT" }, { status: 409 });
+  }
+  if (message.includes("DOCUMENT_RESERVATION_CLEANUP_REQUIRED")) {
+    return NextResponse.json({ error: "DOCUMENT_UPLOAD_RETRY_REQUIRED" }, { status: 409 });
+  }
+  if (error?.code === "42501") {
+    return NextResponse.json({ error: "EVENT_ACCESS_DENIED" }, { status: 403 });
+  }
+  return NextResponse.json({ error: "EVENT_DOCUMENT_UPLOAD_FAILED" }, { status: 500 });
+}
+
+async function cleanupExpiredReservations(
+  db: ReturnType<typeof getServiceClient>,
+  eventId: string,
+  userId: string,
+) {
+  const { data, error } = await db.rpc("claim_expired_event_document_uploads", {
+    p_event_id: eventId,
+    p_actor_id: userId,
+    p_limit: 20,
+  });
+  if (error) {
+    logger.warn("EVENT_DOCUMENT_EXPIRED_CLAIM_FAILED", { code: error.code });
+    return;
+  }
+
+  for (const reservation of (Array.isArray(data) ? data : []) as ExpiredReservation[]) {
+    const removal = await db.storage.from(DOCUMENT_BUCKET).remove([reservation.objectPath]);
+    if (removal.error) {
+      logger.error("EVENT_DOCUMENT_EXPIRED_OBJECT_CLEANUP_FAILED", {
+        reservationId: reservation.reservationId,
+        message: removal.error.message,
+      });
+      continue;
+    }
+    const completed = await db.rpc("complete_event_document_upload_cleanup", {
+      p_event_id: eventId,
+      p_actor_id: userId,
+      p_reservation_id: reservation.reservationId,
+      p_object_path: reservation.objectPath,
+    });
+    if (completed.error) {
+      logger.error("EVENT_DOCUMENT_EXPIRED_CLOSE_FAILED", {
+        reservationId: reservation.reservationId,
+        code: completed.error.code,
+      });
+    }
+  }
+}
+
+async function releaseReservation(
+  db: ReturnType<typeof getServiceClient>,
+  eventId: string,
+  userId: string,
+  reservation: UploadReservation,
+) {
+  const released = await db.rpc("release_event_document_upload", {
+    p_event_id: eventId,
+    p_actor_id: userId,
+    p_reservation_id: reservation.reservationId,
+    p_object_path: reservation.objectPath,
+  });
+  if (released.error) {
+    logger.error("EVENT_DOCUMENT_RESERVATION_RELEASE_FAILED", {
+      reservationId: reservation.reservationId,
+      code: released.error.code,
+    });
+  }
+}
+
+async function readDocumentById(
+  db: ReturnType<typeof getServiceClient>,
+  eventId: string,
+  documentId: string,
+) {
+  return db
+    .from("event_documents")
+    .select("id,original_name,category,mime_type,file_size,notes,created_at")
+    .eq("id", documentId)
+    .eq("event_id", eventId)
+    .maybeSingle();
 }
 
 export async function GET(req: NextRequest) {
@@ -105,69 +193,119 @@ export async function POST(req: NextRequest) {
     }
 
     const db = getServiceClient();
-    const { data: sizes, error: quotaError } = await db
-      .from("event_documents")
-      .select("file_size")
-      .eq("event_id", currentEvent.eventId);
+    await cleanupExpiredReservations(db, currentEvent.eventId, userId);
 
-    if (quotaError) {
-      logger.error("EVENT_DOCUMENT_QUOTA_READ_FAILED", { code: quotaError.code });
-      return NextResponse.json({ error: "EVENT_DOCUMENT_UPLOAD_FAILED" }, { status: 500 });
-    }
-
-    const usedBytes = (sizes || []).reduce(
-      (sum, row) => sum + Number((row as { file_size?: number | string }).file_size || 0),
-      0,
+    const requestIdempotencyKey = form.get("idempotencyKey")
+      || req.headers?.get?.("idempotency-key")
+      || randomUUID();
+    const idempotencyKey = parseUuid(requestIdempotencyKey, "DOCUMENT_IDEMPOTENCY_KEY_INVALID");
+    const { data: reservationData, error: reservationError } = await db.rpc(
+      "reserve_event_document_upload",
+      {
+        p_event_id: currentEvent.eventId,
+        p_actor_id: userId,
+        p_idempotency_key: idempotencyKey,
+        p_file_size: value.size,
+        p_original_name: value.name.trim(),
+        p_mime_type: value.type,
+        p_category: categoryValue,
+        p_notes: notesValue || null,
+        p_ttl_seconds: 900,
+      },
     );
-    if (usedBytes + value.size > EVENT_QUOTA_BYTES) {
-      return NextResponse.json({ error: "EVENT_DOCUMENT_QUOTA_EXCEEDED" }, { status: 413 });
+    if (reservationError || !reservationData) {
+      logger.warn("EVENT_DOCUMENT_RESERVATION_FAILED", { code: reservationError?.code });
+      return uploadErrorResponse(reservationError);
+    }
+    const reservation = reservationData as unknown as UploadReservation;
+    if (reservation.status === "finalized") {
+      const existing = await readDocumentById(
+        db,
+        currentEvent.eventId,
+        reservation.documentId,
+      );
+      if (existing.error || !existing.data) {
+        logger.error("EVENT_DOCUMENT_IDEMPOTENT_READ_FAILED", { code: existing.error?.code });
+        return NextResponse.json({ error: "EVENT_DOCUMENT_UPLOAD_FAILED" }, { status: 500 });
+      }
+      return NextResponse.json(
+        { document: serializeDocument(existing.data as EventDocumentRow), idempotent: true },
+        { status: 200 },
+      );
     }
 
-    const documentId = randomUUID();
-    const objectPath = `${currentEvent.eventId}/${documentId}/${safeStorageName(value.name)}`;
     const bytes = new Uint8Array(await value.arrayBuffer());
     const { error: uploadError } = await db.storage
       .from(DOCUMENT_BUCKET)
-      .upload(objectPath, bytes, {
+      .upload(reservation.objectPath, bytes, {
         contentType: value.type,
         upsert: false,
         cacheControl: "3600",
       });
 
     if (uploadError) {
+      const retryFinalize = await db.rpc("finalize_event_document_upload", {
+        p_event_id: currentEvent.eventId,
+        p_actor_id: userId,
+        p_reservation_id: reservation.reservationId,
+        p_object_path: reservation.objectPath,
+        p_file_size: value.size,
+      });
+      if (!retryFinalize.error) {
+        const existing = await readDocumentById(
+          db,
+          currentEvent.eventId,
+          reservation.documentId,
+        );
+        if (!existing.error && existing.data) {
+          return NextResponse.json(
+            { document: serializeDocument(existing.data as EventDocumentRow), idempotent: true },
+            { status: 200 },
+          );
+        }
+      }
+
       logger.error("EVENT_DOCUMENT_STORAGE_UPLOAD_FAILED", { message: uploadError.message });
+      const cleanup = await db.storage.from(DOCUMENT_BUCKET).remove([reservation.objectPath]);
+      if (!cleanup.error) await releaseReservation(db, currentEvent.eventId, userId, reservation);
       return NextResponse.json({ error: "EVENT_DOCUMENT_UPLOAD_FAILED" }, { status: 500 });
     }
 
-    const { data: row, error: insertError } = await db
-      .from("event_documents")
-      .insert({
-        id: documentId,
-        event_id: currentEvent.eventId,
-        created_by: userId,
-        original_name: value.name.trim(),
-        object_path: objectPath,
-        category: categoryValue,
-        mime_type: value.type,
-        file_size: value.size,
-        notes: notesValue || null,
-      })
-      .select("id,original_name,category,mime_type,file_size,notes,created_at")
-      .single();
-
-    if (insertError || !row) {
-      const cleanup = await db.storage.from(DOCUMENT_BUCKET).remove([objectPath]);
+    const finalized = await db.rpc("finalize_event_document_upload", {
+      p_event_id: currentEvent.eventId,
+      p_actor_id: userId,
+      p_reservation_id: reservation.reservationId,
+      p_object_path: reservation.objectPath,
+      p_file_size: value.size,
+    });
+    if (finalized.error) {
+      const cleanup = await db.storage.from(DOCUMENT_BUCKET).remove([reservation.objectPath]);
       if (cleanup.error) {
         logger.error("EVENT_DOCUMENT_ORPHAN_CLEANUP_FAILED", {
-          path: objectPath,
+          reservationId: reservation.reservationId,
           message: cleanup.error.message,
         });
+      } else {
+        await releaseReservation(db, currentEvent.eventId, userId, reservation);
       }
-      logger.error("EVENT_DOCUMENT_METADATA_INSERT_FAILED", { code: insertError?.code });
+      logger.error("EVENT_DOCUMENT_FINALIZE_FAILED", { code: finalized.error.code });
+      return uploadErrorResponse(finalized.error);
+    }
+
+    const { data: row, error: readError } = await readDocumentById(
+      db,
+      currentEvent.eventId,
+      reservation.documentId,
+    );
+    if (readError || !row) {
+      logger.error("EVENT_DOCUMENT_FINAL_READ_FAILED", { code: readError?.code });
       return NextResponse.json({ error: "EVENT_DOCUMENT_UPLOAD_FAILED" }, { status: 500 });
     }
 
-    return NextResponse.json({ document: serializeDocument(row as EventDocumentRow) }, { status: 201 });
+    return NextResponse.json(
+      { document: serializeDocument(row as EventDocumentRow), idempotencyKey },
+      { status: 201 },
+    );
   } catch (error) {
     return apiSecurityErrorResponse(error, "EVENT_DOCUMENT_UPLOAD_FAILED");
   }

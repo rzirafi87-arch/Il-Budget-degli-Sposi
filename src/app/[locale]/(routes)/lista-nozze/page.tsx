@@ -253,6 +253,7 @@ export default function ListaNozzePage() {
             >
               <option value="wanted">{t("statuses.wanted")}</option>
               <option value="received">{t("statuses.received")}</option>
+              <option value="archived">{t("statuses.archived")}</option>
             </select>
           </div>
           <div className="md:col-span-3">

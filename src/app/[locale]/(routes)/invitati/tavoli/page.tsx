@@ -6,7 +6,15 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type AssignedGuest = { guestId: string; seatNumber: number; guestName?: string };
+type AssignedGuest = {
+  guestId: string;
+  seatNumber: number;
+  guestName?: string;
+  guestType: "bride" | "groom" | "common";
+  familyGroupId?: string | null;
+  familyName?: string | null;
+  excludeFromFamilyTable?: boolean;
+};
 type Table = {
   id?: string;
   tableNumber?: number;
@@ -54,7 +62,7 @@ export default function TavoliPage() {
         });
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "TABLES_READ_FAILED");
-        interface ApiTable { id?: string; tableNumber?: number; tableName?: string; tableType?: string; totalSeats?: number; notes?: string; assignedGuests?: { guestId: string; seatNumber: number; guestName?: string }[] }
+        interface ApiTable { id?: string; tableNumber?: number; tableName?: string; tableType?: string; totalSeats?: number; notes?: string; assignedGuests?: AssignedGuest[] }
         const apiTables: ApiTable[] = json.tables || [];
         setTables(apiTables.map((t) => ({
           id: t.id,
@@ -67,6 +75,10 @@ export default function TavoliPage() {
             guestId: ag.guestId,
             seatNumber: ag.seatNumber,
             guestName: ag.guestName,
+            guestType: ag.guestType,
+            familyGroupId: ag.familyGroupId,
+            familyName: ag.familyName,
+            excludeFromFamilyTable: ag.excludeFromFamilyTable,
           })),
         })));
         setAvailableGuests(json.availableGuests || []);
@@ -97,7 +109,10 @@ export default function TavoliPage() {
       ...tables.flatMap((table) => table.assignedGuests.map((guest) => ({
         id: guest.guestId,
         name: guest.guestName || guest.guestId,
-        guestType: "common" as const,
+        guestType: guest.guestType,
+        familyGroupId: guest.familyGroupId,
+        familyName: guest.familyName,
+        excludeFromFamilyTable: guest.excludeFromFamilyTable,
       }))),
     ];
     if (allGuests.length === 0) {
@@ -128,7 +143,15 @@ export default function TavoliPage() {
         const tableName = type === "family" && members.length <= seatsPerTable
           ? t("namedTable", {label})
           : `${type === "family" ? t("namedTable", {label}) : t("cousinsTable")} ${Math.floor(i / seatsPerTable) + 1}`;
-        const assigned: AssignedGuest[] = slice.map((g, idx) => ({ guestId: g.id, seatNumber: idx + 1, guestName: g.name }));
+        const assigned: AssignedGuest[] = slice.map((g, idx) => ({
+          guestId: g.id,
+          seatNumber: idx + 1,
+          guestName: g.name,
+          guestType: g.guestType,
+          familyGroupId: g.familyGroupId,
+          familyName: g.familyName,
+          excludeFromFamilyTable: g.excludeFromFamilyTable,
+        }));
         newTables.push({
           tableNumber: tableCounter++,
           tableName,
@@ -185,6 +208,10 @@ export default function TavoliPage() {
       assignedGuests: [...table.assignedGuests, {
         guestId: guest.id,
         guestName: guest.name,
+        guestType: guest.guestType,
+        familyGroupId: guest.familyGroupId,
+        familyName: guest.familyName,
+        excludeFromFamilyTable: guest.excludeFromFamilyTable,
         seatNumber: table.assignedGuests.length + 1,
       }],
     } : table));
@@ -201,7 +228,10 @@ export default function TavoliPage() {
     setAvailableGuests((current) => [...current, {
       id: guest.guestId,
       name: guest.guestName || guest.guestId,
-      guestType: "common" as const,
+      guestType: guest.guestType,
+      familyGroupId: guest.familyGroupId,
+      familyName: guest.familyName,
+      excludeFromFamilyTable: guest.excludeFromFamilyTable,
     }].sort((a, b) => a.name.localeCompare(b.name)));
   }
 
@@ -222,7 +252,14 @@ export default function TavoliPage() {
         return;
       }
     }
-    const returned = table.assignedGuests.map((guest) => ({ id: guest.guestId, name: guest.guestName || guest.guestId, guestType: "common" as const }));
+    const returned = table.assignedGuests.map((guest) => ({
+      id: guest.guestId,
+      name: guest.guestName || guest.guestId,
+      guestType: guest.guestType,
+      familyGroupId: guest.familyGroupId,
+      familyName: guest.familyName,
+      excludeFromFamilyTable: guest.excludeFromFamilyTable,
+    }));
     setAvailableGuests((current) => [...current, ...returned].sort((a, b) => a.name.localeCompare(b.name)));
     setTables((current) => current.filter((_, tableIndex) => tableIndex !== index));
   }

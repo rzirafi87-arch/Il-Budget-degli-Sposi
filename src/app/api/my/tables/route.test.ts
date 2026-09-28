@@ -9,11 +9,12 @@ jest.mock("next/server", () => ({
 
 import fs from "node:fs";
 
-type AccessMode = "owner" | "partner" | "anonymous" | "revoked" | "stranger";
+type AccessMode = "owner" | "partner" | "legacy" | "anonymous" | "revoked" | "stranger";
 let accessMode: AccessMode = "owner";
 const eventId = "53310000-0000-4000-8000-000000000010";
 const ownerId = "53310000-0000-4000-8000-000000000001";
 const partnerId = "53310000-0000-4000-8000-000000000002";
+const legacyId = "53310000-0000-4000-8000-000000000003";
 const tableId = "53310000-0000-4000-8000-000000000020";
 const guestA = "53310000-0000-4000-8000-000000000030";
 const guestB = "53310000-0000-4000-8000-000000000031";
@@ -23,7 +24,7 @@ const mockRequireAccess = jest.fn(async () => {
   if (accessMode === "revoked" || accessMode === "stranger") throw { status: 404, code: "EVENT_NOT_FOUND" };
   return {
     currentEvent: { eventId, accessRole: accessMode },
-    userId: accessMode === "partner" ? partnerId : ownerId,
+    userId: accessMode === "partner" ? partnerId : accessMode === "legacy" ? legacyId : ownerId,
   };
 });
 const mockRpc = jest.fn();
@@ -46,7 +47,7 @@ jest.mock("@/lib/supabaseServer", () => ({
 }));
 
 import type { NextRequest } from "next/server";
-import { DELETE, POST } from "./route";
+import { DELETE, GET, POST } from "./route";
 
 function request(method: string, body?: unknown, query = "") {
   return {
@@ -114,6 +115,59 @@ describe("/api/my/tables transactional contracts", () => {
     }));
   });
 
+  it("passes a server-verified legacy collaborator to the shared atomic RPC", async () => {
+    accessMode = "legacy";
+    const response = await POST(request("POST", tablePlan()));
+    expect(response.status).toBe(200);
+    expect(mockRpc).toHaveBeenCalledWith("save_event_table_plan", expect.objectContaining({
+      p_event_id: eventId,
+      p_actor_id: legacyId,
+    }));
+  });
+
+  it("returns complete family metadata for already assigned guests", async () => {
+    const tableQuery = {
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          order: jest.fn(async () => ({
+            data: [{
+              id: tableId, table_number: 1, table_name: "Famiglia", table_type: "family",
+              total_seats: 8, notes: null,
+              table_assignments: [{ id: "assignment", guest_id: guestA, seat_number: 1 }],
+            }],
+            error: null,
+          })),
+        })),
+      })),
+    };
+    const guestQuery = {
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          order: jest.fn(async () => ({
+            data: [{
+              id: guestA, name: "Ada", guest_type: "bride", attending: true,
+              exclude_from_family_table: true, family_group_id: "family-a",
+              family_groups: { family_name: "Rossi" },
+            }],
+            error: null,
+          })),
+        })),
+      })),
+    };
+    mockFrom.mockReturnValueOnce(tableQuery).mockReturnValueOnce(guestQuery);
+    const response = await GET(request("GET"));
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      tables: [{ assignedGuests: [{
+        guestId: guestA,
+        guestType: "bride",
+        familyGroupId: "family-a",
+        familyName: "Rossi",
+        excludeFromFamilyTable: true,
+      }] }],
+    });
+  });
+
   it.each([
     [tablePlan({ tables: [{ tableNumber: 1, totalSeats: 1, assignedGuests: [{ guestId: guestA }, { guestId: guestB }] }] }), "TABLE_CAPACITY_EXCEEDED"],
     [tablePlan({ tables: [
@@ -155,7 +209,9 @@ describe("/api/my/tables transactional contracts", () => {
     expect(source).toContain('.from("tables")');
     expect(source).toContain('.from("guests")');
     expect(source).toContain("family_groups!guests_family_group_id_fkey");
-    expect(source).toContain("sameEventGuestNames");
+    expect(source).toContain("sameEventGuests");
+    expect(source).toContain("excludeFromFamilyTable");
+    expect(source).toContain("familyGroupId");
     expect(source).not.toContain("seat_number, guests");
     expect(source).toContain('.rpc("save_event_table_plan"');
     expect(source).not.toContain("service_role");

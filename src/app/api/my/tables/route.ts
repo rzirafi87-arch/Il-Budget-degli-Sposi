@@ -140,7 +140,14 @@ export async function GET(req: NextRequest) {
     }
 
     const guests = (rawGuests || []) as GuestRow[];
-    const sameEventGuestNames = new Map(guests.map((guest) => [guest.id, guest.name]));
+    const sameEventGuests = new Map(guests.map((guest) => [guest.id, {
+      id: guest.id,
+      name: guest.name,
+      guestType: guest.guest_type,
+      excludeFromFamilyTable: guest.exclude_from_family_table === true,
+      familyGroupId: guest.family_group_id,
+      familyName: relationOne(guest.family_groups)?.family_name || null,
+    }]));
     const tables = ((rawTables || []) as TableRow[]).map((table) => ({
       id: table.id,
       tableNumber: table.table_number,
@@ -148,24 +155,24 @@ export async function GET(req: NextRequest) {
       tableType: table.table_type,
       totalSeats: table.total_seats,
       notes: table.notes || "",
-      assignedGuests: (table.table_assignments || []).map((assignment) => ({
-        id: assignment.id,
-        guestId: assignment.guest_id,
-        guestName: sameEventGuestNames.get(assignment.guest_id) || null,
-        seatNumber: assignment.seat_number,
-      })),
+      assignedGuests: (table.table_assignments || []).map((assignment) => {
+        const guest = sameEventGuests.get(assignment.guest_id);
+        return {
+          id: assignment.id,
+          guestId: assignment.guest_id,
+          guestName: guest?.name || null,
+          guestType: guest?.guestType || "common",
+          excludeFromFamilyTable: guest?.excludeFromFamilyTable === true,
+          familyGroupId: guest?.familyGroupId || null,
+          familyName: guest?.familyName || null,
+          seatNumber: assignment.seat_number,
+        };
+      }),
     }));
     const assigned = new Set(tables.flatMap((table) => table.assignedGuests.map((guest) => guest.guestId)));
     const availableGuests = guests
       .filter((guest) => guest.attending === true && !assigned.has(guest.id))
-      .map((guest) => ({
-        id: guest.id,
-        name: guest.name,
-        guestType: guest.guest_type,
-        excludeFromFamilyTable: guest.exclude_from_family_table === true,
-        familyGroupId: guest.family_group_id,
-        familyName: relationOne(guest.family_groups)?.family_name || null,
-      }));
+      .map((guest) => sameEventGuests.get(guest.id)!);
     return NextResponse.json({ tables, availableGuests });
   } catch (error) {
     return apiSecurityErrorResponse(error, "TABLES_READ_FAILED");

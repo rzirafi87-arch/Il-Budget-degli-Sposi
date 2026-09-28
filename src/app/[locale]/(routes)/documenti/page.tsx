@@ -21,6 +21,11 @@ type Document = {
   notes?: string | null;
 };
 
+type UploadResult = {
+  name: string;
+  status: "success" | "failed";
+};
+
 const DOCUMENT_CATEGORIES = ["quote", "contract", "invoice", "receipt", "generic", "certificate", "license"] as const;
 
 export default function DocumentiPage() {
@@ -32,6 +37,7 @@ export default function DocumentiPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
+  const [uploadResults, setUploadResults] = useState<UploadResult[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   async function bearer() {
@@ -71,23 +77,40 @@ export default function DocumentiPage() {
 
     setUploading(true);
     setUploadProgress({ current: 0, total: files.length });
+    setUploadResults([]);
     setError(null);
+    const results: UploadResult[] = [];
     try {
       const token = await bearer();
       for (let index = 0; index < files.length; index += 1) {
+        const idempotencyKey = crypto.randomUUID();
         const form = new FormData();
         form.append("file", files[index]);
         form.append("category", "generic");
-        const res = await fetch("/api/my/documents", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: form,
-        });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.error || "EVENT_DOCUMENT_UPLOAD_FAILED");
+        form.append("idempotencyKey", idempotencyKey);
+        let succeeded = false;
+        for (let attempt = 0; attempt < 2 && !succeeded; attempt += 1) {
+          try {
+            const res = await fetch("/api/my/documents", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Idempotency-Key": idempotencyKey,
+              },
+              body: form,
+            });
+            succeeded = res.ok;
+            if (!res.ok && res.status < 500) break;
+          } catch {
+            if (attempt === 1) succeeded = false;
+          }
+        }
+        results.push({ name: files[index].name, status: succeeded ? "success" : "failed" });
+        setUploadResults([...results]);
         setUploadProgress({ current: index + 1, total: files.length });
       }
-      await loadDocuments();
+      if (results.some((result) => result.status === "success")) await loadDocuments();
+      if (results.some((result) => result.status === "failed")) setError(t("operationError"));
     } catch {
       setError(t("operationError"));
     } finally {
@@ -182,6 +205,17 @@ export default function DocumentiPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {uploadResults.length > 0 && (
+        <ul className="app-card app-card--md space-y-1 text-sm" aria-live="polite">
+          {uploadResults.map((result, index) => (
+            <li key={`${result.name}-${index}`} className={result.status === "success" ? "text-green-700" : "text-red-700"}>
+              {result.status === "success" ? "✓" : "✕"} {result.name}
+              {result.status === "failed" ? ` — ${t("operationError")}` : ""}
+            </li>
+          ))}
+        </ul>
       )}
 
       <div className="app-card border-2 border-dashed border-gray-300 p-6 transition-colors hover:border-gray-400">
