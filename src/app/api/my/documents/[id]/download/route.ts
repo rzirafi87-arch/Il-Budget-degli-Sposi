@@ -25,8 +25,11 @@ export async function GET(
       "event_documents",
       documentId,
       currentEvent.eventId,
-      "id,object_path,original_name",
+      "id,object_path,original_name,deletion_state",
     );
+    if (resource.deletion_state !== "active") {
+      return NextResponse.json({ error: "DOCUMENT_NOT_FOUND" }, { status: 404 });
+    }
     const objectPath = String(resource.object_path || "");
     if (!objectPath.startsWith(`${currentEvent.eventId}/`)) {
       return NextResponse.json({ error: "DOCUMENT_PATH_INVALID" }, { status: 500 });

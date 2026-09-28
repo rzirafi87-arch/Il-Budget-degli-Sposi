@@ -10,7 +10,11 @@ select has_table('private', 'event_document_deletions', 'private document deleti
 select ok(not has_table_privilege('authenticated', 'private.event_document_deletions', 'select,insert,update,delete'), 'browser roles cannot access deletion ledger');
 select ok((select prosecdef from pg_proc where oid='public.delete_event_table(uuid,uuid,uuid)'::regprocedure), 'table delete RPC is security definer');
 select is((select proconfig[1] from pg_proc where oid='public.delete_event_table(uuid,uuid,uuid)'::regprocedure), 'search_path=""', 'table delete RPC fixes empty search path');
-select matches(pg_get_functiondef('public.delete_event_table(uuid,uuid,uuid)'::regprocedure), '(?i)from[[:space:]]+public.events.+for[[:space:]]+update', 'table delete locks the event row');
+select matches(
+  regexp_replace(pg_get_functiondef('public.delete_event_table(uuid,uuid,uuid)'::regprocedure), '[[:space:]]+', ' ', 'g'),
+  '(?i)from public.events .+ for update',
+  'table delete locks the event row'
+);
 select ok((select prosecdef from pg_proc where oid='public.begin_event_document_delete(uuid,uuid,uuid)'::regprocedure), 'document begin RPC is security definer');
 select ok((select prosecdef from pg_proc where oid='public.complete_event_document_delete(uuid,uuid,uuid,uuid,text)'::regprocedure), 'document complete RPC is security definer');
 select is((select proconfig[1] from pg_proc where oid='public.begin_event_document_delete(uuid,uuid,uuid)'::regprocedure), 'search_path=""', 'document begin fixes empty search path');
@@ -94,6 +98,10 @@ select public.begin_event_document_delete(
 
 select is((select result->>'status' from delete_result), 'pending_storage', 'delete begin returns explicit pending state');
 select is((select deletion_state from public.event_documents where id='53900000-0000-4000-8000-000000000030'), 'pending_storage', 'delete begin tombstones metadata before Storage');
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"53900000-0000-4000-8000-000000000001","email":"delete-test-owner@example.invalid","role":"authenticated"}',true);
+select is((select count(*)::int from public.event_documents where id='53900000-0000-4000-8000-000000000030'), 0, 'RLS no longer exposes tombstoned metadata as active');
+set local role postgres;
 select is((select count(*)::int from private.event_document_deletions where document_id='53900000-0000-4000-8000-000000000030'), 1, 'delete begin creates one ledger operation');
 select is(
   (public.begin_event_document_delete('53900000-0000-4000-8000-000000000010','53900000-0000-4000-8000-000000000002','53900000-0000-4000-8000-000000000030')->>'operationId'),

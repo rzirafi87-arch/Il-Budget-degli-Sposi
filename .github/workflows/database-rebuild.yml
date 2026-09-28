@@ -270,6 +270,12 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql
 
+      - name: Apply Branch 53 targeted delete remediation
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260928131021_branch_53_delete_remediation.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260928131021_branch_53_delete_remediation.sql
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 

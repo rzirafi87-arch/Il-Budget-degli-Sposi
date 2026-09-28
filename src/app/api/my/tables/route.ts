@@ -206,21 +206,26 @@ export const PATCH = POST;
 
 export async function DELETE(req: NextRequest) {
   try {
-    const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
+    const { userId, currentEvent } = await requireEventAccess(req, "owner-or-partner");
     const tableId = parseUuid(new URL(req.url).searchParams.get("id"), "INVALID_TABLE_ID");
-    const { data, error } = await getServiceClient()
-      .from("tables")
-      .delete()
-      .eq("id", tableId)
-      .eq("event_id", currentEvent.eventId)
-      .select("id")
-      .maybeSingle();
+    const { data, error } = await getServiceClient().rpc("delete_event_table", {
+      p_event_id: currentEvent.eventId,
+      p_actor_id: userId,
+      p_table_id: tableId,
+    });
     if (error) {
-      logger.error("TABLE_DELETE_FAILED", { code: error.code });
+      logger.error("TABLE_DELETE_FAILED", { code: error.code, message: error.message });
+      if (error.code === "42501" && error.message.includes("TABLE_EVENT_MISMATCH")) {
+        return NextResponse.json({ error: "TABLE_NOT_FOUND" }, { status: 404 });
+      }
       return NextResponse.json({ error: "TABLE_DELETE_FAILED" }, { status: 500 });
     }
-    if (!data) return NextResponse.json({ error: "TABLE_NOT_FOUND" }, { status: 404 });
-    return NextResponse.json({ success: true });
+    const status = (data as { status?: string } | null)?.status;
+    if (status !== "deleted" && status !== "already_deleted") {
+      logger.error("TABLE_DELETE_INVALID_RESULT", { status });
+      return NextResponse.json({ error: "TABLE_DELETE_FAILED" }, { status: 500 });
+    }
+    return NextResponse.json({ success: true, ...(status === "already_deleted" ? { idempotent: true } : {}) });
   } catch (error) {
     return apiSecurityErrorResponse(error, "TABLE_DELETE_FAILED");
   }

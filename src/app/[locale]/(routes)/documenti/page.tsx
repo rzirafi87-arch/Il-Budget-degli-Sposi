@@ -129,6 +129,11 @@ export default function DocumentiPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();
+      if (!res.ok && json.deletionPending === true) {
+        setDocuments((current) => current.filter((document) => document.id !== id));
+        setError(t("deletePending"));
+        return;
+      }
       if (!res.ok) throw new Error(json.error || "EVENT_DOCUMENT_DELETE_FAILED");
       setDocuments((current) => current.filter((document) => document.id !== id));
     } catch {

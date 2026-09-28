@@ -1,6 +1,6 @@
 # ADR 005 — Branch 53 P1/P2 spec-driven reimplementation
 
-- Status: targeted remediation in progress after Final Release Readiness STOP
+- Status: targeted remediation implemented; verification governed by the final commit checks
 - Date: 2026-09-28
 - Red baseline: `16c84b335b4ef2fba705344000681ca64fdcc8d4`
 - Base: `main@7aaf48c0736fa50187864145f1d7d41fc1265014`
@@ -224,6 +224,31 @@ A defensive `event_documents` quota trigger also locks the event row. It makes t
 
 Authenticated clients lose direct INSERT/DELETE privileges on document metadata and direct Storage INSERT/DELETE policies. Reads remain event-scoped. All mutations remain available through the existing authenticated application API.
 
+### Targeted document deletion protocol
+
+The additive migration `20260928131021_branch_53_delete_remediation.sql`
+introduces `event_documents.deletion_state` and the server-only
+`private.event_document_deletions` ledger. The document ID is the stable delete
+intention, so duplicate and concurrent DELETE requests reuse one operation.
+
+1. `begin_event_document_delete` authorizes, locks the event and document in the
+   established order, creates/replays the ledger row, and changes metadata from
+   `active` to `pending_storage` atomically.
+2. Application and RLS reads exclude `pending_storage`; signed downloads reject
+   it. The document is therefore never presented as active after deletion has
+   begun.
+3. The server removes the immutable ledger object key from Storage after the
+   first transaction commits and while no database lock is held.
+4. `complete_event_document_delete` reacquires the event-first lock order,
+   reauthorizes, verifies operation/document/event/object-key identity and
+   confirms the Storage row is absent before deleting metadata and marking the
+   ledger `completed`.
+
+If Storage fails, or if completion fails after Storage succeeds, the API returns
+an explicit retryable pending response. A retry replays the same operation,
+repeats the idempotent object removal, and completes cleanup. Completed retries
+return success without touching Storage.
+
 ## Constraints and indexes
 
 - unique reservation `(event_id, idempotency_key)`;
@@ -250,7 +275,11 @@ Authenticated clients lose direct INSERT/DELETE privileges on document metadata 
 - expired upload: finalize is denied; opportunistic cleanup removes the object before closing the reservation;
 - concurrent table saves: event lock serializes them; a failed later save preserves the earlier committed plan;
 - a caller-enforced lock timeout expires: the request fails without partial state and can be safely retried;
-- document deletion frees quota when metadata deletion commits; cross-system deletion remains Storage-first, with any metadata failure surfaced and logged rather than reported as success.
+- document deletion first secures a tombstone and ledger; Storage or database
+  failure leaves `pending_storage`, and a later retry can complete cleanup;
+- a completed document delete frees quota only when tombstoned metadata is
+  removed; no active metadata can point to an already deleted object;
+- concurrent or duplicate deletes converge on one unique document ledger row.
 
 ## Rollback
 

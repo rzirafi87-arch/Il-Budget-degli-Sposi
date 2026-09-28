@@ -19,6 +19,7 @@ record_result() {
 }
 
 cleanup() {
+  "${psql_cmd[@]}" -c "begin; set local session_replication_role=replica; delete from storage.objects where bucket_id='event-documents' and (name like '53800000-0000-4000-8000-000000000010/%' or name like '53800000-0000-4000-8000-000000000011/%'); commit;" >/dev/null 2>&1 || true
   "${psql_cmd[@]}" -c "delete from public.events where id in ('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000011'); delete from auth.users where id in ('53800000-0000-4000-8000-000000000001','53800000-0000-4000-8000-000000000002','53800000-0000-4000-8000-000000000003','53800000-0000-4000-8000-000000000004');" >/dev/null 2>&1 || true
   if [[ "$log_dir" == */branch53-delete-remediation.* && -d "$log_dir" ]]; then
     find "$log_dir" -type f -delete
@@ -58,8 +59,8 @@ SQL
 
 has_table_delete_rpc=$("${psql_cmd[@]}" -Atc "select to_regprocedure('public.delete_event_table(uuid,uuid,uuid)') is not null")
 has_document_delete_rpc=$("${psql_cmd[@]}" -Atc "select to_regprocedure('public.begin_event_document_delete(uuid,uuid,uuid)') is not null and to_regprocedure('public.complete_event_document_delete(uuid,uuid,uuid,uuid,text)') is not null")
-record_result "serialized table delete RPC exists" "$has_table_delete_rpc" "present=$has_table_delete_rpc"
-record_result "recoverable document delete RPCs exist" "$has_document_delete_rpc" "present=$has_document_delete_rpc"
+record_result "serialized table delete RPC exists" "$([[ "$has_table_delete_rpc" == "t" ]] && echo true || echo false)" "present=$has_table_delete_rpc"
+record_result "recoverable document delete RPCs exist" "$([[ "$has_document_delete_rpc" == "t" ]] && echo true || echo false)" "present=$has_document_delete_rpc"
 
 # This probes the actual route strategy at each revision. On the red baseline the
 # route is a direct DELETE and incorrectly succeeds while the event lock is held.

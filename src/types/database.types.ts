@@ -819,6 +819,8 @@ export type Database = {
           category: string
           created_at: string
           created_by: string | null
+          deletion_started_at: string | null
+          deletion_state: string
           event_id: string
           file_size: number
           id: string
@@ -831,6 +833,8 @@ export type Database = {
           category?: string
           created_at?: string
           created_by?: string | null
+          deletion_started_at?: string | null
+          deletion_state?: string
           event_id: string
           file_size: number
           id?: string
@@ -843,6 +847,8 @@ export type Database = {
           category?: string
           created_at?: string
           created_by?: string | null
+          deletion_started_at?: string | null
+          deletion_state?: string
           event_id?: string
           file_size?: number
           id?: string
@@ -3764,6 +3770,10 @@ export type Database = {
         Args: { p_token: string; p_user_id: string }
         Returns: string
       }
+      begin_event_document_delete: {
+        Args: { p_actor_id: string; p_document_id: string; p_event_id: string }
+        Returns: Json
+      }
       can_access_event: { Args: { p_event_id: string }; Returns: boolean }
       can_manage_event_location_supplier_links: {
         Args: { p_event_id: string }
@@ -3779,6 +3789,16 @@ export type Database = {
       }
       claim_expired_event_document_uploads: {
         Args: { p_actor_id: string; p_event_id: string; p_limit?: number }
+        Returns: Json
+      }
+      complete_event_document_delete: {
+        Args: {
+          p_actor_id: string
+          p_document_id: string
+          p_event_id: string
+          p_object_path: string
+          p_operation_id: string
+        }
         Returns: Json
       }
       complete_event_document_upload_cleanup: {
@@ -3797,6 +3817,10 @@ export type Database = {
           remaining: number
           reset_at: string
         }[]
+      }
+      delete_event_table: {
+        Args: { p_actor_id: string; p_event_id: string; p_table_id: string }
+        Returns: Json
       }
       ensure_subcategory: {
         Args: { p_category: string; p_name: string }

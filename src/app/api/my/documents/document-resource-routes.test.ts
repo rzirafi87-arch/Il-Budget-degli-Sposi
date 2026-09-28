@@ -119,6 +119,14 @@ describe("document download and delete contracts", () => {
     });
   });
 
+  it("keeps the tombstone pending when Storage deletion fails", async () => {
+    mockRemove.mockResolvedValueOnce({ error: { message: "Storage unavailable" } });
+    const response = await DELETE({} as NextRequest, context);
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toMatchObject({ deletionPending: true, retryable: true });
+    expect(mockRpc.mock.calls.filter(([name]) => name === "complete_event_document_delete")).toHaveLength(0);
+  });
+
   it("does not touch Storage when the durable begin transition fails", async () => {
     mockRpc.mockResolvedValueOnce({ data: null, error: { code: "08006", message: "database unavailable" } });
     const response = await DELETE({} as NextRequest, context);

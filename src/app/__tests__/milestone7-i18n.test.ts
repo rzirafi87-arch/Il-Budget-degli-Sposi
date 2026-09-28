@@ -16,6 +16,7 @@ describe("Milestone 7 runtime localization", () => {
       const messages = JSON.parse(read(`src/messages/milestone7.${locale}.json`));
       expect(messages.milestone7.documents.categories.generic).toBeTruthy();
       expect(messages.milestone7.documents.confirmDelete).toBeTruthy();
+      expect(messages.milestone7.documents.deletePending).toBeTruthy();
     }
   });
 

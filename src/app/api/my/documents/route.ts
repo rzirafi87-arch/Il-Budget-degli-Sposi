@@ -139,6 +139,7 @@ async function readDocumentById(
     .select("id,original_name,category,mime_type,file_size,notes,created_at")
     .eq("id", documentId)
     .eq("event_id", eventId)
+    .eq("deletion_state", "active")
     .maybeSingle();
 }
 
@@ -149,6 +150,7 @@ export async function GET(req: NextRequest) {
       .from("event_documents")
       .select("id,original_name,category,mime_type,file_size,notes,created_at")
       .eq("event_id", currentEvent.eventId)
+      .eq("deletion_state", "active")
       .order("created_at", { ascending: false });
 
     if (error) {

@@ -56,6 +56,7 @@
       "uploadFormatsSecure": "PDF, JPG, PNG • Massimo 10 MB per file • Archivio privato",
       "loading": "Caricamento documenti…",
       "operationError": "Operazione non riuscita. Riprova.",
+      "deletePending": "Il documento non è più attivo. La cancellazione protetta è in attesa di completamento: riprova.",
       "retry": "Riprova"
     }
   }
