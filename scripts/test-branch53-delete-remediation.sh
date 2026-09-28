@@ -95,7 +95,7 @@ if [[ "$has_table_delete_rpc" == "t" ]]; then
     "${psql_cmd[@]}" -c "select public.delete_event_table('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000001','53800000-0000-4000-8000-000000000022');" >"$log_dir/delete-after-save-$iteration.log" 2>&1
     wait "$save_pid"
     final_absent=$("${psql_cmd[@]}" -Atc "select count(*)=0 from public.tables where id='53800000-0000-4000-8000-000000000022'")
-    record_result "save-before-delete serialization $iteration" "$final_absent" "table_absent=$final_absent"
+    record_result "save-before-delete serialization $iteration" "$([[ "$final_absent" == "t" ]] && echo true || echo false)" "table_absent=$final_absent"
 
     "${psql_cmd[@]}" -c "insert into public.tables(id,event_id,table_number,table_name,total_seats) values('53800000-0000-4000-8000-000000000022','53800000-0000-4000-8000-000000000010',1,'Before delete',1);" >/dev/null
     "${psql_cmd[@]}" -c "begin; select public.delete_event_table('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000001','53800000-0000-4000-8000-000000000022'); select pg_sleep(0.2); commit;" >"$log_dir/delete-first-$iteration.log" 2>&1 &
@@ -104,11 +104,11 @@ if [[ "$has_table_delete_rpc" == "t" ]]; then
     "${psql_cmd[@]}" -c "select public.save_event_table_plan('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000002','$plan'::jsonb,true);" >"$log_dir/save-after-delete-$iteration.log" 2>&1
     wait "$delete_pid"
     final_present=$("${psql_cmd[@]}" -Atc "select count(*)=1 from public.tables where id='53800000-0000-4000-8000-000000000022'")
-    record_result "delete-before-save serialization $iteration" "$final_present" "table_present=$final_present"
+    record_result "delete-before-save serialization $iteration" "$([[ "$final_present" == "t" ]] && echo true || echo false)" "table_present=$final_present"
   done
 
   table_integrity=$("${psql_cmd[@]}" -Atc "select not exists (select 1 from public.table_assignments group by table_id,seat_number having seat_number is not null and count(*)>1) and not exists (select 1 from public.tables t where (select count(*) from public.table_assignments a where a.table_id=t.id)>t.total_seats)")
-  record_result "serialized races preserve seat uniqueness and capacity" "$table_integrity" "integrity=$table_integrity"
+  record_result "serialized races preserve seat uniqueness and capacity" "$([[ "$table_integrity" == "t" ]] && echo true || echo false)" "integrity=$table_integrity"
 
   set +e
   "${psql_cmd[@]}" -c "select public.delete_event_table('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000003','53800000-0000-4000-8000-000000000022');" >"$log_dir/table-left.log" 2>&1
