@@ -140,12 +140,12 @@ try {
     bride_email: legacy.email,
   });
   assert.ifError(event.error);
-  const memberships = await admin.from("event_members").insert([
+  const memberships = await admin.from("event_members").upsert([
     { event_id: eventId, user_id: owner.id, role: "owner", status: "active" },
     { event_id: eventId, user_id: partner.id, role: "partner", status: "active" },
     { event_id: eventId, user_id: left.id, role: "partner", status: "left" },
     { event_id: eventId, user_id: revoked.id, role: "partner", status: "revoked" },
-  ]);
+  ], { onConflict: "event_id,user_id" });
   assert.ifError(memberships.error);
 
   const guestIds = [randomUUID(), randomUUID()];
