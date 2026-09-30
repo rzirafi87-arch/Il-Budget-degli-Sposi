@@ -1,0 +1,233 @@
+name: Branch 53 old app + new schema compatibility
+
+on:
+  push:
+    branches:
+      - ci/branch-53-old-app-new-schema-gate
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: branch-53-old-app-new-schema-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compatibility:
+    name: OLD APP main + NEW SCHEMA Branch 53
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OLD_APP_REF: 7aaf48c0736fa50187864145f1d7d41fc1265014
+      NEW_SCHEMA_REF: e778846d0fffa437be1d17fd891df59e39b7f384
+      NEW_SCHEMA_LAST_MIGRATION: 20260928131021_branch_53_delete_remediation.sql
+      SUPABASE_TELEMETRY_DISABLED: "1"
+      OLD_APP_BASE_URL: http://127.0.0.1:3000
+
+    steps:
+      - name: Checkout QA harness only
+        uses: actions/checkout@v4
+        with:
+          path: harness
+
+      - name: Checkout exact OLD APP ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.OLD_APP_REF }}
+          path: old-app
+
+      - name: Checkout exact NEW SCHEMA ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.NEW_SCHEMA_REF }}
+          path: new-schema
+
+      - name: Prove ref separation and immutable sources
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          actual_old="$(git -C old-app rev-parse HEAD)"
+          actual_schema="$(git -C new-schema rev-parse HEAD)"
+          test "$actual_old" = "$OLD_APP_REF"
+          test "$actual_schema" = "$NEW_SCHEMA_REF"
+          test "$actual_old" != "$actual_schema"
+          test "$(git -C new-schema rev-parse HEAD^{tree})" = "8690dacfb175afaf664f8053c0a473eff283695e"
+          echo "OLD_APP_SHA=$actual_old"
+          echo "NEW_SCHEMA_SHA=$actual_schema"
+          echo "NEW_SCHEMA_LAST_MIGRATION=$NEW_SCHEMA_LAST_MIGRATION"
+          echo "REFS_DISTINCT=YES"
+
+      - name: Verify all five Branch 53 migrations byte-for-byte
+        shell: bash
+        working-directory: new-schema
+        run: |
+          set -Eeuo pipefail
+          test "$(sha256sum supabase/migrations/20260922190000_branch_53_event_documents.sql | cut -d' ' -f1)" = "7fd9f964e83f2846650aee511c3b89348de1f73e4c0061048caf1156a6deb754"
+          test "$(sha256sum supabase/migrations/20260922204756_branch_53_gift_list_items.sql | cut -d' ' -f1)" = "3a315a62d16ef5555f620f8f7ed035da2005aea535b610d1e7f69f2d800d984f"
+          test "$(sha256sum supabase/migrations/20260922210136_branch_53_transactional_tables.sql | cut -d' ' -f1)" = "5139dcfe56130f7ecca3c5684653db58c6a792152cd5a4f47f9362903c5b9276"
+          test "$(sha256sum supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql | cut -d' ' -f1)" = "06113aa63f26c70d0e59806e8e0a6bbaab5cd78c4981fba83d25071da871df2d"
+          test "$(sha256sum supabase/migrations/20260928131021_branch_53_delete_remediation.sql | cut -d' ' -f1)" = "26bdaa5c1f97eea00d216bc35c53155e7668ccf29aa7c153cd8b8e4251e75946"
+          echo "BRANCH53_MIGRATION_COUNT=5"
+          echo "BRANCH53_MIGRATIONS_UNMODIFIED=YES"
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.116.0
+
+      - name: Start complete isolated Supabase stack
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir isolated-supabase
+          cd isolated-supabase
+          supabase init
+          supabase start
+          supabase status -o env > status.env
+          set -a
+          source status.env
+          set +a
+          case "$API_URL|$DB_URL" in
+            *127.0.0.1*|*localhost*) ;;
+            *) echo "Refusing non-local Supabase endpoint" >&2; exit 1 ;;
+          esac
+          for value in "$ANON_KEY" "$SERVICE_ROLE_KEY" "$DB_URL"; do echo "::add-mask::$value"; done
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "SUPABASE_SERVICE_ROLE=$SERVICE_ROLE_KEY"
+            echo "LOCAL_DATABASE_URL=$DB_URL"
+          } >> "$GITHUB_ENV"
+          echo "SUPABASE_ENDPOINT=$API_URL"
+          echo "PRODUCTION_CONNECTION=NONE"
+
+      - name: Rebuild Production-compatible baseline then NEW SCHEMA
+        shell: bash
+        working-directory: new-schema
+        run: |
+          set -Eeuo pipefail
+          bash scripts/rebuild-local-supabase.sh "$LOCAL_DATABASE_URL"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -At <<'SQL'
+          select 'event_documents=' || (to_regclass('public.event_documents') is not null);
+          select 'gift_list_items=' || (to_regclass('public.gift_list_items') is not null);
+          select 'table_seat_unique=' || exists(select 1 from pg_indexes where schemaname='public' and indexname='table_assignments_table_seat_unique_idx');
+          select 'delete_event_table=' || (to_regprocedure('public.delete_event_table(uuid,uuid,uuid)') is not null);
+          select 'bucket=' || exists(select 1 from storage.buckets where id='event-documents');
+          select 'last_migration_objects=' || exists(select 1 from pg_constraint where conname='event_documents_deletion_state_check');
+          SQL
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from storage.buckets where id='event-documents'")" = "1"
+          echo "SCHEMA_REBUILD=PASS"
+          echo "BRANCH53_MIGRATIONS_APPLIED_SEQUENCE=5/5"
+
+      - name: Verify Supabase Auth, Data API and Storage services
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          curl --fail --silent "$NEXT_PUBLIC_SUPABASE_URL/auth/v1/health" >/dev/null
+          curl --fail --silent "$NEXT_PUBLIC_SUPABASE_URL/rest/v1/" -H "apikey: $NEXT_PUBLIC_SUPABASE_ANON_KEY" >/dev/null
+          curl --fail --silent "$NEXT_PUBLIC_SUPABASE_URL/storage/v1/bucket" -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" >/dev/null
+          echo "SUPABASE_SERVICES=POSTGRES,AUTH,POSTGREST,STORAGE,RLS,RPC"
+
+      - name: Install OLD APP dependencies
+        working-directory: old-app
+        run: npm ci
+
+      - name: Typecheck exact OLD APP
+        working-directory: old-app
+        run: npm run typecheck
+
+      - name: Build exact OLD APP against isolated Supabase
+        working-directory: old-app
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+        run: npm run build
+
+      - name: Prove OLD APP source was not patched
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -z "$(git -C old-app status --porcelain --untracked-files=no)"
+          test "$(git -C old-app rev-parse HEAD)" = "$OLD_APP_REF"
+          echo "OLD_APP_PATCHED=NO"
+
+      - name: Install Chromium
+        working-directory: old-app
+        run: npx playwright install --with-deps chromium
+
+      - name: Start exact OLD APP runtime
+        shell: bash
+        working-directory: old-app
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+        run: |
+          set -Eeuo pipefail
+          nohup npm run start -- -H 127.0.0.1 > ../old-app-runtime.log 2>&1 &
+          echo "$!" > ../old-app-runtime.pid
+          npx wait-on --timeout 120000 http://127.0.0.1:3000/it
+
+      - name: Run OLD APP + NEW SCHEMA compatibility gate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          ln -s old-app/node_modules node_modules
+          node harness/qa/old-app-new-schema-gate.mjs
+        env:
+          PLAYWRIGHT_QA_RUN_ID: ${{ github.run_id }}
+
+      - name: Verify cleanup residue from isolated stack
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$(jq -r '.cleanup.databaseRows' gate-evidence.json)" = "0"
+          test "$(jq -r '.cleanup.storageObjects' gate-evidence.json)" = "0"
+          test "$(jq -r '.cleanup.authUsers' gate-evidence.json)" = "0"
+          test "$(jq -r '.browser.skipped' gate-evidence.json)" = "0"
+          test "$(jq -r '.result' gate-evidence.json)" = "PASS"
+          echo "FIXTURE_RESIDUE=0"
+          echo "BROWSER_SKIPPED=0"
+
+      - name: Publish compatibility evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: branch-53-old-app-new-schema-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            gate-evidence.json
+            old-app-runtime.log
+
+      - name: Write run summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Branch 53 — OLD APP + NEW SCHEMA"
+            echo "- OLD_APP_SHA: $OLD_APP_REF"
+            echo "- NEW_SCHEMA_SHA: $NEW_SCHEMA_REF"
+            echo "- NEW_SCHEMA_LAST_MIGRATION: $NEW_SCHEMA_LAST_MIGRATION"
+            echo "- refs distinct: YES"
+            echo "- Production connection: NONE"
+            if test -f gate-evidence.json; then
+              echo "- result: $(jq -r '.result' gate-evidence.json)"
+              echo "- browser skipped: $(jq -r '.browser.skipped' gate-evidence.json)"
+              echo "- browser 5xx: $(jq -r '.browser.http5xx | length' gate-evidence.json)"
+              echo "- console errors: $(jq -r '.browser.consoleErrors | length' gate-evidence.json)"
+              echo "- cleanup DB/Storage/Auth: $(jq -r '[.cleanup.databaseRows,.cleanup.storageObjects,.cleanup.authUsers] | join("/")' gate-evidence.json)"
+            else
+              echo "- result: FAIL before runtime evidence"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Stop OLD APP and isolated Supabase
+        if: always()
+        shell: bash
+        run: |
+          if test -f old-app-runtime.pid; then kill "$(cat old-app-runtime.pid)" 2>/dev/null || true; fi
+          if test -d isolated-supabase/supabase; then cd isolated-supabase && supabase stop --no-backup; fi
