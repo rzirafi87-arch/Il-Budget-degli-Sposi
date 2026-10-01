@@ -23,8 +23,8 @@ assert.match(appUrl, /^http:\/\/(127\.0\.0\.1|localhost):\d+$/);
 const report = {
   refs: {
     oldApp: "7aaf48c0736fa50187864145f1d7d41fc1265014",
-    newSchema: "e778846d0fffa437be1d17fd891df59e39b7f384",
-    lastMigration: "20260928131021_branch_53_delete_remediation.sql",
+    newSchema: "97da8f1651465ee8e59f6014072819f4bf5ce5b1",
+    lastMigration: "20261001081905_branch_53_gift_list_legacy_compatibility.sql",
   },
   runId: process.env.GITHUB_RUN_ID,
   gates: {},
@@ -51,6 +51,7 @@ const marker = `qa-b53-compat-${process.env.GITHUB_RUN_ID}-${Date.now()}`;
 const password = "Qa-Branch53-Compatibility!9";
 const users = [];
 let eventId;
+let eventIdB;
 let storagePath;
 let browser;
 let primaryError;
@@ -110,6 +111,11 @@ async function expectDenied(identity) {
   assert.equal(current.body.status, "NO_EVENT");
   const gift = await api("/api/my/gift-list", identity.token);
   assert.equal(gift.status, 404);
+  const giftWrite = await api("/api/my/gift-list", identity.token, {
+    method: "POST",
+    body: JSON.stringify({ type: "Altro", name: "Denied gift", priority: "media", status: "desiderato" }),
+  });
+  assert.equal(giftWrite.status, 404);
 }
 
 async function count(table, column, value) {
@@ -119,26 +125,38 @@ async function count(table, column, value) {
 }
 
 try {
-  const [owner, partner, legacy, outsider, left, revoked] = await Promise.all([
+  const [owner, partner, legacy, outsider, left, revoked, otherOwner] = await Promise.all([
     createIdentity("owner"),
     createIdentity("partner"),
     createIdentity("legacy"),
     createIdentity("outsider"),
     createIdentity("left"),
     createIdentity("revoked"),
+    createIdentity("other-owner"),
   ]);
-  pass("auth-fixtures", "six isolated users created and logged in through Supabase Auth");
+  pass("auth-fixtures", "seven isolated users created and logged in through Supabase Auth");
 
   eventId = randomUUID();
-  const event = await admin.from("events").insert({
-    id: eventId,
-    owner_id: owner.id,
-    name: `QA-M8-${marker}`,
-    event_type: "wedding",
-    language: "it",
-    country: "IT",
-    bride_email: legacy.email,
-  });
+  eventIdB = randomUUID();
+  const event = await admin.from("events").insert([
+    {
+      id: eventId,
+      owner_id: owner.id,
+      name: `QA-M8-${marker}`,
+      event_type: "wedding",
+      language: "it",
+      country: "IT",
+      bride_email: legacy.email,
+    },
+    {
+      id: eventIdB,
+      owner_id: otherOwner.id,
+      name: `QA-M8-cross-event-${marker}`,
+      event_type: "wedding",
+      language: "it",
+      country: "IT",
+    },
+  ]);
   assert.ifError(event.error);
   const memberships = await admin.from("event_members").upsert([
     { event_id: eventId, user_id: owner.id, role: "owner", status: "active" },
@@ -161,7 +179,7 @@ try {
   await expectDenied(outsider);
   await expectDenied(left);
   await expectDenied(revoked);
-  pass("event-access", "owner, active partner and legacy resolved; outsider, left and revoked denied");
+  pass("event-access", "owner, active partner and legacy resolved; outsider, left and revoked denied for reads and writes");
 
   const rlsExpectations = [
     [owner, 2], [partner, 2], [legacy, 2], [outsider, 0], [left, 0], [revoked, 0],
@@ -235,34 +253,137 @@ try {
 
   const giftCreate = await api("/api/my/gift-list", owner.token, {
     method: "POST",
-    body: JSON.stringify({ type: "Cassa comune", name: "QA Compat Gift", price: 125, priority: "media", status: "desiderato" }),
+    body: JSON.stringify({ type: "Cassa comune", name: "QA Compat Gift", price: 125, priority: "media", status: "desiderato", notes: "Nota legacy" }),
   });
   assert.equal(giftCreate.status, 201);
   assert.ok(giftCreate.body.item.id);
   const giftId = giftCreate.body.item.id;
+  assert.equal(giftCreate.body.item.priority, "media");
+  assert.equal(giftCreate.body.item.status, "desiderato");
+  assert.equal(Number(giftCreate.body.item.price), 125);
+  assert.equal(giftCreate.body.item.notes, "Nota legacy");
+  const canonicalCreate = await admin.from("gift_list_items")
+    .select("id,event_id,created_by,type,name,target_amount,priority,status,note")
+    .eq("id", giftId)
+    .single();
+  assert.ifError(canonicalCreate.error);
+  assert.equal(canonicalCreate.data.event_id, eventId);
+  assert.equal(canonicalCreate.data.created_by, owner.id);
+  assert.equal(canonicalCreate.data.target_amount, 125);
+  assert.equal(canonicalCreate.data.priority, "medium");
+  assert.equal(canonicalCreate.data.status, "wanted");
+  assert.equal(canonicalCreate.data.note, "Nota legacy");
+  pass("gift-list-old-create-new-read", "legacy create maps to the canonical row without duplication");
+
   const giftRead = await api("/api/my/gift-list", partner.token);
   assert.equal(giftRead.status, 200);
   assert.equal(giftRead.body.items.some(item => item.id === giftId), true);
-  const giftUpdate = await api("/api/my/gift-list", owner.token, {
+  const giftUpdate = await api("/api/my/gift-list", partner.token, {
     method: "PUT",
-    body: JSON.stringify({ ...giftCreate.body.item, id: giftId, type: "Cassa comune", name: "QA Compat Gift Updated", status: "acquistato" }),
+    body: JSON.stringify({ ...giftCreate.body.item, id: giftId, type: "Cassa comune", name: "QA Compat Gift Updated", priority: "alta", status: "acquistato", price: 250, notes: "Partner update" }),
   });
   assert.equal(giftUpdate.status, 200);
   assert.equal(giftUpdate.body.item.name, "QA Compat Gift Updated");
-  const giftDelete = await api(`/api/my/gift-list?id=${giftId}`, owner.token, { method: "DELETE" });
-  assert.equal(giftDelete.status, 200);
-  assert.equal(await count("gift_list", "event_id", eventId), 0);
-  pass("gift-list-old-api", "old gift_list CRUD remains functional beside Branch 53 gift_list_items");
+  assert.equal(giftUpdate.body.item.priority, "alta");
+  assert.equal(giftUpdate.body.item.status, "acquistato");
+  const canonicalPartnerUpdate = await admin.from("gift_list_items").select("name,target_amount,priority,status,note").eq("id", giftId).single();
+  assert.ifError(canonicalPartnerUpdate.error);
+  assert.deepEqual(canonicalPartnerUpdate.data, { name: "QA Compat Gift Updated", target_amount: 250, priority: "high", status: "received", note: "Partner update" });
+  pass("gift-list-partner-old-update-new-read", "active partner updates the same canonical row with deterministic priority/status mapping");
+
+  const newUpdate = await admin.from("gift_list_items").update({ name: "QA New App Update", priority: "low", status: "wanted", target_amount: 300, note: "New update" }).eq("id", giftId);
+  assert.ifError(newUpdate.error);
+  const oldAfterNewUpdate = await api("/api/my/gift-list", owner.token);
+  assert.equal(oldAfterNewUpdate.status, 200);
+  const mappedAfterNewUpdate = oldAfterNewUpdate.body.items.find(item => item.id === giftId);
+  assert.deepEqual(
+    { name: mappedAfterNewUpdate.name, priority: mappedAfterNewUpdate.priority, status: mappedAfterNewUpdate.status, price: Number(mappedAfterNewUpdate.price), notes: mappedAfterNewUpdate.notes },
+    { name: "QA New App Update", priority: "bassa", status: "desiderato", price: 300, notes: "New update" },
+  );
+  pass("gift-list-new-update-old-read", "canonical update round-trips through the old contract");
+
+  const legacyCreate = await api("/api/my/gift-list", legacy.token, {
+    method: "POST",
+    body: JSON.stringify({ type: "Esperienze", name: "QA Legacy Collaborator Gift", price: 75, priority: "bassa", status: "acquistato" }),
+  });
+  assert.equal(legacyCreate.status, 201);
+  const legacyGiftId = legacyCreate.body.item.id;
+  const legacyCanonical = await admin.from("gift_list_items").select("created_by,priority,status,target_amount").eq("id", legacyGiftId).single();
+  assert.ifError(legacyCanonical.error);
+  assert.deepEqual(legacyCanonical.data, { created_by: legacy.id, priority: "low", status: "received", target_amount: 75 });
+  pass("gift-list-legacy-collaborator", "legacy collaborator remains authorized through requireEventAccess");
+
+  const newWantedId = randomUUID();
+  const newReceivedId = randomUUID();
+  const newArchivedId = randomUUID();
+  const canonicalRows = await admin.from("gift_list_items").insert([
+    { id: newWantedId, event_id: eventId, created_by: owner.id, type: "Arredamento", name: "QA New Wanted", priority: "high", status: "wanted" },
+    { id: newReceivedId, event_id: eventId, created_by: owner.id, type: "Elettrodomestici", name: "QA New Received", priority: "medium", status: "received" },
+    { id: newArchivedId, event_id: eventId, created_by: owner.id, type: "Altro", name: "QA New Archived", priority: "low", status: "archived" },
+  ]);
+  assert.ifError(canonicalRows.error);
+  const oldMappedRows = await api("/api/my/gift-list", owner.token);
+  assert.equal(oldMappedRows.status, 200);
+  assert.equal(oldMappedRows.body.items.find(item => item.id === newWantedId)?.status, "desiderato");
+  assert.equal(oldMappedRows.body.items.find(item => item.id === newReceivedId)?.status, "acquistato");
+  assert.equal(oldMappedRows.body.items.some(item => item.id === newArchivedId), false);
+  pass("gift-list-new-status-old-read", "wanted and received map to old statuses; archived is hidden");
+
+  const archiveExisting = await admin.from("gift_list_items").update({ status: "archived" }).eq("id", giftId);
+  assert.ifError(archiveExisting.error);
+  const oldAfterArchive = await api("/api/my/gift-list", owner.token);
+  assert.equal(oldAfterArchive.status, 200);
+  assert.equal(oldAfterArchive.body.items.some(item => item.id === giftId), false);
+  pass("gift-list-new-archive-old-behavior", "new archive removes the item from the old active list");
+
+  const crossEventGiftId = randomUUID();
+  const crossEventGift = await admin.from("gift_list_items").insert({ id: crossEventGiftId, event_id: eventIdB, created_by: otherOwner.id, type: "Altro", name: "QA Cross Event", priority: "medium", status: "wanted" });
+  assert.ifError(crossEventGift.error);
+  const ownerCrossUpdate = await api("/api/my/gift-list", owner.token, {
+    method: "PUT",
+    body: JSON.stringify({ id: crossEventGiftId, type: "Altro", name: "Tampered", priority: "media", status: "desiderato" }),
+  });
+  assert.equal(ownerCrossUpdate.status, 404);
+  const otherCrossDelete = await api(`/api/my/gift-list?id=${legacyGiftId}`, otherOwner.token, { method: "DELETE" });
+  assert.equal(otherCrossDelete.status, 404);
+  const crossVerify = await admin.from("gift_list_items").select("name").eq("id", crossEventGiftId).single();
+  assert.ifError(crossVerify.error);
+  assert.equal(crossVerify.data.name, "QA Cross Event");
+  pass("gift-list-cross-event", "cross-event item IDs and actors cannot update or delete foreign rows");
+
+  for (const [field, value, expectedCode] of [
+    ["image_url", "https://example.com/image.png", "22023"],
+    ["purchased_by", "Buyer", "22023"],
+    ["purchased_at", new Date().toISOString(), "22023"],
+  ]) {
+    const unsupported = await admin.from("gift_list").insert({ event_id: eventId, user_id: owner.id, type: "Altro", name: `Unsupported ${field}`, [field]: value });
+    assert.ok(unsupported.error);
+    assert.equal(unsupported.error.code, expectedCode);
+  }
+  const unsupportedRows = await admin.from("gift_list_items").select("id", { count: "exact", head: true }).eq("event_id", eventId).like("name", "Unsupported %");
+  assert.ifError(unsupportedRows.error);
+  assert.equal(unsupportedRows.count, 0);
+  pass("gift-list-unsupported-fields", "image_url, purchased_by and purchased_at fail deterministically without silent loss");
+
+  const legacyDelete = await api(`/api/my/gift-list?id=${legacyGiftId}`, owner.token, { method: "DELETE" });
+  assert.equal(legacyDelete.status, 200);
+  assert.equal(await count("gift_list_items", "id", legacyGiftId), 0);
+  assert.equal(await count("gift_list_items", "id", giftId), 1);
+  pass("gift-list-old-delete-new-absence", "old delete removes exactly the targeted canonical row and creates no duplicate source");
 
   storagePath = `${eventId}/qa-${marker}.png`;
   const png = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
   const uploaded = await admin.storage.from("event-documents").upload(storagePath, png, { contentType: "image/png", upsert: false });
   assert.ifError(uploaded.error);
-  const ownerDownload = await clientFor(owner.token).storage.from("event-documents").download(storagePath);
-  assert.ifError(ownerDownload.error);
-  const outsiderDownload = await clientFor(outsider.token).storage.from("event-documents").download(storagePath);
-  assert.ok(outsiderDownload.error);
-  pass("storage-service", "real Storage upload plus owner read and outsider deny confirmed against local stack");
+  for (const allowed of [owner, partner, legacy]) {
+    const download = await clientFor(allowed.token).storage.from("event-documents").download(storagePath);
+    assert.ifError(download.error);
+  }
+  for (const denied of [outsider, left, revoked, otherOwner]) {
+    const download = await clientFor(denied.token).storage.from("event-documents").download(storagePath);
+    assert.ok(download.error);
+  }
+  pass("storage-service", "real Storage upload plus owner/partner/legacy reads and outsider/left/revoked/cross-event denies confirmed");
 
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
@@ -309,7 +430,9 @@ try {
   const uiGift = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/my/gift-list");
   await page.getByRole("button", { name: /^aggiungi$/i }).click();
   assert.equal((await uiGift).status(), 201);
-  assert.equal(await count("gift_list", "event_id", eventId), 1);
+  const browserGift = await admin.from("gift_list_items").select("id", { count: "exact", head: true }).eq("event_id", eventId).eq("name", "QA Browser Gift");
+  assert.ifError(browserGift.error);
+  assert.equal(browserGift.count, 1);
 
   await page.goto(`${appUrl}/it/documenti`, { waitUntil: "networkidle" });
   await page.locator('input[type="file"]').setInputFiles({ name: "qa-compat.png", mimeType: "image/png", buffer: Buffer.from(png) });
@@ -338,6 +461,10 @@ try {
     const removedEvent = await admin.from("events").delete().eq("id", eventId);
     if (removedEvent.error && !primaryError) primaryError = removedEvent.error;
   }
+  if (eventIdB) {
+    const removedEventB = await admin.from("events").delete().eq("id", eventIdB);
+    if (removedEventB.error && !primaryError) primaryError = removedEventB.error;
+  }
   for (const user of users.reverse()) {
     await user.authClient.auth.signOut().catch(() => {});
     const removed = await admin.auth.admin.deleteUser(user.id);
@@ -349,8 +476,10 @@ try {
       count("events", "id", eventId),
       count("guests", "event_id", eventId),
       count("tables", "event_id", eventId),
-      count("gift_list", "event_id", eventId),
+      count("gift_list_items", "event_id", eventId),
       count("event_documents", "event_id", eventId),
+      eventIdB ? count("events", "id", eventIdB) : 0,
+      eventIdB ? count("gift_list_items", "event_id", eventIdB) : 0,
     ]);
     report.cleanup.databaseRows = dbResidue.reduce((sum, value) => sum + value, 0);
     const listed = await admin.storage.from("event-documents").list(eventId);

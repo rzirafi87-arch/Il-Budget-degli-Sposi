@@ -20,8 +20,8 @@ jobs:
     timeout-minutes: 45
     env:
       OLD_APP_REF: 7aaf48c0736fa50187864145f1d7d41fc1265014
-      NEW_SCHEMA_REF: e778846d0fffa437be1d17fd891df59e39b7f384
-      NEW_SCHEMA_LAST_MIGRATION: 20260928131021_branch_53_delete_remediation.sql
+      NEW_SCHEMA_REF: 97da8f1651465ee8e59f6014072819f4bf5ce5b1
+      NEW_SCHEMA_LAST_MIGRATION: 20261001081905_branch_53_gift_list_legacy_compatibility.sql
       SUPABASE_TELEMETRY_DISABLED: "1"
       OLD_APP_BASE_URL: http://127.0.0.1:3000
 
@@ -52,13 +52,13 @@ jobs:
           test "$actual_old" = "$OLD_APP_REF"
           test "$actual_schema" = "$NEW_SCHEMA_REF"
           test "$actual_old" != "$actual_schema"
-          test "$(git -C new-schema rev-parse HEAD^{tree})" = "8690dacfb175afaf664f8053c0a473eff283695e"
+          test "$(git -C new-schema rev-parse HEAD^{tree})" = "dc09f405029e68a86fe69bf0222e5434fb77c477"
           echo "OLD_APP_SHA=$actual_old"
           echo "NEW_SCHEMA_SHA=$actual_schema"
           echo "NEW_SCHEMA_LAST_MIGRATION=$NEW_SCHEMA_LAST_MIGRATION"
           echo "REFS_DISTINCT=YES"
 
-      - name: Verify all five Branch 53 migrations byte-for-byte
+      - name: Verify all six Branch 53 migrations byte-for-byte
         shell: bash
         working-directory: new-schema
         run: |
@@ -68,7 +68,8 @@ jobs:
           test "$(sha256sum supabase/migrations/20260922210136_branch_53_transactional_tables.sql | cut -d' ' -f1)" = "5139dcfe56130f7ecca3c5684653db58c6a792152cd5a4f47f9362903c5b9276"
           test "$(sha256sum supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql | cut -d' ' -f1)" = "06113aa63f26c70d0e59806e8e0a6bbaab5cd78c4981fba83d25071da871df2d"
           test "$(sha256sum supabase/migrations/20260928131021_branch_53_delete_remediation.sql | cut -d' ' -f1)" = "26bdaa5c1f97eea00d216bc35c53155e7668ccf29aa7c153cd8b8e4251e75946"
-          echo "BRANCH53_MIGRATION_COUNT=5"
+          test "$(sha256sum supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql | cut -d' ' -f1)" = "b3b23f813d1c9120832259726dfd83786e42bb835799430e4646e7ef82aed9cd"
+          echo "BRANCH53_MIGRATION_COUNT=6"
           echo "BRANCH53_MIGRATIONS_UNMODIFIED=YES"
 
       - name: Install pinned Supabase CLI
@@ -112,6 +113,7 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -At <<'SQL'
           select 'event_documents=' || (to_regclass('public.event_documents') is not null);
           select 'gift_list_items=' || (to_regclass('public.gift_list_items') is not null);
+          select 'gift_list_legacy_view=' || exists(select 1 from pg_class where oid=to_regclass('public.gift_list') and relkind='v');
           select 'table_seat_unique=' || exists(select 1 from pg_indexes where schemaname='public' and indexname='table_assignments_table_seat_unique_idx');
           select 'delete_event_table=' || (to_regprocedure('public.delete_event_table(uuid,uuid,uuid)') is not null);
           select 'bucket=' || exists(select 1 from storage.buckets where id='event-documents');
@@ -119,7 +121,7 @@ jobs:
           SQL
           test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from storage.buckets where id='event-documents'")" = "1"
           echo "SCHEMA_REBUILD=PASS"
-          echo "BRANCH53_MIGRATIONS_APPLIED_SEQUENCE=5/5"
+          echo "BRANCH53_MIGRATIONS_APPLIED_SEQUENCE=6/6"
 
       - name: Verify Supabase Auth, Data API and Storage services
         shell: bash
