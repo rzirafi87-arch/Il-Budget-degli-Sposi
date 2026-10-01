@@ -439,7 +439,7 @@ try {
   pass("browser-table-write", "old table UI generated and persisted a valid plan on the new schema");
 
   await page.goto(`${appUrl}/it/lista-nozze`, { waitUntil: "networkidle" });
-  await page.getByLabel(/nome/i).first().fill("QA Browser Gift");
+  await page.getByPlaceholder("Es. Robot aspirapolvere", { exact: true }).fill("QA Browser Gift");
   const uiGift = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/my/gift-list");
   await page.getByRole("button", { name: /^aggiungi$/i }).click();
   assert.equal((await uiGift).status(), 201);
