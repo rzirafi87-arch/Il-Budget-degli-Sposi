@@ -16,6 +16,7 @@ on:
       - 'scripts/test-branch53-concurrency.sh'
       - 'scripts/test-branch53-red-team.sh'
       - 'scripts/test-branch53-delete-remediation.sh'
+      - 'supabase/tests/branch_53_gift_list_legacy_compatibility.sql'
       - 'scripts/lib/pgtap-runner.mjs'
       - 'scripts/lib/pgtap-runner.test.mjs'
       - 'scripts/fixtures/pgtap-runner/**'
@@ -275,6 +276,12 @@ jobs:
           set -Eeuo pipefail
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260928131021_branch_53_delete_remediation.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260928131021_branch_53_delete_remediation.sql
+
+      - name: Apply Branch 53 gift-list legacy compatibility
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql
 
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"

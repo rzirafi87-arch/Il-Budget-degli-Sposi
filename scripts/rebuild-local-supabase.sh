@@ -44,5 +44,6 @@ for migration in \
   20260922204756_branch_53_gift_list_items.sql \
   20260922210136_branch_53_transactional_tables.sql \
   20260927134918_branch_53_atomic_integrity_reimplementation.sql \
-  20260928131021_branch_53_delete_remediation.sql
+  20260928131021_branch_53_delete_remediation.sql \
+  20261001081905_branch_53_gift_list_legacy_compatibility.sql
 do apply "supabase/migrations/$migration"; done
