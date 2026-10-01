@@ -3664,6 +3664,71 @@ export type Database = {
       }
     }
     Views: {
+      gift_list: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          event_id: string | null
+          id: string | null
+          image_url: string | null
+          name: string | null
+          notes: string | null
+          price: number | null
+          priority: string | null
+          purchased_at: string | null
+          purchased_by: string | null
+          status: string | null
+          type: string | null
+          updated_at: string | null
+          url: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string | null
+          image_url?: never
+          name?: string | null
+          notes?: string | null
+          price?: number | null
+          priority?: never
+          purchased_at?: never
+          purchased_by?: never
+          status?: never
+          type?: string | null
+          updated_at?: string | null
+          url?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string | null
+          image_url?: never
+          name?: string | null
+          notes?: string | null
+          price?: number | null
+          priority?: never
+          purchased_at?: never
+          purchased_by?: never
+          status?: never
+          type?: string | null
+          updated_at?: string | null
+          url?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_list_items_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       high_rated_locations: {
         Row: {
           city: string | null
