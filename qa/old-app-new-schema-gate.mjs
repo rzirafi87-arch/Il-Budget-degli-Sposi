@@ -385,6 +385,17 @@ try {
   }
   pass("storage-service", "real Storage upload plus owner/partner/legacy reads and outsider/left/revoked/cross-event denies confirmed");
 
+  // Keep one assigned guest so the unmodified old tables API emits a valid
+  // `not in (...)` UUID filter while the browser still has one guest to place.
+  // The empty-table path in the legacy bundle builds `in.('')`, which is a
+  // pre-existing old-app defect unrelated to the Branch 53 schema contract.
+  const browserTableSeed = await api("/api/my/tables", owner.token, {
+    method: "POST",
+    body: JSON.stringify({ tables: firstPlan }),
+  });
+  assert.equal(browserTableSeed.status, 200);
+  assert.equal(await count("tables", "event_id", eventId), 1);
+
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -419,8 +430,10 @@ try {
 
   await page.goto(`${appUrl}/it/invitati/tavoli`, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /assegna automaticamente/i }).click();
+  const saveDisposition = page.getByRole("button", { name: "Salva disposizione", exact: true });
+  await saveDisposition.waitFor({ state: "visible", timeout: 10_000 });
   const uiSave = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/my/tables");
-  await page.getByRole("button", { name: /^salva/i }).click();
+  await saveDisposition.click();
   assert.equal((await uiSave).status(), 200);
   assert.ok(await count("tables", "event_id", eventId) > 0);
   pass("browser-table-write", "old table UI generated and persisted a valid plan on the new schema");
