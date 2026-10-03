@@ -39,5 +39,11 @@ for migration in \
   20260916193000_branch_51_least_privilege.sql \
   20260919161056_branch_52_event_catalog_snapshots.sql \
   20260919200457_branch_52_location_supplier_associations.sql \
-  20260920072942_branch_52_supplier_timeline_appointments.sql
+  20260920072942_branch_52_supplier_timeline_appointments.sql \
+  20260922190000_branch_53_event_documents.sql \
+  20260922204756_branch_53_gift_list_items.sql \
+  20260922210136_branch_53_transactional_tables.sql \
+  20260927134918_branch_53_atomic_integrity_reimplementation.sql \
+  20260928131021_branch_53_delete_remediation.sql \
+  20261001081905_branch_53_gift_list_legacy_compatibility.sql
 do apply "supabase/migrations/$migration"; done

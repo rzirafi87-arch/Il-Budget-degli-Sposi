@@ -1963,6 +1963,14 @@
       "pageTitle": "Table seating",
       "back": "Back to guests",
       "autoAssign": "Auto-assign by family",
+      "addTable": "Add table",
+      "tableNumber": "Table number",
+      "tableName": "Table name",
+      "capacity": "Capacity",
+      "deleteTable": "Delete",
+      "confirmDelete": "Delete this table and release its assigned guests?",
+      "assignGuest": "Assign a guest",
+      "unassign": "Remove",
       "noGuests": "No guests are available to assign.",
       "withoutFamily": "No family",
       "namedTable": "{label} table",
@@ -1981,6 +1989,7 @@
       "save": "Save seating",
       "errors": {
         "TABLE_SAVE_FAILED": "Unable to save the tables.",
+        "TABLE_SAVE_CONFLICT": "The seating plan is invalid. Check capacities, seats, and duplicate guests.",
         "TABLE_NETWORK_ERROR": "Network error while saving."
       }
     }

@@ -1198,6 +1198,14 @@
       "pageTitle": "Plan de table",
       "back": "Retour aux invités",
       "autoAssign": "Attribuer automatiquement par famille",
+      "addTable": "Ajouter une table",
+      "tableNumber": "Numéro de table",
+      "tableName": "Nom de la table",
+      "capacity": "Capacité",
+      "deleteTable": "Supprimer",
+      "confirmDelete": "Supprimer cette table et libérer les invités attribués ?",
+      "assignGuest": "Attribuer un invité",
+      "unassign": "Retirer",
       "noGuests": "Aucun invité disponible à attribuer.",
       "withoutFamily": "Sans famille",
       "namedTable": "Table {label}",
@@ -1216,6 +1224,7 @@
       "save": "Enregistrer le plan",
       "errors": {
         "TABLE_SAVE_FAILED": "Impossible d’enregistrer les tables.",
+        "TABLE_SAVE_CONFLICT": "Le plan de table est invalide. Vérifiez les capacités, les places et les invités en double.",
         "TABLE_NETWORK_ERROR": "Erreur réseau lors de l’enregistrement."
       }
     }
