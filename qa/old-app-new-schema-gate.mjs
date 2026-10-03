@@ -29,7 +29,7 @@ const report = {
   },
   runId: process.env.GITHUB_RUN_ID,
   gates: {},
-  browser: { skipped: 0, consoleErrors: [], http5xx: [] },
+  browser: { skipped: 0, consoleErrors: [], http5xx: [], http4xx: [], failedRequests: [] },
   cleanup: {},
 };
 
@@ -401,19 +401,23 @@ try {
   const context = await browser.newContext();
   const page = await context.newPage();
   page.on("console", message => {
-    if (message.type() === "error") report.browser.consoleErrors.push(message.text());
+    if (message.type() === "error") report.browser.consoleErrors.push({ text: message.text(), location: message.location() });
+  });
+  page.on("requestfailed", request => {
+    report.browser.failedRequests.push({ url: request.url(), failure: request.failure() });
   });
   page.on("response", response => {
     if (response.status() >= 500) report.browser.http5xx.push({ status: response.status(), url: response.url() });
+    else if (response.status() >= 400) report.browser.http4xx.push({ status: response.status(), url: response.url() });
   });
 
   for (const locale of ["it", "en"]) {
-    const response = await page.goto(`${appUrl}/${locale}`, { waitUntil: "domcontentloaded" });
+    const response = await page.goto(`${appUrl}/${locale}`, { waitUntil: "networkidle" });
     assert.ok(response);
     assert.ok(response.status() < 500);
     assert.ok((await page.locator("body").innerText()).trim().length > 0);
   }
-  await page.goto(`${appUrl}/it/auth`);
+  await page.goto(`${appUrl}/it/auth`, { waitUntil: "networkidle" });
   await page.getByLabel("Email", { exact: true }).fill(owner.email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   const [tokenResponse] = await Promise.all([
@@ -471,6 +475,7 @@ try {
   primaryError = error;
   report.failure = error instanceof Error ? { message: error.message, stack: error.stack } : { message: String(error) };
   console.error("GATE_FAILURE", report.failure);
+  console.error("BROWSER_DIAGNOSTICS", JSON.stringify(report.browser));
 } finally {
   if (browser) await browser.close().catch(() => {});
   if (storagePath) {
