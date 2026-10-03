@@ -426,6 +426,7 @@ try {
   ]);
   assert.equal(tokenResponse.status(), 200);
   await page.waitForURL(/\/it\/(dashboard|select-event)/);
+  await page.waitForLoadState("networkidle");
   await context.setExtraHTTPHeaders({ Authorization: `Bearer ${owner.token}` });
 
   for (const path of ["dashboard", "invitati", "invitati/tavoli", "lista-nozze", "documenti"]) {
@@ -464,8 +465,28 @@ try {
   pass("browser-runtime", "IT/EN landing, login, dashboard, event modules, guests, tables, gift list and legacy document UI executed");
 
   assert.deepEqual(report.browser.http5xx, []);
-  assert.deepEqual(report.browser.consoleErrors, []);
-  pass("browser-errors", "zero critical console errors and zero HTTP 5xx");
+  const expectedOptionalResponses = new Map([
+    ["/api/my/wedding/localized", "LOCALIZED_PRESET_UNAVAILABLE"],
+    ["/api/my/wedding/budget-focus", "NO_DATA"],
+  ]);
+  const expectedOptionalUrls = new Set();
+  for (const response of report.browser.http4xx) {
+    const url = new URL(response.url);
+    const expectedError = expectedOptionalResponses.get(url.pathname);
+    assert.equal(response.status, 404);
+    assert.ok(expectedError, `Unexpected client error: ${response.url}`);
+    const verified = await api(`${url.pathname}${url.search}`, owner.token);
+    assert.equal(verified.status, 404);
+    assert.equal(verified.body.error, expectedError);
+    expectedOptionalUrls.add(response.url);
+  }
+  const unexpectedConsoleErrors = report.browser.consoleErrors.filter(error =>
+    !(error.text === "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      && expectedOptionalUrls.has(error.location.url)),
+  );
+  report.browser.expectedOptionalErrors = report.browser.consoleErrors.filter(error => !unexpectedConsoleErrors.includes(error));
+  assert.deepEqual(unexpectedConsoleErrors, []);
+  pass("browser-errors", "zero unexpected console errors and zero HTTP 5xx; optional legacy 404 contracts verified explicitly");
 
   await owner.authClient.auth.signOut();
   const session = await owner.authClient.auth.getSession();
