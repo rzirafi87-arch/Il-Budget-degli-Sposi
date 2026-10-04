@@ -51,7 +51,16 @@ export async function cleanupEventDocuments(eventId: string, actorId: string): P
     for (const object of listed.data) {
       if (!object.name || object.name.includes("/") || object.name === "." || object.name === "..") return false;
       const path = `${prefix}/${object.name}`;
-      if (object.id) paths.push(path);
+      if (object.id) {
+        // Reservations precede Storage writes and keep immutable paths. Check
+        // both ledgers under the event lock after listing, including metadata
+        // finalized since the initial document batch. Uncertainty is retryable.
+        const untracked = await db.rpc("event_document_path_is_untracked", {
+          p_event_id: eventId, p_actor_id: actorId, p_object_path: path,
+        });
+        if (untracked.error || untracked.data !== true) return false;
+        paths.push(path);
+      }
       else folders.push(path);
     }
     if (paths.length && (await bucket.remove(paths)).error) return false;

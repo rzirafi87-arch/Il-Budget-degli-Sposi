@@ -3891,6 +3891,14 @@ export type Database = {
         Args: { p_category: string; p_name: string }
         Returns: undefined
       }
+      event_document_path_is_untracked: {
+        Args: {
+          p_actor_id: string
+          p_event_id: string
+          p_object_path: string
+        }
+        Returns: boolean
+      }
       finalize_event_document_upload: {
         Args: {
           p_actor_id: string

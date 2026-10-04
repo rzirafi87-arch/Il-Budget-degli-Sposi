@@ -332,6 +332,11 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004094408_branch_53_upload_actor_cleanup_followup.sql
           node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-upload-actor-red.sql --database-url-env LOCAL_DATABASE_URL
 
+      - name: Apply upload race guard twice
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004095304_branch_53_upload_race_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004095304_branch_53_upload_race_followup.sql
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 

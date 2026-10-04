@@ -186,7 +186,7 @@ describe("/api/my/documents contracts", () => {
     await expect(response.json()).resolves.toMatchObject({ idempotent: true, document: { id: documentId } });
   });
 
-  it("cleans up and releases quota when Storage upload fails", async () => {
+  it("preserves the reservation when upload reconciliation remains uncertain", async () => {
     mockUpload.mockResolvedValue({ error: { message: "Storage unavailable" } });
     mockRpc.mockImplementation(async (name: string) => {
       if (name === "claim_expired_event_document_uploads") return { data: [], error: null };
@@ -197,14 +197,12 @@ describe("/api/my/documents contracts", () => {
       return { data: { status: "released" }, error: null };
     });
     const response = await POST(uploadRequest(file()));
-    expect(response.status).toBe(500);
-    expect(mockRemove).toHaveBeenCalledWith([objectPath]);
-    expect(mockRpc).toHaveBeenCalledWith("release_event_document_upload", expect.objectContaining({
-      p_reservation_id: reservationId,
-    }));
+    expect(response.status).toBe(503);
+    expect(mockRemove).not.toHaveBeenCalled();
+    expect(mockRpc).not.toHaveBeenCalledWith("release_event_document_upload", expect.anything());
   });
 
-  it("removes the object and releases quota when finalize fails", async () => {
+  it("preserves the object when repeated finalization responses are uncertain", async () => {
     mockRpc.mockImplementation(async (name: string) => {
       if (name === "claim_expired_event_document_uploads") return { data: [], error: null };
       if (name === "reserve_event_document_upload") return { data: reservation(), error: null };
@@ -214,10 +212,20 @@ describe("/api/my/documents contracts", () => {
       return { data: { status: "released" }, error: null };
     });
     const response = await POST(uploadRequest(file()));
-    expect(response.status).toBe(500);
-    expect(mockRemove).toHaveBeenCalledWith([objectPath]);
-    expect(mockRpc).toHaveBeenCalledWith("release_event_document_upload", expect.objectContaining({
-      p_reservation_id: reservationId,
-    }));
+    expect(response.status).toBe(503);
+    expect(mockRemove).not.toHaveBeenCalled();
+    expect(mockRpc).not.toHaveBeenCalledWith("release_event_document_upload", expect.anything());
+  });
+  it("reconciles a committed finalization after its response was lost", async () => {
+    let attempts = 0;
+    mockRpc.mockImplementation(async (name: string) => {
+      if (name === "claim_expired_event_document_uploads") return { data: [], error: null };
+      if (name === "reserve_event_document_upload") return { data: reservation(), error: null };
+      if (name === "finalize_event_document_upload" && ++attempts === 1) return { data: null, error: { message: "response lost" } };
+      return { data: { documentId }, error: null };
+    });
+    expect((await POST(uploadRequest(file()))).status).toBe(201);
+    expect(attempts).toBe(2);
+    expect(mockRemove).not.toHaveBeenCalled();
   });
 });

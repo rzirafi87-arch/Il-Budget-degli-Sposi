@@ -89,7 +89,7 @@ describe("canonical event deletion", () => {
     mockDocuments.mockResolvedValue({ data: [], error: null });
     mockStorageList.mockResolvedValue({ data: [], error: null });
     mockRemove.mockResolvedValue({ error: null });
-    mockRpc.mockImplementation(async (name: string) => ({ data: name === "claim_expired_event_document_uploads" ? [] : { operationId: "op", documentId: "doc", objectPath: `${EVENT_A}/doc.pdf`, status: name === "begin_event_document_delete" ? "pending_storage" : "completed" }, error: null }));
+    mockRpc.mockImplementation(async (name: string) => ({ data: name === "claim_expired_event_document_uploads" ? [] : name === "event_document_path_is_untracked" ? true : { operationId: "op", documentId: "doc", objectPath: `${EVENT_A}/doc.pdf`, status: name === "begin_event_document_delete" ? "pending_storage" : "completed" }, error: null }));
   });
   it("removes Storage before the guarded event cascade", async () => {
     mockDocuments.mockResolvedValueOnce({ data: [{ id: "doc" }], error: null });
@@ -124,6 +124,14 @@ describe("canonical event deletion", () => {
   it("retains the event when Storage enumeration fails", async () => {
     mockStorageList.mockResolvedValueOnce({ data: null, error: { message: "unavailable" } });
     expect((await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }))).status).toBe(503);
+    expect(mockMaybeSingle).not.toHaveBeenCalled();
+  });
+  it.each([false, true])("never sweeps a protected path or failed check (error=%s)", async (failed) => {
+    mockStorageList.mockResolvedValueOnce({ data: [{ name: "upload.pdf", id: "object" }], error: null });
+    mockRpc.mockImplementation(async (name: string) => name === "event_document_path_is_untracked"
+      ? { data: false, error: failed ? { message: "unavailable" } : null } : { data: [], error: null });
+    expect((await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }))).status).toBe(503);
+    expect(mockRemove).not.toHaveBeenCalled();
     expect(mockMaybeSingle).not.toHaveBeenCalled();
   });
   it("refuses a cross-event cleanup path", async () => {

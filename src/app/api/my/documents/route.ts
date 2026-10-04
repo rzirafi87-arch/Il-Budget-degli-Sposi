@@ -109,26 +109,6 @@ async function cleanupExpiredReservations(
   }
 }
 
-async function releaseReservation(
-  db: ReturnType<typeof getServiceClient>,
-  eventId: string,
-  userId: string,
-  reservation: UploadReservation,
-) {
-  const released = await db.rpc("release_event_document_upload", {
-    p_event_id: eventId,
-    p_actor_id: userId,
-    p_reservation_id: reservation.reservationId,
-    p_object_path: reservation.objectPath,
-  });
-  if (released.error) {
-    logger.error("EVENT_DOCUMENT_RESERVATION_RELEASE_FAILED", {
-      reservationId: reservation.reservationId,
-      code: released.error.code,
-    });
-  }
-}
-
 async function readDocumentById(
   db: ReturnType<typeof getServiceClient>,
   eventId: string,
@@ -274,30 +254,23 @@ export async function POST(req: NextRequest) {
       }
 
       logger.error("EVENT_DOCUMENT_STORAGE_UPLOAD_FAILED", { message: uploadError.message });
-      const cleanup = await db.storage.from(DOCUMENT_BUCKET).remove([reservation.objectPath]);
-      if (!cleanup.error) await releaseReservation(db, currentEvent.eventId, userId, reservation);
-      return NextResponse.json({ error: "EVENT_DOCUMENT_UPLOAD_FAILED" }, { status: 500 });
+      // A lost finalization response may already have committed metadata.
+      // Keep the immutable reservation/path for idempotent retry or expiry cleanup.
+      return NextResponse.json({ error: "DOCUMENT_UPLOAD_RETRY_REQUIRED", retryable: true }, { status: 503 });
     }
 
-    const finalized = await db.rpc("finalize_event_document_upload", {
+    const finalizeArgs = {
       p_event_id: currentEvent.eventId,
       p_actor_id: userId,
       p_reservation_id: reservation.reservationId,
       p_object_path: reservation.objectPath,
       p_file_size: value.size,
-    });
+    };
+    let finalized = await db.rpc("finalize_event_document_upload", finalizeArgs);
+    if (finalized.error) finalized = await db.rpc("finalize_event_document_upload", finalizeArgs);
     if (finalized.error) {
-      const cleanup = await db.storage.from(DOCUMENT_BUCKET).remove([reservation.objectPath]);
-      if (cleanup.error) {
-        logger.error("EVENT_DOCUMENT_ORPHAN_CLEANUP_FAILED", {
-          reservationId: reservation.reservationId,
-          message: cleanup.error.message,
-        });
-      } else {
-        await releaseReservation(db, currentEvent.eventId, userId, reservation);
-      }
       logger.error("EVENT_DOCUMENT_FINALIZE_FAILED", { code: finalized.error.code });
-      return uploadErrorResponse(finalized.error);
+      return NextResponse.json({ error: "DOCUMENT_UPLOAD_RETRY_REQUIRED", retryable: true }, { status: 503 });
     }
 
     const { data: row, error: readError } = await readDocumentById(
