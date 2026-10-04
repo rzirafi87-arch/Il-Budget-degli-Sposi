@@ -158,8 +158,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "EVENT_DOCUMENTS_READ_FAILED" }, { status: 500 });
     }
 
+    const pending = await getServiceClient().from("event_documents")
+      .select("id,original_name").eq("event_id", currentEvent.eventId)
+      .eq("deletion_state", "pending_storage").order("created_at", { ascending: false });
+    if (pending.error) return NextResponse.json({ error: "EVENT_DOCUMENTS_READ_FAILED" }, { status: 500 });
+
     return NextResponse.json({
       documents: ((data || []) as EventDocumentRow[]).map(serializeDocument),
+      pendingDeletions: ((pending.data || []) as Array<{ id: string; original_name: string }>).map((row) => ({ id: row.id, name: row.original_name })),
       limits: { maxFileBytes: MAX_FILE_BYTES, eventQuotaBytes: EVENT_QUOTA_BYTES },
     });
   } catch (error) {

@@ -33,6 +33,7 @@ export default function DocumentiPage() {
   const t = useTranslations("milestone7.documents");
   const supabase = getBrowserClient();
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [pendingDeletions, setPendingDeletions] = useState<Array<{ id: string; name: string }>>([]);
   const [filter, setFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -59,6 +60,7 @@ export default function DocumentiPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "EVENT_DOCUMENTS_READ_FAILED");
       setDocuments(json.documents || []);
+      setPendingDeletions(json.pendingDeletions || []);
     } catch {
       setError(t("operationError"));
     } finally {
@@ -119,8 +121,8 @@ export default function DocumentiPage() {
     }
   };
 
-  const deleteDocument = async (id: string) => {
-    if (!window.confirm(t("confirmDelete"))) return;
+  const deleteDocument = async (id: string, confirm = true) => {
+    if (confirm && !window.confirm(t("confirmDelete"))) return;
     setError(null);
     try {
       const token = await bearer();
@@ -130,12 +132,16 @@ export default function DocumentiPage() {
       });
       const json = await res.json();
       if (!res.ok && json.deletionPending === true) {
+        const document = documents.find((item) => item.id === id);
+        setPendingDeletions((current) => current.some((item) => item.id === id)
+          ? current : [...current, { id, name: document?.name || id }]);
         setDocuments((current) => current.filter((document) => document.id !== id));
         setError(t("deletePending"));
         return;
       }
       if (!res.ok) throw new Error(json.error || "EVENT_DOCUMENT_DELETE_FAILED");
       setDocuments((current) => current.filter((document) => document.id !== id));
+      setPendingDeletions((current) => current.filter((document) => document.id !== id));
     } catch {
       setError(t("operationError"));
     }
@@ -222,6 +228,13 @@ export default function DocumentiPage() {
           ))}
         </ul>
       )}
+
+      {pendingDeletions.map((document) => (
+        <div key={document.id} data-testid={`pending-document-${document.id}`} className="app-card app-card--md flex flex-wrap items-center justify-between gap-3" role="status">
+          <span>{document.name} — {t("deletePending")}</span>
+          <button type="button" className="app-button app-button--sm app-button--outline" onClick={() => void deleteDocument(document.id, false)}>{t("retry")}</button>
+        </div>
+      ))}
 
       <div className="app-card border-2 border-dashed border-gray-300 p-6 transition-colors hover:border-gray-400">
         <label className={`block ${uploading ? "cursor-wait" : "cursor-pointer"}`}>

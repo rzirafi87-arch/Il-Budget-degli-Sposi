@@ -117,6 +117,16 @@ describe("/api/my/documents contracts", () => {
     await expect(response.json()).resolves.toMatchObject({ documents: [{ name: "contratto.pdf", fileSize: 3 }] });
   });
 
+  it("returns event-scoped pending IDs for retry without exposing downloads or paths", async () => {
+    const active = documentQuery(row, []);
+    const pending = documentQuery(row, [row]);
+    mockFrom.mockReturnValueOnce(active).mockReturnValueOnce(pending);
+    const response = await GET({} as NextRequest);
+    expect(pending.eq).toHaveBeenCalledWith("event_id", eventId);
+    expect(pending.eq).toHaveBeenCalledWith("deletion_state", "pending_storage");
+    await expect(response.json()).resolves.toMatchObject({ documents: [], pendingDeletions: [{ id: documentId, name: "contratto.pdf" }] });
+  });
+
   it.each([
     [file("malware.exe", "application/octet-stream"), "DOCUMENT_TYPE_NOT_ALLOWED", 415],
     [file("bad.pdf", "application/pdf"), "DOCUMENT_FILE_TOO_LARGE", 413],

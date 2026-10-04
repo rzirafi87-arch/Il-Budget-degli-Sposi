@@ -28,7 +28,9 @@ insert into storage.objects(bucket_id,name) values ('event-documents','53490000-
 select throws_ok($q$delete from public.events where id='53490000-0000-4000-8000-000000000010'$q$, '55000', 'EVENT_DOCUMENT_CLEANUP_REQUIRED', 'Storage object without metadata blocks cascade');
 select lives_ok($q$delete from public.events where id='53490000-0000-4000-8000-000000000011'$q$, 'foreign event objects do not block clean event deletion');
 -- SQL fixture represents no physical blob; cleanup stays inside rolled-back test.
+set local session_replication_role=replica;
 delete from storage.objects where bucket_id='event-documents' and name='53490000-0000-4000-8000-000000000010/orphan.pdf';
+set local session_replication_role=origin;
 select lives_ok($q$delete from public.events where id='53490000-0000-4000-8000-000000000010'$q$, 'cleaned event can cascade');
 select throws_ok($q$insert into storage.objects(bucket_id,name) values ('event-documents','53490000-0000-4000-8000-000000000010/late.pdf')$q$, '23503', 'DOCUMENT_EVENT_NOT_FOUND', 'delayed upload cannot orphan Storage after deletion');
 select is((select count(*) from private.event_document_upload_reservations where event_id='53490000-0000-4000-8000-000000000010'), 0::bigint, 'terminal ledger cascades only after cleanup');

@@ -303,6 +303,21 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004090526_branch_53_review_followup.sql
           node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-review-followup-red.sql --database-url-env LOCAL_DATABASE_URL
 
+      - name: Reproduce document lifecycle findings RED then verify additive GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-lifecycle-red.sql --database-url-env LOCAL_DATABASE_URL > lifecycle-red.log 2>&1; then
+            cat lifecycle-red.log
+            echo "Expected lifecycle RED before additive migration" >&2
+            exit 1
+          fi
+          cat lifecycle-red.log
+          grep -q 'not ok 1 - tombstoned Storage read denied' lifecycle-red.log
+          grep -q 'not ok 2 - completed document actor can delete account' lifecycle-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004092439_branch_53_document_lifecycle_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004092439_branch_53_document_lifecycle_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-lifecycle-red.sql --database-url-env LOCAL_DATABASE_URL
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 

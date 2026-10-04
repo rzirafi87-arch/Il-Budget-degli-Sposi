@@ -25,7 +25,7 @@ const report = {
   refs: {
     oldApp: "7aaf48c0736fa50187864145f1d7d41fc1265014",
     newSchema: process.env.NEW_SCHEMA_REF,
-    lastMigration: "20261004090526_branch_53_review_followup.sql",
+    lastMigration: "20261004092439_branch_53_document_lifecycle_followup.sql",
   },
   runId: process.env.GITHUB_RUN_ID,
   gates: {},
@@ -414,6 +414,8 @@ try {
   const png = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
   const uploaded = await admin.storage.from("event-documents").upload(storagePath, png, { contentType: "image/png", upsert: false });
   assert.ifError(uploaded.error);
+  const storageMetadata = await admin.from("event_documents").insert({ event_id: eventId, created_by: owner.id, original_name: "qa-compat.png", object_path: storagePath, mime_type: "image/png", file_size: png.length });
+  assert.ifError(storageMetadata.error);
   for (const allowed of [owner, partner, legacy]) {
     const download = await clientFor(allowed.token).storage.from("event-documents").download(storagePath);
     assert.ifError(download.error);
@@ -423,6 +425,14 @@ try {
     assert.ok(download.error);
   }
   pass("storage-service", "real Storage upload plus owner/partner/legacy reads and outsider/left/revoked/cross-event denies confirmed");
+  const tombstone = await admin.from("event_documents").update({ deletion_state: "pending_storage" }).eq("object_path", storagePath);
+  assert.ifError(tombstone.error);
+  for (const allowed of [owner, partner, legacy]) {
+    assert.ok((await clientFor(allowed.token).storage.from("event-documents").download(storagePath)).error);
+  }
+  const restoreMetadata = await admin.from("event_documents").update({ deletion_state: "active" }).eq("object_path", storagePath);
+  assert.ifError(restoreMetadata.error);
+  pass("storage-tombstone-denial", "owner/partner/legacy cannot download tombstoned files directly");
 
   // Keep one assigned guest so the unmodified old tables API emits a valid
   // `not in (...)` UUID filter while the browser still has one guest to place.
@@ -540,6 +550,10 @@ try {
   if (storagePath) {
     const removed = await admin.storage.from("event-documents").remove([storagePath]);
     if (removed.error && !primaryError) primaryError = removed.error;
+    if (!removed.error) {
+      const metadataRemoved = await admin.from("event_documents").delete().eq("object_path", storagePath);
+      if (metadataRemoved.error && !primaryError) primaryError = metadataRemoved.error;
+    }
   }
   if (eventId) {
     const removedEvent = await admin.from("events").delete().eq("id", eventId);
