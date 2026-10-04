@@ -20,6 +20,8 @@ The view is backed by `gift_list_items` and an `INSTEAD OF INSERT OR UPDATE OR D
 
 Canonical `received` has one stable legacy representation: `acquistato`. Canonical `archived` rows are not exposed by the legacy view because the old client has no archived state.
 
+Gift types remain losslessly stored and returned by both API and compatibility view. The new UI uses `src/lib/giftTypes.ts` to map all ten descriptive values emitted by `main@7aaf48c` to canonical translation keys and edit options. Saving a known legacy item uses its canonical type on the same row. Unknown historical values render directly and have a matching edit option, so they survive editing without missing translations or replacement with `other`. No migration or additional persisted representation is required. The old UI displays the returned type directly and accepts canonical values through its API; the compatibility harness covers all ten old-write/new-read and new-write/old-read round trips.
+
 `image_url`, `purchased_by`, and `purchased_at` are returned as `null`. Non-null writes fail with stable SQLSTATE `22023` errors so unsupported information is never silently discarded.
 
 ## Security

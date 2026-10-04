@@ -2,6 +2,7 @@
 
 import PageInfoNote from "@/components/PageInfoNote";
 import { formatCurrency } from "@/lib/locale";
+import { canonicalGiftType, GIFT_TYPES } from "@/lib/giftTypes";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -18,8 +19,6 @@ type GiftItem = {
   status?: "wanted" | "received" | "archived";
   notes?: string;
 };
-
-const GIFT_TYPES = ["honeymoon", "cash", "experiences", "furniture", "appliances", "luxury", "charity", "vouchers", "smartHome", "other"] as const;
 
 export default function ListaNozzePage() {
   const locale = useLocale();
@@ -110,7 +109,7 @@ export default function ListaNozzePage() {
 
   const startEdit = (item: GiftItem) => {
     setEditingId(item.id || null);
-    setNewItem({ ...item, price: item.price ?? undefined });
+    setNewItem({ ...item, type: canonicalGiftType(item.type) ?? item.type, price: item.price ?? undefined });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -188,6 +187,7 @@ export default function ListaNozzePage() {
               {GIFT_TYPES.map((key) => (
                 <option key={key} value={key}>{t(`types.${key}`)}</option>
               ))}
+              {!canonicalGiftType(newItem.type) && <option value={newItem.type}>{newItem.type}</option>}
             </select>
           </div>
           <div>
@@ -294,7 +294,7 @@ export default function ListaNozzePage() {
             <div data-testid={it.id ? `gift-item-${it.id}` : undefined} key={it.id || it.name + it.type} className="rounded-xl border bg-white/70 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <div className="font-semibold">{it.name}</div>
-                <div className="text-sm text-gray-600">{t(`types.${it.type}`)} · {t(`priorities.${it.priority}`)}</div>
+                <div className="text-sm text-gray-600">{canonicalGiftType(it.type) ? t(`types.${canonicalGiftType(it.type)}`) : it.type} · {t(`priorities.${it.priority}`)}</div>
                 {it.description && (
                   <div className="text-sm text-gray-700 mt-1">{it.description}</div>
                 )}

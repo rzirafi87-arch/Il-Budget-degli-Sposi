@@ -47,7 +47,7 @@ jest.mock("@/lib/supabaseServer", () => ({
 }));
 
 import type { NextRequest } from "next/server";
-import { DELETE, GET, POST } from "./route";
+import { DELETE, GET, PATCH, POST, PUT } from "./route";
 
 function request(method: string, body?: unknown, query = "") {
   return {
@@ -78,6 +78,28 @@ describe("/api/my/tables transactional contracts", () => {
     accessMode = "owner";
     jest.clearAllMocks();
     mockRpc.mockResolvedValue({ data: { savedTables: 1 }, error: null });
+  });
+
+  it.each([["POST", POST], ["PUT", PUT], ["PATCH", PATCH]] as const)("rejects malformed %s JSON before RPC", async (method, handler) => {
+    const req = request(method);
+    jest.mocked(req.json).mockImplementation(async () => JSON.parse('{"tables":'));
+    const response = await handler(req);
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({ error: "INVALID_JSON" });
+    expect(mockRpc).not.toHaveBeenCalled();
+    expect(mockFrom).not.toHaveBeenCalled();
+  });
+
+  it.each([["POST", POST], ["PUT", PUT], ["PATCH", PATCH]] as const)("authorizes %s before parsing malformed JSON", async (method, handler) => {
+    for (const mode of ["anonymous", "revoked", "stranger"] as const) {
+      accessMode = mode;
+      const req = request(method);
+      jest.mocked(req.json).mockRejectedValue(new SyntaxError("private parser detail"));
+      const response = await handler(req);
+      expect(response.status).toBe(mode === "anonymous" ? 401 : 404);
+      expect(req.json).not.toHaveBeenCalled();
+      expect(mockRpc).not.toHaveBeenCalled();
+    }
   });
 
   it.each([["anonymous", 401], ["revoked", 404], ["stranger", 404]] as const)("denies %s before a save", async (mode, status) => {

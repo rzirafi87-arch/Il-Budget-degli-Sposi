@@ -276,6 +276,44 @@ try {
   assert.equal(canonicalCreate.data.note, "Nota legacy");
   pass("gift-list-old-create-new-read", "legacy create maps to the canonical row without duplication");
 
+  // Exact type values emitted by OLD APP main@7aaf48c; no schema normalization
+  // may discard the old representation or create a second persisted row.
+  const giftTypes = {
+    honeymoon: "Contributo viaggio di nozze", cash: "Cassa comune",
+    experiences: "Esperienze (cene, spa, tour)", furniture: "Arredamento",
+    appliances: "Elettrodomestici", luxury: "Beni di lusso", charity: "Beneficenza",
+    vouchers: "Buoni regalo", smartHome: "Tech & Smart Home", other: "Altro",
+  };
+  for (const [canonicalType, legacyType] of Object.entries(giftTypes)) {
+    const created = await api("/api/my/gift-list", owner.token, {
+      method: "POST",
+      body: JSON.stringify({ type: legacyType, name: `QA Type ${canonicalType}`, priority: "media", status: "desiderato" }),
+    });
+    assert.equal(created.status, 201);
+    const id = created.body.item.id;
+    assert.equal(created.body.item.type, legacyType);
+    const stored = await admin.from("gift_list_items").select("id,type").eq("id", id).single();
+    assert.ifError(stored.error);
+    assert.equal(stored.data.type, legacyType);
+    const newWrite = await admin.from("gift_list_items").update({ type: canonicalType }).eq("id", id);
+    assert.ifError(newWrite.error);
+    const oldRead = await api("/api/my/gift-list", partner.token);
+    assert.equal(oldRead.status, 200);
+    assert.equal(oldRead.body.items.find(item => item.id === id)?.type, canonicalType);
+    const oldWrite = await api("/api/my/gift-list", partner.token, {
+      method: "PUT",
+      body: JSON.stringify({ ...created.body.item, type: legacyType }),
+    });
+    assert.equal(oldWrite.status, 200);
+    const roundTrip = await admin.from("gift_list_items").select("id,type").eq("id", id).single();
+    assert.ifError(roundTrip.error);
+    assert.equal(roundTrip.data.type, legacyType);
+    assert.equal(await count("gift_list_items", "id", id), 1);
+    assert.equal((await api(`/api/my/gift-list?id=${id}`, owner.token, { method: "DELETE" })).status, 200);
+    assert.equal(await count("gift_list_items", "id", id), 0);
+  }
+  pass("gift-list-all-type-round-trips", "10 legacy/canonical types: old write/new read, new write/old read, old update, unique row and delete");
+
   const giftRead = await api("/api/my/gift-list", partner.token);
   assert.equal(giftRead.status, 200);
   assert.equal(giftRead.body.items.some(item => item.id === giftId), true);

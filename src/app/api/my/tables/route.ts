@@ -119,6 +119,14 @@ function validationResponse(error: unknown) {
   return null;
 }
 
+async function readBody(req: NextRequest): Promise<unknown> {
+  try {
+    return await req.json();
+  } catch {
+    throw new TablePlanError("INVALID_JSON");
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { currentEvent } = await requireEventAccess(req, "owner-or-partner");
@@ -182,7 +190,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { userId, currentEvent } = await requireEventAccess(req, "owner-or-partner");
-    const plan = validatePlan(await req.json());
+    const plan = validatePlan(await readBody(req));
     const { data, error } = await getServiceClient().rpc("save_event_table_plan", {
       p_event_id: currentEvent.eventId,
       p_actor_id: userId,
