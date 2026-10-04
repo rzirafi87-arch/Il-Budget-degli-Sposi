@@ -262,6 +262,19 @@ jobs:
       - name: Apply Branch 53 transactional table plans
         run: |
           set -Eeuo pipefail
+          if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-index-red.sql > seat-index-red.log 2>&1; then
+            echo "Expected duplicate historical seats to reject unique index" >&2
+            exit 1
+          fi
+          grep -q 'could not create unique index' seat-index-red.log
+          if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-preflight-blocked.sql > seat-preflight-blocked.log 2>&1; then
+            echo "Expected preflight to block unresolved historical seats" >&2
+            exit 1
+          fi
+          cat seat-preflight-blocked.log
+          grep -q 'BRANCH53_DUPLICATE_SEATS_REMEDIATION_REQUIRED' seat-preflight-blocked.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-preflight-clean.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/preflight-branch53-seat-integrity.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
 
@@ -286,19 +299,7 @@ jobs:
       - name: Reproduce new Branch 53 cascade and direct-delete findings RED
         run: |
           set -Eeuo pipefail
-          if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-index-red.sql > seat-index-red.log 2>&1; then
-            echo "Expected duplicate historical seats to reject unique index" >&2
-            exit 1
-          fi
-          grep -q 'could not create unique index' seat-index-red.log
-          if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-preflight-blocked.sql > seat-preflight-blocked.log 2>&1; then
-            echo "Expected preflight to block unresolved historical seats" >&2
-            exit 1
-          fi
-          cat seat-preflight-blocked.log
-          grep -q 'BRANCH53_DUPLICATE_SEATS_REMEDIATION_REQUIRED' seat-preflight-blocked.log
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-preflight-clean.sql
-          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/preflight-branch53-seat-integrity.sql
+
           if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-review-followup-red.sql --database-url-env LOCAL_DATABASE_URL > followup-red.log 2>&1; then
             cat followup-red.log
             echo "Expected RED before additive followup migration" >&2
