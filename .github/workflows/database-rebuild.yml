@@ -283,6 +283,26 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql
 
+      - name: Reproduce new Branch 53 cascade and direct-delete findings RED
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-review-followup-red.sql --database-url-env LOCAL_DATABASE_URL > followup-red.log 2>&1; then
+            cat followup-red.log
+            echo "Expected RED before additive followup migration" >&2
+            exit 1
+          fi
+          cat followup-red.log
+          grep -q 'not ok 1 - browser direct table DELETE denied' followup-red.log
+          grep -q 'not ok 2 - metadata survives an unsafe event cascade' followup-red.log
+          grep -q 'not ok 3 - late Storage write requires an existing event' followup-red.log
+
+      - name: Apply additive Branch 53 review followup and verify GREEN
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004090526_branch_53_review_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004090526_branch_53_review_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-review-followup-red.sql --database-url-env LOCAL_DATABASE_URL
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 

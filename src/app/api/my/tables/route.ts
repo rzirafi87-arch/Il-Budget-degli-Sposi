@@ -155,6 +155,7 @@ export async function GET(req: NextRequest) {
       excludeFromFamilyTable: guest.exclude_from_family_table === true,
       familyGroupId: guest.family_group_id,
       familyName: relationOne(guest.family_groups)?.family_name || null,
+      attending: guest.attending === true,
     }]));
     const tables = ((rawTables || []) as TableRow[]).map((table) => ({
       id: table.id,
@@ -173,6 +174,7 @@ export async function GET(req: NextRequest) {
           excludeFromFamilyTable: guest?.excludeFromFamilyTable === true,
           familyGroupId: guest?.familyGroupId || null,
           familyName: guest?.familyName || null,
+          attending: guest?.attending === true,
           seatNumber: assignment.seat_number,
         };
       }),

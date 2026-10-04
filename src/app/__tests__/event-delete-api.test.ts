@@ -1,6 +1,16 @@
 const mockRequireUser = jest.fn();
 const mockListOwnedEvents = jest.fn();
 const mockMaybeSingle = jest.fn();
+const mockDocuments = jest.fn();
+const mockRpc = jest.fn();
+const mockRemove = jest.fn();
+const mockStorageList = jest.fn();
+
+jest.mock("@/lib/supabaseServer", () => ({ getServiceClient: () => ({
+  from: () => ({ select: () => ({ eq: () => ({ limit: mockDocuments }) }) }),
+  rpc: mockRpc,
+  storage: { from: () => ({ remove: mockRemove, list: mockStorageList }) },
+}) }));
 
 jest.mock("next/server", () => ({
   NextResponse: {
@@ -76,6 +86,52 @@ describe("canonical event deletion", () => {
     mockRequireUser.mockResolvedValue({ userId: "user-a" });
     mockListOwnedEvents.mockResolvedValue([owner]);
     mockMaybeSingle.mockResolvedValue({ data: { id: EVENT_A }, error: null });
+    mockDocuments.mockResolvedValue({ data: [], error: null });
+    mockStorageList.mockResolvedValue({ data: [], error: null });
+    mockRemove.mockResolvedValue({ error: null });
+    mockRpc.mockImplementation(async (name: string) => ({ data: name === "claim_expired_event_document_uploads" ? [] : { operationId: "op", documentId: "doc", objectPath: `${EVENT_A}/doc.pdf`, status: name === "begin_event_document_delete" ? "pending_storage" : "completed" }, error: null }));
+  });
+  it("removes Storage before the guarded event cascade", async () => {
+    mockDocuments.mockResolvedValueOnce({ data: [{ id: "doc" }], error: null });
+    const response = await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }));
+    expect(response.status).toBe(200);
+    expect(mockRemove).toHaveBeenCalledWith([`${EVENT_A}/doc.pdf`]);
+    expect(mockRpc).toHaveBeenCalledWith("complete_event_document_delete", expect.objectContaining({ p_event_id: EVENT_A, p_actor_id: "user-a" }));
+    expect(mockRemove.mock.invocationCallOrder[0]).toBeLessThan(mockMaybeSingle.mock.invocationCallOrder[0]);
+  });
+  it.each(["storage", "finalize", "query"])("keeps the event retryable after %s failure", async (failure) => {
+    mockDocuments.mockResolvedValueOnce({ data: [{ id: "doc" }], error: null });
+    if (failure === "storage") mockRemove.mockResolvedValue({ error: { message: "private storage detail" } });
+    if (failure === "finalize") mockRpc.mockImplementation(async (name: string) => ({ data: name === "claim_expired_event_document_uploads" ? [] : { operationId: "op", documentId: "doc", objectPath: `${EVENT_A}/doc.pdf`, status: "pending_storage" }, error: name === "complete_event_document_delete" ? { message: "private DB detail" } : null }));
+    if (failure === "query") mockDocuments.mockReset().mockResolvedValue({ data: null, error: { message: "private query detail" } });
+    const response = await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }));
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ error: "EVENT_DELETE_CLEANUP_PENDING", retryable: true });
+    expect(mockMaybeSingle).not.toHaveBeenCalled();
+  });
+  it("returns retryable cleanup when an upload races the final cascade", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: null, error: { code: "55000", message: "EVENT_DOCUMENT_CLEANUP_REQUIRED" } });
+    const response = await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }));
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ error: "EVENT_DELETE_CLEANUP_PENDING", retryable: true });
+  });
+  it("removes untracked nested Storage objects before cascading", async () => {
+    mockStorageList.mockResolvedValueOnce({ data: [{ name: "reservation", id: null }], error: null })
+      .mockResolvedValueOnce({ data: [{ name: "orphan.pdf", id: "object" }], error: null });
+    expect((await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }))).status).toBe(200);
+    expect(mockRemove).toHaveBeenCalledWith([`${EVENT_A}/reservation/orphan.pdf`]);
+  });
+  it("retains the event when Storage enumeration fails", async () => {
+    mockStorageList.mockResolvedValueOnce({ data: null, error: { message: "unavailable" } });
+    expect((await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }))).status).toBe(503);
+    expect(mockMaybeSingle).not.toHaveBeenCalled();
+  });
+  it("refuses a cross-event cleanup path", async () => {
+    mockDocuments.mockResolvedValueOnce({ data: [{ id: "doc" }], error: null });
+    mockRpc.mockImplementation(async (name: string) => ({ data: name === "claim_expired_event_document_uploads" ? [] : { operationId: "op", documentId: "doc", objectPath: `${EVENT_B}/file.pdf`, status: "pending_storage" }, error: null }));
+    expect((await DELETE(request({ eventId: EVENT_A, confirmationName: "Nozze A" }))).status).toBe(503);
+    expect(mockRemove).not.toHaveBeenCalled();
+    expect(mockMaybeSingle).not.toHaveBeenCalled();
   });
   it("returns 401 for anonymous requests", async () => {
     mockRequireUser.mockRejectedValue(new Error());
@@ -92,6 +148,8 @@ describe("canonical event deletion", () => {
     );
     expect(response.status).toBe(status);
     expect(mockMaybeSingle).not.toHaveBeenCalled();
+    expect(mockDocuments).not.toHaveBeenCalled();
+    expect(mockStorageList).not.toHaveBeenCalled();
   });
   it("prevents owner A from deleting event B", async () => {
     expect(

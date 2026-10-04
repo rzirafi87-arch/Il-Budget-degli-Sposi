@@ -110,10 +110,10 @@ select is((select count(*)::int from public.tables where event_id = '53300000-00
 select set_config('request.jwt.claims','{"sub":"53300000-0000-4000-8000-000000000004","email":"stranger53tables@example.invalid","role":"authenticated"}',true);
 select is((select count(*)::int from public.tables where event_id = '53300000-0000-4000-8000-000000000010'), 0, 'stranger cannot read cross-event tables');
 select is((select count(*)::int from public.tables where event_id = '53300000-0000-4000-8000-000000000011'), 1, 'stranger can read the table in their own event');
-with deleted as (
-  delete from public.tables where id = '53300000-0000-4000-8000-000000000030' returning 1
-)
-select is((select count(*)::int from deleted), 0, 'cross-event table deletion is denied');
+select throws_ok(
+  $q$delete from public.tables where id = '53300000-0000-4000-8000-000000000030'$q$,
+  '42501', 'permission denied for table tables', 'browser table deletion is denied before event scoping'
+);
 
 set local role postgres;
 delete from public.events where id = '53300000-0000-4000-8000-000000000010';

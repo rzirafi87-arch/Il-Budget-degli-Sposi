@@ -20,7 +20,7 @@ record_result() {
 
 cleanup() {
   "${psql_cmd[@]}" -c "begin; set local session_replication_role=replica; delete from storage.objects where bucket_id='event-documents' and (name like '53800000-0000-4000-8000-000000000010/%' or name like '53800000-0000-4000-8000-000000000011/%'); commit;" >/dev/null 2>&1 || true
-  "${psql_cmd[@]}" -c "delete from public.events where id in ('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000011'); delete from auth.users where id in ('53800000-0000-4000-8000-000000000001','53800000-0000-4000-8000-000000000002','53800000-0000-4000-8000-000000000003','53800000-0000-4000-8000-000000000004');" >/dev/null 2>&1 || true
+  "${psql_cmd[@]}" -c "delete from public.event_documents where event_id in ('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000011'); delete from private.event_document_upload_reservations where event_id in ('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000011'); delete from private.event_document_deletions where event_id in ('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000011'); delete from public.events where id in ('53800000-0000-4000-8000-000000000010','53800000-0000-4000-8000-000000000011'); delete from auth.users where id in ('53800000-0000-4000-8000-000000000001','53800000-0000-4000-8000-000000000002','53800000-0000-4000-8000-000000000003','53800000-0000-4000-8000-000000000004');" >/dev/null 2>&1 || true
   if [[ "$log_dir" == */branch53-delete-remediation.* && -d "$log_dir" ]]; then
     find "$log_dir" -type f -delete
     rmdir "$log_dir"

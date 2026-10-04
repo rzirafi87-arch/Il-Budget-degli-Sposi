@@ -13,3 +13,4 @@ supabase/tests/branch_53_gift_list_legacy_compatibility.sql
 supabase/tests/branch_53_transactional_tables.sql
 supabase/tests/branch_53_atomic_integrity.sql
 supabase/tests/branch_53_delete_remediation.sql
+supabase/tests/branch_53_review_followup.sql

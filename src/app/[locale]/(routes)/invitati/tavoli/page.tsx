@@ -14,6 +14,7 @@ type AssignedGuest = {
   familyGroupId?: string | null;
   familyName?: string | null;
   excludeFromFamilyTable?: boolean;
+  attending?: boolean;
 };
 type Table = {
   id?: string;
@@ -32,6 +33,7 @@ type AvailableGuest = {
   familyGroupId?: string | null;
   familyName?: string | null;
   excludeFromFamilyTable?: boolean;
+  attending?: boolean;
 };
 
 export default function TavoliPage() {
@@ -79,6 +81,7 @@ export default function TavoliPage() {
             familyGroupId: ag.familyGroupId,
             familyName: ag.familyName,
             excludeFromFamilyTable: ag.excludeFromFamilyTable,
+            attending: ag.attending,
           })),
         })));
         setAvailableGuests(json.availableGuests || []);
@@ -105,17 +108,20 @@ export default function TavoliPage() {
 
   function autoAssignByFamily() {
     const allGuests: AvailableGuest[] = [
-      ...availableGuests,
-      ...tables.flatMap((table) => table.assignedGuests.map((guest) => ({
+      ...availableGuests.filter((guest) => guest.attending !== false),
+      ...tables.flatMap((table) => table.assignedGuests.filter((guest) => guest.attending !== false).map((guest) => ({
         id: guest.guestId,
         name: guest.guestName || guest.guestId,
         guestType: guest.guestType,
         familyGroupId: guest.familyGroupId,
         familyName: guest.familyName,
         excludeFromFamilyTable: guest.excludeFromFamilyTable,
+        attending: guest.attending,
       }))),
     ];
     if (allGuests.length === 0) {
+      setTables([]);
+      setAvailableGuests([]);
       setMessage(t("noGuests"));
       return;
     }
@@ -151,6 +157,7 @@ export default function TavoliPage() {
           familyGroupId: g.familyGroupId,
           familyName: g.familyName,
           excludeFromFamilyTable: g.excludeFromFamilyTable,
+          attending: g.attending,
         }));
         newTables.push({
           tableNumber: tableCounter++,
@@ -212,6 +219,7 @@ export default function TavoliPage() {
         familyGroupId: guest.familyGroupId,
         familyName: guest.familyName,
         excludeFromFamilyTable: guest.excludeFromFamilyTable,
+        attending: guest.attending,
         seatNumber: table.assignedGuests.length + 1,
       }],
     } : table));
@@ -225,6 +233,7 @@ export default function TavoliPage() {
         .filter((assignment) => assignment.guestId !== guest.guestId)
         .map((assignment, seatIndex) => ({ ...assignment, seatNumber: seatIndex + 1 })),
     } : table));
+    if (guest.attending === false) return;
     setAvailableGuests((current) => [...current, {
       id: guest.guestId,
       name: guest.guestName || guest.guestId,
@@ -232,6 +241,7 @@ export default function TavoliPage() {
       familyGroupId: guest.familyGroupId,
       familyName: guest.familyName,
       excludeFromFamilyTable: guest.excludeFromFamilyTable,
+      attending: guest.attending,
     }].sort((a, b) => a.name.localeCompare(b.name)));
   }
 
@@ -252,13 +262,14 @@ export default function TavoliPage() {
         return;
       }
     }
-    const returned = table.assignedGuests.map((guest) => ({
+    const returned = table.assignedGuests.filter((guest) => guest.attending !== false).map((guest) => ({
       id: guest.guestId,
       name: guest.guestName || guest.guestId,
       guestType: guest.guestType,
       familyGroupId: guest.familyGroupId,
       familyName: guest.familyName,
       excludeFromFamilyTable: guest.excludeFromFamilyTable,
+      attending: guest.attending,
     }));
     setAvailableGuests((current) => [...current, ...returned].sort((a, b) => a.name.localeCompare(b.name)));
     setTables((current) => current.filter((_, tableIndex) => tableIndex !== index));
@@ -345,11 +356,11 @@ export default function TavoliPage() {
                 )}
               </div>
             ))}
-            <div className="flex justify-end">
-              <button onClick={saveTables} disabled={saving} className="px-4 py-2 rounded text-white" style={{ background: 'var(--color-sage)' }}>{saving ? t("saving") : t("save")}</button>
-            </div>
           </div>
         )}
+        <div className="flex justify-end mt-4">
+          <button onClick={saveTables} disabled={saving} className="px-4 py-2 rounded text-white" style={{ background: 'var(--color-sage)' }}>{saving ? t("saving") : t("save")}</button>
+        </div>
       </div>
     </section>
   );

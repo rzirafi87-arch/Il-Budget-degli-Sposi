@@ -169,6 +169,7 @@ describe("/api/my/tables transactional contracts", () => {
         familyGroupId: "family-a",
         familyName: "Rossi",
         excludeFromFamilyTable: true,
+        attending: true,
       }] }],
     });
   });

@@ -228,11 +228,34 @@ test("[B53][persistence-mobile] documents, gifts and tables persist for owner an
     expect((await tableDelete).status()).toBe(200);
     await page.reload();
     await expect(page.getByTestId(`table-${persistedTable!.id}`)).toHaveCount(0);
+
+    // Real Storage cleanup must complete before event metadata can cascade.
+    await loginAs(page, owner);
+    await page.goto("/it/documenti");
+    const finalUpload = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/my/documents");
+    await page.locator('input[type="file"]').setInputFiles({ name: "event-delete.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4\nEvent cleanup") });
+    expect((await finalUpload).status()).toBe(201);
+    const finalDocuments = await db.from("event_documents").select("object_path").eq("event_id", eventId);
+    expect(finalDocuments.error).toBeNull();
+    expect(finalDocuments.data?.length).toBe(1);
+    const deletedEvent = await browserApi(page, "/api/event/delete", {
+      method: "DELETE", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventId, confirmationName: `QA-M8-B53-${owner.marker}` }),
+    });
+    expect(deletedEvent.status).toBe(200);
+    expect((await db.from("events").select("id").eq("id", eventId)).data).toEqual([]);
+    expect((await db.from("event_documents").select("id").eq("event_id", eventId)).data).toEqual([]);
+    expect((await db.storage.from("event-documents").list(eventId)).data).toEqual([]);
+    expect((await db.storage.from("event-documents").download(finalDocuments.data![0].object_path)).error).toBeTruthy();
+    console.info("[B53] event deletion Storage/metadata cleanup PASS");
   } finally {
     const documents = await db.from("event_documents").select("object_path").eq("event_id", eventId);
     const paths = (documents.data || []).map(document => document.object_path).filter(Boolean);
     if (paths.length > 0) await db.storage.from("event-documents").remove(paths);
-    await db.from("events").delete().eq("id", eventId);
+    const metadataCleanup = await db.from("event_documents").delete().eq("event_id", eventId);
+    expect(metadataCleanup.error).toBeNull();
+    const eventCleanup = await db.from("events").delete().eq("id", eventId);
+    expect(eventCleanup.error).toBeNull();
     for (const identity of identities.reverse()) await deleteQaIdentity(identity);
     console.info("[B53] fixture cleanup complete; residue=0");
   }
