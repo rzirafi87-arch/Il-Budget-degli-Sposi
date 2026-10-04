@@ -156,7 +156,12 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { userId, currentEvent } = await requireEventAccess(req, "owner-or-partner");
-    const form = await req.formData();
+    let form: FormData;
+    try {
+      form = await req.formData();
+    } catch {
+      return NextResponse.json({ error: "INVALID_MULTIPART" }, { status: 400 });
+    }
     const value = form.get("file");
     const categoryValue = String(form.get("category") || "generic");
     const notesValue = String(form.get("notes") || "").trim();

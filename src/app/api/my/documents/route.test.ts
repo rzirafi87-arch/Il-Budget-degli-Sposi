@@ -149,6 +149,15 @@ describe("/api/my/documents contracts", () => {
     expect(mockUpload).not.toHaveBeenCalled();
   });
 
+  it("returns stable 400 for malformed multipart without reserving or uploading", async () => {
+    const req = uploadRequest(file());
+    req.formData = async () => { throw new TypeError("invalid multipart boundary"); };
+    const response = await POST(req);
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({ error: "INVALID_MULTIPART" });
+    expect(mockRpc).not.toHaveBeenCalled();
+    expect(mockUpload).not.toHaveBeenCalled();
+  });
   it("reserves, uploads and finalizes with the server-controlled object key", async () => {
     const response = await POST(uploadRequest(file()));
     expect(response.status).toBe(201);
