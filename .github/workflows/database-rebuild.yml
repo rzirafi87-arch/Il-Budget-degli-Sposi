@@ -351,6 +351,21 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004095304_branch_53_upload_race_followup.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004095304_branch_53_upload_race_followup.sql
 
+      - name: Reproduce direct plan mutation ACL RED and verify additive GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-table-mutations-red.sql --database-url-env LOCAL_DATABASE_URL > table-mutations-red.log 2>&1; then
+            echo "Expected browser mutation ACL RED before additive migration" >&2
+            exit 1
+          fi
+          cat table-mutations-red.log
+          for assertion in '1 - browser table INSERT denied' '2 - browser table UPDATE denied' '3 - browser assignment INSERT denied' '4 - browser assignment UPDATE denied' '5 - browser assignment DELETE denied'; do
+            grep -q "not ok $assertion" table-mutations-red.log
+          done
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004183049_branch_53_table_mutation_acl_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004183049_branch_53_table_mutation_acl_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-table-mutations-red.sql --database-url-env LOCAL_DATABASE_URL
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 

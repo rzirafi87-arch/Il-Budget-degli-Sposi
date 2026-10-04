@@ -1,0 +1,12 @@
+create extension if not exists pgtap with schema extensions;
+begin;
+set local role postgres;
+set local search_path=extensions,public,pg_catalog;
+select plan(5);
+select ok(not has_table_privilege('authenticated','public.tables','INSERT'),'browser table INSERT denied');
+select ok(not has_table_privilege('authenticated','public.tables','UPDATE'),'browser table UPDATE denied');
+select ok(not has_table_privilege('authenticated','public.table_assignments','INSERT'),'browser assignment INSERT denied');
+select ok(not has_table_privilege('authenticated','public.table_assignments','UPDATE'),'browser assignment UPDATE denied');
+select ok(not has_table_privilege('authenticated','public.table_assignments','DELETE'),'browser assignment DELETE denied');
+select * from finish();
+rollback;

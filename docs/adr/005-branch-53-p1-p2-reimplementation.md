@@ -10,6 +10,8 @@
 
 ### Mandatory legacy seating upgrade preflight
 
+`20261004183049_branch_53_table_mutation_acl_followup.sql` closes browser INSERT/UPDATE/DELETE on both `tables` and `table_assignments`; assignment writes mutate the same full plan and must not bypass event serialization. SELECT remains available under existing RLS, and service-role grants preserve both guarded APIs and the unmodified old bundle's server routes. SQL RED/GREEN verifies every remaining browser mutation grant and authorized server access.
+
 Before applying any Branch 53 table migration on an existing database, run `psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/preflight-branch53-seat-integrity.sql`. This read-only gate lists event/table/seat IDs and conflicting guest IDs and fails with `BRANCH53_DUPLICATE_SEATS_REMEDIATION_REQUIRED` before the published unique index can abort an upgrade. Suspend seating writes during preflight and migration. If conflicts exist, stop the rollout, export the output, and have the event owner approve a corrected plan with distinct seats (or intentionally unassigned guests). Apply that reviewed correction through the existing application with separately authorized data writes, rerun the preflight, and proceed only when clean. Do not automatically discard assignments or rewrite published migrations. Both isolated rebuild entrypoints enforce the gate; Production execution and remediation remain separately authorized rollout requirements.
 
 The independent readiness review found two additional violations on
