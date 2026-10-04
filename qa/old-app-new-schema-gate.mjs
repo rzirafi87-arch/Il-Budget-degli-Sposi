@@ -25,7 +25,7 @@ const report = {
   refs: {
     oldApp: "7aaf48c0736fa50187864145f1d7d41fc1265014",
     newSchema: process.env.NEW_SCHEMA_REF,
-    lastMigration: "20261004092439_branch_53_document_lifecycle_followup.sql",
+    lastMigration: "20261004094408_branch_53_upload_actor_cleanup_followup.sql",
   },
   runId: process.env.GITHUB_RUN_ID,
   gates: {},

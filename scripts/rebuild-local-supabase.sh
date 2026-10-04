@@ -48,4 +48,5 @@ for migration in \
   20261001081905_branch_53_gift_list_legacy_compatibility.sql \
   20261004090526_branch_53_review_followup.sql \
   20261004092439_branch_53_document_lifecycle_followup.sql
+  20261004094408_branch_53_upload_actor_cleanup_followup.sql
 do apply "supabase/migrations/$migration"; done

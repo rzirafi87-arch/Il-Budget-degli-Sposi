@@ -24,7 +24,7 @@ jobs:
     env:
       OLD_APP_REF: 7aaf48c0736fa50187864145f1d7d41fc1265014
       NEW_SCHEMA_REF: ${{ github.event.pull_request.head.sha || github.sha }}
-      NEW_SCHEMA_LAST_MIGRATION: 20261004092439_branch_53_document_lifecycle_followup.sql
+      NEW_SCHEMA_LAST_MIGRATION: 20261004094408_branch_53_upload_actor_cleanup_followup.sql
       SUPABASE_TELEMETRY_DISABLED: "1"
       OLD_APP_BASE_URL: http://127.0.0.1:3000
 
@@ -71,7 +71,7 @@ jobs:
           test "$(sha256sum supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql | cut -d' ' -f1)" = "06113aa63f26c70d0e59806e8e0a6bbaab5cd78c4981fba83d25071da871df2d"
           test "$(sha256sum supabase/migrations/20260928131021_branch_53_delete_remediation.sql | cut -d' ' -f1)" = "26bdaa5c1f97eea00d216bc35c53155e7668ccf29aa7c153cd8b8e4251e75946"
           test "$(sha256sum supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql | cut -d' ' -f1)" = "b3b23f813d1c9120832259726dfd83786e42bb835799430e4646e7ef82aed9cd"
-          echo "BRANCH53_MIGRATION_COUNT=8"
+          echo "BRANCH53_MIGRATION_COUNT=9"
           echo "BRANCH53_MIGRATIONS_UNMODIFIED=YES"
 
       - name: Install pinned Supabase CLI
@@ -123,7 +123,7 @@ jobs:
           SQL
           test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from storage.buckets where id='event-documents'")" = "1"
           echo "SCHEMA_REBUILD=PASS"
-          echo "BRANCH53_MIGRATIONS_APPLIED_SEQUENCE=8/8"
+          echo "BRANCH53_MIGRATIONS_APPLIED_SEQUENCE=9/9"
 
       - name: Verify Supabase Auth, Data API and Storage services
         shell: bash

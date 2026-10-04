@@ -15,3 +15,4 @@ supabase/tests/branch_53_atomic_integrity.sql
 supabase/tests/branch_53_delete_remediation.sql
 supabase/tests/branch_53_review_followup.sql
 supabase/tests/branch_53_document_lifecycle.sql
+supabase/tests/branch_53_upload_actor_cleanup.sql

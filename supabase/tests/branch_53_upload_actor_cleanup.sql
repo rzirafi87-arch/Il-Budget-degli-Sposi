@@ -1,0 +1,22 @@
+create extension if not exists pgtap with schema extensions;
+begin;
+set local role postgres;
+set local search_path = extensions, public, pg_catalog;
+select plan(10);
+select col_is_null('private','event_document_upload_reservations','actor_id','upload actor nullable');
+select is((select confdeltype::text from pg_constraint where conrelid='private.event_document_upload_reservations'::regclass and conname='event_document_upload_reservations_actor_id_fkey'),'n','upload actor SET NULL');
+insert into auth.users(id,email) values ('53470000-0000-4000-8000-000000000001','upload-owner@example.invalid'),('53470000-0000-4000-8000-000000000002','upload-partner@example.invalid');
+insert into public.events(id,owner_id,event_type) values ('53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000001','wedding');
+insert into private.event_document_upload_reservations(id,event_id,actor_id,idempotency_key,object_path,original_name,mime_type,file_size,category,status,expires_at) values ('53470000-0000-4000-8000-000000000020','53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000002','53470000-0000-4000-8000-000000000030','53470000-0000-4000-8000-000000000010/pending.pdf','pending.pdf','application/pdf',1,'generic','cleanup_pending',now());
+delete from auth.users where id='53470000-0000-4000-8000-000000000002';
+select is((select count(*) from private.event_document_upload_reservations where id='53470000-0000-4000-8000-000000000020' and status='cleanup_pending'),1::bigint,'pending upload cleanup survives actor removal');
+select ok((select actor_id is null from private.event_document_upload_reservations where id='53470000-0000-4000-8000-000000000020'),'removed upload actor anonymized');
+select is(jsonb_array_length(public.claim_expired_event_document_uploads('53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000001',20)),1,'owner discovers abandoned cleanup');
+select throws_ok($q$select public.reserve_event_document_upload('53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000001','53470000-0000-4000-8000-000000000030',1,'pending.pdf','application/pdf','generic')$q$,'22023','DOCUMENT_IDEMPOTENCY_CONFLICT','null actor cannot transfer reservation identity');
+select throws_ok($q$select public.finalize_event_document_upload('53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000001','53470000-0000-4000-8000-000000000020','53470000-0000-4000-8000-000000000010/pending.pdf',1)$q$,'42501','DOCUMENT_RESERVATION_MISMATCH','null actor cannot finalize as another member');
+select throws_ok($q$select public.release_event_document_upload('53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000001','53470000-0000-4000-8000-000000000020','53470000-0000-4000-8000-000000000010/pending.pdf')$q$,'42501','DOCUMENT_RESERVATION_MISMATCH','null actor cannot release as another member');
+select lives_ok($q$select public.complete_event_document_upload_cleanup('53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000001','53470000-0000-4000-8000-000000000020','53470000-0000-4000-8000-000000000010/pending.pdf')$q$,'owner completes abandoned cleanup');
+select is((select status from private.event_document_upload_reservations where id='53470000-0000-4000-8000-000000000020'),'expired','cleanup reaches terminal state');
+select * from finish();
+rollback;
+

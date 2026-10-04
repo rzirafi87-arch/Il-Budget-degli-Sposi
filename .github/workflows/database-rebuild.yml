@@ -318,6 +318,20 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004092439_branch_53_document_lifecycle_followup.sql
           node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-lifecycle-red.sql --database-url-env LOCAL_DATABASE_URL
 
+      - name: Reproduce upload actor cleanup RED then verify additive GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-upload-actor-red.sql --database-url-env LOCAL_DATABASE_URL > upload-actor-red.log 2>&1; then
+            cat upload-actor-red.log
+            echo "Expected upload actor RED before additive migration" >&2
+            exit 1
+          fi
+          cat upload-actor-red.log
+          grep -q 'not ok 1 - pending upload cleanup survives actor removal' upload-actor-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004094408_branch_53_upload_actor_cleanup_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004094408_branch_53_upload_actor_cleanup_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-upload-actor-red.sql --database-url-env LOCAL_DATABASE_URL
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 

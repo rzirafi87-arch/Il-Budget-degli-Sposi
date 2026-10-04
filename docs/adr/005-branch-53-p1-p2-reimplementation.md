@@ -322,4 +322,6 @@ The additive `20261004090526_branch_53_review_followup.sql` revokes browser-role
 
 ## Review followup: document cleanup lifecycle
 
+Upload reservation cleanup similarly survives actor removal in `20261004094408_branch_53_upload_actor_cleanup_followup.sql`: the nullable actor uses `ON DELETE SET NULL`. Reservation, finalization and release reject a null actor with `IS DISTINCT FROM`; authorized event members can still claim and complete abandoned cleanup through the existing cleanup RPCs. Account removal cannot discard cleanup paths or transfer upload identity to another member.
+
 The additive `20261004092439_branch_53_document_lifecycle_followup.sql` requires active document metadata for direct authenticated Storage reads, so tombstones deny owner and partner access while physical removal is retried. GET exposes pending deletion IDs and display names separately; the UI retains them after a transient error and reload, with an explicit retry action and no download action. The private deletion ledger retains its idempotency identity when an actor account is deleted, anonymizing the nullable actor foreign key with `ON DELETE SET NULL`. RED/GREEN fixtures cover both database regressions; UI/API tests cover retry persistence. The legacy harness creates active metadata for its real Storage probe and separately verifies denial after tombstoning.
