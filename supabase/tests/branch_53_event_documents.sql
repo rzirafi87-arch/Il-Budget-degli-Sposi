@@ -3,7 +3,7 @@ create extension if not exists pgtap with schema extensions;
 begin;
 set local role postgres;
 set local search_path = extensions, public, pg_catalog;
-select plan(38);
+select plan(39);
 
 select has_table('public', 'event_documents', 'event documents table exists');
 select is(
@@ -159,8 +159,14 @@ select throws_ok(
 );
 
 set local role postgres;
+select throws_ok(
+  $q$delete from public.events where id = '53100000-0000-4000-8000-000000000010'$q$,
+  '55000', 'EVENT_DOCUMENT_CLEANUP_REQUIRED', 'event cascade waits for document cleanup'
+);
+-- These fixtures contain metadata only, no physical Storage objects.
+delete from public.event_documents where event_id = '53100000-0000-4000-8000-000000000010';
 delete from public.events where id = '53100000-0000-4000-8000-000000000010';
-select is((select count(*)::int from public.event_documents where event_id = '53100000-0000-4000-8000-000000000010'), 0, 'event deletion cascades document metadata');
+select is((select count(*)::int from public.event_documents where event_id = '53100000-0000-4000-8000-000000000010'), 0, 'cleaned event deletion leaves no document metadata');
 select is((select count(*)::int from public.event_documents where event_id = '53100000-0000-4000-8000-000000000011'), 1, 'cross-event metadata remains intact');
 
 select * from finish();
