@@ -8,6 +8,10 @@
 
 ## Targeted remediation after Final Release Readiness
 
+### Mandatory legacy seating upgrade preflight
+
+Before applying any Branch 53 table migration on an existing database, run `psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/preflight-branch53-seat-integrity.sql`. This read-only gate lists event/table/seat IDs and conflicting guest IDs and fails with `BRANCH53_DUPLICATE_SEATS_REMEDIATION_REQUIRED` before the published unique index can abort an upgrade. Suspend seating writes during preflight and migration. If conflicts exist, stop the rollout, export the output, and have the event owner approve a corrected plan with distinct seats (or intentionally unassigned guests). Apply that reviewed correction through the existing application with separately authorized data writes, rerun the preflight, and proceed only when clean. Do not automatically discard assignments or rewrite published migrations. Both isolated rebuild entrypoints enforce the gate; Production execution and remediation remain separately authorized rollout requirements.
+
 The independent readiness review found two additional violations on
 `babf949aa784e552d387c3e01f6637229e6d746c`:
 

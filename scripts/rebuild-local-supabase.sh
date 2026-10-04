@@ -50,4 +50,9 @@ for migration in \
   20261004092439_branch_53_document_lifecycle_followup.sql \
   20261004094408_branch_53_upload_actor_cleanup_followup.sql \
   20261004095304_branch_53_upload_race_followup.sql
-do apply "supabase/migrations/$migration"; done
+do
+  if [[ "$migration" == "20260922210136_branch_53_transactional_tables.sql" ]]; then
+    apply scripts/preflight-branch53-seat-integrity.sql
+  fi
+  apply "supabase/migrations/$migration"
+done
