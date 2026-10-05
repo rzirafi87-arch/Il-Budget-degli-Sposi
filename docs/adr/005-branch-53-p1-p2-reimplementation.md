@@ -10,6 +10,8 @@
 
 ### Mandatory legacy seating upgrade preflight
 
+The preflight also exports and blocks historical range/capacity/context violations before enabling canonical plan saves: table numbers 1–10000, capacity 1–100, assigned count within capacity, non-null seats 1–capacity, guest/table event agreement and table notes within the existing save limit. `BRANCH53_TABLE_PLAN_REMEDIATION_REQUIRED` requires an owner-approved valid plan and a clean rerun, preserving all assignments and text until separately authorized correction.
+
 `20261004184418_branch_53_late_upload_guard_followup.sql` makes final Storage INSERT/name changes serialize with reservation expiry through the event lock. Protocol paths (event/reservation UUID/filename) or any tracked reservation path require an unexpired active reservation or active persisted metadata. Late inserts after cleanup/release or immutable-path rotation are rejected; legacy flat/non-reservation paths remain compatible. The trigger uses `clock_timestamp()` after lock acquisition so queued requests cannot rely on an earlier transaction timestamp.
 
 `20261004183049_branch_53_table_mutation_acl_followup.sql` closes browser INSERT/UPDATE/DELETE on both `tables` and `table_assignments`; assignment writes mutate the same full plan and must not bypass event serialization. SELECT remains available under existing RLS, and service-role grants preserve both guarded APIs and the unmodified old bundle's server routes. SQL RED/GREEN verifies every remaining browser mutation grant and authorized server access.

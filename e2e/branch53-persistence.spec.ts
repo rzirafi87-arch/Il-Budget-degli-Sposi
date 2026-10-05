@@ -178,11 +178,16 @@ test("[B53][persistence-mobile] documents, gifts and tables persist for owner an
     await expect(giftCard).toContainText(giftName);
     await giftCard.getByRole("button", { name: "Modifica", exact: true }).click();
     await page.getByLabel("Nome", { exact: true }).fill(updatedGiftName);
+    await page.getByLabel("Prezzo stimato (€)", { exact: true }).fill("750");
     const giftUpdate = page.waitForResponse(response => response.request().method() === "PUT" && new URL(response.url()).pathname === "/api/my/gift-list");
     await page.getByRole("button", { name: "Salva modifiche", exact: true }).click();
     expect((await giftUpdate).status()).toBe(200);
     await page.reload();
     await expect(page.getByTestId(`gift-item-${createdGift.item.id}`)).toContainText(updatedGiftName);
+
+    const editedGifts = await browserApi<{ items: Array<{ id: string; price: number; targetAmount: number }> }>(page, "/api/my/gift-list");
+    expect(editedGifts.status).toBe(200);
+    expect(editedGifts.body.items.find(item => item.id === createdGift.item.id)).toMatchObject({ price: 750, targetAmount: 750 });
 
     await loginAs(page, owner);
     await page.goto("/it/lista-nozze");

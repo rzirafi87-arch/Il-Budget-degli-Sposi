@@ -23,6 +23,20 @@ describe("gift type compatibility in the new UI", () => {
     localStorage.setItem("eventType", "wedding");
     window.scrollTo = jest.fn();
   });
+  it.each([450, 0, null])("sends the edited price %s instead of stale response aliases", async (edited) => {
+    const item = { id: "gift-id", type: "cash", name: "Gift", price: 100, targetAmount: 100, currentAmount: 25, priority: "medium", status: "wanted" };
+    const fetchMock = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ items: [item], item }) });
+    global.fetch = fetchMock;
+    render(<Page />);
+    await screen.findByText("Gift");
+    fireEvent.click(screen.getByText("edit"));
+    fireEvent.change(screen.getByLabelText("fields.price"), { target: { value: edited === null ? "" : String(edited) } });
+    fireEvent.click(screen.getByText("saveChanges"));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    const body = JSON.parse(fetchMock.mock.calls[1][1].body);
+    expect(body.targetAmount).toBe(edited);
+    expect(body).not.toHaveProperty("currentAmount");
+  });
 
   it.each(cases)("renders and edits %s without losing its type", async (stored, expected) => {
     const item = { id: "gift-id", type: stored, name: "Gift", priority: "medium", status: "wanted", description: "", notes: "", url: "" };

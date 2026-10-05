@@ -82,7 +82,14 @@ export default function ListaNozzePage() {
       const res = await fetch("/api/my/gift-list", {
         method: editingId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ ...newItem, id: editingId || undefined }),
+        // Send editable fields only, and keep the canonical amount alias in
+        // sync with the price input instead of echoing stale GET-only fields.
+        body: JSON.stringify({
+          id: editingId || undefined, type: newItem.type, name: newItem.name,
+          description: newItem.description, price: newItem.price,
+          targetAmount: newItem.price ?? null, url: newItem.url,
+          priority: newItem.priority, status: newItem.status, notes: newItem.notes,
+        }),
       });
       if (!res.ok) {
         const j = await res.json();
@@ -206,8 +213,8 @@ export default function ListaNozzePage() {
               id="gift-price"
               type="number"
               className="border rounded px-3 py-2 w-full"
-              value={newItem.price || ""}
-              onChange={(e) => setNewItem({ ...newItem, price: Number(e.target.value) || undefined })}
+              value={newItem.price ?? ""}
+              onChange={(e) => setNewItem({ ...newItem, price: e.target.value === "" ? undefined : Number(e.target.value) })}
             />
           </div>
           <div className="md:col-span-3">

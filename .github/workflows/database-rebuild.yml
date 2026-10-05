@@ -16,6 +16,9 @@ on:
       - 'scripts/test-branch53-concurrency.sh'
       - 'scripts/test-branch53-red-team.sh'
       - 'scripts/test-branch53-delete-remediation.sh'
+      - 'scripts/test-branch53-late-upload.sh'
+      - 'scripts/preflight-branch53-seat-integrity.sql'
+      - 'scripts/fixtures/branch53-*.sql'
       - 'supabase/tests/branch_53_gift_list_legacy_compatibility.sql'
       - 'scripts/lib/pgtap-runner.mjs'
       - 'scripts/lib/pgtap-runner.test.mjs'
@@ -274,6 +277,14 @@ jobs:
           cat seat-preflight-blocked.log
           grep -q 'BRANCH53_DUPLICATE_SEATS_REMEDIATION_REQUIRED' seat-preflight-blocked.log
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-preflight-clean.sql
+          for violation in capacity seat-high seat-negative capacity-upper table-number guest-event notes; do
+            if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -v violation="$violation" -f scripts/fixtures/branch53-seat-preflight-invalid-plan.sql > "seat-$violation.log" 2>&1; then
+              echo "Expected preflight to block historical $violation" >&2
+              exit 1
+            fi
+            cat "seat-$violation.log"
+            grep -q BRANCH53_TABLE_PLAN_REMEDIATION_REQUIRED "seat-$violation.log"
+          done
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/preflight-branch53-seat-integrity.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
