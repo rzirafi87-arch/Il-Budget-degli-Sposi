@@ -8,6 +8,8 @@ on:
         "playwright*.config.ts",
         "src/app/**",
         "src/components/**",
+        "src/i18n/**",
+        "src/proxy.ts",
         "src/messages/**",
         "supabase/**",
         "scripts/rebuild-local-supabase.sh",

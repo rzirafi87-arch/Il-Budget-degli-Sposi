@@ -24,7 +24,7 @@ on:
       - 'scripts/lib/pgtap-runner.test.mjs'
       - 'scripts/fixtures/pgtap-runner/**'
       - 'src/i18n/**'
-      - 'middleware.ts'
+      - 'src/proxy.ts'
       - '.github/workflows/database-rebuild.yml'
   workflow_dispatch:
 
