@@ -337,3 +337,22 @@ Upload race followup (`20261004095304_branch_53_upload_race_followup.sql`) adds 
 Upload reservation cleanup similarly survives actor removal in `20261004094408_branch_53_upload_actor_cleanup_followup.sql`: the nullable actor uses `ON DELETE SET NULL`. Reservation, finalization and release reject a null actor with `IS DISTINCT FROM`; authorized event members can still claim and complete abandoned cleanup through the existing cleanup RPCs. Account removal cannot discard cleanup paths or transfer upload identity to another member.
 
 The additive `20261004092439_branch_53_document_lifecycle_followup.sql` requires active document metadata for direct authenticated Storage reads, so tombstones deny owner and partner access while physical removal is retried. GET exposes pending deletion IDs and display names separately; the UI retains them after a transient error and reload, with an explicit retry action and no download action. The private deletion ledger retains its idempotency identity when an actor account is deleted, anonymizing the nullable actor foreign key with `ON DELETE SET NULL`. RED/GREEN fixtures cover both database regressions; UI/API tests cover retry persistence. The legacy harness creates active metadata for its real Storage probe and separately verifies denial after tombstoning.
+
+## Production seating write suspension protocol
+
+The previously required seating freeze now has dedicated operational scripts in
+`scripts/rollout/`. Statement-level BEFORE INSERT/UPDATE/DELETE triggers on
+`public.tables` and `public.table_assignments` reject all application roles and
+SECURITY DEFINER mutation paths with `BRANCH53_SEATING_WRITES_SUSPENDED`.
+Activation waits for existing writers using ACCESS EXCLUSIVE locks with finite
+timeouts. The committed freeze survives rollout interruption until explicit resume.
+Exact object identity checks reject partial or unexpected state; resume removes
+only protocol objects and preserves all permanent Branch 53 schema and grants.
+No published migration changes and no additional application migration are needed.
+
+See [the operational runbook](../runbooks/branch-53-production-rollout.md) for
+activation, verification, historical preflight, the twelve-migration window,
+post-migration verification, controlled/emergency resume, failure modes and rollback.
+Resume precedes runtime seating mutation smoke because the intentional freeze
+blocks both old and new application writers. This addition provides tooling only;
+it does not execute or authorize a Production rollout.
