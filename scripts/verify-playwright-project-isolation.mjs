@@ -103,7 +103,7 @@ const lines = [
   "- duplicate mandatory journeys: 0",
   "- Chromium service-role exposure: 0",
   "- protected recovery redirect and security-matrix environment: configured",
-  `- Preview read-only: ${preview.previewCases} public GET-only cases across ${preview.previewProjects} projects; authenticated/mutating specs: 0`,
+  `- Preview read-only: ${preview.previewCases} public non-mutating cases across ${preview.previewProjects} projects; authenticated/mutating specs: 0`,
 ];
 console.log(lines.join("\n"));
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### ${lines.join("\n")}\n`);

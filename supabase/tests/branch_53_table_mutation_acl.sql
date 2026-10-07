@@ -1,0 +1,21 @@
+create extension if not exists pgtap with schema extensions;
+begin;
+set local role postgres;
+set local search_path=extensions,public,pg_catalog;
+select plan(11);
+select ok(not has_table_privilege('authenticated','public.tables','INSERT'),'browser table INSERT denied');
+select ok(not has_table_privilege('authenticated','public.tables','UPDATE'),'browser table UPDATE denied');
+select ok(not has_table_privilege('authenticated','public.table_assignments','INSERT'),'browser assignment INSERT denied');
+select ok(not has_table_privilege('authenticated','public.table_assignments','UPDATE'),'browser assignment UPDATE denied');
+select ok(not has_table_privilege('authenticated','public.table_assignments','DELETE'),'browser assignment DELETE denied');
+select ok(has_table_privilege('authenticated','public.tables','SELECT'),'table SELECT retained');
+select ok(has_table_privilege('authenticated','public.table_assignments','SELECT'),'assignment SELECT retained');
+select ok(has_table_privilege('service_role','public.tables','INSERT,UPDATE,DELETE'),'service table writes retained');
+select ok(has_table_privilege('service_role','public.table_assignments','INSERT,UPDATE,DELETE'),'service assignment writes retained');
+set local role authenticated;
+select throws_ok($q$insert into public.tables(event_id,table_number,total_seats) values('53440000-0000-4000-8000-000000000010',1,4)$q$,'42501','permission denied for table tables','Data API INSERT stops at grant');
+select throws_ok($q$update public.tables set total_seats=4$q$,'42501','permission denied for table tables','Data API UPDATE stops at grant');
+set local role postgres;
+select * from finish();
+rollback;
+

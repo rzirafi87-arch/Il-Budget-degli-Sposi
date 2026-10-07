@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'supabase/**'
+      - "scripts/rollout/**"
+      - "scripts/fixtures/branch53-seating*.sql"
       - 'scripts/datasets/churches-italy-wikidata.json'
       - 'scripts/datasets/locations-italy-wikidata.json'
       - 'scripts/datasets/locations-italy-openstreetmap.json'
@@ -13,11 +15,18 @@ on:
       - 'scripts/import-catalog.mjs'
       - 'scripts/run-pgtap.mjs'
       - 'scripts/test-pgtap-runner-integration.mjs'
+      - 'scripts/test-branch53-concurrency.sh'
+      - 'scripts/test-branch53-red-team.sh'
+      - 'scripts/test-branch53-delete-remediation.sh'
+      - 'scripts/test-branch53-late-upload.sh'
+      - 'scripts/preflight-branch53-seat-integrity.sql'
+      - 'scripts/fixtures/branch53-*.sql'
+      - 'supabase/tests/branch_53_gift_list_legacy_compatibility.sql'
       - 'scripts/lib/pgtap-runner.mjs'
       - 'scripts/lib/pgtap-runner.test.mjs'
       - 'scripts/fixtures/pgtap-runner/**'
       - 'src/i18n/**'
-      - 'middleware.ts'
+      - 'src/proxy.ts'
       - '.github/workflows/database-rebuild.yml'
   workflow_dispatch:
 
@@ -243,6 +252,157 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -Atf supabase/tests/branch_52_m2_preservation_snapshot.sql > /tmp/branch-52-m4-after.json
           diff -u /tmp/branch-52-m4-before.json /tmp/branch-52-m4-after.json
 
+      - name: Apply Branch 53 persistent event documents
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922190000_branch_53_event_documents.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922190000_branch_53_event_documents.sql
+
+      - name: Apply Branch 53 persistent gift list
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922204756_branch_53_gift_list_items.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922204756_branch_53_gift_list_items.sql
+
+      - name: Apply Branch 53 transactional table plans
+        run: |
+          set -Eeuo pipefail
+          if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-index-red.sql > seat-index-red.log 2>&1; then
+            echo "Expected duplicate historical seats to reject unique index" >&2
+            exit 1
+          fi
+          grep -q 'could not create unique index' seat-index-red.log
+          if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-preflight-blocked.sql > seat-preflight-blocked.log 2>&1; then
+            echo "Expected preflight to block unresolved historical seats" >&2
+            exit 1
+          fi
+          cat seat-preflight-blocked.log
+          grep -q 'BRANCH53_DUPLICATE_SEATS_REMEDIATION_REQUIRED' seat-preflight-blocked.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch53-seat-preflight-clean.sql
+          for violation in capacity seat-high seat-negative capacity-upper table-number guest-event notes; do
+            if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -v violation="$violation" -f scripts/fixtures/branch53-seat-preflight-invalid-plan.sql > "seat-$violation.log" 2>&1; then
+              echo "Expected preflight to block historical $violation" >&2
+              exit 1
+            fi
+            cat "seat-$violation.log"
+            grep -q BRANCH53_TABLE_PLAN_REMEDIATION_REQUIRED "seat-$violation.log"
+          done
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/preflight-branch53-seat-integrity.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260922210136_branch_53_transactional_tables.sql
+
+      - name: Apply Branch 53 atomic integrity reimplementation
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260927134918_branch_53_atomic_integrity_reimplementation.sql
+
+      - name: Apply Branch 53 targeted delete remediation
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260928131021_branch_53_delete_remediation.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260928131021_branch_53_delete_remediation.sql
+
+      - name: Apply Branch 53 gift-list legacy compatibility
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261001081905_branch_53_gift_list_legacy_compatibility.sql
+
+      - name: Reproduce new Branch 53 cascade and direct-delete findings RED
+        run: |
+          set -Eeuo pipefail
+
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-review-followup-red.sql --database-url-env LOCAL_DATABASE_URL > followup-red.log 2>&1; then
+            cat followup-red.log
+            echo "Expected RED before additive followup migration" >&2
+            exit 1
+          fi
+          cat followup-red.log
+          grep -q 'not ok 1 - browser direct table DELETE denied' followup-red.log
+          grep -q 'not ok 2 - metadata survives an unsafe event cascade' followup-red.log
+          grep -q 'not ok 3 - late Storage write requires an existing event' followup-red.log
+
+      - name: Apply additive Branch 53 review followup and verify GREEN
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004090526_branch_53_review_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004090526_branch_53_review_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-review-followup-red.sql --database-url-env LOCAL_DATABASE_URL
+
+      - name: Reproduce document lifecycle findings RED then verify additive GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-lifecycle-red.sql --database-url-env LOCAL_DATABASE_URL > lifecycle-red.log 2>&1; then
+            cat lifecycle-red.log
+            echo "Expected lifecycle RED before additive migration" >&2
+            exit 1
+          fi
+          cat lifecycle-red.log
+          grep -q 'not ok 1 - tombstoned Storage read denied' lifecycle-red.log
+          grep -q 'not ok 2 - completed document actor can delete account' lifecycle-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004092439_branch_53_document_lifecycle_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004092439_branch_53_document_lifecycle_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-lifecycle-red.sql --database-url-env LOCAL_DATABASE_URL
+
+      - name: Reproduce upload actor cleanup RED then verify additive GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-upload-actor-red.sql --database-url-env LOCAL_DATABASE_URL > upload-actor-red.log 2>&1; then
+            cat upload-actor-red.log
+            echo "Expected upload actor RED before additive migration" >&2
+            exit 1
+          fi
+          cat upload-actor-red.log
+          grep -q 'not ok 1 - pending upload cleanup survives actor removal' upload-actor-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004094408_branch_53_upload_actor_cleanup_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004094408_branch_53_upload_actor_cleanup_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-upload-actor-red.sql --database-url-env LOCAL_DATABASE_URL
+
+      - name: Apply upload race guard twice
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004095304_branch_53_upload_race_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004095304_branch_53_upload_race_followup.sql
+
+      - name: Reproduce direct plan mutation ACL RED and verify additive GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-table-mutations-red.sql --database-url-env LOCAL_DATABASE_URL > table-mutations-red.log 2>&1; then
+            echo "Expected browser mutation ACL RED before additive migration" >&2
+            exit 1
+          fi
+          cat table-mutations-red.log
+          for assertion in '1 - browser table INSERT denied' '2 - browser table UPDATE denied' '3 - browser assignment INSERT denied' '4 - browser assignment UPDATE denied' '5 - browser assignment DELETE denied'; do
+            grep -q "not ok $assertion" table-mutations-red.log
+          done
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004183049_branch_53_table_mutation_acl_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004183049_branch_53_table_mutation_acl_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-table-mutations-red.sql --database-url-env LOCAL_DATABASE_URL
+
+      - name: Reproduce late upload RED and verify additive GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-late-upload-red.sql --database-url-env LOCAL_DATABASE_URL > late-upload-red.log 2>&1; then
+            echo "Expected late upload RED before additive migration" >&2
+            exit 1
+          fi
+          cat late-upload-red.log
+          grep -q 'not ok 1 - late expired upload denied' late-upload-red.log
+          grep -q 'not ok 2 - late released upload denied' late-upload-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004184418_branch_53_late_upload_guard_followup.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261004184418_branch_53_late_upload_guard_followup.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-late-upload-red.sql --database-url-env LOCAL_DATABASE_URL
+          bash scripts/test-branch53-late-upload.sh "$LOCAL_DATABASE_URL"
+
+      - name: Verify Branch 53 concurrency and rejected-RC regressions
+        run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
+
+      - name: Red-team Branch 53 locking and idempotency
+        run: ./scripts/test-branch53-red-team.sh "$LOCAL_DATABASE_URL"
+
+      - name: Verify Branch 53 targeted delete remediation
+        run: ./scripts/test-branch53-delete-remediation.sh "$LOCAL_DATABASE_URL"
+
       - name: Verify pgTAP runner positive and negative contracts
         run: |
           set -Eeuo pipefail
@@ -357,4 +517,28 @@ jobs:
         if: always()
         run: |
           cd .supabase-ci
+          supabase stop --no-backup
+
+  seating-suspension:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.116.0
+      - name: Initialize separate isolated database
+        run: |
+          mkdir .seating-ci
+          cd .seating-ci
+          supabase init
+          supabase start
+      - name: Verify suspension across all twelve migrations
+        run: bash scripts/rollout/test-branch53-seating-suspension.sh postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      - name: Stop isolated database
+        if: always()
+        run: |
+          cd .seating-ci
           supabase stop --no-backup

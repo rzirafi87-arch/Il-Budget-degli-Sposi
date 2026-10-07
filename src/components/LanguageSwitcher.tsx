@@ -1,8 +1,7 @@
 "use client";
 
 import { visibleLanguages } from "@/i18n/languageCapabilities";
-import { useLocale as useLocalePreferences } from "@/providers/LocaleProvider";
-import type { Locale } from "@/lib/i18n";
+import { localizedHref, persistLocalePreference, pushLocalizedRoute } from "@/i18n/runtimeRouting";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -10,17 +9,13 @@ import { useMemo } from "react";
 export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
-  const { setLocale } = useLocalePreferences();
   const t = useTranslations("languageSwitcher");
   const pathSegments = useMemo(() => pathname ? pathname.split("/").filter(Boolean) : [], [pathname]);
   const currentLocale = visibleLanguages.some((language) => language.locale === pathSegments[0]) ? pathSegments[0] : "it";
 
   const changeLang = (locale: string) => {
-    const segments = [...pathSegments];
-    if (segments.length === 0 || !visibleLanguages.some((language) => language.locale === segments[0])) segments.unshift(locale);
-    else segments[0] = locale;
-    setLocale(locale as Locale);
-    router.push(`/${segments.join("/")}` || `/${locale}`);
+    persistLocalePreference(locale);
+    pushLocalizedRoute(router, pathname || "/", locale as Parameters<typeof localizedHref>[1], window.location.search, window.location.hash);
   };
 
   return (
