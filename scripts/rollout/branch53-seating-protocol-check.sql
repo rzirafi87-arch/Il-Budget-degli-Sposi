@@ -20,7 +20,7 @@ END$body$
   IF n NOT IN (0,2) OR EXISTS (
     SELECT 1 FROM pg_trigger WHERE tgname='branch53_rollout_seating_freeze' AND NOT tgisinternal
       AND (tgrelid NOT IN ('public.tables'::regclass,'public.table_assignments'::regclass)
-        OR tgfoid IS DISTINCT FROM f OR tgtype<>30 OR tgenabled<>'A'
+        OR tgfoid IS DISTINCT FROM f OR tgtype<>62 OR tgenabled<>'A'
         OR tgnargs<>0 OR tgqual IS NOT NULL
         OR obj_description(oid,'pg_trigger') IS DISTINCT FROM 'branch53-seating-suspension-v1')
   ) OR (f IS NULL AND n<>0) OR (f IS NOT NULL AND n<>2) THEN

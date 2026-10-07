@@ -13,9 +13,9 @@ BEGIN
 END$body$$ddl$;
     COMMENT ON FUNCTION public.branch53_rollout_seating_guard() IS 'branch53-seating-suspension-v1';
     REVOKE ALL ON FUNCTION public.branch53_rollout_seating_guard() FROM PUBLIC, anon, authenticated, service_role;
-    CREATE TRIGGER branch53_rollout_seating_freeze BEFORE INSERT OR UPDATE OR DELETE
+    CREATE TRIGGER branch53_rollout_seating_freeze BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE
       ON public.tables FOR EACH STATEMENT EXECUTE FUNCTION public.branch53_rollout_seating_guard();
-    CREATE TRIGGER branch53_rollout_seating_freeze BEFORE INSERT OR UPDATE OR DELETE
+    CREATE TRIGGER branch53_rollout_seating_freeze BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE
       ON public.table_assignments FOR EACH STATEMENT EXECUTE FUNCTION public.branch53_rollout_seating_guard();
     ALTER TABLE public.tables ENABLE ALWAYS TRIGGER branch53_rollout_seating_freeze;
     ALTER TABLE public.table_assignments ENABLE ALWAYS TRIGGER branch53_rollout_seating_freeze;

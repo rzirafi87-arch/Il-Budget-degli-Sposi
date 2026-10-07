@@ -10,12 +10,12 @@ Do not use `psql --single-transaction`: the scripts manage their own transaction
 
 The two ordinary persistent triggers are temporary rollout objects, not PostgreSQL
 TEMP objects: they survive disconnect, process failure and session termination.
-They reject every INSERT/UPDATE/DELETE statement, including zero-row statements,
+They reject every INSERT/UPDATE/DELETE/TRUNCATE statement, including zero-row statements,
 service-role DML and SECURITY DEFINER RPCs, with SQLSTATE P0001 and message
 `BRANCH53_SEATING_WRITES_SUSPENDED`. SELECT remains available. ENABLE ALWAYS
 also covers replica-mode sessions. Administrative DDL can disable triggers and is
 outside the application threat model; never disable these triggers during rollout.
-TRUNCATE is not part of the application contract and is never permitted in rollout.
+TRUNCATE is blocked as well. Its runtime probe is isolated-only; Production verifiers inspect exact trigger event coverage without executing destructive probes.
 
 Before activation, complete immutable-source, target, backup and recovery gates.
 Record the previous deployment, SHA, migration history and data/storage checkpoint.
@@ -42,7 +42,13 @@ Keep freeze active until an explicit continue/cancel decision. Export violating 
 For cancellation, run the controlled resume commands in the recovery section.
 If preflight passes, apply only the twelve certified migrations in the approved
 rollout procedure, checking success and recorded migration history after each.
-Do not modify migration files or introduce a thirteenth migration.
+Do not modify migration files or introduce a thirteenth migration. Before applying any migration, verify the ordered twelve-file certified manifest:
+
+```bash
+sha256sum --strict -c scripts/rollout/branch53-certified-migrations.sha256
+```
+
+All twelve filenames and SHA-256 digests are pinned to the incoming certified HEAD `067695f5504c95e4abdb4a7b9359a7d4a881dbbf`. Apply in manifest order; mismatch is STOP.
 
 The isolated `seating-suspension` Database Rebuild job proves the exact chain:
 baseline, RED writable state, suspend twice, verify with administrator/service/

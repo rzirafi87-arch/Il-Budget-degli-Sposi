@@ -3,6 +3,10 @@ set -Eeuo pipefail
 # DESTRUCTIVE isolated rebuild. Refuse non-loopback targets; never source .env.
 db="${1:?isolated loopback DATABASE_URL required}"
 [[ "$db" =~ @127\.0\.0\.1:[0-9]+/ ]] || { echo 'ISOLATED_LOOPBACK_REQUIRED' >&2; exit 1; }
+manifest=scripts/rollout/branch53-certified-migrations.sha256
+sha256sum --strict -c "$manifest"
+mapfile -t certified < <(awk '{print $2}' "$manifest")
+test "${#certified[@]}" -eq 12
 p=(psql "$db" --no-psqlrc -v ON_ERROR_STOP=1)
 apply() { "${p[@]}" -f "$1"; }
 apply supabase/baseline/production_pre_branch_25.sql
@@ -12,6 +16,9 @@ for m in "${migrations[@]}"; do
   apply "supabase/migrations/$m"
 done
 apply scripts/fixtures/branch53-seating-writes-available.sql
+if apply scripts/fixtures/branch53-seating-truncate-blocked.sql; then
+  echo 'Expected TRUNCATE RED before suspension' >&2; exit 1
+fi
 if apply scripts/rollout/branch53-verify-seating-suspended.sql; then
   echo 'Expected initial RED without suspension' >&2; exit 1
 fi
@@ -30,6 +37,7 @@ apply scripts/rollout/branch53-verify-seating-resumed.sql
 apply scripts/rollout/branch53-suspend-seating-writes.sql
 apply scripts/rollout/branch53-suspend-seating-writes.sql
 apply scripts/rollout/branch53-verify-seating-suspended.sql
+apply scripts/fixtures/branch53-seating-truncate-blocked.sql
 # A disconnected client must leave the committed freeze active. Every apply is
 # a fresh connection. Corrupt state must be rejected without removing objects.
 "${p[@]}" -c 'ALTER TABLE public.tables DISABLE TRIGGER branch53_rollout_seating_freeze'
@@ -42,14 +50,14 @@ apply scripts/rollout/branch53-verify-seating-suspended.sql
 "${p[@]}" -c 'SET ROLE authenticated' -f scripts/rollout/branch53-verify-seating-suspended.sql
 apply scripts/preflight-branch53-seat-integrity.sql
 n=0
-for m in "${migrations[@]}"; do
-  [[ "$m" == *branch_53* ]] || continue
-  apply "supabase/migrations/$m"
+for m in "${certified[@]}"; do
+  apply "$m"
   apply scripts/rollout/branch53-verify-seating-suspended.sql
   n=$((n+1))
 done
 test "$n" -eq 12
 apply scripts/fixtures/branch53-seating-rpc-freeze.sql
+apply scripts/fixtures/branch53-seating-truncate-blocked.sql
 "${p[@]}" -c 'SET ROLE service_role' -f scripts/rollout/branch53-verify-seating-suspended.sql
 apply scripts/rollout/branch53-resume-seating-writes.sql
 apply scripts/rollout/branch53-resume-seating-writes.sql

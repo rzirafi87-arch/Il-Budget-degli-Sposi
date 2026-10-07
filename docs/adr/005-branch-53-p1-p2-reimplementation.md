@@ -341,7 +341,7 @@ The additive `20261004092439_branch_53_document_lifecycle_followup.sql` requires
 ## Production seating write suspension protocol
 
 The previously required seating freeze now has dedicated operational scripts in
-`scripts/rollout/`. Statement-level BEFORE INSERT/UPDATE/DELETE triggers on
+`scripts/rollout/`. Statement-level BEFORE INSERT/UPDATE/DELETE/TRUNCATE triggers on
 `public.tables` and `public.table_assignments` reject all application roles and
 SECURITY DEFINER mutation paths with `BRANCH53_SEATING_WRITES_SUSPENDED`.
 Activation waits for existing writers using ACCESS EXCLUSIVE locks with finite
