@@ -30,8 +30,12 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     for (const width of [360, 375, 390, 412, 430]) {
       await page.setViewportSize({ width, height: 844 });
       for (const route of ["onboarding", "dashboard", "budget", "invitati", "documenti"]) {
+        const endpoint = ({ dashboard: "/api/event/resolve", budget: "/api/my/expenses", invitati: "/api/my/guests", documenti: "/api/my/documents" } as Record<string, string>)[route];
+        const loaded = endpoint ? page.waitForResponse(response => response.request().method() === "GET" && new URL(response.url()).pathname === endpoint) : null;
         await page.goto(`/it/${route}`);
-        await expect(page.locator("main")).toBeVisible();
+        if (loaded) expect((await loaded).ok(), `${route} data at ${width}px`).toBe(true);
+        await expect(page.locator("main").first()).toBeVisible();
+        if (route === "dashboard") await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "3");
         await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
         await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
       }
