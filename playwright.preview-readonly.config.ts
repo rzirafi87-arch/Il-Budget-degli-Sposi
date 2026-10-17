@@ -29,7 +29,7 @@ export default defineConfig({
   projects: [
     ...locales.flatMap((locale) => mobileWidths.map((width) => ({
       name: `${locale}-${width}`,
-      testMatch: /language-rollout\.spec\.ts/,
+      testMatch: /language-rollout\.spec\.ts|branch54-signup\.spec\.ts/,
       use: { locale, viewport: { width, height: 844 } },
     }))),
     ...locales.flatMap((locale) => runtimeViewports.map((viewport) => ({

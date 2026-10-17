@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { AppButtonLink, buttonClasses } from "@/components/ui/AppButton";
 import { Inbox, Lightbulb, WalletCards } from "lucide-react";
 import { ExpenseForm } from "@/components/expenses/ExpenseForm";
+import { errorReference } from "@/lib/errorReference";
 
 const supabase = getBrowserClient();
 
@@ -35,6 +36,7 @@ type Row = {
 export default function BudgetPage() {
   const country = getUserCountrySafe();
   const t = useTranslations();
+  const recoveryT = useTranslations("branch54");
   const locale = useLocale();
   const userEventType = typeof window !== "undefined" ? (localStorage.getItem("eventType") || "wedding") : "wedding";
   const isSingleEvent = userEventType === "baptism" || userEventType === "graduation";
@@ -44,9 +46,12 @@ export default function BudgetPage() {
   const [plannedItems, setPlannedItems] = useState<{ name: string; amount: number }[]>([]);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [expenseRefresh, setExpenseRefresh] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+      setLoadError(null);
       try {
         const { data } = await supabase.auth.getSession();
         const jwt = data.session?.access_token;
@@ -59,6 +64,8 @@ export default function BudgetPage() {
           fetch("/api/my/expenses", { headers }),
           fetch(`/api/budget-items?country=${encodeURIComponent(country)}`, { headers }),
         ]);
+
+        if (!expensesRes.ok || !plannedRes.ok) throw new Error("BUDGET_READ_FAILED");
 
         const expensesData = await expensesRes.json();
         type ExpenseData = { status?: string; category?: string; subcategory?: string; supplier?: string; savedSupplierId?: string | null; spendType?: string; amount?: number; committed?: number; paid?: number; fromDashboard?: boolean };
@@ -103,9 +110,7 @@ export default function BudgetPage() {
           : [];
         setPlannedItems(planned);
       } catch {
-        setRows([]);
-        setTotals({ total: 0, common: 0, bride: 0, groom: 0 });
-        setPlannedItems([]);
+        setLoadError(errorReference());
       } finally {
         setLoading(false);
       }
@@ -128,6 +133,8 @@ export default function BudgetPage() {
     const keys = Array.from(new Set([...planMap.keys(), ...actualMap.keys()])).sort((a,b)=>a.localeCompare(b,userLang));
     return keys.map((k) => ({ key: k, planned: planMap.get(k) || 0, actual: actualMap.get(k) || 0 }));
   }, [plannedItems, rows, t]);
+
+  if (loadError) return <section className="space-y-4 p-4"><h1 className="text-2xl font-semibold">{t("budget")}</h1><p role="alert">{recoveryT("loadError")}</p><p className="break-all text-sm">{recoveryT("reference", { id: loadError })}</p><button className={buttonClasses()} onClick={() => setExpenseRefresh(value => value + 1)}>{recoveryT("retry")}</button></section>;
 
   return (
     <section>

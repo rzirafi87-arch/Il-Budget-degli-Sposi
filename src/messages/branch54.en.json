@@ -1,0 +1,17 @@
+{
+  "branch54": {
+    "loading": "Loading your progress…",
+    "loadError": "We could not load your data. Please try again shortly.",
+    "retry": "Try again",
+    "reference": "Error reference: {id}",
+    "eyebrow": "Progressive setup",
+    "title": "Your event: {completed} of {total} steps",
+    "progress": "{completed} of {total} steps complete",
+    "budget": "Set your budget",
+    "firstValue": "Record your first expense or save a supplier",
+    "guests": "Add your first guests",
+    "suppliers": "Confirm a supplier",
+    "email": "Email",
+    "emailSent": "If the address is valid, you will receive an email with instructions."
+  }
+}

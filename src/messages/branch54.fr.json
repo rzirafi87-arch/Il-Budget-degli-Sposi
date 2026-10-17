@@ -1,0 +1,17 @@
+{
+  "branch54": {
+    "loading": "Chargement de votre progression…",
+    "loadError": "Impossible de charger les données. Réessayez dans un instant.",
+    "retry": "Réessayer",
+    "reference": "Référence de l’erreur : {id}",
+    "eyebrow": "Configuration progressive",
+    "title": "Votre événement : {completed} étapes sur {total}",
+    "progress": "{completed} étapes terminées sur {total}",
+    "budget": "Définissez votre budget",
+    "firstValue": "Enregistrez une première dépense ou un prestataire",
+    "guests": "Ajoutez vos premiers invités",
+    "suppliers": "Confirmez un prestataire",
+    "email": "Adresse e-mail",
+    "emailSent": "Si l’adresse est valide, vous recevrez un e-mail avec les instructions."
+  }
+}

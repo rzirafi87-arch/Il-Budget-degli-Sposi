@@ -1,10 +1,12 @@
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { resolveCurrentEvent } from "@/lib/currentEvent";
+import { errorReference } from "@/lib/errorReference";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
+  try {
   const db = getServiceClient();
 
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
@@ -29,37 +31,41 @@ export async function GET(req: NextRequest) {
     .eq("id", resolution.currentEvent.eventId)
     .maybeSingle();
 
-  if (evErr || !ev) {
-    return NextResponse.json({ event: null }, { status: 200 });
-  }
+  if (evErr || !ev) throw new Error("EVENT_READ_FAILED");
 
   // Prova ad arricchire con dati carta nozze (data e nomi)
-  const { data: card } = await db
+  const { data: card, error: cardError } = await db
     .from("wedding_cards")
     .select("bride_name, groom_name, wedding_date")
     .eq("event_id", ev.id)
     .maybeSingle();
 
   // Calcola spese totali dall'evento
-  const { data: expenses } = await db
+  const { data: expenses, error: expenseError } = await db
     .from("expenses")
-    .select("amount")
+    .select("amount,status")
     .eq("event_id", ev.id);
 
   const totalSpent = (expenses || []).reduce((sum, exp) => sum + (exp.amount || 0), 0);
 
   // A supplier setup step is complete only after an explicit event-private
   // selection. Free-text expense data must not imply a planning decision.
-  const { count: selectedSupplierCount } = await db
+  const { count: selectedSupplierCount, error: selectedError } = await db
     .from("saved_suppliers")
     .select("*", { count: "exact", head: true })
     .eq("event_id", ev.id)
     .eq("status", "SELECTED");
 
-  const { count: guestCount } = await db
+  const { count: guestCount, error: guestError } = await db
     .from("guests")
     .select("*", { count: "exact", head: true })
     .eq("event_id", ev.id);
+
+  const [{ count: savedCount, error: savedError }, { count: budgetCount, error: budgetError }] = await Promise.all([
+    db.from("saved_suppliers").select("*", { count: "exact", head: true }).eq("event_id", ev.id).in("status", ["SAVED", "CONTACTED", "QUOTE_REQUESTED", "QUOTE_RECEIVED", "SHORTLISTED", "SELECTED"]),
+    db.from("budget_items").select("*", { count: "exact", head: true }).eq("event_id", ev.id),
+  ]);
+  if (cardError || expenseError || selectedError || guestError || savedError || budgetError) throw new Error("PROGRESS_READ_FAILED");
 
   const couple_name = card?.bride_name && card?.groom_name
     ? `${card.bride_name} & ${card.groom_name}`
@@ -78,10 +84,18 @@ export async function GET(req: NextRequest) {
       couple_name: couple_name || null,
       has_suppliers: (selectedSupplierCount || 0) > 0,
       has_guests: (guestCount || 0) > 0,
+      has_saved_suppliers: (savedCount || 0) > 0,
+      has_budget_items: (budgetCount || 0) > 0,
+      has_expenses: (expenses || []).some(expense => expense.status !== "rejected"),
     },
     status: "RESOLVED",
     onboarding: deriveOnboardingState(ev),
   });
+  } catch {
+    const reference = errorReference();
+    console.error("EVENT_PROGRESS_READ_FAILED", { reference });
+    return NextResponse.json({ error: "EVENT_PROGRESS_READ_FAILED", reference }, { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
 }
 
 function deriveOnboardingState(event: { language: string | null; country: string | null; event_type: string | null }) {

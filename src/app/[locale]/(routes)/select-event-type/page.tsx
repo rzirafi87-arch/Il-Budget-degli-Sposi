@@ -9,6 +9,7 @@ import {
 } from "@/lib/eventTypeCapabilities";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { getOnboardingStatus } from "@/lib/onboardingClient";
+import { errorReference } from "@/lib/errorReference";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -58,6 +59,7 @@ const STATUS_COPY = {
 
 export default function SelectEventTypePage() {
   const t = useTranslations();
+  const journeyT = useTranslations("branch54");
   const router = useRouter();
   const createAdditional = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("new") === "1";
   const locale = useLocale();
@@ -68,6 +70,8 @@ export default function SelectEventTypePage() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string>("");
   const [accessChecked, setAccessChecked] = useState(false);
+  const [accessError, setAccessError] = useState<string | null>(null);
+  const [accessAttempt, setAccessAttempt] = useState(0);
 
   const country =
     typeof window !== "undefined"
@@ -95,11 +99,11 @@ export default function SelectEventTypePage() {
         }
         setAccessChecked(true);
       })
-      .catch(() => router.replace(`/${locale}/auth`));
+      .catch(() => { if (active) setAccessError(errorReference()); });
     return () => {
       active = false;
     };
-  }, [createAdditional, locale, router]);
+  }, [createAdditional, locale, router, accessAttempt]);
 
   useEffect(() => {
     if (!country) return;
@@ -177,12 +181,13 @@ export default function SelectEventTypePage() {
       }
 
       router.replace(`/${locale}/dashboard`);
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : statusCopy.genericError);
+    } catch {
+      setError(`${journeyT("loadError")} ${journeyT("reference", { id: errorReference() })}`);
       setSaving(false);
     }
   }
 
+  if (accessError) return <main className="mx-auto max-w-lg space-y-4 p-4"><p role="alert">{journeyT("loadError")}</p><p className="break-all text-sm">{journeyT("reference", { id: accessError })}</p><button className="app-button app-button--primary app-button--md" onClick={() => { setAccessError(null); setAccessAttempt(value => value + 1); }}>{journeyT("retry")}</button></main>;
   if (!accessChecked) return <LoadingState label={t("milestone9.setup.checkingConfiguration")} cards={2} />;
 
   return (

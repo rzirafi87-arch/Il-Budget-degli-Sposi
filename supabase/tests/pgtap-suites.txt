@@ -20,3 +20,4 @@ supabase/tests/branch_53_upload_races.sql
 supabase/tests/branch_53_table_mutation_acl.sql
 supabase/tests/branch_53_late_upload_guard.sql
 supabase/tests/branch_53_document_download.sql
+supabase/tests/branch_54_activation.sql

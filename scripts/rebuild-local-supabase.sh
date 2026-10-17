@@ -52,7 +52,8 @@ for migration in \
   20261004095304_branch_53_upload_race_followup.sql \
   20261004183049_branch_53_table_mutation_acl_followup.sql \
   20261004184418_branch_53_late_upload_guard_followup.sql \
-  20261017101208_branch_53_document_download_hardening.sql
+  20261017101208_branch_53_document_download_hardening.sql \
+  20261017132156_branch_54_first_value_activation.sql
 do
   if [[ "$migration" == "20260922210136_branch_53_transactional_tables.sql" ]]; then
     apply scripts/preflight-branch53-seat-integrity.sql
