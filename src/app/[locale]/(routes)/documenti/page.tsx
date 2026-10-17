@@ -155,9 +155,18 @@ export default function DocumentiPage() {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
-      const json = await res.json();
-      if (!res.ok || !json.url) throw new Error(json.error || "EVENT_DOCUMENT_DOWNLOAD_FAILED");
-      window.location.assign(json.url);
+      if (!res.ok) throw new Error("EVENT_DOCUMENT_DOWNLOAD_FAILED");
+      const url = URL.createObjectURL(await res.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = documents.find((item) => item.id === id)?.name || "document";
+      document.body.appendChild(link);
+      try {
+        link.click();
+      } finally {
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
     } catch {
       setError(t("operationError"));
     }

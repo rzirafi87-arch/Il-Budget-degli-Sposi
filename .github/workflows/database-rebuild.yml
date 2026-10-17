@@ -394,6 +394,19 @@ jobs:
           node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-late-upload-red.sql --database-url-env LOCAL_DATABASE_URL
           bash scripts/test-branch53-late-upload.sh "$LOCAL_DATABASE_URL"
 
+      - name: Reproduce document direct SELECT RED and verify migration 13 GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-download-red.sql --database-url-env LOCAL_DATABASE_URL > document-download-red.log 2>&1; then
+            echo "Expected direct authenticated document read RED before migration 13" >&2
+            exit 1
+          fi
+          cat document-download-red.log
+          grep -q 'not ok 1 - active direct Storage SELECT denied' document-download-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017101208_branch_53_document_download_hardening.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017101208_branch_53_document_download_hardening.sql
+          node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-download-red.sql --database-url-env LOCAL_DATABASE_URL
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 
@@ -535,7 +548,7 @@ jobs:
           cd .seating-ci
           supabase init
           supabase start
-      - name: Verify suspension across all twelve migrations
+      - name: Verify suspension across all thirteen migrations (isolated historical install)
         run: bash scripts/rollout/test-branch53-seating-suspension.sh postgresql://postgres:postgres@127.0.0.1:54322/postgres
       - name: Stop isolated database
         if: always()

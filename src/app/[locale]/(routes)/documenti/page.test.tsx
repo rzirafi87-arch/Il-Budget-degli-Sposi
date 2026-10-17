@@ -7,6 +7,23 @@ jest.mock("@/lib/supabaseBrowser", () => ({ getBrowserClient: () => ({ auth: { g
 const doc = { id: "doc", name: "pending.pdf", category: "generic", mimeType: "application/pdf", fileSize: 1, uploadedAt: "2026-10-04" };
 describe("retryable document deletion", () => {
   beforeEach(() => { window.confirm = jest.fn(() => true); });
+  it("downloads response bytes using a temporary local URL and revokes it", async () => {
+    const blob = new Blob(["private bytes"]);
+    const json = jest.fn();
+    global.fetch = jest.fn().mockResolvedValueOnce({ ok: true, json: async () => ({ documents: [doc] }) })
+      .mockResolvedValueOnce({ ok: true, blob: async () => blob, json });
+    URL.createObjectURL = jest.fn(() => "blob:local-document");
+    URL.revokeObjectURL = jest.fn();
+    const click = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    render(<Page />);
+    await screen.findByText(doc.name);
+    fireEvent.click(screen.getByRole("button", { name: "downloadNamed" }));
+    await waitFor(() => expect(click).toHaveBeenCalled());
+    expect(URL.createObjectURL).toHaveBeenCalledWith(blob);
+    expect(json).not.toHaveBeenCalled();
+    await waitFor(() => expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:local-document"), { timeout: 2000 });
+    click.mockRestore();
+  });
   it("retains a retry action after a transient deletion failure", async () => {
     const fetchMock = jest.fn().mockResolvedValueOnce({ ok: true, json: async () => ({ documents: [doc] }) })
       .mockResolvedValueOnce({ ok: false, json: async () => ({ deletionPending: true }) })

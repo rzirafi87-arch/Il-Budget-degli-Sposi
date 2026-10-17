@@ -152,9 +152,15 @@ test("[B53][persistence-mobile] documents, gifts and tables persist for owner an
     await expect(page.getByText(documentName, { exact: true })).toBeVisible();
     await page.reload();
     await expect(page.getByText(documentName, { exact: true })).toBeVisible();
-    const download = await browserApi<{ url: string }>(page, `/api/my/documents/${uploaded.document.id}/download`);
-    expect(download.status).toBe(200);
-    expect((await page.request.get(download.body.url)).status()).toBe(200);
+    const fileResponse = page.waitForResponse(response => new URL(response.url()).pathname === `/api/my/documents/${uploaded.document.id}/download`);
+    const fileDownload = page.waitForEvent("download");
+    await page.getByRole("button", { name: `Scarica ${documentName}` }).click();
+    const download = await fileResponse;
+    expect(download.status()).toBe(200);
+    expect(download.headers()["cache-control"]).toBe("private, no-store, max-age=0");
+    expect(download.headers()["content-disposition"]).toContain("attachment;");
+    expect((await download.body()).toString()).toContain("%PDF-1.4");
+    expect((await fileDownload).suggestedFilename()).toBe(documentName);
     page.once("dialog", dialog => dialog.accept());
     const documentDelete = page.waitForResponse(response => response.request().method() === "DELETE" && new URL(response.url()).pathname === `/api/my/documents/${uploaded.document.id}`);
     await page.getByRole("button", { name: `Elimina ${documentName}` }).click();

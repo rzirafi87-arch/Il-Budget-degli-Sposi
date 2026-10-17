@@ -6,7 +6,7 @@ db="${1:?isolated loopback DATABASE_URL required}"
 manifest=scripts/rollout/branch53-certified-migrations.sha256
 sha256sum --strict -c "$manifest"
 mapfile -t certified < <(awk '{print $2}' "$manifest")
-test "${#certified[@]}" -eq 12
+test "${#certified[@]}" -eq 13
 p=(psql "$db" --no-psqlrc -v ON_ERROR_STOP=1)
 apply() { "${p[@]}" -f "$1"; }
 apply supabase/baseline/production_pre_branch_25.sql
@@ -55,7 +55,7 @@ for m in "${certified[@]}"; do
   apply scripts/rollout/branch53-verify-seating-suspended.sql
   n=$((n+1))
 done
-test "$n" -eq 12
+test "$n" -eq 13
 apply scripts/fixtures/branch53-seating-rpc-freeze.sql
 apply scripts/fixtures/branch53-seating-truncate-blocked.sql
 "${p[@]}" -c 'SET ROLE service_role' -f scripts/rollout/branch53-verify-seating-suspended.sql
@@ -74,4 +74,4 @@ apply scripts/rollout/branch53-resume-seating-writes.sql
 "${p[@]}" -Atc "$catalog" > "$after"
 diff -u "$before" "$after"
 bash scripts/test-branch53-concurrency.sh "$db"
-echo 'BASELINE -> SUSPEND -> PREFLIGHT -> 12 MIGRATIONS -> RESUME = PASS'
+echo 'BASELINE -> SUSPEND -> PREFLIGHT -> 13 MIGRATIONS -> RESUME = PASS'

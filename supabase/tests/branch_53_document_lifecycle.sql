@@ -15,7 +15,7 @@ values ('53480000-0000-4000-8000-000000000010','53480000-0000-4000-8000-00000000
 insert into storage.objects(bucket_id,name) values ('event-documents','53480000-0000-4000-8000-000000000010/doc.pdf');
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"53480000-0000-4000-8000-000000000001","role":"authenticated"}',true);
-select is((select count(*) from storage.objects where name='53480000-0000-4000-8000-000000000010/doc.pdf'),1::bigint,'active document remains readable');
+select is((select count(*) from storage.objects where name='53480000-0000-4000-8000-000000000010/doc.pdf'),0::bigint,'active document direct read denied');
 set local role postgres;
 update public.event_documents set deletion_state='pending_storage' where event_id='53480000-0000-4000-8000-000000000010';
 set local role authenticated;

@@ -54,8 +54,8 @@ select is(
 );
 select is(
   (select count(*)::int from pg_policies where schemaname = 'storage' and tablename = 'objects' and policyname like 'event_documents_storage_%'),
-  1,
-  'storage exposes only its event-scoped select policy'
+  0,
+  'storage has no browser document policy'
 );
 select is(
   (select count(*)::int from pg_policies
@@ -63,8 +63,8 @@ select is(
      and policyname like 'event_documents_storage_%'
      and coalesce(qual, with_check, '') like '%can_access_event%'
      and coalesce(qual, with_check, '') like '%foldername%'),
-  1,
-  'the document storage read policy derives access from the event path prefix'
+  0,
+  'no document Storage SELECT policy remains'
 );
 
 insert into auth.users(id,instance_id,aud,role,email,encrypted_password,email_confirmed_at,created_at,updated_at) values

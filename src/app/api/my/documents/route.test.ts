@@ -164,7 +164,7 @@ describe("/api/my/documents contracts", () => {
     expect(mockRpc).toHaveBeenCalledWith("reserve_event_document_upload", expect.objectContaining({
       p_event_id: eventId, p_actor_id: userId, p_idempotency_key: idempotencyKey, p_file_size: 3,
     }));
-    expect(mockUpload).toHaveBeenCalledWith(objectPath, expect.any(Uint8Array), expect.objectContaining({ upsert: false }));
+    expect(mockUpload).toHaveBeenCalledWith(objectPath, expect.any(Uint8Array), expect.objectContaining({ upsert: false, cacheControl: "0" }));
     expect(mockRpc).toHaveBeenCalledWith("finalize_event_document_upload", expect.objectContaining({
       p_reservation_id: reservationId, p_object_path: objectPath,
     }));

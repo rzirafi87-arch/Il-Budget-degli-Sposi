@@ -25,7 +25,7 @@ const report = {
   refs: {
     oldApp: "7aaf48c0736fa50187864145f1d7d41fc1265014",
     newSchema: process.env.NEW_SCHEMA_REF,
-    lastMigration: "20261004184418_branch_53_late_upload_guard_followup.sql",
+    lastMigration: "20261017101208_branch_53_document_download_hardening.sql",
   },
   runId: process.env.GITHUB_RUN_ID,
   gates: {},
@@ -418,13 +418,15 @@ try {
   assert.ifError(storageMetadata.error);
   for (const allowed of [owner, partner, legacy]) {
     const download = await clientFor(allowed.token).storage.from("event-documents").download(storagePath);
-    assert.ifError(download.error);
+    assert.ok(download.error, "active direct authenticated Storage download must be denied");
+    const listing = await clientFor(allowed.token).storage.from("event-documents").list(eventId);
+    assert.ok(listing.error || listing.data.length === 0, "browser Storage object listing must be denied");
   }
   for (const denied of [outsider, left, revoked, otherOwner]) {
     const download = await clientFor(denied.token).storage.from("event-documents").download(storagePath);
     assert.ok(download.error);
   }
-  pass("storage-service", "real Storage upload plus owner/partner/legacy reads and outsider/left/revoked/cross-event denies confirmed");
+  pass("storage-service", "real Storage upload; active direct reads denied for owner/partner/legacy/outsider/left/revoked/cross-event; old app uses local blob documents");
   const tombstone = await admin.from("event_documents").update({ deletion_state: "pending_storage" }).eq("object_path", storagePath);
   assert.ifError(tombstone.error);
   for (const allowed of [owner, partner, legacy]) {

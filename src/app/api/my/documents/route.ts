@@ -233,7 +233,7 @@ export async function POST(req: NextRequest) {
       .upload(reservation.objectPath, bytes, {
         contentType: value.type,
         upsert: false,
-        cacheControl: "3600",
+        cacheControl: "0",
       });
 
     if (uploadError) {

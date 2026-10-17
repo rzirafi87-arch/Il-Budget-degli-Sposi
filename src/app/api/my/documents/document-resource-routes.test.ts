@@ -1,7 +1,9 @@
+/** @jest-environment node */
 const mockRequireEventAccess = jest.fn();
 const mockRequireEventResource = jest.fn();
 const mockRemove = jest.fn();
 const mockCreateSignedUrl = jest.fn();
+const mockDownload = jest.fn();
 const mockFrom = jest.fn();
 const mockRpc = jest.fn();
 
@@ -29,7 +31,7 @@ jest.mock("@/lib/supabaseServer", () => ({
     rpc: (...args: unknown[]) => mockRpc(...args),
     from: (...args: unknown[]) => mockFrom(...args),
     storage: {
-      from: () => ({ remove: mockRemove, createSignedUrl: mockCreateSignedUrl }),
+      from: () => ({ remove: mockRemove, createSignedUrl: mockCreateSignedUrl, download: mockDownload }),
     },
   }),
 }));
@@ -56,6 +58,7 @@ describe("document download and delete contracts", () => {
       deletion_state: "active",
     });
     mockRemove.mockResolvedValue({ error: null });
+    mockDownload.mockResolvedValue({ data: new Blob(["private document"], { type: "application/pdf" }), error: null });
     mockCreateSignedUrl.mockResolvedValue({ data: { signedUrl: "https://signed.invalid/doc" }, error: null });
     mockRpc.mockImplementation(async (name: string) => {
       if (name === "begin_event_document_delete") {
@@ -68,15 +71,31 @@ describe("document download and delete contracts", () => {
     });
   });
 
-  it("returns a signed download URL limited to 60 seconds", async () => {
+  it("serves file bytes with no-store and no signed URL", async () => {
     const response = await DOWNLOAD({} as NextRequest, context);
     expect(response.status).toBe(200);
-    expect(mockCreateSignedUrl).toHaveBeenCalledWith(
-      objectPath,
-      60,
-      { download: "contratto.pdf" },
-    );
-    await expect(response.json()).resolves.toEqual({ url: "https://signed.invalid/doc", expiresIn: 60 });
+    expect(mockDownload).toHaveBeenCalledWith(objectPath);
+    expect(mockCreateSignedUrl).not.toHaveBeenCalled();
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store, max-age=0");
+    expect(response.headers.get("Pragma")).toBe("no-cache");
+    expect(response.headers.get("Content-Type")).toBe("application/pdf");
+    expect(response.headers.get("Content-Disposition")).toContain("attachment;");
+    expect(await response.text()).toBe("private document");
+  });
+
+  it.each(["outsider", "left", "revoked"])("denies %s before Storage", async () => {
+    mockRequireEventAccess.mockRejectedValue({ status: 403, code: "FORBIDDEN" });
+    const response = await DOWNLOAD({} as NextRequest, context);
+    expect(response.status).toBe(403);
+    expect(mockDownload).not.toHaveBeenCalled();
+  });
+
+  it("rejects a deletion committed while fetching bytes", async () => {
+    mockRequireEventResource.mockResolvedValueOnce({ id: documentId, object_path: objectPath, original_name: "doc.pdf", deletion_state: "active" })
+      .mockResolvedValueOnce({ id: documentId, object_path: objectPath, deletion_state: "pending_storage" });
+    const response = await DOWNLOAD({} as NextRequest, context);
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({ error: "DOCUMENT_NOT_FOUND" });
   });
 
   it("hides cross-event or missing resources as 404", async () => {
@@ -84,6 +103,28 @@ describe("document download and delete contracts", () => {
     const response = await DOWNLOAD({} as NextRequest, context);
     expect(response.status).toBe(404);
     expect(mockCreateSignedUrl).not.toHaveBeenCalled();
+    expect(mockDownload).not.toHaveBeenCalled();
+  });
+
+  it.each(["other-event/file.pdf", `${eventId}/../file.pdf`, `${eventId}/a\\file.pdf`])("rejects invalid path %s", async (path) => {
+    mockRequireEventResource.mockResolvedValueOnce({ object_path: path, deletion_state: "active" });
+    expect((await DOWNLOAD({} as NextRequest, context)).status).toBe(500);
+    expect(mockDownload).not.toHaveBeenCalled();
+  });
+
+  it("sanitizes attachment names without exposing Storage internals", async () => {
+    mockRequireEventResource.mockResolvedValueOnce({ object_path: objectPath, deletion_state: "active", original_name: 'contratto"\r\n/x.pdf' });
+    const response = await DOWNLOAD({} as NextRequest, context);
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Disposition")).toContain('filename="contratto____x.pdf"');
+    expect(response.headers.get("Location")).toBeNull();
+    expect(await response.text()).not.toContain("https:");
+  });
+
+  it("denies membership revoked during Storage fetch", async () => {
+    mockRequireEventAccess.mockResolvedValueOnce({ userId: actorId, currentEvent: { eventId } })
+      .mockRejectedValueOnce({ status: 403, code: "FORBIDDEN" });
+    expect((await DOWNLOAD({} as NextRequest, context)).status).toBe(403);
   });
 
   it("secures a tombstone before Storage and finalizes afterward", async () => {

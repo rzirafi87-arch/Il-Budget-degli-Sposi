@@ -356,3 +356,13 @@ post-migration verification, controlled/emergency resume, failure modes and roll
 Resume precedes runtime seating mutation smoke because the intentional freeze
 blocks both old and new application writers. This addition provides tooling only;
 it does not execute or authorize a Production rollout.
+
+## Migration 13: server-only document downloads (2026-10-17)
+
+This decision supersedes the earlier direct Storage SELECT and signed-download contract. A real isolated Production probe reproduced active 200 MISS/HIT, followed immediately by pending_storage 200 HIT, including no-store requests and cacheControl 0 uploads. SQL RLS alone did not revoke a warmed HTTP path. The bucket was verified private and the current policy already checked active metadata.
+
+Old main 7aaf48c uses only React document state and local object URLs; no src reference exists to the persistent document bucket/table/API. Removing the browser SELECT path therefore does not remove an old-app dependency.
+
+The thirteenth additive migration drops only event_documents_storage_select. The first twelve certified migration hashes remain unchanged. Downloads require event access and event-scoped document lookup, active state and a valid event path, then retrieve the bounded 10 MB object with service-role Storage. Access, event identity, state and path are checked again after fetching bytes and before creating the file response. This check is the authorization boundary; bytes already authorized and delivered cannot be recalled. A deletion completed during the Storage fetch is denied. The browser receives attachment bytes with private, no-store, max-age=0 and Pragma no-cache, never a signed URL. Filenames are sanitized and encoded. The frontend downloads a temporary local blob URL and revokes it. Upload cacheControl is 0; security must not rely on CDN expiration.
+
+RED evidence: real Storage HTTP regression failed after recording all four active/pending default/no-store requests as 200; cleanup DB=0 Storage=0 Auth=0. Route regressions failed on signed JSON and concurrent deletion, then passed after implementation (17 tests). Further GREEN/CI/Production evidence must be measured on the remediation HEAD. Migration 13 is not authorized for Production until those gates pass. Do not restart seating freeze, reapply migration 1-12, merge, or deploy before their gates. Any warmed direct URL surviving hardening is STOP.

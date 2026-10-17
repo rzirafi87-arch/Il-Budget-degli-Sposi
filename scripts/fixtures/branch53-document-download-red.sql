@@ -1,0 +1,23 @@
+create extension if not exists pgtap with schema extensions;
+begin;
+set local role postgres;
+set local search_path = extensions, public, pg_catalog;
+select plan(4);
+insert into auth.users(id,email) values ('53130000-0000-4000-8000-000000000001','download-red@example.invalid');
+insert into public.events(id,owner_id,name,event_type) values ('53130000-0000-4000-8000-000000000010','53130000-0000-4000-8000-000000000001','Download RED','wedding');
+insert into public.event_documents(event_id,created_by,original_name,object_path,mime_type,file_size)
+values ('53130000-0000-4000-8000-000000000010','53130000-0000-4000-8000-000000000001','doc.pdf','53130000-0000-4000-8000-000000000010/doc.pdf','application/pdf',1);
+insert into storage.objects(bucket_id,name) values ('event-documents','53130000-0000-4000-8000-000000000010/doc.pdf');
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"53130000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+select is((select count(*) from storage.objects where bucket_id='event-documents'),0::bigint,'active direct Storage SELECT denied');
+set local role postgres;
+update public.event_documents set deletion_state='pending_storage' where event_id='53130000-0000-4000-8000-000000000010';
+set local role authenticated;
+select is((select count(*) from storage.objects where bucket_id='event-documents'),0::bigint,'pending direct Storage SELECT denied');
+set local role service_role;
+select is((select count(*) from storage.objects where name='53130000-0000-4000-8000-000000000010/doc.pdf'),1::bigint,'service role retains server access');
+set local role postgres;
+select is((select public from storage.buckets where id='event-documents'),false,'bucket remains private');
+select * from finish();
+rollback;
