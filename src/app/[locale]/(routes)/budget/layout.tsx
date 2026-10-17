@@ -25,8 +25,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
       {/* Tabs in stile Contabilità */}
       <div className="mb-6 flex flex-wrap gap-2 border-b pb-1" style={{ borderColor: "var(--border-soft)" }}>
         <Link
-          href="/budget"
-          locale={locale}
+          href={`/${locale}/budget`}
           className={`px-4 sm:px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
             !isIdea ? "text-white shadow-soft" : "shadow-soft-sm"
           }`}
@@ -46,8 +45,7 @@ export default function BudgetLayout({ children }: { children: React.ReactNode }
           {t("approved")}
         </Link>
         <Link
-          href="/idea-di-budget"
-          locale={locale}
+          href={`/${locale}/idea-di-budget`}
           className={`px-4 sm:px-6 py-3 font-semibold transition-all rounded-t-xl border focus-ring-sage ${
             isIdea ? "text-white shadow-soft" : "shadow-soft-sm"
           }`}

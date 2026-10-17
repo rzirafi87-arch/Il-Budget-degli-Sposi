@@ -42,6 +42,13 @@ function placeholders(value: unknown): string[] {
   return Array.from(value.matchAll(/\{([\w]+)(?:,[^}]*)?\}/g), (match) => match[1]).sort();
 }
 
+function nestedRuntimeStrings(value: unknown, output: string[] = []): string[] {
+  if (typeof value === "string") output.push(value);
+  else if (Array.isArray(value)) value.forEach(child => nestedRuntimeStrings(child, output));
+  else if (value && typeof value === "object") Object.values(value as Messages).forEach(child => nestedRuntimeStrings(child, output));
+  return output;
+}
+
 function suspiciousItalianResidual(locale: string, key: string, value: unknown, italianValue: unknown) {
   if (locale === "it" || typeof value !== "string" || typeof italianValue !== "string" || value !== italianValue) return false;
   const invariant = new Set(["Budget", "Budget Advisor", "Honeymoon Advisor", "Dashboard", "Timeline", "Location", "Save the Date", "Wedding Planner", "Wedding Bag", "OpenStreetMap", "Wikidata", "SIAE", "DJ", "QR Code", "Email", "URL", "Instagram", "Facebook"]);
@@ -143,5 +150,13 @@ describe("translation coverage policy", () => {
         expect(getLanguageCapability(report.locale)?.selectable).toBe(false);
       }
     }
+  });
+
+  it.each(CANDIDATE_LOCALES.filter(locale => locale !== "it"))("%s landing arrays do not silently reuse Italian runtime copy", (locale) => {
+    const invariant = new Set(["Privacy Policy", "Cookie Policy"]);
+    const italianLanding = new Set(nestedRuntimeStrings(loadMessages("it").landing).filter(value => value.trim().split(/\s+/).length >= 2));
+    const residuals = nestedRuntimeStrings(loadMessages(locale).landing)
+      .filter(value => italianLanding.has(value) && !invariant.has(value));
+    expect(residuals).toEqual([]);
   });
 });

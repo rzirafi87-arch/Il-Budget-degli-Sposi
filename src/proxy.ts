@@ -1,13 +1,14 @@
 import { defaultLocale, getLanguageCapability, isPublicLocale } from "@/i18n/languageCapabilities";
 import { NextRequest, NextResponse } from "next/server";
 
-function continueWithLocale(req: NextRequest, locale: string) {
+function continueWithLocale(req: NextRequest, locale: string, pathname: string) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-app-locale", locale);
+  requestHeaders.set("x-app-pathname", pathname);
   return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const legacyEventApi = /^\/api\/(?:anniversary|babyshower|baptism|bar-mitzvah|birthday|charity-gala|communion|confirmation|corporate|eighteenth|engagement|fifty|gender-reveal|graduation|proposal|quinceanera|retirement)\/seed(?:\/|$)/.test(pathname)
@@ -29,7 +30,7 @@ export function middleware(req: NextRequest) {
 
   const segments = pathname.split("/").filter(Boolean);
   const requestedLocale = segments[0];
-  if (isPublicLocale(requestedLocale)) return continueWithLocale(req, requestedLocale);
+  if (isPublicLocale(requestedLocale)) return continueWithLocale(req, requestedLocale, pathname);
 
   const knownUnavailableLocale = getLanguageCapability(requestedLocale);
   if (knownUnavailableLocale) {

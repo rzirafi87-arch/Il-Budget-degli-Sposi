@@ -999,6 +999,14 @@
       "pageTitle": "Tischordnung",
       "back": "Zurück zu den Gästen",
       "autoAssign": "Automatisch nach Familie zuordnen",
+      "addTable": "Tisch hinzufügen",
+      "tableNumber": "Tischnummer",
+      "tableName": "Tischname",
+      "capacity": "Kapazität",
+      "deleteTable": "Löschen",
+      "confirmDelete": "Diesen Tisch löschen und die zugeordneten Gäste freigeben?",
+      "assignGuest": "Gast zuordnen",
+      "unassign": "Entfernen",
       "noGuests": "Keine Gäste zum Zuordnen verfügbar.",
       "withoutFamily": "Ohne Familie",
       "namedTable": "Tisch {label}",
@@ -1017,6 +1025,7 @@
       "save": "Sitzordnung speichern",
       "errors": {
         "TABLE_SAVE_FAILED": "Die Tische konnten nicht gespeichert werden.",
+        "TABLE_SAVE_CONFLICT": "Der Sitzplan ist ungültig. Bitte Kapazitäten, Plätze und doppelte Gäste prüfen.",
         "TABLE_NETWORK_ERROR": "Netzwerkfehler beim Speichern."
       }
     }

@@ -3,10 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getBearer, requireUser } from "@/lib/apiAuth";
 import { CURRENT_EVENT_COOKIE, listOwnedEvents } from "@/lib/currentEvent";
 import type { Database } from "@/types/database.types";
+import { cleanupEventDocuments } from "@/lib/eventDocumentCleanup";
 
 export const runtime = "nodejs";
 const UUID = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 type DeleteEventBody = { eventId?: unknown; confirmationName?: unknown };
+
+function cleanupPending() {
+  return NextResponse.json({ error: "EVENT_DELETE_CLEANUP_PENDING", retryable: true }, { status: 503 });
+}
 
 export async function DELETE(req: NextRequest) {
   let userId: string;
@@ -55,7 +60,14 @@ export async function DELETE(req: NextRequest) {
       { status: 503 },
     );
 
-  // One SQL DELETE under the caller's JWT: database RLS is the final owner-only guard.
+  try {
+    if (!await cleanupEventDocuments(eventId, userId)) return cleanupPending();
+  } catch {
+    return cleanupPending();
+  }
+
+  // The caller's JWT keeps RLS as the final owner guard; the DB trigger refuses
+  // cascading metadata/ledgers while documents, objects or uploads remain.
   const db = createClient<Database>(url, publicKey, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { headers: { Authorization: `Bearer ${jwt}` } },
@@ -66,6 +78,7 @@ export async function DELETE(req: NextRequest) {
     .eq("id", eventId)
     .select("id")
     .maybeSingle();
+  if (error?.message?.includes("EVENT_DOCUMENT_CLEANUP_REQUIRED")) return cleanupPending();
   if (error)
     return NextResponse.json({ error: "EVENT_DELETE_FAILED" }, { status: 409 });
   if (!deleted)

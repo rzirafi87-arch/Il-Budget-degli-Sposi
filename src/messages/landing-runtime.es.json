@@ -1,0 +1,46 @@
+{
+  "landing": {
+    "hero": {
+      "proofs": [
+        "Funciona en smartphones",
+        "Modifica tus datos en cualquier momento",
+        "No requiere instalación"
+      ]
+    },
+    "features": {
+      "items": [
+        { "title": "Presupuesto", "description": "Mantén bajo control los importes previstos, los gastos y los pagos." },
+        { "title": "Invitados", "description": "Organiza la lista, las confirmaciones y la distribución de las mesas." },
+        { "title": "Proveedores", "description": "Reúne contactos, información y tareas relacionadas con los proveedores." },
+        { "title": "Lugares", "description": "Evalúa y conserva la información sobre los lugares que te interesan." },
+        { "title": "Ceremonia", "description": "Organiza la información útil para la iglesia y la ceremonia." },
+        { "title": "Cronograma", "description": "Sigue los plazos y las tareas durante todo el proceso." },
+        { "title": "Lista de tareas", "description": "Convierte todo lo pendiente en pasos claros y manejables." },
+        { "title": "Documentos", "description": "Mantén organizados los archivos, presupuestos y datos importantes." }
+      ]
+    },
+    "how": {
+      "steps": [
+        { "title": "Crea tu proyecto", "description": "Inicia sesión o regístrate y añade la primera información sobre tu boda." },
+        { "title": "Organiza lo importante", "description": "Configura el presupuesto, los invitados, las tareas, los proveedores y los documentos." },
+        { "title": "Sigue tus avances", "description": "Encuentra todo en el panel y actualiza la información cuando quieras." }
+      ]
+    },
+    "benefits": {
+      "items": [
+        { "title": "Costes más claros", "description": "Compara lo que has planificado con lo que ya has gastado." },
+        { "title": "Organización compartida", "description": "Mantén la información importante en un mismo espacio de trabajo." },
+        { "title": "Un recorrido guiado", "description": "El panel, el cronograma y las listas de tareas te ayudan a no perder de vista los próximos pasos." }
+      ]
+    },
+    "faq": {
+      "items": [
+        { "question": "¿Qué es Il Budget degli Sposi?", "answer": "Es una aplicación web para organizar el presupuesto, los invitados, las tareas, los proveedores y los documentos relacionados con tu boda." },
+        { "question": "¿Tengo que instalar algo?", "answer": "No. Puedes utilizarla directamente desde el navegador en ordenadores, tabletas y smartphones." },
+        { "question": "¿Puedo modificar la información más adelante?", "answer": "Sí. La información del proyecto se puede actualizar durante toda la organización." },
+        { "question": "¿Puedo gestionar el presupuesto y los invitados en el mismo lugar?", "answer": "Sí. El presupuesto, los invitados y las demás áreas disponibles forman parte del mismo espacio de trabajo." },
+        { "question": "¿Cómo se gestionan mis datos?", "answer": "El acceso a las áreas personales requiere autenticación. Consulta la Política de privacidad para conocer los detalles sobre el tratamiento y tus derechos." }
+      ]
+    }
+  }
+}

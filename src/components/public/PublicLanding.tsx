@@ -1,13 +1,13 @@
 import CookiePreferencesButton from "@/components/CookiePreferencesButton";
 import { BRAND_NAME, getSiteUrl } from "@/config/brand";
 import { localeNames, locales, type Locale } from "@/i18n/config";
+import { getIntlLocale } from "@/i18n/localeFormat";
 import {
   ArrowRight, CalendarCheck, Check, ChevronRight, ClipboardCheck, FileText,
   HeartHandshake, Landmark, MapPin, PiggyBank, ShieldCheck, Sparkles,
   Store, Users, WalletCards,
 } from "lucide-react";
 import Link from "next/link";
-import Script from "next/script";
 import { getTranslations } from "next-intl/server";
 import type { ComponentType } from "react";
 import PublicMobileMenu from "./PublicMobileMenu";
@@ -28,13 +28,18 @@ export default async function PublicLanding({ locale }: { locale: Locale }) {
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
     browserRequirements: "Requires JavaScript and a modern web browser",
-    inLanguage: "it-IT",
+    inLanguage: getIntlLocale(locale),
     featureList: [0, 1, 5, 7].map((index) => t(`features.items.${index}.title`)),
   };
 
   return (
     <div className="min-h-screen overflow-x-clip bg-bg text-fg">
-      <Script id="landing-web-application" type="application/ld+json">{JSON.stringify(appSchema)}</Script>
+      <script
+        key={locale}
+        id="landing-web-application"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+      />
       <PublicHeader locale={locale} authHref={authHref} t={t} />
       <main id="contenuto">
         <section className="relative isolate overflow-hidden px-4 pb-20 pt-14 sm:px-6 sm:pb-28 sm:pt-20 lg:px-8">

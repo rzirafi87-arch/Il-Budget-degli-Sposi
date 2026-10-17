@@ -54,7 +54,7 @@ export default function Breadcrumbs() {
       {breadcrumbs.map((crumb, index) => (
         <span key={index} className="flex items-center gap-2 whitespace-nowrap">
           {crumb.href ? (
-            <Link href={crumb.href} locale={locale} className="text-gray-600 hover:text-[#A6B5A0] transition-colors font-medium">
+            <Link href={crumb.href} className="text-gray-600 hover:text-[#A6B5A0] transition-colors font-medium">
               {crumb.label}
             </Link>
           ) : (

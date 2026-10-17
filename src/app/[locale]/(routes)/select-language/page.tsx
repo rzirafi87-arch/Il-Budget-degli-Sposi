@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Globe2 } from "lucide-react";
+import { localizedHref } from "@/i18n/runtimeRouting";
 
 export default function SelectLanguagePage() {
   const t = useTranslations();
@@ -26,7 +27,7 @@ export default function SelectLanguagePage() {
   function handleSelect(code: string) {
     setSelected(code);
     localStorage.setItem("language", code);
-    router.push(`/${locale}/select-country`);
+    router.push(localizedHref(`/${locale}/select-country`, code));
   }
 
   // Fix: set cookie in effect to avoid direct mutation

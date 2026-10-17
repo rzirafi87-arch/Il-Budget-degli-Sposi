@@ -51,7 +51,13 @@
         "quotes": "Angebote",
         "contracts": "Verträge",
         "storage": "Belegter Speicher"
-      }
+      },
+      "unavailable": "Der Dokument-Upload ist vorübergehend nicht verfügbar: Der sichere Speicher wird in Branch 53.1 aktiviert.",
+      "uploadFormatsSecure": "PDF, JPG, PNG • Maximal 10 MB pro Datei • Privates Archiv",
+      "loading": "Dokumente werden geladen…",
+      "operationError": "Der Vorgang ist fehlgeschlagen. Bitte erneut versuchen.",
+      "deletePending": "Das Dokument ist nicht mehr aktiv. Das sichere Löschen wartet auf Abschluss; bitte erneut versuchen.",
+      "retry": "Erneut versuchen"
     }
   }
 }

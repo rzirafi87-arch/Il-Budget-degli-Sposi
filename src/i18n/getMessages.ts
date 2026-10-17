@@ -5,12 +5,12 @@ import fs from "node:fs/promises";
 
 type Messages = Record<string, unknown>;
 
-function mergeDeep(target: Messages, source: Messages): Messages {
+export function mergeMessageFallback(target: Messages, source: Messages): Messages {
   const result: Messages = { ...target };
   for (const [key, value] of Object.entries(source)) {
     if (value && typeof value === "object" && !Array.isArray(value)) {
       const existing = result[key];
-      result[key] = mergeDeep(
+      result[key] = mergeMessageFallback(
         existing && typeof existing === "object" && !Array.isArray(existing) ? (existing as Messages) : {},
         value as Messages,
       );
@@ -26,15 +26,14 @@ async function readJson(filePath: string): Promise<Messages> {
   return JSON.parse(data) as Messages;
 }
 
-export async function getMessages(locale: string): Promise<Messages> {
-  const normalizedLocale = locales.includes(locale as Locale) ? (locale as Locale) : defaultLocale;
+async function loadLocaleMessages(locale: Locale): Promise<Messages> {
   const messagesDir = path.join(process.cwd(), "src", "messages");
   const entries = await fs.readdir(messagesDir);
   const baseFiles: string[] = [];
   for (const entry of entries) {
     if (!entry.endsWith(".json")) continue;
     if (entry.endsWith(".json.bak") || entry.endsWith(".json.backup")) continue;
-    if (entry === `${normalizedLocale}.json` || entry.endsWith(`.${normalizedLocale}.json`)) {
+    if (entry === `${locale}.json` || entry.endsWith(`.${locale}.json`)) {
       baseFiles.push(path.join(messagesDir, entry));
     }
   }
@@ -44,15 +43,20 @@ export async function getMessages(locale: string): Promise<Messages> {
   for (const file of baseFiles) {
     try {
       const data = await readJson(file);
-      messages = mergeDeep(messages, data);
+      messages = mergeMessageFallback(messages, data);
     } catch (error) {
       console.error(`Unable to load messages from ${file}`, error);
     }
   }
 
-  if (Object.keys(messages).length === 0 && normalizedLocale !== defaultLocale) {
-    return getMessages(defaultLocale);
-  }
+  return messages;
+}
 
-  return normalizeMessageSchema(messages);
+export async function getMessages(locale: string): Promise<Messages> {
+  const normalizedLocale = locales.includes(locale as Locale) ? (locale as Locale) : defaultLocale;
+  const fallbackMessages = await loadLocaleMessages(defaultLocale);
+  if (normalizedLocale === defaultLocale) return normalizeMessageSchema(fallbackMessages);
+
+  const localizedMessages = await loadLocaleMessages(normalizedLocale);
+  return normalizeMessageSchema(mergeMessageFallback(fallbackMessages, localizedMessages));
 }

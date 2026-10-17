@@ -16,7 +16,7 @@ jest.mock('next/server', () => {
   return { NextResponse: { next, redirect, json } };
 });
 
-import { middleware } from '../../../middleware';
+import { proxy } from '../../proxy';
 
 // Minimal shape mock per soddisfare il middleware senza dipendere da Next internals
 type MockNextRequest = { method: string; nextUrl: URL & { clone: () => URL }; cookies: { get: (name: string) => { value: string } | undefined } };
@@ -42,7 +42,7 @@ describe('middleware redirects onboarding', () => {
 
   it('redirects to select-language when no cookies', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq('/dashboard') as unknown as any) as MiddlewareResponse; // cast per firma NextRequest
+    const res = proxy(makeReq('/dashboard') as unknown as any) as MiddlewareResponse; // cast per firma NextRequest
     expect(res.status).toBe(307);
     expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
   });
@@ -50,7 +50,7 @@ describe('middleware redirects onboarding', () => {
 
   it('redirects to select-country when language only', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq('/dashboard', { language: 'it' }) as unknown as any) as MiddlewareResponse;
+    const res = proxy(makeReq('/dashboard', { language: 'it' }) as unknown as any) as MiddlewareResponse;
     expect(res.status).toBe(307);
     expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
   });
@@ -58,28 +58,28 @@ describe('middleware redirects onboarding', () => {
 
   it('redirects to select-event-type when language and country only', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq('/dashboard', { language: 'it', country: 'it' }) as unknown as any) as MiddlewareResponse;
+    const res = proxy(makeReq('/dashboard', { language: 'it', country: 'it' }) as unknown as any) as MiddlewareResponse;
     expect(res.status).toBe(307);
     expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
   });
 
   it('redirects to locale dashboard when all cookies present and no locale prefix', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const res = middleware(makeReq('/dashboard', { language: 'it', country: 'it', eventType: 'wedding' }) as unknown as any) as MiddlewareResponse;
+  const res = proxy(makeReq('/dashboard', { language: 'it', country: 'it', eventType: 'wedding' }) as unknown as any) as MiddlewareResponse;
     expect(res.status).toBe(307);
     expect(res.headers.get('location')).toBe('http://localhost/it/dashboard');
   });
 
   it.each(['en', 'es', 'fr', 'de'])('serves the audited locale %s without redirecting', (locale) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq(`/${locale}/dashboard`) as unknown as any) as MiddlewareResponse;
+    const res = proxy(makeReq(`/${locale}/dashboard`) as unknown as any) as MiddlewareResponse;
     expect(res.status).toBe(200);
     expect(res.headers.get('location')).toBeNull();
   });
 
   it('uses a READY English locale cookie', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = middleware(makeReq('/dashboard', { language: 'en' }) as unknown as any) as MiddlewareResponse;
+    const res = proxy(makeReq('/dashboard', { language: 'en' }) as unknown as any) as MiddlewareResponse;
     expect(res.headers.get('location')).toBe('http://localhost/en/dashboard');
   });
 
@@ -89,13 +89,13 @@ describe('middleware redirects onboarding', () => {
   ])('blocks direct legacy event API access for %s', async (pathname) => {
     const req = makeReq(pathname);
     req.method = pathname.includes('/seed/') ? 'POST' : 'GET';
-    const res = middleware(req as never) as MiddlewareResponse & { json: () => Promise<unknown> };
+    const res = proxy(req as never) as MiddlewareResponse & { json: () => Promise<unknown> };
     expect(res.status).toBe(409);
     await expect(res.json()).resolves.toEqual({ error: 'EVENT_TYPE_COMING_SOON' });
   });
 
   it('keeps legacy seed GET read-only', async () => {
-    const res = middleware(makeReq('/api/baptism/seed') as never) as MiddlewareResponse & { json: () => Promise<unknown> };
+    const res = proxy(makeReq('/api/baptism/seed') as never) as MiddlewareResponse & { json: () => Promise<unknown> };
     expect(res.status).toBe(405);
     expect(res.headers.get('allow')).toBe('POST');
     await expect(res.json()).resolves.toEqual({ error: 'METHOD_NOT_ALLOWED' });

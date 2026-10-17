@@ -1,12 +1,11 @@
 "use client";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import { useLocale } from "@/providers/LocaleProvider";
 import { buildLocalizedPath } from "@/lib/localizedPath";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function OnboardingPage() {
-  const { locale } = useLocale();
+  const locale = useLocale();
   const t = useTranslations("milestone9.onboarding");
   return (
     <main className="max-w-2xl mx-auto p-6 space-y-6">

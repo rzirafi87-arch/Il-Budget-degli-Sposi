@@ -33,7 +33,7 @@ export default function DynamicHeader() {
         const res = await fetch("/api/event/resolve", { headers: { Authorization: `Bearer ${jwt}` } });
         const json = await res.json();
         if (json.event) {
-          const coupleName = json.event.couple_name || "Voi due";
+          const coupleName = json.event.couple_name || t("coupleFallback");
           const weddingDate = json.event.wedding_date as string | undefined;
           let daysLeft: number | null = null;
           if (weddingDate) {
@@ -50,7 +50,7 @@ export default function DynamicHeader() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [t]);
 
   if (loading || !weddingInfo?.weddingDate) return null;
 
@@ -65,7 +65,7 @@ export default function DynamicHeader() {
       <div className="mx-auto max-w-7xl px-4 py-2 text-center sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm sm:text-base">
           <span className="inline-flex items-center gap-1.5 font-serif font-bold text-gray-800">
-            {weddingInfo.coupleName} <Heart size={15} fill="currentColor" className="text-[#a66367]" aria-label="insieme" />
+            {weddingInfo.coupleName} <Heart size={15} fill="currentColor" className="text-[#a66367]" aria-label={t("together")} />
           </span>
           <span className="hidden sm:inline text-gray-400" aria-hidden>
             ·

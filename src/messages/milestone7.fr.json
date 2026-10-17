@@ -51,7 +51,13 @@
         "quotes": "Devis",
         "contracts": "Contrats",
         "storage": "Espace utilisé"
-      }
+      },
+      "unavailable": "L’import de documents est temporairement indisponible : le stockage sécurisé sera activé dans le Branch 53.1.",
+      "uploadFormatsSecure": "PDF, JPG, PNG • 10 Mo maximum par fichier • Archives privées",
+      "loading": "Chargement des documents…",
+      "operationError": "L’opération a échoué. Réessayez.",
+      "deletePending": "Le document n’est plus actif. La suppression sécurisée est en attente ; réessayez.",
+      "retry": "Réessayer"
     }
   }
 }

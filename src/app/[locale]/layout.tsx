@@ -8,6 +8,7 @@ import { BRAND_NAME, getSiteUrl } from "@/config/brand";
 import { defaultLocale, locales, type Locale } from "@/i18n/config";
 import { getOpenGraphLocale } from "@/i18n/localeFormat";
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages as getIntlMessages, getTranslations } from "next-intl/server";
 import "../globals.css";
@@ -29,8 +30,15 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
   const locale = resolveLocale(rawLocale);
   const t = await getTranslations({ locale, namespace: "landing.seo" });
   const siteUrl = getSiteUrl();
-  const canonical = `${siteUrl}/${locale}`;
-  const languageAlternates = Object.fromEntries(locales.map((item) => [item, `${siteUrl}/${item}`]));
+  const requestHeaders = await headers();
+  const requestPathname = requestHeaders.get("x-app-pathname") || `/${locale}`;
+  const pathSegments = requestPathname.split("/").filter(Boolean);
+  const localizedSuffix = locales.includes(pathSegments[0] as Locale)
+    ? pathSegments.slice(1)
+    : pathSegments;
+  const suffix = localizedSuffix.length ? `/${localizedSuffix.join("/")}` : "";
+  const canonical = `${siteUrl}/${locale}${suffix}`;
+  const languageAlternates = Object.fromEntries(locales.map((item) => [item, `${siteUrl}/${item}${suffix}`]));
 
   return {
     applicationName: BRAND_NAME,
@@ -64,7 +72,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     },
     alternates: {
       canonical,
-      languages: { ...languageAlternates, "x-default": `${siteUrl}/${defaultLocale}` },
+      languages: { ...languageAlternates, "x-default": `${siteUrl}/${defaultLocale}${suffix}` },
     },
     metadataBase: new URL(siteUrl),
   } satisfies Metadata;

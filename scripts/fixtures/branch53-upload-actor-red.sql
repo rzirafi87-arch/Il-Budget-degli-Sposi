@@ -1,0 +1,12 @@
+create extension if not exists pgtap with schema extensions;
+begin;
+set local role postgres;
+set local search_path = extensions, public, pg_catalog;
+select plan(1);
+insert into auth.users(id,email) values ('53470000-0000-4000-8000-000000000001','upload-owner@example.invalid'),('53470000-0000-4000-8000-000000000002','upload-partner@example.invalid');
+insert into public.events(id,owner_id,event_type) values ('53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000001','wedding');
+insert into private.event_document_upload_reservations(id,event_id,actor_id,idempotency_key,object_path,original_name,mime_type,file_size,category,status,expires_at) values ('53470000-0000-4000-8000-000000000020','53470000-0000-4000-8000-000000000010','53470000-0000-4000-8000-000000000002','53470000-0000-4000-8000-000000000030','53470000-0000-4000-8000-000000000010/pending.pdf','pending.pdf','application/pdf',1,'generic','cleanup_pending',now());
+delete from auth.users where id='53470000-0000-4000-8000-000000000002';
+select is((select count(*) from private.event_document_upload_reservations where id='53470000-0000-4000-8000-000000000020' and status='cleanup_pending'),1::bigint,'pending upload cleanup survives actor removal');
+select * from finish();
+rollback;

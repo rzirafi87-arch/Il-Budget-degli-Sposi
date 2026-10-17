@@ -617,6 +617,14 @@
       "pageTitle": "Disposizione tavoli",
       "back": "Torna agli invitati",
       "autoAssign": "Assegna automaticamente per famiglia",
+      "addTable": "Aggiungi tavolo",
+      "tableNumber": "Numero tavolo",
+      "tableName": "Nome tavolo",
+      "capacity": "Capienza",
+      "deleteTable": "Elimina",
+      "confirmDelete": "Eliminare questo tavolo e liberare gli invitati assegnati?",
+      "assignGuest": "Assegna un invitato",
+      "unassign": "Rimuovi",
       "noGuests": "Nessun invitato disponibile da assegnare.",
       "withoutFamily": "Senza famiglia",
       "namedTable": "Tavolo {label}",
@@ -635,6 +643,7 @@
       "save": "Salva disposizione",
       "errors": {
         "TABLE_SAVE_FAILED": "Impossibile salvare i tavoli.",
+        "TABLE_SAVE_CONFLICT": "La disposizione non è valida: controlla capacità, posti e invitati duplicati.",
         "TABLE_NETWORK_ERROR": "Errore di rete durante il salvataggio."
       }
     }

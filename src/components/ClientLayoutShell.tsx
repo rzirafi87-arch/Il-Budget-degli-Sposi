@@ -79,6 +79,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     if (typeof document === "undefined") return;
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+    document.documentElement.dataset.runtimeLocale = locale;
     try {
       localStorage.setItem("language", locale);
     } catch {}
