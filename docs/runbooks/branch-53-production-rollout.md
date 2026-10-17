@@ -23,7 +23,22 @@ environment. It must deny active and pending reads for both ordinary and no-stor
 HTTP requests, and finish with DB/Storage/Auth residue 0. CDN HIT after tombstoning
 was reproduced on 2026-10-17 even for a new object uploaded with cacheControl 0.
 Do not accept cache expiry as revocation, and do not infer HTTP denial from SQL RLS.
-Previously warmed URLs must also be verified; any surviving access is STOP.
+Classify URLs warmed before migration 13 as
+`LEGACY_PRE_HARDENING_CACHE_OBSERVATION`, separately from the post-hardening
+security contract. Previously delivered CDN bytes are not synchronously revoked.
+Use a new QA identity, event, document and random object path created after
+migration 13 for the authoritative test: the first and repeated authenticated
+direct GET must return 400/401/403, for active and pending metadata. A fresh 200
+is STOP. Do not wait indefinitely for legacy cache expiry or add a migration to
+purge an already populated edge cache. Pre-hardening QA objects were isolated
+fixtures, not Production user data.
+
+After migration 13 no authenticated direct Storage access is allowed. All new
+application downloads use `/api/my/documents/:id/download`, which authorizes
+event and actor, accepts only active documents and returns server-fetched bytes
+with no-store. The product distributes neither signed nor direct Storage URLs.
+This preserves the post-hardening contract; historical cached responses are
+recorded separately and do not certify or invalidate new origin authorization.
 
 Verify old main `7aaf48c0736fa50187864145f1d7d41fc1265014` against the actual
 Production schema before merge: its documents page uses React state and local

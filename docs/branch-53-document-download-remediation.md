@@ -18,7 +18,9 @@ metadata. The real isolated HTTP regression recorded:
 The object was uploaded with `cacheControl: "0"`. A warmed authenticated direct
 URL continued serving bytes after the tombstone. This reproduces the original
 finding; client cache options and active-only RLS do not establish immediate HTTP
-revocation. The original gate must remain failing until actual denial is measured.
+revocation of bytes already delivered to a CDN. These pre-hardening QA responses
+are classified as `LEGACY_PRE_HARDENING_CACHE_OBSERVATION`; they are not user
+Production data and are separate from the post-hardening security contract.
 The probe removed its object, metadata, event and Auth identity and verified
 DB=0 / Storage=0 / Auth=0. No user data was changed.
 
@@ -48,6 +50,13 @@ CI or Production gates, which must be recorded separately on the release SHA.
 
 No Production migration, merge or deploy may occur until complete GREEN and CI
 PASS. Apply only migration 13, verify 13/13 history and actual direct HTTP denial
-(including previously warmed URLs), then run old app against actual Production
+on a fresh post-hardening QA identity/event/document/random path (first and repeated
+GET, active and pending), then run old app against actual Production
 schema. Merge/deploy requires that PASS; new-app Production smoke and zero residue
 are mandatory before closing Branch 53. Never accept CDN expiry as security.
+The product does not rely on synchronous revocation of CDN bytes already
+delivered. No authenticated direct Storage access is allowed after migration 13;
+all new application downloads pass through the authorized server route, returning
+bytes with no-store and distributing no signed or direct Storage URL. A fresh
+post-hardening direct GET returning 200 is STOP. Legacy cache observations remain
+audit evidence, without weakening this contract or requiring migration 14.
