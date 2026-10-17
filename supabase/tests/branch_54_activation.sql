@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(19);
+select plan(22);
 select has_table('private', 'event_activations', 'durable event activation exists');
 select ok(not has_table_privilege('anon', 'private.event_activations', 'select'), 'no anonymous read');
 select ok(not has_table_privilege('authenticated', 'private.event_activations', 'insert'), 'no client activation writes');
@@ -42,6 +42,21 @@ update public.expenses set status='approved' where id='54000000-0000-4000-8000-0
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000012'),1,'approval does not recount');
 insert into public.budget_items(event_id,name,country_code,amount) values (null,'Public template','it',25);
 select is((select count(*)::int from private.event_activations where event_id::text like '54000000%'),3,'public template is not activation');
+-- Simulate records created before this migration, without backfilling metrics.
+insert into public.events(id,owner_id,name,event_type) values
+('54000000-0000-4000-8000-000000000013','54000000-0000-4000-8000-000000000001','Historical expense','wedding'),
+('54000000-0000-4000-8000-000000000014','54000000-0000-4000-8000-000000000001','Historical supplier','wedding');
+alter table public.expenses disable trigger record_expense_first_value;
+alter table public.saved_suppliers disable trigger record_supplier_first_value;
+insert into public.expenses(id,event_id,amount,status) values ('54000000-0000-4000-8000-000000000041','54000000-0000-4000-8000-000000000013',25,'pending');
+insert into public.saved_suppliers(id,event_id,supplier_id,status) values ('54000000-0000-4000-8000-000000000031','54000000-0000-4000-8000-000000000014','54000000-0000-4000-8000-000000000020','SAVED');
+alter table public.expenses enable trigger record_expense_first_value;
+alter table public.saved_suppliers enable trigger record_supplier_first_value;
+select is((select count(*)::int from private.event_activations where event_id in ('54000000-0000-4000-8000-000000000013','54000000-0000-4000-8000-000000000014')),0,'historical rows have no fabricated activation');
+update public.expenses set status='approved' where id='54000000-0000-4000-8000-000000000041';
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000013'),0,'legacy expense approval is not new activation');
+update public.saved_suppliers set status='SELECTED' where id='54000000-0000-4000-8000-000000000031';
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000014'),0,'legacy supplier selection is not new activation');
 delete from public.events where id='54000000-0000-4000-8000-000000000010';
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000010'),0,'event deletion removes private metric');
 select * from finish();

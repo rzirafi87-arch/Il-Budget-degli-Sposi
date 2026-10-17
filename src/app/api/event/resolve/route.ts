@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
       has_guests: (guestCount || 0) > 0,
       has_saved_suppliers: (savedCount || 0) > 0,
       has_budget_items: (budgetCount || 0) > 0,
-      has_expenses: (expenses || []).some(expense => expense.status !== "rejected"),
+      has_expenses: (expenses || []).some(expense => expense.status != null && expense.status !== "rejected"),
     },
     status: "RESOLVED",
     onboarding: deriveOnboardingState(ev),
