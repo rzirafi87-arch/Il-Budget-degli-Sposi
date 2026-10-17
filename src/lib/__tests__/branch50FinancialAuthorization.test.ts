@@ -172,8 +172,8 @@ describe("Branch 50 typed financial contracts", () => {
       amount: 2500,
       canonical_key: undefined,
       saved_supplier_id: "saved-50",
-      source: undefined,
-      spend_type: undefined,
+      source: "manual",
+      spend_type: "common",
       tradition_id: undefined,
       vendor_id: undefined,
     });

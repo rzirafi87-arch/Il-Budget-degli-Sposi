@@ -157,6 +157,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
         <div aria-hidden className="h-0" />
       )}
 
+      <QuickSettings showTrigger={!showHeader} />
       <main className="min-h-screen bg-bg text-fg">
         <Background />
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
@@ -166,7 +167,6 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
       </main>
 
       <Footer />
-      <QuickSettings />
     </ToastProvider>
   );
 }

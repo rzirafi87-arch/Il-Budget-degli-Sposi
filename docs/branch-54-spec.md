@@ -2,6 +2,8 @@
 
 Base: main `5fd13a62fd47d13af5187032b9cab15dbb236284`. Branch: `branch-54-onboarding-activation-ux-mobile`. Branch 53 closeout is recorded locally in `_LOCAL/branch53-final-closeout-20261017.md` (excluded from commits). No merge or Production writes are authorized by this branch.
 
+**Production prerequisite reconciliation:** the later `_LOCAL/branch53-final-production-closeout-20261017.md` supersedes the initial read-only PASS with STOP: real Production `POST /api/budget-items` failed when optional `source` was omitted (NOT NULL violation). This was discovered in a concurrently running certification chat and reconciled here after the user supplied its screenshot. The user authorized continuing development; this branch fixes the same first-value blocker and tests it only in isolation. Production remains unchanged and its certification is still STOP. Preserve the Branch 57 review backlog for `private.subcategory_identity_reservations` RLS; no change here.
+
 ## Scope and acceptance contract
 
 1. First value: signup → event creation → resumable onboarding → budget → first persisted budget item/expense OR first saved supplier. Completion must come from server data, never clicks, local storage, demo rows or a generated event name. Activation is counted once per event, survives logout/login, repeated actions and deletion of the originating item. Concurrent first actions must not double count. Checklist completion reflects current persisted data; historical activation is a separate metric.
@@ -27,6 +29,8 @@ Non-scope: payments, subscriptions, B2B, commercial launch, complex gamification
 | Supplier save | `fornitori/page.tsx`, saved supplier/planning APIs | SAVED and SELECTED are distinct. Setup requires SELECTED; first value should accept SAVED too. | Separate first-value signal from supplier selection; never infer selection from free-text expenses. |
 | Partner invite | `PartnerLifecycleSection`, invitation/member APIs | Retry missing on initial read; raw error code rendered; leave redirect executes even if request fails. | Safe error reference, retry, no navigation after failed leave. |
 | Activation | Existing analytics endpoint tracks catalog contact/view events only | No durable once-per-event activation contract. | Add minimal private ledger with transactional insert triggers, unique event identity, no public RPC or browser writes. No Production migration in this task. |
+| First budget item | Optional source/spend_type parsed as undefined in bulk insert | Later Production report and isolated B54 journey reproduce HTTP 500 / SQLSTATE 23502. | Materialize existing database defaults manual/common in the allowlisted parser; no schema change. |
+| Mobile settings | Floating trigger plus settings trigger in app header; modal without keyboard focus handling | 360px signup screenshot shows trigger overlapping register CTA. RED keyboard test confirms missing focus transfer. | Single trigger in normal flow on auth/onboarding, reuse app header elsewhere; trap focus, Escape/restore; dynamic viewport height. |
 
 ## RED → GREEN and verification plan
 
@@ -38,4 +42,8 @@ Preview must be READY for exact PR SHA; CI green, automatic review P0/P1/P2 in s
 
 ## Execution evidence
 
-Pending: implementation and final verification results will be added here with actual outcomes; no planned check is considered PASS.
+Local evidence (2026-10-17): 121 Jest suites / 811 tests PASS; typecheck PASS; lint 0 errors (15 existing warnings); validate and production build PASS. Signup Playwright matrix: 30/30 (IT/EN/ES/FR/DE × 320/360/375/390/412/430), including keyboard submit, native validation, password toggle, short viewport and axe serious/critical checks. Browser mutations are intercepted; this is UI evidence, not a real signup persistence claim.
+
+New activation tests run RED before migration, then GREEN after applying it twice in disposable CI: source-specific counting, retention, rollback, access denial and event cleanup; concurrent first actions are tested independently. Local Docker did not become available, so database and real lifecycle evidence comes from ephemeral GitHub CI. The first database run exposed a malformed supplier fixture (missing required location columns); corrected. The first collection gate exposed the strict historical test allowlist; fixed with a separate Branch 54 public test config, preserving the certified Production harness.
+
+PR: https://github.com/rzirafi87-arch/Il-Budget-degli-Sposi/pull/72. Full database/real lifecycle, exact-HEAD Preview and automatic review results are recorded in the PR checks and final PR description. No pending or skipped gate is considered PASS. No Production migration or data write; no merge. The actual signup and write journeys run only on loopback disposable Supabase. Preview signup proof is intentionally limited to safe intercepted UI behavior when its backend is Production.

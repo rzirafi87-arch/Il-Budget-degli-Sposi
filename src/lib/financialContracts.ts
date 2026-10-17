@@ -173,8 +173,10 @@ export function parseBudgetItemCreate(value: unknown): BudgetItemCreate {
     amount: optionalNumber(input.amount),
     canonical_key: optionalString(input.canonical_key),
     saved_supplier_id: optionalString(input.saved_supplier_id),
-    source: optionalNonNullString(input.source),
-    spend_type: optionalNonNullString(input.spend_type),
+    // Bulk PostgREST inserts default missing columns to NULL. Materialize the
+    // database defaults so an omitted optional field cannot violate NOT NULL.
+    source: input.source === undefined ? "manual" : optionalNonNullString(input.source),
+    spend_type: input.spend_type === undefined ? "common" : optionalNonNullString(input.spend_type),
     tradition_id: traditionId as number | null | undefined,
     vendor_id: optionalString(input.vendor_id),
   };

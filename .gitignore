@@ -13,6 +13,7 @@
 # testing
 /coverage
 /.playwright-results/
+/.playwright-results-b54/
 /playwright-report/
 /test-results/.last-run.json
 /.production-smoke-integrity-baseline.json
