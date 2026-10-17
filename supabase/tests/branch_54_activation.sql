@@ -24,8 +24,8 @@ savepoint first_action;
 insert into public.budget_items(event_id,name,country_code,amount) values ('54000000-0000-4000-8000-000000000011','Rolled back','it',25);
 rollback to first_action;
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000011'),0,'failed transaction cannot activate');
-insert into public.suppliers(id,name,category,country_code,source,verification_status) values
-('54000000-0000-4000-8000-000000000020','B54 supplier','catering','it','admin_import','VERIFIED');
+insert into public.suppliers(id,name,category,country_code,source,verification_status,region,province,city) values
+('54000000-0000-4000-8000-000000000020','B54 supplier','catering','it','admin_import','VERIFIED','Lazio','RM','Roma');
 insert into public.saved_suppliers(id,event_id,supplier_id,status) values
 ('54000000-0000-4000-8000-000000000030','54000000-0000-4000-8000-000000000011','54000000-0000-4000-8000-000000000020','DISCOVERED');
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000011'),0,'discovery alone is not activation');

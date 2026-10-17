@@ -13,6 +13,7 @@ const branch52IsolatedSpecs = [
   "branch52-security-matrix.spec.ts",
   "branch53-persistence.spec.ts",
   "branch54-journey.spec.ts",
+  "branch54-signup.spec.ts",
   "i18n-runtime.spec.ts",
 ];
 
