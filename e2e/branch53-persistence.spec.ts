@@ -159,8 +159,14 @@ test("[B53][persistence-mobile] documents, gifts and tables persist for owner an
     expect(download.status()).toBe(200);
     expect(download.headers()["cache-control"]).toBe("private, no-store, max-age=0");
     expect(download.headers()["content-disposition"]).toContain("attachment;");
-    expect((await download.body()).toString()).toContain("%PDF-1.4");
-    expect((await fileDownload).suggestedFilename()).toBe(documentName);
+    const downloaded = await fileDownload;
+    expect(downloaded.suggestedFilename()).toBe(documentName);
+    expect(await downloaded.failure()).toBeNull();
+    const stream = await downloaded.createReadStream();
+    expect(stream).not.toBeNull();
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
+    expect(Buffer.concat(chunks)).toEqual(Buffer.from("%PDF-1.4\nQA Branch 53"));
     page.once("dialog", dialog => dialog.accept());
     const documentDelete = page.waitForResponse(response => response.request().method() === "DELETE" && new URL(response.url()).pathname === `/api/my/documents/${uploaded.document.id}`);
     await page.getByRole("button", { name: `Elimina ${documentName}` }).click();

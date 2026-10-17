@@ -56,7 +56,7 @@ select ok(not exists (
   ]) function_oid where not has_function_privilege('service_role', function_oid, 'execute')
 ), 'service role has only the explicit privileged document RPC entrypoints');
 select ok(not has_table_privilege('authenticated', 'public.event_documents', 'insert,delete'), 'metadata writes are server-only');
-select is((select count(*)::int from pg_policies where schemaname = 'storage' and tablename = 'objects' and policyname like 'event_documents_storage_%'), 1, 'browser Storage access is read-only');
+select is((select count(*)::int from pg_policies where schemaname = 'storage' and tablename = 'objects' and policyname like 'event_documents_storage_%'), 0, 'browser Storage access is denied by default');
 
 insert into auth.users(id,email) values
   ('53700000-0000-4000-8000-000000000001','atomic-owner@example.invalid'),
