@@ -24,6 +24,7 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "3");
     await page.goto("/it/profilo");
     await page.getByRole("button", { name: /esci/i }).click();
+    await expect(page).toHaveURL(/\/it\/?$/);
     await login(page, identity);
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "3");
 

@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(22);
+select plan(27);
 select has_table('private', 'event_activations', 'durable event activation exists');
 select ok(not has_table_privilege('anon', 'private.event_activations', 'select'), 'no anonymous read');
 select ok(not has_table_privilege('authenticated', 'private.event_activations', 'insert'), 'no client activation writes');
@@ -57,6 +57,24 @@ update public.expenses set status='approved' where id='54000000-0000-4000-8000-0
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000013'),0,'legacy expense approval is not new activation');
 update public.saved_suppliers set status='SELECTED' where id='54000000-0000-4000-8000-000000000031';
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000014'),0,'legacy supplier selection is not new activation');
+-- Persisted exclusion also covers a NEW row of a DIFFERENT kind, and survives
+-- removal of old value rows. Cohort capture itself is checked before this suite.
+insert into private.activation_legacy_events(event_id) values
+('54000000-0000-4000-8000-000000000013'),('54000000-0000-4000-8000-000000000014');
+select ok(not has_table_privilege('authenticated','private.activation_legacy_events','insert'),'browser cannot edit legacy cohort');
+insert into public.budget_items(event_id,name,country_code,amount) values
+('54000000-0000-4000-8000-000000000013','New value after historical expense','it',25),
+('54000000-0000-4000-8000-000000000014','New value after historical supplier','it',25);
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000013'),0,'legacy event new budget item is not activation');
+insert into public.expenses(event_id,amount,status) values ('54000000-0000-4000-8000-000000000014',25,'pending');
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000014'),0,'legacy event new expense is not activation');
+insert into public.saved_suppliers(event_id,supplier_id,status) values ('54000000-0000-4000-8000-000000000013','54000000-0000-4000-8000-000000000020','SAVED');
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000013'),0,'legacy event new supplier is not activation');
+delete from public.budget_items where event_id in ('54000000-0000-4000-8000-000000000013','54000000-0000-4000-8000-000000000014');
+delete from public.expenses where event_id in ('54000000-0000-4000-8000-000000000013','54000000-0000-4000-8000-000000000014');
+delete from public.saved_suppliers where event_id in ('54000000-0000-4000-8000-000000000013','54000000-0000-4000-8000-000000000014');
+insert into public.budget_items(event_id,name,country_code,amount) values ('54000000-0000-4000-8000-000000000013','Recreated value','it',25);
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000013'),0,'legacy exclusion survives deletion and recreation');
 delete from public.events where id='54000000-0000-4000-8000-000000000010';
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000010'),0,'event deletion removes private metric');
 select * from finish();
