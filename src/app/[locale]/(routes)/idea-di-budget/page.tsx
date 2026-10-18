@@ -114,6 +114,8 @@ export default function BudgetIdeaPage() {
   const [message, setMessage] = useState("");
   const [loadError, setLoadError] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
+  // A saved idea opens read-only; "Edit" unlocks it, a successful save or apply locks it again.
+  const [locked, setLocked] = useState(false);
 
   const money = (value: number) => new Intl.NumberFormat(getIntlLocale(locale), { style: "currency", currency }).format(value || 0);
 
@@ -178,6 +180,7 @@ export default function BudgetIdeaPage() {
           if (row.category && row.subcategory) byKey.set(row.canonicalKey ? `canonical:${row.canonicalKey}` : `${row.category}\u0000${row.subcategory}`, row);
         });
         setRows([...byKey.values()]);
+        setLocked(saved.length > 0);
       } catch {
         if (active) setLoadError(true);
       } finally {
@@ -243,6 +246,7 @@ export default function BudgetIdeaPage() {
       localStorage.setItem("budgetIdea.contingencyPct", String(contingencyPct));
       const response = await request("/api/idea-di-budget", canonicalPayload(rows));
       setMessage(response.ok ? t("messages.saved") : t("messages.saveError"));
+      if (response.ok) setLocked(true);
     } catch {
       setMessage(t("messages.saveError"));
     } finally {
@@ -252,6 +256,7 @@ export default function BudgetIdeaPage() {
 
   async function apply() {
     if (saving) return;
+    if (!window.confirm(t("messages.applyConfirm"))) return;
     setSaving(true);
     setMessage("");
     try {
@@ -264,6 +269,7 @@ export default function BudgetIdeaPage() {
       const response = await request("/api/idea-di-budget/apply", { country, rows: canonicalPayload(rows) });
       const json = await response.json().catch(() => ({}));
       setMessage(response.ok ? t("messages.applied", { count: Number(json.inserted || 0) }) : t("messages.applyError"));
+      if (response.ok) setLocked(true);
     } catch {
       setMessage(t("messages.applyError"));
     } finally {
@@ -282,7 +288,7 @@ export default function BudgetIdeaPage() {
 
     <section className="grid gap-4 rounded-xl border bg-white p-4 dark:bg-gray-950 sm:grid-cols-3">
       <label className="font-semibold sm:col-span-2">{t("search.label")}<input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t("search.placeholder")} className="mt-2 min-h-12 w-full rounded-lg border px-3" /></label>
-      <label className="font-semibold">{t("contingencyPct")}<input type="number" inputMode="decimal" min="0" max="100" value={contingencyPct} onChange={(e) => setContingencyPct(number(e.target.value))} className="mt-2 min-h-12 w-full rounded-lg border px-3" /></label>
+      <label className="font-semibold">{t("contingencyPct")}<input type="number" inputMode="decimal" min="0" max="100" value={contingencyPct} onChange={(e) => setContingencyPct(number(e.target.value))} disabled={locked} className="mt-2 min-h-12 w-full rounded-lg border px-3 disabled:opacity-70" /></label>
     </section>
 
     <section className="space-y-3">
@@ -295,6 +301,7 @@ export default function BudgetIdeaPage() {
           </button>
           {expanded && <div id={`budget-category-${category}`} className="space-y-3 border-t bg-gray-50 p-3 dark:bg-gray-900 sm:p-4">
             {visible(category).map(({ row, index }) => <div key={row.canonicalKey || `${row.subcategory}-${index}`} data-testid={row.custom ? "budget-custom-row" : undefined} className={`rounded-xl border bg-white p-3 dark:bg-gray-950 ${row.enabled ? "border-rose-200 dark:border-rose-700" : "border-gray-200 dark:border-gray-700"}`}>
+              <fieldset disabled={locked} className="m-0 min-w-0 border-0 p-0 disabled:opacity-80">
               <div className="flex items-start gap-3">
                 <input id={`enabled-${index}`} type="checkbox" checked={row.enabled} onChange={(e) => change(index, { enabled: e.target.checked })} className="mt-1 h-5 w-5 shrink-0" />
                 <label htmlFor={`enabled-${index}`} className="min-w-0 flex-1 font-semibold">{row.custom ? <input aria-label={t("custom.nameAria")} value={row.subcategory} onChange={(e) => change(index, { subcategory: e.target.value })} className="w-full rounded border px-2 py-1" /> : row.subcategory}</label>
@@ -306,8 +313,9 @@ export default function BudgetIdeaPage() {
                 <label className="text-sm font-semibold">{t("fields.notes")}<input value={row.notes || ""} onChange={(e) => change(index, { notes: e.target.value })} className="mt-1 min-h-12 w-full rounded-lg border px-3" /></label>
               </div>}
               {row.enabled && row.package === "wedding_bag" ? <p className="mt-2 text-xs font-semibold text-emerald-700">{t("weddingBagIncluded")}</p> : null}
+              </fieldset>
             </div>)}
-            <button type="button" onClick={() => addCustom(category)} className="min-h-11 rounded-full border border-rose-700 px-4 font-semibold text-rose-800">{t("custom.add")}</button>
+            <button type="button" onClick={() => addCustom(category)} disabled={locked} className="disabled:opacity-60 min-h-11 rounded-full border border-rose-700 px-4 font-semibold text-rose-800">{t("custom.add")}</button>
           </div>}
         </article>;
       })}
@@ -318,10 +326,14 @@ export default function BudgetIdeaPage() {
       <div>
         <p><strong>{t("summary.planned")}</strong> {money(totals.planned)}</p>
         <p className="text-sm text-gray-600">{t("summary.contingency", { amount: money(totals.contingency) })} · <strong>{t("summary.withContingency", { amount: money(totals.total) })}</strong></p>
-        <p role="status" className="mt-1 text-sm text-emerald-700">{message}</p>
+        <p role="status" className="mt-1 text-sm text-emerald-700">{message || (locked ? t("messages.locked") : "")}</p>
       </div>
-      <button type="button" disabled={saving} onClick={save} className="min-h-12 rounded-full border border-rose-700 px-5 font-semibold text-rose-800 disabled:opacity-60">{saving ? t("actions.saving") : t("actions.save")}</button>
-      <button type="button" disabled={saving} onClick={apply} className="min-h-12 rounded-full bg-rose-700 px-5 font-semibold text-white disabled:opacity-60">{t("actions.apply")}</button>
+      {locked
+        ? <button type="button" onClick={() => { setLocked(false); setMessage(""); }} className="min-h-12 rounded-full bg-rose-700 px-5 font-semibold text-white sm:col-span-2">{t("actions.edit")}</button>
+        : <>
+          <button type="button" disabled={saving} onClick={save} className="min-h-12 rounded-full border border-rose-700 px-5 font-semibold text-rose-800 disabled:opacity-60">{saving ? t("actions.saving") : t("actions.save")}</button>
+          <button type="button" disabled={saving} onClick={apply} className="min-h-12 rounded-full bg-rose-700 px-5 font-semibold text-white disabled:opacity-60">{t("actions.apply")}</button>
+        </>}
     </section>
   </main>;
 }

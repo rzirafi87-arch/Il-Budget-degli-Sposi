@@ -1,1 +1,11 @@
-{}
+{
+  "budgetIdea": {
+    "actions": {
+      "edit": "Editar"
+    },
+    "messages": {
+      "locked": "Idea de presupuesto guardada. Pulsa Editar para cambiarla.",
+      "applyConfirm": "Las partidas creadas antes desde la Idea de presupuesto se sustituirán. ¿Continuar?"
+    }
+  }
+}

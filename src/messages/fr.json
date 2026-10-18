@@ -43,7 +43,7 @@
     "summary": {
       "planned": "Total prévu :",
       "withContingency": "Total avec imprévus : {amount}",
-      "contingency": "Contingence:",
+      "contingency": "Imprévus : {amount}",
       "plannedTotal": "Total prévu :",
       "totalWithContingency": "Total avec imprévus :"
     },
