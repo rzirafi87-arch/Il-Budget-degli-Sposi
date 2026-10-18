@@ -1,4 +1,5 @@
 import { sendAppointmentReminder } from "@/lib/emailService";
+import { isAuthorizedCronRequest } from "@/lib/cronAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
@@ -9,15 +10,8 @@ function toDateStr(d: Date) {
 
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const cronSecret = process.env.CRON_SECRET;
-    const token = req.nextUrl.searchParams.get("token");
-    const isVercelCron = req.headers.get("x-vercel-cron") === "1";
-    const authorized = Boolean(
-      (cronSecret && authHeader === `Bearer ${cronSecret}`) ||
-      (cronSecret && token === cronSecret) ||
-      isVercelCron
-    );
+    // Only `Authorization: Bearer <CRON_SECRET>` (sent by Vercel Cron) is accepted.
+    const authorized = isAuthorizedCronRequest(req);
     if (!authorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
