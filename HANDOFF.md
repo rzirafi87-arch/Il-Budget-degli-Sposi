@@ -41,11 +41,14 @@ Ultimo aggiornamento: 2026-10-18 (Claude)
 
 ## 3. Divisione del lavoro
 
-Regole: **un branch = un proprietario**; mai gli stessi file in parallelo; **merge su `main` e gate Production li approva l'utente** (il merge su `main` fa deploy in Production).
+Regole:
+- **un branch = un proprietario**; mai gli stessi file in parallelo;
+- **di norma un branch di roadmap alla volta, ma due branch di roadmap possono avanzare in parallelo se non toccano lo stesso argomento** (decisione utente 2026-10-18);
+- **merge su `main` e gate Production li approva l'utente** (il merge su `main` fa deploy in Production).
 
 | Chi | Cosa |
 |---|---|
-| **Codex** (PC dell'utente) | Roadmap principale: chiusura B54 → B55 → … ; Supabase locale, migration, gate Production |
+| **Codex** (PC dell'utente) | Roadmap principale: chiusura B54 → B56 → … ; Supabase locale, gate Production |
 | **Claude** (cloud) | Review indipendenti delle PR di Codex; hotfix fuori roadmap che non toccano file in lavorazione; inventari read-only; questo documento |
 
 Prima di aprire un branch, controllare qui chi sta lavorando su cosa.
@@ -53,6 +56,7 @@ Prima di aprire un branch, controllare qui chi sta lavorando su cosa.
 | Branch / PR | Proprietario | File principali | Stato |
 |---|---|---|---|
 | `branch-54-onboarding-activation-ux-mobile` / #72 | Codex | onboarding, ProgressiveSetup, event/resolve, auth page, migration activation | aperta |
+| `branch-55-data-quality` | **Claude** | catalogo: `suppliers`/`locations`/`churches`/`vendors`, categorie, `/api/suppliers`, pagine categoria e `/fornitori` | in corso (parallelo a B54, argomenti distinti) |
 
 ---
 
