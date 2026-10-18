@@ -407,6 +407,19 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017101208_branch_53_document_download_hardening.sql
           node scripts/run-pgtap.mjs --file scripts/fixtures/branch53-document-download-red.sql --database-url-env LOCAL_DATABASE_URL
 
+      - name: Reproduce Branch 57 private RLS RED and verify migration GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file supabase/tests/branch_57_private_rls.sql --database-url-env LOCAL_DATABASE_URL > branch57-private-rls-red.log 2>&1; then
+            echo "Expected private tables without RLS before the Branch 57 migration" >&2
+            exit 1
+          fi
+          cat branch57-private-rls-red.log
+          grep -q 'not ok 1 - subcategory identity reservations: RLS on' branch57-private-rls-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261018190000_branch_57_private_rls_hardening.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261018190000_branch_57_private_rls_hardening.sql
+          node scripts/run-pgtap.mjs --file supabase/tests/branch_57_private_rls.sql --database-url-env LOCAL_DATABASE_URL
+
       - name: Verify Branch 53 concurrency and rejected-RC regressions
         run: ./scripts/test-branch53-concurrency.sh "$LOCAL_DATABASE_URL"
 
