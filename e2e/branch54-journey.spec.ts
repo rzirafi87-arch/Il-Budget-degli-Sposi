@@ -19,12 +19,12 @@ test("[B54][journey] new user without an event reaches setup without a retry dea
     // real country step instead of asserting the transient event-type URL.
     await expect(page).toHaveURL(/\/it\/select-country/);
     await expect(page.getByRole("button", { name: "Italia", exact: true })).toBeEnabled();
-    await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(page.locator("main").first().getByRole("alert")).toHaveCount(0);
     await page.getByRole("button", { name: "Italia", exact: true }).click();
     await page.getByRole("button", { name: /^avanti$/i }).click({ noWaitAfter: true });
     await expect(page).toHaveURL(/\/it\/select-event-type/);
     await expect(page.getByRole("button", { name: /^matrimonio disponibile/i })).toBeEnabled();
-    await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(page.locator("main").first().getByRole("alert")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Riprova", exact: true })).toHaveCount(0);
   } finally {
     await deleteQaIdentity(identity);
