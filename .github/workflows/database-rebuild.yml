@@ -19,6 +19,7 @@ on:
       - 'scripts/test-branch53-red-team.sh'
       - 'scripts/test-branch53-delete-remediation.sh'
       - 'scripts/test-branch53-late-upload.sh'
+      - 'scripts/test-branch54-activation-concurrency.mjs'
       - 'scripts/preflight-branch53-seat-integrity.sql'
       - 'scripts/fixtures/branch53-*.sql'
       - 'supabase/tests/branch_53_gift_list_legacy_compatibility.sql'
@@ -421,6 +422,38 @@ jobs:
           set -Eeuo pipefail
           node --test scripts/lib/pgtap-runner.test.mjs
           node scripts/test-pgtap-runner-integration.mjs
+
+      - name: Verify Branch 54 activation RED then GREEN (isolated only)
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file supabase/tests/branch_54_activation.sql --database-url-env LOCAL_DATABASE_URL > activation-red.log 2>&1; then
+            echo "Expected activation RED before migration" >&2
+            exit 1
+          fi
+          grep -q 'event_activations' activation-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch54-legacy-before-migration.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017132156_branch_54_first_value_activation.sql
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from private.activation_legacy_events where event_id::text like '54900000%'")" = "3"
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select count(*) from private.event_activations where event_id::text like '54900000%'")" = "0"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch54-activation-legacy-red.sql
+          if node scripts/run-pgtap.mjs --file supabase/tests/branch_54_activation.sql --database-url-env LOCAL_DATABASE_URL > activation-legacy-red.log 2>&1; then
+            echo "Expected legacy activation RED before transition guard" >&2
+            exit 1
+          fi
+          grep -q 'not ok .*legacy expense approval is not new activation' activation-legacy-red.log
+          grep -q 'not ok .*legacy supplier selection is not new activation' activation-legacy-red.log
+          grep -q 'not ok .*legacy event new budget item is not activation' activation-legacy-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch54-budget-idea-red.sql
+          if node scripts/run-pgtap.mjs --file supabase/tests/branch_54_activation.sql --database-url-env LOCAL_DATABASE_URL > activation-budget-idea-red.log 2>&1; then
+            echo "Expected budget_idea activation RED before source guard" >&2
+            exit 1
+          fi
+          grep -q 'not ok .*budget_idea application is not activation' activation-budget-idea-red.log
+          grep -q 'not ok .*budget snapshot save is not activation' activation-budget-idea-red.log
+          echo "B54 budget_idea activation RED confirmed against reviewed trigger"
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017132156_branch_54_first_value_activation.sql
+          node scripts/run-pgtap.mjs --file supabase/tests/branch_54_activation.sql --database-url-env LOCAL_DATABASE_URL
+          node scripts/test-branch54-activation-concurrency.mjs
 
       - name: Run every pgTAP suite with TAP enforcement
         run: |
