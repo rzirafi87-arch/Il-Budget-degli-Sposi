@@ -41,7 +41,7 @@ it.each([false, true])("counts manual budget items, never an applied idea (manua
       : { data: [], count: table === "budget_items" ? (manualOnly ? Number(manual) : 1) : 0, error: null };
     const query = {
       select: jest.fn().mockReturnThis(),
-      eq: jest.fn((column: string, value: string) => { if (column === "source" && value === "manual") manualOnly = true; return query; }),
+      eq: jest.fn(function (this: unknown, column: string, value: string) { if (column === "source" && value === "manual") manualOnly = true; return this; }),
       in: jest.fn().mockReturnThis(),
       maybeSingle: async () => result(),
       then: (resolve: (value: unknown) => unknown) => Promise.resolve(result()).then(resolve),
