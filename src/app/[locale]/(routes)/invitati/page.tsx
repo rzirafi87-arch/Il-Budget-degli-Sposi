@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import ExportButton from "@/components/ExportButton";
+import { fetchMyTables } from "@/lib/fetchMyTables";
 import { GuestMobileCard, type GuestMenuPreference } from "@/components/guests/GuestMobileCard";
 import ImageCarousel from "@/components/ImageCarousel";
 import PageInfoNote from "@/components/PageInfoNote";
@@ -87,7 +88,7 @@ export default function InvitatiPage() {
     setLoadingTables(true);
     setTablesError(false);
     try {
-      const res = await fetch("/api/my/tables");
+      const res = await fetchMyTables();
       if (!res.ok) throw new Error("TABLES_LOAD_FAILED");
       const json = await res.json();
       setTables((json.tables || []).map((t: Record<string, unknown>) => ({

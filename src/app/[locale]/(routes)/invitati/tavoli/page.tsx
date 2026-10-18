@@ -3,6 +3,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { fetchMyTables } from "@/lib/fetchMyTables";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -57,11 +58,7 @@ export default function TavoliPage() {
   async function loadTables() {
       setLoading(true);
       try {
-        const token = await bearer();
-        const res = await fetch("/api/my/tables", {
-          headers: { Authorization: `Bearer ${token}` },
-          cache: "no-store",
-        });
+        const res = await fetchMyTables();
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "TABLES_READ_FAILED");
         interface ApiTable { id?: string; tableNumber?: number; tableName?: string; tableType?: string; totalSeats?: number; notes?: string; assignedGuests?: AssignedGuest[] }
