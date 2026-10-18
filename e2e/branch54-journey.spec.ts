@@ -49,6 +49,18 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     const signedIn = await createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } }).auth.signInWithPassword(identity);
     expect(signedIn.error).toBeNull();
     const headers = { Authorization: `Bearer ${signedIn.data.session!.access_token}` };
+    const idea = await page.request.post("/api/idea-di-budget/apply", {
+      headers,
+      data: { country: "it", rows: [{ name: "QA applied model", amount: 100, custom: true }] },
+    });
+    expect(idea.status()).toBe(200);
+    expect(await idea.json()).toMatchObject({ success: true, inserted: 1 });
+    const ideaProgress = page.waitForResponse(response =>
+      response.request().method() === "GET" && new URL(response.url()).pathname === "/api/event/resolve"
+    );
+    await page.reload();
+    expect((await (await ideaProgress).json()).event.has_budget_items).toBe(false);
+    await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
     const budget = await page.request.post("/api/event/update-budget", { headers, data: { total_budget: 2500 } });
     expect(budget.ok()).toBe(true);
     const first = await page.request.post("/api/budget-items", { headers, data: { name: "QA first value", country_code: "it", amount: 25 } });

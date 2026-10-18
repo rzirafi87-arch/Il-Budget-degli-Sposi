@@ -28,7 +28,7 @@ revoke all on private.activation_legacy_events from public, anon, authenticated,
 grant select on private.activation_legacy_events to service_role;
 insert into private.activation_legacy_events(event_id)
 select distinct existing_value.event_id from (
-  select event_id from public.budget_items where event_id is not null
+  select event_id from public.budget_items where event_id is not null and source = 'manual'
   union all
   select event_id from public.expenses where status is not null and status <> 'rejected'
   union all
@@ -58,6 +58,8 @@ begin
     if tg_op = 'UPDATE' and old.status is not null and old.status <> 'rejected' then return new; end if;
     action_name := 'expense';
   elsif tg_table_name = 'budget_items' then
+    -- Applying a model is setup, not the first manual value action.
+    if new.source <> 'manual' then return new; end if;
     action_name := 'budget_item';
   else
     raise exception 'INVALID_ACTIVATION_SOURCE';

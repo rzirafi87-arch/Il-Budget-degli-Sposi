@@ -443,6 +443,13 @@ jobs:
           grep -q 'not ok .*legacy expense approval is not new activation' activation-legacy-red.log
           grep -q 'not ok .*legacy supplier selection is not new activation' activation-legacy-red.log
           grep -q 'not ok .*legacy event new budget item is not activation' activation-legacy-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/fixtures/branch54-budget-idea-red.sql
+          if node scripts/run-pgtap.mjs --file supabase/tests/branch_54_activation.sql --database-url-env LOCAL_DATABASE_URL > activation-budget-idea-red.log 2>&1; then
+            echo "Expected budget_idea activation RED before source guard" >&2
+            exit 1
+          fi
+          grep -q 'not ok .*budget_idea application is not activation' activation-budget-idea-red.log
+          echo "B54 budget_idea activation RED confirmed against reviewed trigger"
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017132156_branch_54_first_value_activation.sql
           node scripts/run-pgtap.mjs --file supabase/tests/branch_54_activation.sql --database-url-env LOCAL_DATABASE_URL
           node scripts/test-branch54-activation-concurrency.mjs

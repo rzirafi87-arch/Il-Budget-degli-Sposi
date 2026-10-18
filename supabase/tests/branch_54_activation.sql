@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(27);
+select plan(31);
 select has_table('private', 'event_activations', 'durable event activation exists');
 select ok(not has_table_privilege('anon', 'private.event_activations', 'select'), 'no anonymous read');
 select ok(not has_table_privilege('authenticated', 'private.event_activations', 'insert'), 'no client activation writes');
@@ -75,6 +75,18 @@ delete from public.expenses where event_id in ('54000000-0000-4000-8000-00000000
 delete from public.saved_suppliers where event_id in ('54000000-0000-4000-8000-000000000013','54000000-0000-4000-8000-000000000014');
 insert into public.budget_items(event_id,name,country_code,amount) values ('54000000-0000-4000-8000-000000000013','Recreated value','it',25);
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000013'),0,'legacy exclusion survives deletion and recreation');
+-- Applying Idea di Budget persists templates, not a first manual action.
+insert into public.events(id,owner_id,name,event_type) values
+('54000000-0000-4000-8000-000000000015','54000000-0000-4000-8000-000000000001','B54 applied idea','wedding');
+insert into public.budget_items(event_id,name,country_code,amount,source) values
+('54000000-0000-4000-8000-000000000015','Applied idea item','it',100,'budget_idea');
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000015'),0,'budget_idea application is not activation');
+select is((select count(*)::int from public.budget_items where event_id='54000000-0000-4000-8000-000000000015' and source='manual'),0,'budget_idea does not complete manual firstValue');
+insert into public.budget_items(event_id,name,country_code,amount,source) values
+('54000000-0000-4000-8000-000000000015','First manual item after idea','it',25,'manual');
+select is((select first_action from private.event_activations where event_id='54000000-0000-4000-8000-000000000015'),'budget_item','manual item after budget_idea activates');
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000015'),1,'manual action after idea is counted exactly once');
+
 delete from public.events where id='54000000-0000-4000-8000-000000000010';
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000010'),0,'event deletion removes private metric');
 select * from finish();

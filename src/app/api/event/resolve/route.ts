@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
 
   const [{ count: savedCount, error: savedError }, { count: budgetCount, error: budgetError }] = await Promise.all([
     db.from("saved_suppliers").select("*", { count: "exact", head: true }).eq("event_id", ev.id).in("status", ["SAVED", "CONTACTED", "QUOTE_REQUESTED", "QUOTE_RECEIVED", "SHORTLISTED", "SELECTED"]),
-    db.from("budget_items").select("*", { count: "exact", head: true }).eq("event_id", ev.id),
+    db.from("budget_items").select("*", { count: "exact", head: true }).eq("event_id", ev.id).eq("source", "manual"),
   ]);
   if (cardError || expenseError || selectedError || guestError || savedError || budgetError) throw new Error("PROGRESS_READ_FAILED");
 

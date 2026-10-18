@@ -32,3 +32,23 @@ it("returns recoverable failure, never a missing-event success, when reads fail"
   expect(JSON.stringify(body)).not.toContain("private backend details");
   spy.mockRestore();
 });
+
+it.each([false, true])("counts manual budget items, never an applied idea (manual=%s)", async (manual) => {
+  mockFrom.mockImplementation((table: string) => {
+    let manualOnly = false;
+    const result = () => table === "events"
+      ? { data: { id: "current", language: "it", country: "IT", event_type: "wedding" }, error: null }
+      : { data: [], count: table === "budget_items" ? (manualOnly ? Number(manual) : 1) : 0, error: null };
+    const query = {
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn((column: string, value: string) => { if (column === "source" && value === "manual") manualOnly = true; return query; }),
+      in: jest.fn().mockReturnThis(),
+      maybeSingle: async () => result(),
+      then: (resolve: (value: unknown) => unknown) => Promise.resolve(result()).then(resolve),
+    };
+    return query;
+  });
+  const response = await GET(request);
+  expect(response.status).toBe(200);
+  expect((await response.json()).event).toMatchObject({ has_budget_items: manual, has_expenses: false, has_saved_suppliers: false });
+});
