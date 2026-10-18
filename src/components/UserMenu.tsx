@@ -3,7 +3,8 @@ import { getBrowserClient } from "@/lib/supabaseBrowser";
 import type { Session } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { LogIn, UserRound } from "lucide-react";
 import { buttonClasses } from "@/components/ui/AppButton";
 import LogoutButton from "@/components/LogoutButton";
@@ -12,6 +13,29 @@ export default function UserMenu() {
   const locale = useLocale();
   const t = useTranslations("runtimeUi.shared");
   const [user, setUser] = useState<{ email?: string; name?: string } | null | undefined>(undefined);
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  const pathname = usePathname();
+  const close = () => { if (menuRef.current) menuRef.current.open = false; };
+
+  // A <details> menu stays open across client-side navigation: close it when the
+  // route changes, on a click outside the menu, and on Escape.
+  useEffect(() => { close(); }, [pathname]);
+  useEffect(() => {
+    const onPointerDown = (event: PointerEvent) => {
+      if (menuRef.current?.open && !menuRef.current.contains(event.target as Node)) close();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !menuRef.current?.open) return;
+      close();
+      menuRef.current.querySelector("summary")?.focus();
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
   useEffect(() => {
     const sb = getBrowserClient();
     let active = true;
@@ -72,5 +96,5 @@ export default function UserMenu() {
 
   if (user === undefined) return <span className="h-9 w-20 animate-pulse rounded bg-black/5" aria-hidden />;
   if (!user) return <Link className={buttonClasses({ variant: "ghost", size: "sm", className: "hidden lg:inline-flex" })} href={`/${locale}/auth`}><LogIn size={17} aria-hidden />{t("signIn")}</Link>;
-  return <details className="relative min-w-0"><summary className={buttonClasses({ variant: "ghost", size: "sm", className: "max-w-40 sm:max-w-60" })}><UserRound size={17} className="shrink-0" aria-hidden /><span className="truncate">{user.name || t("profile")}</span></summary><div className="absolute right-0 z-50 mt-2 min-w-56 rounded-xl border border-border bg-bg p-2 shadow-lg"><p className="truncate px-3 py-2 text-xs text-muted-fg">{user.email}</p><Link className="block min-h-11 rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/10" href={`/${locale}/profilo`}>{t("profile")}</Link><LogoutButton /></div></details>;
+  return <details ref={menuRef} className="relative min-w-0"><summary className={buttonClasses({ variant: "ghost", size: "sm", className: "max-w-40 sm:max-w-60" })}><UserRound size={17} className="shrink-0" aria-hidden /><span className="truncate">{user.name || t("profile")}</span></summary><div className="absolute right-0 z-50 mt-2 min-w-56 rounded-xl border border-border bg-bg p-2 shadow-lg"><p className="truncate px-3 py-2 text-xs text-muted-fg">{user.email}</p><Link className="block min-h-11 rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/10" href={`/${locale}/profilo`} onClick={close}>{t("profile")}</Link><LogoutButton /></div></details>;
 }
