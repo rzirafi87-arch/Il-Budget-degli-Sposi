@@ -1,4 +1,5 @@
 import { getServiceClient } from "@/lib/supabaseServer";
+import { readOnlyEndpoint } from "@/lib/communitySubmission";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -38,11 +39,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ traditions: data });
 }
 
-// POST: Aggiunge una nuova tradizione
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const db = getServiceClient();
-  const { data, error } = await db.from("traditions").insert([body]).select();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ tradition: data[0] });
+// POST: reference data is read-only through the API (B57).
+export async function POST() {
+  return readOnlyEndpoint();
 }

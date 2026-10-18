@@ -2028,7 +2028,9 @@
     "messages": {
       "submitSuccess": "¡Música de ceremonia enviada! Será verificado antes de la publicación.",
       "submitError": "Error al enviar",
-      "networkError": "error de red"
+      "networkError": "error de red",
+      "loginRequired": "Inicia sesión para proponer un proveedor.",
+      "rateLimited": "Demasiados envíos. Inténtalo de nuevo más tarde."
     }
   },
   "suppliersMusicReception": {
@@ -2074,7 +2076,9 @@
     "messages": {
       "submitSuccess": "¡Música de recepción enviada! Será verificado antes de la publicación.",
       "submitError": "Error al enviar",
-      "networkError": "error de red"
+      "networkError": "error de red",
+      "loginRequired": "Inicia sesión para proponer un proveedor.",
+      "rateLimited": "Demasiados envíos. Inténtalo de nuevo más tarde."
     }
   },
   "suppliersWeddingPlanner": {
@@ -2120,7 +2124,9 @@
     "messages": {
       "submitSuccess": "¡Planificador de bodas enviado! Será verificado antes de la publicación.",
       "submitError": "Error al enviar",
-      "networkError": "error de red"
+      "networkError": "error de red",
+      "loginRequired": "Inicia sesión para proponer un proveedor.",
+      "rateLimited": "Demasiados envíos. Inténtalo de nuevo más tarde."
     }
   },
   "suppliersChurches": {

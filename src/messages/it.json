@@ -1731,7 +1731,9 @@
     "messages": {
       "submitSuccess": "Musica cerimonia inviata! Sarà verificata prima della pubblicazione.",
       "submitError": "Errore nell'invio",
-      "networkError": "Errore di rete"
+      "networkError": "Errore di rete",
+      "loginRequired": "Accedi per proporre un fornitore.",
+      "rateLimited": "Hai inviato troppe proposte. Riprova più tardi."
     }
   },
   "suppliersMusicReception": {
@@ -1777,7 +1779,9 @@
     "messages": {
       "submitSuccess": "Musica ricevimento inviata! Sarà verificata prima della pubblicazione.",
       "submitError": "Errore nell'invio",
-      "networkError": "Errore di rete"
+      "networkError": "Errore di rete",
+      "loginRequired": "Accedi per proporre un fornitore.",
+      "rateLimited": "Hai inviato troppe proposte. Riprova più tardi."
     }
   },
   "suppliersWeddingPlanner": {
@@ -1823,7 +1827,9 @@
     "messages": {
       "submitSuccess": "Wedding planner inviato! Sarà verificato prima della pubblicazione.",
       "submitError": "Errore nell'invio",
-      "networkError": "Errore di rete"
+      "networkError": "Errore di rete",
+      "loginRequired": "Accedi per proporre un fornitore.",
+      "rateLimited": "Hai inviato troppe proposte. Riprova più tardi."
     }
   },
   "suppliersChurches": {
