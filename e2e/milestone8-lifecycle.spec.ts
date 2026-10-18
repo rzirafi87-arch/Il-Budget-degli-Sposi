@@ -362,6 +362,9 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await categories.nth(0).locator("button[aria-expanded]").click();
       await categories.nth(1).locator("button[aria-expanded]").click();
       await expect(page.locator('input[type="checkbox"]:checked')).toHaveCount(2);
+      // A saved idea reopens read-only until Edit is pressed.
+      await expect(categories.nth(0).getByRole("button", { name: /aggiungi voce/i })).toBeDisabled();
+      await page.getByRole("button", { name: /^modifica$/i }).click();
       const customMarker = `Voce ${identity.marker}`;
       page.once("dialog", dialog => dialog.accept(customMarker));
       await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
@@ -374,7 +377,10 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
       await categories.nth(0).getByRole("button", { name: /aggiungi voce/i }).click();
       await expect(page.getByRole("status")).toBeVisible();
       await page.getByRole("button", { name: /^salva$/i }).click();
+      await page.getByRole("button", { name: /^modifica$/i }).click();
+      page.once("dialog", dialog => dialog.accept());
       await page.getByRole("button", { name: /applica/i }).click();
+      await expect(page.getByRole("button", { name: /^modifica$/i })).toBeVisible();
       await expect(page.getByRole("status")).not.toBeEmpty();
       await page.reload();
       await categories.nth(0).locator("button[aria-expanded]").click();
