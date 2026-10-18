@@ -2032,7 +2032,9 @@
     "messages": {
       "submitSuccess": "Zeremonienmusik eingereicht! Es wird vor der Veröffentlichung überprüft.",
       "submitError": "Fehler beim Senden",
-      "networkError": "Netzwerkfehler"
+      "networkError": "Netzwerkfehler",
+      "loginRequired": "Melde dich an, um einen Dienstleister vorzuschlagen.",
+      "rateLimited": "Zu viele Einsendungen. Bitte versuche es später erneut."
     }
   },
   "suppliersMusicReception": {
@@ -2078,7 +2080,9 @@
     "messages": {
       "submitSuccess": "Empfangsmusik eingereicht! Es wird vor der Veröffentlichung überprüft.",
       "submitError": "Fehler beim Senden",
-      "networkError": "Netzwerkfehler"
+      "networkError": "Netzwerkfehler",
+      "loginRequired": "Melde dich an, um einen Dienstleister vorzuschlagen.",
+      "rateLimited": "Zu viele Einsendungen. Bitte versuche es später erneut."
     }
   },
   "suppliersWeddingPlanner": {
@@ -2124,7 +2128,9 @@
     "messages": {
       "submitSuccess": "Hochzeitsplaner eingereicht! Es wird vor der Veröffentlichung überprüft.",
       "submitError": "Fehler beim Senden",
-      "networkError": "Netzwerkfehler"
+      "networkError": "Netzwerkfehler",
+      "loginRequired": "Melde dich an, um einen Dienstleister vorzuschlagen.",
+      "rateLimited": "Zu viele Einsendungen. Bitte versuche es später erneut."
     }
   },
   "suppliersChurches": {

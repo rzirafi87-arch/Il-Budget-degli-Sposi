@@ -1534,7 +1534,9 @@
     "messages": {
       "submitSuccess": "Ceremony music submitted! It will be verified before publication.",
       "submitError": "Error submitting",
-      "networkError": "Network error"
+      "networkError": "Network error",
+      "loginRequired": "Sign in to suggest a supplier.",
+      "rateLimited": "Too many submissions. Please try again later."
     }
   },
   "suppliersMusicReception": {
@@ -1580,7 +1582,9 @@
     "messages": {
       "submitSuccess": "Reception music submitted! It will be verified before publication.",
       "submitError": "Error submitting",
-      "networkError": "Network error"
+      "networkError": "Network error",
+      "loginRequired": "Sign in to suggest a supplier.",
+      "rateLimited": "Too many submissions. Please try again later."
     }
   },
   "suppliersWeddingPlanner": {
@@ -1626,7 +1630,9 @@
     "messages": {
       "submitSuccess": "Wedding planner submitted! It will be verified before publication.",
       "submitError": "Error submitting",
-      "networkError": "Network error"
+      "networkError": "Network error",
+      "loginRequired": "Sign in to suggest a supplier.",
+      "rateLimited": "Too many submissions. Please try again later."
     }
   },
   "suppliersChurches": {

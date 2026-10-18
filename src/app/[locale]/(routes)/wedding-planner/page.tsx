@@ -4,6 +4,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
 import { getPageImages } from "@/lib/pageImages";
+import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -78,9 +79,15 @@ export default function WeddingPlannerPage() {
     e.preventDefault();
 
     try {
+      const { data: sessionData } = await getBrowserClient().auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) {
+        alert(t("messages.loginRequired"));
+        return;
+      }
       const res = await fetch("/api/wedding-planner", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(formData),
       });
 
@@ -100,6 +107,10 @@ export default function WeddingPlannerPage() {
         });
         setShowAddForm(false);
         loadPlanners();
+      } else if (res.status === 401) {
+        alert(t("messages.loginRequired"));
+      } else if (res.status === 429) {
+        alert(t("messages.rateLimited"));
       } else {
         alert(t("messages.submitError"));
       }

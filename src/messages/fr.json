@@ -2231,7 +2231,9 @@
     "messages": {
       "submitSuccess": "Musique de cérémonie soumise ! Il sera vérifié avant publication.",
       "submitError": "Erreur lors de la soumission",
-      "networkError": "Erreur réseau"
+      "networkError": "Erreur réseau",
+      "loginRequired": "Connectez-vous pour proposer un prestataire.",
+      "rateLimited": "Trop d'envois. Réessayez plus tard."
     }
   },
   "suppliersMusicReception": {
@@ -2277,7 +2279,9 @@
     "messages": {
       "submitSuccess": "Musique de réception soumise ! Il sera vérifié avant publication.",
       "submitError": "Erreur lors de la soumission",
-      "networkError": "Erreur réseau"
+      "networkError": "Erreur réseau",
+      "loginRequired": "Connectez-vous pour proposer un prestataire.",
+      "rateLimited": "Trop d'envois. Réessayez plus tard."
     }
   },
   "suppliersWeddingPlanner": {
@@ -2323,7 +2327,9 @@
     "messages": {
       "submitSuccess": "Planificateur de mariage soumis ! Il sera vérifié avant publication.",
       "submitError": "Erreur lors de la soumission",
-      "networkError": "Erreur réseau"
+      "networkError": "Erreur réseau",
+      "loginRequired": "Connectez-vous pour proposer un prestataire.",
+      "rateLimited": "Trop d'envois. Réessayez plus tard."
     }
   },
   "suppliersChurches": {
