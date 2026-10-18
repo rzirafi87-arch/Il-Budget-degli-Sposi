@@ -13,7 +13,7 @@ export default defineConfig({
   workers: 1,
   reporter: [["list"], ["html", { outputFolder: "playwright-report-m8", open: "never" }]],
   use: {
-    actionTimeout: 0,
+    actionTimeout: 15_000,
     trace: "off",
     screenshot: "off",
     video: "off",

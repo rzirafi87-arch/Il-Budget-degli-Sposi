@@ -55,10 +55,11 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     expect(violations).toEqual([]);
     await page.route("**/api/my/expenses", route => route.fulfill({ status: 503, contentType: "application/json", body: '{"error":"temporary"}' }));
     await page.goto("/it/budget");
-    await expect(page.getByRole("alert")).toBeVisible();
+    const recoveryAlert = page.getByRole("alert").filter({ hasText: "Non riusciamo a caricare i dati" });
+    await expect(recoveryAlert).toBeVisible();
     await page.unroute("**/api/my/expenses");
     await page.getByRole("button", { name: "Riprova", exact: true }).click();
-    await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(recoveryAlert).toHaveCount(0);
     await admin.auth.admin.signOut(signedIn.data.session!.access_token);
   } finally {
     expect((await admin.from("budget_items").delete().eq("event_id", fixture.eventId)).error).toBeNull();

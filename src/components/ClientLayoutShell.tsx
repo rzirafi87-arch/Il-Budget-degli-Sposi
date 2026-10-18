@@ -130,6 +130,8 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
                           window.dispatchEvent(new CustomEvent("open-quick-settings"));
                         }}
                         aria-label={t("openSettings")}
+                        aria-haspopup="dialog"
+                        aria-controls="quick-settings-dialog"
                         title={t("settings")}
                       >
                         <Settings size={19} aria-hidden />
