@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { securityHeaders } from "./src/config/securityHeaders";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -24,13 +25,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{
       source: "/(.*)",
-      headers: [
-        { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
-        { key: "X-Content-Type-Options", value: "nosniff" },
-        { key: "X-Frame-Options", value: "DENY" },
-        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-        { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self), payment=()" },
-      ],
+      headers: securityHeaders({
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
+      }),
     }];
   },
   async redirects() {
