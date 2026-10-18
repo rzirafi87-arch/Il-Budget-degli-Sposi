@@ -28,10 +28,12 @@ Ultimo aggiornamento: 2026-10-18 (Claude)
 
 | Elemento | Stato |
 |---|---|
-| `main` | `d296de5` (merge PR #73 e #74) |
+| `main` | `0390eb8` (merge PR #78, 2026-10-18 17:10 UTC; prima `d296de5`, merge PR #73 e #74) |
 | PR #72 — Branch 54 (Codex) | aperta, review indipendente: nessun P0/P1; P2 in lavorazione da Codex |
 | PR #75 — questo `HANDOFF.md` (Claude) | aperta: **`HANDOFF.md` non è ancora su `main`**, vive solo sul branch `docs/handoff` |
-| PR #76 (B55), #77, #78, #79 (Claude) | aperte, **nessuna mergiata**; `main` ancora `d296de5`. Stato CI e ordine di sblocco in §3.1 |
+| PR #76 (B55) e #79 (Claude) | aperte, **CI tutta verde** e `mergeable_state=clean` (head `a872cc0` e `2ffdae7`, con `main` già unito). **Non mergiate**: il merge spetta all'utente. Dettagli in §3.1 |
+| PR #77 (Claude) | aperta, **non aggiornata da `main`**: il suo `Preview integration` è ancora rosso sul vecchio head (stesso passo di §3.1). Serve `git merge main` |
+| PR #78 — CI Preview Vercel (Claude) | **mergiata** (2026-10-18 17:10 UTC) |
 | PR #73 — truthfulness hotfix (Claude) | **mergiata** |
 | PR #74 — 401 uniformi su `/api/my` (Claude) | **mergiata** |
 | Vercel progetto reale | `il-budget-degli-sposi` → `il-budget-degli-sposi.vercel.app` (protetto da login Vercel) |
@@ -58,23 +60,24 @@ Prima di aprire un branch, controllare qui chi sta lavorando su cosa.
 | Branch / PR | Proprietario | File principali | Stato |
 |---|---|---|---|
 | `branch-54-onboarding-activation-ux-mobile` / #72 | Codex | onboarding, ProgressiveSetup, event/resolve, auth page, migration activation | aperta |
-| `ci/vercel-preview-env` / #78 | Claude | `.github/workflows/playwright-i18n.yml` (riga del lookup Preview) | CI verde. **Da mergiare per prima (l'utente)**: sblocca il check `Preview integration` di #76, #77 e #79 |
-| `fix/user-menu-close` / #77 | Claude | `src/components/UserMenu.tsx` | in attesa di #78 |
-| `fix/budget-idea-lock` / #79 | Claude | `idea-di-budget/page.tsx`, messaggi budgetIdea | tutti i check verdi tranne `Preview integration` (blocco di #78, §3.1). Nessuna modifica al codice necessaria |
-| `branch-55-data-quality` / #76 | **Claude** | catalogo: `suppliers`/`locations`/`churches`/`vendors`, categorie, `/api/suppliers`, pagine categoria e `/fornitori` | aperta (parallelo a B54, argomenti distinti). Tipi DB sincronizzati in `667d645`; `Preview integration` attende #78 (§3.1) |
+| `ci/vercel-preview-env` / #78 | Claude | `.github/workflows/playwright-i18n.yml` (riga del lookup Preview) | **mergiata** il 2026-10-18 17:10 UTC |
+| `fix/user-menu-close` / #77 | Claude | `src/components/UserMenu.tsx` | aperta; #78 è su `main`, serve `git merge main` e verifica dei workflow (fuori dal blocco CI #76/#79) |
+| `fix/budget-idea-lock` / #79 | Claude | `idea-di-budget/page.tsx`, messaggi budgetIdea | **CI verde** (head `2ffdae7`, merge di `main`). Nessuna modifica al codice è stata necessaria. Pronta al merge dell'utente |
+| `branch-55-data-quality` / #76 | **Claude** | catalogo: `suppliers`/`locations`/`churches`/`vendors`, categorie, `/api/suppliers`, pagine categoria e `/fornitori` | **CI verde** (head `a872cc0` = merge di `main` + tipi DB sincronizzati `667d645`). Pronta al merge dell'utente; parallela a B54, argomenti distinti |
 
-### 3.1 Sblocco CI di #76 e #79 (2026-10-18)
+### 3.1 CI di #76 e #79 portata a verde (2026-10-18)
 
-Situazione verificata: `main` = `d296de5`, #72 e #78 **non** sono su `main`, quindi nessun merge da `main` è stato fatto (#76 e #79 sono a 0 commit di distanza da `main`) e nessun conflitto B54/B55 è stato risolto. Nessun merge, nessun rebase, nessun force push, Production non toccata.
+**Esito (verificato via API sui due head):** #76 (`a872cc0`) e #79 (`2ffdae7`) hanno tutti i check verdi e `mergeable_state=clean`; restano "skipped" solo `Supabase Preview` e, su #79, i job di smoke Production (non girano sulle PR). **Nessuna PR è stata mergiata**, nessun rebase, nessun force push, Production non toccata.
 
-Due cause distinte dei check rossi:
-1. **`Preview integration` (#76, #79; stesso passo "Resolve exact Vercel Preview for this commit").** I deploy Vercel di queste PR hanno environment `Preview` (senza suffisso) mentre il workflow su `main` cerca solo `Preview – il-budget-degli-sposi`. #78 accetta entrambi i nomi ed è verde perché il suo branch contiene già il workflow corretto. Finché #78 non è su `main`, questo check resta rosso e **non è un difetto del codice** di #76/#79.
-2. **`rebuild` (solo #76).** Tutti i passi di migration e pgTAP erano verdi; falliva `Verify committed database types are current` perché `src/types/database.types.ts` non rifletteva la migration B55. Aggiunti `supplier_category_aliases`, `supplier_category_slug()`, `suppliers.duplicate_of` e il suo FK (commit `667d645`). I tipi sono stati **derivati a mano dalla DDL** (nel cloud non c'è Supabase CLI): se la CI dovesse ancora segnalare differenze, scaricare l'artifact `current-database-types` dal run di `Database Rebuild` e copiarlo in `src/types/database.types.ts`.
+Come si è arrivati lì:
+1. **`Preview integration` (#76, #79, #77), passo "Resolve exact Vercel Preview for this commit".** I deploy Vercel hanno environment `Preview` (senza suffisso), mentre il lookup su `main` cercava solo `Preview – il-budget-degli-sposi`. Il fix è #78, **mergiata su `main` alle 17:10 UTC mentre il lavoro era in corso**. La run di #76 su `667d645`, partita dopo il merge di #78, è passata anche se il file del branch conteneva ancora il lookup vecchio: la spiegazione più probabile è che nelle run `pull_request` GitHub legga il workflow dal merge-ref (branch + `main` corrente). È un'**inferenza**: i log dei job non sono leggibili dal cloud. Non era un difetto del codice di #76/#79.
+2. **`main` unito nei due branch con merge semplice** (#78 tocca solo `playwright-i18n.yml`, nessun conflitto): #76 → `a872cc0`, #79 → `2ffdae7`.
+3. **`rebuild` (solo #76).** Tutti i passi di migration e pgTAP erano verdi; falliva `Verify committed database types are current` perché `src/types/database.types.ts` non rifletteva la migration B55. Aggiunti `supplier_category_aliases`, `supplier_category_slug()`, `suppliers.duplicate_of` e il suo FK (commit `667d645`). I tipi sono stati **derivati a mano dalla DDL** (nel cloud non c'è Supabase CLI) e la CI li ha confermati (verde su `667d645` e su `a872cc0`). Se in futuro la CI segnalasse differenze: scaricare l'artifact `current-database-types` del run di `Database Rebuild` e copiarlo in `src/types/database.types.ts`.
 
-Ordine di sblocco:
-1. L'utente mergia **#78**.
-2. Claude fa `git merge main` (no rebase, no force push) in #77, #79 e #76 e controlla i workflow.
-3. Quando B54 (#72) o B55 (#76) è su `main`, l'altro branch risolve i conflitti su **tre** file: `scripts/rebuild-local-supabase.sh`, `.github/workflows/database-rebuild.yml` e `supabase/tests/pgtap-suites.txt`, tenendo **prima B54 poi B55** (la migration B54 è `20261017…`, quella B55 `20261018…`). B54 non tocca `src/types/database.types.ts`.
+Prossimi passi:
+1. **L'utente decide il merge** di #76 e #79.
+2. **#77**: serve `git merge main` (no rebase, no force push) e verifica dei workflow; non era nel perimetro di questo blocco.
+3. **B54 (#72) non è su `main`** (aperta, head `82eb9b4` al momento del controllo), quindi nessun conflitto B54/B55 è stato ancora risolto. Quando B54 o B55 entra su `main`, l'altro branch risolve i conflitti su **tre** file: `scripts/rebuild-local-supabase.sh`, `.github/workflows/database-rebuild.yml` e `supabase/tests/pgtap-suites.txt`, tenendo **prima B54 poi B55** (la migration B54 è `20261017…`, quella B55 `20261018…`). B54 non tocca `src/types/database.types.ts`.
 4. I merge su `main` restano all'utente.
 
 ---
@@ -147,4 +150,6 @@ Verificati il 2026-10-18; non sono bug del repo.
 - **`gh pr view` e ogni chiamata GraphQL sono bloccati.** Usare le API REST: `gh api repos/<repo>/pulls/N`, `.../commits/<sha>/check-runs`, `.../actions/jobs/<id>` (passi) e `.../check-runs/<id>/annotations`.
 - **Log dei job e artifact di Actions non scaricabili dal cloud**: il gateway rifiuta l'host blob di GitHub. Dal cloud si vede solo *quale passo* fallisce, non l'output (es. il diff dei tipi). Per leggere l'output serve l'utente o Codex dal PC.
 - **Nessuna Supabase CLI e nessun Docker nel cloud**: i tipi DB (`src/types/database.types.ts`) non si possono rigenerare lì. Dal PC: `supabase gen types typescript --local`, oppure copiare l'artifact `current-database-types` del run di `Database Rebuild`.
-- **Il clone cloud è shallow e single-branch**: per altri branch usare refspec espliciti (`git fetch origin +refs/heads/X:refs/remotes/origin/X`); `checkout -b --track` fallisce.
+- **Il clone cloud è shallow e single-branch**: per altri branch usare refspec espliciti (`git fetch origin +refs/heads/X:refs/remotes/origin/X`); `checkout -b --track` fallisce (e può lasciare indice e working tree su un altro albero: controllare `git status`).
+- **`git push origin X:X` non aggiorna `origin/X`** con questo refspec: l'hook di fine sessione può segnalare commit "non pubblicati" già presenti sul remoto. Basta rifare il fetch esplicito di `X` e confrontare con `git ls-remote`.
+- **Probabile (inferito, non verificato sui log): nelle run `pull_request` il workflow viene letto dal merge-ref (branch + `main` corrente)**, quindi una modifica al workflow già su `main` varrebbe anche per le PR che non la contengono, a partire dal prossimo push.
