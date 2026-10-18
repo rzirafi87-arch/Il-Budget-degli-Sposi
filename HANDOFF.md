@@ -64,6 +64,12 @@ Prima di aprire un branch, controllare qui chi sta lavorando su cosa.
 | `fix/user-menu-close` / #77 | Claude | `src/components/UserMenu.tsx` | aperta; #78 è su `main`, serve `git merge main` e verifica dei workflow (fuori dal blocco CI #76/#79) |
 | `fix/budget-idea-lock` / #79 | Claude | `idea-di-budget/page.tsx`, messaggi budgetIdea | **CI verde** (head `2ffdae7`, merge di `main`). Nessuna modifica al codice è stata necessaria. Pronta al merge dell'utente |
 | `branch-55-data-quality` / #76 | **Claude** | catalogo: `suppliers`/`locations`/`churches`/`vendors`, categorie, `/api/suppliers`, pagine categoria e `/fornitori` | **CI verde** (head `a872cc0` = merge di `main` + tipi DB sincronizzati `667d645`). Pronta al merge dell'utente; parallela a B54, argomenti distinti |
+| `security/b57-unauth-catalog-writes` / #80 | Claude (B57) | POST `checklist-modules`, `traditions`, `wedding-planner`, `musica-*`; `src/lib/communitySubmission.ts`; 3 form; messaggi it/en/es/fr/de/hi | aperta |
+| `security/b57-cron-auth` / #81 | Claude (B57) | `api/cron/*`, `src/lib/cronAuth.ts`, `scripts/audit-branch51-routes.mjs` | aperta |
+| `security/b57-categories-authz` / #82 | Claude (B57) | `api/categories/route.ts` | aperta |
+| `security/b57-csp` / #83 | Claude (B57) | `next.config.ts`, `src/config/securityHeaders.ts` | aperta; prima del merge giro su Preview con console aperta (violazioni CSP) |
+| `security/b57-private-rls` / #84 | Claude (B57) | migration `20261018190000_branch_57_private_rls_hardening.sql`, pgTAP, `database-rebuild.yml`, `pgtap-suites.txt` | aperta; **migration → gate Production**; rebase atteso con #76 (stessi due file CI) |
+| `security/b57-deps` / #85 | Claude (B57) | `package.json`, `package-lock.json` (next 16.3.8 + patch transitive) | aperta |
 
 ### 3.1 CI di #76 e #79 portata a verde (2026-10-18)
 
@@ -107,9 +113,10 @@ Prossimi passi:
 ### Prima della Beta
 - **Dominio** da acquistare. Poi: Supabase Auth → Site URL = dominio, redirect `https://<dominio>/**`; togliere le 4 voci del vecchio progetto `-kbg1`. Oggi la Site URL è l'indirizzo `.vercel.app` protetto da login Vercel: con utenti esterni, conferma email e recupero password finirebbero sul login di Vercel.
 - **Supabase Free**: progetto messo in pausa dopo 7 giorni di bassa attività → valutare Pro per la Beta.
-- **Repo pubblico**: scansione secret su tutta la storia git (es. gitleaks) e decisione se renderlo privato.
+- **Repo pubblico**: scansione secret sulla storia git **fatta** (B57, 2026-10-18). Ci sono **azioni manuali dell'utente in sospeso** su Supabase e Google Cloud, descritte nel report privato B57 (non nel repo). Resta la decisione se renderlo privato.
 - Pagine pubbliche di categoria con dati errati/vuoti (vedi §4) → B55.
-- `private.subcategory_identity_reservations` senza RLS → B57.
+- `private.subcategory_identity_reservations` senza RLS → B57, PR #84 (non raggiungibile oggi; difesa in profondità).
+- B57 seguiti: CSP con nonce (dopo #83); Supabase Auth "leaked password protection" (impostazione utente); `/api/public/[publicId]` e `/api/share/[token]` interrogano colonne/tabelle inesistenti (500/503).
 - Modalità demo anonima su GET `/api/my/*` (dashboard, expenses, guests, incomes): decidere se tenerla. Il test `anonymousAccess.test.ts` garantisce che non legga il database.
 - `/api/event/resolve` chiamato 2 volte per pagina.
 
