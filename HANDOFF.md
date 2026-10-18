@@ -15,9 +15,12 @@ Ultimo aggiornamento: 2026-10-18 (Claude)
 - **Fornitori (clienti paganti):** presenza nel catalogo tramite **pacchetti** (gratuiti o a pagamento), rivendicazione del profilo, visibilità.
 - Il **catalogo fornitori è il prodotto venduto**: qualità, verifica e proprietà dei dati sono centrali, non accessorie.
 
-### Perimetro Beta (proposto, da confermare)
-- Solo **matrimonio + Italia** visibili. Altri tipi di evento e paesi dietro feature flag.
-- Coppie reali + **pochi fornitori pilota con pacchetto gratuito**, per validare i pacchetti prima di costruire i pagamenti (B60).
+### Decisioni dell'utente (2026-10-18)
+- **Perimetro Beta confermato:** solo **matrimonio + Italia** visibili. Altri tipi di evento e paesi dietro feature flag.
+- **Copertura: tutte le province italiane** (non zone pilota). Crescita del catalogo con dati aperti non verificati + rivendicazione/creazione del profilo da parte dei fornitori.
+- **Categorie:** l'elenco attuale va bene; vanno eliminati i **duplicati pubblicati** nei filtri (es. `Fiori e decorazioni`/`Fiorai`/`Fiori`, `Musica e intrattenimento`/`Musica per il ricevimento`, `Location e catering`/`Location per il ricevimento`, varianti maiuscole/minuscole).
+- **Modalità demo senza login: si tiene.**
+- **Pacchetti fornitori:** esistono già (`SUBSCRIPTION_SYSTEM.md`: Gratuito, Base €29,90, Premium €69,90, Premium Plus €129,90/mese; pagamenti disattivati). Revisione del modello in §5 "B59".
 
 ---
 
@@ -89,6 +92,13 @@ Prima di aprire un branch, controllare qui chi sta lavorando su cosa.
 - Termini: clausola "esclusivamente Foro di Roma" con consumatori.
 - **Marketplace con fornitori paganti**: regolamento UE P2B (condizioni per i fornitori, trasparenza del ranking), segnalazione dei risultati sponsorizzati ai consumatori.
 - Fatturazione elettronica B2B e IVA sui pacchetti (B60–61).
+
+### B59 — revisione pacchetti (proposta Claude, decisione umana)
+- Oggi il **Gratuito è invisibile** nelle ricerche: con un catalogo nuovo e zero fornitori paganti le coppie vedrebbero un catalogo vuoto. Proposta: profilo gratuito **visibile** con richieste di preventivo via piattaforma; si paga per posizione, contatti diretti, contenuti extra e statistiche (modello simile ai marketplace di settore).
+- Il badge **"Fornitore Certificato" incluso nel Base a pagamento** fa sembrare comprabile una certificazione: "Verificato" deve dipendere da un controllo (es. P.IVA), non dal pacchetto. Le posizioni a pagamento vanno etichettate come sponsorizzate.
+- La pagina pubblica `/pacchetti-fornitori` mostra prezzi non ancora decisi: fuori dal perimetro Beta.
+- Esistono già `src/app/api/stripe/checkout` e `subscription_transactions`: B60 non parte da zero, ma il provider va comunque confermato (roadmap 60.1).
+- 4 righe `premium_plus` in `suppliers` sono dati di test messicani scaduti → pulizia B55.
 
 ### Prima del primo pacchetto a pagamento
 - **Vercel Pro**: il piano Hobby è solo per uso non commerciale.
