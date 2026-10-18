@@ -1,4 +1,4 @@
-import { getBearer, requireUser } from "@/lib/apiAuth";
+import { authErrorResponse, getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { requireServerCurrentEvent } from "@/lib/currentEvent";
@@ -79,6 +79,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ incomes: formattedIncomes });
   } catch (e: unknown) {
+    const authResponse = authErrorResponse(e);
+    if (authResponse) return authResponse;
     const err = e instanceof Error ? e : new Error(String(e));
     logger.error("INCOMES GET uncaught", { message: err.message });
     return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });
@@ -113,6 +115,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ income: created });
   } catch (e: unknown) {
+    const authResponse = authErrorResponse(e);
+    if (authResponse) return authResponse;
     const err = e instanceof Error ? e : new Error(String(e));
     logger.error("INCOMES POST uncaught", { message: err.message });
     return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });

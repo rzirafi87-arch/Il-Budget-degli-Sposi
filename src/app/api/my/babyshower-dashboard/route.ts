@@ -81,9 +81,3 @@ export async function GET(req: NextRequest) {
     colorTheme: event.color_theme,
   });
 }
-
-export async function POST(req: NextRequest) {
-  // Logica di salvataggio spese/entrate (single-budget)
-  // ...implementazione standard come altri eventi single-budget...
-  return NextResponse.json({ ok: true });
-}
