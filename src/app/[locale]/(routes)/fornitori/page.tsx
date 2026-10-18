@@ -1,5 +1,6 @@
 "use client";
 
+import { SUPPLIER_CATEGORY_SLUGS } from "@/lib/supplierCategories";
 import { CatalogMap } from "@/components/catalog/CatalogMap";
 import ContributionPanel from "@/components/catalog/ContributionPanel";
 import { CurrentPosition, NearMeButton } from "@/components/catalog/NearMeButton";
@@ -15,7 +16,7 @@ import { useTranslations } from "next-intl";
 
 type Saved = { id:string; supplier_id:string; status:string; favorite:boolean; planning_state?:string };
 type Pagination = { page:number; pageSize:number; total:number; totalPages:number };
-const categories = ["Beauty & Benessere","Catering","Location & Catering","Sposa","Foto & Video","Fiori & Decor","Gioiellerie","Inviti & Stationery","Trasporti","Sposo","Musica & Intrattenimento","Viaggio di nozze","Ricevimento Location","Bomboniere & Regali","Fiorai","Musica Ricevimento","Fotografi","fiori"];
+const categories = SUPPLIER_CATEGORY_SLUGS;
 
 export default function SuppliersPage() {
   const t = useTranslations("catalogSearch");
@@ -65,7 +66,7 @@ export default function SuppliersPage() {
     <form onSubmit={submit} className="app-card app-card--md grid gap-3 lg:grid-cols-4">
       <label className="lg:col-span-2"><span className="sr-only">{ui("search")}</span><input className="app-input w-full" value={q} onChange={e=>setQ(e.target.value)} placeholder={ui("searchPlaceholder")}/></label>
       <select className="app-select" value={category} onChange={e=>setCategory(e.target.value)} aria-label={ui("category")}><option value="">{ui("allCategories")}</option>{categories.map(c=><option key={c} value={c}>{ui.has(`categories.${c}`) ? ui(`categories.${c}`) : c.replaceAll("_"," ")}</option>)}</select>
-      <select className="app-select" value={verification} onChange={e=>setVerification(e.target.value)} aria-label={t("verification")}><option value="">{t("all")}</option><option>VERIFIED</option><option>PROBABLE</option><option>TO_CHECK</option></select>
+      <select className="app-select" value={verification} onChange={e=>setVerification(e.target.value)} aria-label={t("verification")}><option value="">{t("all")}</option>{(["VERIFIED","PROBABLE","TO_CHECK"] as const).map(v=><option key={v} value={v}>{ui(`verification.${v}`)}</option>)}</select>
       <input className="app-input" value={city} onChange={e=>setCity(e.target.value)} placeholder={ui("city")} aria-label={ui("city")}/>
       <input className="app-input" value={province} onChange={e=>setProvince(e.target.value)} placeholder={t("province")} aria-label={t("province")}/>
       <input className="app-input" value={region} onChange={e=>setRegion(e.target.value)} placeholder={t("region")} aria-label={t("region")}/>

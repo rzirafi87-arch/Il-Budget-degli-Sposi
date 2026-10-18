@@ -56,7 +56,7 @@ export default function BeautyPage() {
       if (jwt) headers.Authorization = `Bearer ${jwt}`;
 
       const params = new URLSearchParams();
-  params.append("category", "Make-up & Beauty");
+  params.append("category", "beauty");
       if (region) params.append("region", region);
       if (province) params.append("province", province);
       if (search) params.append("search", search);

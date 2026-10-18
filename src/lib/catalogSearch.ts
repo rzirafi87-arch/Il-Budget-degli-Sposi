@@ -1,3 +1,4 @@
+import { toSupplierCategorySlug } from "@/lib/supplierCategories";
 import { getServiceClient } from "@/lib/supabaseServer";
 
 export type CatalogEntityType = "church" | "location" | "supplier";
@@ -38,12 +39,22 @@ function coordinate(value: string | null, min: number, max: number) {
   return parsed;
 }
 
+/** Supplier categories are canonical slugs; other entity types keep their own vocabulary. */
+function catalogCategory(entity: CatalogEntityType, raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  if (entity === "supplier") return toSupplierCategorySlug(raw) ?? raw.toLowerCase();
+  return raw.toLowerCase();
+}
+
+export const BETA_DEFAULT_COUNTRY = "it";
+
 export function parseCatalogSearch(searchParams: URLSearchParams, forcedEntity?: CatalogEntityType): CatalogSearchRequest {
   const entity = forcedEntity || searchParams.get("entityType") || "";
   if (!ENTITY_TYPES.has(entity as CatalogEntityType)) throw new Error("INVALID_ENTITY_TYPE");
   const rawCountry = searchParams.get("country")?.trim().toLowerCase();
   if (rawCountry && !/^[a-z]{2}$/.test(rawCountry)) throw new Error("INVALID_COUNTRY");
-  const country = rawCountry || undefined;
+  // Beta perimeter (HANDOFF.md): the public catalog is Italy unless a country is requested.
+  const country = rawCountry || BETA_DEFAULT_COUNTRY;
   const verification = searchParams.get("verification")?.trim().toUpperCase();
   if (verification && !VERIFICATION.has(verification as CatalogVerificationStatus)) throw new Error("INVALID_VERIFICATION");
   const latitude = coordinate(searchParams.get("latitude") ?? searchParams.get("lat"), -90, 90);
@@ -58,7 +69,7 @@ export function parseCatalogSearch(searchParams: URLSearchParams, forcedEntity?:
   if (requestedSort === "NEAREST" && latitude === undefined) throw new Error("NEAREST_REQUIRES_POSITION");
   return {
     entityType: entity as CatalogEntityType, query: text(searchParams.get("q")),
-    category: text(searchParams.get("category") ?? searchParams.get("type"), 80)?.toLowerCase(),
+    category: catalogCategory(entity as CatalogEntityType, text(searchParams.get("category") ?? searchParams.get("type"), 80)),
     city: text(searchParams.get("city")), province: text(searchParams.get("province")),
     region: text(searchParams.get("region")), country,
     verificationStatus: verification as CatalogVerificationStatus | undefined,
