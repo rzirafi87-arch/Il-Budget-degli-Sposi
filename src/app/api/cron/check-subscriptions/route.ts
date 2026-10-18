@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 import { requirePaymentsCapability } from "@/lib/monetizationCapability";
+import { isAuthorizedCronRequest } from "@/lib/cronAuth";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { sendSubscriptionExpiryWarning } from "@/lib/emailService";
 
@@ -11,20 +12,8 @@ export async function GET(req: NextRequest) {
   if (unavailable) return unavailable;
 
   try {
-    // Verifica secret (due modalità):
-    // 1) Authorization: Bearer <CRON_SECRET>  (per run manuali)
-    // 2) Token via query string ?token=<CRON_SECRET> (opzione compatibile con cron esterni)
-    // In alternativa, se la richiesta proviene dal Cron di Vercel, è presente l'header x-vercel-cron
-    const authHeader = req.headers.get("authorization");
-    const cronSecret = process.env.CRON_SECRET;
-    const token = req.nextUrl.searchParams.get("token");
-    const isVercelCron = req.headers.get("x-vercel-cron") === "1";
-
-    const authorized = Boolean(
-      (cronSecret && authHeader === `Bearer ${cronSecret}`) ||
-      (cronSecret && token === cronSecret) ||
-      isVercelCron
-    );
+    // Only `Authorization: Bearer <CRON_SECRET>` (sent by Vercel Cron) is accepted.
+    const authorized = isAuthorizedCronRequest(req);
 
     if (!authorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -33,7 +33,7 @@ function classify(file, source) {
     ? "admin"
     : /requireUser|requireSession|requireEventAccess|requireEventResource/.test(source)
       ? "user"
-      : /CRON_SECRET|x-vercel-cron/.test(source)
+      : /isAuthorizedCronRequest|CRON_SECRET/.test(source)
         ? "cron"
         : route.startsWith("/api/auth/")
           ? "auth-flow"
