@@ -1,6 +1,7 @@
 export const runtime = "nodejs";
 
 import { getServiceClient } from "@/lib/supabaseServer";
+import { isHiddenCatalogSource, visibleSourceFilter } from "@/lib/catalogSourcePolicy";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -173,7 +174,10 @@ export async function GET(req: NextRequest) {
     }
 
     // Default branch: existing unified view for locations/churches/others
-    let query = db.from("vendors_with_places").select("*", { count: "exact" });
+    if (isHiddenCatalogSource(filters.source)) {
+      return NextResponse.json({ success: true, data: [], pagination: { total: 0, limit: filters.limit, offset: filters.offset, hasMore: false }, filters });
+    }
+    let query = db.from("vendors_with_places").select("*", { count: "exact" }).or(visibleSourceFilter());
 
     if (filters.type) query = query.eq("type", filters.type);
     if (filters.region) query = query.eq("region", filters.region);
