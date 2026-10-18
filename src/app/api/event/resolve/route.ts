@@ -5,6 +5,12 @@ import { errorReference } from "@/lib/errorReference";
 
 export const runtime = "nodejs";
 
+class ProgressReadError extends Error {
+  constructor(readonly operation: string, readonly databaseCode?: string) {
+    super("EVENT_PROGRESS_READ_FAILED");
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
   const db = getServiceClient();
@@ -31,7 +37,7 @@ export async function GET(req: NextRequest) {
     .eq("id", resolution.currentEvent.eventId)
     .maybeSingle();
 
-  if (evErr || !ev) throw new Error("EVENT_READ_FAILED");
+  if (evErr || !ev) throw new ProgressReadError("event", evErr?.code);
 
   // Prova ad arricchire con dati carta nozze (data e nomi)
   const { data: card, error: cardError } = await db
@@ -65,7 +71,12 @@ export async function GET(req: NextRequest) {
     db.from("saved_suppliers").select("*", { count: "exact", head: true }).eq("event_id", ev.id).in("status", ["SAVED", "CONTACTED", "QUOTE_REQUESTED", "QUOTE_RECEIVED", "SHORTLISTED", "SELECTED"]),
     db.from("budget_items").select("*", { count: "exact", head: true }).eq("event_id", ev.id).eq("source", "manual"),
   ]);
-  if (cardError || expenseError || selectedError || guestError || savedError || budgetError) throw new Error("PROGRESS_READ_FAILED");
+  if (cardError) throw new ProgressReadError("wedding_card", cardError.code);
+  if (expenseError) throw new ProgressReadError("expenses", expenseError.code);
+  if (selectedError) throw new ProgressReadError("selected_suppliers", selectedError.code);
+  if (guestError) throw new ProgressReadError("guests", guestError.code);
+  if (savedError) throw new ProgressReadError("saved_suppliers", savedError.code);
+  if (budgetError) throw new ProgressReadError("manual_budget_items", budgetError.code);
 
   const couple_name = card?.bride_name && card?.groom_name
     ? `${card.bride_name} & ${card.groom_name}`
@@ -91,9 +102,12 @@ export async function GET(req: NextRequest) {
     status: "RESOLVED",
     onboarding: deriveOnboardingState(ev),
   });
-  } catch {
+  } catch (cause) {
     const reference = errorReference();
-    console.error("EVENT_PROGRESS_READ_FAILED", { reference });
+    // Keep correlation useful without logging query text, exception messages or PII.
+    const operation = cause instanceof ProgressReadError ? cause.operation : "unexpected";
+    const code = cause instanceof ProgressReadError && /^(?:[0-9A-Z]{5}|PGRST[0-9]{3})$/.test(cause.databaseCode || "") ? cause.databaseCode : undefined;
+    console.error("EVENT_PROGRESS_READ_FAILED", { reference, operation, ...(code ? { code } : {}) });
     return NextResponse.json({ error: "EVENT_PROGRESS_READ_FAILED", reference }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }

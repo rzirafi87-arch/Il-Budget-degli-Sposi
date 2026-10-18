@@ -57,6 +57,9 @@ No P0/P1 reported. P2 reconciliation reopens the gate for subsequent changes:
 - Client-generated UUIDs were not correlated with server logs. ProgressiveSetup
   now displays the server UUID when returned; failures without a server reference
   show no code. Other client recovery consumers no longer generate local UUIDs.
+  Automatic review also required useful server diagnostics: resolver failures log
+  the same returned reference with an explicit failed operation and validated
+  database error code, never raw exception/query text or personal data.
 - Successful NO_EVENT/SELECTION_REQUIRED responses no longer become retry errors
   in ProgressiveSetup; route guards own onboarding/selection. Unit RED reproduced
   all three reference/NO_EVENT failures before the fix. A real-login E2E covers a

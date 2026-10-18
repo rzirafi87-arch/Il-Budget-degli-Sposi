@@ -30,7 +30,25 @@ it("returns recoverable failure, never a missing-event success, when reads fail"
   expect(body.error).toBe("EVENT_PROGRESS_READ_FAILED");
   expect(body.reference).toMatch(/^[0-9a-f-]{36}$/);
   expect(JSON.stringify(body)).not.toContain("private backend details");
+  expect(spy).toHaveBeenCalledWith("EVENT_PROGRESS_READ_FAILED", { reference: body.reference, operation: "unexpected" });
   spy.mockRestore();
+});
+
+it("logs safe operation and database code under the returned reference", async () => {
+  const baseline = mockFrom.getMockImplementation()!;
+  mockFrom.mockImplementation((table: string) => table === "guests" ? {
+    select: jest.fn().mockReturnThis(), eq: jest.fn().mockReturnThis(),
+    then: (resolve: (value: unknown) => unknown) => Promise.resolve({ count: null, error: { code: "42P01", message: "private query details" } }).then(resolve),
+  } : baseline(table));
+  const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+  try {
+    const response = await GET(request);
+    const body = await response.json();
+    expect(response.status).toBe(503);
+    expect(spy).toHaveBeenCalledWith("EVENT_PROGRESS_READ_FAILED", { reference: body.reference, operation: "guests", code: "42P01" });
+    expect(JSON.stringify(spy.mock.calls)).not.toContain("private query details");
+    expect(body).not.toHaveProperty("code");
+  } finally { spy.mockRestore(); }
 });
 
 it.each([false, true])("counts manual budget items, never an applied idea (manual=%s)", async (manual) => {
