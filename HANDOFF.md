@@ -56,6 +56,9 @@ Prima di aprire un branch, controllare qui chi sta lavorando su cosa.
 | Branch / PR | Proprietario | File principali | Stato |
 |---|---|---|---|
 | `branch-54-onboarding-activation-ux-mobile` / #72 | Codex | onboarding, ProgressiveSetup, event/resolve, auth page, migration activation | aperta |
+| `ci/vercel-preview-env` / #78 | Claude | `.github/workflows/playwright-i18n.yml` (riga del lookup Preview) | CI verde, da mergiare per prima |
+| `fix/user-menu-close` / #77 | Claude | `src/components/UserMenu.tsx` | in attesa di #78 |
+| `fix/budget-idea-lock` / #79 | Claude | `idea-di-budget/page.tsx`, messaggi budgetIdea | CI in corso |
 | `branch-55-data-quality` | **Claude** | catalogo: `suppliers`/`locations`/`churches`/`vendors`, categorie, `/api/suppliers`, pagine categoria e `/fornitori` | in corso (parallelo a B54, argomenti distinti) |
 
 ---
@@ -109,7 +112,15 @@ Prima di aprire un branch, controllare qui chi sta lavorando su cosa.
 
 ---
 
-## 6. Come si lavora (invariato)
+## 6. Regole d'uso degli assistenti (decisione utente 2026-10-18)
+
+Per non restare fermi per i limiti di utilizzo:
+- **Sonnet** per i fix di routine (bug piccoli, test, copy, piccoli refactor).
+- **Opus** per review indipendenti, architettura, sicurezza e specifiche.
+- **Una chat nuova per ogni branch**, che parte leggendo questo `HANDOFF.md`; aggiornare questo file alla fine di ogni blocco di lavoro.
+- Evitare browser/screenshot quando bastano codice, log e API; leggere solo i file e le righe necessari.
+
+## 7. Come si lavora (invariato)
 
 PRECHECK → SPEC → RED → IMPLEMENTAZIONE MINIMA → GREEN → RED TEAM → PR → CI → RELEASE READINESS → PRODUCTION GATE separato.
 Niente DML/migration in Production senza gate; niente force push; niente cancellazione di dati utente.
