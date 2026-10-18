@@ -592,23 +592,27 @@
             "duration": "Duration"
           },
           "rows": {
-            "session": "Session",
-            "30d": "30 days",
+            "untilLogout": "Until logout",
+            "6m": "6 months",
             "1y": "1 year",
-            "session_token": {
-              "purpose": "Keeps the user session active"
+            "untilCleared": "Until cleared from the browser",
+            "sbAuth": {
+              "purpose": "Keeps you signed in (Supabase Auth, browser local storage)"
             },
-            "auth_token": {
-              "purpose": "Secure authentication"
+            "language": {
+              "purpose": "Remembers your chosen language"
             },
-            "csrf_token": {
-              "purpose": "Protection against CSRF attacks"
+            "country": {
+              "purpose": "Remembers your chosen country"
             },
-            "user_preferences": {
-              "purpose": "Saves UI/UX preferences"
+            "eventType": {
+              "purpose": "Remembers the selected event type"
             },
-            "cookie_consent": {
-              "purpose": "Remembers cookie banner choice"
+            "localPrefs": {
+              "purpose": "Interface and active-event preferences (language, country, event type, active event, Budget Idea settings), saved in browser local storage"
+            },
+            "analyticsConsent": {
+              "purpose": "Remembers your choice about analytics tools (only present if analytics tools are enabled)"
             }
           }
         },
@@ -619,15 +623,15 @@
         "s2": {
           "title": "2. Types of Cookies Used",
           "tech": {
-            "title": "2.1 Technical (Necessary) Cookies 🔒",
+            "title": "2.1 Technical (Necessary) Cookies",
             "p1": "These cookies are essential for the website to function and cannot be disabled. They do not require your consent under current regulations."
           },
           "prefs": {
             "title": "2.2 Preference Cookies 🎨",
-            "p1": "They remember your choices (language, theme, view) to enhance your experience."
+            "p1": "They remember your choices (language, country, event type) so the app works as you set it up. They are needed for the service you requested and do not require consent."
           },
           "analytics": {
-            "title": "2.3 Analytics Cookies 📊",
+            "title": "2.3 Analytics Cookies",
             "p1": "They collect anonymous data about how you use the site to help us improve it. They require your consent.",
             "note": "Note: We currently do not use third-party analytics cookies (such as Google Analytics). We only monitor anonymous server-side metrics."
           },
@@ -653,7 +657,7 @@
           "title": "4. How to Manage Cookies",
           "banner": {
             "title": "4.1 Via Cookie Banner",
-            "p1": "On your first visit, you can choose which cookies to accept through the consent banner. You can change your preferences at any time from your account settings."
+            "p1": "We currently do not use analytics or marketing tools, so we do not ask for any consent. If we enable them in the future, we will ask you on your first visit and you can change your choice at any time from the \"Cookie preferences\" link at the bottom of the page."
           },
           "browser": {
             "title": "4.2 Via Browser",
@@ -702,17 +706,17 @@
         },
         "s9": {
           "title": "9. Contacts",
-          "p1": "For questions about the Cookie Policy or how we handle your data: Email: privacy@ilbudgetdeglisposi.it — Phone: +39 XXX XXX XXXX"
+          "p1": "For questions about the Cookie Policy or how we handle your data: email privacy@ilbudgetdeglisposi.it"
         },
         "summary": {
-          "title": "📋 Quick Summary",
+          "title": "Quick Summary",
           "tech": {
             "title": "Technical Cookies",
             "value": "✅ Always active"
           },
           "prefs": {
             "title": "Preference Cookies",
-            "value": "🔘 Require consent"
+            "value": "✅ Always active (needed for the service)"
           },
           "marketing": {
             "title": "Marketing Cookies",
@@ -848,7 +852,7 @@
               "desc": "Withdraw consent at any time."
             }
           },
-          "contact": "To exercise your rights, contact us: {strong}"
+          "contact": "To exercise your rights, contact us: <strong>privacy@ilbudgetdeglisposi.it</strong>"
         },
         "s9": {
           "title": "9. Data security",
@@ -863,7 +867,7 @@
         },
         "s10": {
           "title": "10. Cookies",
-          "p1": "For more details about cookies, see our {link}."
+          "p1": "For more details about cookies, see our <link>Cookie Policy</link>."
         },
         "s11": {
           "title": "11. Extra-EU transfers",
@@ -881,14 +885,12 @@
           "title": "14. Privacy Officer Contacts",
           "p1": "For any privacy question or request:",
           "authName": "Privacy Officer — Il Budget degli Sposi",
-          "addr": "Address: Via Esempio 123, 00100 Rome (RM)",
-          "email": "Email: privacy@ilbudgetdeglisposi.it",
-          "phone": "Phone: +39 XXX XXX XXXX"
+          "email": "Email: privacy@ilbudgetdeglisposi.it"
         },
         "s15": {
           "title": "15. How to exercise your rights",
           "p1": "You can exercise your rights by writing to:",
-          "email": "Email: {strong}",
+          "email": "Email: <strong>privacy@ilbudgetdeglisposi.it</strong>",
           "sla": "We will respond within 30 days, unless longer periods apply as per GDPR."
         }
       },

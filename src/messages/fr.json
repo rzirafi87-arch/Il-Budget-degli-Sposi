@@ -1344,23 +1344,27 @@
           "duration": "Durée"
         },
         "rows": {
-          "session": "Session",
-          "30d": "30 jours",
+          "untilLogout": "Jusqu'à la déconnexion",
+          "6m": "6 mois",
           "1y": "1 an",
-          "session_token": {
-            "purpose": "Maintient la session utilisateur active"
+          "untilCleared": "Jusqu'à suppression dans le navigateur",
+          "sbAuth": {
+            "purpose": "Maintient votre session de connexion (Supabase Auth, stockage local du navigateur)"
           },
-          "auth_token": {
-            "purpose": "Authentification sécurisée"
+          "language": {
+            "purpose": "Mémorise la langue choisie"
           },
-          "csrf_token": {
-            "purpose": "Protection contre les attaques CSRF"
+          "country": {
+            "purpose": "Mémorise le pays choisi"
           },
-          "user_preferences": {
-            "purpose": "Enregistre les préférences UI/UX"
+          "eventType": {
+            "purpose": "Mémorise le type d'événement sélectionné"
           },
-          "cookie_consent": {
-            "purpose": "Se souvient du choix de la bannière de cookie"
+          "localPrefs": {
+            "purpose": "Préférences de l'interface et de l'événement actif (langue, pays, type d'événement, événement actif, réglages de l'Idée de budget), enregistrées dans le stockage local du navigateur"
+          },
+          "analyticsConsent": {
+            "purpose": "Mémorise votre choix concernant les outils d'analyse (présent uniquement si les outils d'analyse sont activés)"
           }
         }
       },
@@ -1371,15 +1375,15 @@
       "s2": {
         "title": "2. Types de cookies utilisés",
         "tech": {
-          "title": "2.1 Cookies techniques (nécessaires) 🔒",
+          "title": "2.1 Cookies techniques (nécessaires)",
           "p1": "Ces cookies sont essentiels au fonctionnement du site Web et ne peuvent pas être désactivés. Ils ne nécessitent pas votre consentement au regard de la réglementation en vigueur."
         },
         "prefs": {
           "title": "2.2 Cookies de préférence 🎨",
-          "p1": "Ils mémorisent vos choix (langue, thème, vue) pour agrémenter votre expérience."
+          "p1": "Ils mémorisent vos choix (langue, pays, type d'événement) pour que l'application fonctionne comme vous l'avez configurée. Ils sont nécessaires au service demandé et ne requièrent pas de consentement."
         },
         "analytics": {
-          "title": "2.3 Cookies d'analyse 📊",
+          "title": "2.3 Cookies d'analyse",
           "p1": "Ils collectent des données anonymes sur la façon dont vous utilisez le site pour nous aider à l'améliorer. Ils nécessitent votre consentement.",
           "note": "Remarque : Nous n'utilisons actuellement pas de cookies d'analyse tiers (tels que Google Analytics). Nous surveillons uniquement les métriques anonymes côté serveur."
         },
@@ -1405,7 +1409,7 @@
         "title": "4. Comment gérer les cookies",
         "banner": {
           "title": "4.1 Via la bannière de cookies",
-          "p1": "Lors de votre première visite, vous pouvez choisir les cookies que vous souhaitez accepter via la bannière de consentement. Vous pouvez modifier vos préférences à tout moment depuis les paramètres de votre compte."
+          "p1": "Nous n'utilisons actuellement aucun outil d'analyse ni de marketing : nous ne vous demandons donc aucun consentement. Si nous les activons à l'avenir, nous vous le demanderons lors de votre première visite et vous pourrez modifier votre choix à tout moment via le lien « Préférences cookies » en bas de page."
         },
         "browser": {
           "title": "4.2 Via le navigateur",
@@ -1454,17 +1458,17 @@
       },
       "s9": {
         "title": "9. Contacts",
-        "p1": "Pour des questions sur la politique en matière de cookies ou sur la façon dont nous traitons vos données : Email : Privacy@ilbudgetdeglisposi.it — Téléphone : +39 XXX XXX XXXX"
+        "p1": "Pour toute question sur la Politique de cookies ou sur le traitement de vos données : e-mail privacy@ilbudgetdeglisposi.it"
       },
       "summary": {
-        "title": "📋 Résumé rapide",
+        "title": "Résumé rapide",
         "tech": {
           "title": "Cookies techniques",
           "value": "✅ Toujours actif"
         },
         "prefs": {
           "title": "Cookies de préférence",
-          "value": "🔘 Exiger le consentement"
+          "value": "✅ Toujours actifs (nécessaires au service)"
         },
         "marketing": {
           "title": "Cookies marketing",
@@ -1600,7 +1604,7 @@
             "desc": "Retirez votre consentement à tout moment."
           }
         },
-        "contact": "Pour exercer vos droits, contactez-nous : {strong}"
+        "contact": "Pour exercer vos droits, contactez-nous : <strong>privacy@ilbudgetdeglisposi.it</strong>"
       },
       "s9": {
         "title": "9. Sécurité des données",
@@ -1615,7 +1619,7 @@
       },
       "s10": {
         "title": "10. Cookies",
-        "p1": "Pour plus de détails sur les cookies, consultez notre {link}."
+        "p1": "Pour plus de détails sur les cookies, consultez notre <link>Politique de cookies</link>."
       },
       "s11": {
         "title": "11. Virements extra-UE",
@@ -1633,14 +1637,12 @@
         "title": "14. Contacts du responsable de la confidentialité",
         "p1": "Pour toute question ou demande relative à la confidentialité :",
         "authName": "Responsable de la confidentialité — Il Budget degli Sposi",
-        "addr": "Adresse : Via Esempio 123, 00100 Rome (RM)",
-        "email": "E-mail : Privacy@ilbudgetdeglisposi.it",
-        "phone": "Téléphone : +39 XXX XXX XXXX"
+        "email": "E-mail : Privacy@ilbudgetdeglisposi.it"
       },
       "s15": {
         "title": "15. Comment exercer vos droits",
         "p1": "Vous pouvez exercer vos droits en écrivant à :",
-        "email": "Courriel : {strong}",
+        "email": "Courriel : <strong>privacy@ilbudgetdeglisposi.it</strong>",
         "sla": "Nous vous répondrons dans les 30 jours, sauf si des délais plus longs s'appliquent conformément au RGPD."
       }
     },
