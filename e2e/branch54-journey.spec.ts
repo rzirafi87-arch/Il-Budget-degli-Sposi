@@ -19,8 +19,8 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
       );
       await page.goto(`/it/${route}`);
       const response = await loaded;
-      expect(response.status(), `${route}: ${await response.text()}`).toBe(200);
-      expect(response.request().headers().authorization).toMatch(/^Bearer \S+$/);
+      expect.soft(response.status(), `${route}: ${await response.text()}`).toBe(200);
+      expect.soft(response.request().headers().authorization, route).toMatch(/^Bearer \S+$/);
     }
     await page.goto("/it/dashboard");
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1"); // persisted guests only
@@ -38,7 +38,7 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     await expect(page).toHaveURL(/\/it\/?$/);
     const anonymousTables = await page.evaluate(async () => {
       const response = await fetch("/api/my/tables");
-      return { status: response.status(), body: await response.json() };
+      return { status: response.status, body: await response.json() };
     });
     expect(anonymousTables.status).toBe(401);
     expect(anonymousTables.body.error).toBe("AUTHENTICATION_REQUIRED");
