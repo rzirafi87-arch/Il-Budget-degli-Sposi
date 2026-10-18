@@ -1,1 +1,11 @@
-{}
+{
+  "budgetIdea": {
+    "actions": {
+      "edit": "Modifier"
+    },
+    "messages": {
+      "locked": "Idée de budget enregistrée. Appuyez sur Modifier pour la changer.",
+      "applyConfirm": "Les postes créés auparavant depuis l'Idée de budget seront remplacés. Continuer ?"
+    }
+  }
+}

@@ -42,7 +42,7 @@
     "weddingBagIncluded": "Bereits in der Wedding Bag enthalten · wird nur einmal gezählt",
     "summary": {
       "planned": "Geplante Summe:",
-      "contingency": "Kontingenz:",
+      "contingency": "Reserve: {amount}",
       "withContingency": "Gesamtsumme inkl. Reserve: {amount}",
       "plannedTotal": "Gesamt geplant:",
       "totalWithContingency": "Gesamt mit Eventualverbindlichkeiten:"

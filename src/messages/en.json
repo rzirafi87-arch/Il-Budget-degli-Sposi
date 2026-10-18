@@ -1070,7 +1070,7 @@
     },
     "summary": {
       "plannedTotal": "Total planned:",
-      "contingency": "Contingency:",
+      "contingency": "Contingency: {amount}",
       "totalWithContingency": "Total with contingency:"
     },
     "panel": {

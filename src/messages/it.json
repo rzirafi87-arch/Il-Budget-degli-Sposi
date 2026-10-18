@@ -1267,7 +1267,7 @@
     },
     "summary": {
       "plannedTotal": "Totale pianificato:",
-      "contingency": "Imprevisti:",
+      "contingency": "Imprevisti: {amount}",
       "totalWithContingency": "Totale con imprevisti:"
     },
     "panel": {
