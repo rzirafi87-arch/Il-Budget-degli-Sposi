@@ -12,6 +12,17 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
   const admin = createClient(url, process.env.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
   try {
     await login(page, identity);
+    // Observe actual page requests after UI login; never inject a JWT into them.
+    for (const route of ["invitati", "formazione-tavoli", "invitati/tavoli"]) {
+      const loaded = page.waitForResponse(response =>
+        response.request().method() === "GET" && new URL(response.url()).pathname === "/api/my/tables"
+      );
+      await page.goto(`/it/${route}`);
+      const response = await loaded;
+      expect(response.status(), `${route}: ${await response.text()}`).toBe(200);
+      expect(response.request().headers().authorization).toMatch(/^Bearer \S+$/);
+    }
+    await page.goto("/it/dashboard");
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1"); // persisted guests only
     const signedIn = await createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } }).auth.signInWithPassword(identity);
     expect(signedIn.error).toBeNull();
@@ -25,6 +36,17 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     await page.goto("/it/profilo");
     await page.getByRole("button", { name: /esci/i }).click();
     await expect(page).toHaveURL(/\/it\/?$/);
+    const anonymousTables = await page.evaluate(async () => {
+      const response = await fetch("/api/my/tables");
+      return { status: response.status(), body: await response.json() };
+    });
+    expect(anonymousTables.status).toBe(401);
+    expect(anonymousTables.body.error).toBe("AUTHENTICATION_REQUIRED");
+    const invalidTables = await page.evaluate(async () => {
+      const response = await fetch("/api/my/tables", { headers: { Authorization: "Bearer invalid" } });
+      return response.status;
+    });
+    expect(invalidTables).toBe(401);
     await login(page, identity);
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "3");
 
