@@ -56,6 +56,19 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     const signedIn = await createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } }).auth.signInWithPassword(identity);
     expect(signedIn.error).toBeNull();
     const headers = { Authorization: `Bearer ${signedIn.data.session!.access_token}` };
+    // The real Apply UI saves its snapshot before applying budget_items.
+    const snapshot = await page.request.post("/api/idea-di-budget", {
+      headers,
+      data: [{ category: "QA B54 snapshot", subcategory: "QA planned template", idea_amount: 100, custom: true }],
+    });
+    expect(snapshot.status()).toBe(200);
+    const snapshotRows = await admin.from("expenses").select("status,from_dashboard")
+      .eq("event_id", fixture.eventId).eq("from_dashboard", true);
+    expect(snapshotRows.error).toBeNull();
+    expect(snapshotRows.data).toEqual(expect.arrayContaining([{ status: "planned", from_dashboard: true }]));
+    const savedProgress = await page.request.get("/api/event/resolve", { headers });
+    expect(savedProgress.status()).toBe(200);
+    expect((await savedProgress.json()).event).toMatchObject({ has_budget_items: false, has_expenses: false });
     const idea = await page.request.post("/api/idea-di-budget/apply", {
       headers,
       data: { country: "it", rows: [{ name: "QA applied model", amount: 100, custom: true }] },
@@ -66,7 +79,7 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
       response.request().method() === "GET" && new URL(response.url()).pathname === "/api/event/resolve"
     );
     await page.reload();
-    expect((await (await ideaProgress).json()).event.has_budget_items).toBe(false);
+    expect((await (await ideaProgress).json()).event).toMatchObject({ has_budget_items: false, has_expenses: false });
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
     const budget = await page.request.post("/api/event/update-budget", { headers, data: { total_budget: 2500 } });
     expect(budget.ok()).toBe(true);

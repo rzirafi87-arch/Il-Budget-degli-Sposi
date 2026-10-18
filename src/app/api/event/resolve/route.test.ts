@@ -70,3 +70,20 @@ it.each([false, true])("counts manual budget items, never an applied idea (manua
   expect(response.status).toBe(200);
   expect((await response.json()).event).toMatchObject({ has_budget_items: manual, has_expenses: false, has_saved_suppliers: false });
 });
+it.each([
+  { status: "planned", from_dashboard: true, expected: false },
+  { status: "planned", from_dashboard: false, expected: true },
+  { status: "planned", from_dashboard: null, expected: true },
+  { status: "pending", from_dashboard: true, expected: true },
+  { status: "approved", from_dashboard: true, expected: true },
+  { status: "rejected", from_dashboard: false, expected: false },
+])("derives first value from a real expense, excluding saved idea snapshots: %j", async ({ status, from_dashboard, expected }) => {
+  const baseline = mockFrom.getMockImplementation()!;
+  mockFrom.mockImplementation((table: string) => table === "expenses" ? {
+    select: jest.fn().mockReturnThis(), eq: jest.fn().mockReturnThis(),
+    then: (resolve: (value: unknown) => unknown) => Promise.resolve({ data: [{ amount: 0, status, from_dashboard }], error: null }).then(resolve),
+  } : baseline(table));
+  const response = await GET(request);
+  expect(response.status).toBe(200);
+  expect((await response.json()).event.has_expenses).toBe(expected);
+});

@@ -31,6 +31,7 @@ select distinct existing_value.event_id from (
   select event_id from public.budget_items where event_id is not null and source = 'manual'
   union all
   select event_id from public.expenses where status is not null and status <> 'rejected'
+    and not (status = 'planned' and from_dashboard is true)
   union all
   select event_id from public.saved_suppliers where status in ('SAVED','CONTACTED','QUOTE_REQUESTED','QUOTE_RECEIVED','SHORTLISTED','SELECTED')
 ) existing_value
@@ -54,8 +55,10 @@ begin
     if tg_op = 'UPDATE' and old.status in ('SAVED','CONTACTED','QUOTE_REQUESTED','QUOTE_RECEIVED','SHORTLISTED','SELECTED') then return new; end if;
     action_name := 'supplier';
   elsif tg_table_name = 'expenses' then
-    if new.status is null or new.status = 'rejected' then return new; end if;
-    if tg_op = 'UPDATE' and old.status is not null and old.status <> 'rejected' then return new; end if;
+    -- Saving an Idea di Budget snapshot is setup, just like budget_idea rows.
+    if new.status is null or new.status = 'rejected' or (new.status = 'planned' and new.from_dashboard is true) then return new; end if;
+    if tg_op = 'UPDATE' and old.status is not null and old.status <> 'rejected'
+      and not (old.status = 'planned' and old.from_dashboard is true) then return new; end if;
     action_name := 'expense';
   elsif tg_table_name = 'budget_items' then
     -- Applying a model is setup, not the first manual value action.
@@ -74,7 +77,7 @@ drop trigger if exists record_budget_first_value on public.budget_items;
 create trigger record_budget_first_value after insert on public.budget_items
 for each row execute function private.record_first_value();
 drop trigger if exists record_expense_first_value on public.expenses;
-create trigger record_expense_first_value after insert or update of status on public.expenses
+create trigger record_expense_first_value after insert or update of status, from_dashboard on public.expenses
 for each row execute function private.record_first_value();
 drop trigger if exists record_supplier_first_value on public.saved_suppliers;
 create trigger record_supplier_first_value after insert or update of status on public.saved_suppliers

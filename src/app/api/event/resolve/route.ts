@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
   // Calcola spese totali dall'evento
   const { data: expenses, error: expenseError } = await db
     .from("expenses")
-    .select("amount,status")
+    .select("amount,status,from_dashboard")
     .eq("event_id", ev.id);
 
   const totalSpent = (expenses || []).reduce((sum, exp) => sum + (exp.amount || 0), 0);
@@ -97,7 +97,8 @@ export async function GET(req: NextRequest) {
       has_guests: (guestCount || 0) > 0,
       has_saved_suppliers: (savedCount || 0) > 0,
       has_budget_items: (budgetCount || 0) > 0,
-      has_expenses: (expenses || []).some(expense => expense.status != null && expense.status !== "rejected"),
+      has_expenses: (expenses || []).some(expense => expense.status != null && expense.status !== "rejected"
+        && !(expense.status === "planned" && expense.from_dashboard === true)),
     },
     status: "RESOLVED",
     onboarding: deriveOnboardingState(ev),

@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(31);
+select plan(37);
 select has_table('private', 'event_activations', 'durable event activation exists');
 select ok(not has_table_privilege('anon', 'private.event_activations', 'select'), 'no anonymous read');
 select ok(not has_table_privilege('authenticated', 'private.event_activations', 'insert'), 'no client activation writes');
@@ -78,6 +78,9 @@ select is((select count(*)::int from private.event_activations where event_id='5
 -- Applying Idea di Budget persists templates, not a first manual action.
 insert into public.events(id,owner_id,name,event_type) values
 ('54000000-0000-4000-8000-000000000015','54000000-0000-4000-8000-000000000001','B54 applied idea','wedding');
+insert into public.expenses(event_id,amount,status,from_dashboard) values
+('54000000-0000-4000-8000-000000000015',0,'planned',true);
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000015'),0,'budget snapshot save is not activation');
 insert into public.budget_items(event_id,name,country_code,amount,source) values
 ('54000000-0000-4000-8000-000000000015','Applied idea item','it',100,'budget_idea');
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000015'),0,'budget_idea application is not activation');
@@ -86,6 +89,22 @@ insert into public.budget_items(event_id,name,country_code,amount,source) values
 ('54000000-0000-4000-8000-000000000015','First manual item after idea','it',25,'manual');
 select is((select first_action from private.event_activations where event_id='54000000-0000-4000-8000-000000000015'),'budget_item','manual item after budget_idea activates');
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000015'),1,'manual action after idea is counted exactly once');
+-- A historical template-only event must remain eligible for its first manual action.
+select is((select count(*)::int from private.activation_legacy_events where event_id='54900000-0000-4000-8000-000000000013'),0,'legacy snapshot only is not excluded from activation');
+insert into public.events(id,owner_id,name,event_type) values
+('54000000-0000-4000-8000-000000000016','54000000-0000-4000-8000-000000000001','B54 snapshot promotion','wedding'),
+('54000000-0000-4000-8000-000000000017','54000000-0000-4000-8000-000000000001','B54 snapshot manual conversion','wedding');
+insert into public.expenses(id,event_id,amount,status,from_dashboard) values
+('54000000-0000-4000-8000-000000000042','54000000-0000-4000-8000-000000000016',0,'planned',true),
+('54000000-0000-4000-8000-000000000043','54000000-0000-4000-8000-000000000017',0,'planned',true);
+update public.expenses set status='planned' where id='54000000-0000-4000-8000-000000000042';
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000016'),0,'snapshot resave is not activation');
+update public.expenses set status='pending' where id='54000000-0000-4000-8000-000000000042';
+select is((select first_action from private.event_activations where event_id='54000000-0000-4000-8000-000000000016'),'expense','snapshot promoted to real expense activates');
+update public.expenses set status='approved' where id='54000000-0000-4000-8000-000000000042';
+select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000016'),1,'promoted snapshot activates only once');
+update public.expenses set from_dashboard=false where id='54000000-0000-4000-8000-000000000043';
+select is((select first_action from private.event_activations where event_id='54000000-0000-4000-8000-000000000017'),'expense','snapshot converted to manual planned expense activates');
 
 delete from public.events where id='54000000-0000-4000-8000-000000000010';
 select is((select count(*)::int from private.event_activations where event_id='54000000-0000-4000-8000-000000000010'),0,'event deletion removes private metric');
