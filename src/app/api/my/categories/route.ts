@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/apiAuth";
+import { authErrorResponse, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { requireServerCurrentEvent } from "@/lib/currentEvent";
@@ -25,6 +25,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ eventId: ev.id, categories: data || [] });
   } catch (e: unknown) {
+    const authResponse = authErrorResponse(e);
+    if (authResponse) return authResponse;
     const err = e instanceof Error ? e : new Error(String(e));
     logger.error("MY/CATEGORIES Uncaught", { message: err.message });
     return NextResponse.json({ error: err.message || "Unexpected" }, { status: 500 });

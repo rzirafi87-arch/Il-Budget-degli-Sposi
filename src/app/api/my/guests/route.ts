@@ -1,4 +1,4 @@
-import { getBearer, requireUser } from "@/lib/apiAuth";
+import { authErrorResponse, getBearer, requireUser } from "@/lib/apiAuth";
 import { logger } from "@/lib/logger";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { requireServerCurrentEvent } from "@/lib/currentEvent";
@@ -48,6 +48,8 @@ export async function GET(req: NextRequest) {
       defaultRsvpDeadline: eventResult.data?.default_rsvp_deadline || "",
     });
   } catch (err: unknown) {
+    const authResponse = authErrorResponse(err);
+    if (authResponse) return authResponse;
     const message = err instanceof Error ? err.message : "Internal error";
     logger.error("GET /api/my/guests error", { message });
     return fail(message);
@@ -80,6 +82,8 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json(data || { success: true });
   } catch (err: unknown) {
+    const authResponse = authErrorResponse(err);
+    if (authResponse) return authResponse;
     const message = err instanceof Error ? err.message : "Internal error";
     logger.error("POST /api/my/guests error", { message });
     return fail("GUEST_SNAPSHOT_SAVE_FAILED");

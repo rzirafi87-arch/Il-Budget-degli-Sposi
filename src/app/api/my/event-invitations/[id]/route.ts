@@ -1,11 +1,18 @@
-import { requireUser } from "@/lib/apiAuth";
+import { authErrorResponse, requireUser } from "@/lib/apiAuth";
 import { requireServerCurrentEvent } from "@/lib/currentEvent";
 import { isEventOwnerForUser } from "@/lib/eventOwnership";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  const { userId } = await requireUser(req);
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(req));
+  } catch (error) {
+    const authResponse = authErrorResponse(error);
+    if (authResponse) return authResponse;
+    throw error;
+  }
   const { eventId } = await requireServerCurrentEvent(userId);
   if (!(await isEventOwnerForUser(eventId, userId))) {
     return NextResponse.json({ error: "OWNER_REQUIRED" }, { status: 403 });
