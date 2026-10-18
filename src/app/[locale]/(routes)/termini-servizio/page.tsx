@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { formatDate } from "@/lib/locale";
+import { LEGAL_LAST_UPDATED } from "@/lib/legalDocuments";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -12,7 +13,7 @@ export default function TerminiServizioPage() {
 
       <div className="prose prose-lg max-w-none bg-white/70 rounded-2xl p-8 shadow-sm">
         <p className="text-sm text-gray-500 mb-6">
-          <strong>{t("lastUpdated")}</strong> {formatDate(new Date())}
+          <strong>{t("lastUpdated")}</strong> {formatDate(LEGAL_LAST_UPDATED)}
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">{t("terms.s1.title")}</h2>

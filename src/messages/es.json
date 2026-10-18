@@ -1141,23 +1141,27 @@
           "duration": "Duración"
         },
         "rows": {
-          "session": "Sesión",
-          "30d": "30 dias",
+          "untilLogout": "Hasta cerrar sesión",
+          "6m": "6 meses",
           "1y": "1 año",
-          "session_token": {
-            "purpose": "Mantiene activa la sesión del usuario."
+          "untilCleared": "Hasta que se borre del navegador",
+          "sbAuth": {
+            "purpose": "Mantiene activa la sesión de acceso (Supabase Auth, almacenamiento local del navegador)"
           },
-          "auth_token": {
-            "purpose": "Autenticación segura"
+          "language": {
+            "purpose": "Recuerda el idioma elegido"
           },
-          "csrf_token": {
-            "purpose": "Protección contra ataques CSRF"
+          "country": {
+            "purpose": "Recuerda el país elegido"
           },
-          "user_preferences": {
-            "purpose": "Guarda las preferencias de UI/UX"
+          "eventType": {
+            "purpose": "Recuerda el tipo de evento seleccionado"
           },
-          "cookie_consent": {
-            "purpose": "Recuerda la elección del banner de cookies"
+          "localPrefs": {
+            "purpose": "Preferencias de la interfaz y del evento activo (idioma, país, tipo de evento, evento activo, ajustes de Idea de presupuesto), guardadas en el almacenamiento local del navegador"
+          },
+          "analyticsConsent": {
+            "purpose": "Recuerda su elección sobre las herramientas de análisis (solo si las herramientas de análisis están activas)"
           }
         }
       },
@@ -1168,15 +1172,15 @@
       "s2": {
         "title": "2. Tipos de cookies utilizadas",
         "tech": {
-          "title": "2.1 Cookies técnicas (necesarias) 🔒",
+          "title": "2.1 Cookies técnicas (necesarias)",
           "p1": "Estas cookies son esenciales para que el sitio web funcione y no se pueden desactivar. No requieren su consentimiento según la normativa vigente."
         },
         "prefs": {
           "title": "2.2 Cookies de preferencia 🎨",
-          "p1": "Recuerdan sus elecciones (idioma, tema, vista) para mejorar su experiencia."
+          "p1": "Recuerdan sus elecciones (idioma, país, tipo de evento) para que la aplicación funcione como la ha configurado. Son necesarias para el servicio solicitado y no requieren consentimiento."
         },
         "analytics": {
-          "title": "2.3 Cookies de análisis 📊",
+          "title": "2.3 Cookies de análisis",
           "p1": "Recopilan datos anónimos sobre cómo utiliza el sitio para ayudarnos a mejorarlo. Requieren su consentimiento.",
           "note": "Nota: Actualmente no utilizamos cookies analíticas de terceros (como Google Analytics). Solo monitoreamos métricas anónimas del lado del servidor."
         },
@@ -1202,7 +1206,7 @@
         "title": "4. Cómo gestionar las cookies",
         "banner": {
           "title": "4.1 A través del banner de cookies",
-          "p1": "En su primera visita, puede elegir qué cookies aceptar a través del banner de consentimiento. Puede cambiar sus preferencias en cualquier momento desde la configuración de su cuenta."
+          "p1": "Actualmente no utilizamos herramientas de análisis ni de marketing, por lo que no le pedimos ningún consentimiento. Si las activamos en el futuro, se lo pediremos en su primer acceso y podrá cambiar su elección en cualquier momento desde el enlace \"Preferencias de cookies\" al final de la página."
         },
         "browser": {
           "title": "4.2 A través del navegador",
@@ -1251,17 +1255,17 @@
       },
       "s9": {
         "title": "9. Contactos",
-        "p1": "Si tiene preguntas sobre la Política de cookies o cómo manejamos sus datos: Correo electrónico: privacidad@ilbudgetdeglisposi.it — Teléfono: +39 XXX XXX XXXX"
+        "p1": "Si tiene preguntas sobre la Política de cookies o sobre cómo tratamos sus datos: correo electrónico privacy@ilbudgetdeglisposi.it"
       },
       "summary": {
-        "title": "📋 Resumen rápido",
+        "title": "Resumen rápido",
         "tech": {
           "title": "Cookies técnicas",
           "value": "✅ Siempre activo"
         },
         "prefs": {
           "title": "Cookies de preferencia",
-          "value": "🔘 Requerir consentimiento"
+          "value": "✅ Siempre activas (necesarias para el servicio)"
         },
         "marketing": {
           "title": "Galletas de marketing",
@@ -1397,7 +1401,7 @@
             "desc": "Retirar el consentimiento en cualquier momento."
           }
         },
-        "contact": "Para ejercer sus derechos, póngase en contacto con nosotros: {strong}"
+        "contact": "Para ejercer sus derechos, póngase en contacto con nosotros: <strong>privacy@ilbudgetdeglisposi.it</strong>"
       },
       "s9": {
         "title": "9. Seguridad de los datos",
@@ -1412,7 +1416,7 @@
       },
       "s10": {
         "title": "10. galletas",
-        "p1": "Para obtener más detalles sobre las cookies, consulte nuestro {link}."
+        "p1": "Para obtener más detalles sobre las cookies, consulte nuestro <link>Política de cookies</link>."
       },
       "s11": {
         "title": "11. Transferencias extracomunitarias",
@@ -1430,14 +1434,12 @@
         "title": "14. Contactos del responsable de privacidad",
         "p1": "Para cualquier pregunta o solicitud de privacidad:",
         "authName": "Responsable de privacidad — Il Budget degli Sposi",
-        "addr": "Dirección: Via Esempio 123, 00100 Roma (RM)",
-        "email": "Correo electrónico: privacidad@ilbudgetdeglisposi.it",
-        "phone": "Teléfono: +39 XXX XXX XXXX"
+        "email": "Correo electrónico: privacidad@ilbudgetdeglisposi.it"
       },
       "s15": {
         "title": "15. Cómo ejercer tus derechos",
         "p1": "Puede ejercer sus derechos dirigiéndose por escrito a:",
-        "email": "Correo electrónico: {strong}",
+        "email": "Correo electrónico: <strong>privacy@ilbudgetdeglisposi.it</strong>",
         "sla": "Responderemos dentro de los 30 días, a menos que se apliquen períodos más largos según el RGPD."
       }
     },

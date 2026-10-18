@@ -2,6 +2,7 @@
 
 import { BRAND_NAME } from "@/config/brand";
 import { formatDate } from "@/lib/locale";
+import { LEGAL_LAST_UPDATED } from "@/lib/legalDocuments";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -13,7 +14,7 @@ export default function PrivacyPolicyPage() {
 
       <div className="prose prose-lg max-w-none bg-white/70 rounded-2xl p-8 shadow-sm">
         <p className="text-sm text-gray-500 mb-6">
-          <strong>{t("lastUpdated")}</strong> {formatDate(new Date())}
+          <strong>{t("lastUpdated")}</strong> {formatDate(LEGAL_LAST_UPDATED)}
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s1.title")}</h2>
@@ -114,9 +115,7 @@ export default function PrivacyPolicyPage() {
         <p className="leading-relaxed">
           {t("privacy.s14.p1")}<br />
           <strong>{t("privacy.s14.authName")}</strong><br />
-          {t("privacy.s14.addr")}<br />
-          {t("privacy.s14.email")}<br />
-          {t("privacy.s14.phone")}
+          {t("privacy.s14.email")}
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">{t("privacy.s15.title")}</h2>
