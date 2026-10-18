@@ -1,0 +1,133 @@
+name: Branch 54 current main compatibility
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/branch54-main-compatibility.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: branch54-main-compatibility-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  compatibility:
+    name: OLD APP current main + NEW B54 SCHEMA
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: old-app
+    env:
+      OLD_APP_REF: d296de56022d37ac791f1e44162bff86f1363613
+      SUPABASE_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: new-schema
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.OLD_APP_REF }}
+          path: old-app
+      - name: Prove immutable refs
+        working-directory: ${{ github.workspace }}
+        env:
+          NEW_SCHEMA_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -Eeuo pipefail
+          test "$(git -C old-app rev-parse HEAD)" = "$OLD_APP_REF"
+          test "$(git -C new-schema rev-parse HEAD)" = "$NEW_SCHEMA_REF"
+          test "$OLD_APP_REF" != "$NEW_SCHEMA_REF"
+          echo "OLD_APP_SHA=$OLD_APP_REF"
+          echo "NEW_SCHEMA_SHA=$NEW_SCHEMA_REF"
+          echo "PRODUCTION_CONNECTION=NONE"
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: npm, cache-dependency-path: old-app/package-lock.json }
+      - uses: supabase/setup-cli@v1
+        with: { version: 2.116.0 }
+      - name: Start ephemeral Supabase
+        run: |
+          mkdir .supabase-m8
+          cd .supabase-m8
+          supabase init
+          supabase start
+          supabase status -o env > status.env
+          set -a
+          source status.env
+          set +a
+          for value in "$API_URL" "$ANON_KEY" "$SERVICE_ROLE_KEY" "$DB_URL" "$INBUCKET_URL"; do echo "::add-mask::$value"; done
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "PLAYWRIGHT_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "PLAYWRIGHT_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "SUPABASE_SERVICE_ROLE=$SERVICE_ROLE_KEY"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "LOCAL_DATABASE_URL=$DB_URL"
+            echo "PLAYWRIGHT_INBUCKET_URL=$INBUCKET_URL"
+          } >> "$GITHUB_ENV"
+      - name: Rebuild and verify B54 schema
+        working-directory: new-schema
+        run: |
+          set -Eeuo pipefail
+          bash scripts/rebuild-local-supabase.sh "$LOCAL_DATABASE_URL"
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select to_regclass('private.event_activations') is not null and to_regclass('private.activation_legacy_events') is not null and to_regprocedure('private.record_first_value()') is not null")" = "t"
+          echo B54_SCHEMA_INSTALLED=YES
+      - name: Reapply B54 migration to verify idempotence
+        working-directory: new-schema
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017132156_branch_54_first_value_activation.sql
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build application against ephemeral Supabase
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+      - name: Run minimal real onboarding diagnostic first
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-diagnostic
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - name: Run real isolated browser journeys without skips
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-390 --project=m8-430
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - name: Verify OLD APP was not patched
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = "$OLD_APP_REF"
+          test -z "$(git status --porcelain --untracked-files=no)"
+          echo "OLD_APP_UNMODIFIED=YES" >> "$GITHUB_STEP_SUMMARY"
+          echo "OLD_APP_SHA=$OLD_APP_REF" >> "$GITHUB_STEP_SUMMARY"
+          echo "PRODUCTION_CONNECTION=NONE" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: branch54-old-app-mobile-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
+          path: ${{ github.workspace }}/old-app/.playwright-results-m8/**/m5-guests-*.png
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: branch54-old-app-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 7
+          path: |
+            ${{ github.workspace }}/old-app/playwright-report-m8/**
+            ${{ github.workspace }}/old-app/.playwright-results-m8/**
+      - name: Destroy ephemeral Supabase and fixtures
+        if: always()
+        run: |
+          if test -d .supabase-m8/supabase; then cd .supabase-m8 && supabase stop --no-backup; fi
