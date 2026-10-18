@@ -50,6 +50,26 @@ between the current Cookie Policy and actual inventory belongs to this work.
 
 ## Release gate
 
+### Additional independent review of `824651a7`
+
+No P0/P1 reported. P2 reconciliation reopens the gate for subsequent changes:
+
+- Client-generated UUIDs were not correlated with server logs. ProgressiveSetup
+  now displays the server UUID when returned; failures without a server reference
+  show no code. Other client recovery consumers no longer generate local UUIDs.
+- Successful NO_EVENT/SELECTION_REQUIRED responses no longer become retry errors
+  in ProgressiveSetup; route guards own onboarding/selection. Unit RED reproduced
+  all three reference/NO_EVENT failures before the fix. A real-login E2E covers a
+  fresh identity without an event reaching the enabled event-creation choice.
+- Whether `source='budget_idea'` counts as activation/firstValue requires an explicit
+  user choice: exclude templates from the metric or retain them and change labels.
+  No trigger/metric change is made before that decision.
+- P3 duplicate event-resolve calls and full-history gitleaks/repository-visibility
+  decision are recorded in the separate local pre-Beta backlog, outside this PR.
+
+The previous table-auth PASS applies to `824651a7`. Subsequent changes require
+fresh CI/review evidence and resolution of the activation product decision.
+
 PASS requires RED reproduced, GREEN real browser requests for all three routes,
 negative auth checks, full Branch 54/unit/integration/database/mobile/i18n checks,
 typecheck, validate, build, complete CI, exact-HEAD Preview smoke, and a fresh

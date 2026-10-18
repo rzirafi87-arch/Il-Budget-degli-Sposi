@@ -1,7 +1,6 @@
 "use client";
 
 import { AppButton, AppButtonLink } from "@/components/ui/AppButton";
-import { errorReference } from "@/lib/errorReference";
 import { AppCard } from "@/components/ui/AppCard";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { Check, Circle, ListChecks } from "lucide-react";
@@ -14,7 +13,8 @@ export default function ProgressiveSetup() {
   const locale = useLocale();
   const t = useTranslations("branch54");
   const [event, setEvent] = useState<EventProgress | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ reference?: string } | null>(null);
+  const [noEvent, setNoEvent] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let active = true;
@@ -24,11 +24,18 @@ export default function ProgressiveSetup() {
       const jwt = data.session?.access_token;
       if (sessionError || !jwt) throw new Error("SESSION_UNAVAILABLE");
       const response = await fetch("/api/event/resolve", { headers: { Authorization: `Bearer ${jwt}` }, cache: "no-store" });
-      if (!response.ok) throw new Error("PROGRESS_UNAVAILABLE");
-      const payload = await response.json() as { event?: EventProgress };
+      const payload = await response.json() as { event?: EventProgress; status?: string; reference?: unknown };
+      if (!response.ok) {
+        if (active) setError({ reference: typeof payload.reference === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(payload.reference) ? payload.reference : undefined });
+        return;
+      }
+      if (payload.status === "NO_EVENT" || payload.status === "SELECTION_REQUIRED") {
+        if (active) { setNoEvent(true); setError(null); }
+        return;
+      }
       if (!payload.event) throw new Error("EVENT_UNAVAILABLE");
-      if (active) { setEvent(payload.event); setError(null); }
-      } catch { if (active) setError(errorReference()); }
+      if (active) { setEvent(payload.event); setNoEvent(false); setError(null); }
+      } catch { if (active) setError({}); }
     })();
     return () => { active = false; };
   }, [attempt]);
@@ -38,7 +45,9 @@ export default function ProgressiveSetup() {
     { done: Boolean(event?.has_guests), label: t("guests"), href: `/${locale}/invitati` },
     { done: Boolean(event?.has_suppliers), label: t("suppliers"), href: `/${locale}/fornitori` },
   ];
-  if (error) return <AppCard className="mb-6" padding="md"><p role="alert">{t("loadError")}</p><p className="break-all text-xs text-muted-fg">{t("reference", { id: error })}</p><AppButton onClick={() => { setError(null); setAttempt(value => value + 1); }}>{t("retry")}</AppButton></AppCard>;
+  if (error) return <AppCard className="mb-6" padding="md"><p role="alert">{t("loadError")}</p>{error.reference && <p className="break-all text-xs text-muted-fg">{t("reference", { id: error.reference })}</p>}<AppButton onClick={() => { setError(null); setAttempt(value => value + 1); }}>{t("retry")}</AppButton></AppCard>;
+  // The route guard owns onboarding/event selection, which are successful states.
+  if (noEvent) return null;
   if (!event) return <p role="status" className="mb-6">{t("loading")}</p>;
   const completed = steps.filter((step) => step.done).length;
   if (completed === steps.length) return null;

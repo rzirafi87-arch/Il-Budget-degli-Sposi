@@ -2,6 +2,28 @@ import { expect, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import { createQaIdentity, createGuestUxFixture, deleteGuestUxFixture, deleteQaIdentity, login } from "./helpers/milestone8-fixtures";
 
+test("[B54][journey] new user without an event reaches setup without a retry dead end", async ({ page }) => {
+  const url = process.env.PLAYWRIGHT_SUPABASE_URL || "";
+  expect(["localhost", "127.0.0.1"].includes(new URL(url).hostname)).toBe(true);
+  const identity = await createQaIdentity("branch54-no-event");
+  try {
+    await login(page, identity);
+    const resolved = page.waitForResponse(response =>
+      response.request().method() === "GET" && new URL(response.url()).pathname === "/api/event/resolve"
+    );
+    await page.goto("/it/dashboard");
+    const response = await resolved;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toMatchObject({ event: null, status: "NO_EVENT" });
+    await expect(page).toHaveURL(/\/it\/select-event-type/);
+    await expect(page.getByRole("button", { name: /^matrimonio disponibile/i })).toBeEnabled();
+    await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Riprova", exact: true })).toHaveCount(0);
+  } finally {
+    await deleteQaIdentity(identity);
+  }
+});
+
 test("[B54][journey] persisted first value, recovery, mobile and accessibility", async ({ page }, testInfo) => {
   test.setTimeout(300_000);
   // This journey writes fixtures only against explicitly disposable loopback Supabase.

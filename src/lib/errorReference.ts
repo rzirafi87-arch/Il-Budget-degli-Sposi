@@ -1,4 +1,4 @@
-/** Local support reference only: never include exception messages or request data. */
+/** Server correlation ID: log it with the failure before returning it to clients. */
 export function errorReference(): string {
   return crypto.randomUUID();
 }

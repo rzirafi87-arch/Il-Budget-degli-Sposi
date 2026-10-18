@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import ExportPDFButton from "@/components/ExportPDFButton";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -13,7 +13,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { AppButtonLink, buttonClasses } from "@/components/ui/AppButton";
 import { Inbox, Lightbulb, WalletCards } from "lucide-react";
 import { ExpenseForm } from "@/components/expenses/ExpenseForm";
-import { errorReference } from "@/lib/errorReference";
+
 
 const supabase = getBrowserClient();
 
@@ -110,7 +110,7 @@ export default function BudgetPage() {
           : [];
         setPlannedItems(planned);
       } catch {
-        setLoadError(errorReference());
+        setLoadError("READ_FAILED");
       } finally {
         setLoading(false);
       }
@@ -134,7 +134,7 @@ export default function BudgetPage() {
     return keys.map((k) => ({ key: k, planned: planMap.get(k) || 0, actual: actualMap.get(k) || 0 }));
   }, [plannedItems, rows, t]);
 
-  if (loadError) return <section className="space-y-4 p-4"><h1 className="text-2xl font-semibold">{t("budget")}</h1><p role="alert">{recoveryT("loadError")}</p><p className="break-all text-sm">{recoveryT("reference", { id: loadError })}</p><button className={buttonClasses()} onClick={() => setExpenseRefresh(value => value + 1)}>{recoveryT("retry")}</button></section>;
+  if (loadError) return <section className="space-y-4 p-4"><h1 className="text-2xl font-semibold">{t("budget")}</h1><p role="alert">{recoveryT("loadError")}</p><button className={buttonClasses()} onClick={() => setExpenseRefresh(value => value + 1)}>{recoveryT("retry")}</button></section>;
 
   return (
     <section>

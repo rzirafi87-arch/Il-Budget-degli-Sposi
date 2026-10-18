@@ -9,7 +9,7 @@ import {
 } from "@/lib/eventTypeCapabilities";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { getOnboardingStatus } from "@/lib/onboardingClient";
-import { errorReference } from "@/lib/errorReference";
+
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -99,7 +99,7 @@ export default function SelectEventTypePage() {
         }
         setAccessChecked(true);
       })
-      .catch(() => { if (active) setAccessError(errorReference()); });
+      .catch(() => { if (active) setAccessError("READ_FAILED"); });
     return () => {
       active = false;
     };
@@ -182,12 +182,12 @@ export default function SelectEventTypePage() {
 
       router.replace(`/${locale}/dashboard`);
     } catch {
-      setError(`${journeyT("loadError")} ${journeyT("reference", { id: errorReference() })}`);
+      setError(journeyT("loadError"));
       setSaving(false);
     }
   }
 
-  if (accessError) return <main className="mx-auto max-w-lg space-y-4 p-4"><p role="alert">{journeyT("loadError")}</p><p className="break-all text-sm">{journeyT("reference", { id: accessError })}</p><button className="app-button app-button--primary app-button--md" onClick={() => { setAccessError(null); setAccessAttempt(value => value + 1); }}>{journeyT("retry")}</button></main>;
+  if (accessError) return <main className="mx-auto max-w-lg space-y-4 p-4"><p role="alert">{journeyT("loadError")}</p><button className="app-button app-button--primary app-button--md" onClick={() => { setAccessError(null); setAccessAttempt(value => value + 1); }}>{journeyT("retry")}</button></main>;
   if (!accessChecked) return <LoadingState label={t("milestone9.setup.checkingConfiguration")} cards={2} />;
 
   return (
