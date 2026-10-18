@@ -1,5 +1,10 @@
 -- Branch 55: canonical supplier categories, hidden duplicates, truthful verification.
+-- The contract runs in one DO block that raises on the first violation; the
+-- TAP plan records it as a single assertion for the manifest runner.
+create extension if not exists pgtap with schema extensions;
 begin;
+set local search_path = extensions, public, pg_catalog;
+select plan(1);
 do $$
 declare
   canonical_id uuid := gen_random_uuid();
@@ -73,4 +78,6 @@ begin
     raise exception 'Mexican regions tagged as Italy';
   end if;
 end $$;
+select pass('Branch 55 catalog truth contract holds');
+select * from finish();
 rollback;
