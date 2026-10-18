@@ -5,8 +5,10 @@ const read = (file: string) => fs.readFileSync(path.join(process.cwd(), file), "
 
 describe("Branch 39 production readiness", () => {
   it("ships conservative security headers", () => {
-    const config = read("next.config.ts");
-    for (const header of ["Strict-Transport-Security", "X-Content-Type-Options", "X-Frame-Options", "Referrer-Policy", "Permissions-Policy"]) expect(config).toContain(header);
+    // B57: the header list moved to src/config/securityHeaders.ts, applied by next.config.ts.
+    expect(read("next.config.ts")).toContain("securityHeaders(");
+    const config = read("src/config/securityHeaders.ts");
+    for (const header of ["Content-Security-Policy", "Strict-Transport-Security", "X-Content-Type-Options", "X-Frame-Options", "Referrer-Policy", "Permissions-Policy"]) expect(config).toContain(header);
   });
   it("gates analytics behind explicit consent", () => {
     expect(read("src/app/[locale]/layout.tsx")).toContain("ConsentAwareAnalytics");
