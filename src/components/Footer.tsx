@@ -147,10 +147,7 @@ export default function Footer() {
         {/* Trust badges + copyright */}
         <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/20">
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-4 sm:mb-6 text-xs sm:text-sm text-white/80">
-            <span>{t("securePayments", { default: "Pagamenti Sicuri" })}</span>
             <span>{t("madeInItaly", { default: "Made in Italy" })}</span>
-            <span>{t("gdprCompliant", { default: "GDPR Compliant" })}</span>
-            <span>{t("free100", { default: "100% Gratuito" })}</span>
           </div>
           <div className="text-center text-xs sm:text-sm text-white/70">
             <p>© {new Date().getFullYear()} {BRAND_NAME}. {t("copyright", { default: "Tutti i diritti riservati." })}</p>
