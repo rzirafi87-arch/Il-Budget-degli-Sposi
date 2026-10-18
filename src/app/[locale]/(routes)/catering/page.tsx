@@ -56,7 +56,7 @@ export default function CateringPage() {
       if (jwt) headers.Authorization = `Bearer ${jwt}`;
 
       const params = new URLSearchParams();
-      params.append("category", "Catering");
+      params.append("category", "catering");
       if (region) params.append("region", region);
       if (province) params.append("province", province);
       if (search) params.append("search", search);

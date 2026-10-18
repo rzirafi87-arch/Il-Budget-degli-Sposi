@@ -60,7 +60,22 @@
         "Fiorai": "Floristas",
         "Musica Ricevimento": "Música para la recepción",
         "Fotografi": "Fotógrafos",
-        "fiori": "Flores"
+        "fiori": "Flores",
+        "location": "Espacios",
+        "catering": "Catering",
+        "photo-video": "Foto y vídeo",
+        "flowers": "Flores y decoración",
+        "music": "Música y entretenimiento",
+        "bridal": "Novia",
+        "groom": "Novio",
+        "beauty": "Belleza y bienestar",
+        "jewelry": "Joyerías",
+        "stationery": "Invitaciones y papelería",
+        "favors": "Detalles y regalos",
+        "transport": "Transporte",
+        "honeymoon": "Luna de miel",
+        "wedding-planner": "Organización de bodas",
+        "other": "Otros servicios"
       }
     },
     "supplierProfile": {

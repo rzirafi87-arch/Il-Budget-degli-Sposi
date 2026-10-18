@@ -28,7 +28,7 @@ begin
        'payment_reminders','places','profiles','rate_limit_buckets','saved_churches',
        'saved_locations','saved_suppliers','subcategories','subcategory_translations',
        'subscription_packages','subscription_transactions','supplier_locations',
-       'suppliers','sync_jobs','table_assignments','tables','timeline_items','traditions',
+       'supplier_category_aliases','suppliers','sync_jobs','table_assignments','tables','timeline_items','traditions',
        'user_event_timeline','user_favorites','vendor_places','vendors','wedding_cards',
        'wedding_planners'
      ]);

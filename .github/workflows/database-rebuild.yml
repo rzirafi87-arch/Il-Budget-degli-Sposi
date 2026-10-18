@@ -422,6 +422,19 @@ jobs:
           node --test scripts/lib/pgtap-runner.test.mjs
           node scripts/test-pgtap-runner-integration.mjs
 
+      - name: Verify Branch 55 catalog truth RED then GREEN
+        run: |
+          set -Eeuo pipefail
+          if node scripts/run-pgtap.mjs --file supabase/tests/branch_55_catalog_truth.sql --database-url-env LOCAL_DATABASE_URL > catalog-truth-red.log 2>&1; then
+            echo "Expected Branch 55 RED before migration" >&2
+            exit 1
+          fi
+          grep -q 'missing supplier_category_aliases' catalog-truth-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261018170000_branch_55_catalog_truth.sql
+          # Idempotent re-apply: data corrections must not change on a second run.
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261018170000_branch_55_catalog_truth.sql
+          node scripts/run-pgtap.mjs --file supabase/tests/branch_55_catalog_truth.sql --database-url-env LOCAL_DATABASE_URL
+
       - name: Run every pgTAP suite with TAP enforcement
         run: |
           set -Eeuo pipefail

@@ -2805,6 +2805,21 @@ export type Database = {
           },
         ]
       }
+      supplier_category_aliases: {
+        Row: {
+          alias: string
+          slug: string
+        }
+        Insert: {
+          alias: string
+          slug: string
+        }
+        Update: {
+          alias?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       supplier_locations: {
         Row: {
           created_at: string
@@ -2870,6 +2885,7 @@ export type Database = {
           created_at: string
           currency: string | null
           description: string | null
+          duplicate_of: string | null
           email: string | null
           external_id: string | null
           facebook_url: string | null
@@ -2926,6 +2942,7 @@ export type Database = {
           created_at?: string
           currency?: string | null
           description?: string | null
+          duplicate_of?: string | null
           email?: string | null
           external_id?: string | null
           facebook_url?: string | null
@@ -2982,6 +2999,7 @@ export type Database = {
           created_at?: string
           currency?: string | null
           description?: string | null
+          duplicate_of?: string | null
           email?: string | null
           external_id?: string | null
           facebook_url?: string | null
@@ -3026,7 +3044,15 @@ export type Database = {
           website?: string | null
           website_clicks?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "suppliers_duplicate_of_fkey"
+            columns: ["duplicate_of"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sync_jobs: {
         Row: {
@@ -4098,6 +4124,7 @@ export type Database = {
         Args: { p_category: string; p_names: string[] }
         Returns: undefined
       }
+      supplier_category_slug: { Args: { p_value: string }; Returns: string }
       upsert_vendor: {
         Args: {
           p_address?: string

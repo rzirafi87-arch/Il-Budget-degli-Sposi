@@ -26,6 +26,7 @@ with classification(object_name, object_class) as (values
   ('subcategories','event-scoped'), ('subcategory_translations','catalogo globale read-only'),
   ('subscription_packages','catalogo globale read-only'),
   ('subscription_transactions','owner-only'),
+  ('supplier_category_aliases','server-only'),
   ('supplier_locations','catalogo globale read-only'), ('suppliers','catalogo globale read-only'),
   ('sync_jobs','server-only'), ('table_assignments','event-scoped'),
   ('tables','event-scoped'), ('timeline_items','event-scoped'),
