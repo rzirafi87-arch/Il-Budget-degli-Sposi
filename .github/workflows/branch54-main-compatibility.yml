@@ -14,7 +14,7 @@ concurrency:
 jobs:
   compatibility:
     name: OLD APP current main + NEW B54 SCHEMA
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     defaults:
       run:

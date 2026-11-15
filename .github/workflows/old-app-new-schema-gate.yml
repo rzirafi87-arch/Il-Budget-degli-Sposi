@@ -21,7 +21,7 @@ concurrency:
 jobs:
   compatibility:
     name: OLD APP main + NEW SCHEMA Branch 53
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
       OLD_APP_REF: 7aaf48c0736fa50187864145f1d7d41fc1265014
