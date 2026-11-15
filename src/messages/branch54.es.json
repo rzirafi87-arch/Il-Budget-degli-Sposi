@@ -1,0 +1,17 @@
+{
+  "branch54": {
+    "loading": "Cargando tu progreso…",
+    "loadError": "No pudimos cargar los datos. Inténtalo de nuevo en unos instantes.",
+    "retry": "Reintentar",
+    "reference": "Referencia del error: {id}",
+    "eyebrow": "Configuración progresiva",
+    "title": "Tu evento: {completed} de {total} pasos",
+    "progress": "{completed} de {total} pasos completados",
+    "budget": "Define tu presupuesto",
+    "firstValue": "Registra tu primer gasto o guarda un proveedor",
+    "guests": "Añade tus primeros invitados",
+    "suppliers": "Confirma un proveedor",
+    "email": "Correo electrónico",
+    "emailSent": "Si la dirección es válida, recibirás un correo con instrucciones."
+  }
+}
