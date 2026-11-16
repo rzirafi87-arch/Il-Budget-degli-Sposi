@@ -41,7 +41,7 @@ jobs:
   validate:
     name: Validate Production smoke workflow
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,11 +51,13 @@ jobs:
       - run: npm ci
       - name: Verify exact Playwright project collection and cleanup guards
         run: npm run test:production-smoke-isolation
+      - name: Validate B54/B57 release prerequisites (static, read-only)
+        run: node scripts/rollout/branch54-release-preflight.mjs
 
   preflight:
     name: Production HTTP preflight
     if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Require main and approved target
@@ -104,7 +106,7 @@ jobs:
     name: Production public and authenticated browser smoke
     if: github.event_name == 'workflow_dispatch'
     needs: [preflight]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       PLAYWRIGHT_BASE_URL: ${{ inputs.base_url }}
