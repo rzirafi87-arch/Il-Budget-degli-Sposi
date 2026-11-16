@@ -1,0 +1,43 @@
+name: Encrypted Production Database Backup (one-off)
+
+on:
+  push:
+    branches:
+      - backup/controlled-snapshot-20261116
+
+permissions:
+  contents: read
+
+concurrency:
+  group: controlled-db-backup-20261116
+  cancel-in-progress: false
+
+jobs:
+  encrypted-backup:
+    name: Export Supabase and encrypt before artifact upload
+    if: github.repository == 'rzirafi87-arch/Il-Budget-degli-Sposi' && github.ref == 'refs/heads/backup/controlled-snapshot-20261116'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout trusted backup script and public certificate
+        uses: actions/checkout@v4
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.116.0
+
+      - name: Export and encrypt (no plaintext artifacts)
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+        shell: bash
+        run: bash scripts/rollout/oneoff-encrypted-db-backup.sh
+
+      - name: Upload ONLY encrypted archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: controlled-production-db-encrypted-${{ github.run_id }}
+          path: ${{ runner.temp }}/controlled-production-backup/production-backup.cms
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
