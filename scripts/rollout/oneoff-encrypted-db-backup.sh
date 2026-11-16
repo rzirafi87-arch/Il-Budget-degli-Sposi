@@ -7,6 +7,22 @@ if [[ -z "${BACKUP_DATABASE_URL:-}" ]]; then
   echo "::error::BACKUP_DATABASE_URL secret missing. No production connection attempted." >&2
   exit 10
 fi
+# Supabase session-pooler usernames are tenant-qualified. Normalize only the
+# default postgres username when the hostname is the official pooler. Never
+# print the resulting secret URL or the password.
+BACKUP_DATABASE_URL="$(python3 - <<'PY'
+import os
+from urllib.parse import urlsplit, urlunsplit
+v = os.environ["BACKUP_DATABASE_URL"]
+p = urlsplit(v)
+if p.hostname and p.hostname.endswith(".pooler.supabase.com") and p.username == "postgres":
+    if p.port != 5432:
+        raise SystemExit("STOP: unexpected Supabase pooler port")
+    p = p._replace(netloc="postgres.vsguhivizuneylqhygfk" + p.netloc[len("postgres"):])
+print(urlunsplit(p))
+PY
+)"
+export BACKUP_DATABASE_URL
 case "$BACKUP_DATABASE_URL" in
   postgresql://*|postgres://*) ;;
   *) echo "::error::BACKUP_DATABASE_URL must be a PostgreSQL connection string." >&2; exit 11 ;;
