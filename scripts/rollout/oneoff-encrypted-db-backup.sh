@@ -28,6 +28,26 @@ case "$BACKUP_DATABASE_URL" in
   *) echo "::error::BACKUP_DATABASE_URL must be a PostgreSQL connection string." >&2; exit 11 ;;
 esac
 
+# Prove actual PostgreSQL authentication without dumping any data. The CLI's
+# role export may use a different connection method, so keep this as a separate gate.
+if ! command -v psql >/dev/null 2>&1; then
+  echo "::error::PostgreSQL client unavailable; backup not started." >&2
+  exit 13
+fi
+echo "Backup connection preflight: verifying tenant-scoped login (no secret printed)."
+python3 - <<'PY'
+import os
+from urllib.parse import urlsplit
+p = urlsplit(os.environ["BACKUP_DATABASE_URL"])
+print("Connection method: " + ("session-pooler" if (p.hostname or "").endswith(".pooler.supabase.com") else "other"))
+print("Normalized PostgreSQL username: " + str(p.username))
+PY
+if ! psql --no-psqlrc --no-password "$BACKUP_DATABASE_URL" -Atqc 'select 1' >/dev/null 2>"${RUNNER_TEMP:-/tmp}/backup-pg-preflight.err"; then
+  echo "::error::PostgreSQL connection/authentication preflight FAILED. Verify the exact Supabase Connect URL and current password in BACKUP_DATABASE_URL." >&2
+  exit 14
+fi
+echo "PostgreSQL login preflight PASS."
+
 # Never print connection credentials, SQL content, or environment variables.
 private_dir="$(mktemp -d "${RUNNER_TEMP:-/tmp}/controlled-dump.XXXXXXXX")"
 encrypted_dir="${RUNNER_TEMP:-/tmp}/controlled-production-backup"
