@@ -14,6 +14,7 @@ export default function AuthPage() {
   const locale = useLocale();
   const t = useTranslations("runtimeUi.auth");
   const tGlobal = useTranslations();
+  const journeyT = useTranslations("branch54");
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,34 +52,36 @@ export default function AuthPage() {
 
   async function signIn() {
     setError(null); setMessage(null); setLoading(true);
+    try {
     const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    setLoading(false);
     if (authError) { setError(t(`errors.${authErrorKey(authError.message)}`)); if (authError.message.toLowerCase().includes("email not confirmed")) setMode("waiting"); }
     else window.location.assign(returnPath);
+    } catch { setError(journeyT("loadError")); }
+    finally { setLoading(false); }
   }
 
   async function resend() {
     if (cooldown || loading) return;
     setError(null); setLoading(true);
-    try { const result = await request("/api/auth/resend", { email }); setMessage(result.message); setCooldown(AUTH_RESEND_COOLDOWN_SECONDS); }
+    try { await request("/api/auth/resend", { email }); setMessage(journeyT("emailSent")); setCooldown(AUTH_RESEND_COOLDOWN_SECONDS); }
     catch (e) { setError(t(`errors.${authErrorKey(e instanceof Error ? e.message : undefined)}`)); }
     finally { setLoading(false); }
   }
 
   async function recover() {
     setError(null); setLoading(true);
-    try { const result = await request("/api/auth/recovery", { email }); setMessage(result.message); }
+    try { await request("/api/auth/recovery", { email }); setMessage(journeyT("emailSent")); }
     catch (e) { setError(t(`errors.${authErrorKey(e instanceof Error ? e.message : undefined)}`)); }
     finally { setLoading(false); }
   }
 
-  if (mode === "waiting") return <main className="mx-auto max-w-lg space-y-5 p-8"><h1 className="text-2xl font-bold">{t("confirmationTitle")}</h1><p>{t("confirmationBody")}</p><p className="text-sm text-muted-fg">{email}</p><button className="app-button app-button-primary" onClick={resend} disabled={loading || cooldown > 0}>{t("resend")}{cooldown ? ` (${cooldown}s)` : ""}</button><button className="app-button app-button-ghost" onClick={() => { setMode("login"); setError(null); }}>{t("backToLogin")}</button>{message && <p role="status" className="text-green-700">{message}</p>}{error && <p ref={errorRef} tabIndex={-1} role="alert" className="text-red-700">{error}</p>}</main>;
+  if (mode === "waiting") return <main className="mx-auto max-w-lg space-y-5 p-8"><h1 className="text-2xl font-bold">{t("confirmationTitle")}</h1><p>{t("confirmationBody")}</p><p className="text-sm text-muted-fg">{email}</p><button className="app-button app-button--primary app-button--md" onClick={resend} disabled={loading || cooldown > 0}>{t("resend")}{cooldown ? ` (${cooldown}s)` : ""}</button><button className="app-button app-button--ghost app-button--md" type="button" onClick={() => { setMode("login"); setError(null); }}>{t("backToLogin")}</button>{message && <p role="status" className="text-green-700">{message}</p>}{error && <p ref={errorRef} tabIndex={-1} role="alert" className="text-red-700">{error}</p>}</main>;
 
-  return <main className="mx-auto max-w-lg space-y-4 p-8"><h1 className="text-2xl font-bold">{t("title")}</h1>
-    {mode === "register" && <><label className="block">{t("eventType")}<select className="mt-1 block w-full border bg-bg px-3 py-2 text-fg" value={eventType} onChange={e => setEventType(e.target.value)}>{publicEventTypeCapabilities().map(event => <option key={event.slug} value={event.slug} disabled={event.availabilityStatus !== "READY"}>{tGlobal(`events.${event.slug}`)}{event.availabilityStatus !== "READY" ? ` — ${tGlobal("comingSoon")}` : ""}</option>)}</select></label>{eventType === "wedding" && <><label className="block">{t("partnerEmail")}<input className="mt-1 block w-full border px-3 py-2" type="email" autoComplete="email" value={partnerEmail} onChange={e => setPartnerEmail(e.target.value)} /></label><label className="block">{t("weddingDate")}<input className="mt-1 block w-full border px-3 py-2" type="date" value={weddingDate} onChange={e => setWeddingDate(e.target.value)} /></label></>}<div className="grid gap-3 sm:grid-cols-2"><label className="block">{eventType === "wedding" ? t("brideBudget") : t("totalBudget")}<input className="mt-1 block w-full border px-3 py-2" type="number" min="0" inputMode="decimal" value={brideBudget} onChange={e => setBrideBudget(e.target.value)} /></label>{eventType === "wedding" && <label className="block">{t("groomBudget")}<input className="mt-1 block w-full border px-3 py-2" type="number" min="0" inputMode="decimal" value={groomBudget} onChange={e => setGroomBudget(e.target.value)} /></label>}</div></>}
-    <label className="block">Email<input className="mt-1 block w-full border px-3 py-2" type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} required aria-describedby={error ? "auth-error" : undefined} /></label>
+  return <main className="mx-auto w-full max-w-lg space-y-4 p-4 sm:p-8"><form className="space-y-4" onSubmit={event => { event.preventDefault(); if (loading) return; void (mode === "login" ? signIn() : mode === "register" ? signUp() : recover()); }}><h1 className="text-2xl font-bold">{t("title")}</h1>
+    {mode === "register" && <><label className="block">{t("eventType")}<select className="mt-1 block min-h-11 w-full border bg-bg px-3 py-2 text-fg" value={eventType} onChange={e => setEventType(e.target.value)}>{publicEventTypeCapabilities().map(event => <option key={event.slug} value={event.slug} disabled={event.availabilityStatus !== "READY"}>{tGlobal(`events.${event.slug}`)}{event.availabilityStatus !== "READY" ? ` — ${tGlobal("comingSoon")}` : ""}</option>)}</select></label>{eventType === "wedding" && <><label className="block">{t("partnerEmail")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="email" autoComplete="email" value={partnerEmail} onChange={e => setPartnerEmail(e.target.value)} /></label><label className="block">{t("weddingDate")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="date" value={weddingDate} onChange={e => setWeddingDate(e.target.value)} /></label></>}<div className="grid gap-3 sm:grid-cols-2"><label className="block">{eventType === "wedding" ? t("brideBudget") : t("totalBudget")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="number" step="0.01" min="0" inputMode="decimal" value={brideBudget} onChange={e => setBrideBudget(e.target.value)} /></label>{eventType === "wedding" && <label className="block">{t("groomBudget")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="number" step="0.01" min="0" inputMode="decimal" value={groomBudget} onChange={e => setGroomBudget(e.target.value)} /></label>}</div></>}
+    <label className="block">{journeyT("email")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} required aria-describedby={error ? "auth-error" : undefined} /></label>
     {mode !== "forgot" && <div><PasswordInput minLength={mode === "register" ? 10 : undefined} autoComplete={mode === "register" ? "new-password" : "current-password"} value={password} onChange={e => setPassword(e.target.value)} required aria-describedby={error ? "auth-error" : undefined} />{mode === "register" && <span className="text-xs text-muted-fg">{t("passwordHint")}</span>}</div>}
-    <div className="flex flex-wrap gap-2"><button className="app-button app-button-primary" onClick={mode === "login" ? signIn : mode === "register" ? signUp : recover} disabled={loading || !email || (mode !== "forgot" && !password)}>{loading ? t("working") : mode === "login" ? t("signIn") : mode === "register" ? t("register") : t("sendInstructions")}</button>{mode === "login" && <><button className="app-button app-button-ghost" onClick={() => setMode("register")}>{t("register")}</button><button className="app-button app-button-ghost" onClick={() => setMode("forgot")}>{t("forgotPassword")}</button></>}{mode !== "login" && <button className="app-button app-button-ghost" onClick={() => setMode("login")}>{t("backToLogin")}</button>}</div>
+    <div className="flex flex-wrap gap-2"><button className="app-button app-button--primary app-button--md" type="submit" disabled={loading || !email || (mode !== "forgot" && !password)}>{loading ? t("working") : mode === "login" ? t("signIn") : mode === "register" ? t("register") : t("sendInstructions")}</button>{mode === "login" && <><button className="app-button app-button--ghost app-button--md" type="button" onClick={() => setMode("register")}>{t("register")}</button><button className="app-button app-button--ghost app-button--md" type="button" onClick={() => setMode("forgot")}>{t("forgotPassword")}</button></>}{mode !== "login" && <button className="app-button app-button--ghost app-button--md" type="button" onClick={() => setMode("login")}>{t("backToLogin")}</button>}</div>
     {message && <p role="status" className="text-green-700">{message}</p>}{error && <p id="auth-error" ref={errorRef} tabIndex={-1} role="alert" className="text-red-700">{error}</p>}
-  </main>;
+  </form></main>;
 }

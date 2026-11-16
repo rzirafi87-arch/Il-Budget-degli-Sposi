@@ -1,0 +1,17 @@
+{
+  "branch54": {
+    "loading": "Dein Fortschritt wird geladen…",
+    "loadError": "Die Daten konnten nicht geladen werden. Versuche es gleich noch einmal.",
+    "retry": "Erneut versuchen",
+    "reference": "Fehlerreferenz: {id}",
+    "eyebrow": "Schrittweise Einrichtung",
+    "title": "Deine Veranstaltung: {completed} von {total} Schritten",
+    "progress": "{completed} von {total} Schritten abgeschlossen",
+    "budget": "Lege dein Budget fest",
+    "firstValue": "Erfasse die erste Ausgabe oder speichere einen Anbieter",
+    "guests": "Füge die ersten Gäste hinzu",
+    "suppliers": "Bestätige einen Anbieter",
+    "email": "E-Mail",
+    "emailSent": "Wenn die Adresse gültig ist, erhältst du eine E-Mail mit Anweisungen."
+  }
+}
