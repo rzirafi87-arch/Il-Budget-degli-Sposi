@@ -14,9 +14,17 @@ try {
   await first.query("insert into auth.users(id,email) values($1,'atomic-concurrency-owner@example.invalid'),($2,'atomic-concurrency-partner@example.invalid')", [owner,partner]);
   await first.query("insert into public.events(id,owner_id,event_type) values($1,$2,'wedding')", [event,owner]);
   await first.query("insert into public.event_members(event_id,user_id,role,status) values($1,$2,'partner','active')", [event,partner]);
+  const secondPid = (await second.query('select pg_backend_pid() pid')).rows[0].pid;
   await first.query('begin');
   await first.query(query,[event,owner,'it',items('first')]);
   const waiting = second.query(query,[event,partner,'it',items('second')]);
+  // Prove the second connection is waiting on the first before releasing it.
+  let blocked = false;
+  for (let attempt = 0; attempt < 40 && !blocked; attempt++) {
+    blocked = (await first.query('select pg_backend_pid() = any(pg_blocking_pids($1)) blocked', [secondPid])).rows[0].blocked;
+    if (!blocked) await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  assert.equal(blocked, true, 'second replacement must wait for the event lock');
   await first.query('commit');
   await waiting;
   const rows = await first.query('select name from public.budget_items where event_id=$1 order by name',[event]);
