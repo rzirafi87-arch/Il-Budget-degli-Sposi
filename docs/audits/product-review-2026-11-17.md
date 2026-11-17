@@ -97,7 +97,7 @@ Base isolata: main `cd6b406`; branch `fix/guest-read-error-disclosure-20261117`;
 
 Modifica minima: l'errore inatteso in GET Invitati conserva HTTP 500 ma risponde con `GUEST_SNAPSHOT_READ_FAILED`, anziché il testo dell'eccezione. La classificazione AuthError resta 401. Nessuna migrazione, mutazione dati o modifica dei privilegi. Quattro test verificano errore resolver, errore trasporto, token invalido e snapshot valido filtrato per evento.
 
-Validazione: RED iniziale 2 test falliti/2 passati; GREEN finale 4/4. Suite completa 122/122 e 861/861; typecheck, ESLint sui file modificati, validate e diff whitespace PASS. Corretto anche un errore di tipizzazione nel mock durante la verifica. Build/Preview/CI remoti sono gate separati da seguire sulla nuova PR; nessuna dichiarazione di release readiness.
+Validazione: RED iniziale 2 test falliti/2 passati; GREEN finale 4/4. Suite completa 122/122 e 861/861; typecheck, ESLint sui file modificati, validate e diff whitespace PASS. Corretto anche un errore di tipizzazione nel mock durante la verifica. Preview remota `dpl_Dp2YHmbeUaHzr3RPrvDpBT2aJ3zL` READY sullo SHA remoto esatto. CI #760 e Playwright #271 ancora in corso all’ultimo controllo; nessuna dichiarazione di release readiness. Anche il branch del rapporto passa typecheck; la riproduzione RED è esclusa dalla raccolta ordinaria.
 
 ## Fonti verificabili
 
