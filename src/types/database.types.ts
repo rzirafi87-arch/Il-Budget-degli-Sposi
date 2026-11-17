@@ -3835,6 +3835,15 @@ export type Database = {
         Args: { p_token: string; p_user_id: string }
         Returns: string
       }
+      apply_budget_idea_atomic: {
+        Args: {
+          p_actor_id: string
+          p_country: string
+          p_event_id: string
+          p_items: Json
+        }
+        Returns: Json
+      }
       begin_event_document_delete: {
         Args: { p_actor_id: string; p_document_id: string; p_event_id: string }
         Returns: Json

@@ -435,6 +435,13 @@ jobs:
           node --test scripts/lib/pgtap-runner.test.mjs
           node scripts/test-pgtap-runner-integration.mjs
 
+      - name: Apply atomic Idea Budget replacement twice and verify concurrency
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261117183002_atomic_budget_idea_apply.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261117183002_atomic_budget_idea_apply.sql
+          npm ci --ignore-scripts
+          node scripts/test-atomic-budget-concurrency.mjs
+
       - name: Run every pgTAP suite with TAP enforcement
         run: |
           set -Eeuo pipefail

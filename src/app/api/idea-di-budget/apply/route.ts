@@ -72,22 +72,15 @@ export async function POST(req: NextRequest) {
     .filter((it, index) => it.amount > 0 && rows[index]?.enabled !== false);
   const uniqueItems = deduplicateCanonicalBudgetItems(items);
 
-  const del = await db.from("budget_items").delete().eq("event_id", ev.id).eq("country_code", country).eq("source", "budget_idea");
-  if (del.error) return NextResponse.json({ error: "BUDGET_IDEA_APPLY_DELETE_FAILED", code: del.error.code || null }, { status: 500 });
-
-  if (uniqueItems.length === 0) return NextResponse.json({ success: true, inserted: 0 });
-
-  const payload = uniqueItems.map((it) => ({
-    event_id: ev.id,
-    country_code: country,
-    name: it.name,
-    amount: it.amount,
-    spend_type: it.spend_type,
-    source: "budget_idea",
-    canonical_key: it.canonical_key,
-  }));
-
-  const { error: insErr, data } = await db.from("budget_items").insert(payload).select();
-  if (insErr) return NextResponse.json({ error: "BUDGET_IDEA_APPLY_INSERT_FAILED", code: insErr.code || null }, { status: 500 });
-  return NextResponse.json({ success: true, inserted: data?.length || 0 });
+  const { data, error: applyError } = await db.rpc("apply_budget_idea_atomic", {
+    p_event_id: ev.id,
+    p_actor_id: userData.user.id,
+    p_country: country,
+    p_items: uniqueItems,
+  });
+  if (applyError) {
+    // Never fall back to separate DELETE/INSERT, including before migration.
+    return NextResponse.json({ error: "BUDGET_IDEA_APPLY_FAILED" }, { status: 500 });
+  }
+  return NextResponse.json(data);
 }
