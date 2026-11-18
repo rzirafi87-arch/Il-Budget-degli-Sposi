@@ -3990,6 +3990,15 @@ export type Database = {
       normalize_catalog_text: { Args: { value: string }; Returns: string }
       normalize_phone: { Args: { phone_input: string }; Returns: string }
       normalize_url: { Args: { url_input: string }; Returns: string }
+      patch_event_details: {
+        Args: {
+          p_actor_id: string
+          p_card: Json
+          p_event: Json
+          p_event_id: string
+        }
+        Returns: boolean
+      }
       regenerate_event_data: { Args: { p_event_id: string }; Returns: string }
       regenerate_event_timeline: {
         Args: { p_event_id: string }

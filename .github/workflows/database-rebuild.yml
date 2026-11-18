@@ -435,6 +435,9 @@ jobs:
           node --test scripts/lib/pgtap-runner.test.mjs
           node scripts/test-pgtap-runner-integration.mjs
 
+      - name: Install atomic event update in isolated database
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261118070000_atomic_event_update.sql
+
       - name: Run every pgTAP suite with TAP enforcement
         run: |
           set -Eeuo pipefail
