@@ -4,7 +4,7 @@
     "loadError": "Non riusciamo a caricare i dati. Riprova tra poco.",
     "retry": "Riprova",
     "reference": "Riferimento errore: {id}",
-    "eyebrow": "Configurazione progressiva",
+    "eyebrow": "I primi passi per organizzare il tuo evento",
     "title": "Il tuo evento: {completed} di {total} passaggi",
     "progress": "{completed} di {total} passaggi completati",
     "budget": "Imposta il budget",

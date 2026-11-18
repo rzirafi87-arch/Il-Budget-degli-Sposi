@@ -467,6 +467,14 @@ jobs:
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017132156_branch_54_first_value_activation.sql
           node scripts/run-pgtap.mjs --file supabase/tests/branch_54_activation.sql --database-url-env LOCAL_DATABASE_URL
           node scripts/test-branch54-activation-concurrency.mjs
+      - name: Apply atomic Idea Budget replacement twice and verify concurrency
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261117183002_atomic_budget_idea_apply.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261117183002_atomic_budget_idea_apply.sql
+          npm ci --ignore-scripts
+          node scripts/test-atomic-budget-concurrency.mjs
+      - name: Install atomic event update in isolated database
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261118070000_atomic_event_update.sql
 
       - name: Run every pgTAP suite with TAP enforcement
         run: |

@@ -22,3 +22,6 @@ supabase/tests/branch_53_late_upload_guard.sql
 supabase/tests/branch_53_document_download.sql
 supabase/tests/branch_57_private_rls.sql
 supabase/tests/branch_54_activation.sql
+
+supabase/tests/atomic_budget_idea_apply.sql
+supabase/tests/atomic_event_update.sql

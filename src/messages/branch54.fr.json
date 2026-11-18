@@ -4,7 +4,7 @@
     "loadError": "Impossible de charger les données. Réessayez dans un instant.",
     "retry": "Réessayer",
     "reference": "Référence de l’erreur : {id}",
-    "eyebrow": "Configuration progressive",
+    "eyebrow": "Les premières étapes de vos préparatifs",
     "title": "Votre événement : {completed} étapes sur {total}",
     "progress": "{completed} étapes terminées sur {total}",
     "budget": "Définissez votre budget",

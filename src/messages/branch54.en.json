@@ -4,7 +4,7 @@
     "loadError": "We could not load your data. Please try again shortly.",
     "retry": "Try again",
     "reference": "Error reference: {id}",
-    "eyebrow": "Progressive setup",
+    "eyebrow": "Your first planning steps",
     "title": "Your event: {completed} of {total} steps",
     "progress": "{completed} of {total} steps complete",
     "budget": "Set your budget",

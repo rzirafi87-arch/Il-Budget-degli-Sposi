@@ -4,7 +4,7 @@
     "loadError": "Die Daten konnten nicht geladen werden. Versuche es gleich noch einmal.",
     "retry": "Erneut versuchen",
     "reference": "Fehlerreferenz: {id}",
-    "eyebrow": "Schrittweise Einrichtung",
+    "eyebrow": "Die ersten Schritte der Planung",
     "title": "Deine Veranstaltung: {completed} von {total} Schritten",
     "progress": "{completed} von {total} Schritten abgeschlossen",
     "budget": "Lege dein Budget fest",
