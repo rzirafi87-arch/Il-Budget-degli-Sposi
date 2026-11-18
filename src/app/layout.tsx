@@ -3,7 +3,6 @@ import { defaultLocale, getLanguageCapability } from "@/i18n/languageCapabilitie
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Script from "next/script";
-import { Inter, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
 
@@ -19,8 +18,6 @@ const themeBootstrapScript = `(() => {
   } catch {}
 })();`;
 
-const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-serif", display: "swap" });
-const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-sans", display: "swap" });
 
 export const metadata: Metadata = { metadataBase: new URL(getSiteUrl()) };
 
@@ -32,7 +29,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const direction = capability?.publicRouting ? capability.direction : "ltr";
 
   return (
-    <html lang={locale} dir={direction} data-theme="light" suppressHydrationWarning className={`${playfair.variable} ${inter.variable}`}>
+    <html lang={locale} dir={direction} data-theme="light" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <Script id="theme-bootstrap" strategy="beforeInteractive">{themeBootstrapScript}</Script>
