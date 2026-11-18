@@ -77,6 +77,7 @@
       "empty": "Nessun elemento in lista"
     },
     "currentEvent": {
+      "add": "Aggiungi un evento",
       "label": "Evento corrente", "choose": "Scegli un evento", "none": "Nessun evento", "change": "Cambia evento", "soon": "Prossimamente", "confirmTitle": "Cambiare evento?", "confirmDescription": "Stai per passare a {event}. Tutte le pagine useranno i dati di questo evento.", "cancel": "Annulla", "confirm": "Cambia evento", "switching": "Cambio in corso…"
     },
     "errorPage": {

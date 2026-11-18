@@ -61,5 +61,15 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     expect(await page.evaluate(async headers => (await fetch("/api/my/eighteenth-dashboard", {headers})).status, headers)).toBe(409);
     await page.goto("/it/dashboard");
     await expect(page.getByRole("progressbar")).toBeVisible();
+    await page.getByRole("button", { name: /^apri impostazioni$/i }).click();
+    const settings = page.getByRole("dialog", { name: "Impostazioni", exact: true });
+    await expect(settings.getByRole("link", { name: "Aggiungi un evento" })).toHaveAttribute("href", "/it/select-event-type?new=1");
+    const selector = settings.getByRole("combobox", { name: /Cambia evento/i });
+    const partyId = await selector.getByRole("option", { name: /Sofia QA/ }).getAttribute("value");
+    expect(partyId).toBeTruthy();
+    await selector.selectOption(partyId!);
+    await settings.getByRole("button", { name: "Cambia evento", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Sofia QA" })).toBeVisible();
+    await expect(balance).toContainText("1.380");
   }
 });
