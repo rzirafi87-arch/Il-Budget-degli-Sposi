@@ -1,13 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import { randomUUID } from "node:crypto";
-import { createQaIdentity, deleteQaIdentity, login } from "./helpers/milestone8-fixtures";
+import { createQaIdentity, login } from "./helpers/milestone8-fixtures";
 
 test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ page }) => {
   const url = process.env.PLAYWRIGHT_SUPABASE_URL!;
   expect(["127.0.0.1", "localhost"]).toContain(new URL(url).hostname);
   const user = await createQaIdentity("party18");
-  try {
+  // The workflow destroys this isolated database and its identities after the test.
+  {
     await login(page, user);
     await page.goto("/it/select-country");
     await page.getByRole("button", {name:"Italia", exact:true}).click();
@@ -44,11 +45,21 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     }
     const wedding = await page.request.post("/api/event/ensure-default", {headers, data:{eventType:"wedding", country:"it", language:"it", createAdditional:true}});
     expect(wedding.ok()).toBe(true);
-    expect((await (await page.request.get("/api/my/guests", {headers})).json()).guests).toHaveLength(0);
-    expect((await page.request.get("/api/my/eighteenth-dashboard", {headers})).status()).toBe(409);
+    const {eventId} = await wedding.json();
+    // Chromium owns the active-event cookie used by the real dashboard.
+    await page.evaluate(async ({headers, eventId}) => {
+      const selected = await fetch("/api/my/current-event", {method:"POST",
+        headers:{...headers,"Content-Type":"application/json"}, body:JSON.stringify({eventId})});
+      if (!selected.ok) throw new Error("Event selection failed: " + selected.status);
+    }, {headers, eventId});
+    const otherGuests = await page.evaluate(async headers => {
+      const r = await fetch("/api/my/guests", {headers});
+      if (!r.ok) throw new Error("Guest read failed: " + r.status);
+      return (await r.json()).guests;
+    }, headers);
+    expect(otherGuests).toHaveLength(0);
+    expect(await page.evaluate(async headers => (await fetch("/api/my/eighteenth-dashboard", {headers})).status, headers)).toBe(409);
     await page.goto("/it/dashboard");
     await expect(page.getByRole("progressbar")).toBeVisible();
-  } finally {
-    await deleteQaIdentity(user);
   }
 });
