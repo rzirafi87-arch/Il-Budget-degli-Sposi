@@ -26,7 +26,7 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     const auth = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
     const session = await auth.auth.signInWithPassword(user);
     const headers = { Authorization: "Bearer " + session.data.session!.access_token };
-    const guests = { familyGroups: [], nonInvitedRecipients: [], guests: [{ id:randomUUID(), name:"Alex QA", guestType:"adult", attending:true, rsvpReceived:true }] };
+    const guests = { familyGroups: [], nonInvitedRecipients: [], guests: [{ id:randomUUID(), name:"Alex QA", guestType:"common", attending:true, rsvpReceived:true }] };
     expect((await page.request.post("/api/my/guests", {headers, data:guests})).ok()).toBe(true);
     await page.goto("/it/profilo");
     await page.getByRole("button", {name:/esci/i}).click();
