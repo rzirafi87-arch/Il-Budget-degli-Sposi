@@ -112,7 +112,18 @@ export const EVENT_TYPE_CAPABILITIES: Record<string, EventTypeCapability> = {
     description: WEDDING_CAPABILITY_DESCRIPTION,
   },
   baptism: comingSoon("baptism"),
-  eighteenth: comingSoon("eighteenth"),
+  eighteenth: {
+    ...comingSoon("eighteenth"),
+    availabilityStatus: process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1" ? "READY" : "COMING_SOON",
+    enabledModules: process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1"
+      ? ["dashboard", "guests", "suppliers", "location-reception", "timeline"] : [],
+    ceremonyMode: "none",
+    budgetTemplate: "eighteenth",
+    timelineTemplate: "eighteenth",
+    guestModule: true,
+    locationRoles: ["main_event"],
+    supplierCategories: ["catering", "decorazioni", "fotografia-video", "musica-intrattenimento", "partecipazioni"],
+  },
   graduation: comingSoon("graduation"),
   confirmation: comingSoon("confirmation"),
   communion: comingSoon("communion"),
@@ -175,7 +186,7 @@ export function getEventTypeCapability(value: string | null | undefined): EventT
 }
 
 export type EventTypeRegistrationDecision =
-  | { ok: true; eventType: "wedding" }
+  | { ok: true; eventType: "wedding" | "eighteenth" }
   | { ok: false; eventType: string; reason: "COMING_SOON" | "INTERNAL_ONLY" | "UNKNOWN" };
 
 export function validateEventTypeForRegistration(value: unknown): EventTypeRegistrationDecision {
@@ -191,7 +202,8 @@ export function validateEventTypeForRegistration(value: unknown): EventTypeRegis
   if (capability.availabilityStatus === "INTERNAL_ONLY") {
     return { ok: false, eventType, reason: "INTERNAL_ONLY" };
   }
-  return { ok: true, eventType: "wedding" };
+  if (eventType === "wedding" || eventType === "eighteenth") return { ok: true, eventType };
+  return { ok: false, eventType, reason: "UNKNOWN" };
 }
 
 export function publicEventTypeCapabilities(): EventTypeCapability[] {

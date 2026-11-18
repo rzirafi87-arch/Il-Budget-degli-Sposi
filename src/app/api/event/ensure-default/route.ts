@@ -1,3 +1,4 @@
+import { parseEighteenthSetup } from "@/lib/eighteenthSetup";
 import { getEventTypeCapability, validateEventTypeForRegistration } from "@/lib/eventTypeCapabilities";
 import { generatePublicId } from "@/lib/publicId";
 import { getServiceClient } from "@/lib/supabaseServer";
@@ -77,6 +78,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, code: "EVENT_SELECTION_REQUIRED", events: resolution.events }, { status: 409 });
     }
 
+    const setup = eventTypeSlug === "eighteenth" ? parseEighteenthSetup(body) : null;
+    if (eventTypeSlug === "eighteenth" && !setup) {
+      return NextResponse.json({ error: "INVALID_PARTY_DETAILS" }, { status: 400 });
+    }
     const publicId = generatePublicId();
     const eventName = eventTypeSlug === "wedding" ? "Il nostro matrimonio" : "Il mio evento";
     const { data: createdEvent, error: createError } = await db
@@ -84,6 +89,7 @@ export async function POST(req: NextRequest) {
       .insert({
         public_id: publicId,
         name: eventName,
+        ...setup,
         owner_id: userId,
         event_type: eventTypeSlug,
         language: language || null,

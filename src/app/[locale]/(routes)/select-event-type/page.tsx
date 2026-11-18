@@ -66,6 +66,7 @@ export default function SelectEventTypePage() {
   const language = (["it", "en", "es", "fr", "de"] as const).find((item) => item === locale) || "it";
   const statusCopy = STATUS_COPY[language];
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
+  const [partyDetails, setPartyDetails] = useState({ name: "", date: "", budget: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string>("");
@@ -173,7 +174,7 @@ export default function SelectEventTypePage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ eventType: code, country, language: locale, createAdditional }),
+        body: JSON.stringify({ eventType: code, country, language: locale, createAdditional, ...(code === "eighteenth" ? { ...partyDetails, budget: Number(partyDetails.budget) } : {}) }),
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || !payload.ok) {
@@ -214,9 +215,19 @@ export default function SelectEventTypePage() {
           {t("onboarding.selectEventTypeTitle")}
         </h1>
 
-        {tradition && <div className="mb-6"><WeddingTraditionInfo tradition={tradition} /></div>}
+        {selected === "wedding" && tradition && <div className="mb-6"><WeddingTraditionInfo tradition={tradition} /></div>}
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {selected === "eighteenth" ? (
+          <form className="grid gap-4" onSubmit={e => { e.preventDefault(); void handleSelect(selected); }}>
+            {(["name", "date", "budget"] as const).map(key => <label key={key} className="grid gap-1">
+              {t("party18." + key)}
+              <input required type={{ name: "text", date: "date", budget: "number" }[key]}
+                maxLength={120} min={key === "budget" ? 0 : undefined} step={key === "budget" ? "0.01" : undefined}
+                value={partyDetails[key]} onChange={e => setPartyDetails({ ...partyDetails, [key]: e.target.value })} />
+            </label>)}
+            <button disabled={saving} className="app-button app-button--primary">{t("party18.start")}</button>
+          </form>
+        ) : <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {events.map((event) => {
             const isReady = event.capability.availabilityStatus === "READY";
             const isSelected = selected === event.slug;
@@ -232,7 +243,7 @@ export default function SelectEventTypePage() {
                       : "border-border shadow-sm hover:border-primary"
                     : "cursor-not-allowed border-border/60 opacity-75"
                 }`}
-                onClick={() => void handleSelect(event.slug)}
+                onClick={() => event.slug === "eighteenth" ? setSelected(event.slug) : void handleSelect(event.slug)}
                 aria-pressed={isSelected}
                 aria-disabled={!isReady}
                 aria-describedby={!isReady ? `event-type-${event.slug}-status` : undefined}
@@ -264,7 +275,7 @@ export default function SelectEventTypePage() {
               </button>
             );
           })}
-        </div>
+        </div>}
 
         {saving && <p className="mt-6 text-center font-semibold text-[#7A8A74]">{statusCopy.creating}</p>}
         {error && <p className="mt-6 text-center font-semibold text-red-600" role="alert">{error}</p>}
