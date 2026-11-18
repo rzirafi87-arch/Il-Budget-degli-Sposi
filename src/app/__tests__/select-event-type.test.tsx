@@ -21,6 +21,17 @@ beforeAll(() => {
 import SelectEventTypePage from "../[locale]/(routes)/select-event-type/page";
 
 describe("SelectEventTypePage", () => {
+  it("keeps transient onboarding read failures recoverable without redirecting to login", async () => {
+    window.localStorage.setItem("language", "it");
+    window.localStorage.setItem("country", "it");
+    mockReplace.mockClear();
+    mockGetOnboardingStatus.mockRejectedValueOnce(new Error("offline"));
+    render(<SelectEventTypePage />);
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+    expect(mockReplace).not.toHaveBeenCalledWith("/it/auth");
+    fireEvent.click(screen.getByRole("button", { name: "retry" }));
+    expect(await screen.findByText("events.wedding")).toBeInTheDocument();
+  });
   beforeEach(() => {
     mockReplace.mockClear();
     mockGetOnboardingStatus.mockReset();

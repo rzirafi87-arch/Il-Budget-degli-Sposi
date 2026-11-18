@@ -12,7 +12,7 @@ import { pushLocalizedRoute } from "@/i18n/runtimeRouting";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function QuickSettings() {
+export default function QuickSettings({ showTrigger = true }: { showTrigger?: boolean }) {
   const t = useTranslations("runtimeUi.settings");
   const locale = useLocale();
   const pathname = usePathname();
@@ -22,6 +22,8 @@ export default function QuickSettings() {
   const [lang, setLang] = React.useState<string>(locale);
   const [country, setCountry] = React.useState<string>("it");
   const [eventType, setEventType] = React.useState<string>("wedding");
+  const dialogRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   const capability = getEventTypeCapability(eventType);
 
@@ -46,6 +48,25 @@ export default function QuickSettings() {
     return () => window.removeEventListener("open-quick-settings", handler);
   }, []);
 
+  React.useEffect(() => {
+    if (!open) return;
+    const previous = document.activeElement instanceof HTMLElement && document.activeElement !== document.body
+      ? document.activeElement : triggerRef.current;
+    const focusable = () => dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), select:not([disabled]), input:not([disabled]), [tabindex="0"]');
+    focusable()?.[0]?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); setOpen(false); return; }
+      if (event.key !== "Tab") return;
+      const controls = focusable();
+      if (!controls?.length) return;
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => { document.removeEventListener("keydown", onKeyDown); previous?.focus(); };
+  }, [open]);
+
   function persist(name: string, value: string) {
     localStorage.setItem(name, value);
     document.cookie = `${name}=${value}; Path=/; Max-Age=15552000; SameSite=Lax`;
@@ -66,15 +87,16 @@ export default function QuickSettings() {
 
   return (
     <>
-      <button
+      {showTrigger && <div className="flex justify-end px-4 pt-3 md:hidden"><button
+        ref={triggerRef}
         aria-label={t("settings")}
-        className="app-button app-button--primary app-button--icon fixed bottom-5 right-5 z-60 rounded-full shadow-soft-lg md:hidden"
+        className="app-button app-button--primary app-button--icon rounded-full shadow-soft-lg"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         aria-controls="quick-settings-dialog"
       >
         <Settings size={20} aria-hidden />
-      </button>
+      </button></div>}
 
       {open && (
         <button
@@ -86,8 +108,9 @@ export default function QuickSettings() {
 
       {open && (
         <div
+          ref={dialogRef}
           id="quick-settings-dialog"
-          className="app-card app-card--md fixed inset-x-4 bottom-4 z-61 max-h-[calc(100vh-2rem)] overflow-y-auto shadow-soft-xl sm:inset-x-auto sm:bottom-20 sm:right-5 sm:w-96"
+          className="app-card app-card--md fixed inset-x-4 bottom-4 z-61 max-h-[calc(100dvh-2rem)] overflow-y-auto shadow-soft-xl sm:inset-x-auto sm:bottom-20 sm:right-5 sm:w-96"
           role="dialog"
           aria-modal="true"
           aria-labelledby="quick-settings-title"

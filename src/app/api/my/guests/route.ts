@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     if (authResponse) return authResponse;
     const message = err instanceof Error ? err.message : "Internal error";
     logger.error("GET /api/my/guests error", { message });
-    return fail(message);
+    return fail("GUEST_SNAPSHOT_READ_FAILED");
   }
 }
 

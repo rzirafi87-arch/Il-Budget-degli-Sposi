@@ -12,7 +12,8 @@ describe("Branch 41 Idea di Budget apply schema", () => {
   );
 
   it("persists the contributor field required by the apply route", () => {
-    expect(applyRoute).toContain("spend_type: it.spend_type");
+    expect(applyRoute).toContain("spend_type: st");
+    expect(applyRoute).toContain("p_items: uniqueItems");
     expect(migration).toContain("add column if not exists spend_type text not null default 'common'");
   });
 
