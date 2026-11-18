@@ -1,7 +1,7 @@
 name: Playwright i18n matrix
 on:
   pull_request:
-    branches: [main]
+    branches: [main, review/core-languages-20261118]
     paths:
       [
         "e2e/**",
@@ -25,6 +25,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   preview:
+    if: github.head_ref != 'feature/eighteenth-party'
     name: Preview integration
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -96,6 +97,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
+      NEXT_PUBLIC_EIGHTEENTH_PREVIEW: ${{ github.head_ref == 'feature/eighteenth-party' && '1' || '0' }}
       SUPABASE_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -135,6 +137,12 @@ jobs:
           NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
+      - name: Verify isolated eighteenth party
+        if: github.head_ref == 'feature/eighteenth-party'
+        run: npx playwright test --config=playwright.m8.config.ts --project=party18
+        env:
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
       - name: Run minimal real onboarding diagnostic first
         run: npx playwright test --config=playwright.m8.config.ts --project=m8-diagnostic
         env:

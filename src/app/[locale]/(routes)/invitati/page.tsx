@@ -61,6 +61,7 @@ type Table = {
 export default function InvitatiPage() {
   const t = useTranslations("guestsPage");
   const [activeTab, setActiveTab] = useState<"guests" | "tables">("guests");
+  const [party, setParty] = useState(false);
   const [guests, setGuests] = useState<Guest[]>([]);
   const [familyGroups, setFamilyGroups] = useState<FamilyGroup[]>([]);
   const [nonInvitedRecipients, setNonInvitedRecipients] = useState<NonInvitedRecipient[]>([]);
@@ -116,6 +117,7 @@ export default function InvitatiPage() {
       if (!res.ok) throw new Error("GUESTS_LOAD_FAILED");
       const json = await res.json();
 
+      setParty(json.eventType === "eighteenth");
       setGuests(json.guests || []);
       setFamilyGroups(json.familyGroups || []);
       setNonInvitedRecipients(json.nonInvitedRecipients || []);
@@ -418,7 +420,7 @@ export default function InvitatiPage() {
       <div className="app-card app-card--md mb-6">
         <h3 className="font-semibold text-lg mb-4">{t("summary.title")}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div className="rounded-lg border border-pink-200 bg-pink-50 p-3 dark:border-pink-800 dark:bg-pink-950">
+          {!party && <><div className="rounded-lg border border-pink-200 bg-pink-50 p-3 dark:border-pink-800 dark:bg-pink-950">
             <div className="font-semibold text-fg">{t("guestTypes.bride")}</div>
             <div className="text-2xl font-bold text-pink-700 dark:text-pink-300">{totalByType.bride}</div>
           </div>
@@ -429,7 +431,7 @@ export default function InvitatiPage() {
           <div className="rounded-lg border border-border bg-muted p-3">
             <div className="font-semibold text-fg">{t("guestTypes.common")}</div>
             <div className="text-2xl font-bold text-fg">{totalByType.common}</div>
-          </div>
+          </div></>}
           <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950">
             <div className="font-semibold text-fg">{t("summary.attendees")}</div>
             <div className="text-2xl font-bold text-green-700 dark:text-green-300">{totalGuests}</div>
@@ -604,6 +606,7 @@ export default function InvitatiPage() {
           <div className="space-y-3 md:hidden" data-testid="mobile-guest-list">
             {guests.map((guest) => (
               <GuestMobileCard
+                showGuestSide={!party}
                 key={guest.id}
                 guest={guest}
                 families={familyGroups}
@@ -621,7 +624,7 @@ export default function InvitatiPage() {
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
                 <th className="px-3 py-2 text-left font-semibold text-gray-900">{t("columns.name")}</th>
-                <th className="px-2 py-2 text-left font-semibold text-gray-900">{t("columns.type")}</th>
+                {!party && <th className="px-2 py-2 text-left font-semibold text-gray-900">{t("columns.type")}</th>}
                 <th className="px-2 py-2 text-left font-semibold text-gray-900">{t("columns.family")}</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900">{t("columns.mainContact")}</th>
                 <th className="px-2 py-2 text-center font-semibold text-gray-900 whitespace-nowrap" title={t("columns.separateHelp")}>🚫 {t("columns.separate")}</th>
@@ -648,7 +651,7 @@ export default function InvitatiPage() {
                         aria-label={t("fieldLabels.name", {name: guest.name || t("list.guestFallback")})}
                       />
                     </td>
-                    <td className="px-2 py-2">
+                    {!party && <td className="px-2 py-2">
                       <select
                         className="border border-gray-200 rounded px-1 py-1 w-full text-xs"
                         value={guest.guestType}
@@ -659,7 +662,7 @@ export default function InvitatiPage() {
                         <option value="bride">{t("guestTypes.bride")}</option>
                         <option value="groom">{t("guestTypes.groom")}</option>
                       </select>
-                    </td>
+                    </td>}
                     <td className="px-2 py-2">
                       <select
                         className="border border-gray-200 rounded px-1 py-1 w-full text-xs bg-white"

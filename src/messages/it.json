@@ -1,4 +1,36 @@
 {
+  "party18": {
+    "name": "Nome di chi compie 18 anni",
+    "date": "Data della festa",
+    "budget": "Budget iniziale",
+    "start": "Organizza la festa",
+    "first": "Invita la prima persona oppure registra il primo preventivo.",
+    "paid": "Spese pagate",
+    "remaining": "Disponibilità dopo le spese pagate",
+    "quotes": "Preventivi aperti",
+    "category": "Categoria",
+    "categories": {
+      "venue": "Sala",
+      "catering": "Catering",
+      "cake": "Torta",
+      "dj": "DJ",
+      "photography": "Foto",
+      "decor": "Allestimenti",
+      "invites": "Inviti"
+    },
+    "amount": "Importo",
+    "expense": "Registra spesa",
+    "quote": "Salva preventivo",
+    "empty": "Nessuna spesa o preventivo registrato.",
+    "saved": "Salvato",
+    "error": "Impossibile caricare o salvare i dati. Riprova.",
+    "links": {
+      "invitati": "Invitati e conferme",
+      "location": "Location",
+      "fornitori": "Fornitori",
+      "timeline": "Scadenze"
+    }
+  },
   "dashboard": "Dashboard",
   "timeline": "Timeline",
   "budget": "Budget",

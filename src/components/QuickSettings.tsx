@@ -14,6 +14,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 export default function QuickSettings({ showTrigger = true }: { showTrigger?: boolean }) {
   const t = useTranslations("runtimeUi.settings");
+  const currentEvent = useTranslations("milestone9.currentEvent");
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -52,9 +53,10 @@ export default function QuickSettings({ showTrigger = true }: { showTrigger?: bo
     if (!open) return;
     const previous = document.activeElement instanceof HTMLElement && document.activeElement !== document.body
       ? document.activeElement : triggerRef.current;
-    const focusable = () => dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), select:not([disabled]), input:not([disabled]), [tabindex="0"]');
+    const focusable = () => dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), select:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]');
     focusable()?.[0]?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
+      if (dialogRef.current?.querySelector('[role="dialog"]')) return;
       if (event.key === "Escape") { event.preventDefault(); setOpen(false); return; }
       if (event.key !== "Tab") return;
       const controls = focusable();
@@ -163,7 +165,7 @@ export default function QuickSettings({ showTrigger = true }: { showTrigger?: bo
             </div>
 
             <div className="app-field">
-              <p className="app-label">{t("currentEvent")}</p>
+              <p className="app-label">{currentEvent("label")}</p>
               <CurrentEventSelector />
             </div>
 
