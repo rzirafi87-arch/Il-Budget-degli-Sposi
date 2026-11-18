@@ -125,7 +125,7 @@ export async function resolveCurrentEvent(
   userId: string,
   options?: { explicitEventId?: string | null },
 ): Promise<CurrentEventResolution> {
-  const events = await listOwnedEvents(userId);
+  const events = (await listOwnedEvents(userId)).filter(event => event.eventType === "wedding");
   const explicit = options?.explicitEventId || null;
   const hinted = explicit || req.cookies.get(CURRENT_EVENT_COOKIE)?.value || null;
   const selected = hinted ? events.find((event) => event.id === hinted) : undefined;

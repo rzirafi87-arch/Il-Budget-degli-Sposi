@@ -1,6 +1,5 @@
 "use client";
 
-import CurrentEventSelector from "@/components/CurrentEventSelector";
 import { AppButton } from "@/components/ui/AppButton";
 import { COUNTRIES, LANGS } from "@/lib/loadConfigs";
 import { getEventTypeCapability, normalizeEventType } from "@/lib/eventTypeCapabilities";
@@ -137,11 +136,6 @@ export default function QuickSettings() {
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div className="app-field">
-              <p className="app-label">{t("currentEvent")}</p>
-              <CurrentEventSelector />
             </div>
 
             <div className="app-field">
