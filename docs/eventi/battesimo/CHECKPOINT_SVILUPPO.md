@@ -79,3 +79,17 @@ Questa prova NON equivale a logout/login: uscita e nuovo accesso restano da
 eseguire, così come registrazione, prova browser invitati/inviti/checklist,
 verifica dimensioni iPhone e cambio Matrimonio/Battesimo. Il sito pubblico
 Production non è stato aggiornato.
+
+## Seconda verifica browser — 19 novembre 2026
+Sul deployment 9f9c7f5 verificati salvataggio e riapertura di due persone nello
+stesso gruppo familiare, con accompagnatore e conferme distinte: cerimonia 2,
+ritrovo 1. Copia dell'invito riuscita, con orari distinti e senza note private.
+Prima attività completata, salvata e recuperata dopo reload e riapertura;
+la prossima azione passa correttamente alla seconda attività.
+
+Registrazione dedicata implementata: solo account, nessun Matrimonio creato,
+rientro al Battesimo dopo conferma email e reinvio coerente. Campi conservati
+in caso di errore. Registrazione reale con conferma email ancora da verificare
+nel browser; 24 test mirati su registrazione, modello e ambiente PASS.
+Restano aperti logout/login, dimensioni iPhone, cambio data nel browser,
+concorrenza browser e integrazione cambio evento. Nessun aggiornamento Production.
