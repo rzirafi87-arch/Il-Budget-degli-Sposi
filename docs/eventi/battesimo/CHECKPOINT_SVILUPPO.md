@@ -15,7 +15,8 @@ inviti e promemoria localizzati, ringraziamenti. Immagini fotografiche generate
 con avorio e azzurro polvere, formati 1600x900 e 900x1125 WebP.
 
 Verifiche: typecheck PASS; 15 test dominio PASS. Budget: 393/1354/3980 EUR.
-Browser autenticato, nuovo accesso, concorrenza reale, RLS e migrazione: PENDING.
+Controllo PostgreSQL isolato PASS: sintassi, rollback input incompleti, ledger condivisi, replay, revisioni e controllo proprietario.
+Browser autenticato, nuovo accesso, concorrenza reale, RLS e migrazione QA: PENDING.
 
 La migrazione proposta sposta ospiti e costi nelle tabelle condivise guests ed
 expenses, lasciando nel JSON i dettagli specifici e le scadenze relative.

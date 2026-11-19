@@ -16,6 +16,11 @@ const owner=randomUUID(),other=randomUUID(),id=randomUUID();
 await db.query("select set_config('request.jwt.claim.sub',$1,false)",[owner]);
 const p={version:2,name:'Vittoria',budget:'1500',ceremony:'2027-04-18T10:30',scenario:'lunch',time:'2027-04-18T13:00',adults:22,companions:2,children:5,noMeal:1,guests:[{id:randomUUID(),name:'Elena',kind:'adult',ceremony:'yes',reception:'pending',menu:'adult',food:'private',companionOf:''}],costs:[{id:randomUUID(),name:'Pranzo',scope:'reception',enabled:true,quantity:22,unitCost:38,payments:[{id:randomUUID(),amount:150,date:'2027-01-01'}]}]};
 const save=async(rev,plan=p)=>(await db.query('select public.save_family_baptism($1,$2,$3::jsonb) as rev',[id,rev,JSON.stringify(plan)])).rows[0].rev;
+// Invalid optional-looking enums must not become SQL NULL and bypass checks.
+for(const key of ['scenario']) { const bad={...p};delete bad[key];await assert.rejects(()=>save(0,bad),/INVALID_BAPTISM/); }
+for(const key of ['ceremony','reception','menu','kind']) { const g={...p.guests[0]};delete g[key];await assert.rejects(()=>save(0,{...p,guests:[g]}),/INVALID_BAPTISM_GUEST/); }
+const badCost={...p.costs[0]};delete badCost.scope;await assert.rejects(()=>save(0,{...p,costs:[badCost]}),/INVALID_BAPTISM_COST/);
+assert.equal((await db.query('select count(*)::int as n from events')).rows[0].n,0,'invalid snapshots roll back event creation');
 const rev=await save(0);assert.equal(await save(0),rev,'creation replay is idempotent');
 let row=(await db.query('select public.read_family_baptism($1) as r',[id])).rows[0].r;
 assert.equal(row.plan.costs[0].payments[0].amount,150);assert.equal(row.plan.guests[0].ceremony,'yes');

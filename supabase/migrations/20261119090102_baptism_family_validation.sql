@@ -45,7 +45,7 @@ declare
 begin
  if owner is null or p_id is null or p_revision is null or p_revision<0 or jsonb_typeof(p_plan) is distinct from 'object' or octet_length(p_plan::text)>1000000 or p_plan->>'version' is distinct from '2' or jsonb_typeof(p_plan->'guests') is distinct from 'array' or jsonb_typeof(p_plan->'costs') is distinct from 'array' then raise exception 'INVALID_BAPTISM'; end if;
  title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');budget:=coalesce(nullif(p_plan->>'budget','')::numeric,0);day:=nullif(left(p_plan->>'ceremony',10),'')::date;
- if length(title)>120 or budget<0 or budget>999999999 or budget='NaN'::numeric or jsonb_array_length(p_plan->'guests')>2000 or jsonb_array_length(p_plan->'costs')>1000 or p_plan->>'scenario' not in ('solo','later','home','lunch','hall') then raise exception 'INVALID_BAPTISM';end if;
+ if length(title)>120 or budget<0 or budget>999999999 or budget='NaN'::numeric or jsonb_array_length(p_plan->'guests')>2000 or jsonb_array_length(p_plan->'costs')>1000 or coalesce(p_plan->>'scenario','') not in ('solo','later','home','lunch','hall') then raise exception 'INVALID_BAPTISM';end if;
  foreach title in array array['adults','companions','children','noMeal'] loop
   if not coalesce(p_plan->>title,'') ~ '^\d+$' then raise exception 'INVALID_BAPTISM_COUNTS';end if;
  end loop;
@@ -66,7 +66,7 @@ begin
  if (select count(*) from jsonb_array_elements(p_plan->'guests'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'guests')) or (select count(*) from jsonb_array_elements(p_plan->'costs'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'costs')) then raise exception 'DUPLICATE_BAPTISM_ITEM';end if;
  for g in select value from jsonb_array_elements(p_plan->'guests') loop
   eid:=(g->>'id')::uuid;
-  if coalesce(btrim(g->>'name'),'')='' or g->>'ceremony' not in ('pending','yes','no') or g->>'reception' not in ('pending','yes','no') or g->>'menu' not in ('adult','child','none','pending') or g->>'kind' not in ('adult','child') then raise exception 'INVALID_BAPTISM_GUEST';end if;
+  if coalesce(btrim(g->>'name'),'')='' or coalesce(g->>'ceremony','') not in ('pending','yes','no') or coalesce(g->>'reception','') not in ('pending','yes','no') or coalesce(g->>'menu','') not in ('adult','child','none','pending') or coalesce(g->>'kind','') not in ('adult','child') then raise exception 'INVALID_BAPTISM_GUEST';end if;
   if exists(select 1 from public.guests where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;
   if coalesce(g->>'companionOf','')<>'' and (g->>'companionOf'=g->>'id' or not exists(select 1 from jsonb_array_elements(p_plan->'guests') x where x->>'id'=g->>'companionOf' and coalesce(x->>'companionOf','')='')) then raise exception 'INVALID_BAPTISM_COMPANION';end if;
   insert into public.guests(id,event_id,name,guest_type,rsvp_received,attending,menu_preferences,allergies_intolerances,baptism_details)
@@ -76,7 +76,7 @@ begin
  delete from public.guests where event_id=p_id and baptism_details is not null and id::text not in (select value->>'id' from jsonb_array_elements(p_plan->'guests'));
  for c in select value from jsonb_array_elements(p_plan->'costs') loop
   eid:=(c->>'id')::uuid;
-  if coalesce(btrim(c->>'name'),'')='' or c->>'scope' not in ('ceremony','reception') or not coalesce(c->>'quantity','')~'^\d+$' or coalesce(c->>'unitCost','') !~ '^\d+(\.\d+)?$' or jsonb_typeof(c->'payments') is distinct from 'array' then raise exception 'INVALID_BAPTISM_COST';end if;
+  if coalesce(btrim(c->>'name'),'')='' or coalesce(c->>'scope','') not in ('ceremony','reception') or not coalesce(c->>'quantity','')~'^\d+$' or coalesce(c->>'unitCost','') !~ '^\d+(\.\d+)?$' or jsonb_typeof(c->'payments') is distinct from 'array' then raise exception 'INVALID_BAPTISM_COST';end if;
   if exists(select 1 from public.expenses where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;
   paid:=0;
   for p in select value from jsonb_array_elements(c->'payments') loop
