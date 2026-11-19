@@ -57,3 +57,25 @@ vsguhivizuneylqhygfk: serve una SUPABASE_SERVICE_ROLE_KEY specifica QA sul branc
 Aggiunto controllo server che rifiuta JWT anon, JWT non valido e progetto
 incoerente prima di creare il client. Nessuna chiave inclusa nei messaggi.
 22 test mirati PASS. Registrazione e percorso browser ancora NON verificati.
+
+## Anteprima e prova browser — 19 novembre 2026
+Chiave server QA configurata come Secret in Vercel, esclusivamente Preview /
+feature/battesimo-completo. Credenziali non versionate. Le sessioni amministrative
+aperte sono riutilizzabili nel browser; password e OTP non sono archiviati.
+
+Deployment dpl_FG7PgCJdfUMzd2WEdWYHWLt9bdFZ READY su 9f9c7f5.
+URL verificato: https://il-budget-degli-sposi-cvl027oov-rzirafi87-archs-projects.vercel.app/it/battesimo
+
+Browser PASS: login con account QA tramite modulo protetto, creazione della bozza
+Vittoria, salvataggio parziale del nome, modifica e salvataggio del programma,
+cerimonia 18/04/2027 10:30 e ritrovo 13:00 in luoghi distinti, impostazione budget
+1500 EUR e quantità 22 adulti / 5 bambini / 1 senza menù. Inserite tre voci di
+prova (costi fissi aggregati): 22x38 + 5x18 + 428 = 1354 EUR. Due pagamenti
+150+133=283, residuo1071, margine146. Reload della pagina, scelta dello stesso
+Vittoria dalla lista e recupero del programma e di tutti e quattro i valori PASS.
+I dati fittizi restano nell'account QA come esempio consultabile.
+
+Questa prova NON equivale a logout/login: uscita e nuovo accesso restano da
+eseguire, così come registrazione, prova browser invitati/inviti/checklist,
+verifica dimensioni iPhone e cambio Matrimonio/Battesimo. Il sito pubblico
+Production non è stato aggiornato.
