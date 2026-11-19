@@ -93,3 +93,19 @@ in caso di errore. Registrazione reale con conferma email ancora da verificare
 nel browser; 24 test mirati su registrazione, modello e ambiente PASS.
 Restano aperti logout/login, dimensioni iPhone, cambio data nel browser,
 concorrenza browser e integrazione cambio evento. Nessun aggiornamento Production.
+
+## Registrazione pubblicata in anteprima QA
+Commit funzionale 0541778e594381f56d6abb0c4cfb3f4c95872db7, deployment
+dpl_obPyZosKcgLzn1uoAhLCWPTVfckw READY. Branch alias verificato nel browser:
+https://il-budget-degli-sposi-git-featu-bd1aed-rzirafi87-archs-projects.vercel.app/it/battesimo
+La registrazione da questo percorso mostra solo email e password, senza campi
+Matrimonio. Typecheck e controllo SQL locale PASS. Nel database QA il trigger
+nuovo utente crea solo il profilo, senza evento automatico.
+
+Configurazione Auth QA: Site URL passato da localhost all'alias del branch;
+aggiunti ritorni consentiti solo per alias del branch e hostname del deployment
+0541778. Registrazione con password nuova e conferma email richiede intervento
+manuale dell'utente; non ancora verificata end-to-end.
+
+Ulteriore prova browser sul deployment 9f9c7f5: bambino con menù bambino e
+risposte in attesa salvato; promemoria corretto generato.
