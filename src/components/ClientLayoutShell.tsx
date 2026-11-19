@@ -91,7 +91,7 @@ export default function ClientLayoutShell({ children }: { children: ReactNode })
     } catch {}
   }, [locale]);
 
-  if (isPublicHome || normalizedPath === "/anteprima/battesimo-vittoria") {
+  if (isPublicHome || normalizedPath === "/anteprima/battesimo-vittoria" || normalizedPath === "/battesimo") {
     return <ToastProvider>{children}</ToastProvider>;
   }
 
