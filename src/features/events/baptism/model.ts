@@ -72,7 +72,7 @@ export function upgradePlan(raw: Record<string,unknown>): Plan {
   if(raw.version===2) return {...blankPlan(),...raw} as Plan;
   const reception=String(raw.reception||'');
   const p={...blankPlan(),...raw,scenario:({'Solo cerimonia':'solo','Rinfresco in casa':'home','Pranzo in famiglia':'lunch','Ricevimento in sala':'hall'} as Record<string,Scenario>)[reception]||'later'} as Plan;
-  p.guests=((raw.guests||[]) as {name:string;ceremony:boolean;lunch:boolean}[]).map((g,i)=>({id:crypto.randomUUID(),name:g.name,group:'',contact:'',kind:'adult',companionOf:'',ceremony:g.ceremony?'yes':'pending',reception:g.lunch?'yes':'pending',menu:'pending',food:'',access:''}));
+  p.guests=((raw.guests||[]) as {name:string;ceremony:boolean;lunch:boolean}[]).map(g=>({id:crypto.randomUUID(),name:g.name,group:'',contact:'',kind:'adult',companionOf:'',ceremony:g.ceremony?'yes':'pending',reception:g.lunch?'yes':'pending',menu:'pending',food:'',access:''}));
   p.costs=((raw.costs||[]) as {name:string;amount:number;paid:number}[]).map((c,i)=>({id:crypto.randomUUID(),name:c.name,scope:'ceremony',enabled:true,quantity:1,unitCost:c.amount,quote:'',payments:c.paid?[{id:`legacy-payment-${i}`,amount:c.paid,date:'',note:''}]:[]}));
   return p;
 }
