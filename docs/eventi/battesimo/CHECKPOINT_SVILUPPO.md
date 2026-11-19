@@ -34,3 +34,16 @@ Problemi ancora da risolvere:
 - revisione SQL di autorizzazioni, replay, snapshot e aggiornamenti concorrenti.
 
 Matrimonio: PR #92 separata; nessun merge o rilascio Production autorizzato.
+
+## Verifica QA aggiornata
+Migrazione baptism_shared_ledger_validation applicata in Preview QA.
+PASS sul database reale: creazione, replay, riapertura, costo previsto,
+disattivazione ritrovo, acconto conservato, revisione obsoleta e rifiuto RPC
+per altro proprietario. Dati di prova annullati con rollback.
+
+Il test RLS ha rilevato un bypass nella funzione condivisa can_access_event:
+JWT senza email coincideva con email sposi vuote. Applicata in QA la migrazione
+event_access_nonempty_email. Nuovo test come ruolo authenticated PASS:
+proprietario autorizzato, altro utente senza email non vede piani, ospiti o spese.
+Production NON aggiornata. La correzione condivisa va inclusa nel gate finale.
+Browser e configurazione del deployment restano PENDING.
