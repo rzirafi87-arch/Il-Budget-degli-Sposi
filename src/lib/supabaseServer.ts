@@ -1,3 +1,4 @@
+import { assertSupabaseEnvironment } from "@/lib/supabaseEnvironment";
 import { createClient } from "@supabase/supabase-js";
 
 // Server-only Supabase client using the service role key
@@ -13,6 +14,8 @@ export function getServiceClient() {
       }`.trim()
     );
   }
+
+  assertSupabaseEnvironment(url, serviceRole, process.env.SUPABASE_EXPECTED_PROJECT_REF);
 
   return createClient(url, serviceRole, { auth: { persistSession: false } });
 }

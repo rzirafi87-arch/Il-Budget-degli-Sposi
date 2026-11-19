@@ -47,3 +47,13 @@ event_access_nonempty_email. Nuovo test come ruolo authenticated PASS:
 proprietario autorizzato, altro utente senza email non vede piani, ospiti o spese.
 Production NON aggiornata. La correzione condivisa va inclusa nel gate finale.
 Browser e configurazione del deployment restano PENDING.
+
+## Allineamento anteprima
+Configurate in Vercel per il solo branch feature/battesimo-completo le variabili
+NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY del QA e il riferimento
+atteso SUPABASE_EXPECTED_PROJECT_REF=tnopiqxlcuakkavpwbrq.
+Verificato che la chiave server ereditata appartiene invece al progetto
+vsguhivizuneylqhygfk: serve una SUPABASE_SERVICE_ROLE_KEY specifica QA sul branch.
+Aggiunto controllo server che rifiuta JWT anon, JWT non valido e progetto
+incoerente prima di creare il client. Nessuna chiave inclusa nei messaggi.
+22 test mirati PASS. Registrazione e percorso browser ancora NON verificati.
