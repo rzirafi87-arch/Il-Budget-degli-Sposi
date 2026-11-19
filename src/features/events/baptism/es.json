@@ -258,5 +258,7 @@
   "taxonomy.logistics.title": "Logística y servicios",
   "taxonomy.logistics.transport": "Transporte y aparcamiento",
   "taxonomy.logistics.childcare": "Cuidado de niños",
-  "taxonomy.logistics.cleaning": "Limpieza después del evento"
+  "taxonomy.logistics.cleaning": "Limpieza después del evento",
+  "common.signOutError": "No hemos podido cerrar la sesión. Tus datos siguen aquí: vuelve a intentarlo.",
+  "invite.shared": "Contenido compartido."
 }

@@ -258,5 +258,7 @@
   "taxonomy.logistics.title": "Logistique et services",
   "taxonomy.logistics.transport": "Transport et stationnement",
   "taxonomy.logistics.childcare": "Garde d’enfants",
-  "taxonomy.logistics.cleaning": "Nettoyage après l’événement"
+  "taxonomy.logistics.cleaning": "Nettoyage après l’événement",
+  "common.signOutError": "La déconnexion a échoué. Vos données sont toujours ici : réessayez.",
+  "invite.shared": "Partage terminé."
 }

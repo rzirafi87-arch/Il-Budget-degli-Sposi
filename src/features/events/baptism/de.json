@@ -258,5 +258,7 @@
   "taxonomy.logistics.title": "Logistik und Services",
   "taxonomy.logistics.transport": "Transport und Parken",
   "taxonomy.logistics.childcare": "Kinderbetreuung",
-  "taxonomy.logistics.cleaning": "Reinigung nach der Feier"
+  "taxonomy.logistics.cleaning": "Reinigung nach der Feier",
+  "common.signOutError": "Die Abmeldung ist fehlgeschlagen. Deine Daten sind noch hier: versuche es erneut.",
+  "invite.shared": "Teilen abgeschlossen."
 }

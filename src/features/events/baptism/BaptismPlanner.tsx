@@ -4,7 +4,9 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
 import { getBrowserClient } from '@/lib/supabaseBrowser';
-import { blankPlan, dueDate, hasReception, invitation, round, scenarioKey, totals, translator, upgradePlan, validate, visibleTasks, type Cost, type Guest, type Plan, type Scenario } from './model';
+import { logoutCurrentSession } from '@/lib/logout';
+import { rememberedBaptism, rememberBaptism } from './resume';
+import { blankPlan, dueDate, hasReception, nextTask, localDay, invitation, round, scenarioKey, totals, translator, upgradePlan, validate, visibleTasks, type Cost, type Guest, type Plan, type Scenario } from './model';
 
 type Row = {event_id:string;revision:number;plan:Record<string,unknown>};
 type View = 'dashboard'|'setup'|'guests'|'budget'|'checklist'|'invite';
@@ -20,34 +22,89 @@ export default function BaptismPlanner() {
  const [user,setUser]=useState(''), [rows,setRows]=useState<Row[]>([]), [id,setId]=useState(''), [revision,setRevision]=useState(0), [plan,setPlan]=useState<Plan>(blankPlan), [view,setView]=useState<View>('dashboard'), [step,setStep]=useState(1), [busy,setBusy]=useState(false), [loading,setLoading]=useState(true), [notice,setNotice]=useState(''), [dirty,setDirty]=useState(false), [errors,setErrors]=useState<Record<string,string>>({}), [loadFailed,setLoadFailed]=useState(false);
  const [payment,setPayment]=useState({costId:'',amount:'',date:'',note:''});
  const loadingUser=useRef('');
+ const operation=useRef(0);
+ const saving=useRef(false);
+ const [authReady,setAuthReady]=useState(false);
  const loadErrorCopy=useRef(t('common.loadError'));
  loadErrorCopy.current=t('common.loadError');
- useEffect(()=>{const db=getBrowserClient(); void db.auth.getSession().then(({data})=>setUser(data.session?.user.id||'')); const {data}=db.auth.onAuthStateChange((_e,s)=>setUser(s?.user.id||'')); return ()=>data.subscription.unsubscribe();},[]);
- useEffect(()=>{let active=true;loadingUser.current=user;setRows([]);setId('');setPlan(blankPlan());setDirty(false);setLoading(Boolean(user));if(user) void getBrowserClient().from('baptism_family_plans').select('event_id,revision,plan').then(({data,error})=>{if(!active)return;setLoading(false);setLoadFailed(Boolean(error));if(error)setNotice(loadErrorCopy.current);else setRows(data||[]);});else setLoading(false);return()=>{active=false};},[user]); // locale changes must not reset edits
+ useEffect(()=>{
+  const db=getBrowserClient(); let active=true, authChanged=false;
+  const accept=(id:string)=>{if(!active)return;loadingUser.current=id;operation.current++;setUser(id);setAuthReady(true);};
+  void db.auth.getSession().then(({data})=>{if(!authChanged)accept(data.session?.user.id||'');}).catch(()=>{if(!authChanged)accept('');});
+  const {data}=db.auth.onAuthStateChange((_e,s)=>{authChanged=true;setAuthReady(true);if((s?.user.id||'')!==loadingUser.current)accept(s?.user.id||'');});
+  return ()=>{active=false;operation.current++;data.subscription.unsubscribe();};
+ },[]);
+ useEffect(()=>{
+  let active=true;loadingUser.current=user;operation.current++;saving.current=false;
+  setRows([]);setId('');setRevision(0);setPlan(blankPlan());setDirty(false);setErrors({});setNotice('');setBusy(false);setLoadFailed(false);setLoading(Boolean(user));
+  if(user) void (async()=>{
+   try {
+    const {data,error}=await getBrowserClient().from('baptism_family_plans').select('event_id,revision,plan');
+    if(!active||loadingUser.current!==user)return;if(error)throw error;
+    const available=(data||[]) as Row[];setRows(available);
+    const previous=available.find(row=>row.event_id===rememberedBaptism(user));
+    if(previous){
+     const {data:loaded,error:readError}=await getBrowserClient().rpc('read_family_baptism',{p_id:previous.event_id});
+     if(!active||loadingUser.current!==user)return;if(readError||!loaded)throw readError;
+     setId(loaded.event_id);setRevision(loaded.revision);setPlan(upgradePlan(loaded.plan));setView(loaded.plan.draft?'setup':'dashboard');setStep(1);
+    }
+   }catch{if(active){setLoadFailed(true);setNotice(loadErrorCopy.current);}}
+   finally{if(active)setLoading(false);}
+  })();else setLoading(false);
+  return()=>{active=false};
+ },[user]); // locale changes must not reset edits
  useEffect(()=>{if(!dirty)return;const leave=(e:BeforeUnloadEvent)=>{e.preventDefault();e.returnValue='';};window.addEventListener('beforeunload',leave);return()=>window.removeEventListener('beforeunload',leave);},[dirty]);
  const change=(p:Partial<Plan>)=>{setPlan(old=>({...old,...p}));setDirty(true);setErrors({});setNotice('');};
- async function open(row:Row){if(dirty&&!window.confirm(x[12]))return;setBusy(true);const owner=user;try{let loaded=row;if(row.revision>0){const {data,error}=await getBrowserClient().rpc('read_family_baptism',{p_id:row.event_id});if(error||!data)throw error;loaded=data as unknown as Row;}if(loadingUser.current!==owner)return;setId(loaded.event_id);setRevision(loaded.revision);setPlan(upgradePlan(loaded.plan));setDirty(false);setView(loaded.revision===0?'setup':'dashboard');setStep(1);setNotice('');setErrors({});}catch{setNotice(t('common.loadError'));}finally{setBusy(false);}}
- async function save(draft=plan.draft){const next={...plan,draft};const faults=validate(next);setErrors(faults);if(Object.keys(faults).length){setNotice(t(Object.values(faults)[0]));setView('setup');const first=Object.keys(faults)[0];setStep(['time'].includes(first)?2:['adults','companions','children','noMeal','budget'].includes(first)?3:1);requestAnimationFrame(()=>document.getElementById('baptism-'+first)?.focus());return false;}setBusy(true);const owner=user;try{const {data,error}=await getBrowserClient().rpc('save_family_baptism',{p_id:id,p_revision:revision,p_plan:{...next,locale}});if(error)throw error;if(loadingUser.current!==owner)return false;setRevision(data);setPlan(next);setRows(old=>[...old.filter(r=>r.event_id!==id),{event_id:id,revision:data,plan:next as unknown as Record<string,unknown>}]);setDirty(false);setNotice(t(draft?'setup.draftSaved':'common.saved'));return true;}catch(error){if(loadingUser.current===owner)setNotice(error instanceof Object&&'message' in error&&String(error.message).includes('BAPTISM_CONFLICT')?x[13]:t('common.saveError'));return false;}finally{setBusy(false);}}
+ async function open(row:Row){
+  if(saving.current||dirty&&!window.confirm(x[12]))return;
+  const ticket=++operation.current;setBusy(true);const owner=user;
+  try{let loaded=row;if(row.revision>0){const {data,error}=await getBrowserClient().rpc('read_family_baptism',{p_id:row.event_id});if(error||!data)throw error;loaded=data as unknown as Row;}
+   if(loadingUser.current!==owner||ticket!==operation.current)return;
+   setId(loaded.event_id);setRevision(loaded.revision);setPlan(upgradePlan(loaded.plan));setPayment({costId:'',amount:'',date:'',note:''});setDirty(false);setView(loaded.revision===0||loaded.plan.draft?'setup':'dashboard');setStep(1);setNotice('');setErrors({});
+   if(loaded.revision>0)rememberBaptism(owner,loaded.event_id);
+  }catch{if(ticket===operation.current)setNotice(t('common.loadError'));}finally{if(ticket===operation.current)setBusy(false);}
+ }
+ async function save(draft=plan.draft){
+  if(saving.current)return false;
+  const next={...plan,draft},faults=validate(next);setErrors(faults);
+  if(Object.keys(faults).length){
+   const first=Object.keys(faults)[0];setNotice(t(faults[first]));
+   setView(first==='guests'?'guests':first==='costs'?'budget':first==='replyBy'?'invite':'setup');
+   setStep(first==='time'?2:['adults','companions','children','noMeal','budget'].includes(first)?3:1);
+   const target=first==='guests'?'guest-'+next.guests.find(g=>!g.name.trim())?.id:first==='costs'?'cost-'+next.costs.find(c=>!c.name.trim()||!Number.isFinite(c.unitCost)||c.unitCost<0||!Number.isSafeInteger(c.quantity)||c.quantity<0||c.payments.some(p=>!Number.isFinite(p.amount)||p.amount<0))?.id:first;
+   requestAnimationFrame(()=>document.getElementById('baptism-'+target)?.focus());return false;
+  }
+  saving.current=true;setBusy(true);const owner=user,ticket=++operation.current;
+  try{const {data,error}=await getBrowserClient().rpc('save_family_baptism',{p_id:id,p_revision:revision,p_plan:{...next,locale}});if(error)throw error;if(loadingUser.current!==owner||ticket!==operation.current)return false;
+   setRevision(data);setPlan(next);setRows(old=>[...old.filter(r=>r.event_id!==id),{event_id:id,revision:data,plan:next as unknown as Record<string,unknown>}]);setDirty(false);rememberBaptism(owner,id);setNotice(t(draft?'setup.draftSaved':'common.saved'));return true;
+  }catch(error){if(loadingUser.current===owner&&ticket===operation.current)setNotice(error instanceof Object&&'message' in error&&String(error.message).includes('BAPTISM_CONFLICT')?x[13]:t('common.saveError'));return false;}
+  finally{if(ticket===operation.current){saving.current=false;setBusy(false);}}
+ }
+ async function signOut(){
+  if(dirty&&!window.confirm(x[12]))return;setBusy(true);
+  try{const db=getBrowserClient(),{data}=await db.auth.getSession();await logoutCurrentSession({supabase:db,accessToken:data.session?.access_token});}
+  catch{setNotice(t('common.signOutError'));}finally{setBusy(false);}
+ }
  const money=(n:number)=>new Intl.NumberFormat(locale,{style:'currency',currency:'EUR'}).format(n), summary=totals(plan), reception=hasReception(plan), invite=invitation(plan,locale);
  const date=(s:string)=>s?new Date(s.slice(0,10)+'T12:00:00Z').toLocaleDateString(locale):t('dashboard.pendingDate');
  const counts={ceremony:plan.guests.filter(g=>g.ceremony==='yes').length,reception:plan.guests.filter(g=>g.reception==='yes').length,pending:plan.guests.filter(g=>g.ceremony==='pending'||reception&&g.reception==='pending').length};
  const title=plan.name?t('dashboard.title',{childName:plan.name}):t('dashboard.titleFallback');
- const button=(label:string,fn:()=>void,primary=false,disabled=false)=><button type="button" disabled={busy||disabled} className={`min-h-11 rounded-xl border px-4 py-3 font-semibold disabled:opacity-50 ${primary?'border-[#345b70] bg-[#345b70] text-white':'border-[#c3d2d9] bg-white text-[#294b5c]'}`} onClick={fn}>{label}</button>;
+ const button=(label:string,fn:()=>void,primary=false,disabled=false,key?:string)=><button key={key} type="button" disabled={busy||disabled} className={`min-h-11 rounded-xl border px-4 py-3 font-semibold disabled:opacity-50 ${primary?'border-[#345b70] bg-[#345b70] text-white':'border-[#c3d2d9] bg-white text-[#294b5c]'}`} onClick={fn}>{label}</button>;
  const field=(key:keyof Plan,label:string,type='text')=><label className="grid gap-2" key={key}>{label}<input id={'baptism-'+key} className="app-input min-h-12 !text-base" type={type} min={type==='number'?0:undefined} step={type==='number'?'0.01':undefined} maxLength={key==='name'?120:2000} aria-invalid={Boolean(errors[key])} aria-describedby={errors[key]?'error-'+key:undefined} value={String(plan[key])} onChange={e=>change({[key]:e.target.value})}/>{errors[key]&&<span id={'error-'+key} role="alert" className="text-red-800">{t(errors[key])}</span>}</label>;
  const countField=(key:'adults'|'companions'|'children'|'noMeal',label:string)=><label className="grid gap-2">{label}<input id={'baptism-'+key} className="app-input min-h-12 !text-base" type="number" min="0" step="1" value={plan[key]} onChange={e=>change({[key]:Number(e.target.value)})} aria-invalid={Boolean(errors[key])}/>{errors[key]&&<span role="alert">{t(errors[key])}</span>}</label>;
  const check=(key:'ceremonyConfirmed'|'receptionConfirmed'|'photographer'|'favours',label:string)=><label className="flex min-h-12 items-center gap-3"><input type="checkbox" className="h-5 w-5" checked={plan[key]} onChange={e=>change({[key]:e.target.checked})}/>{label}</label>;
  const card=(heading:string,children:ReactNode)=><section className="space-y-4 rounded-3xl border border-[#d4dfe3] bg-white/90 p-5 shadow-sm"><h2 className="text-xl font-serif">{heading}</h2>{children}</section>;
  function updateGuest(g:Guest,patch:Partial<Guest>){change({guests:plan.guests.map(item=>item.id===g.id?{...item,...patch}:item)});}
  function updateCost(c:Cost,patch:Partial<Cost>){change({costs:plan.costs.map(item=>item.id===c.id?{...item,...patch}:item)});}
- async function copy(text:string,share=false){try{if(share&&navigator.share)await navigator.share({title,text});else await navigator.clipboard.writeText(text);setNotice(t('invite.copied'));}catch{setNotice(t('invite.copyError'));}}
+ async function copy(text:string,share=false){try{if(share&&navigator.share){await navigator.share({title,text});setNotice(t('invite.shared'));}else{await navigator.clipboard.writeText(text);setNotice(t('invite.copied'));}}catch(error){if(!(error instanceof DOMException&&error.name==='AbortError'))setNotice(t('invite.copyError'));}}
  return <div className="mx-auto max-w-3xl rounded-3xl bg-[#f8f6ef] p-4 text-[#243f4d] sm:p-7">
- <header className="mb-6 flex flex-wrap items-center justify-between gap-3"><p className="text-sm uppercase tracking-widest">{t('selector.start')}</p>{user&&button(x[2],()=>{if(!dirty||window.confirm(x[12]))void getBrowserClient().auth.signOut();})}</header>
+ <header className="mb-6 flex flex-wrap items-center justify-between gap-3"><p className="text-sm uppercase tracking-widest">{t('selector.start')}</p>{user&&button(x[2],()=>void signOut())}</header>
  <h1 className="mb-3 text-3xl font-serif sm:text-4xl">{id?title:t('selector.start')}</h1>
  <p className="mb-6 text-sm">{x[28]}</p>
  <div aria-live="polite" role="status" className={notice?'mb-5 rounded-xl border border-[#a8c1cf] bg-[#e6eef2] p-4':''}>{notice}</div>
- {!user?<div className="space-y-4"><p>{x[24]}</p><Link className="app-button app-button--primary" href={`/${locale}/auth?next=${encodeURIComponent('/'+locale+'/battesimo')}`}>{t('selector.start')}</Link></div>:<>
- <details open={!id} className="mb-5 rounded-2xl border border-[#d4dfe3] p-4"><summary className="min-h-11 cursor-pointer font-semibold">{x[0]}</summary><div className="mt-3 grid gap-3">{loading?<p>{t('common.loading')}</p>:rows.map(row=>button(String(row.plan.name||t('setup.resume')),()=>open(row)))}{loadFailed?button(t('common.retry'),()=>window.location.reload()):button(x[1],()=>open({event_id:crypto.randomUUID(),revision:0,plan:blankPlan() as unknown as Record<string,unknown>}),true)}</div></details>
- {id&&<><nav aria-label={title} className="mb-6 flex flex-wrap gap-2">{(['dashboard','setup','guests','budget','checklist','invite'] as View[]).map((name,i)=>button([t('dashboard.programme'),t('common.edit'),t('guests.title'),t('budget.title'),t('timeline.title'),t('invite.title')][i],()=>setView(name),view===name))}</nav>
+ {!authReady?<p role="status">{t('common.loading')}</p>:!user?<div className="space-y-4"><p>{x[24]}</p><Link className="app-button app-button--primary" href={`/${locale}/auth?next=${encodeURIComponent('/'+locale+'/battesimo')}`}>{t('selector.start')}</Link></div>:<>
+ <details open={!id} className="mb-5 rounded-2xl border border-[#d4dfe3] p-4"><summary className="min-h-11 cursor-pointer font-semibold">{x[0]}</summary><div className="mt-3 grid gap-3">{loading?<p>{t('common.loading')}</p>:rows.map(row=>button(String(row.plan.name||t('setup.resume')),()=>open(row),false,false,row.event_id))}{loadFailed?button(t('common.retry'),()=>window.location.reload()):button(x[1],()=>open({event_id:crypto.randomUUID(),revision:0,plan:blankPlan() as unknown as Record<string,unknown>}),true)}</div></details>
+ {id&&<><nav aria-label={title} className="mb-6 flex flex-wrap gap-2">{(['dashboard','setup','guests','budget','checklist','invite'] as View[]).map((name,i)=>button([t('dashboard.programme'),t('common.edit'),t('guests.title'),t('budget.title'),t('timeline.title'),t('invite.title')][i],()=>setView(name),view===name,false,name))}</nav>
  <fieldset disabled={busy} className="min-w-0 space-y-5">
  {view==='setup'&&<>
  <p>{t('setup.progress',{step,total:3})}</p>
@@ -58,14 +115,14 @@ export default function BaptismPlanner() {
  </>}
  {view==='dashboard'&&<>
  {card(t('dashboard.programme'),<>{['ceremony',...(reception?['reception']:[])].map(kind=>{const isCeremony=kind==='ceremony',time=isCeremony?plan.ceremony:plan.time,address=isCeremony?plan.address:plan.receptionAddress;return <div key={kind} className="space-y-2 border-b border-[#d4dfe3] pb-4"><h3 className="font-semibold">{t('dashboard.'+kind)}</h3><p>{date(time)} · {time.slice(11,16)||t('dashboard.pendingTime')}</p><p>{(isCeremony?plan.venue||plan.community:plan.place)||t('dashboard.pendingVenue')}</p><p>{address}</p>{address&&<a className="underline" target="_blank" rel="noopener noreferrer" href={'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(address)}>{t('dashboard.directions')}</a>}</div>})}{plan.scenario==='later'&&<p>{t('dashboard.pendingReception')}</p>}{button(t('common.edit'),()=>setView('setup'))}</>)}
- {card(t('dashboard.next'),<>{!plan.ceremonyConfirmed&&<p>{t('timeline.noDate')}</p>}<p>{(()=>{const next=visibleTasks(plan).find(([key])=>!plan.tasks[key]?.completed&&!plan.tasks[key]?.skipped);return next?t('timeline.task.'+next[0])+(dueDate(plan,next[0],next[1])?' · '+date(dueDate(plan,next[0],next[1])):''):t('dashboard.noAction');})()}</p>{button(t('dashboard.openChecklist'),()=>setView('checklist'))}</>)}
+ {card(t('dashboard.next'),<>{!plan.ceremonyConfirmed&&<p>{t('timeline.noDate')}</p>}<p>{(()=>{const next=nextTask(plan);return next?t('timeline.task.'+next[0])+(dueDate(plan,next[0],next[1])?' · '+date(dueDate(plan,next[0],next[1])):''):t('dashboard.noAction');})()}</p>{button(t('dashboard.openChecklist'),()=>setView('checklist'))}</>)}
  {card(t('guests.title'),<><p>{t('guests.confirmedCeremony',{count:counts.ceremony})}</p>{reception&&<p>{t('guests.confirmedReception',{count:counts.reception})}</p>}<p>{t('guests.pendingReplies',{count:counts.pending})}</p>{button(t('dashboard.openGuests'),()=>setView('guests'))}</>)}
  {card(t('budget.title'),<><dl className="grid grid-cols-2 gap-3">{(['forecast','paid','unpaid'] as const).map(k=><div key={k}><dt>{t('budget.'+k)}</dt><dd className="text-xl font-semibold">{money(summary[k])}</dd></div>)}<div><dt>{t('budget.margin')}</dt><dd className="text-xl font-semibold">{plan.budget===''?t('budget.noLimit'):money(round(Number(plan.budget)-summary.forecast))}</dd></div></dl>{button(t('dashboard.openBudget'),()=>setView('budget'))}</>)}
  {card(t('invite.title'),<>{button(t('dashboard.openInvite'),()=>setView('invite'))}</>)}
  </>}
  {view==='guests'&&card(t('guests.title'),<>
- {!plan.guests.length&&<p>{t('guests.empty')}</p>}<p className="text-sm">{x[20]}</p>
- {plan.guests.map(g=><section key={g.id} className="space-y-4 rounded-2xl border border-[#d4dfe3] p-4"><label className="grid gap-2">{t('guests.name')}<input className="app-input min-h-12" value={g.name} onChange={e=>updateGuest(g,{name:e.target.value})}/></label><label className="grid gap-2">{x[23]}<input className="app-input min-h-12" value={g.group} onChange={e=>updateGuest(g,{group:e.target.value})}/></label><label className="grid gap-2">{t('guests.mainContact')}<input className="app-input min-h-12" value={g.contact} onChange={e=>updateGuest(g,{contact:e.target.value})}/></label>
+ {errors.guests&&<p role="alert" className="text-red-800">{t(errors.guests)}</p>}{!plan.guests.length&&<p>{t('guests.empty')}</p>}<p className="text-sm">{x[20]}</p>
+ {plan.guests.map(g=><section key={g.id} className="space-y-4 rounded-2xl border border-[#d4dfe3] p-4"><label className="grid gap-2">{t('guests.name')}<input id={'baptism-guest-'+g.id} aria-invalid={Boolean(errors.guests&&!g.name.trim())} className="app-input min-h-12" value={g.name} onChange={e=>updateGuest(g,{name:e.target.value})}/></label><label className="grid gap-2">{x[23]}<input className="app-input min-h-12" value={g.group} onChange={e=>updateGuest(g,{group:e.target.value})}/></label><label className="grid gap-2">{t('guests.mainContact')}<input className="app-input min-h-12" value={g.contact} onChange={e=>updateGuest(g,{contact:e.target.value})}/></label>
  <label className="grid gap-2">{t('guests.kind')}<select className="app-input min-h-12" value={g.kind} onChange={e=>updateGuest(g,{kind:e.target.value as Guest['kind']})}><option value="adult">{t('guests.kindAdult')}</option><option value="child">{t('guests.kindChild')}</option></select></label>
  <label className="grid gap-2">{x[10]}<select className="app-input min-h-12" value={g.companionOf} onChange={e=>updateGuest(g,{companionOf:e.target.value})}><option value="">{x[11]}</option>{plan.guests.filter(item=>item.id!==g.id&&!item.companionOf).map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
  {(['ceremony',...(reception?['reception']:[])] as ('ceremony'|'reception')[]).map(kind=><label key={kind} className="grid gap-2">{t('guests.'+kind+'Attendance')}<select className="app-input min-h-12" value={g[kind]} onChange={e=>updateGuest(g,{[kind]:e.target.value})}>{['pending','yes','no'].map((v,i)=><option key={v} value={v}>{t('guests.'+['rsvpPending','rsvpYes','rsvpNo'][i])}</option>)}</select></label>)}
@@ -75,22 +132,22 @@ export default function BaptismPlanner() {
  {button(t('guests.add'),()=>change({guests:[...plan.guests,{id:crypto.randomUUID(),name:'',group:'',contact:'',kind:'adult',companionOf:'',ceremony:'pending',reception:'pending',menu:'pending',food:'',access:''}]}),true)}
  </>)}
  {view==='budget'&&card(t('budget.title'),<>
- {field('budget',t('setup.limit'),'number')}{!plan.costs.length&&<p>{t('budget.empty')}</p>}
+ {errors.costs&&<p role="alert" className="text-red-800">{t(errors.costs)}</p>}{field('budget',t('setup.limit'),'number')}{!plan.costs.length&&<p>{t('budget.empty')}</p>}
  <p>{t('budget.forecast')} {money(summary.forecast)} · {t('budget.paid')} {money(summary.paid)} · {x[26]} {money(summary.unpaid)}</p>
- {plan.costs.map(c=>{const paid=c.payments.reduce((s,p)=>s+p.amount,0),forecast=c.enabled&&(c.scope!=='reception'||reception)?round(c.quantity*c.unitCost):0;return <section key={c.id} className="space-y-4 rounded-2xl border border-[#d4dfe3] p-4"><label className="grid gap-2">{x[4]}<input className="app-input min-h-12" value={c.name} onChange={e=>updateCost(c,{name:e.target.value})}/></label><label className="flex min-h-12 gap-3"><input type="checkbox" checked={c.enabled} onChange={e=>updateCost(c,{enabled:e.target.checked})}/>{x[6]}</label><label className="grid gap-2">{t('dashboard.programme')}<select className="app-input min-h-12" value={c.scope} onChange={e=>updateCost(c,{scope:e.target.value as Cost['scope']})}><option value="ceremony">{t('dashboard.ceremony')}</option><option value="reception">{t('dashboard.reception')}</option></select></label>
+ {plan.costs.map(c=>{const paid=c.payments.reduce((s,p)=>s+p.amount,0),forecast=c.enabled&&(c.scope!=='reception'||reception)?round(c.quantity*c.unitCost):0;return <section key={c.id} className="space-y-4 rounded-2xl border border-[#d4dfe3] p-4"><label className="grid gap-2">{x[4]}<input id={'baptism-cost-'+c.id} className="app-input min-h-12" value={c.name} onChange={e=>updateCost(c,{name:e.target.value})}/></label><label className="flex min-h-12 gap-3"><input type="checkbox" checked={c.enabled} onChange={e=>updateCost(c,{enabled:e.target.checked})}/>{x[6]}</label><label className="grid gap-2">{t('dashboard.programme')}<select className="app-input min-h-12" value={c.scope} onChange={e=>updateCost(c,{scope:e.target.value as Cost['scope']})}><option value="ceremony">{t('dashboard.ceremony')}</option><option value="reception">{t('dashboard.reception')}</option></select></label>
  <div className="grid grid-cols-2 gap-3">{(['quantity','unitCost'] as const).map(key=><label className="grid gap-2" key={key}>{t('budget.'+key)}<input className="app-input min-h-12 min-w-0" type="number" min="0" step={key==='quantity'?'1':'0.01'} value={c[key]} onChange={e=>updateCost(c,{[key]:Number(e.target.value)})}/></label>)}</div><label className="grid gap-2">{x[5]}<textarea className="app-input" value={c.quote} onChange={e=>updateCost(c,{quote:e.target.value})}/></label>
  <p>{t('budget.forecast')}: {money(forecast)} · {t('budget.paid')}: {money(paid)} · {x[26]}: {money(Math.max(0,forecast-paid))}</p>{paid>forecast&&<p role="alert">{t('budget.overpayment',{itemName:c.name})}</p>}
  {c.payments.map(p=><div key={p.id} className="flex flex-wrap items-center gap-3"><p>{date(p.date)} · {money(p.amount)} · {p.note}</p>{button(x[3],()=>updateCost(c,{payments:c.payments.filter(a=>a.id!==p.id)}))}</div>)}
- {button(t('budget.recordPayment'),()=>setPayment({costId:c.id,amount:'',date:new Date().toISOString().slice(0,10),note:''}))}
+ {button(t('budget.recordPayment'),()=>setPayment({costId:c.id,amount:'',date:localDay(),note:''}))}
  {payment.costId===c.id&&<div className="grid gap-3"><label>{x[27]}<input className="app-input min-h-12" type="number" min="0.01" step="0.01" value={payment.amount} onChange={e=>setPayment({...payment,amount:e.target.value})}/></label><label>{x[7]}<input className="app-input min-h-12" type="date" value={payment.date} onChange={e=>setPayment({...payment,date:e.target.value})}/></label><label>{x[8]}<input className="app-input min-h-12" value={payment.note} onChange={e=>setPayment({...payment,note:e.target.value})}/></label>{button(t('common.save'),()=>{updateCost(c,{payments:[...c.payments,{id:crypto.randomUUID(),amount:Number(payment.amount),date:payment.date,note:payment.note}]});setPayment({...payment,costId:''});},true,!payment.date||!Number.isFinite(Number(payment.amount))||Number(payment.amount)<=0)}</div>}
  {button(x[3],()=>paid?updateCost(c,{enabled:false}):change({costs:plan.costs.filter(a=>a.id!==c.id)}))}</section>;})}
  {button(t('budget.addExpense'),()=>change({costs:[...plan.costs,{id:crypto.randomUUID(),name:'',scope:'ceremony',enabled:true,quantity:1,unitCost:0,quote:'',payments:[]}]}),true)}
  </>)}
- {view==='checklist'&&card(t('timeline.title'),<>{!plan.ceremonyConfirmed&&<p>{t('timeline.noDate')}</p>}{visibleTasks(plan).map(([key,offset])=>{const state=plan.tasks[key],due=dueDate(plan,key,offset);return <section key={key} className="space-y-3 border-b border-[#d4dfe3] py-4"><h3 className="font-semibold">{t('timeline.task.'+key)}</h3><p>{t('timeline.task.'+key+'Help')}</p><p className={due&&due<new Date().toISOString().slice(0,10)&&!state?.completed?'font-bold text-red-800':''}>{due?t('timeline.offsetDate',{dueDate:date(due)}):t('dashboard.pendingDate')}</p><label className="flex min-h-11 items-center gap-3"><input type="checkbox" checked={state?.completed||false} onChange={e=>change({tasks:{...plan.tasks,[key]:{completed:e.target.checked,due,completedAt:e.target.checked?new Date().toISOString():'',customDue:state?.customDue||'',skipped:false}}})}/>{t(state?.completed?'timeline.reopen':'timeline.complete')}</label><label className="grid gap-2">{x[21]}<input type="date" className="app-input min-h-12" disabled={state?.completed} value={state?.customDue||''} onChange={e=>change({tasks:{...plan.tasks,[key]:{completed:false,due:'',completedAt:'',skipped:false,customDue:e.target.value}}})}/></label></section>;})}</>)}
+ {view==='checklist'&&card(t('timeline.title'),<>{!plan.ceremonyConfirmed&&<p>{t('timeline.noDate')}</p>}{visibleTasks(plan).map(([key,offset])=>{const state=plan.tasks[key],due=dueDate(plan,key,offset);return <section key={key} className="space-y-3 border-b border-[#d4dfe3] py-4"><h3 className="font-semibold">{t('timeline.task.'+key)}</h3><p>{t('timeline.task.'+key+'Help')}</p><p className={due&&due<localDay()&&!state?.completed?'font-bold text-red-800':''}>{due?t('timeline.offsetDate',{dueDate:date(due)}):t('dashboard.pendingDate')}</p><label className="flex min-h-11 items-center gap-3"><input type="checkbox" checked={state?.completed||false} onChange={e=>change({tasks:{...plan.tasks,[key]:{completed:e.target.checked,due,completedAt:e.target.checked?new Date().toISOString():'',customDue:state?.customDue||'',skipped:false}}})}/>{t(state?.completed?'timeline.reopen':'timeline.complete')}</label>{state?.completedAt&&<p className="text-sm">{x[22]} · <time dateTime={state.completedAt}>{new Date(state.completedAt).toLocaleDateString(locale)}</time></p>}<label className="grid gap-2">{x[21]}<input type="date" className="app-input min-h-12" disabled={state?.completed} value={state?.customDue||''} onChange={e=>change({tasks:{...plan.tasks,[key]:{completed:false,due:'',completedAt:'',skipped:false,customDue:e.target.value}}})}/></label></section>;})}</>)}
  {view==='invite'&&card(t('invite.title'),<>{field('replyBy',t('invite.replyBy'),'date')}{field('replyContact',t('invite.replyContact'))}{field('arrivalNote',t('invite.arrivalNote'))}<label className="grid gap-2">{t('invite.preview')}<textarea readOnly className="app-input min-h-64" value={invite.text}/></label>{!invite.ready&&<p role="alert">{t('invite.waitingDetails')} {t('invite.confirmCeremony')} {t('invite.confirmProgramme')}</p>}<div className="flex flex-wrap gap-3">{button(t('invite.copy'),()=>void copy(invite.text),true,!invite.ready)}{button(x[16],()=>void copy(invite.text,true),false,!invite.ready)}</div>
  <h3 className="font-semibold">{t('reminder.title')}</h3>{!counts.pending&&<p>{t('reminder.empty')}</p>}{plan.guests.filter(g=>g.ceremony==='pending'||reception&&g.reception==='pending').map(g=><div className="space-y-2" key={g.id}><p>{g.name}</p><textarea className="app-input" readOnly value={t(reception?'reminder.followUp':'reminder.followUpOnly',{...invite.args,guestName:g.name})}/>{button(t('reminder.copy'),()=>void copy(t(reception?'reminder.followUp':'reminder.followUpOnly',{...invite.args,guestName:g.name})))}</div>)}<h3 className="font-semibold">{x[15]}</h3><textarea readOnly className="app-input" value={x[14].replace('{name}',plan.name)}/>{button(x[15],()=>void copy(x[14].replace('{name}',plan.name)))}</>)}
  </fieldset>
- <footer className="sticky bottom-0 mt-6 flex flex-wrap gap-3 rounded-2xl border border-[#a8c1cf] bg-[#eef3f5] p-3 shadow-lg">{button(busy?t('common.saving'):t(plan.draft?'setup.draft':'common.save'),()=>void save(),true,!dirty&&revision>0)}{view!=='dashboard'&&button(x[25],()=>setView('dashboard'))}{revision>0&&button(x[19],()=>{const row=rows.find(r=>r.event_id===id);if(row&&!dirty)open(row);else if(window.confirm(x[12]))void getBrowserClient().rpc('read_family_baptism',{p_id:id}).then(({data,error})=>{if(error)setNotice(t('common.loadError'));else if(data){setDirty(false);setId(data.event_id);setRevision(data.revision);setPlan(upgradePlan(data.plan));setNotice('');}});})}</footer>
+ <footer className="sticky bottom-0 mt-6 flex flex-wrap gap-3 rounded-2xl border border-[#a8c1cf] bg-[#eef3f5] p-3 shadow-lg">{button(busy?t('common.saving'):t(plan.draft?'setup.draft':'common.save'),()=>void save(),true,!dirty&&revision>0)}{view!=='dashboard'&&button(x[25],()=>setView('dashboard'))}{revision>0&&button(x[19],()=>void open({event_id:id,revision,plan:plan as unknown as Record<string,unknown>}))}</footer>
  </>}
  </>}
  </div>;

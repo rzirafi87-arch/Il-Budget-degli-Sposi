@@ -258,5 +258,7 @@
   "taxonomy.logistics.title": "Logistics and services",
   "taxonomy.logistics.transport": "Transport and parking",
   "taxonomy.logistics.childcare": "Childcare",
-  "taxonomy.logistics.cleaning": "Post-event cleaning"
+  "taxonomy.logistics.cleaning": "Post-event cleaning",
+  "common.signOutError": "We could not sign you out. Your data is still here: try again.",
+  "invite.shared": "Sharing completed."
 }

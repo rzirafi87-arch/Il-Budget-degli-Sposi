@@ -109,3 +109,15 @@ manuale dell'utente; non ancora verificata end-to-end.
 
 Ulteriore prova browser sul deployment 9f9c7f5: bambino con menù bambino e
 risposte in attesa salvato; promemoria corretto generato.
+
+## Riapertura, errori e concorrenza client
+Implementati: preferenza dell'ultimo Battesimo per account (solo identificatore,
+sempre riverificato dal database); ripresa bozze nella configurazione; protezione
+da risposte tardive dopo uscita/cambio account; blocco del doppio salvataggio;
+ricaricamento attraverso lo stesso percorso autorizzato; logout condiviso con
+segnalazione degli errori. Gli errori di invitati, spese e invito riportano al
+modulo pertinente e conservano gli inserimenti. Checklist ordinata per prossima
+scadenza effettiva, con data di completamento visibile. Controlli sulle date
+calendariali e testi di uscita/condivisione nelle cinque lingue.
+32 test mirati PASS, inclusi 6 test interattivi del planner; typecheck PASS.
+Queste nuove funzioni richiedono ancora verifica browser sull'anteprima aggiornata.

@@ -23,6 +23,10 @@ export function translator(locale: string) {
   return (key: string, args: Record<string,string|number> = {}) => (catalog[key] || key).replace(/\{(\w+)\}/g, (_, name) => String(args[name] ?? ''));
 }
 export const round = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+export const localDay = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+export function validDate(value: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value+'T12:00:00Z')) && new Date(value+'T12:00:00Z').toISOString().slice(0,10)===value;
+}
 export function totals(p: Plan) {
   return p.costs.reduce((s,c) => {
     const forecast = c.enabled && (c.scope !== 'reception' || hasReception(p)) ? round(c.quantity * c.unitCost) : 0;
@@ -37,7 +41,7 @@ export function dueDate(p: Plan, key: string, offset: number) {
   const state=p.tasks[key];
   if(state?.completed) return state.due;
   if(state?.customDue) return state.customDue;
-  if(!p.ceremonyConfirmed || !p.ceremony) return '';
+  if(!p.ceremonyConfirmed || !validDate(p.ceremony.slice(0,10))) return '';
   const date=new Date(p.ceremony.slice(0,10)+'T12:00:00Z');
   date.setUTCDate(date.getUTCDate()+offset);
   return date.toISOString().slice(0,10);
@@ -45,16 +49,20 @@ export function dueDate(p: Plan, key: string, offset: number) {
 export function visibleTasks(p: Plan) {
   return tasks.filter(([key]) => !(['menu','finalCounts'].includes(key) && !hasReception(p)) && !(key==='photographer'&&!p.photographer) && !(key==='favours'&&!p.favours));
 }
+export function nextTask(p: Plan) {
+  return visibleTasks(p).filter(([key])=>!p.tasks[key]?.completed&&!p.tasks[key]?.skipped)
+    .sort((a,b)=>(dueDate(p,a[0],a[1])||'9999').localeCompare(dueDate(p,b[0],b[1])||'9999'))[0];
+}
 export function validate(p: Plan): Record<string,string> {
   const errors: Record<string,string> = {};
-  for(const key of ['ceremony','time'] as const) if(p[key] && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(p[key]) || !Number.isFinite(Date.parse(p[key])))) errors[key]='setup.dateTimeError';
+  for(const key of ['ceremony','time'] as const) if(p[key] && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(p[key]) || !validDate(p[key].slice(0,10)) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(p[key].slice(11)))) errors[key]='setup.dateTimeError';
   if (p.ceremonyConfirmed && !p.ceremony.slice(0,10)) errors.ceremony='setup.confirmDateError';
   if (hasReception(p) && p.ceremony && p.time && p.time<=p.ceremony) errors.time='setup.receptionOrderError';
   if (hasReception(p) && p.receptionConfirmed && (!p.time || !p.place.trim() || !p.receptionAddress.trim())) errors.time='setup.confirmReceptionError';
   if (p.companions>p.adults) errors.companions='setup.companionCountError';
   for (const key of ['adults','companions','children','noMeal'] as const) if (!Number.isSafeInteger(p[key]) || p[key]<0) errors[key]='setup.countError';
   if (p.budget!=='' && (!Number.isFinite(Number(p.budget)) || Number(p.budget)<0)) errors.budget='setup.moneyError';
-  if (p.replyBy && p.ceremony && p.replyBy>=p.ceremony.slice(0,10)) errors.replyBy='invite.replyByError';
+  if (p.replyBy && (!validDate(p.replyBy) || p.ceremony && p.replyBy>=p.ceremony.slice(0,10))) errors.replyBy='invite.replyByError';
   if(p.guests.some(g=>!g.name.trim())) errors.guests='guests.nameError';
   if(p.costs.some(c=>!c.name.trim()||!Number.isFinite(c.unitCost)||c.unitCost<0||!Number.isSafeInteger(c.quantity)||c.quantity<0||c.payments.some(a=>!Number.isFinite(a.amount)||a.amount<0))) errors.costs='setup.moneyError';
   return errors;

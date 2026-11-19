@@ -258,5 +258,7 @@
   "taxonomy.logistics.title": "Logistica e servizi",
   "taxonomy.logistics.transport": "Trasporti e parcheggio",
   "taxonomy.logistics.childcare": "Assistenza bambini",
-  "taxonomy.logistics.cleaning": "Pulizie dopo l’evento"
+  "taxonomy.logistics.cleaning": "Pulizie dopo l’evento",
+  "common.signOutError": "Non siamo riusciti a uscire. I dati sono ancora qui: riprova.",
+  "invite.shared": "Condivisione completata."
 }
