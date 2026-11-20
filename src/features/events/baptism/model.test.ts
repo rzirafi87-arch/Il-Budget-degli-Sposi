@@ -1,4 +1,4 @@
-import { blankPlan, totals, dueDate, validate, invitation, upgradePlan, translator, visibleTasks, nextTask, type Plan } from './model';
+import { blankPlan, confirmedMenus, totals, dueDate, validate, invitation, upgradePlan, translator, visibleTasks, nextTask, type Plan } from './model';
 import examples from './examples.json';
 
 function example(i:number):Plan {const e=examples[i];return {...blankPlan(),name:'Vittoria',scenario:e.scenario as Plan['scenario'],budget:String(e.budget),costs:e.costs.map((c,index)=>({...c,id:String(index),enabled:true,scope:c.scope as 'ceremony'|'reception',quote:'',payments:c.paid?[{id:String(index),amount:c.paid,date:'2027-01-01',note:''}]:[]}))};}
@@ -19,4 +19,11 @@ describe('Approved baptism editorial contract',()=>{
  it('prioritizes the earliest custom deadline rather than the template order',()=>{const p=blankPlan();p.ceremony='2027-04-18T10:30';p.ceremonyConfirmed=true;p.tasks.venues={completed:false,due:'',completedAt:'',customDue:'2027-01-15',skipped:false};expect(nextTask(p)?.[0]).toBe('venues');p.tasks.venues.completed=true;expect(nextTask(p)?.[0]).toBe('community');});
  it('rejects impossible calendar dates without crashing the checklist',()=>{const p=blankPlan();p.ceremony='2027-02-30T10:30';p.ceremonyConfirmed=true;p.replyBy='2027-02-29';expect(validate(p)).toMatchObject({ceremony:'setup.dateTimeError',replyBy:'invite.replyByError'});expect(dueDate(p,'community',-56)).toBe('');});
  it.each(['it','en','es','fr','de'])('composes a localized invitation in %s without private notes',locale=>{const p=example(1);Object.assign(p,{ceremony:'2027-04-18T10:30',ceremonyConfirmed:true,community:'San Luca',venue:'San Luca',address:'Piazza del Gelso 4',time:'2027-04-18T13:00',place:'Trattoria del Cedro',receptionAddress:'Via del Cedro 12',receptionConfirmed:true,replyBy:'2027-04-08',replyContact:'Elena'});p.guests=[{id:'1',name:'Marta',group:'A',contact:'private contact',kind:'adult',companionOf:'',ceremony:'yes',reception:'yes',menu:'adult',food:'private food',access:'private access'}];const result=invitation(p,locale);expect(result.ready).toBe(true);expect(result.text).toContain('Vittoria');expect(result.text).toContain('10:30');expect(result.text).toContain('13:00');for(const secret of ['private contact','private food','private access'])expect(result.text).not.toContain(secret);expect(result.text).not.toMatch(/\{\w+\}/);expect(translator(locale)('setup.communityName')).not.toBe('setup.communityName');});
+});
+
+it('counts each confirmed reception menu once, including companions and excluding ceremony-only guests',()=>{
+ const p=blankPlan();p.scenario='lunch';
+ const guest={id:'1',name:'Test',group:'Family',contact:'',kind:'adult' as const,companionOf:'',ceremony:'yes' as const,reception:'yes' as const,menu:'adult' as const,food:'',access:''};
+ p.guests=[guest,{...guest,id:'2',companionOf:'1'},{...guest,id:'3',kind:'child',menu:'child'},{...guest,id:'4',kind:'child',menu:'none'},{...guest,id:'5',menu:'pending'},{...guest,id:'6',reception:'no'},{...guest,id:'7',reception:'pending'}];
+ expect(confirmedMenus(p)).toEqual({adult:2,child:1,none:1,pending:1});p.scenario='solo';expect(confirmedMenus(p)).toEqual({adult:0,child:0,none:0,pending:0});
 });

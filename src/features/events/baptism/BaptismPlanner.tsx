@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getBrowserClient } from '@/lib/supabaseBrowser';
 import { logoutCurrentSession } from '@/lib/logout';
 import { rememberedBaptism, rememberBaptism } from './resume';
-import { blankPlan, dueDate, hasReception, nextTask, localDay, invitation, round, scenarioKey, totals, translator, upgradePlan, validate, visibleTasks, type Cost, type Guest, type Plan, type Scenario } from './model';
+import { blankPlan, confirmedMenus, dueDate, hasReception, nextTask, localDay, invitation, round, scenarioKey, totals, translator, upgradePlan, validate, visibleTasks, type Cost, type Guest, type Plan, type Scenario } from './model';
 
 type Row = {event_id:string;revision:number;plan:Record<string,unknown>};
 type View = 'dashboard'|'setup'|'guests'|'budget'|'checklist'|'invite';
@@ -85,7 +85,7 @@ export default function BaptismPlanner() {
   try{const db=getBrowserClient(),{data}=await db.auth.getSession();await logoutCurrentSession({supabase:db,accessToken:data.session?.access_token});}
   catch{setNotice(t('common.signOutError'));}finally{setBusy(false);}
  }
- const money=(n:number)=>new Intl.NumberFormat(locale,{style:'currency',currency:'EUR'}).format(n), summary=totals(plan), reception=hasReception(plan), invite=invitation(plan,locale);
+ const money=(n:number)=>new Intl.NumberFormat(locale,{style:'currency',currency:'EUR'}).format(n), summary=totals(plan), menus=confirmedMenus(plan), reception=hasReception(plan), invite=invitation(plan,locale);
  const date=(s:string)=>s?new Date(s.slice(0,10)+'T12:00:00Z').toLocaleDateString(locale):t('dashboard.pendingDate');
  const counts={ceremony:plan.guests.filter(g=>g.ceremony==='yes').length,reception:plan.guests.filter(g=>g.reception==='yes').length,pending:plan.guests.filter(g=>g.ceremony==='pending'||reception&&g.reception==='pending').length};
  const title=plan.name?t('dashboard.title',{childName:plan.name}):t('dashboard.titleFallback');
@@ -135,6 +135,7 @@ export default function BaptismPlanner() {
  {errors.costs&&<p role="alert" className="text-red-800">{t(errors.costs)}</p>}{field('budget',t('setup.limit'),'number')}{!plan.costs.length&&<p>{t('budget.empty')}</p>}
  <p>{t('budget.forecast')} {money(summary.forecast)} · {t('budget.paid')} {money(summary.paid)} · {x[26]} {money(summary.unpaid)}</p>
  {plan.costs.map(c=>{const paid=c.payments.reduce((s,p)=>s+p.amount,0),forecast=c.enabled&&(c.scope!=='reception'||reception)?round(c.quantity*c.unitCost):0;return <section key={c.id} className="space-y-4 rounded-2xl border border-[#d4dfe3] p-4"><label className="grid gap-2">{x[4]}<input id={'baptism-cost-'+c.id} className="app-input min-h-12" value={c.name} onChange={e=>updateCost(c,{name:e.target.value})}/></label><label className="flex min-h-12 gap-3"><input type="checkbox" checked={c.enabled} onChange={e=>updateCost(c,{enabled:e.target.checked})}/>{x[6]}</label><label className="grid gap-2">{t('dashboard.programme')}<select className="app-input min-h-12" value={c.scope} onChange={e=>updateCost(c,{scope:e.target.value as Cost['scope']})}><option value="ceremony">{t('dashboard.ceremony')}</option><option value="reception">{t('dashboard.reception')}</option></select></label>
+ {c.scope==='reception'&&reception&&<div className="space-y-2"><p className="text-sm">{t('budget.confirmedMenusHelp',{pending:menus.pending})}</p><div className="flex flex-wrap gap-2">{(['adult','child','none'] as const).map(menu=>button(t('budget.useConfirmedMenus',{count:menus[menu],menu:t('guests.'+({adult:'menuAdult',child:'menuChild',none:'menuNone'}[menu]))}),()=>{const quantity=menus[menu];if(window.confirm(t('budget.confirmMenuQuantity',{name:c.name,before:c.quantity,after:quantity,total:money(round(quantity*c.unitCost))})))updateCost(c,{quantity});},false,!c.enabled,menu))}</div></div>}
  <div className="grid grid-cols-2 gap-3">{(['quantity','unitCost'] as const).map(key=><label className="grid gap-2" key={key}>{t('budget.'+key)}<input className="app-input min-h-12 min-w-0" type="number" min="0" step={key==='quantity'?'1':'0.01'} value={c[key]} onChange={e=>updateCost(c,{[key]:Number(e.target.value)})}/></label>)}</div><label className="grid gap-2">{x[5]}<textarea className="app-input" value={c.quote} onChange={e=>updateCost(c,{quote:e.target.value})}/></label>
  <p>{t('budget.forecast')}: {money(forecast)} · {t('budget.paid')}: {money(paid)} · {x[26]}: {money(Math.max(0,forecast-paid))}</p>{paid>forecast&&<p role="alert">{t('budget.overpayment',{itemName:c.name})}</p>}
  {c.payments.map(p=><div key={p.id} className="flex flex-wrap items-center gap-3"><p>{date(p.date)} · {money(p.amount)} · {p.note}</p>{button(x[3],()=>updateCost(c,{payments:c.payments.filter(a=>a.id!==p.id)}))}</div>)}

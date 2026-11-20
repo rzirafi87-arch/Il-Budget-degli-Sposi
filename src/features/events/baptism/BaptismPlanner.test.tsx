@@ -78,3 +78,16 @@ it('reports logout failure without discarding the event',async()=>{
  expect(await screen.findByText('Non siamo riusciti a uscire. I dati sono ancora qui: riprova.')).toBeInTheDocument();
  expect(screen.getByRole('heading',{name:'Il battesimo di Vittoria'})).toBeInTheDocument();
 });
+
+it('applies confirmed menus only after confirmation, preserving price and deposits',async()=>{
+ const guest={id:'g',name:'Persona QA',group:'',contact:'',kind:'adult',companionOf:'',ceremony:'yes',reception:'yes',menu:'adult',food:'',access:''};
+ const cost={id:'c',name:'Pranzo',scope:'reception',enabled:true,quantity:22,unitCost:38,quote:'',payments:[{id:'p',amount:150,date:'2027-01-01',note:''}]};
+ mockRpc.mockResolvedValueOnce({data:{...stored,plan:{...stored.plan,scenario:'lunch',guests:[guest],costs:[cost]}},error:null});
+ localStorage.setItem('baptism:last-event:owner-a','event-a');render(<BaptismPlanner/>);await screen.findByRole('heading',{name:'Il battesimo di Vittoria'});
+ fireEvent.click(screen.getByRole('button',{name:'Budget del battesimo'}));
+ const confirm=jest.spyOn(window,'confirm').mockReturnValueOnce(false).mockReturnValueOnce(true);
+ fireEvent.click(screen.getByRole('button',{name:'Usa 1 · Menù adulto'}));expect(screen.getByLabelText('Quantità')).toHaveValue(22);
+ fireEvent.click(screen.getByRole('button',{name:'Usa 1 · Menù adulto'}));expect(screen.getByLabelText('Quantità')).toHaveValue(1);expect(screen.getByLabelText('Costo unitario')).toHaveValue(38);
+ mockRpc.mockResolvedValueOnce({data:3,error:null});fireEvent.click(screen.getByRole('button',{name:'Salva'}));
+ await waitFor(()=>expect(mockRpc).toHaveBeenCalledWith('save_family_baptism',expect.objectContaining({p_plan:expect.objectContaining({costs:[{...cost,quantity:1}]})})));confirm.mockRestore();
+});

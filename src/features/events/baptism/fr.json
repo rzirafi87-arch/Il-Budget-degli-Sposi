@@ -260,5 +260,8 @@
   "taxonomy.logistics.childcare": "Garde d’enfants",
   "taxonomy.logistics.cleaning": "Nettoyage après l’événement",
   "common.signOutError": "La déconnexion a échoué. Vos données sont toujours ici : réessayez.",
-  "invite.shared": "Partage terminé."
+  "invite.shared": "Partage terminé.",
+  "budget.useConfirmedMenus": "Utiliser {count} · {menu}",
+  "budget.confirmedMenusHelp": "Menus des personnes confirmées à la réception. À définir : {pending}. Absents et réponses en attente exclus.",
+  "budget.confirmMenuQuantity": "Passer « {name} » de {before} à {after} unités, pour un prévisionnel de {total} ? Le prix unitaire et les paiements sont conservés. Enregistrez la modification."
 }

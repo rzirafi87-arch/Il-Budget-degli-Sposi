@@ -260,5 +260,8 @@
   "taxonomy.logistics.childcare": "Kinderbetreuung",
   "taxonomy.logistics.cleaning": "Reinigung nach der Feier",
   "common.signOutError": "Die Abmeldung ist fehlgeschlagen. Deine Daten sind noch hier: versuche es erneut.",
-  "invite.shared": "Teilen abgeschlossen."
+  "invite.shared": "Teilen abgeschlossen.",
+  "budget.useConfirmedMenus": "{count} verwenden · {menu}",
+  "budget.confirmedMenusHelp": "Menüs der bestätigten Gäste beim Beisammensein. Noch offen: {pending}. Absagen und ausstehende Antworten zählen nicht mit.",
+  "budget.confirmMenuQuantity": "„{name}“ von {before} auf {after} Einheiten ändern, mit geschätzten Kosten von {total}? Einzelpreis und Zahlungen bleiben erhalten. Speichere die Änderung."
 }

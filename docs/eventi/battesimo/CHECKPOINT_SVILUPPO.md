@@ -151,3 +151,12 @@ relativo alla cerimonia di maggio. SHA funzionale verificato5e8ff06.
 Rientro verificato dopo login manuale; NON ancora un ciclo automatizzato completo
 di logout/login. Ancora aperti registrazione con conferma email, mobile390/360,
 integrazione cambio evento e gate finale. Nessuna modifica Production.
+
+## Quantità del preventivo dalle conferme
+Aggiunte alle spese del ritrovo azioni esplicite per utilizzare i conteggi dei
+menù adulto, bambino e nessun menù dei soli presenti confermati al ritrovo.
+Conferma obbligatoria con vecchia quantità, nuova quantità e totale previsto.
+Prezzo unitario e pagamenti conservati; nessuna modifica automatica ai costi
+quando cambia una risposta. Menù da definire indicati separatamente.
+36 test mirati e typecheck PASS. Nuova funzione non ancora verificata nel browser.
+Nessuna modifica database o Production.

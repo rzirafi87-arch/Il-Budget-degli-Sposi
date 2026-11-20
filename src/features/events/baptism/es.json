@@ -260,5 +260,8 @@
   "taxonomy.logistics.childcare": "Cuidado de niños",
   "taxonomy.logistics.cleaning": "Limpieza después del evento",
   "common.signOutError": "No hemos podido cerrar la sesión. Tus datos siguen aquí: vuelve a intentarlo.",
-  "invite.shared": "Contenido compartido."
+  "invite.shared": "Contenido compartido.",
+  "budget.useConfirmedMenus": "Usar {count} · {menu}",
+  "budget.confirmedMenusHelp": "Menús de asistentes confirmados a la reunión. Por definir: {pending}. Se excluyen ausentes y respuestas pendientes.",
+  "budget.confirmMenuQuantity": "¿Actualizar «{name}» de {before} a {after} unidades, con una previsión de {total}? El precio unitario y los pagos se conservan. Guarda el cambio."
 }

@@ -17,6 +17,11 @@ export type Plan = {
 };
 export const blankPlan = (): Plan => ({ version: 2, name: '', community: '', contact: '', venue: '', address: '', ceremony: '', ceremonyConfirmed: false, scenario: 'later', place: '', receptionAddress: '', time: '', receptionConfirmed: false, budget: '', adults: 0, companions: 0, children: 0, noMeal: 0, godparents: '', theme: '', photographer: false, photoScope: 'ceremony', favours: false, communityNote: '', replyBy: '', replyContact: '', arrivalNote: '', guests: [], costs: [], tasks: {}, draft: true });
 export const hasReception = (p: Plan) => ['home','lunch','hall'].includes(p.scenario);
+export function confirmedMenus(p: Plan) {
+  const counts = {adult:0,child:0,none:0,pending:0};
+  if(hasReception(p)) for(const guest of p.guests) if(guest.reception==='yes') counts[guest.menu]++;
+  return counts;
+}
 export const scenarioKey: Record<Scenario, string> = { later:'receptionLater', solo:'soloCeremony', home:'scenarioHome', lunch:'scenarioLunch', hall:'scenarioHall' };
 export function translator(locale: string) {
   const catalog: Record<string,string> = ({it,en,es,fr,de} as Record<string, Record<string,string>>)[locale] || it;
