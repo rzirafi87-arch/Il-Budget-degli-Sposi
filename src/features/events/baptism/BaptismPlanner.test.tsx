@@ -12,6 +12,19 @@ jest.mock('@/lib/supabaseBrowser',()=>({getBrowserClient:()=>({
 })}));
 import BaptismPlanner from './BaptismPlanner';
 
+it('preserves local edits on a revision conflict and allows cancelling reload',async()=>{
+ localStorage.setItem('baptism:last-event:owner-a','event-a');render(<BaptismPlanner/>);
+ await screen.findByRole('heading',{name:'Il battesimo di Vittoria'});
+ fireEvent.click(screen.getAllByRole('button',{name:'Modifica'})[0]);
+ const name=screen.getByLabelText('Nome da mostrare nell’evento');fireEvent.change(name,{target:{value:'Vittoria locale'}});
+ mockRpc.mockResolvedValueOnce({error:{message:'BAPTISM_CONFLICT'}});
+ fireEvent.click(screen.getByRole('button',{name:'Salva'}));
+ expect(await screen.findByText(/Evento modificato altrove/)).toBeInTheDocument();expect(name).toHaveValue('Vittoria locale');
+ const confirm=jest.spyOn(window,'confirm').mockReturnValue(false);
+ fireEvent.click(screen.getByRole('button',{name:'Ricarica la versione salvata'}));
+ expect(name).toHaveValue('Vittoria locale');expect(mockRpc).toHaveBeenCalledTimes(2);confirm.mockRestore();
+});
+
 const stored={event_id:'event-a',revision:2,plan:{...blankPlan(),name:'Vittoria',draft:false}};
 beforeEach(()=>{
  localStorage.clear();mockRpc.mockReset();mockList.mockReset();mockLogout.mockReset();

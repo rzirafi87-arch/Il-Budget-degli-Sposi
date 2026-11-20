@@ -121,3 +121,18 @@ scadenza effettiva, con data di completamento visibile. Controlli sulle date
 calendariali e testi di uscita/condivisione nelle cinque lingue.
 32 test mirati PASS, inclusi 6 test interattivi del planner; typecheck PASS.
 Queste nuove funzioni richiedono ancora verifica browser sull'anteprima aggiornata.
+
+## Aggiornamento 20 novembre 2026
+Checklist: il controllo delle risposte usa la scadenza dell'invito, conservando
+una scadenza personalizzata o quella dell'attività già completata.
+34 test mirati e typecheck PASS. Test interattivo aggiunto per conflitto di
+revisione: inserimenti locali conservati e annullamento della ricarica rispettato.
+
+Prova browser precedente su 2b5bdbc: apertura di Vittoria e reload con ripresa
+automatica PASS; date di cerimonia e ritrovo spostate al 18/05/2027, checklist
+ricalcolata al 23/03 per la stima, attività completata conservata al 21/02.
+L'esempio QA resta alla data di maggio dopo questa prova.
+La sessione browser autenticata non è disponibile al recupero del 20 novembre.
+Restano da provare due schede concorrenti nel browser, logout/login, registrazione
+con conferma email, dimensioni iPhone e integrazione del cambio evento.
+Production non modificata.

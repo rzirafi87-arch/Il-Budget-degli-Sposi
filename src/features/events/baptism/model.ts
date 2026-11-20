@@ -41,6 +41,7 @@ export function dueDate(p: Plan, key: string, offset: number) {
   const state=p.tasks[key];
   if(state?.completed) return state.due;
   if(state?.customDue) return state.customDue;
+  if(key==='replies' && validDate(p.replyBy)) return p.replyBy;
   if(!p.ceremonyConfirmed || !validDate(p.ceremony.slice(0,10))) return '';
   const date=new Date(p.ceremony.slice(0,10)+'T12:00:00Z');
   date.setUTCDate(date.getUTCDate()+offset);

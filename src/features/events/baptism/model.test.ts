@@ -3,6 +3,11 @@ import examples from './examples.json';
 
 function example(i:number):Plan {const e=examples[i];return {...blankPlan(),name:'Vittoria',scenario:e.scenario as Plan['scenario'],budget:String(e.budget),costs:e.costs.map((c,index)=>({...c,id:String(index),enabled:true,scope:c.scope as 'ceremony'|'reception',quote:'',payments:c.paid?[{id:String(index),amount:c.paid,date:'2027-01-01',note:''}]:[]}))};}
 describe('Approved baptism editorial contract',()=>{
+ it('uses the invitation reply deadline while preserving explicit and completed task dates',()=>{
+  const p=blankPlan();p.replyBy='2027-04-03';expect(dueDate(p,'replies',-10)).toBe('2027-04-03');
+  p.tasks.replies={completed:false,due:'',completedAt:'',customDue:'2027-04-04',skipped:false};expect(dueDate(p,'replies',-10)).toBe('2027-04-04');
+  p.tasks.replies={...p.tasks.replies,completed:true,due:'2027-04-04'};p.replyBy='2027-04-07';expect(dueDate(p,'replies',-10)).toBe('2027-04-04');
+ });
  it.each([[0,393,78,315,87],[1,1354,283,1071,146],[2,3980,855,3125,-80]])('reproduces scenario %s', (i,forecast,paid,unpaid,margin)=>{const p=example(i);expect(totals(p)).toEqual({forecast,paid,unpaid,excess:0});expect(Number(p.budget)-totals(p).forecast).toBe(margin);});
  it('preserves payments when removing a reception and restores the estimate',()=>{const p=example(1),before=totals(p);p.scenario='solo';expect(totals(p).paid).toBe(283);expect(totals(p).excess).toBe(180);expect(totals(p).forecast).toBe(308);p.scenario='lunch';expect(totals(p)).toEqual(before);});
  it('does not offset an overpayment against the balance of another expense',()=>{const p=example(1);p.costs[0].payments[0].amount=28;expect(totals(p)).toMatchObject({paid:293,unpaid:1071,excess:10});});
