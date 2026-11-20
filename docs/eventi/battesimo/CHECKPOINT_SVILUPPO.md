@@ -136,3 +136,18 @@ La sessione browser autenticata non è disponibile al recupero del 20 novembre.
 Restano da provare due schede concorrenti nel browser, logout/login, registrazione
 con conferma email, dimensioni iPhone e integrazione del cambio evento.
 Production non modificata.
+
+## Verifica browser autenticata — 20 novembre 2026
+Accesso completato manualmente dall'utente dopo credenziali rifiutate.
+PASS: Vittoria riaperta automaticamente con programma, 2 conferme cerimonia,
+1 conferma ritrovo, 1 risposta in attesa e importi 1354/283/1071/146 EUR.
+PASS concorrenza reale tra due schede sulla stessa revisione: seconda scheda
+salva budget1501; prima scheda tenta1502 e riceve conflitto, conservando1502
+nel campo senza sovrascrivere il server. Seconda scheda ripristina1500; prima
+scheda ricarica esplicitamente e recupera margine146. Nessuna spesa/pagamento
+modificato nella prova.
+PASS: checklist Verifica le risposte usa08/04/2027 dell'invito invece di08/05
+relativo alla cerimonia di maggio. SHA funzionale verificato5e8ff06.
+Rientro verificato dopo login manuale; NON ancora un ciclo automatizzato completo
+di logout/login. Ancora aperti registrazione con conferma email, mobile390/360,
+integrazione cambio evento e gate finale. Nessuna modifica Production.
