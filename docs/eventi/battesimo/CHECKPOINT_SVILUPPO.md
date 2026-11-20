@@ -160,3 +160,12 @@ Prezzo unitario e pagamenti conservati; nessuna modifica automatica ai costi
 quando cambia una risposta. Menù da definire indicati separatamente.
 36 test mirati e typecheck PASS. Nuova funzione non ancora verificata nel browser.
 Nessuna modifica database o Production.
+
+### Prova browser quantità su 449e24d
+Deployment dpl_C9NwbyYwEHCzViGPorZABdrSin8X READY. La sessione QA è risultata
+riutilizzabile aprendo una nuova scheda sull'alias del branch.
+PASS: Pranzo adulti aggiornato da22 a1 usando il menù adulto confermato;
+previsto556, pagato283, residuo385 (saldo calcolato per singola spesa),
+segnalazione acconto150 maggiore della nuova stima38. Salvataggio e reload
+recuperano quantità1. Ripristinata quantità22 e salvata: riepilogo torna
+a1354/283/1071/146. Nessuna perdita di acconti.
