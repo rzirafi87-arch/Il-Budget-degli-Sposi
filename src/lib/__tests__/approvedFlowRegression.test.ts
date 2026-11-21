@@ -5,12 +5,12 @@ const read = (relativePath: string) =>
   fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
 describe("approved application flow regressions", () => {
-  it("keeps event selection only inside Quick Settings", () => {
+  it("keeps the event switch hidden during the wedding tester phase", () => {
     const shell = read("src/components/ClientLayoutShell.tsx");
     const settings = read("src/components/QuickSettings.tsx");
     expect(shell).not.toContain("TopBarSelector");
     expect(shell).not.toContain("CurrentEventSelector");
-    expect(settings).toContain("CurrentEventSelector");
+    expect(settings).not.toContain("CurrentEventSelector");
   });
 
   it("does not route configured or multi-event users through select-event-type", () => {

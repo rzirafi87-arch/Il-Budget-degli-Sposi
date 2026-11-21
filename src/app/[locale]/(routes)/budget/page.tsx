@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 
+import { compareBudgetItems, type PlannedBudgetItem } from "@/lib/budgetComparison";
 import ExportPDFButton from "@/components/ExportPDFButton";
 import ImageCarousel from "@/components/ImageCarousel";
 import { getUserCountrySafe } from "@/constants/geo";
@@ -10,7 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { AppButtonLink, buttonClasses } from "@/components/ui/AppButton";
+import { AppButton, AppButtonLink, buttonClasses } from "@/components/ui/AppButton";
 import { Inbox, Lightbulb, WalletCards } from "lucide-react";
 import { ExpenseForm } from "@/components/expenses/ExpenseForm";
 
@@ -41,12 +42,15 @@ export default function BudgetPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [totals, setTotals] = useState<Totals>({ total: 0, common: 0, bride: 0, groom: 0 });
   const [loading, setLoading] = useState(true);
-  const [plannedItems, setPlannedItems] = useState<{ name: string; amount: number }[]>([]);
+  const [loadError, setLoadError] = useState(false);
+  const [plannedItems, setPlannedItems] = useState<PlannedBudgetItem[]>([]);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [expenseRefresh, setExpenseRefresh] = useState(0);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+      setLoadError(false);
       try {
         const { data } = await supabase.auth.getSession();
         const jwt = data.session?.access_token;
@@ -60,9 +64,10 @@ export default function BudgetPage() {
           fetch(`/api/budget-items?country=${encodeURIComponent(country)}`, { headers }),
         ]);
 
+        if (!expensesRes.ok || !plannedRes.ok) throw new Error("BUDGET_READ_FAILED");
         const expensesData = await expensesRes.json();
         type ExpenseData = { status?: string; category?: string; subcategory?: string; supplier?: string; savedSupplierId?: string | null; spendType?: string; amount?: number; committed?: number; paid?: number; fromDashboard?: boolean };
-        const includedExpenses = (expensesData.expenses || []).filter((exp: ExpenseData) => exp.status !== "rejected");
+        const includedExpenses = (expensesData.expenses || []).filter((exp: ExpenseData) => exp.status === "approved");
 
         const budgetRows: Row[] = includedExpenses.map((exp: ExpenseData) => ({
           category: exp.category || "",
@@ -99,13 +104,13 @@ export default function BudgetPage() {
           ? plannedJson.items.map((it: PlannedItem) => ({
               name: it.name || [it.category, it.subcategory].filter(Boolean).join(" - ") || t("budgetPage.fallbackItem"),
               amount: Number(it.amount || 0) || 0,
+              category: it.category,
+              subcategory: it.subcategory,
             }))
           : [];
         setPlannedItems(planned);
       } catch {
-        setRows([]);
-        setTotals({ total: 0, common: 0, bride: 0, groom: 0 });
-        setPlannedItems([]);
+        setLoadError(true);
       } finally {
         setLoading(false);
       }
@@ -113,21 +118,15 @@ export default function BudgetPage() {
   }, [t, expenseRefresh]);
 
   const plannedTotal = useMemo(() => plannedItems.reduce((s, it) => s + (Number(it.amount)||0), 0), [plannedItems]);
-  const compareRows = useMemo(() => {
-    const planMap = new Map<string, number>();
-    for (const p of plannedItems) {
-      const key = p.name || t("budgetPage.fallbackItem");
-      planMap.set(key, (planMap.get(key) || 0) + (Number(p.amount) || 0));
-    }
-    const actualMap = new Map<string, number>();
-    for (const r of rows) {
-      const key = [r.category, r.subcategory].filter(Boolean).join(" - ") || t("budgetPage.fallbackItem");
-      actualMap.set(key, (actualMap.get(key) || 0) + (Number(r.budget) || 0));
-    }
-    const userLang = getUserLanguage();
-    const keys = Array.from(new Set([...planMap.keys(), ...actualMap.keys()])).sort((a,b)=>a.localeCompare(b,userLang));
-    return keys.map((k) => ({ key: k, planned: planMap.get(k) || 0, actual: actualMap.get(k) || 0 }));
-  }, [plannedItems, rows, t]);
+  const compareRows = useMemo(() => compareBudgetItems(plannedItems, rows, t("budgetPage.fallbackItem"), getUserLanguage()), [plannedItems, rows, t]);
+
+  if (loadError) return (
+    <section>
+      <PageHeader title={t("budget")} />
+      <p role="alert" className="mb-4 text-red-700">{t("budgetPage.loadError")}</p>
+      <AppButton onClick={() => setExpenseRefresh(value => value + 1)}>{t("budgetPage.retry")}</AppButton>
+    </section>
+  );
 
   return (
     <section>
@@ -323,8 +322,8 @@ export default function BudgetPage() {
           <div className="text-sm text-right">
             <div>{t("budgetPage.plannedVsActual.totalPlanned")}: {formatEuro(plannedTotal)}</div>
             <div>{t("budgetPage.plannedVsActual.totalActualApproved")}: {formatEuro(totals.total)}</div>
-            <div className={`${plannedTotal - totals.total > 0 ? 'text-red-600' : 'text-emerald-700'} font-medium`}>
-              {t("budgetPage.plannedVsActual.difference")}: {formatEuro(Math.abs(plannedTotal - totals.total))} ({plannedTotal - totals.total > 0 ? t("budgetPage.plannedVsActual.over") : t("budgetPage.plannedVsActual.under")})
+            <div className={`${totals.total - plannedTotal > 0 ? 'text-red-600' : 'text-emerald-700'} font-medium`}>
+              {t("budgetPage.plannedVsActual.difference")}: {formatEuro(Math.abs(totals.total - plannedTotal))} ({totals.total - plannedTotal > 0 ? t("budgetPage.plannedVsActual.over") : t("budgetPage.plannedVsActual.under")})
             </div>
           </div>
         </div>

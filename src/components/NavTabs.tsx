@@ -5,6 +5,7 @@ import { getEventTypeCapability, normalizeEventType, type EventModule } from "@/
 import clsx from "clsx";
 import {
   Church,
+  ListChecks,
   CircleDollarSign,
   FileText,
   Heart,
@@ -77,6 +78,7 @@ export default function NavTabs() {
     { module: "budget", path: "/budget", label: () => t("budget"), icon: PiggyBank },
     { module: "budget-ideas", path: "/idea-di-budget", label: () => t("ideaBudget", { default: "Idea di Budget" }), icon: ReceiptText },
     { module: "save-the-date", path: "/save-the-date", label: () => t("saveTheDate", { default: "Save the Date" }), icon: Heart },
+    { module: "timeline", path: "/timeline", label: () => t("timeline"), icon: ListChecks },
     { module: "guests", path: "/invitati", label: () => t("guests"), icon: Users },
     { module: "accounting", path: "/contabilita", label: () => t("accounting"), icon: CircleDollarSign },
     { module: "suppliers", path: "/fornitori", label: () => t("suppliers"), icon: HeartHandshake },
