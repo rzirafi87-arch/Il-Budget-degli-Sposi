@@ -32,6 +32,8 @@ export default function AuthPage() {
   const errorRef = useRef<HTMLParagraphElement>(null);
   const returnPath = typeof window === "undefined" ? `/${locale}/dashboard` : safeInternalPath(new URLSearchParams(window.location.search).get("next"), `/${locale}/dashboard`);
 
+  const baptismIntent = returnPath === `/${locale}/battesimo`;
+
   useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
   useEffect(() => { if (!cooldown) return; const timer = window.setInterval(() => setCooldown(v => Math.max(0, v - 1)), 1000); return () => window.clearInterval(timer); }, [cooldown]);
   useEffect(() => { supabase.auth.getSession().then(({ data }) => { if (data.session) window.location.replace(returnPath); }); }, [returnPath]);
@@ -46,7 +48,11 @@ export default function AuthPage() {
   async function signUp() {
     setError(null); setMessage(null); setLoading(true);
     try {
-      await request("/api/auth/register", { primaryEmail: email, password, eventType, ...(eventType === "eighteenth" ? {name: partyName, date: partyDate, budget: Number(brideBudget)} : {}), partnerEmail: partnerEmail || undefined, weddingDate: weddingDate || undefined, brideBudget: brideBudget ? Number(brideBudget) : undefined, groomBudget: groomBudget ? Number(groomBudget) : undefined, totalBudget: eventType !== "wedding" && brideBudget ? Number(brideBudget) : undefined, next: returnPath });
+      if (baptismIntent) {
+        const { data, error: signupError } = await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: window.location.origin + returnPath } });
+        if (signupError) throw signupError;
+        if (data?.session) { window.location.assign(returnPath); return; }
+      } else await request("/api/auth/register", { primaryEmail: email, password, eventType, ...(eventType === "eighteenth" ? {name: partyName, date: partyDate, budget: Number(brideBudget)} : {}), partnerEmail: partnerEmail || undefined, weddingDate: weddingDate || undefined, brideBudget: brideBudget ? Number(brideBudget) : undefined, groomBudget: groomBudget ? Number(groomBudget) : undefined, totalBudget: eventType !== "wedding" && brideBudget ? Number(brideBudget) : undefined, next: returnPath });
       setMode("waiting"); setCooldown(AUTH_RESEND_COOLDOWN_SECONDS);
     } catch (e) { setError(t(`errors.${authErrorKey(e instanceof Error ? e.message : undefined)}`)); }
     finally { setLoading(false); }
@@ -65,7 +71,7 @@ export default function AuthPage() {
   async function resend() {
     if (cooldown || loading) return;
     setError(null); setLoading(true);
-    try { await request("/api/auth/resend", { email }); setMessage(journeyT("emailSent")); setCooldown(AUTH_RESEND_COOLDOWN_SECONDS); }
+    try { if (baptismIntent) { const { error: resendError } = await supabase.auth.resend({ type: "signup", email: email.trim(), options: { emailRedirectTo: window.location.origin + returnPath } }); if (resendError) throw resendError; } else await request("/api/auth/resend", { email }); setMessage(journeyT("emailSent")); setCooldown(AUTH_RESEND_COOLDOWN_SECONDS); }
     catch (e) { setError(t(`errors.${authErrorKey(e instanceof Error ? e.message : undefined)}`)); }
     finally { setLoading(false); }
   }
@@ -79,8 +85,8 @@ export default function AuthPage() {
 
   if (mode === "waiting") return <main className="mx-auto max-w-lg space-y-5 p-8"><h1 className="text-2xl font-bold">{t("confirmationTitle")}</h1><p>{t("confirmationBody")}</p><p className="text-sm text-muted-fg">{email}</p><button className="app-button app-button--primary app-button--md" onClick={resend} disabled={loading || cooldown > 0}>{t("resend")}{cooldown ? ` (${cooldown}s)` : ""}</button><button className="app-button app-button--ghost app-button--md" type="button" onClick={() => { setMode("login"); setError(null); }}>{t("backToLogin")}</button>{message && <p role="status" className="text-green-700">{message}</p>}{error && <p ref={errorRef} tabIndex={-1} role="alert" className="text-red-700">{error}</p>}</main>;
 
-  return <main className="mx-auto w-full max-w-lg space-y-4 p-4 sm:p-8"><form className="space-y-4" onSubmit={event => { event.preventDefault(); if (loading) return; void (mode === "login" ? signIn() : mode === "register" ? signUp() : recover()); }}><h1 className="text-2xl font-bold">{t("title")}</h1>
-    {mode === "register" && <><label className="block">{t("eventType")}<select className="mt-1 block min-h-11 w-full border bg-bg px-3 py-2 text-fg" value={eventType} onChange={e => setEventType(e.target.value)}>{publicEventTypeCapabilities().map(event => <option key={event.slug} value={event.slug} disabled={event.availabilityStatus !== "READY"}>{tGlobal(`events.${event.slug}`)}{event.availabilityStatus !== "READY" ? ` — ${tGlobal("comingSoon")}` : ""}</option>)}</select></label>{eventType === "eighteenth" && <>
+  return <main className="mx-auto w-full max-w-lg space-y-4 p-4 sm:p-8"><form className="space-y-4" onSubmit={event => { event.preventDefault(); if (loading) return; void (mode === "login" ? signIn() : mode === "register" ? signUp() : recover()); }}><h1 className="text-2xl font-bold">{t("title")}</h1>{baptismIntent && <p>{tGlobal("events.baptism")}</p>}
+    {mode === "register" && !baptismIntent && <><label className="block">{t("eventType")}<select className="mt-1 block min-h-11 w-full border bg-bg px-3 py-2 text-fg" value={eventType} onChange={e => setEventType(e.target.value)}>{publicEventTypeCapabilities().map(event => <option key={event.slug} value={event.slug} disabled={event.availabilityStatus !== "READY"}>{tGlobal(`events.${event.slug}`)}{event.availabilityStatus !== "READY" ? ` — ${tGlobal("comingSoon")}` : ""}</option>)}</select></label>{eventType === "eighteenth" && <>
       <label className="block">{tGlobal("party18.name")}<input className="block w-full border p-2" required maxLength={120} value={partyName} onChange={e => setPartyName(e.target.value)} /></label>
       <label className="block">{tGlobal("party18.date")}<input className="block w-full border p-2" required type="date" value={partyDate} onChange={e => setPartyDate(e.target.value)} /></label>
     </>}{eventType === "wedding" && <><label className="block">{t("partnerEmail")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="email" autoComplete="email" value={partnerEmail} onChange={e => setPartnerEmail(e.target.value)} /></label><label className="block">{t("weddingDate")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="date" value={weddingDate} onChange={e => setWeddingDate(e.target.value)} /></label></>}<div className="grid gap-3 sm:grid-cols-2"><label className="block">{eventType === "wedding" ? t("brideBudget") : t("totalBudget")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="number" step="0.01" min="0" inputMode="decimal" required={eventType === "eighteenth"} value={brideBudget} onChange={e => setBrideBudget(e.target.value)} /></label>{eventType === "wedding" && <label className="block">{t("groomBudget")}<input className="mt-1 block min-h-11 w-full border px-3 py-2" type="number" step="0.01" min="0" inputMode="decimal" value={groomBudget} onChange={e => setGroomBudget(e.target.value)} /></label>}</div></>}
