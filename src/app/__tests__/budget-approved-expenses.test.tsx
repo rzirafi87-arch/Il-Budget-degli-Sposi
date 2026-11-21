@@ -7,7 +7,7 @@ jest.mock("@/components/ImageCarousel",()=>({__esModule:true,default:()=>null}))
 jest.mock("@/components/expenses/ExpenseForm",()=>({ExpenseForm:()=>null}));
 
 test("Budget includes approved expenses only, matching Accounting totals", async () => {
-  global.fetch=jest.fn(async (url)=>({json:async()=>String(url).includes("budget-items") ? {items:[]} : {expenses:[
+  global.fetch=jest.fn(async (url)=>({json:async()=>String(url).includes("budget-items") ? {items:[{name:"APPROVED_COST",amount:100}]} : {expenses:[
     {status:"approved",category:"Cerimonia",subcategory:"APPROVED_COST",amount:80,committed:80,paid:20},
     {status:"pending",category:"Cerimonia",subcategory:"PENDING_QUOTE",amount:1150,committed:1150},
     {status:"rejected",category:"Cerimonia",subcategory:"REJECTED_COST",amount:200},
@@ -15,6 +15,8 @@ test("Budget includes approved expenses only, matching Accounting totals", async
   ]}})) as jest.Mock;
   render(<BudgetPage/>);
   await waitFor(()=>expect(screen.getAllByText("APPROVED_COST").length).toBeGreaterThan(0));
+  expect(screen.getByText(/budgetPage.plannedVsActual.under/)).toBeInTheDocument();
+  expect(screen.queryByText(/budgetPage.plannedVsActual.over/)).not.toBeInTheDocument();
   expect(screen.queryByText("PENDING_QUOTE")).not.toBeInTheDocument();
   expect(screen.queryByText("REJECTED_COST")).not.toBeInTheDocument();
   expect(screen.queryByText("UNKNOWN_STATUS")).not.toBeInTheDocument();

@@ -54,3 +54,16 @@ Il nuovo codice richiede ancora deploy e verifica browser prima di dichiararlo
 verificato. Restano aperti salvataggi QA, mobile reale, account multipli nel browser,
 logout/login e riconciliazione delle righe del confronto pianificato/effettivo
 (etichette storiche diverse tra budget e spese). Nessuna modifica dati o Production.
+
+## Riscontro anteprima b12abe2
+
+Browser: dopo ricaricamento la sessione è mantenuta; countdown italiano corretto,
+nessun selettore evento, Timeline nel menu con otto attività. Budget ora mostra
+1670 pianificati e 0 approvati, coerente con Contabilità; nessuna spesa modificata.
+Suite ampliata: 12 suite/71 test PASS e TypeScript PASS.
+
+Ulteriore correzione: API spese restituisce il costo impegnato come importo totale
+anche dopo un acconto (1000 di costo, 200 pagati restano distinti), test dedicato
+PASS. Corretto anche il segno del confronto economico: effettivo inferiore al
+pianificato è sotto il previsto. Etichetta accessibile Lingua usa il catalogo header.
+Queste ultime correzioni attendono deployment e verifica browser.

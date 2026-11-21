@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const t = useTranslations("runtimeUi.shared");
+  const header = useTranslations("header");
   const pathname = usePathname();
   const router = useRouter();
 
@@ -62,7 +63,7 @@ export default function LocaleSwitcher() {
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
-      <select aria-label={t("language")} value={locale} onChange={(e) => switchLocale(e.target.value)} className="min-h-11 max-w-full border rounded-lg px-3 py-2">
+      <select aria-label={header("language")} value={locale} onChange={(e) => switchLocale(e.target.value)} className="min-h-11 max-w-full border rounded-lg px-3 py-2">
         {locales.map((l) => (
           <option key={l.code} value={l.code} dir={l.rtl ? "rtl" : undefined} disabled={!l.selectable}>
             {l.native_name || l.name || l.code.toUpperCase()}{!l.selectable ? ` (${t("comingSoon")})` : ""}

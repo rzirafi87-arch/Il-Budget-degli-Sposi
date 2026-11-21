@@ -323,8 +323,8 @@ export default function BudgetPage() {
           <div className="text-sm text-right">
             <div>{t("budgetPage.plannedVsActual.totalPlanned")}: {formatEuro(plannedTotal)}</div>
             <div>{t("budgetPage.plannedVsActual.totalActualApproved")}: {formatEuro(totals.total)}</div>
-            <div className={`${plannedTotal - totals.total > 0 ? 'text-red-600' : 'text-emerald-700'} font-medium`}>
-              {t("budgetPage.plannedVsActual.difference")}: {formatEuro(Math.abs(plannedTotal - totals.total))} ({plannedTotal - totals.total > 0 ? t("budgetPage.plannedVsActual.over") : t("budgetPage.plannedVsActual.under")})
+            <div className={`${totals.total - plannedTotal > 0 ? 'text-red-600' : 'text-emerald-700'} font-medium`}>
+              {t("budgetPage.plannedVsActual.difference")}: {formatEuro(Math.abs(totals.total - plannedTotal))} ({totals.total - plannedTotal > 0 ? t("budgetPage.plannedVsActual.over") : t("budgetPage.plannedVsActual.under")})
             </div>
           </div>
         </div>
