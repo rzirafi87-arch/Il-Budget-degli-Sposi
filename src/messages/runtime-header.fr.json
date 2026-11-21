@@ -19,5 +19,9 @@
     "invitations": "Préparer et envoyer les invitations",
     "confirmations": "Recueillir les réponses et organiser les tables",
     "finalChecks": "Confirmer le programme, les contacts et les soldes"
+  },
+  "budgetPage": {
+    "loadError": "Le budget ne peut pas être chargé. Vos données enregistrées sont conservées. Réessayez dans un instant.",
+    "retry": "Réessayer"
   }
 }

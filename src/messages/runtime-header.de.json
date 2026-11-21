@@ -19,5 +19,9 @@
     "invitations": "Einladungen vorbereiten und versenden",
     "confirmations": "Zusagen sammeln und Sitzordnung planen",
     "finalChecks": "Ablauf, Kontakte und Restzahlungen bestätigen"
+  },
+  "budgetPage": {
+    "loadError": "Das Budget konnte nicht geladen werden. Deine gespeicherten Daten bleiben erhalten. Versuche es gleich erneut.",
+    "retry": "Erneut versuchen"
   }
 }

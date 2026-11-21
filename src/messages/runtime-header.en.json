@@ -19,5 +19,9 @@
     "invitations": "Prepare and send invitations",
     "confirmations": "Collect replies and plan seating",
     "finalChecks": "Confirm the schedule, contacts and balances"
+  },
+  "budgetPage": {
+    "loadError": "We could not load your budget. Your saved data is preserved. Please try again shortly.",
+    "retry": "Try again"
   }
 }

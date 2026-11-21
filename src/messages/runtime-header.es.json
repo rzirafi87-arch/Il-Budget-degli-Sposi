@@ -19,5 +19,9 @@
     "invitations": "Preparar y enviar las invitaciones",
     "confirmations": "Recoger las respuestas y organizar las mesas",
     "finalChecks": "Confirmar el programa, los contactos y los saldos"
+  },
+  "budgetPage": {
+    "loadError": "No podemos cargar el presupuesto. Tus datos guardados se conservan. Inténtalo de nuevo en unos instantes.",
+    "retry": "Reintentar"
   }
 }

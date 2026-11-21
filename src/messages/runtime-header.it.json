@@ -19,5 +19,9 @@
     "invitations": "Preparare e inviare gli inviti",
     "confirmations": "Raccogliere le conferme e definire i tavoli",
     "finalChecks": "Confermare programma, contatti e saldi"
+  },
+  "budgetPage": {
+    "loadError": "Non riusciamo a caricare il budget. I dati salvati sono conservati. Riprova tra poco.",
+    "retry": "Riprova"
   }
 }
