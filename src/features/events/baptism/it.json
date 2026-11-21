@@ -263,5 +263,8 @@
   "invite.shared": "Condivisione completata.",
   "budget.useConfirmedMenus": "Usa {count} · {menu}",
   "budget.confirmedMenusHelp": "Menù dei presenti confermati al ritrovo. Da definire: {pending}. Le persone in attesa o assenti sono escluse.",
-  "budget.confirmMenuQuantity": "Aggiornare «{name}» da {before} a {after} unità, per un previsto di {total}? Prezzo unitario e pagamenti restano invariati. Salva per conservare la modifica."
+  "budget.confirmMenuQuantity": "Aggiornare «{name}» da {before} a {after} unità, per un previsto di {total}? Prezzo unitario e pagamenti restano invariati. Salva per conservare la modifica.",
+  "budget.addPayment": "Aggiungi pagamento",
+  "budget.pendingPayment": "Aggiungi o annulla il pagamento aperto prima di salvare o inserire un altro pagamento.",
+  "budget.paymentHelp": "Aggiungi il pagamento alla bozza, poi premi Salva per conservarlo."
 }

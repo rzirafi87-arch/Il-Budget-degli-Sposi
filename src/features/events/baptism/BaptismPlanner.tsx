@@ -21,6 +21,7 @@ export default function BaptismPlanner() {
  const locale=useLocale(), t=translator(locale), x=(extras as Record<string,string[]>)[locale]||extras.it;
  const [user,setUser]=useState(''), [rows,setRows]=useState<Row[]>([]), [id,setId]=useState(''), [revision,setRevision]=useState(0), [plan,setPlan]=useState<Plan>(blankPlan), [view,setView]=useState<View>('dashboard'), [step,setStep]=useState(1), [busy,setBusy]=useState(false), [loading,setLoading]=useState(true), [notice,setNotice]=useState(''), [dirty,setDirty]=useState(false), [errors,setErrors]=useState<Record<string,string>>({}), [loadFailed,setLoadFailed]=useState(false);
  const [payment,setPayment]=useState({costId:'',amount:'',date:'',note:''});
+ const pendingPayment=Boolean(payment.costId);
  const loadingUser=useRef('');
  const operation=useRef(0);
  const saving=useRef(false);
@@ -36,7 +37,7 @@ export default function BaptismPlanner() {
  },[]);
  useEffect(()=>{
   let active=true;loadingUser.current=user;operation.current++;saving.current=false;
-  setRows([]);setId('');setRevision(0);setPlan(blankPlan());setDirty(false);setErrors({});setNotice('');setBusy(false);setLoadFailed(false);setLoading(Boolean(user));
+  setPayment({costId:'',amount:'',date:'',note:''});setRows([]);setId('');setRevision(0);setPlan(blankPlan());setDirty(false);setErrors({});setNotice('');setBusy(false);setLoadFailed(false);setLoading(Boolean(user));
   if(user) void (async()=>{
    try {
     const {data,error}=await getBrowserClient().from('baptism_family_plans').select('event_id,revision,plan');
@@ -53,10 +54,10 @@ export default function BaptismPlanner() {
   })();else setLoading(false);
   return()=>{active=false};
  },[user]); // locale changes must not reset edits
- useEffect(()=>{if(!dirty)return;const leave=(e:BeforeUnloadEvent)=>{e.preventDefault();e.returnValue='';};window.addEventListener('beforeunload',leave);return()=>window.removeEventListener('beforeunload',leave);},[dirty]);
+ useEffect(()=>{if(!dirty&&!pendingPayment)return;const leave=(e:BeforeUnloadEvent)=>{e.preventDefault();e.returnValue='';};window.addEventListener('beforeunload',leave);return()=>window.removeEventListener('beforeunload',leave);},[dirty,pendingPayment]);
  const change=(p:Partial<Plan>)=>{setPlan(old=>({...old,...p}));setDirty(true);setErrors({});setNotice('');};
  async function open(row:Row){
-  if(saving.current||dirty&&!window.confirm(x[12]))return;
+  if(saving.current||(dirty||pendingPayment)&&!window.confirm(x[12]))return;
   const ticket=++operation.current;setBusy(true);const owner=user;
   try{let loaded=row;if(row.revision>0){const {data,error}=await getBrowserClient().rpc('read_family_baptism',{p_id:row.event_id});if(error||!data)throw error;loaded=data as unknown as Row;}
    if(loadingUser.current!==owner||ticket!==operation.current)return;
@@ -66,6 +67,7 @@ export default function BaptismPlanner() {
  }
  async function save(draft=plan.draft){
   if(saving.current)return false;
+  if(pendingPayment){setNotice(t('budget.pendingPayment'));setView('budget');requestAnimationFrame(()=>document.getElementById('baptism-payment-amount')?.focus());return false;}
   const next={...plan,draft},faults=validate(next);setErrors(faults);
   if(Object.keys(faults).length){
    const first=Object.keys(faults)[0];setNotice(t(faults[first]));
@@ -81,7 +83,7 @@ export default function BaptismPlanner() {
   finally{if(ticket===operation.current){saving.current=false;setBusy(false);}}
  }
  async function signOut(){
-  if(dirty&&!window.confirm(x[12]))return;setBusy(true);
+  if((dirty||pendingPayment)&&!window.confirm(x[12]))return;setBusy(true);
   try{const db=getBrowserClient(),{data}=await db.auth.getSession();await logoutCurrentSession({supabase:db,accessToken:data.session?.access_token});}
   catch{setNotice(t('common.signOutError'));}finally{setBusy(false);}
  }
@@ -139,16 +141,16 @@ export default function BaptismPlanner() {
  <div className="grid grid-cols-2 gap-3">{(['quantity','unitCost'] as const).map(key=><label className="grid gap-2" key={key}>{t('budget.'+key)}<input className="app-input min-h-12 min-w-0" type="number" min="0" step={key==='quantity'?'1':'0.01'} value={c[key]} onChange={e=>updateCost(c,{[key]:Number(e.target.value)})}/></label>)}</div><label className="grid gap-2">{x[5]}<textarea className="app-input" value={c.quote} onChange={e=>updateCost(c,{quote:e.target.value})}/></label>
  <p>{t('budget.forecast')}: {money(forecast)} · {t('budget.paid')}: {money(paid)} · {x[26]}: {money(Math.max(0,forecast-paid))}</p>{paid>forecast&&<p role="alert">{t('budget.overpayment',{itemName:c.name})}</p>}
  {c.payments.map(p=><div key={p.id} className="flex flex-wrap items-center gap-3"><p>{date(p.date)} · {money(p.amount)} · {p.note}</p>{button(x[3],()=>updateCost(c,{payments:c.payments.filter(a=>a.id!==p.id)}))}</div>)}
- {button(t('budget.recordPayment'),()=>setPayment({costId:c.id,amount:'',date:localDay(),note:''}))}
- {payment.costId===c.id&&<div className="grid gap-3"><label>{x[27]}<input className="app-input min-h-12" type="number" min="0.01" step="0.01" value={payment.amount} onChange={e=>setPayment({...payment,amount:e.target.value})}/></label><label>{x[7]}<input className="app-input min-h-12" type="date" value={payment.date} onChange={e=>setPayment({...payment,date:e.target.value})}/></label><label>{x[8]}<input className="app-input min-h-12" value={payment.note} onChange={e=>setPayment({...payment,note:e.target.value})}/></label>{button(t('common.save'),()=>{updateCost(c,{payments:[...c.payments,{id:crypto.randomUUID(),amount:Number(payment.amount),date:payment.date,note:payment.note}]});setPayment({...payment,costId:''});},true,!payment.date||!Number.isFinite(Number(payment.amount))||Number(payment.amount)<=0)}</div>}
- {button(x[3],()=>paid?updateCost(c,{enabled:false}):change({costs:plan.costs.filter(a=>a.id!==c.id)}))}</section>;})}
+ {button(t('budget.recordPayment'),()=>{if(pendingPayment){setNotice(t('budget.pendingPayment'));return;}setPayment({costId:c.id,amount:'',date:localDay(),note:''});})}
+ {payment.costId===c.id&&<div className="grid gap-3"><label>{x[27]}<input id="baptism-payment-amount" className="app-input min-h-12" type="number" min="0.01" step="0.01" value={payment.amount} onChange={e=>setPayment({...payment,amount:e.target.value})}/></label><label>{x[7]}<input className="app-input min-h-12" type="date" value={payment.date} onChange={e=>setPayment({...payment,date:e.target.value})}/></label><label>{x[8]}<input className="app-input min-h-12" value={payment.note} onChange={e=>setPayment({...payment,note:e.target.value})}/></label>{button(t('budget.addPayment'),()=>{updateCost(c,{payments:[...c.payments,{id:crypto.randomUUID(),amount:Number(payment.amount),date:payment.date,note:payment.note}]});setPayment({...payment,costId:''});},true,!payment.date||!Number.isFinite(Number(payment.amount))||Number(payment.amount)<=0)}{button(t('common.cancel'),()=>{if((payment.amount||payment.note)&&!window.confirm(x[12]))return;setPayment({costId:'',amount:'',date:'',note:''});setNotice('');})}<p className="text-sm">{t('budget.paymentHelp')}</p></div>}
+ {button(x[3],()=>{if(payment.costId===c.id){setNotice(t('budget.pendingPayment'));return;}if(paid)updateCost(c,{enabled:false});else change({costs:plan.costs.filter(a=>a.id!==c.id)});})}</section>;})}
  {button(t('budget.addExpense'),()=>change({costs:[...plan.costs,{id:crypto.randomUUID(),name:'',scope:'ceremony',enabled:true,quantity:1,unitCost:0,quote:'',payments:[]}]}),true)}
  </>)}
  {view==='checklist'&&card(t('timeline.title'),<>{!plan.ceremonyConfirmed&&<p>{t('timeline.noDate')}</p>}{visibleTasks(plan).map(([key,offset])=>{const state=plan.tasks[key],due=dueDate(plan,key,offset);return <section key={key} className="space-y-3 border-b border-[#d4dfe3] py-4"><h3 className="font-semibold">{t('timeline.task.'+key)}</h3><p>{t('timeline.task.'+key+'Help')}</p><p className={due&&due<localDay()&&!state?.completed?'font-bold text-red-800':''}>{due?t('timeline.offsetDate',{dueDate:date(due)}):t('dashboard.pendingDate')}</p><label className="flex min-h-11 items-center gap-3"><input type="checkbox" checked={state?.completed||false} onChange={e=>change({tasks:{...plan.tasks,[key]:{completed:e.target.checked,due,completedAt:e.target.checked?new Date().toISOString():'',customDue:state?.customDue||'',skipped:false}}})}/>{t(state?.completed?'timeline.reopen':'timeline.complete')}</label>{state?.completedAt&&<p className="text-sm">{x[22]} · <time dateTime={state.completedAt}>{new Date(state.completedAt).toLocaleDateString(locale)}</time></p>}<label className="grid gap-2">{x[21]}<input type="date" className="app-input min-h-12" disabled={state?.completed} value={state?.customDue||''} onChange={e=>change({tasks:{...plan.tasks,[key]:{completed:false,due:'',completedAt:'',skipped:false,customDue:e.target.value}}})}/></label></section>;})}</>)}
  {view==='invite'&&card(t('invite.title'),<>{field('replyBy',t('invite.replyBy'),'date')}{field('replyContact',t('invite.replyContact'))}{field('arrivalNote',t('invite.arrivalNote'))}<label className="grid gap-2">{t('invite.preview')}<textarea readOnly className="app-input min-h-64" value={invite.text}/></label>{!invite.ready&&<p role="alert">{t('invite.waitingDetails')} {t('invite.confirmCeremony')} {t('invite.confirmProgramme')}</p>}<div className="flex flex-wrap gap-3">{button(t('invite.copy'),()=>void copy(invite.text),true,!invite.ready)}{button(x[16],()=>void copy(invite.text,true),false,!invite.ready)}</div>
  <h3 className="font-semibold">{t('reminder.title')}</h3>{!counts.pending&&<p>{t('reminder.empty')}</p>}{plan.guests.filter(g=>g.ceremony==='pending'||reception&&g.reception==='pending').map(g=><div className="space-y-2" key={g.id}><p>{g.name}</p><textarea className="app-input" readOnly value={t(reception?'reminder.followUp':'reminder.followUpOnly',{...invite.args,guestName:g.name})}/>{button(t('reminder.copy'),()=>void copy(t(reception?'reminder.followUp':'reminder.followUpOnly',{...invite.args,guestName:g.name})))}</div>)}<h3 className="font-semibold">{x[15]}</h3><textarea readOnly className="app-input" value={x[14].replace('{name}',plan.name)}/>{button(x[15],()=>void copy(x[14].replace('{name}',plan.name)))}</>)}
  </fieldset>
- <footer className="sticky bottom-0 mt-6 flex flex-wrap gap-3 rounded-2xl border border-[#a8c1cf] bg-[#eef3f5] p-3 shadow-lg">{button(busy?t('common.saving'):t(plan.draft?'setup.draft':'common.save'),()=>void save(),true,!dirty&&revision>0)}{view!=='dashboard'&&button(x[25],()=>setView('dashboard'))}{revision>0&&button(x[19],()=>void open({event_id:id,revision,plan:plan as unknown as Record<string,unknown>}))}</footer>
+ <footer className="sticky bottom-0 mt-6 flex flex-wrap gap-3 rounded-2xl border border-[#a8c1cf] bg-[#eef3f5] p-3 shadow-lg">{button(busy?t('common.saving'):t(plan.draft?'setup.draft':'common.save'),()=>void save(),true,!dirty&&!pendingPayment&&revision>0)}{view!=='dashboard'&&button(x[25],()=>setView('dashboard'))}{revision>0&&button(x[19],()=>void open({event_id:id,revision,plan:plan as unknown as Record<string,unknown>}))}</footer>
  </>}
  </>}
  </div>;

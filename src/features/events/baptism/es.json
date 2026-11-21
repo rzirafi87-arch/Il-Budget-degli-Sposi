@@ -263,5 +263,8 @@
   "invite.shared": "Contenido compartido.",
   "budget.useConfirmedMenus": "Usar {count} · {menu}",
   "budget.confirmedMenusHelp": "Menús de asistentes confirmados a la reunión. Por definir: {pending}. Se excluyen ausentes y respuestas pendientes.",
-  "budget.confirmMenuQuantity": "¿Actualizar «{name}» de {before} a {after} unidades, con una previsión de {total}? El precio unitario y los pagos se conservan. Guarda el cambio."
+  "budget.confirmMenuQuantity": "¿Actualizar «{name}» de {before} a {after} unidades, con una previsión de {total}? El precio unitario y los pagos se conservan. Guarda el cambio.",
+  "budget.addPayment": "Añadir pago",
+  "budget.pendingPayment": "Añade o cancela el pago abierto antes de guardar o introducir otro pago.",
+  "budget.paymentHelp": "Añade el pago al borrador y pulsa Guardar para conservarlo."
 }

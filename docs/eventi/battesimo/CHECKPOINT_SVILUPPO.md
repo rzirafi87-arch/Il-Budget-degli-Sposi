@@ -169,3 +169,26 @@ previsto556, pagato283, residuo385 (saldo calcolato per singola spesa),
 segnalazione acconto150 maggiore della nuova stima38. Salvataggio e reload
 recuperano quantità1. Ripristinata quantità22 e salvata: riepilogo torna
 a1354/283/1071/146. Nessuna perdita di acconti.
+
+## Protezione dei pagamenti in compilazione — 21 novembre 2026
+Individuato e corretto un caso di perdita silenziosa: il modulo pagamento era
+separato dalla bozza, ma salvataggio evento, apertura di un altro pagamento,
+rimozione della spesa e ricarica potevano ignorarlo o sostituirlo.
+Ora il salvataggio invita ad aggiungere o annullare il pagamento e riporta al
+campo importo; apertura di un altro pagamento e rimozione della spesa sono
+bloccate mentre il modulo è aperto. Ricarica, nuovo evento, uscita e chiusura
+pagina considerano anche il pagamento non aggiunto. Annullamento esplicito con
+conferma per importo/note inseriti. Stato del modulo azzerato al cambio account.
+Il pulsante “Aggiungi pagamento” distingue l'inserimento nella bozza dal
+successivo “Salva” dell'evento; testi aggiornati nelle cinque lingue.
+38 test mirati PASS (4 suite); typecheck PASS; controlli codifica e segreti PASS.
+Build Turbopack locale bloccata dal collegamento delle dipendenze esterno alla
+root del progetto. Anche il tentativo alternativo Webpack fallisce: node:crypto
+importato da catalogContributions.ts nel percorso client ContributionPanel /
+chiese. Questo controllo non consente di dichiarare la build PASS; errore fuori
+dai file modificati. Deployment aggiornato non verificato.
+Push bloccato dalla revisione automatica: richiede autorizzazione esplicita
+alla pubblicazione del commit sul branch remoto feature/battesimo-completo.
+Questa correzione richiede ancora prova interattiva sul deployment aggiornato.
+Production e database non modificati. Restano aperti i gate mobile, registrazione
+con conferma email, cambio Matrimonio/Battesimo e revisione finale del diff.

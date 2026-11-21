@@ -91,3 +91,45 @@ it('applies confirmed menus only after confirmation, preserving price and deposi
  mockRpc.mockResolvedValueOnce({data:3,error:null});fireEvent.click(screen.getByRole('button',{name:'Salva'}));
  await waitFor(()=>expect(mockRpc).toHaveBeenCalledWith('save_family_baptism',expect.objectContaining({p_plan:expect.objectContaining({costs:[{...cost,quantity:1}]})})));confirm.mockRestore();
 });
+
+async function openPayment() {
+ const cost={id:'c',name:'Fotografo',scope:'ceremony',enabled:true,quantity:1,unitCost:300,quote:'',payments:[]};
+ mockRpc.mockResolvedValueOnce({data:{...stored,plan:{...stored.plan,costs:[cost]}},error:null});
+ localStorage.setItem('baptism:last-event:owner-a','event-a');render(<BaptismPlanner/>);
+ await screen.findByRole('heading',{name:'Il battesimo di Vittoria'});
+ fireEvent.click(screen.getByRole('button',{name:'Budget del battesimo'}));
+ fireEvent.click(screen.getByRole('button',{name:'Registra pagamento'}));
+ fireEvent.change(screen.getByLabelText('Importo (€)'),{target:{value:'75'}});
+ return cost;
+}
+
+it('requires adding the pending payment before saving, then persists it exactly once',async()=>{
+ const cost=await openPayment();
+ fireEvent.click(screen.getByRole('button',{name:'Salva'}));
+ expect(screen.getByRole('status')).toHaveTextContent('Aggiungi o annulla il pagamento aperto');
+ expect(mockRpc).toHaveBeenCalledTimes(1);
+ expect(screen.getByLabelText('Importo (€)')).toHaveValue(75);
+ fireEvent.click(screen.getByRole('button',{name:'Aggiungi pagamento'}));
+ mockRpc.mockResolvedValueOnce({data:3,error:null});
+ fireEvent.click(screen.getByRole('button',{name:'Salva'}));
+ await waitFor(()=>expect(mockRpc).toHaveBeenCalledWith('save_family_baptism',expect.objectContaining({p_plan:expect.objectContaining({costs:[expect.objectContaining({...cost,payments:[expect.objectContaining({amount:75})]})]})})));
+});
+
+it('protects a pending payment from replacement, removal, reload, logout and page exit',async()=>{
+ await openPayment();
+ fireEvent.click(screen.getByRole('button',{name:'Registra pagamento'}));
+ expect(screen.getByLabelText('Importo (€)')).toHaveValue(75);
+ fireEvent.click(screen.getByRole('button',{name:'Rimuovi'}));
+ expect(screen.getByLabelText('Importo (€)')).toHaveValue(75);
+ const confirm=jest.spyOn(window,'confirm').mockReturnValue(false);
+ fireEvent.click(screen.getByRole('button',{name:'Ricarica la versione salvata'}));
+ fireEvent.click(screen.getByRole('button',{name:'Nuovo battesimo'}));
+ fireEvent.click(screen.getByRole('button',{name:'Esci'}));
+ expect(mockRpc).toHaveBeenCalledTimes(1);expect(mockLogout).not.toHaveBeenCalled();
+ const exit=new Event('beforeunload',{cancelable:true});window.dispatchEvent(exit);expect(exit.defaultPrevented).toBe(true);
+ fireEvent.click(screen.getByRole('button',{name:'Annulla'}));expect(screen.getByLabelText('Importo (€)')).toHaveValue(75);
+ confirm.mockReturnValue(true);fireEvent.click(screen.getByRole('button',{name:'Annulla'}));
+ expect(screen.queryByLabelText('Importo (€)')).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'Salva'})).toBeDisabled();
+ confirm.mockRestore();
+});

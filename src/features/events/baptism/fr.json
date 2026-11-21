@@ -263,5 +263,8 @@
   "invite.shared": "Partage terminé.",
   "budget.useConfirmedMenus": "Utiliser {count} · {menu}",
   "budget.confirmedMenusHelp": "Menus des personnes confirmées à la réception. À définir : {pending}. Absents et réponses en attente exclus.",
-  "budget.confirmMenuQuantity": "Passer « {name} » de {before} à {after} unités, pour un prévisionnel de {total} ? Le prix unitaire et les paiements sont conservés. Enregistrez la modification."
+  "budget.confirmMenuQuantity": "Passer « {name} » de {before} à {after} unités, pour un prévisionnel de {total} ? Le prix unitaire et les paiements sont conservés. Enregistrez la modification.",
+  "budget.addPayment": "Ajouter le paiement",
+  "budget.pendingPayment": "Ajoutez ou annulez le paiement en cours avant d’enregistrer ou de saisir un autre paiement.",
+  "budget.paymentHelp": "Ajoutez le paiement au brouillon, puis appuyez sur Enregistrer pour le conserver."
 }

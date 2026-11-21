@@ -263,5 +263,8 @@
   "invite.shared": "Sharing completed.",
   "budget.useConfirmedMenus": "Use {count} · {menu}",
   "budget.confirmedMenusHelp": "Menus for confirmed reception attendees. Undecided: {pending}. Pending and absent guests are excluded.",
-  "budget.confirmMenuQuantity": "Update “{name}” from {before} to {after} units, with a forecast of {total}? Unit price and payments stay unchanged. Save to keep this change."
+  "budget.confirmMenuQuantity": "Update “{name}” from {before} to {after} units, with a forecast of {total}? Unit price and payments stay unchanged. Save to keep this change.",
+  "budget.addPayment": "Add payment",
+  "budget.pendingPayment": "Add or cancel the open payment before saving or entering another payment.",
+  "budget.paymentHelp": "Add the payment to the draft, then select Save to keep it."
 }

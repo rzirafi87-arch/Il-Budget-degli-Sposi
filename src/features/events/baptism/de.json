@@ -263,5 +263,8 @@
   "invite.shared": "Teilen abgeschlossen.",
   "budget.useConfirmedMenus": "{count} verwenden · {menu}",
   "budget.confirmedMenusHelp": "Menüs der bestätigten Gäste beim Beisammensein. Noch offen: {pending}. Absagen und ausstehende Antworten zählen nicht mit.",
-  "budget.confirmMenuQuantity": "„{name}“ von {before} auf {after} Einheiten ändern, mit geschätzten Kosten von {total}? Einzelpreis und Zahlungen bleiben erhalten. Speichere die Änderung."
+  "budget.confirmMenuQuantity": "„{name}“ von {before} auf {after} Einheiten ändern, mit geschätzten Kosten von {total}? Einzelpreis und Zahlungen bleiben erhalten. Speichere die Änderung.",
+  "budget.addPayment": "Zahlung hinzufügen",
+  "budget.pendingPayment": "Füge die offene Zahlung hinzu oder brich sie ab, bevor du speicherst oder eine weitere Zahlung eingibst.",
+  "budget.paymentHelp": "Füge die Zahlung zum Entwurf hinzu und wähle dann Speichern, um sie zu behalten."
 }
