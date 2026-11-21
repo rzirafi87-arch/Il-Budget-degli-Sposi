@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import ExportPDFButton from "@/components/ExportPDFButton";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -62,7 +62,7 @@ export default function BudgetPage() {
 
         const expensesData = await expensesRes.json();
         type ExpenseData = { status?: string; category?: string; subcategory?: string; supplier?: string; savedSupplierId?: string | null; spendType?: string; amount?: number; committed?: number; paid?: number; fromDashboard?: boolean };
-        const includedExpenses = (expensesData.expenses || []).filter((exp: ExpenseData) => exp.status !== "rejected");
+        const includedExpenses = (expensesData.expenses || []).filter((exp: ExpenseData) => exp.status === "approved");
 
         const budgetRows: Row[] = includedExpenses.map((exp: ExpenseData) => ({
           category: exp.category || "",

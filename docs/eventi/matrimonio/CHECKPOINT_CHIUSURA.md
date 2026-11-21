@@ -29,3 +29,28 @@ Da completare prima della chiusura:
 - checkpoint per autorizzare separatamente merge, migrazioni e Production.
 
 Nessuna migrazione, merge o modifica Production eseguiti.
+
+## Verifica autenticata del 21 novembre
+
+Anteprima fix/matrimonio-tester-access su e95fa40: READY, deployment
+ dpl_pLi8HCMFDp2H7zQ92ayTNcftrDLf. Accesso tramite modulo protetto riuscito;
+evento e voci salvate recuperati. Budget, Contabilità, Invitati, Fornitori,
+Location, Preferiti e Timeline aperti nel browser, in sola lettura.
+
+Problemi riprodotti e corretti nel nuovo codice:
+- selettore evento residuo nel DynamicHeader/LocaleSwitcher, che alterava solo
+  la preferenza locale senza selezionare un evento reale: rimosso;
+- collegamento Timeline assente dal menu: aggiunto nel desktop e menu mobile;
+- Budget includeva pending come approvato (1670 contro 0 di Contabilità): ora
+  include solo approved; preventivi conservati in Contabilità;
+- checklist senza template quando il catalogo non ne restituisce: otto attività
+  iniziali tradotte nelle cinque lingue, conservando quelle personali esistenti;
+- etichette mancanti countdown, entrate, dettagli location: completate.
+
+Test aggiunti: spese approved/pending/rejected/senza stato; preferenze header
+senza cambio evento; template checklist senza scritture automatiche e rispetto
+attività personali. 6 suite/15 test PASS, oltre ai 59 test del checkpoint precedente.
+Il nuovo codice richiede ancora deploy e verifica browser prima di dichiararlo
+verificato. Restano aperti salvataggi QA, mobile reale, account multipli nel browser,
+logout/login e riconciliazione delle righe del confronto pianificato/effettivo
+(etichette storiche diverse tra budget e spese). Nessuna modifica dati o Production.

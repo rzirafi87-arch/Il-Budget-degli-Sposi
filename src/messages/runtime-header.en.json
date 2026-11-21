@@ -1,6 +1,23 @@
 {
   "header": {
     "coupleFallback": "You two",
-    "together": "together"
+    "together": "together",
+    "today": "Today is the big day!",
+    "dayLeft": "1 day left",
+    "daysLeft": "{count} days left"
+  },
+  "locationsCatalog": {
+    "details": "Details"
+  },
+  "weddingChecklist": {
+    "category": "Planning",
+    "planning": "Choose the wedding date and style",
+    "budget": "Set the budget and contributions",
+    "ceremony": "Choose the ceremony venue",
+    "reception": "Confirm the reception venue",
+    "suppliers": "Compare and book suppliers",
+    "invitations": "Prepare and send invitations",
+    "confirmations": "Collect replies and plan seating",
+    "finalChecks": "Confirm the schedule, contacts and balances"
   }
 }

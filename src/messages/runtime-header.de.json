@@ -1,6 +1,23 @@
 {
   "header": {
     "coupleFallback": "Ihr beide",
-    "together": "zusammen"
+    "together": "zusammen",
+    "today": "Heute ist der große Tag!",
+    "dayLeft": "Noch 1 Tag",
+    "daysLeft": "Noch {count} Tage"
+  },
+  "locationsCatalog": {
+    "details": "Details"
+  },
+  "weddingChecklist": {
+    "category": "Organisation",
+    "planning": "Datum und Stil der Hochzeit festlegen",
+    "budget": "Budget und Beiträge festlegen",
+    "ceremony": "Ort der Trauung auswählen",
+    "reception": "Ort der Hochzeitsfeier bestätigen",
+    "suppliers": "Dienstleister vergleichen und buchen",
+    "invitations": "Einladungen vorbereiten und versenden",
+    "confirmations": "Zusagen sammeln und Sitzordnung planen",
+    "finalChecks": "Ablauf, Kontakte und Restzahlungen bestätigen"
   }
 }
