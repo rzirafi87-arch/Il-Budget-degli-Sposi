@@ -192,3 +192,37 @@ alla pubblicazione del commit sul branch remoto feature/battesimo-completo.
 Questa correzione richiede ancora prova interattiva sul deployment aggiornato.
 Production e database non modificati. Restano aperti i gate mobile, registrazione
 con conferma email, cambio Matrimonio/Battesimo e revisione finale del diff.
+
+## Ripresa e regressione permessi QA — 22 novembre 2026
+
+Verificato PR #93 ancora draft/open, senza merge, HEAD remoto 0cdf1fb.
+Il suo tree coincide con il checkpoint locale 90d9ffa.
+La pubblicazione e la prova pagamenti del 21 novembre sono documentate nel
+riepilogo app: la precedente nota di push bloccato è superata.
+
+Nuovo errore riprodotto nel browser: elenco Vittoria visibile ma riapertura
+fallita, anche dopo Riprova. Log PostgreSQL: permission denied for function
+read_family_baptism. In QA entrambe le RPC read_family_baptism e
+save_family_baptism avevano perso EXECUTE per authenticated. È presente la
+migrazione qa_reconcile_verified_branch48_through_branch52 del 21 novembre;
+Branch 51 revoca globalmente i permessi RPC, includendo queste funzioni più
+recenti quando eseguito successivamente. I controlli proprietario nelle RPC
+sono ancora presenti.
+
+Applicata esclusivamente al progetto Preview QA tnopiqxlcuakkavpwbrq la
+migrazione baptism_restore_client_rpc_grants: ripristina EXECUTE per
+authenticated sulle due firme esatte; public/anon restano esclusi. Nessuna
+modifica ai corpi funzione, alle policy o ai dati. Migrazione equivalente
+versionata in 20261122150000_baptism_restore_client_rpc_grants.sql.
+
+PASS database/tests/baptism_client_rpc_grants.sql sul database QA reale:
+permessi espliciti, accesso e salvataggio proprietario, lettura/salvataggio
+rifiutati ad altro utente, lettura/salvataggio rifiutati senza identità.
+La prova è transazionale con ROLLBACK, incluso il salvataggio proprietario.
+PASS browser dopo reload: ripresa automatica Vittoria, programma e invitati
+recuperati; previsto 1354 EUR, pagato 283 EUR, saldo 1071 EUR, margine 146 EUR.
+
+Gate mobile 360/390 ancora aperto: il browser gestito impedisce DevTools,
+quindi nessuna certificazione delle due larghezze in questa sessione.
+Registrazione con conferma email, logout/login completo, cambio evento e
+revisione diff restano aperti. Production invariata.
