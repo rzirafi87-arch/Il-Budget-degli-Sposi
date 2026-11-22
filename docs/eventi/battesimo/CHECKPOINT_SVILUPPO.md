@@ -226,3 +226,23 @@ Gate mobile 360/390 ancora aperto: il browser gestito impedisce DevTools,
 quindi nessuna certificazione delle due larghezze in questa sessione.
 Registrazione con conferma email, logout/login completo, cambio evento e
 revisione diff restano aperti. Production invariata.
+
+## Collegamento tra eventi — 22 novembre 2026
+
+Corretto PageProps della pagina pubblica e/[publicId]: params è Promise e
+viene atteso, come richiesto da Next 16. Typecheck completo PASS.
+
+Selezione evento: il selettore nelle impostazioni e /select-event instradano
+il Battesimo autorizzato a /battesimo?eventId=..., Matrimonio alla dashboard.
+La modalità ?change=1 mostra la scelta anche con evento già selezionato.
+Il planner offre Cambia evento, protegge modifiche/pagamenti aperti e carica
+solo l’identificatore richiesto presente nell’elenco autorizzato; un ID estraneo
+non apre il precedente evento ricordato. Nessuna abilitazione generale dei
+moduli condivisi Battesimo o dei nuovi tipi di evento.
+
+59 test PASS in 6 suite: planner, dominio, destinazioni, selezione evento,
+contesto e regressione prima esperienza. Il ciclo logout/login reale è passato
+nella verifica precedente, recuperando Vittoria e importi 1354/283/1071/146 EUR.
+Prova browser del nuovo cambio evento ancora da completare dopo il deployment.
+Registrazione con conferma email e larghezze 360/390 ancora aperte.
+Nessuna modifica database e nessun rilascio Production per questo intervento.

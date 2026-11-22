@@ -43,11 +43,14 @@ export default function BaptismPlanner() {
     const {data,error}=await getBrowserClient().from('baptism_family_plans').select('event_id,revision,plan');
     if(!active||loadingUser.current!==user)return;if(error)throw error;
     const available=(data||[]) as Row[];setRows(available);
-    const previous=available.find(row=>row.event_id===rememberedBaptism(user));
+    const requested=new URLSearchParams(window.location.search).get('eventId');
+    const previous=available.find(row=>row.event_id===(requested||rememberedBaptism(user)));
+    if(requested&&!previous)throw new Error('EVENT_UNAVAILABLE');
     if(previous){
      const {data:loaded,error:readError}=await getBrowserClient().rpc('read_family_baptism',{p_id:previous.event_id});
      if(!active||loadingUser.current!==user)return;if(readError||!loaded)throw readError;
      setId(loaded.event_id);setRevision(loaded.revision);setPlan(upgradePlan(loaded.plan));setView(loaded.plan.draft?'setup':'dashboard');setStep(1);
+     rememberBaptism(user,loaded.event_id);
     }
    }catch{if(active){setLoadFailed(true);setNotice(loadErrorCopy.current);}}
    finally{if(active)setLoading(false);}
@@ -100,7 +103,7 @@ export default function BaptismPlanner() {
  function updateCost(c:Cost,patch:Partial<Cost>){change({costs:plan.costs.map(item=>item.id===c.id?{...item,...patch}:item)});}
  async function copy(text:string,share=false){try{if(share&&navigator.share){await navigator.share({title,text});setNotice(t('invite.shared'));}else{await navigator.clipboard.writeText(text);setNotice(t('invite.copied'));}}catch(error){if(!(error instanceof DOMException&&error.name==='AbortError'))setNotice(t('invite.copyError'));}}
  return <div className="mx-auto max-w-3xl rounded-3xl bg-[#f8f6ef] p-4 text-[#243f4d] sm:p-7">
- <header className="mb-6 flex flex-wrap items-center justify-between gap-3"><p className="text-sm uppercase tracking-widest">{t('selector.start')}</p>{user&&button(x[2],()=>void signOut())}</header>
+ <header className="mb-6 flex flex-wrap items-center justify-between gap-3"><p className="text-sm uppercase tracking-widest">{t('selector.start')}</p>{user&&<><Link className="app-button app-button--outline" href={`/${locale}/select-event?change=1`} onClick={e=>{if(busy||saving.current||((dirty||pendingPayment)&&!window.confirm(x[12])))e.preventDefault();}}>{({it:'Cambia evento',en:'Change event',es:'Cambiar evento',fr:'Changer d’événement',de:'Veranstaltung wechseln'} as Record<string,string>)[locale]||'Change event'}</Link>{button(x[2],()=>void signOut())}</>}</header>
  <h1 className="mb-3 text-3xl font-serif sm:text-4xl">{id?title:t('selector.start')}</h1>
  <p className="mb-6 text-sm">{x[28]}</p>
  <div aria-live="polite" role="status" className={notice?'mb-5 rounded-xl border border-[#a8c1cf] bg-[#e6eef2] p-4':''}>{notice}</div>

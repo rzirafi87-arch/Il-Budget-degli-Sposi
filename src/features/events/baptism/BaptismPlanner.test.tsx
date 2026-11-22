@@ -4,7 +4,7 @@ import {blankPlan} from './model';
 const mockRpc=jest.fn(), mockList=jest.fn(), mockLogout=jest.fn();
 let mockAuthChange: (event:string,session:{user:{id:string}}|null)=>void;
 jest.mock('next-intl',()=>({useLocale:()=> 'it'}));
-jest.mock('next/link',()=>({__esModule:true,default:({children,href}:{children:React.ReactNode;href:string})=><a href={href}>{children}</a>}));
+jest.mock('next/link',()=>({__esModule:true,default:(props:React.AnchorHTMLAttributes<HTMLAnchorElement>)=><a {...props}/>}));
 jest.mock('@/lib/logout',()=>({logoutCurrentSession:(...args:unknown[])=>mockLogout(...args)}));
 jest.mock('@/lib/supabaseBrowser',()=>({getBrowserClient:()=>({
  auth:{getSession:async()=>({data:{session:{user:{id:'owner-a'}}}}),onAuthStateChange:(callback:typeof mockAuthChange)=>{mockAuthChange=callback;return {data:{subscription:{unsubscribe:jest.fn()}}};}},
@@ -27,10 +27,38 @@ it('preserves local edits on a revision conflict and allows cancelling reload',a
 
 const stored={event_id:'event-a',revision:2,plan:{...blankPlan(),name:'Vittoria',draft:false}};
 beforeEach(()=>{
+ window.history.replaceState({},'', '/it/battesimo');
  localStorage.clear();mockRpc.mockReset();mockList.mockReset();mockLogout.mockReset();
  mockList.mockResolvedValue({data:[stored],error:null});mockRpc.mockResolvedValue({data:stored,error:null});
  Object.defineProperty(globalThis.crypto,'randomUUID',{configurable:true,value:()=> 'new-id'});
  window.requestAnimationFrame=callback=>{callback(0);return 0;};
+});
+
+it('opens the explicitly selected baptism instead of the remembered one',async()=>{
+ window.history.replaceState({},'', '/it/battesimo?eventId=event-b');
+ localStorage.setItem('baptism:last-event:owner-a','event-a');
+ const selected={...stored,event_id:'event-b',plan:{...stored.plan,name:'Secondo'}};
+ mockList.mockResolvedValue({data:[stored,selected],error:null});mockRpc.mockResolvedValue({data:selected,error:null});
+ render(<BaptismPlanner/>);
+ expect(await screen.findByRole('heading',{name:'Il battesimo di Secondo'})).toBeInTheDocument();
+ expect(mockRpc).toHaveBeenCalledWith('read_family_baptism',{p_id:'event-b'});
+ expect(localStorage.getItem('baptism:last-event:owner-a')).toBe('event-b');
+});
+it('does not fall back to remembered data when an explicit event is unauthorized',async()=>{
+ window.history.replaceState({},'', '/it/battesimo?eventId=foreign-event');
+ localStorage.setItem('baptism:last-event:owner-a','event-a');render(<BaptismPlanner/>);
+ expect(await screen.findByText('Non siamo riusciti a caricare il battesimo. Riprova.')).toBeInTheDocument();
+ expect(mockRpc).not.toHaveBeenCalled();
+});
+it('lets the user cancel event switching without losing local edits',async()=>{
+ localStorage.setItem('baptism:last-event:owner-a','event-a');render(<BaptismPlanner/>);
+ await screen.findByRole('heading',{name:'Il battesimo di Vittoria'});
+ fireEvent.click(screen.getAllByRole('button',{name:'Modifica'})[0]);
+ fireEvent.change(screen.getByLabelText('Nome da mostrare nell’evento'),{target:{value:'Modifica locale'}});
+ const confirm=jest.spyOn(window,'confirm').mockReturnValue(false);
+ expect(fireEvent.click(screen.getByRole('link',{name:'Cambia evento'}))).toBe(false);
+ expect(screen.getByLabelText('Nome da mostrare nell’evento')).toHaveValue('Modifica locale');
+ expect(confirm).toHaveBeenCalled();confirm.mockRestore();
 });
 
 it('reopens the remembered authorized event from its canonical data',async()=>{

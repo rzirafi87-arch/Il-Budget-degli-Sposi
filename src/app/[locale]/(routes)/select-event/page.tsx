@@ -1,12 +1,13 @@
 "use client";
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { eventDestination } from "@/lib/eventDestination";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 type EventOption = { id: string; name: string | null; eventType: string; date: string | null };
-type ResolvePayload = { status: "RESOLVED" | "NO_EVENT" | "SELECTION_REQUIRED"; events: EventOption[] };
+type ResolvePayload = { status: "RESOLVED" | "NO_EVENT" | "SELECTION_REQUIRED"; events: EventOption[]; currentEvent?: { eventId: string; eventType: string } | null };
 
 export default function SelectEventPage() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function SelectEventPage() {
       const response = await fetch("/api/my/current-event", { headers: { Authorization: `Bearer ${jwt}` }, cache: "no-store" });
       if (!response.ok) throw new Error("EVENTS_LOAD_FAILED");
       const payload = (await response.json()) as ResolvePayload;
-      if (payload.status === "RESOLVED") return router.replace(`/${locale}/dashboard`);
+      if (payload.status === "RESOLVED" && payload.currentEvent && new URLSearchParams(window.location.search).get('change') !== '1') return router.replace(eventDestination(locale, payload.currentEvent));
       if (payload.status === "NO_EVENT") return router.replace(`/${locale}/select-language`);
       setEvents(payload.events);
       setState("ready");
@@ -48,8 +49,10 @@ export default function SelectEventPage() {
         body: JSON.stringify({ eventId }),
       });
       if (!response.ok) throw new Error("EVENT_SELECTION_FAILED");
+      const next = (await response.json()) as ResolvePayload;
+      if (!next.currentEvent || next.currentEvent.eventId !== eventId) throw new Error("EVENT_SELECTION_FAILED");
       localStorage.setItem("currentEventChangedAt", String(Date.now()));
-      router.replace(`/${locale}/dashboard`);
+      router.replace(eventDestination(locale, next.currentEvent));
       router.refresh();
     } catch {
       setState("error");
