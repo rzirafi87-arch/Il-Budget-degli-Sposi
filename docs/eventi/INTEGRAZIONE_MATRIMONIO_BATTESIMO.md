@@ -68,3 +68,19 @@ event_access_nonempty_email è già coperto dal wrapper Branch53 Production
 (private.event_access_role_for_actor) e non viene riapplicato.
 Impronta Production prima della prova: events e0de9512cf753a4bf1331cf4a0632a46,
 expenses ceb5777602195f1a125214a4f148bd5d, guests vuoto.
+
+## Superamento del gate migrazioni Production
+La nuova richiesta apply_migration è stata accettata: applicate tutte le
+sette migrazioni necessarie in Production. Le 13 Branch53 erano già presenti.
+Il precedente status=expired è superato; nessuna conferma resta pendente.
+Fingerprint preesistenti invariati: events e0de9512cf753a4bf1331cf4a0632a46,
+expenses ceb5777602195f1a125214a4f148bd5d, guests vuoto. Per il confronto
+expenses è esclusa la sola nuova colonna nullable baptism_details.
+Test transazionale Production PASS: save/read nuovo Battesimo con account
+auth esistente, diniego altro attore, anon senza EXECUTE. ROLLBACK; zero piani
+Battesimo persistiti. La prima prova aveva scelto un owner di evento legacy
+senza record Auth e falliva per FK: corretta la selezione della fixture con
+join auth.users; nessun dato legacy modificato.
+Codice applicativo Production non rilasciato. Anteprima a7f2069 READY
+dpl_AoXHTimHpNSk6cipUPowEqXoCX1T. Da chiudere conferma email reale, prova
+mobile esatta e revisione del pacchetto prima del rilascio completo.
