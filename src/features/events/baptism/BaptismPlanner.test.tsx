@@ -7,7 +7,7 @@ jest.mock('next-intl',()=>({useLocale:()=> 'it'}));
 jest.mock('next/link',()=>({__esModule:true,default:(props:React.AnchorHTMLAttributes<HTMLAnchorElement>)=><a {...props}/>}));
 jest.mock('@/lib/logout',()=>({logoutCurrentSession:(...args:unknown[])=>mockLogout(...args)}));
 jest.mock('@/lib/supabaseBrowser',()=>({getBrowserClient:()=>({
- auth:{getSession:async()=>({data:{session:{user:{id:'owner-a'}}}}),onAuthStateChange:(callback:typeof mockAuthChange)=>{mockAuthChange=callback;return {data:{subscription:{unsubscribe:jest.fn()}}};}},
+ auth:{getSession:async()=>({data:{session:{user:{id:'owner-a'},access_token:'qa-test-token'}}}),onAuthStateChange:(callback:typeof mockAuthChange)=>{mockAuthChange=callback;return {data:{subscription:{unsubscribe:jest.fn()}}};}},
  from:()=>({select:()=>mockList()}),rpc:(...args:unknown[])=>mockRpc(...args)
 })}));
 import BaptismPlanner from './BaptismPlanner';
@@ -43,6 +43,18 @@ it('opens the explicitly selected baptism instead of the remembered one',async()
  expect(await screen.findByRole('heading',{name:'Il battesimo di Secondo'})).toBeInTheDocument();
  expect(mockRpc).toHaveBeenCalledWith('read_family_baptism',{p_id:'event-b'});
  expect(localStorage.getItem('baptism:last-event:owner-a')).toBe('event-b');
+});
+it('refuses to open shared documents if server selection does not match the planner',async()=>{
+ const previousFetch=global.fetch;
+ global.fetch=jest.fn().mockResolvedValue({ok:true,json:async()=>({currentEvent:{eventId:'another-event',eventType:'wedding'}})});
+ try{
+  localStorage.setItem('baptism:last-event:owner-a','event-a');render(<BaptismPlanner/>);
+  await screen.findByRole('heading',{name:'Il battesimo di Vittoria'});
+  fireEvent.click(screen.getByRole('button',{name:'Documenti'}));
+  expect(await screen.findByText('Non siamo riusciti a caricare il battesimo. Riprova.')).toBeInTheDocument();
+  expect(fetch).toHaveBeenCalledWith('/api/my/current-event',expect.objectContaining({method:'POST',body:JSON.stringify({eventId:'event-a'})}));
+  expect(screen.getByRole('heading',{name:'Il battesimo di Vittoria'})).toBeInTheDocument();
+ }finally{global.fetch=previousFetch;}
 });
 it('does not fall back to remembered data when an explicit event is unauthorized',async()=>{
  window.history.replaceState({},'', '/it/battesimo?eventId=foreign-event');

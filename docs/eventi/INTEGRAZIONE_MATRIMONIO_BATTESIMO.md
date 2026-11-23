@@ -1,0 +1,49 @@
+# Matrimonio e Battesimo — integrazione 23 novembre 2026
+
+Autorizzazione ricevuta: completare i due eventi e le migrazioni necessarie; Diciottesimo successivo.
+
+## Ambiente e migrazioni
+QA: tnopiqxlcuakkavpwbrq. Production: vsguhivizuneylqhygfk.
+Applicate in QA tutte le 13 migrazioni Branch53 e le 4 migrazioni
+Branch54 first-value, Branch57 RLS privato, atomic_budget_idea_apply e atomic_event_update.
+Ogni gruppo è stato provato prima con rollback; poi registrato nella history QA.
+Installato pgTAP solo in QA per le verifiche.
+Audit scripts/audit-wedding-qa-readiness.sql: zero prerequisiti mancanti.
+17 suite SQL / 392 asserzioni: finish() senza diagnostica di fallimento.
+Regressione baptism_client_rpc_grants.sql PASS dopo tutte le migrazioni.
+
+Impronte prima/dopo migrazioni e prove SQL identiche:
+- events: b54b79ffac36bc9a5837e7a47da819a9
+- guests: 5affcd51b7daac1de188be81144554e7
+- expenses: bbae2f23a64bdad03ae568d5ff4a10ec
+- baptism_family_plans: 2d5b930e369f7b3e0f7dee6122d0474e
+
+## Codice
+Integrate le correzioni Matrimonio da PR92 con Battesimo da PR93.
+Conflitti risolti conservando il selettore evento nelle impostazioni, il
+budget approvato e gli errori recuperabili. 962 test applicativi PASS in
+143 suite prima dell'ultimo test aggiunto per la selezione dei documenti.
+TypeScript PASS.
+Aggiunti accessi dal planner Battesimo a fornitori, location, chiese e documenti.
+Ogni accesso seleziona l'evento sul server e verifica ID/tipo prima di navigare;
+modifiche e pagamenti aperti sono protetti dalla conferma.
+I soli moduli condivisi revisionati sono ammessi per Battesimo in preview;
+budget/invitati/checklist restano gestiti dal planner famiglia.
+La dashboard comune ridirige il Battesimo al suo planner.
+Diciottesimo rimane coming-soon senza modulo o template esposto quando
+NEXT_PUBLIC_EIGHTEENTH_PREVIEW non è abilitato.
+
+## Prove precedenti confermate
+Logout/login reale e cambio Matrimonio di prova QA/Battesimo verificati.
+Il Matrimonio di prova fbfebe42-b4c5-41ee-a599-59f876b95385 resta disponibile
+nell'account proprietario del Battesimo per le prove dell'utente.
+
+## Gate ancora aperti
+Build e verifica browser dei nuovi moduli condivisi sulla versione integrata.
+Registrazione reale con conferma email e viewport mobile 360/390.
+Production non modificata in questa fase: migrazioni residue e rilascio dopo
+il gate completo. Non è richiesta un'altra autorizzazione per il perimetro
+già approvato, ma questo checkpoint non dichiara i due eventi completi.
+La migrazione event_access_nonempty_email è un precedente rimedio QA: prima di
+Production va riconciliata con il wrapper Branch53 già presente, evitando
+di sostituire automaticamente la funzione autorizzativa più recente.

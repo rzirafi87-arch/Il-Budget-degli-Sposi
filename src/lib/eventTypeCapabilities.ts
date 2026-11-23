@@ -111,19 +111,26 @@ export const EVENT_TYPE_CAPABILITIES: Record<string, EventTypeCapability> = {
     churchModule: true,
     description: WEDDING_CAPABILITY_DESCRIPTION,
   },
-  baptism: comingSoon("baptism"),
-  eighteenth: {
+  baptism: {
+    ...comingSoon("baptism"),
+    // The family planner owns budget, guests and checklist. Only these reviewed
+    // shared modules are reachable by existing baptism events during preview.
+    legacyAccessModules: ["dashboard", "suppliers", "location-reception", "location-ceremony", "churches", "documents"],
+    ceremonyMode: "religious",
+    locationRoles: ["ceremony", "reception"],
+  },
+  eighteenth: process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1" ? {
     ...comingSoon("eighteenth"),
     availabilityStatus: process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1" ? "READY" : "COMING_SOON",
     enabledModules: process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1"
       ? ["dashboard", "guests", "suppliers", "location-reception", "timeline"] : [],
-    ceremonyMode: "none",
+    ceremonyMode: process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1" ? "none" : "not_configured",
     budgetTemplate: "eighteenth",
     timelineTemplate: "eighteenth",
     guestModule: true,
     locationRoles: ["main_event"],
     supplierCategories: ["catering", "decorazioni", "fotografia-video", "musica-intrattenimento", "partecipazioni"],
-  },
+  } : comingSoon("eighteenth"),
   graduation: comingSoon("graduation"),
   confirmation: comingSoon("confirmation"),
   communion: comingSoon("communion"),

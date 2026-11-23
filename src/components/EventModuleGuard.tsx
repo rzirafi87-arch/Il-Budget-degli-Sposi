@@ -1,6 +1,7 @@
 "use client";
 
 import { LoadingState } from "@/components/ui/LoadingState";
+import { eventDestination } from "@/lib/eventDestination";
 import { getOnboardingStatus } from "@/lib/onboardingClient";
 import {
   getEventTypeCapability,
@@ -93,6 +94,10 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
         }
 
         const eventType = normalizeEventType(status.event.event_type);
+        if (eventType === "baptism" && routeModule === "dashboard") {
+          router.replace(eventDestination(locale, { eventType, eventId: status.event.id }));
+          return;
+        }
         const capability = getEventTypeCapability(eventType);
         try {
           localStorage.setItem("eventType", eventType);
@@ -102,7 +107,8 @@ export default function EventModuleGuard({ children }: { children: ReactNode }) 
           // The authoritative DB value remains available in this execution.
         }
 
-        if (capability.availabilityStatus !== "READY" || !isModuleEnabled(eventType, routeModule)) {
+        const baptismPreview = eventType === "baptism" && isModuleEnabled(eventType, routeModule, { legacy: true });
+        if (!baptismPreview && (capability.availabilityStatus !== "READY" || !isModuleEnabled(eventType, routeModule))) {
           router.replace(`/${locale}/coming-soon?legacy=1`);
           return;
         }

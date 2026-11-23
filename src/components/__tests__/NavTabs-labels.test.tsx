@@ -36,5 +36,6 @@ describe("NavTabs label rendering", () => {
     );
     expect(screen.getByText("Location Ricevimento")).not.toBeNull();
     expect(screen.getByText("Cerimonia")).not.toBeNull();
+    expect(screen.getByRole("link", {name:"timeline"})).toHaveAttribute("href", "/it/timeline");
   });
 });

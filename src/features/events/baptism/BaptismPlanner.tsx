@@ -90,6 +90,22 @@ export default function BaptismPlanner() {
   try{const db=getBrowserClient(),{data}=await db.auth.getSession();await logoutCurrentSession({supabase:db,accessToken:data.session?.access_token});}
   catch{setNotice(t('common.signOutError'));}finally{setBusy(false);}
  }
+ async function openSharedModule(path:string){
+  if(busy||saving.current||!id)return;
+  if((dirty||pendingPayment)&&!window.confirm(x[12]))return;
+  setBusy(true);const owner=user,ticket=++operation.current;
+  try{
+   const {data}=await getBrowserClient().auth.getSession();
+   if(!data.session?.access_token)throw new Error('NOT_AUTHENTICATED');
+   const response=await fetch('/api/my/current-event',{method:'POST',headers:{Authorization:`Bearer ${data.session.access_token}`,'Content-Type':'application/json'},body:JSON.stringify({eventId:id})});
+   if(!response.ok)throw new Error('EVENT_SELECTION_FAILED');
+   const selected=await response.json();
+   if(loadingUser.current!==owner||operation.current!==ticket)return;
+   if(selected.currentEvent?.eventId!==id||selected.currentEvent?.eventType!=='baptism')throw new Error('EVENT_SELECTION_FAILED');
+   window.location.assign(`/${locale}/${path}`);
+  }catch{if(operation.current===ticket)setNotice(t('common.loadError'));}
+  finally{if(operation.current===ticket)setBusy(false);}
+ }
  const money=(n:number)=>new Intl.NumberFormat(locale,{style:'currency',currency:'EUR'}).format(n), summary=totals(plan), menus=confirmedMenus(plan), reception=hasReception(plan), invite=invitation(plan,locale);
  const date=(s:string)=>s?new Date(s.slice(0,10)+'T12:00:00Z').toLocaleDateString(locale):t('dashboard.pendingDate');
  const counts={ceremony:plan.guests.filter(g=>g.ceremony==='yes').length,reception:plan.guests.filter(g=>g.reception==='yes').length,pending:plan.guests.filter(g=>g.ceremony==='pending'||reception&&g.reception==='pending').length};
@@ -110,6 +126,7 @@ export default function BaptismPlanner() {
  {!authReady?<p role="status">{t('common.loading')}</p>:!user?<div className="space-y-4"><p>{x[24]}</p><Link className="app-button app-button--primary" href={`/${locale}/auth?next=${encodeURIComponent('/'+locale+'/battesimo')}`}>{t('selector.start')}</Link></div>:<>
  <details open={!id} className="mb-5 rounded-2xl border border-[#d4dfe3] p-4"><summary className="min-h-11 cursor-pointer font-semibold">{x[0]}</summary><div className="mt-3 grid gap-3">{loading?<p>{t('common.loading')}</p>:rows.map(row=>button(String(row.plan.name||t('setup.resume')),()=>open(row),false,false,row.event_id))}{loadFailed?button(t('common.retry'),()=>window.location.reload()):button(x[1],()=>open({event_id:crypto.randomUUID(),revision:0,plan:blankPlan() as unknown as Record<string,unknown>}),true)}</div></details>
  {id&&<><nav aria-label={title} className="mb-6 flex flex-wrap gap-2">{(['dashboard','setup','guests','budget','checklist','invite'] as View[]).map((name,i)=>button([t('dashboard.programme'),t('common.edit'),t('guests.title'),t('budget.title'),t('timeline.title'),t('invite.title')][i],()=>setView(name),view===name,false,name))}</nav>
+ <nav aria-label={t('details.namedContact')} className="mb-5 flex flex-wrap gap-2">{(['fornitori','location','chiese','documenti'] as const).map((path,i)=>button((({it:['Fornitori','Location del ritrovo','Luogo della cerimonia','Documenti'],en:['Suppliers','Reception venue','Ceremony venue','Documents'],es:['Proveedores','Lugar de reunión','Lugar de la ceremonia','Documentos'],fr:['Prestataires','Lieu de réception','Lieu de cérémonie','Documents'],de:['Dienstleister','Ort des Beisammenseins','Ort der Zeremonie','Dokumente']} as Record<string,string[]>)[locale]||['Suppliers','Reception venue','Ceremony venue','Documents'])[i],()=>void openSharedModule(path),false,revision===0,path))}</nav>
  <fieldset disabled={busy} className="min-w-0 space-y-5">
  {view==='setup'&&<>
  <p>{t('setup.progress',{step,total:3})}</p>

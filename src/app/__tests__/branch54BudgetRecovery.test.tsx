@@ -12,6 +12,6 @@ it("does not present failed reads as an empty budget and allows retry", async ()
   expect(await screen.findByRole("alert")).toHaveTextContent("loadError");
   expect(screen.queryByText("budgetPage.emptyTitle")).not.toBeInTheDocument();
   (fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => ({ expenses: [], items: [] }) });
-  fireEvent.click(screen.getByRole("button", { name: "retry" }));
+  fireEvent.click(screen.getByRole("button", { name: "budgetPage.retry" }));
   expect((await screen.findAllByText("budgetPage.emptyTitle")).length).toBeGreaterThan(0);
 });
