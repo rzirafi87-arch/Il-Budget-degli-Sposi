@@ -47,3 +47,24 @@ già approvato, ma questo checkpoint non dichiara i due eventi completi.
 La migrazione event_access_nonempty_email è un precedente rimedio QA: prima di
 Production va riconciliata con il wrapper Branch53 già presente, evitando
 di sostituire automaticamente la funzione autorizzativa più recente.
+
+## Collaudo della versione integrata
+Pubblicato su feature/battesimo-completo@ec8b500, Vercel READY
+dpl_H2L42efwnnHtfyuHiRGtDEjShmv2. Browser autenticato: apertura
+Documenti (archivio vuoto senza errore), Fornitori, Location e Chiese dal
+contesto Battesimo. Nessuna proposta fittizia inviata ai cataloghi.
+Corrette le immagini matrimonio ereditate dalle pagine luoghi per il Battesimo
+e l'indicazione DOC/DOCX nei suggerimenti documenti (supportati PDF/JPG/PNG).
+Suite completa successiva: 963 test PASS / 143 suite, TypeScript PASS.
+
+Production: preflight in rollback delle sette migrazioni necessarie PASS.
+Il tentativo apply_migration della prima (Branch54) ha restituito
+status=expired, conferma scaduta. Verifica successiva: private.event_activations
+e baptism_family_plans ancora assenti. Nessuna migration Production eseguita.
+Pacchetto necessario: le quattro migrazioni QA sopra indicate e
+20261118230000_baptism_family_plans, 20261119090102_baptism_family_validation,
+20261122150000_baptism_restore_client_rpc_grants. Il rimedio
+event_access_nonempty_email è già coperto dal wrapper Branch53 Production
+(private.event_access_role_for_actor) e non viene riapplicato.
+Impronta Production prima della prova: events e0de9512cf753a4bf1331cf4a0632a46,
+expenses ceb5777602195f1a125214a4f148bd5d, guests vuoto.

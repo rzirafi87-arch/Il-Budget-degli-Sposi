@@ -67,6 +67,7 @@ export default function ChiesePage() {
   const country = getUserCountrySafe().toLowerCase();
   const [churches, setChurches] = useState<Church[]>([]);
   const [saved, setSaved] = useState<Record<string, SavedChurch>>({});
+  const [eventType, setEventType] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
@@ -92,6 +93,7 @@ export default function ChiesePage() {
   useEffect(() => {
     getOnboardingStatus().then((status) => {
       if (status.kind === "complete") {
+        setEventType(status.event.event_type || "wedding");
         setToken(status.accessToken);
         void loadSaved(status.accessToken);
       }
@@ -190,7 +192,7 @@ export default function ChiesePage() {
   return (
     <section className="space-y-6">
       <PageHeader eyebrow={t("catalog.eyebrow")} title={t("title")} description={t("description")} icon={<ChurchIcon size={24} aria-hidden />} />
-      <ImageCarousel images={getPageImages("chiese", country)} height="280px" />
+      {eventType && eventType !== "baptism" && <ImageCarousel images={getPageImages("chiese", country)} height="280px" />}
       <ContributionPanel entityType="church" initialData={{ city, region }} />
 
       <AppCard padding="md">
