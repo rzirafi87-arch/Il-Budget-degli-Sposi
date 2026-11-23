@@ -146,6 +146,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { currentEvent } = await requireFinancialAccess(req, "mutate");
+    const expectedEvent = req.headers.get('X-Expected-Event-Id');
+    if (expectedEvent && expectedEvent !== currentEvent.eventId) {
+      return NextResponse.json({ error: "EVENT_CHANGED" }, { status: 409 });
+    }
     const expense = parseExpenseCreate(await req.json());
     const db = getServiceClient();
 
