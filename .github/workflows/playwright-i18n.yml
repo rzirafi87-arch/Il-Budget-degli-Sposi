@@ -1,7 +1,7 @@
 name: Playwright i18n matrix
 on:
   pull_request:
-    branches: [main, review/core-languages-20261118]
+    branches: [main, review/core-languages-20261118, feature/battesimo-completo]
     paths:
       [
         "e2e/**",
