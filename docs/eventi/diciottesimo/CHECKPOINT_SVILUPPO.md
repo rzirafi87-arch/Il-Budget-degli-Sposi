@@ -69,17 +69,39 @@ Isolamento delle suite standard PASS. Aggiunti tre progetti browser del
 Diciottesimo (320/360/390) al workflow isolato, con prova dei dettagli persistiti.
 La nuova esecuzione remota NON è ancora dichiarata PASS.
 
-### STOP anteprima Diciottesimo con scritture
-URL/anon/expected-ref QA configurati per il branch PR95. Manca ancora
-SUPABASE_SERVICE_ROLE_KEY QA dedicata al branch. Il valore sensitive del
-branch Battesimo non è leggibile tramite il connettore; non è stato spostato,
-reso leggibile o sostituito con una chiave Production. NEXT_PUBLIC_EIGHTEENTH_PREVIEW=0
-sul branch hosted; nessuna anteprima dichiarata utilizzabile prima del completamento.
-Serve inserire la chiave del progetto tnopiqxlcuakkavpwbrq come sensitive,
-solo Preview / feature/eighteenth-completion-20261123. Non inviarla in chat.
+### Configurazione QA completata — 25 novembre
+Superato il precedente blocco della chiave server: la chiave QA sensitive già
+presente è stata resa predefinita solo per Preview, senza leggerne il valore,
+modificarne il tipo o usare credenziali Production. Le variabili predefinite
+Production/Development conservano valori e destinazioni necessarie; le nuove
+Preview ereditano URL, anon, expected-ref e servizio del progetto QA
+`tnopiqxlcuakkavpwbrq`. Il flag Diciottesimo è 1 solo sul branch PR95.
+
+Redeploy QA sul commit 39c48d1: dpl_u7dSQdGANk64ZnRjABTyqPXTMy56 READY.
+GET /api/budget-items?country=it restituisce 200 {items:[]}: il client server
+ha superato il controllo di corrispondenza del progetto ed eseguito la query.
+/api/health/latest restituisce invece 500 perché app_health_latest non esiste:
+questa route diagnostica non è utilizzabile come evidenza di salute completa.
+
+CI 45596601324 PASS. Preview integration 45596601327 PASS. Il collaudo isolato
+Diciottesimo si è fermato al selettore organizzatore alle tre larghezze; nessun
+PASS attribuito ai passaggi successivi. Corretto il nome accessibile esplicito
+e il locator semantico. Nuova esecuzione sul commit ce5b3a7 in corso.
 
 Restano: collaudo browser dei nuovi dettagli, traduzioni, integrazione della
 checklist preparativa con timeline condivisa, acconti/pagamenti parziali,
 prova completa fornitori/location/inviti/RSVP e cambio dei tre eventi sullo
 stesso account. Le correzioni esistenti restano conservate; questo checkpoint
 è un avanzamento e non una dichiarazione di completamento del Diciottesimo.
+
+## Acconti e saldo — avanzamento QA
+Migrazione QA 20261125104656_eighteenth_partial_payments applicata. RPC
+autenticata sulla spesa canonica: lock evento/spesa, controllo attore e tipo,
+importo positivo a due decimali, limite al saldo, data e nota limitate. UUID
+del pagamento rende il retry idempotente; cambi di payload con lo stesso UUID
+sono rifiutati. Nessuna copia del budget in metadati. Stato approved solo a saldo.
+Test SQL PostgreSQL locale e sul QA PASS, fixture in rollback; UI mantiene
+la bozza e l'identità del tentativo incerto. Pagato/saldo visibili per spesa,
+preventivi aperti calcolati sulla parte ancora da pagare.
+Nuovo collaudo browser include acconto 20 su preventivo 200 oltre a spesa 120,
+rientro con pagato 140 e cambio fra tre eventi. Esito remoto ancora da verificare.

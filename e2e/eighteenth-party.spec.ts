@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import {blankPlan} from "../src/features/events/baptism/model";
 import { randomUUID } from "node:crypto";
 import { createQaIdentity, login } from "./helpers/milestone8-fixtures";
 
@@ -32,7 +33,7 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     await page.getByRole("button", {name:"Invito",exact:true}).click();
     await page.getByLabel("Risposta entro", {exact:true}).fill("2027-04-25");
     await page.getByLabel("Contatto per le conferme", {exact:true}).fill("Referente QA");
-    expect(await page.getByLabel("Anteprima invito", {exact:true}).inputValue()).not.toContain("PRIVATE-PARTY-NOTE");
+    expect(await page.getByRole("textbox", {name:"Anteprima invito",exact:true}).inputValue()).not.toContain("PRIVATE-PARTY-NOTE");
     await expect(page.getByRole("button", {name:"Copia invito",exact:true})).toBeEnabled();
     await page.getByRole("button", {name:"Salva dettagli festa",exact:true}).click();
     await expect(page.getByRole("status")).toHaveText("Dettagli salvati.");
@@ -41,6 +42,13 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     await page.getByRole("button", {name:"Registra spesa"}).click();
     const balance = page.getByText("Disponibilità dopo le spese pagate").locator("..");
     await expect(balance).toContainText("1.380");
+    await page.getByLabel("Importo",{exact:true}).fill("200");
+    await page.getByRole("button",{name:"Salva preventivo",exact:true}).click();
+    await page.getByRole("button",{name:"Registra acconto o saldo",exact:true}).click();
+    await page.getByLabel("Importo pagamento (€)",{exact:true}).fill("20");
+    await page.getByLabel("Data pagamento",{exact:true}).fill("2027-01-10");
+    await page.getByRole("button",{name:"Conferma pagamento",exact:true}).click();
+    await expect(balance).toContainText("1.360");
     const auth = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
     const session = await auth.auth.signInWithPassword(user);
     const headers = { Authorization: "Bearer " + session.data.session!.access_token };
@@ -52,7 +60,7 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     await login(page, user);
     await page.goto("/it/dashboard");
     await page.reload();
-    await expect(balance).toContainText("1.380");
+    await expect(balance).toContainText("1.360");
     const snapshot = await page.request.get("/api/my/guests", {headers});
     expect((await snapshot.json()).guests).toEqual([expect.objectContaining({name:"Alex QA", attending:true, rsvpReceived:true})]);
     for (const locale of ["it","en","es","fr","de"]) {
@@ -90,6 +98,22 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     await selector.selectOption(partyId!);
     await settings.getByRole("button", { name: "Cambia evento", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Sofia QA" })).toBeVisible();
-    await expect(balance).toContainText("1.380");
+    await expect(balance).toContainText("1.360");
+    const baptismId=randomUUID();
+    const baptism=await auth.rpc("save_family_baptism",{p_id:baptismId,p_revision:0,p_plan:{...blankPlan(),name:"QA-M8-BATTESIMO-ISOLATO",draft:false,ceremony:"2030-05-18T10:30",ceremonyConfirmed:true,community:"Comunità QA",venue:"Chiesa QA",address:"Via QA",scenario:"solo",budget:"500",replyBy:"2030-05-08",replyContact:"Referente QA"}});
+    expect(baptism.error).toBeNull();
+    async function selectEvent(id:string){await page.evaluate(async({headers,id})=>{const r=await fetch("/api/my/current-event",{method:"POST",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({eventId:id})});if(!r.ok)throw new Error("Selection failed "+r.status);},{headers,id});}
+    await selectEvent(baptismId);
+    await page.goto("/it/battesimo?eventId="+baptismId);
+    await expect(page.getByRole("heading",{name:"Il battesimo di QA-M8-BATTESIMO-ISOLATO",exact:true})).toBeVisible();
+    expect(await page.evaluate(async headers=>(await fetch("/api/my/eighteenth-dashboard",{headers})).status,headers)).toBe(409);
+    const baptismSnapshot=await auth.rpc("read_family_baptism",{p_id:baptismId});
+    expect(baptismSnapshot.data.plan.guests).toHaveLength(0);
+    expect(baptismSnapshot.data.plan.costs).toHaveLength(0);
+    await selectEvent(partyId!);await page.goto("/it/dashboard");
+    await expect(page.getByRole("heading",{name:"Sofia QA",exact:true})).toBeVisible();
+    await expect(balance).toContainText("1.360");
+    const partyExpenses=await page.request.get("/api/my/expenses",{headers});
+    expect((await partyExpenses.json()).expenses.reduce((sum:number,e:{paid:number})=>sum+e.paid,0)).toBe(140);
   }
 });

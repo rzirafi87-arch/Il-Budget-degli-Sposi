@@ -62,7 +62,8 @@ for migration in \
   20261122150000_baptism_restore_client_rpc_grants.sql \
   20261125093000_restore_actor_authorization_wrapper.sql \
   20261125100634_baptism_revision_parent_cascade_guard.sql \
-  20261125102641_eighteenth_party_plan_revision.sql
+  20261125102641_eighteenth_party_plan_revision.sql \
+  20261125104656_eighteenth_partial_payments.sql
 do
   if [[ "$migration" == "20260922210136_branch_53_transactional_tables.sql" ]]; then
     apply scripts/preflight-branch53-seat-integrity.sql

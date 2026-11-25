@@ -141,6 +141,7 @@ jobs:
         if: startsWith(github.head_ref, 'feature/eighteenth-')
         run: |
           psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f database/tests/eighteenth_party_plan.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f database/tests/eighteenth_payment.sql
           npx playwright test --config=playwright.m8.config.ts --project=party18 --project=party18-360 --project=party18-390
         env:
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
