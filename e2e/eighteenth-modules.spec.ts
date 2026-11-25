@@ -15,7 +15,7 @@ test('[18] suppliers and venue saved, reopened and isolated from wedding and bap
  const choose=async(eventId:string)=>expect((await call('/api/my/current-event','POST',{eventId})).status).toBe(200);
  await choose(fixture.eventId);
  expect((await call('/api/my/locations?id='+fixture.savedLocationId,'DELETE')).status).toBe(200);
- expect((await call('/api/my/suppliers?id='+fixture.savedSupplierId,'DELETE')).status).toBe(200);
+ expect((await call('/api/my/suppliers?resource_id='+fixture.savedSupplierId,'DELETE')).status).toBe(200);
  await waitForPublicCatalogFixture(page,'location',fixture.locationId,fixture.locationName);
  await page.goto('/it/location/'+fixture.locationId+'?role=main_event');
  await expect(page.getByRole('heading',{name:fixture.locationName,exact:true})).toBeVisible();
@@ -35,7 +35,7 @@ test('[18] suppliers and venue saved, reopened and isolated from wedding and bap
  expect((await call('/api/my/locations')).body.savedLocations.some((x:{id:string})=>x.id===savedLocation.id)).toBe(false);
  expect((await call('/api/my/suppliers')).body.savedSuppliers.some((x:{id:string})=>x.id===savedSupplier.id)).toBe(false);
  expect((await call('/api/my/locations','PATCH',{id:savedLocation.id,selected:true})).status).toBe(404);
- expect((await call('/api/my/suppliers','PATCH',{id:savedSupplier.id,status:'SELECTED'})).status).toBe(404);
+ expect((await call('/api/my/suppliers','PATCH',{resource_id:savedSupplier.id,status:'SELECTED'})).status).toBe(404);
  }
  await choose(fixture.eventId);await page.goto('/it/profilo');await page.getByRole('button',{name:/esci/i}).click();await page.waitForURL(/\/it\/?$/);await login(page,identity);
  await choose(fixture.eventId);
