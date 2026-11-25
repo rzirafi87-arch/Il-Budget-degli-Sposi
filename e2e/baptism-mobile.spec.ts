@@ -31,13 +31,14 @@ test("[BAPTISM] mobile planner, payments, reload, modules and re-entry", async (
     costs: [{ id: randomUUID(), name: "Torta QA", scope: "reception" as const, enabled: true, quantity: 1, unitCost: 120, quote: "",
       payments: [{ id: randomUUID(), amount: 20, date: "2030-01-10", note: "Acconto QA" }] }],
   };
+  let journeyError: unknown;
   try {
     expect((await auth.auth.signInWithPassword(identity)).error).toBeNull();
     const created = await auth.rpc("save_family_baptism", { p_id: eventId, p_revision: 0, p_plan: plan });
     expect(created.error).toBeNull();
     await signIn(page, identity);
     await page.goto(`/it/battesimo?eventId=${eventId}`);
-    await expect(page.getByRole("heading", { name: plan.name, exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: `Il battesimo di ${plan.name}`, exact: true })).toBeVisible();
     const noOverflow = async () => {
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
       await expect(page.locator("body")).not.toContainText("MISSING_MESSAGE");
@@ -67,7 +68,7 @@ test("[BAPTISM] mobile planner, payments, reload, modules and re-entry", async (
     await page.getByRole("button", { name: "Salva", exact: true }).click();
     await expect(page.getByRole("status")).toContainText("Modifiche salvate.");
     await page.reload();
-    await expect(page.getByRole("heading", { name: plan.name, exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: `Il battesimo di ${plan.name}`, exact: true })).toBeVisible();
     const stored = await auth.rpc("read_family_baptism", { p_id: eventId });
     expect(stored.error).toBeNull();
     expect(stored.data.plan.guests[0].name).toBe("Invitato QA aggiornato");
@@ -84,16 +85,22 @@ test("[BAPTISM] mobile planner, payments, reload, modules and re-entry", async (
       await expect(page.locator("main").first()).toBeVisible();
       await noOverflow();
       await page.goto(`/it/battesimo?eventId=${eventId}`);
-      await expect(page.getByRole("heading", { name: plan.name, exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: `Il battesimo di ${plan.name}`, exact: true })).toBeVisible();
     }
     await page.getByRole("button", { name: "Esci", exact: true }).click();
     await expect(page.getByRole("link", { name: "Organizza il battesimo", exact: true })).toBeVisible();
     await signIn(page, identity);
     await page.goto(`/it/battesimo?eventId=${eventId}`);
-    await expect(page.getByRole("heading", { name: plan.name, exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: `Il battesimo di ${plan.name}`, exact: true })).toBeVisible();
     await noOverflow();
+  } catch (error) {
+    journeyError = error;
+    throw error;
   } finally {
     await auth.auth.signOut();
-    await deleteQaIdentity(identity);
+    try { await deleteQaIdentity(identity); } catch (cleanupError) {
+      if (journeyError) throw new AggregateError([journeyError, cleanupError], "Baptism journey and cleanup both failed");
+      throw cleanupError;
+    }
   }
 });

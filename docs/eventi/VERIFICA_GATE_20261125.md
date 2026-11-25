@@ -87,3 +87,31 @@ Verificare la nuova CI, completare mobile autenticato 360/390 e revisione
 residua, quindi aggiornare la base PR95 conservando 3daf382 e completarne
 i moduli e il collaudo. Il lancio resta STOP per i gate residui.
 Nessun merge, servizio a pagamento o rilascio Production eseguito.
+
+## Controllo successivo su 7a0f54e
+CI, Database Rebuild, validazione smoke e compatibilità Branch53/54 PASS.
+Preview integration PASS. Lifecycle isolato STOP nel nuovo test Battesimo:
+la pulizia mascherava l'asserzione iniziale del titolo (il titolo effettivo
+include «Il battesimo di»). Corretto il selettore senza ridurre il controllo;
+errori del percorso e del cleanup ora conservati entrambi.
+
+La pulizia ha inoltre rivelato un difetto reale, riprodotto in QA con fixture
+in rollback: la cancellazione di un evento con spese Battesimo genera 23503.
+Il trigger bump_baptism_revision tenta di aggiornare il piano durante la
+cascata dopo che il padre events è stato cancellato. Riprodotto RED anche
+in PostgreSQL locale rispettando l'ordine reale di creazione delle FK.
+
+Correzione additiva 20261125100634_baptism_revision_parent_cascade_guard,
+generata/applicata esclusivamente in QA tramite il gestore migrazioni.
+Il trigger aggiorna la revisione solo se il lock trova ancora il padre;
+conservati controllo identità righe, lock, security definer, search_path e ACL.
+GREEN locale e QA reale: guest edit incrementa revisione, cancellazione evento
+con ospite e acconto riuscita senza orfani. Test SQL:
+database/tests/baptism_event_delete_cascade.sql (tutte le fixture in rollback).
+Fingerprint QA prima/dopo invariati:
+- events b54b79ffac36bc9a5837e7a47da819a9
+- expenses bbae2f23a64bdad03ae568d5ff4a10ec
+- baptism_family_plans 2d5b930e369f7b3e0f7dee6122d0474e
+TypeScript, controllo diff e sintassi shell PASS. Nuova esecuzione mobile
+ancora necessaria. Nessuna modifica Production; il pacchetto di rilascio
+futuro dovrà includere anche questa migrazione dopo il checkpoint richiesto.

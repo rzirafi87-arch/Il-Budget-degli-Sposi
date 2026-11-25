@@ -150,6 +150,8 @@ jobs:
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
           PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - name: Verify baptism event deletion and revision integrity
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f database/tests/baptism_event_delete_cascade.sql
       - name: Verify baptism authenticated mobile at 360 and 390
         run: npx playwright test --config=playwright.baptism.config.ts
         env:
