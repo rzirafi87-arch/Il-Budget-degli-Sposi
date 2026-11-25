@@ -87,7 +87,7 @@
       "no": "No",
       "detailsEmpty": "No hay información adicional disponible.",
       "contactsEmpty": "No hay contactos públicos disponibles.",
-      "eventSection": "Para tu boda",
+      "eventSection": "Para tu evento",
       "signInToSave": "Inicia sesión para guardar este proveedor en tu evento.",
       "savedStatus": "Estado: {status}",
       "select": "Seleccionar",
@@ -121,7 +121,7 @@
       "loading": "Cargando lugar…", "notFound": "Lugar no encontrado.", "back": "Volver a los lugares", "loadError": "No se pudo cargar el lugar.", "retry": "Reintentar", "verified": "Verificado",
       "description": "Descripción", "noDescription": "Este lugar aún no tiene descripción.", "featuresTitle": "Servicios y características", "featuresEmpty": "No hay características adicionales disponibles.", "capacity": "Hasta {count} invitados",
       "features": { "accommodation": "Alojamiento disponible", "internalCatering": "Servicio de catering propio", "externalCatering": "Catering externo permitido", "parking": "Aparcamiento", "accessibility": "Accesibilidad", "outdoor": "Espacios exteriores", "indoor": "Espacios interiores" },
-      "contacts": "Contactos", "website": "Sitio web", "contactsEmpty": "No hay contactos públicos disponibles.", "eventSection": "Para tu boda", "role": "Función del lugar", "signInToSave": "Inicia sesión para guardar este lugar en tu evento.", "select": "Seleccionar", "unselect": "Anular selección", "removeSaved": "Quitar de guardados", "saveLocation": "Guardar lugar", "mutationError": "No se pudo actualizar el lugar guardado."
+      "contacts": "Contactos", "website": "Sitio web", "contactsEmpty": "No hay contactos públicos disponibles.", "eventSection": "Para tu evento", "role": "Función del lugar", "signInToSave": "Inicia sesión para guardar este lugar en tu evento.", "select": "Seleccionar", "unselect": "Anular selección", "removeSaved": "Quitar de guardados", "saveLocation": "Guardar lugar", "mutationError": "No se pudo actualizar el lugar guardado."
     },
     "associations": {
       "title": "Lugares y proveedores conectados", "description": { "location": "Consulta los proveedores asociados a este lugar y gestiona los vínculos privados de tu evento.", "supplier": "Consulta los lugares asociados a este proveedor y gestiona los vínculos privados de tu evento." },

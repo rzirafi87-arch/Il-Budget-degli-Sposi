@@ -1,0 +1,11 @@
+import {readFileSync} from 'node:fs';import assert from 'node:assert/strict';
+const {PGlite}=await import(process.env.PGLITE_MODULE||'@electric-sql/pglite');const db=new PGlite();
+await db.exec(`create role anon;create role authenticated;create schema auth;create schema private;create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;create table events(id uuid primary key,event_type text,owner_id uuid);create table expenses(id uuid primary key,event_id uuid references events(id),amount numeric,committed_amount numeric,paid_amount numeric,payment_installments jsonb,status text);create function private.event_access_role_for_actor(e uuid,a uuid) returns text language sql as $$ select case when owner_id=a then 'owner' end from public.events where id=e $$;`);
+await db.exec(readFileSync(process.env.PARTY_PAYMENT_SQL||'supabase/migrations/20261125104656_eighteenth_partial_payments.sql','utf8'));
+const owner='95250000-0000-4000-8000-000000000201',party='95250000-0000-4000-8000-000000000203',expense='95250000-0000-4000-8000-000000000204',payment='95250000-0000-4000-8000-000000000205';
+await db.query("insert into events values($1,'eighteenth',$2)",[party,owner]);await db.query("insert into expenses values($1,$2,120,120,0,'[]','pending')",[expense,party]);await db.query("select set_config('request.jwt.claim.sub',$1,false)",[owner]);
+const save=(id,amount)=>db.query("select record_eighteenth_payment($1,$2,$3,$4,'2030-05-01','Acconto') n",[party,expense,id,amount]);
+assert.equal(Number((await save(payment,20)).rows[0].n),20);assert.equal(Number((await save(payment,20)).rows[0].n),20);await assert.rejects(()=>save(payment,25),/PAYMENT_RETRY_CONFLICT/);await assert.rejects(()=>save('95250000-0000-4000-8000-000000000206',101),/PAYMENT_EXCEEDS_REMAINING/);
+assert.equal(Number((await save('95250000-0000-4000-8000-000000000206',100)).rows[0].n),120);assert.equal((await db.query('select status from expenses')).rows[0].status,'approved');
+await db.query("select set_config('request.jwt.claim.sub',$1,false)",['95250000-0000-4000-8000-000000000202']);await assert.rejects(()=>save(payment,20),/EVENT_UNAVAILABLE/);
+console.log('PASS partial payment, retry idempotency, changed retry rejection, overpayment rejection, settlement and outsider isolation');await db.close();

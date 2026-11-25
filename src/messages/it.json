@@ -1,5 +1,6 @@
 {
   "party18": {
+    "retry": "Riprova",
     "name": "Nome di chi compie 18 anni",
     "date": "Data della festa",
     "budget": "Budget iniziale",

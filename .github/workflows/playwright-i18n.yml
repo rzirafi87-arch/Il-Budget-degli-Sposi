@@ -1,7 +1,7 @@
 name: Playwright i18n matrix
 on:
   pull_request:
-    branches: [main, review/core-languages-20261118]
+    branches: [main, review/core-languages-20261118, feature/battesimo-completo]
     paths:
       [
         "e2e/**",
@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
-      NEXT_PUBLIC_EIGHTEENTH_PREVIEW: ${{ github.head_ref == 'feature/eighteenth-party' && '1' || '0' }}
+      NEXT_PUBLIC_EIGHTEENTH_PREVIEW: ${{ startsWith(github.head_ref, 'feature/eighteenth-') && '1' || '0' }}
       SUPABASE_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -138,8 +138,11 @@ jobs:
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
       - name: Verify isolated eighteenth party
-        if: github.head_ref == 'feature/eighteenth-party'
-        run: npx playwright test --config=playwright.m8.config.ts --project=party18
+        if: startsWith(github.head_ref, 'feature/eighteenth-')
+        run: |
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f database/tests/eighteenth_party_plan.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f database/tests/eighteenth_payment.sql
+          npx playwright test --config=playwright.m8.config.ts --project=party18 --project=party18-360 --project=party18-390
         env:
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
           PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local

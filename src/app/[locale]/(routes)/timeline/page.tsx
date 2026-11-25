@@ -1,5 +1,6 @@
 "use client";
 
+import PartyTimeline from "@/features/events/eighteenth/PartyTimeline";
 import ExportButton from "@/components/ExportButton";
 import ExportPDFButton from "@/components/ExportPDFButton";
 import { SupplierLinkView } from "@/components/suppliers/SupplierLinkView";
@@ -75,7 +76,7 @@ function identity(value: SupplierLink | null) {
   return value ? `${value.scope}:${value.resourceId}` : "";
 }
 
-export default function TimelinePage() {
+function SharedTimelinePage() {
   const locale = useLocale();
   const t = useTranslations("milestone7.timeline");
   const m4 = useTranslations("branch52M4.timeline");
@@ -402,3 +403,5 @@ function convertStepsToTemplates(steps: string[]): TimelineTaskTemplate[] {
     priority: "media",
   }));
 }
+
+export default function TimelinePage(){return <PartyTimeline><SharedTimelinePage/></PartyTimeline>;}

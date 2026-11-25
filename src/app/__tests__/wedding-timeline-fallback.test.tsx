@@ -7,6 +7,7 @@ jest.mock("@/components/ExportButton",()=>({__esModule:true,default:()=>null}));
 function mockResponses(items:unknown[]) {
   localStorage.setItem("eventType","wedding");
   global.fetch=jest.fn(async (url)=>({ok:true,json:async()=>String(url)==="/api/my/timeline" ? {items}
+    : String(url)==="/api/my/current-event" ? {currentEvent:{eventId:"wedding-a",eventType:"wedding"}}
     : String(url)==="/api/event/resolve" ? {event:{wedding_date:"2027-09-06"}}
     : String(url).includes("localized") ? {data:{timeline:[]}} : {suppliers:[]}})) as jest.Mock;
 }
