@@ -7,12 +7,15 @@
 - Anteprima PR94 iqn5p57uf: registrazione, conferma email reale e login del nuovo account verificati.
 - Anteprima PR95 esistente READY su 3daf382, ma non certificata per scritture QA.
 
-## Esito: STOP al lancio pubblico
+## Esito: PASS dei gate tecnici su e6585e8; rilascio in attesa di checkpoint
 | Gate | Esito | Evidenza e limite |
 | --- | --- | --- |
 | Conferma email reale | PASS | Nuovo account QA creato il 25/11 alle 09:08:54 UTC; email inviata alle 09:08:54, confermata alle 09:09:11. Verifica read-only auth.users. Login successivo completato nel browser tramite modulo protetto: /it/battesimo autenticato, comandi Esci e Nuovo battesimo visibili. Nessuna conferma amministrativa. |
-| Mobile 360/390 | STOP | Nessun collaudo autenticato a queste due larghezze eseguito in questa ripresa. L'apertura desktop del planner non equivale a PASS mobile. |
-| Revisione diff completo | STOP | Inventario di 159 file; esaminate aree di autorizzazione, API modificate, selezione evento, registrazione, workflow e ricostruzione DB. Trovato e riprodotto un difetto; la revisione completa e la nuova CI restano da chiudere. |
+| Mobile 360/390 | PASS | Due esecuzioni integrali del workflow 45593220837 sullo stesso codice; Battesimo 360/390, percorsi Matrimonio, cleanup fixture e distruzione stack. Evidenze e limite di rilascio in REVISIONE_PR94_E6585E8.md. |
+| Revisione diff completo | PASS | Revisione residua conclusa su 167 file; correzioni autorizzazione/cascata incluse, nessun finding bloccante aperto nel pacchetto verificato. Rapporto REVISIONE_PR94_E6585E8.md. |
+
+## Storico delle verifiche
+Le sezioni seguenti documentano i checkpoint precedenti; dove differiscono, prevalgono il riepilogo corrente e il rapporto finale.
 
 ## Difetto confermato e correzione
 La migrazione storica 20261119201651_event_access_nonempty_email sostituisce
@@ -115,3 +118,13 @@ Fingerprint QA prima/dopo invariati:
 TypeScript, controllo diff e sintassi shell PASS. Nuova esecuzione mobile
 ancora necessaria. Nessuna modifica Production; il pacchetto di rilascio
 futuro dovrà includere anche questa migrazione dopo il checkpoint richiesto.
+
+
+## Chiusura tecnica Matrimonio/Battesimo — e6585e8
+Matrimonio PASS QA/Release Candidate; Battesimo PASS QA/Release Candidate.
+Conferma email reale conservata, nessuna ripetizione. Sei workflow PASS sul
+checkpoint; il rebuild è passato dopo retry dello startup per porta occupata.
+La seconda esecuzione integrale di Playwright include la pulizia delle fixture
+e lo shutdown dello stack. Nuovo codice applicativo Production non rilasciato.
+Prima del rilascio pubblico rimane il checkpoint esplicitamente richiesto,
+con preflight e riconciliazione migrazioni Production. Non è un merge automatico.
