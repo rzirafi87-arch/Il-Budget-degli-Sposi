@@ -113,7 +113,7 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     await selectEvent(partyId!);await page.goto("/it/dashboard");
     await expect(page.getByRole("heading",{name:"Sofia QA",exact:true})).toBeVisible();
     await expect(balance).toContainText("1.360");
-    const partyExpenses=await page.request.get("/api/my/expenses",{headers});
-    expect((await partyExpenses.json()).expenses.reduce((sum:number,e:{paid:number})=>sum+e.paid,0)).toBe(140);
+    const partyExpenses=await page.evaluate(async headers=>{const r=await fetch("/api/my/eighteenth-dashboard",{headers});const body=await r.json();if(!r.ok)throw new Error(JSON.stringify(body));return body;},headers);
+    expect(partyExpenses.entries.reduce((sum:number,e:{paid:number})=>sum+e.paid,0)).toBe(140);
   }
 });
