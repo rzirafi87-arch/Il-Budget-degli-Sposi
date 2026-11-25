@@ -38,3 +38,48 @@ Matrimonio/Battesimo consolidati nella PR94 verso main. Migrazioni necessarie
 applicate e verificate; codice pubblico ancora non rilasciato. Restano reali
 la prova di conferma email e la validazione finale del pacchetto: l'ordine
 richiesto dall'utente non trasforma i test simulati in una conferma email reale.
+
+## Ripresa 25 novembre — riallineamento e dettagli della festa
+Riallineata la base con PR94 e6585e8 mantenendo 3daf382 come genitore e tutte
+le sue correzioni a riepilogo/spese/cambio evento. Nessuna ricostruzione del prototipo.
+
+Nuovo modulo italiano nel dashboard in Preview: scelta festeggiato/organizzatore,
+nome di chi festeggia, luogo, indirizzo, orario, tema e note private; programma
+con date/orari anche dopo mezzanotte; checklist preparativa relativa alla data;
+invito in prima persona o per conto del festeggiato, senza note private.
+Le altre lingue conservano il dashboard precedente: questa fase non certifica
+la traduzione dei nuovi campi. Collegamenti fornitori/location/invitati conservati.
+
+Persistenza separata solo per questi dettagli, senza copie di budget, spese o
+ospiti. Tabella eighteenth_party_plans con SELECT autorizzata e RPC autenticata:
+lock evento, controllo tipo e accesso autorevole, revisione ottimistica,
+idempotenza dei retry, limiti del payload e controllo programma/scadenze.
+Il conflitto conserva le modifiche; caricamento fallito non abilita scritture.
+Modifiche aperte protette prima di lasciare i link del dashboard; le spese
+non possono ricaricare il dashboard e perdere dettagli ancora da salvare.
+
+Migrazione QA applicata: 20261125102641_eighteenth_party_plan_revision.
+PASS SQL PostgreSQL locale: owner/read/RLS, altro attore, tipo errato,
+retry, conflitto di revisione, data risposte e programma dopo mezzanotte.
+PASS test SQL sul QA reale, tutte le fixture in rollback:
+database/tests/eighteenth_party_plan.sql. Nessuna migrazione Production.
+987 test in 148 suite PASS prima dell'ultima guardia UI; successivi 10 test
+mirati in 3 suite PASS; TypeScript PASS, lint senza errori (un warning ref).
+Isolamento delle suite standard PASS. Aggiunti tre progetti browser del
+Diciottesimo (320/360/390) al workflow isolato, con prova dei dettagli persistiti.
+La nuova esecuzione remota NON è ancora dichiarata PASS.
+
+### STOP anteprima Diciottesimo con scritture
+URL/anon/expected-ref QA configurati per il branch PR95. Manca ancora
+SUPABASE_SERVICE_ROLE_KEY QA dedicata al branch. Il valore sensitive del
+branch Battesimo non è leggibile tramite il connettore; non è stato spostato,
+reso leggibile o sostituito con una chiave Production. NEXT_PUBLIC_EIGHTEENTH_PREVIEW=0
+sul branch hosted; nessuna anteprima dichiarata utilizzabile prima del completamento.
+Serve inserire la chiave del progetto tnopiqxlcuakkavpwbrq come sensitive,
+solo Preview / feature/eighteenth-completion-20261123. Non inviarla in chat.
+
+Restano: collaudo browser dei nuovi dettagli, traduzioni, integrazione della
+checklist preparativa con timeline condivisa, acconti/pagamenti parziali,
+prova completa fornitori/location/inviti/RSVP e cambio dei tre eventi sullo
+stesso account. Le correzioni esistenti restano conservate; questo checkpoint
+è un avanzamento e non una dichiarazione di completamento del Diciottesimo.

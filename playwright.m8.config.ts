@@ -22,6 +22,7 @@ export default defineConfig({
     ...devices["Desktop Chrome"],
   },
   projects: [
+    ...[360,390].map(width => ({name:`party18-${width}`,grep:/\[18\]/,use:{locale:"it",viewport:{width,height:844}}})),
     { name: "party18", grep: /\[18\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },
     { name: "m8-diagnostic", grep: /\[M8\]\[diagnostic\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },
     { name: "m8-320", grep: /\[M8\]\[(reset|matrix|responsive-320)\]|\[M3\]\[associations-320\]|\[M4\]\[supplier-work-320\]|\[M5\]\[guest-mobile\]/, use: { locale: "it", viewport: { width: 320, height: 844 } } },

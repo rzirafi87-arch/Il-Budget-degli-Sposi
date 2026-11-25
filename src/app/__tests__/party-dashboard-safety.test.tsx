@@ -1,3 +1,4 @@
+jest.mock('@/features/events/eighteenth/PartyDetails',()=>({__esModule:true,default:()=>null}));
 import {render,screen,fireEvent,waitFor} from '@testing-library/react';
 jest.mock('next-intl',()=>({useLocale:()=> 'it',useTranslations:()=> (key:string)=>key}));
 import PartyDashboard from '@/components/dashboard/PartyDashboard';

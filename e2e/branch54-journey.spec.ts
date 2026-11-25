@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import budgetCopy from "../src/messages/runtime-header.it.json";
 import { createQaIdentity, createGuestUxFixture, deleteGuestUxFixture, deleteQaIdentity, login } from "./helpers/milestone8-fixtures";
 
 test("[B54][journey] new user without an event reaches setup without a retry dead end", async ({ page }) => {
@@ -131,7 +132,7 @@ test("[B54][journey] persisted first value, recovery, mobile and accessibility",
     expect(violations).toEqual([]);
     await page.route("**/api/my/expenses", route => route.fulfill({ status: 503, contentType: "application/json", body: '{"error":"temporary"}' }));
     await page.goto("/it/budget");
-    const recoveryAlert = page.getByRole("alert").filter({ hasText: "Non riusciamo a caricare i dati" });
+    const recoveryAlert = page.getByRole("alert").filter({ hasText: budgetCopy.budgetPage.loadError });
     await expect(recoveryAlert).toBeVisible();
     await page.unroute("**/api/my/expenses");
     await page.getByRole("button", { name: "Riprova", exact: true }).click();
