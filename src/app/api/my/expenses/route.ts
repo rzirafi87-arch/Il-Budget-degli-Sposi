@@ -127,7 +127,7 @@ export async function GET(req: NextRequest) {
       supplier: expense.supplier || "",
       savedSupplierId: expense.saved_supplier_id,
       description: expense.description || "",
-      amount: Number(expense.paid_amount || expense.committed_amount || 0),
+      amount: Number(expense.committed_amount ?? expense.paid_amount ?? 0),
       committed: Number(expense.committed_amount || 0),
       paid: Number(expense.paid_amount || 0),
       spendType: (expense.spend_type || "common") as ExpenseResponse["spendType"],

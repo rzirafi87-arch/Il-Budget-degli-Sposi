@@ -12,7 +12,7 @@ type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & 
 export function PasswordInput({
   id,
   labelClassName = "block",
-  inputClassName = "mt-1 block w-full border px-3 py-2 pr-12",
+  inputClassName = "mt-1 block min-h-11 w-full border px-3 py-2 pr-12",
   ...inputProps
 }: PasswordInputProps) {
   const t = useTranslations("runtimeUi.password");

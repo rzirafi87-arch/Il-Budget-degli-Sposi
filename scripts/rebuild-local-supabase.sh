@@ -52,7 +52,16 @@ for migration in \
   20261004095304_branch_53_upload_race_followup.sql \
   20261004183049_branch_53_table_mutation_acl_followup.sql \
   20261004184418_branch_53_late_upload_guard_followup.sql \
-  20261017101208_branch_53_document_download_hardening.sql
+  20261017101208_branch_53_document_download_hardening.sql \
+  20261017132156_branch_54_first_value_activation.sql \
+  20261117183002_atomic_budget_idea_apply.sql \
+  20261118070000_atomic_event_update.sql \
+  20261118230000_baptism_family_plans.sql \
+  20261119090102_baptism_family_validation.sql \
+  20261119201651_event_access_nonempty_email.sql \
+  20261122150000_baptism_restore_client_rpc_grants.sql \
+  20261125093000_restore_actor_authorization_wrapper.sql \
+  20261125100634_baptism_revision_parent_cascade_guard.sql
 do
   if [[ "$migration" == "20260922210136_branch_53_transactional_tables.sql" ]]; then
     apply scripts/preflight-branch53-seat-integrity.sql

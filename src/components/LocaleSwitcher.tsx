@@ -8,20 +8,18 @@ import { useEffect, useState } from "react";
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const t = useTranslations("runtimeUi.shared");
+  const header = useTranslations("header");
   const pathname = usePathname();
   const router = useRouter();
 
   const [locales, setLocales] = useState<{ code: string; name: string; native_name: string; rtl?: boolean; selectable: boolean; status: string }[]>([]);
   const [countries, setCountries] = useState<{ code: string; name: string; native_name: string; region?: string }[]>([]);
-  const [events, setEvents] = useState<{ code: string; name: string; description?: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [country, setCountry] = useState("");
-  const [eventType, setEventType] = useState("");
 
   useEffect(() => {
     setCountry(localStorage.getItem("country") || "");
-    setEventType(localStorage.getItem("eventType") || "");
   }, []);
 
   useEffect(() => {
@@ -29,15 +27,13 @@ export default function LocaleSwitcher() {
     (async () => {
       setLoading(true);
       try {
-        const [loc, ctry, ev] = await Promise.all([
+        const [loc, ctry] = await Promise.all([
           fetch("/api/locales").then(r => r.json()).then(d => d.locales || []),
           fetch("/api/countries").then(r => r.json()).then(d => d.countries || []),
-          fetch("/api/events").then(r => r.json()).then(d => d.events || []),
         ]);
         if (!active) return;
         setLocales(loc);
         setCountries(ctry);
-        setEvents(ev);
         setError(null);
       } catch {
         if (!active) return;
@@ -49,7 +45,7 @@ export default function LocaleSwitcher() {
     return () => { active = false; };
   }, [t]);
 
-  function persistPreference(name: "country" | "eventType", value: string) {
+  function persistPreference(name: "country", value: string) {
     localStorage.setItem(name, value);
     document.cookie = `${name}=${value}; Path=/; Max-Age=31536000; SameSite=Lax`;
   }
@@ -67,7 +63,7 @@ export default function LocaleSwitcher() {
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
-      <select value={locale} onChange={(e) => switchLocale(e.target.value)} className="border rounded-lg px-3 py-2">
+      <select aria-label={header("language")} value={locale} onChange={(e) => switchLocale(e.target.value)} className="min-h-11 max-w-full border rounded-lg px-3 py-2">
         {locales.map((l) => (
           <option key={l.code} value={l.code} dir={l.rtl ? "rtl" : undefined} disabled={!l.selectable}>
             {l.native_name || l.name || l.code.toUpperCase()}{!l.selectable ? ` (${t("comingSoon")})` : ""}
@@ -75,7 +71,7 @@ export default function LocaleSwitcher() {
         ))}
       </select>
 
-      <select value={country} onChange={(e) => { setCountry(e.target.value); persistPreference("country", e.target.value); }} className="border rounded-lg px-3 py-2">
+      <select aria-label={t("country")} value={country} onChange={(e) => { setCountry(e.target.value); persistPreference("country", e.target.value); }} className="min-h-11 max-w-full border rounded-lg px-3 py-2">
         <option value="">— {t("country")} —</option>
         {countries.map(c => (
           <option key={c.code} value={c.code}>
@@ -84,14 +80,7 @@ export default function LocaleSwitcher() {
         ))}
       </select>
 
-      <select value={eventType} onChange={(e) => { setEventType(e.target.value); persistPreference("eventType", e.target.value); }} className="border rounded-lg px-3 py-2">
-        <option value="">— {t("event")} —</option>
-        {events.map(e => (
-          <option key={e.code} value={e.code}>
-            {e.name}
-          </option>
-        ))}
-      </select>
+
     </div>
   );
 }

@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import Link from "next/link";
+import { fetchMyTables } from "@/lib/fetchMyTables";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -18,7 +19,8 @@ export default function TavoliRiepilogoPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/my/tables");
+        const res = await fetchMyTables();
+        if (!res.ok) throw new Error("TABLES_LOAD_FAILED");
         const json = await res.json();
         setTables((json.tables || []).map((t: { totalSeats?: number; assignedGuests?: { id: string }[] }) => ({
           totalSeats: Number(t.totalSeats || 0),

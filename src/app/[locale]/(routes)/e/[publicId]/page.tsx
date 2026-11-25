@@ -31,8 +31,8 @@ async function getPublicEvent(publicId: string) {
   return data.event;
 }
 
-export default async function PublicEventPage({ params }: { params: { publicId: string; locale: string } }) {
-  const { publicId, locale } = params;
+export default async function PublicEventPage({ params }: { params: Promise<{ publicId: string; locale: string }> }) {
+  const { publicId, locale } = await params;
   const t = await getTranslations({ locale, namespace: "milestone9.runtime.publicEvent" });
   let event: PublicEvent | null = null;
   let error: string | null = null;

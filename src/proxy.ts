@@ -13,7 +13,9 @@ export function proxy(req: NextRequest) {
 
   const legacyEventApi = /^\/api\/(?:anniversary|babyshower|baptism|bar-mitzvah|birthday|charity-gala|communion|confirmation|corporate|eighteenth|engagement|fifty|gender-reveal|graduation|proposal|quinceanera|retirement)\/seed(?:\/|$)/.test(pathname)
     || /^\/api\/my\/(?:anniversary|babyshower|baptism|bar-mitzvah|birthday|charity-gala|communion|confirmation|corporate|eighteenth|engagement|fifty|gender-reveal|graduation|proposal|quinceanera|retirement)-dashboard$/.test(pathname);
-  if (legacyEventApi) {
+  const partySummaryEnabled = process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1"
+    && pathname === "/api/my/eighteenth-dashboard" && req.method === "GET";
+  if (legacyEventApi && !partySummaryEnabled) {
     if (req.method === "GET" && pathname.includes("/seed")) {
       return NextResponse.json({ error: "METHOD_NOT_ALLOWED" }, { status: 405, headers: { Allow: "POST" } });
     }

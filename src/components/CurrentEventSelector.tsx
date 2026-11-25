@@ -1,7 +1,8 @@
 "use client";
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { useTranslations } from "next-intl";
+import { eventDestination } from "@/lib/eventDestination";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 
 type EventSummary = {
@@ -20,6 +21,10 @@ type Payload = {
 
 export default function CurrentEventSelector() {
   const t = useTranslations("milestone9.currentEvent");
+  const locale = useLocale();
+  const feedback = useTranslations("branch54");
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const id = useId();
   const selectRef = useRef<HTMLSelectElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -37,10 +42,12 @@ export default function CurrentEventSelector() {
         headers: { Authorization: `Bearer ${jwt}` },
         cache: "no-store",
       });
-      if (response.ok && active) setPayload((await response.json()) as Payload);
-    })();
+      if (!response.ok) throw new Error("EVENTS_LOAD_FAILED");
+      const result = (await response.json()) as Payload;
+      if (active) setPayload(result);
+    })().catch(() => { if (active) setFailed(true); });
     return () => { active = false; };
-  }, []);
+  }, [attempt]);
 
   useEffect(() => {
     if (!pendingEventId) return;
@@ -72,11 +79,19 @@ export default function CurrentEventSelector() {
     return () => window.removeEventListener("storage", sync);
   }, []);
 
+  if (failed) return <div role="alert">
+    <p>{feedback("loadError")}</p>
+    <button type="button" className="app-button app-button--outline" onClick={() => {
+      setFailed(false);
+      setAttempt(value => value + 1);
+    }}>{feedback("retry")}</button>
+  </div>;
   if (!payload) return null;
-  if (payload.events.length === 0) return <p className="text-sm text-muted-fg">{t("none")}</p>;
+  const addEvent = <a className="app-button app-button--outline mt-2" href={`/${locale}/select-event-type?new=1`}>{t("add")}</a>;
+  if (payload.events.length === 0) return <div><p className="text-sm text-muted-fg">{t("none")}</p>{addEvent}</div>;
   if (payload.events.length === 1 && payload.status === "RESOLVED") {
     const only = payload.events[0];
-    return <p className="text-sm font-semibold text-fg">{only.name || only.eventType}{only.date ? ` · ${only.date.slice(0, 10)}` : ""}</p>;
+    return <div><p className="text-sm font-semibold text-fg">{only.name || only.eventType}{only.date ? ` · ${only.date.slice(0, 10)}` : ""}</p>{addEvent}</div>;
   }
 
   const value = payload.currentEvent?.eventId || "";
@@ -88,26 +103,29 @@ export default function CurrentEventSelector() {
     try {
       const { data } = await getBrowserClient().auth.getSession();
       const jwt = data.session?.access_token;
-      if (!jwt) return;
+      if (!jwt) throw new Error("NOT_AUTHENTICATED");
       const response = await fetch("/api/my/current-event", {
         method: "POST",
         headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
         body: JSON.stringify({ eventId: pendingEventId }),
       });
-      if (!response.ok) return;
+      if (!response.ok) throw new Error("EVENT_SELECTION_FAILED");
       const next = (await response.json()) as Payload;
+      if (!next.currentEvent || next.currentEvent.eventId !== pendingEventId) throw new Error("EVENT_SELECTION_FAILED");
       const eventType = next.currentEvent?.eventType;
       if (eventType) localStorage.setItem("eventType", eventType);
       localStorage.setItem("currentEventChangedAt", String(Date.now()));
-      window.location.reload();
+      window.location.assign(eventDestination(locale, next.currentEvent));
+    } catch {
+      setFailed(true);
     } finally {
       setSwitching(false);
       setPendingEventId(null);
     }
   }
   return (
-    <div className="min-w-0 max-w-48">
-      <label className="sr-only" htmlFor={id}>{t("label")}</label>
+    <div className="min-w-0">
+      <label className="block text-sm" htmlFor={id}>{t("change")}</label>
       <select
         ref={selectRef}
         id={id}
@@ -128,6 +146,7 @@ export default function CurrentEventSelector() {
           </option>
         ))}
       </select>
+      {addEvent}
       {pendingEvent && (
         <div className="fixed inset-0 z-[80] grid place-items-center bg-black/45 p-4" role="presentation">
           <section className="w-full max-w-md rounded-2xl border border-border bg-bg p-5 text-fg shadow-2xl" role="dialog" aria-modal="true" aria-labelledby={`${id}-switch-title`}>

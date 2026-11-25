@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     }
     const db = getServiceClient();
     const { userId } = await requireUser(req);
-    const eventId = (await requireServerCurrentEvent(userId)).eventId;
+    const {eventId, eventType} = await requireServerCurrentEvent(userId);
     const [eventResult, familiesResult, guestsResult, recipientsResult] = await Promise.all([
       db.from("events").select("default_rsvp_deadline").eq("id", eventId).single(),
       db.from("family_groups").select("*").eq("event_id", eventId).order("created_at", { ascending: true }),
@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
     if (firstError) throw firstError;
 
     return NextResponse.json({
+      eventType,
       guests: (guestsResult.data || []).map((g: Record<string, unknown>) => ({
         id: g.id, name: g.name, guestType: g.guest_type, isMainContact: Boolean(g.is_main_contact),
         familyGroupId: g.family_group_id || undefined,
@@ -52,7 +53,7 @@ export async function GET(req: NextRequest) {
     if (authResponse) return authResponse;
     const message = err instanceof Error ? err.message : "Internal error";
     logger.error("GET /api/my/guests error", { message });
-    return fail(message);
+    return fail("GUEST_SNAPSHOT_READ_FAILED");
   }
 }
 
