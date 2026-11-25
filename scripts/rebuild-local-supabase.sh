@@ -56,6 +56,10 @@ for migration in \
   20261017132156_branch_54_first_value_activation.sql \
   20261117183002_atomic_budget_idea_apply.sql \
   20261118070000_atomic_event_update.sql \
+  20261118230000_baptism_family_plans.sql \
+  20261119090102_baptism_family_validation.sql \
+  20261119201651_event_access_nonempty_email.sql \
+  20261122150000_baptism_restore_client_rpc_grants.sql \
   20261125093000_restore_actor_authorization_wrapper.sql
 do
   if [[ "$migration" == "20260922210136_branch_53_transactional_tables.sql" ]]; then

@@ -150,6 +150,21 @@ jobs:
           SITE_URL: http://127.0.0.1:3000
           PLAYWRIGHT_LOCAL_SUPABASE: "1"
           PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - name: Verify baptism authenticated mobile at 360 and 390
+        run: npx playwright test --config=playwright.baptism.config.ts
+        env:
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: baptism-mobile-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 14
+          path: |
+            ${{ github.workspace }}/playwright-report-baptism/**
+            ${{ github.workspace }}/.playwright-results-baptism/**
       - name: Run real isolated browser journeys without skips
         run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-390 --project=m8-430
         env:

@@ -14,6 +14,8 @@ const branch52IsolatedSpecs = [
   "branch53-persistence.spec.ts",
   "branch54-journey.spec.ts",
   "branch54-signup.spec.ts",
+  "eighteenth-party.spec.ts",
+  "baptism-mobile.spec.ts",
   "i18n-runtime.spec.ts",
 ];
 
