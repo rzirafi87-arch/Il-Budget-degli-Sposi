@@ -19,7 +19,7 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     await page.getByLabel("Budget iniziale").fill("1500");
     await page.getByRole("button", {name:"Organizza la festa"}).click();
     await expect(page.getByRole("heading", {name:"Sofia QA"})).toBeVisible();
-    await page.getByLabel("Chi organizza?", {exact:true}).selectOption("organizer");
+    await page.getByRole("combobox", {name:"Chi organizza?",exact:true}).selectOption("organizer");
     await page.getByLabel("Nome di chi festeggia", {exact:true}).fill("Sofia");
     await page.getByLabel("Luogo della festa", {exact:true}).fill("Sala QA");
     await page.getByLabel("Indirizzo", {exact:true}).fill("Via QA 18");
