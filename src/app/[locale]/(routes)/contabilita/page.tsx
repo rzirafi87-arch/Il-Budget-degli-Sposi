@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import SpesePage from "../spese/page";
@@ -54,7 +54,7 @@ export default function ContabilitaPage() {
                 }
           }
         >
-          {t("income")}
+          {t("incomesPage.title")}
         </button>
       </div>
 

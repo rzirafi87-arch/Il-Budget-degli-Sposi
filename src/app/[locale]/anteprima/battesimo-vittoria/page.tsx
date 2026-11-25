@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BRAND_NAME } from "@/config/brand";
 
@@ -25,7 +26,7 @@ export default function BaptismPreview() {
         <h1 className="font-serif text-3xl font-bold">Battesimo di Vittoria</h1>
         <p className="mt-2">Domenica 18 aprile 2027</p>
       </div>
-      <a className="app-button app-button--primary mb-4" href="/it/battesimo">Organizza il tuo battesimo</a>
+      <Link className="app-button app-button--primary mb-4" href="/it/battesimo">Organizza il tuo battesimo</Link>
       <section className="app-card mb-4 space-y-4 p-5">
         <h2 className="font-serif text-xl font-semibold">Programma</h2>
         <div><p className="text-sm text-muted-fg">10:30 · Cerimonia</p><h3 className="font-semibold">Comunità San Luca</h3><p>Piazza del Gelso 4</p></div>

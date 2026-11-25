@@ -1,6 +1,27 @@
 {
   "header": {
     "coupleFallback": "Vous deux",
-    "together": "ensemble"
+    "together": "ensemble",
+    "today": "C’est le grand jour !",
+    "dayLeft": "Plus que 1 jour",
+    "daysLeft": "Plus que {count} jours"
+  },
+  "locationsCatalog": {
+    "details": "Détails"
+  },
+  "weddingChecklist": {
+    "category": "Organisation",
+    "planning": "Choisir la date et le style du mariage",
+    "budget": "Définir le budget et les contributions",
+    "ceremony": "Choisir le lieu de la cérémonie",
+    "reception": "Confirmer le lieu de la réception",
+    "suppliers": "Comparer et réserver les prestataires",
+    "invitations": "Préparer et envoyer les invitations",
+    "confirmations": "Recueillir les réponses et organiser les tables",
+    "finalChecks": "Confirmer le programme, les contacts et les soldes"
+  },
+  "budgetPage": {
+    "loadError": "Le budget ne peut pas être chargé. Vos données enregistrées sont conservées. Réessayez dans un instant.",
+    "retry": "Réessayer"
   }
 }

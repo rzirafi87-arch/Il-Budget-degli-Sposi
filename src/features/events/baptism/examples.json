@@ -1,0 +1,272 @@
+[
+  {
+    "scenario": "home",
+    "budget": 480,
+    "costs": [
+      {
+        "name": "Candela battesimale",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 18,
+        "paid": 18
+      },
+      {
+        "name": "Vestina o stola battesimale",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 35,
+        "paid": 35
+      },
+      {
+        "name": "Abito per il battesimo",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 65,
+        "paid": 0
+      },
+      {
+        "name": "Affitto sala",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 0,
+        "paid": 0
+      },
+      {
+        "name": "Torta del battesimo",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 58,
+        "paid": 25
+      },
+      {
+        "name": "Allestimento del tavolo",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 28,
+        "paid": 0
+      },
+      {
+        "name": "Fotografo per la cerimonia",
+        "scope": "ceremony",
+        "quantity": 0,
+        "unitCost": 160,
+        "paid": 0
+      },
+      {
+        "name": "Bomboniere a pacchetto",
+        "scope": "ceremony",
+        "quantity": 0,
+        "unitCost": 60,
+        "paid": 0
+      },
+      {
+        "name": "Animazione per bambini",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 0,
+        "paid": 0
+      },
+      {
+        "name": "Buffet o menù adulti",
+        "scope": "reception",
+        "quantity": 14,
+        "unitCost": 12,
+        "paid": 0
+      },
+      {
+        "name": "Buffet o menù bambini",
+        "scope": "reception",
+        "quantity": 3,
+        "unitCost": 7,
+        "paid": 0
+      },
+      {
+        "name": "Bambini senza menù",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 0,
+        "paid": 0
+      }
+    ]
+  },
+  {
+    "scenario": "lunch",
+    "budget": 1500,
+    "costs": [
+      {
+        "name": "Candela battesimale",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 18,
+        "paid": 18
+      },
+      {
+        "name": "Vestina o stola battesimale",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 35,
+        "paid": 35
+      },
+      {
+        "name": "Abito per il battesimo",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 75,
+        "paid": 0
+      },
+      {
+        "name": "Affitto sala",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 0,
+        "paid": 0
+      },
+      {
+        "name": "Torta del battesimo",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 85,
+        "paid": 30
+      },
+      {
+        "name": "Allestimento del tavolo",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 35,
+        "paid": 0
+      },
+      {
+        "name": "Fotografo per la cerimonia",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 180,
+        "paid": 50
+      },
+      {
+        "name": "Bomboniere a pacchetto",
+        "scope": "ceremony",
+        "quantity": 0,
+        "unitCost": 90,
+        "paid": 0
+      },
+      {
+        "name": "Animazione per bambini",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 0,
+        "paid": 0
+      },
+      {
+        "name": "Buffet o menù adulti",
+        "scope": "reception",
+        "quantity": 22,
+        "unitCost": 38,
+        "paid": 150
+      },
+      {
+        "name": "Buffet o menù bambini",
+        "scope": "reception",
+        "quantity": 5,
+        "unitCost": 18,
+        "paid": 0
+      },
+      {
+        "name": "Bambini senza menù",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 0,
+        "paid": 0
+      }
+    ]
+  },
+  {
+    "scenario": "hall",
+    "budget": 3900,
+    "costs": [
+      {
+        "name": "Candela battesimale",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 20,
+        "paid": 20
+      },
+      {
+        "name": "Vestina o stola battesimale",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 45,
+        "paid": 45
+      },
+      {
+        "name": "Abito per il battesimo",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 95,
+        "paid": 0
+      },
+      {
+        "name": "Affitto sala",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 450,
+        "paid": 200
+      },
+      {
+        "name": "Torta del battesimo",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 140,
+        "paid": 50
+      },
+      {
+        "name": "Allestimento del tavolo",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 135,
+        "paid": 0
+      },
+      {
+        "name": "Fotografo per la cerimonia",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 280,
+        "paid": 100
+      },
+      {
+        "name": "Bomboniere a pacchetto",
+        "scope": "ceremony",
+        "quantity": 1,
+        "unitCost": 120,
+        "paid": 40
+      },
+      {
+        "name": "Animazione per bambini",
+        "scope": "reception",
+        "quantity": 1,
+        "unitCost": 160,
+        "paid": 0
+      },
+      {
+        "name": "Buffet o menù adulti",
+        "scope": "reception",
+        "quantity": 42,
+        "unitCost": 55,
+        "paid": 400
+      },
+      {
+        "name": "Buffet o menù bambini",
+        "scope": "reception",
+        "quantity": 9,
+        "unitCost": 25,
+        "paid": 0
+      },
+      {
+        "name": "Bambini senza menù",
+        "scope": "reception",
+        "quantity": 3,
+        "unitCost": 0,
+        "paid": 0
+      }
+    ]
+  }
+]

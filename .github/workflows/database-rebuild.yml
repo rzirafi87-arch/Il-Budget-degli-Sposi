@@ -476,6 +476,18 @@ jobs:
       - name: Install atomic event update in isolated database
         run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261118070000_atomic_event_update.sql
 
+      - name: Reproduce stale JWT authorization RED and restore actor wrapper GREEN
+        run: |
+          set -Eeuo pipefail
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261119201651_event_access_nonempty_email.sql
+          if psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f database/tests/event_authorization_wrapper.sql > wrapper-red.log 2>&1; then
+            echo "Expected stale JWT regression before reconciliation" >&2
+            exit 1
+          fi
+          grep -q 'STALE_JWT_EMAIL_AUTHORIZED' wrapper-red.log
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261125093000_restore_actor_authorization_wrapper.sql
+          psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f database/tests/event_authorization_wrapper.sql
+
       - name: Run every pgTAP suite with TAP enforcement
         run: |
           set -Eeuo pipefail

@@ -1,6 +1,7 @@
 "use client";
 
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { eventDestination } from "@/lib/eventDestination";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 
@@ -110,10 +111,11 @@ export default function CurrentEventSelector() {
       });
       if (!response.ok) throw new Error("EVENT_SELECTION_FAILED");
       const next = (await response.json()) as Payload;
+      if (!next.currentEvent || next.currentEvent.eventId !== pendingEventId) throw new Error("EVENT_SELECTION_FAILED");
       const eventType = next.currentEvent?.eventType;
       if (eventType) localStorage.setItem("eventType", eventType);
       localStorage.setItem("currentEventChangedAt", String(Date.now()));
-      window.location.assign(`/${locale}/dashboard`);
+      window.location.assign(eventDestination(locale, next.currentEvent));
     } catch {
       setFailed(true);
     } finally {
