@@ -87,7 +87,7 @@
       "no": "Non",
       "detailsEmpty": "Aucune information supplémentaire disponible.",
       "contactsEmpty": "Aucun contact public disponible.",
-      "eventSection": "Pour votre mariage",
+      "eventSection": "Pour votre événement",
       "signInToSave": "Connectez-vous pour enregistrer ce prestataire dans votre événement.",
       "savedStatus": "Statut : {status}",
       "select": "Sélectionner",
@@ -121,7 +121,7 @@
       "loading": "Chargement du lieu…", "notFound": "Lieu introuvable.", "back": "Retour aux lieux", "loadError": "Impossible de charger le lieu.", "retry": "Réessayer", "verified": "Vérifié",
       "description": "Description", "noDescription": "Ce lieu n’a pas encore de description.", "featuresTitle": "Services et caractéristiques", "featuresEmpty": "Aucune caractéristique supplémentaire disponible.", "capacity": "Jusqu’à {count} invités",
       "features": { "accommodation": "Hébergement disponible", "internalCatering": "Traiteur interne", "externalCatering": "Traiteur externe autorisé", "parking": "Parking", "accessibility": "Accessibilité", "outdoor": "Espaces extérieurs", "indoor": "Espaces intérieurs" },
-      "contacts": "Contacts", "website": "Site web", "contactsEmpty": "Aucun contact public disponible.", "eventSection": "Pour votre mariage", "role": "Rôle du lieu", "signInToSave": "Connectez-vous pour enregistrer ce lieu dans votre événement.", "select": "Sélectionner", "unselect": "Désélectionner", "removeSaved": "Retirer des favoris", "saveLocation": "Enregistrer le lieu", "mutationError": "Impossible de mettre à jour le lieu enregistré."
+      "contacts": "Contacts", "website": "Site web", "contactsEmpty": "Aucun contact public disponible.", "eventSection": "Pour votre événement", "role": "Rôle du lieu", "signInToSave": "Connectez-vous pour enregistrer ce lieu dans votre événement.", "select": "Sélectionner", "unselect": "Désélectionner", "removeSaved": "Retirer des favoris", "saveLocation": "Enregistrer le lieu", "mutationError": "Impossible de mettre à jour le lieu enregistré."
     },
     "associations": {
       "title": "Lieux et prestataires associés", "description": { "location": "Consultez les prestataires associés à ce lieu et gérez les liens privés de votre événement.", "supplier": "Consultez les lieux associés à ce prestataire et gérez les liens privés de votre événement." },

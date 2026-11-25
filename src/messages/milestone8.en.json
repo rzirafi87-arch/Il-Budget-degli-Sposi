@@ -87,7 +87,7 @@
       "no": "No",
       "detailsEmpty": "No additional information is available.",
       "contactsEmpty": "No public contact details are available.",
-      "eventSection": "For your wedding",
+      "eventSection": "For your event",
       "signInToSave": "Sign in to save this supplier to your event.",
       "savedStatus": "Status: {status}",
       "select": "Select",
@@ -121,7 +121,7 @@
       "loading": "Loading venue…", "notFound": "Venue not found.", "back": "Back to venues", "loadError": "Unable to load the venue.", "retry": "Try again", "verified": "Verified",
       "description": "Description", "noDescription": "This venue has no description yet.", "featuresTitle": "Services and features", "featuresEmpty": "No additional features are available.", "capacity": "Up to {count} guests",
       "features": { "accommodation": "Accommodation available", "internalCatering": "In-house catering", "externalCatering": "External catering allowed", "parking": "Parking", "accessibility": "Accessibility", "outdoor": "Outdoor spaces", "indoor": "Indoor spaces" },
-      "contacts": "Contacts", "website": "Website", "contactsEmpty": "No public contacts are available.", "eventSection": "For your wedding", "role": "Venue role", "signInToSave": "Sign in to save this venue to your event.", "select": "Select", "unselect": "Unselect", "removeSaved": "Remove from saved", "saveLocation": "Save venue", "mutationError": "Unable to update the saved venue."
+      "contacts": "Contacts", "website": "Website", "contactsEmpty": "No public contacts are available.", "eventSection": "For your event", "role": "Venue role", "signInToSave": "Sign in to save this venue to your event.", "select": "Select", "unselect": "Unselect", "removeSaved": "Remove from saved", "saveLocation": "Save venue", "mutationError": "Unable to update the saved venue."
     },
     "associations": {
       "title": "Connected venues and suppliers", "description": { "location": "View suppliers associated with this venue and manage your event’s private links.", "supplier": "View venues associated with this supplier and manage your event’s private links." },

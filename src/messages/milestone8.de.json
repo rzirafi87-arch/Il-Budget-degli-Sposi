@@ -87,7 +87,7 @@
       "no": "Nein",
       "detailsEmpty": "Keine zusätzlichen Informationen verfügbar.",
       "contactsEmpty": "Keine öffentlichen Kontaktdaten verfügbar.",
-      "eventSection": "Für eure Hochzeit",
+      "eventSection": "Für dein Event",
       "signInToSave": "Melde dich an, um diesen Dienstleister in deinem Event zu speichern.",
       "savedStatus": "Status: {status}",
       "select": "Auswählen",
@@ -121,7 +121,7 @@
       "loading": "Location wird geladen…", "notFound": "Location nicht gefunden.", "back": "Zurück zu den Locations", "loadError": "Die Location konnte nicht geladen werden.", "retry": "Erneut versuchen", "verified": "Verifiziert",
       "description": "Beschreibung", "noDescription": "Für diese Location gibt es noch keine Beschreibung.", "featuresTitle": "Leistungen und Merkmale", "featuresEmpty": "Keine zusätzlichen Merkmale verfügbar.", "capacity": "Bis zu {count} Gäste",
       "features": { "accommodation": "Unterkunft verfügbar", "internalCatering": "Internes Catering", "externalCatering": "Externes Catering erlaubt", "parking": "Parkplätze", "accessibility": "Barrierefreiheit", "outdoor": "Außenbereiche", "indoor": "Innenbereiche" },
-      "contacts": "Kontakte", "website": "Website", "contactsEmpty": "Keine öffentlichen Kontakte verfügbar.", "eventSection": "Für eure Hochzeit", "role": "Rolle der Location", "signInToSave": "Melde dich an, um diese Location für dein Event zu speichern.", "select": "Auswählen", "unselect": "Auswahl aufheben", "removeSaved": "Aus Gespeicherten entfernen", "saveLocation": "Location speichern", "mutationError": "Die gespeicherte Location konnte nicht aktualisiert werden."
+      "contacts": "Kontakte", "website": "Website", "contactsEmpty": "Keine öffentlichen Kontakte verfügbar.", "eventSection": "Für dein Event", "role": "Rolle der Location", "signInToSave": "Melde dich an, um diese Location für dein Event zu speichern.", "select": "Auswählen", "unselect": "Auswahl aufheben", "removeSaved": "Aus Gespeicherten entfernen", "saveLocation": "Location speichern", "mutationError": "Die gespeicherte Location konnte nicht aktualisiert werden."
     },
     "associations": {
       "title": "Verknüpfte Locations und Dienstleister", "description": { "location": "Zeigt Dienstleister dieser Location und verwaltet private Verknüpfungen eures Events.", "supplier": "Zeigt Locations dieses Dienstleisters und verwaltet private Verknüpfungen eures Events." },
