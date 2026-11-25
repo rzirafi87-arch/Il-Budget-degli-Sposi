@@ -3,7 +3,7 @@ import { browserProcessEnv } from "./playwright.browser-env";
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["milestone8-lifecycle.spec.ts", "branch52-location-supplier.spec.ts", "branch52-supplier-work.spec.ts", "branch52-milestone5-ux.spec.ts", "branch52-security-matrix.spec.ts", "branch53-persistence.spec.ts", "branch54-journey.spec.ts", "eighteenth-party.spec.ts"],
+  testMatch: ["milestone8-lifecycle.spec.ts", "branch52-location-supplier.spec.ts", "branch52-supplier-work.spec.ts", "branch52-milestone5-ux.spec.ts", "branch52-security-matrix.spec.ts", "branch53-persistence.spec.ts", "branch54-journey.spec.ts", "eighteenth-party.spec.ts", "eighteenth-modules.spec.ts"],
   outputDir: ".playwright-results-m8",
   timeout: 120_000,
   expect: { timeout: 5_000 },

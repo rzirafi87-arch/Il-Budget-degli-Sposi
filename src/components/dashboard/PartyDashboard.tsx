@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import {partyText} from "@/features/events/eighteenth/copy";
 import PartyPayment from "@/features/events/eighteenth/PartyPayment";
 import PartyDetails from "@/features/events/eighteenth/PartyDetails";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,6 +14,7 @@ type Party = { id: string; name: string; event_date: string; total_budget: numbe
 export default function PartyDashboard({ token }: { token: string }) {
   const t = useTranslations("party18");
   const locale = useLocale();
+  const tx=(text:string)=>partyText(locale,text);
   const [detailsDirty,setDetailsDirty]=useState(false);
   const [paymentDrafts,setPaymentDrafts]=useState<Record<string,boolean>>({});
   const paymentDirty=Object.values(paymentDrafts).some(Boolean);
@@ -68,11 +70,11 @@ export default function PartyDashboard({ token }: { token: string }) {
     {party && <>
       <header><h1 className="text-2xl font-bold">{party.name}</h1>
         <time dateTime={party.event_date}>{new Intl.DateTimeFormat(locale, {dateStyle: "long", timeZone: "UTC"}).format(new Date(party.event_date))}</time></header>
-      {locale==="it"&&<PartyDetails eventId={party.id} day={party.event_date.slice(0,10)} name={party.name} onDirty={setDetailsDirty}/>}
-      {detailsDirty&&<p role="status">Salva i dettagli della festa prima di registrare una spesa.</p>}
+      {<PartyDetails locale={locale} eventId={party.id} day={party.event_date.slice(0,10)} name={party.name} onDirty={setDetailsDirty}/>}
+      {detailsDirty&&<p role="status">{tx("Salva i dettagli della festa prima di registrare una spesa.")}</p>}
       <p>{t("first")}</p>
       <nav className="grid gap-2">{["invitati", "location", "fornitori", "timeline"].map(path =>
-        <Link key={path} onClick={e=>{if((detailsDirty||paymentDirty||amount)&&!window.confirm("Hai modifiche non salvate. Vuoi lasciarle?"))e.preventDefault();}} className="underline" href={`/${locale}/${path}`}>{t("links." + path)}</Link>)}</nav>
+        <Link key={path} onClick={e=>{if((detailsDirty||paymentDirty||amount)&&!window.confirm(tx("Hai modifiche non salvate. Vuoi lasciarle?")))e.preventDefault();}} className="underline" href={`/${locale}/${path}`}>{t("links." + path)}</Link>)}</nav>
       <dl>{Object.entries({budget: party.total_budget, paid, remaining: party.total_budget - paid, quotes}).map(([key, value]) =>
         <div className="flex flex-wrap justify-between gap-2" key={key}><dt>{t(key)}</dt><dd>{money.format(value)}</dd></div>)}</dl>
       <form className="grid gap-3" onSubmit={e => {
@@ -88,8 +90,8 @@ export default function PartyDashboard({ token }: { token: string }) {
       </form>
       {entries.length ? <ul>{entries.map(entry => <li key={entry.id}>
         {categories.some(key => key === entry.category) ? t("categories." + entry.category) : entry.category} · {money.format(entry.committed)}
-        {locale==="it"&&<p>Pagato: {money.format(entry.paid)} · Saldo: {money.format(Math.max(0,entry.committed-entry.paid))}</p>}
-        {locale==="it"&&entry.status!=="rejected"&&entry.committed>entry.paid&&<PartyPayment eventId={party.id} expenseId={entry.id} remaining={entry.committed-entry.paid} blocked={detailsDirty||busy||Boolean(amount)||Object.entries(paymentDrafts).some(([id,dirty])=>id!==entry.id&&dirty)} onDirty={markPaymentDirty} onSaved={()=>refresh(n=>n+1)}/>}
+        {<p>{tx("Pagato")}: {money.format(entry.paid)} · {tx("Saldo")}: {money.format(Math.max(0,entry.committed-entry.paid))}</p>}
+        {entry.status!=="rejected"&&entry.committed>entry.paid&&<PartyPayment locale={locale} eventId={party.id} expenseId={entry.id} remaining={entry.committed-entry.paid} blocked={detailsDirty||busy||Boolean(amount)||Object.entries(paymentDrafts).some(([id,dirty])=>id!==entry.id&&dirty)} onDirty={markPaymentDirty} onSaved={()=>refresh(n=>n+1)}/>}
       </li>)}</ul> : <p>{t("empty")}</p>}
     </>}
   </main>;

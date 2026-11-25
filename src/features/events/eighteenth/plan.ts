@@ -17,10 +17,17 @@ export function partyPlanError(plan:PartyPlan, day:string) {
  return '';
 }
 export function partyDue(day:string,offset:number){if(!validDate(day))return '';const d=new Date(day+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10);}
-export function partyInvitation(plan:PartyPlan, day:string, fallbackName:string){
+export function partyInvitation(plan:PartyPlan, day:string, fallbackName:string,locale="it"){
  const name=plan.celebrant.trim()||fallbackName;
  const ready=Boolean(name&&validDate(day)&&plan.startTime&&plan.venue.trim()&&plan.address.trim()&&plan.replyBy&&plan.replyContact.trim()&&!partyPlanError(plan,day));
- const date=validDate(day)?new Intl.DateTimeFormat('it',{dateStyle:'long',timeZone:'UTC'}).format(new Date(day+'T12:00:00Z')):'';
- const intro=plan.role==='celebrant'?`Ti invito a festeggiare i miei 18 anni! Sono ${name}.`:`Festeggiamo insieme i 18 anni di ${name}!`;
- return {ready,text:[intro,`${date} alle ${plan.startTime}`,`${plan.venue} · ${plan.address}`,plan.theme?`Tema: ${plan.theme}`:'',`Conferma entro il ${plan.replyBy} a ${plan.replyContact}.`].filter(Boolean).join('\n')};
+ const date=validDate(day)?new Intl.DateTimeFormat(locale,{dateStyle:'long',timeZone:'UTC'}).format(new Date(day+'T12:00:00Z')):'';
+ const wording:Record<string,[string,string,string,string,string]>={
+ it:[`Ti invito a festeggiare i miei 18 anni! Sono ${name}.`,`Festeggiamo insieme i 18 anni di ${name}!`,'alle','Tema','Conferma entro il'],
+ en:[`Join me for my 18th birthday! I'm ${name}.`,`Let's celebrate ${name}'s 18th birthday!`,'at','Theme','Please reply by'],
+ fr:[`Je vous invite à fêter mes 18 ans ! Je suis ${name}.`,`Fêtons ensemble les 18 ans de ${name} !`,'à','Thème','Merci de répondre avant le'],
+ es:[`¡Te invito a celebrar mis 18 años! Soy ${name}.`,`¡Celebremos los 18 años de ${name}!`,'a las','Tema','Confirma antes del'],
+ de:[`Feiere meinen 18. Geburtstag mit mir! Ich bin ${name}.`,`Feiern wir zusammen den 18. Geburtstag von ${name}!`,'um','Motto','Bitte antworte bis'],
+ };
+ const w=wording[locale]||wording.it;
+ return {ready,text:[w[plan.role==='celebrant'?0:1],`${date} ${w[2]} ${plan.startTime}`,`${plan.venue} · ${plan.address}`,plan.theme?`${w[3]}: ${plan.theme}`:'',`${w[4]} ${plan.replyBy} · ${plan.replyContact}.`].filter(Boolean).join('\n')};
 }

@@ -79,7 +79,7 @@ export async function deleteQaIdentity(identity: QaIdentity) {
   if (result.error) throw new Error(`QA identity cleanup failed: ${result.error.name}`);
 }
 
-export async function createLocationSupplierFixture(identity: QaIdentity): Promise<LocationSupplierFixture> {
+export async function createLocationSupplierFixture(identity: QaIdentity, eventType: "wedding" | "eighteenth" = "wedding"): Promise<LocationSupplierFixture> {
   const client = admin();
   const suffix = identity.marker.slice(-18);
   const fixture: LocationSupplierFixture = {
@@ -98,7 +98,8 @@ export async function createLocationSupplierFixture(identity: QaIdentity): Promi
     id: fixture.eventId,
     owner_id: identity.id,
     name: `QA-M8-M3-${identity.marker}`,
-    event_type: "wedding",
+    event_type: eventType,
+    ...(eventType === "eighteenth" ? {event_date:"2030-05-18",total_budget:500} : {}),
     language: "it",
     country: "IT",
   }).select("id,owner_id,name").single();

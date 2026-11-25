@@ -1,3 +1,4 @@
+import {partyText} from "../src/features/events/eighteenth/copy";
 import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import {blankPlan} from "../src/features/events/baptism/model";
@@ -37,6 +38,20 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     await expect(page.getByRole("button", {name:"Copia invito",exact:true})).toBeEnabled();
     await page.getByRole("button", {name:"Salva dettagli festa",exact:true}).click();
     await expect(page.getByRole("status")).toHaveText("Dettagli salvati.");
+    await page.getByRole("button",{name:"Checklist",exact:true}).click();
+    await page.getByRole("checkbox",{name:/Definisci il budget/}).check();
+    await page.getByRole("button",{name:"Salva dettagli festa",exact:true}).click();
+    await expect(page.getByRole("status")).toHaveText("Dettagli salvati.");
+    await page.goto("/it/timeline");
+    await expect(page.getByRole("heading",{name:"Timeline della festa",exact:true})).toBeVisible();
+    await expect(page.getByRole("checkbox",{name:/Definisci il budget/})).toBeChecked();
+    await expect(page.locator('time[datetime="2027-03-02"]')).toBeVisible();
+    await page.getByRole("checkbox",{name:/Conferma il luogo della festa/}).check();
+    await page.getByRole("button",{name:"Salva dettagli festa",exact:true}).click();
+    await expect(page.getByRole("status")).toHaveText("Dettagli salvati.");
+    await page.getByRole("link",{name:"Torna alla festa",exact:true}).click();
+    await page.getByRole("button",{name:"Checklist",exact:true}).click();
+    await expect(page.getByRole("checkbox",{name:/Conferma il luogo della festa/})).toBeChecked();
     await page.getByLabel("Categoria").selectOption("cake");
     await page.getByLabel("Importo").fill("120");
     await page.getByRole("button", {name:"Registra spesa"}).click();
@@ -66,6 +81,14 @@ test("[18] party setup, expense, RSVP, sign-in and event isolation", async ({ pa
     for (const locale of ["it","en","es","fr","de"]) {
       await page.goto("/" + locale + "/dashboard");
       await expect(page.getByRole("heading", {name:"Sofia QA"})).toBeVisible();
+      await expect(page.getByRole("heading",{name:partyText(locale,"La tua festa, passo dopo passo"),exact:true})).toBeVisible();
+      await page.getByRole("button",{name:partyText(locale,"Checklist"),exact:true}).click();
+      await expect(page.getByRole("checkbox",{name:new RegExp(partyText(locale,"Definisci il budget"))})).toBeChecked();
+      await expect(page.getByRole("checkbox",{name:new RegExp(partyText(locale,"Conferma il luogo della festa"))})).toBeChecked();
+      await page.getByRole("button",{name:partyText(locale,"Invito"),exact:true}).click();
+      const translatedInvite=await page.getByRole("textbox",{name:partyText(locale,"Anteprima invito"),exact:true}).inputValue();
+      expect(translatedInvite).not.toContain("PRIVATE-PARTY-NOTE");
+      if(locale!=="it")expect(translatedInvite).not.toContain("Festeggiamo insieme");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
     const wedding = await page.request.post("/api/event/ensure-default", {headers, data:{eventType:"wedding", country:"it", language:"it", createAdditional:true}});

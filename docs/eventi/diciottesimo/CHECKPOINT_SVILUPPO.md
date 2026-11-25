@@ -105,3 +105,26 @@ la bozza e l'identità del tentativo incerto. Pagato/saldo visibili per spesa,
 preventivi aperti calcolati sulla parte ancora da pagare.
 Nuovo collaudo browser include acconto 20 su preventivo 200 oltre a spesa 120,
 rientro con pagato 140 e cambio fra tre eventi. Esito remoto ancora da verificare.
+
+## Completamento richiesto — cinque lingue, checklist e moduli
+Base verificata 78fececdc05fa670e482f40e40441acc58b6df2d; tutti i PASS
+precedenti sono conservati. Nuovi campi, errori, pagamenti, attività e inviti
+sono ora disponibili in italiano, inglese, francese, spagnolo e tedesco.
+
+La route /timeline per il Diciottesimo risolve l'evento lato server e presenta
+la stessa checklist del dashboard, dalla stessa riga eighteenth_party_plans.
+Scadenze relative alla data dell'evento, completamento e revisione sono comuni:
+nessuna copia in timeline_items e nessuna migrazione. Gli altri eventi mantengono
+la timeline precedente. Un errore di risoluzione non mostra una finta checklist.
+Le bozze conservano la protezione in caso di uscita o conflitto.
+
+Collaudo esteso: completamento dal dashboard, scadenza, recupero nella timeline,
+completamento dalla timeline e rientro dopo login; verifica nelle cinque lingue.
+Nuovo collaudo moduli su stack isolato: salvataggio reale da UI di location
+(main_event) e fornitore, reload, logout/login, isolamento da Matrimonio e
+Battesimo e tentativi PATCH non autorizzati agli ID del Diciottesimo. Pulizia
+catalogo/identità con residue=0. Queste nuove prove remote vanno ancora concluse.
+
+PASS locale preliminare: TypeScript, lint mirato senza errori, 150 suite /995 test.
+Nessuna nuova registrazione reale, modifica Production o servizio a pagamento.
+/api/health/latest non viene utilizzato come evidenza di salute QA.
