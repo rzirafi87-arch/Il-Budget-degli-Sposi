@@ -18,3 +18,9 @@
 | Merge / DDL / deploy Production | NON ESEGUITI | Nessuna autorizzazione dedotta dal PASS QA |
 | Altri eventi / costi nuovi | NESSUNO | Perimetro rispettato |
 | Pannello Sites live | NON RIPUBBLICATO | Questa checklist è la versione aggiornata nel pacchetto |
+
+## Aggiornamento backup reale
+- CONFIG_PARZIALE del27/11 cifrato, persistito privatamente e decifratura verificata: PASS parziale.
+- Database e byte Storage: NON ACQUISITI; restore reale/conteggi/permessi: NON VERIFICATI.
+- STOP: connessione PostgreSQL protetta, egress del worker e configurazioni sensitive originali mancanti.
+- Dettaglio aggiornato: BACKUP_REALE_STATO.md. Nessun valore, dato o segreto nel repository.
