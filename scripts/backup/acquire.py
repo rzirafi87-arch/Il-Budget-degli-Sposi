@@ -175,6 +175,45 @@ try:
  # Use psql in the disconnected container; compare the same table content, policies and ACL inventory.
  def local_query(query):
   return json.loads(run(['docker','exec','--env','PGPASSWORD='+local_db_password,'--env','PGOPTIONS=-c search_path=pg_catalog',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]))
+ # Extension install scripts and platform bootstrap can supply different initial ACLs.
+ # Replay the complete source permission inventory, then compare it independently.
+ stage=mark_stage('RESTORE_SOURCE_OWNERSHIP_AND_ACL')
+ def json_rows(query):
+  return [list(x.values()) for x in local_query("select coalesce(json_agg(row_to_json(x)),'[]') from ("+query+") x")]
+ relation_rows=json_rows("select n.nspname,c.relname,c.relkind::text from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind in ('r','p','S','v') and n.nspname !~ '^pg_' and n.nspname not in ('information_schema','cron','net') order by 1,2")
+ relation_kinds={(n,name):kind for n,name,kind in relation_rows}
+ current_relations=json_rows("select n.nspname,c.relname,coalesce(json_agg(case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end) filter(where a.grantee is not null),'[]')::text from pg_class c join pg_namespace n on n.oid=c.relnamespace left join lateral aclexplode(c.relacl) a on true where c.relkind in ('r','p','S','v') and n.nspname !~ '^pg_' and n.nspname not in ('information_schema','cron','net') group by 1,2 order by 1,2")
+ current_relation_grantees={(n,name):set(json.loads(acl)) for n,name,acl in current_relations}
+ current_functions={(r[0],r[1],r[2]):r for r in json_rows(PERMISSION_QUERIES['function_permissions'])}
+ current_schemas={r[0]:r for r in json_rows(PERMISSION_QUERIES['schema_permissions'])}
+ commands=['BEGIN;']
+ def restore_acl(object_type,target,owner,source_acl,existing_grantees):
+  entries=json.loads(source_acl or '[]');grantees=set(existing_grantees)|{x[1] for x in entries}|{'PUBLIC',owner}
+  for grantee in sorted(grantees):
+   commands.append('REVOKE ALL PRIVILEGES ON '+object_type+' '+target+' FROM '+('PUBLIC' if grantee=='PUBLIC' else ident(grantee))+' CASCADE;')
+  for grantor,grantee,privilege,grantable in sorted(entries,key=lambda x:(x[0]!=owner,x[0],x[1],x[2])):
+   if grantor!=owner:commands.append('SET ROLE '+ident(grantor)+';')
+   commands.append('GRANT '+privilege+' ON '+object_type+' '+target+' TO '+('PUBLIC' if grantee=='PUBLIC' else ident(grantee))+(' WITH GRANT OPTION' if grantable else '')+';')
+   if grantor!=owner:commands.append('RESET ROLE;')
+ for namespace,name,owner,acl,rls,force in before['grants']:
+  kind=relation_kinds[(namespace,name)];target=ident(namespace)+'.'+ident(name)
+  commands.append('ALTER '+('SEQUENCE' if kind=='S' else 'VIEW' if kind=='v' else 'TABLE')+' '+target+' OWNER TO '+ident(owner)+';')
+  if kind in ('r','p'):
+   commands.append('ALTER TABLE '+target+(' ENABLE' if rls else ' DISABLE')+' ROW LEVEL SECURITY;')
+   commands.append('ALTER TABLE '+target+(' FORCE' if force else ' NO FORCE')+' ROW LEVEL SECURITY;')
+  restore_acl('SEQUENCE' if kind=='S' else 'TABLE',target,owner,acl,current_relation_grantees[(namespace,name)])
+ for namespace,name,args,owner,acl in before['function_permissions']:
+  target=ident(namespace)+'.'+ident(name)+'('+args+')'
+  commands.append('ALTER FUNCTION '+target+' OWNER TO '+ident(owner)+';')
+  current=current_functions[(namespace,name,args)]
+  restore_acl('FUNCTION',target,owner,acl,{x[1] for x in json.loads(current[4] or '[]')})
+ for namespace,owner,acl in before['schema_permissions']:
+  target=ident(namespace);commands.append('ALTER SCHEMA '+target+' OWNER TO '+ident(owner)+';')
+  restore_acl('SCHEMA',target,owner,acl,{x[1] for x in json.loads(current_schemas[namespace][2] or '[]')})
+ commands.append('COMMIT;');(root/'restore-source-permissions.sql').write_text('\n'.join(commands)+'\n')
+ run(['docker','cp',str(root/'restore-source-permissions.sql'),container+':/tmp/restore-source-permissions.sql'])
+ run(['docker','exec',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/restore-source-permissions.sql'])
+ stage=mark_stage('RESTORE_VERIFY')
  for table,expected in before['tables'].items():
   n,t=table.split('.',1);table_ident='"'+n.replace('"','""')+'"."'+t.replace('"','""')+'"'
   actual=local_query("select json_build_array(count(*),md5(coalesce(string_agg(h,'' order by h),''))) from (select md5(row_to_json(t)::text) h from "+table_ident+" t) x")
