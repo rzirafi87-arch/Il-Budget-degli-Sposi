@@ -6,7 +6,7 @@ for label,variable in [('CURRENT','SOURCE_URL'),('EXISTING','EXISTING_SOURCE_URL
  if not valid:print('BACKUP_ACCESS_'+label+'=STOP_INVALID_CONNECTION_STRING');continue
  ref='vsguhivizuneylqhygfk'
  if ref not in p.hostname and ref not in (p.username or ''):print('BACKUP_ACCESS_'+label+'=STOP_PROJECT_IDENTITY_NOT_PROVEN');continue
- env=dict(os.environ,PGOPTIONS='-c default_transaction_read_only=on -c statement_timeout=30000',PGCONNECT_TIMEOUT='10',PGDATABASE=u)
+ env=dict(os.environ,PGOPTIONS='-c default_transaction_read_only=on -c statement_timeout=30000',PGCONNECT_TIMEOUT='10',PGHOST=p.hostname,PGPORT=str(p.port or 5432),PGUSER=urllib.parse.unquote(p.username or ''),PGPASSWORD=urllib.parse.unquote(p.password or ''),PGDATABASE=urllib.parse.unquote(p.path.lstrip('/') or 'postgres'),PGSSLMODE='require')
  try:
   r=subprocess.run(['psql','-X','-A','-t','-v','ON_ERROR_STOP=1','-c',"begin transaction read only;select current_setting('transaction_read_only');select to_regclass('public.events') is not null;rollback;"],env=env,capture_output=True,text=True,timeout=35)
   if not r.returncode and '\non\n' in '\n'+r.stdout and '\nt\n' in '\n'+r.stdout:print('BACKUP_ACCESS_'+label+'=PASS_READ_ONLY_CONNECTION;NO_DATA_EXPORTED');raise SystemExit(0)
