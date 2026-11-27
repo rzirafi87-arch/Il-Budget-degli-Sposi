@@ -10,7 +10,11 @@ report={'date_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'pro
 def mark_stage(name):
  print('BACKUP_STAGE='+name,flush=True);return name
 stage=mark_stage('INIT')
+local_db_password=None
 PERMISSION_QUERIES={
+ 'database_properties':"select datdba::regrole::text,pg_encoding_to_char(encoding),datcollate,datctype,datconnlimit from pg_database where datname=current_database()",
+ 'database_grants':"select case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end as grantee,a.grantor::regrole::text as grantor,a.privilege_type,a.is_grantable from pg_database d cross join lateral aclexplode(coalesce(d.datacl,acldefault('d',d.datdba))) a where d.datname=current_database() order by 1,2,3,4",
+ 'database_settings':"select case when setrole=0 then null else setrole::regrole::text end as role_name,array(select unnest(setconfig) order by 1)::text as settings from pg_db_role_setting where setdatabase=(select oid from pg_database where datname=current_database()) order by 1 nulls first",
  'role_attributes':"select rolname,rolsuper,rolinherit,rolcreaterole,rolcreatedb,rolcanlogin,rolreplication,rolbypassrls,rolconnlimit,rolvaliduntil::text,array(select unnest(rolconfig) order by 1)::text as role_settings from pg_roles where rolname !~ '^pg_' order by 1",
  'role_memberships':"select roleid::regrole::text,member::regrole::text,grantor::regrole::text,admin_option,inherit_option,set_option from pg_auth_members order by 1,2,3",
  'schema_permissions':"select nspname,nspowner::regrole::text,(select json_agg(json_build_array(a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) order by a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) from aclexplode(coalesce(nspacl,acldefault('n',nspowner))) a)::text from pg_namespace where nspname !~ '^pg_' and nspname <> 'information_schema' order by 1",
@@ -18,6 +22,8 @@ PERMISSION_QUERIES={
  'default_permissions':"select defaclrole::regrole::text,defaclnamespace::regnamespace::text,defaclobjtype,(select json_agg(json_build_array(a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) order by a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) from aclexplode(coalesce(defaclacl,'{}'::aclitem[])) a)::text from pg_default_acl order by 1,2,3"
 }
 def run(args,**kw):
+ if args[:2]==['docker','exec'] and '--env-file' not in args and '--env' not in args and any(x in args for x in ['psql','pg_restore','createdb']) and local_db_password is not None:
+  args=args[:2]+['--env','PGPASSWORD='+local_db_password]+args[2:]
  r=subprocess.run(args,capture_output=True,timeout=300,**kw)
  if r.returncode:
   (root/'command-stderr-private.txt').write_bytes(r.stderr or b'')
@@ -41,9 +47,14 @@ try:
  env={'PGHOST':u.hostname,'PGPORT':str(u.port or 5432),'PGUSER':urllib.parse.unquote(u.username or ''),'PGPASSWORD':urllib.parse.unquote(u.password or ''),'PGDATABASE':urllib.parse.unquote(u.path.lstrip('/') or 'postgres'),'PGSSLMODE':'require','PGOPTIONS':'-c default_transaction_read_only=on','PGCONNECT_TIMEOUT':'15'}
  envfile=root/'connection.env';envfile.write_text(''.join(k+'='+v+'\n' for k,v in env.items()))
  container=run(['docker','ps','--format','{{.Names}}']).decode().splitlines();container=next(x for x in container if x.startswith('supabase_db_'))
+ local_info=json.loads(run(['docker','inspect',container]))[0]
+ clone_env=dict(x.split('=',1) for x in local_info['Config']['Env'] if '=' in x)
+ local_db_password=clone_env.get('POSTGRES_PASSWORD') or clone_env.get('PGPASSWORD')
+ if not local_db_password:raise RuntimeError('LOCAL_RESTORE_PASSWORD_UNAVAILABLE')
  stage=mark_stage('CONSISTENT_SNAPSHOT')
  with psycopg.connect(os.environ['SOURCE_URL'],options='-c default_transaction_read_only=on',sslmode='require',connect_timeout=15) as c:
   c.execute('begin isolation level repeatable read read only');snapshot=c.execute('select pg_export_snapshot()').fetchone()[0]
+  db_meta=c.execute("select datdba::regrole::text,pg_encoding_to_char(encoding),datcollate,datctype,datconnlimit from pg_database where datname=current_database()").fetchone();db_grants=c.execute("select case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.grantor::regrole::text,a.privilege_type,a.is_grantable from pg_database d cross join lateral aclexplode(coalesce(d.datacl,acldefault('d',d.datdba))) a where d.datname=current_database()").fetchall();db_settings=c.execute("select case when setrole=0 then null else setrole::regrole::text end,setconfig from pg_db_role_setting where setdatabase=(select oid from pg_database where datname=current_database())").fetchall();(root/'database-properties.json').write_text(json.dumps({'metadata':db_meta,'grants':db_grants,'settings':db_settings},default=str));
   extension_versions=c.execute('select e.extname,n.nspname,e.extversion,e.extowner::regrole::text from pg_extension e join pg_namespace n on n.oid=e.extnamespace order by e.extname').fetchall();(root/'extension-versions.json').write_text(json.dumps(extension_versions));before=manifest(c);(root/'database-manifest.json').write_text(json.dumps(before,default=str))
   buckets=c.execute('select row_to_json(b) from storage.buckets b order by id').fetchall();objects=c.execute('select row_to_json(o) from storage.objects o order by bucket_id,name').fetchall()
   (root/'storage-inventory.json').write_text(json.dumps({'buckets':[x[0] for x in buckets],'objects':[x[0] for x in objects]},default=str))
@@ -85,12 +96,12 @@ try:
  for network in networks:run(['docker','network','disconnect',network,container])
  stage=mark_stage('CREATE_OFFLINE_DATABASE')
  # Restore only into a fresh database inside the ephemeral offline container.
- run(['docker','exec',container,'createdb','-h','/var/run/postgresql','-U','supabase_admin','-T','template0','production_restore_drill'])
+ run(['docker','exec',container,'createdb','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-T','template0','--owner='+db_meta[0],'--encoding='+db_meta[1],'--lc-collate='+db_meta[2],'--lc-ctype='+db_meta[3],'production_restore_drill'])
  # Managed extensions are prerequisites, and must match source versions.
  # A default pg_graphql version can omit the source four-argument wrapper.
  stage=mark_stage('RESTORE_EXTENSION_PREREQUISITES')
  def local_sql(query):
-  return run(['docker','exec',container,'psql','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]).decode().strip()
+  return run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]).decode().strip()
  def ident(x):return '\"'+x.replace('\"','\"\"')+'\"'
  def literal(x):return "'"+x.replace("'","''")+"'"
  stage=mark_stage('RESTORE_CLUSTER_ROLES')
@@ -105,7 +116,18 @@ try:
   role_lines.append(line)
  (root/'roles-restore.sql').write_text('\n'.join(role_lines)+'\n')
  run(['docker','cp',str(root/'roles-restore.sql'),container+':/tmp/roles-restore.sql'])
- run(['docker','exec',container,'psql','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/roles-restore.sql'])
+ run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/roles-restore.sql'])
+ stage=mark_stage('RESTORE_DATABASE_PROPERTIES')
+ local_sql('alter database production_restore_drill connection limit '+str(db_meta[4]))
+ local_sql('revoke all on database production_restore_drill from public')
+ for grantee,grantor,privilege,grantable in db_grants:
+  target='PUBLIC' if grantee=='PUBLIC' else ident(grantee)
+  local_sql('set role '+ident(grantor)+';grant '+privilege+' on database production_restore_drill to '+target+(' with grant option' if grantable else '')+';reset role')
+ for role,settings in db_settings:
+  for setting in settings:
+   key,value=setting.split('=',1)
+   command=('alter database production_restore_drill' if role is None else 'alter role '+ident(role)+' in database production_restore_drill')
+   local_sql(command+' set '+ident(key)+' to '+literal(value))
  stage=mark_stage('RESTORE_EXTENSION_PREREQUISITES')
  report['source_extension_versions']={e:v for e,n,v,owner in extension_versions}
  for extension,schema,version,owner in extension_versions:
@@ -134,11 +156,11 @@ try:
  (root/'restore.list').write_text('\n'.join(filtered)+'\n')
  run(['docker','cp',str(root/'restore.list'),container+':/tmp/production-restore.list'])
  stage=mark_stage('RESTORE_DATABASE')
- run(['docker','exec',container,'pg_restore','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','--use-list=/tmp/production-restore.list','--exit-on-error','/tmp/source-production.dump'])
+ run(['docker','exec',container,'pg_restore','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','--use-list=/tmp/production-restore.list','--exit-on-error','/tmp/source-production.dump'])
  stage=mark_stage('RESTORE_VERIFY')
  # Use psql in the disconnected container; compare the same table content, policies and ACL inventory.
  def local_query(query):
-  return json.loads(run(['docker','exec',container,'psql','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]))
+  return json.loads(run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]))
  for table,expected in before['tables'].items():
   n,t=table.split('.',1);table_ident='"'+n.replace('"','""')+'"."'+t.replace('"','""')+'"'
   actual=local_query("select json_build_array(count(*),md5(coalesce(string_agg(h,'' order by h),''))) from (select md5(row_to_json(t)::text) h from "+table_ident+" t) x")
@@ -154,10 +176,18 @@ try:
  # Prove anonymous/no-claim roles cannot read event data in the restored clone.
  for role in ['anon','authenticated']:
   q='begin;set local role '+ident(role)+";select set_config('request.jwt.claims','{}',true);select count(*) from public.events;rollback;"
-  check=subprocess.run(['docker','exec',container,'psql','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',q],capture_output=True,text=True)
+  check=subprocess.run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',q],capture_output=True,text=True)
   if check.returncode and 'permission denied' not in check.stderr.lower():raise RuntimeError('RESTORED_ACCESS_CHECK_ERROR')
   if not check.returncode and '0' not in check.stdout.splitlines():raise RuntimeError('RESTORED_ANONYMOUS_ACCESS_LEAK')
  report['restore_negative_access']='PASS_ANON_AND_AUTHENTICATED_WITHOUT_CLAIMS'
+ owner_count=local_query('select count(*) from public.events e join auth.users u on u.id=e.owner_id')
+ if owner_count:
+  claims="select json_build_object('sub',u.id,'role','authenticated','email',u.email,'email_verified',u.email_confirmed_at is not null)::text from auth.users u where exists(select 1 from public.events e where e.owner_id=u.id) order by u.id limit 1"
+  query="begin;select set_config('request.jwt.claims',("+claims+"),true);set local role authenticated;select 'RESTORED_OWNER_ACCESS='||count(*)::text from public.events where owner_id=auth.uid();rollback;"
+  output=local_sql(query);line=next((x for x in output.splitlines() if x.startswith('RESTORED_OWNER_ACCESS=')),None)
+  if not line or int(line.split('=')[1])<1:raise RuntimeError('RESTORED_OWNER_ACCESS_DENIED')
+  report['restore_owner_access']='PASS_EXISTING_OWNER_AUTHORIZED'
+ else:report['restore_owner_access']='NOT_VERIFIABLE_NO_AUTH_OWNER_EVENTS'
  report['restore']='PASS_DATABASE_COUNTS_CONTENT_RLS_ACL'
  report['storage']='PASS_EMPTY_INVENTORY_AND_METADATA_RESTORED' if not files else 'PASS_BYTES_ARCHIVED_NOT_SERVICE_RESTORED'
 except Exception as e:
