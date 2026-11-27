@@ -55,7 +55,7 @@ try:
  with psycopg.connect(os.environ['SOURCE_URL'],options='-c default_transaction_read_only=on',sslmode='require',connect_timeout=15) as c:
   c.execute('begin isolation level repeatable read read only');snapshot=c.execute('select pg_export_snapshot()').fetchone()[0]
   db_meta=c.execute("select datdba::regrole::text,pg_encoding_to_char(encoding),datcollate,datctype,datconnlimit from pg_database where datname=current_database()").fetchone();db_grants=c.execute("select case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.grantor::regrole::text,a.privilege_type,a.is_grantable from pg_database d cross join lateral aclexplode(coalesce(d.datacl,acldefault('d',d.datdba))) a where d.datname=current_database()").fetchall();db_settings=c.execute("select case when setrole=0 then null else setrole::regrole::text end,setconfig from pg_db_role_setting where setdatabase=(select oid from pg_database where datname=current_database())").fetchall();(root/'database-properties.json').write_text(json.dumps({'metadata':db_meta,'grants':db_grants,'settings':db_settings},default=str));
-  extension_versions=c.execute('select e.extname,n.nspname,e.extversion,e.extowner::regrole::text from pg_extension e join pg_namespace n on n.oid=e.extnamespace order by e.extname').fetchall();(root/'extension-versions.json').write_text(json.dumps(extension_versions));before=manifest(c);(root/'database-manifest.json').write_text(json.dumps(before,default=str))
+  extension_versions=c.execute('select e.extname,n.nspname,e.extversion,e.extowner::regrole::text from pg_extension e join pg_namespace n on n.oid=e.extnamespace order by e.extname').fetchall();(root/'extension-versions.json').write_text(json.dumps(extension_versions));wrappers=c.execute("select n.nspname,p.proname,pg_get_function_identity_arguments(p.oid),pg_get_functiondef(p.oid),p.proowner::regrole::text,e.extname from pg_proc p join pg_namespace n on n.oid=p.pronamespace join pg_depend d on d.objid=p.oid and d.classid='pg_proc'::regclass and d.deptype='e' join pg_extension e on e.oid=d.refobjid where n.nspname='graphql_public' and p.prokind='f' order by 1,2,3").fetchall();(root/'extension-owned-wrappers.json').write_text(json.dumps(wrappers));before=manifest(c);(root/'database-manifest.json').write_text(json.dumps(before,default=str))
   buckets=c.execute('select row_to_json(b) from storage.buckets b order by id').fetchall();objects=c.execute('select row_to_json(o) from storage.objects o order by bucket_id,name').fetchall()
   (root/'storage-inventory.json').write_text(json.dumps({'buckets':[x[0] for x in buckets],'objects':[x[0] for x in objects]},default=str))
   stage=mark_stage('DATABASE_DUMP')
@@ -140,6 +140,17 @@ try:
   try:local_sql('set role '+ident(owner)+';create extension if not exists '+ident(extension)+' with schema '+ident(schema)+' version '+literal(version)+';reset role')
   finally:
    if not was_superuser:local_sql('alter role '+ident(owner)+' nosuperuser')
+ # Supabase adds wrappers to extension membership outside the extension install SQL.
+ # pg_dump omits those definitions; restore them explicitly from the source snapshot.
+ stage=mark_stage('RESTORE_PLATFORM_WRAPPERS')
+ for schema,name,arguments,definition,owner,extension in wrappers:
+  local_sql('create schema if not exists '+ident(schema))
+  local_sql(definition)
+  signature=ident(schema)+'.'+ident(name)+'('+arguments+')'
+  local_sql('alter function '+signature+' owner to '+ident(owner))
+  member=local_sql("select exists(select 1 from pg_depend where classid='pg_proc'::regclass and objid="+literal(signature)+"::regprocedure and deptype='e')")
+  if member!='t':local_sql('alter extension '+ident(extension)+' add function '+signature)
+ report['platform_wrappers']=len(wrappers)
  existing=json.loads(local_sql("select coalesce(json_agg(nspname),'[]') from pg_namespace where nspname !~ '^pg_' and nspname <> 'information_schema'"))
  for schema,owner,acl in before['schema_permissions']:
   if schema in existing:local_sql('alter schema '+ident(schema)+' owner to '+ident(owner))
