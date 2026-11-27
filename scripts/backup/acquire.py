@@ -213,6 +213,29 @@ try:
  commands.append('COMMIT;');(root/'restore-source-permissions.sql').write_text('\n'.join(commands)+'\n')
  run(['docker','cp',str(root/'restore-source-permissions.sql'),container+':/tmp/restore-source-permissions.sql'])
  run(['docker','exec',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/restore-source-permissions.sql'])
+ stage=mark_stage('REMOVE_CLONE_ONLY_ROLES')
+ expected_roles={row[0] for row in before['role_attributes']}
+ actual_roles=set(local_query("select coalesce(json_agg(rolname),'[]') from pg_roles where rolname !~ '^pg_'"))
+ extra_roles=actual_roles-expected_roles
+ if 'supabase_admin' in extra_roles:raise RuntimeError('SOURCE_ADMIN_ROLE_MISSING')
+ databases=local_query("select json_agg(datname) from pg_database where datallowconn")
+ for extra_role in sorted(extra_roles):
+  for database in databases:
+   run(['docker','exec',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d',database,'-v','ON_ERROR_STOP=1','-c','DROP OWNED BY '+ident(extra_role)+' CASCADE'])
+  local_sql('DROP ROLE '+ident(extra_role))
+ report['clone_only_roles_removed']=len(extra_roles)
+ stage=mark_stage('RESTORE_EXACT_ROLE_SETTINGS')
+ role_config_commands=['BEGIN;']
+ for row in before['role_attributes']:
+  role_name=row[0];role_config_commands.append('ALTER ROLE '+ident(role_name)+' RESET ALL;')
+  settings=local_query('select to_json('+literal(row[-1])+'::text[])')
+  for setting in settings:
+   key,value=setting.split('=',1)
+   role_config_commands.append('SELECT pg_catalog.set_config('+literal(key)+','+literal(value)+',false);')
+   role_config_commands.append('ALTER ROLE '+ident(role_name)+' SET '+ident(key)+' FROM CURRENT;')
+ role_config_commands.append('COMMIT;');(root/'restore-exact-role-settings.sql').write_text('\n'.join(role_config_commands)+'\n')
+ run(['docker','cp',str(root/'restore-exact-role-settings.sql'),container+':/tmp/restore-exact-role-settings.sql'])
+ run(['docker','exec',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/restore-exact-role-settings.sql'])
  stage=mark_stage('RESTORE_VERIFY')
  for table,expected in before['tables'].items():
   n,t=table.split('.',1);table_ident='"'+n.replace('"','""')+'"."'+t.replace('"','""')+'"'
