@@ -1,0 +1,19 @@
+name: Production backup access validation
+on:
+  pull_request:
+    branches: [feature/eighteenth-completion-20261123]
+    paths: ['.github/workflows/production-backup-access.yml', 'scripts/backup/production-access.py']
+permissions:
+  contents: read
+jobs:
+  read-only-access:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Validate protected PostgreSQL connection without printing credentials
+        env:
+          SOURCE_URL: ${{ secrets.PRODUCTION_BACKUP_DATABASE_URL }}
+        run: python3 scripts/backup/production-access.py
