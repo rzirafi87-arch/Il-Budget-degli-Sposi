@@ -10,7 +10,11 @@ report={'date_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'pro
 stage='INIT'
 def run(args,**kw):
  r=subprocess.run(args,capture_output=True,**kw)
- if r.returncode: raise RuntimeError('COMMAND_FAILED')
+ if r.returncode:
+  (root/'command-stderr-private.txt').write_bytes(r.stderr or b'')
+  msg=(r.stderr or b'').decode(errors='replace').lower()
+  print('RESTORE_ERROR_CATEGORIES='+','.join(x for x in ['permission denied','does not exist','already exists','must be owner','extension','role','schema','event trigger','superuser','unrecognized configuration parameter','transaction'] if x in msg))
+  raise RuntimeError('COMMAND_FAILED')
  return r.stdout
 
 def manifest(c):
@@ -37,7 +41,9 @@ try:
   stage='DATABASE_DUMP'
   with (root/'database.dump').open('wb') as f:
    r=subprocess.run(['docker','exec','--env-file',str(envfile),container,'pg_dump','-Fc','--snapshot='+snapshot],stdout=f,stderr=subprocess.PIPE)
-   if r.returncode:raise RuntimeError('DUMP_FAILED')
+   if r.returncode:
+    (root/'dump-stderr-private.txt').write_bytes(r.stderr or b'')
+    raise RuntimeError('DUMP_FAILED')
   report['db_dump']='PASS';report['table_count']=len(before['tables']);report['dump_sha256']=hashlib.sha256((root/'database.dump').read_bytes()).hexdigest()
   stage='ROLES_DUMP';roles=run(['docker','exec','--env-file',str(envfile),container,'pg_dumpall','--roles-only','--no-role-passwords']);(root/'roles.sql').write_bytes(roles)
  envfile.unlink()
