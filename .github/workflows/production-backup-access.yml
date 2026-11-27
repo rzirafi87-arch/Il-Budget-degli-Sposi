@@ -16,4 +16,5 @@ jobs:
       - name: Validate protected PostgreSQL connection without printing credentials
         env:
           SOURCE_URL: ${{ secrets.PRODUCTION_BACKUP_DATABASE_URL }}
+          EXISTING_SOURCE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
         run: python3 scripts/backup/production-access.py
