@@ -22,8 +22,10 @@ PERMISSION_QUERIES={
  'default_permissions':"select defaclrole::regrole::text,defaclnamespace::regnamespace::text,defaclobjtype,(select json_agg(json_build_array(a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) order by a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) from aclexplode(coalesce(defaclacl,'{}'::aclitem[])) a)::text from pg_default_acl order by 1,2,3"
 }
 def run(args,**kw):
- if args[:2]==['docker','exec'] and '--env-file' not in args and '--env' not in args and any(x in args for x in ['psql','pg_restore','createdb']) and local_db_password is not None:
-  args=args[:2]+['--env','PGPASSWORD='+local_db_password]+args[2:]
+ if args[:2]==['docker','exec'] and '--env-file' not in args and any(x in args for x in ['psql','pg_restore','createdb']):
+  extra=['--env','PGOPTIONS=-c search_path=pg_catalog']
+  if local_db_password is not None and not any(x.startswith('PGPASSWORD=') for x in args):extra+=['--env','PGPASSWORD='+local_db_password]
+  args=args[:2]+extra+args[2:]
  r=subprocess.run(args,capture_output=True,timeout=300,**kw)
  if r.returncode:
   (root/'command-stderr-private.txt').write_bytes(r.stderr or b'')
@@ -38,7 +40,7 @@ def manifest(c):
  for n,t in tables:
   q=sql.SQL("select count(*),md5(coalesce(string_agg(h,'' order by h),'')) from (select md5(row_to_json(t)::text) h from {}.{} t) x").format(sql.Identifier(n),sql.Identifier(t))
   result[n+'.'+t]=list(c.execute(q).fetchone())
- policies=c.execute("select schemaname,tablename,policyname,permissive,roles::text,cmd,qual,with_check from pg_policies order by 1,2,3").fetchall()
+ policies=c.execute("select schemaname,tablename,policyname,permissive,array(select unnest(roles) order by 1)::text as roles,cmd,qual,with_check from pg_policies order by 1,2,3").fetchall()
  grants=c.execute("select n.nspname,c.relname,c.relowner::regrole::text,(select json_agg(json_build_array(a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) order by a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) from aclexplode(coalesce(c.relacl,acldefault(case when c.relkind='S' then 'S'::\"char\" else 'r'::\"char\" end,c.relowner))) a)::text,c.relrowsecurity,c.relforcerowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind in ('r','p','S','v') and n.nspname !~ '^pg_' and n.nspname not in ('information_schema','cron','net') order by 1,2").fetchall()
  return {'tables':result,'policies':policies,'grants':grants,**{k:c.execute(q).fetchall() for k,q in PERMISSION_QUERIES.items()}}
 try:
@@ -53,7 +55,7 @@ try:
  if not local_db_password:raise RuntimeError('LOCAL_RESTORE_PASSWORD_UNAVAILABLE')
  stage=mark_stage('CONSISTENT_SNAPSHOT')
  with psycopg.connect(os.environ['SOURCE_URL'],options='-c default_transaction_read_only=on',sslmode='require',connect_timeout=15) as c:
-  c.execute('begin isolation level repeatable read read only');snapshot=c.execute('select pg_export_snapshot()').fetchone()[0]
+  c.execute('begin isolation level repeatable read read only');c.execute('set local search_path=pg_catalog');snapshot=c.execute('select pg_export_snapshot()').fetchone()[0]
   db_meta=c.execute("select datdba::regrole::text,pg_encoding_to_char(encoding),datcollate,datctype,datconnlimit from pg_database where datname=current_database()").fetchone();db_grants=c.execute("select case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.grantor::regrole::text,a.privilege_type,a.is_grantable from pg_database d cross join lateral aclexplode(coalesce(d.datacl,acldefault('d',d.datdba))) a where d.datname=current_database()").fetchall();db_settings=c.execute("select case when setrole=0 then null else setrole::regrole::text end,setconfig from pg_db_role_setting where setdatabase=(select oid from pg_database where datname=current_database())").fetchall();(root/'database-properties.json').write_text(json.dumps({'metadata':db_meta,'grants':db_grants,'settings':db_settings},default=str));
   extension_versions=c.execute('select e.extname,n.nspname,e.extversion,e.extowner::regrole::text from pg_extension e join pg_namespace n on n.oid=e.extnamespace order by e.extname').fetchall();(root/'extension-versions.json').write_text(json.dumps(extension_versions));wrappers=c.execute("select n.nspname,p.proname,pg_get_function_identity_arguments(p.oid),pg_get_functiondef(p.oid),p.proowner::regrole::text,e.extname,p.oid::regprocedure::text,obj_description(p.oid,'pg_proc') from pg_proc p join pg_namespace n on n.oid=p.pronamespace join pg_depend d on d.objid=p.oid and d.classid='pg_proc'::regclass and d.deptype='e' join pg_extension e on e.oid=d.refobjid where n.nspname='graphql_public' and p.prokind='f' order by 1,2,3").fetchall();(root/'extension-owned-wrappers.json').write_text(json.dumps(wrappers));before=manifest(c);(root/'database-manifest.json').write_text(json.dumps(before,default=str))
   buckets=c.execute('select row_to_json(b) from storage.buckets b order by id').fetchall();objects=c.execute('select row_to_json(o) from storage.objects o order by bucket_id,name').fetchall()
@@ -101,7 +103,7 @@ try:
  # A default pg_graphql version can omit the source four-argument wrapper.
  stage=mark_stage('RESTORE_EXTENSION_PREREQUISITES')
  def local_sql(query):
-  return run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]).decode().strip()
+  return run(['docker','exec','--env','PGPASSWORD='+local_db_password,'--env','PGOPTIONS=-c search_path=pg_catalog',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]).decode().strip()
  def ident(x):return '\"'+x.replace('\"','\"\"')+'\"'
  def literal(x):return "'"+x.replace("'","''")+"'"
  stage=mark_stage('RESTORE_CLUSTER_ROLES')
@@ -116,7 +118,7 @@ try:
   role_lines.append(line)
  (root/'roles-restore.sql').write_text('\n'.join(role_lines)+'\n')
  run(['docker','cp',str(root/'roles-restore.sql'),container+':/tmp/roles-restore.sql'])
- run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/roles-restore.sql'])
+ run(['docker','exec','--env','PGPASSWORD='+local_db_password,'--env','PGOPTIONS=-c search_path=pg_catalog',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/roles-restore.sql'])
  stage=mark_stage('RESTORE_DATABASE_PROPERTIES')
  local_sql('alter database production_restore_drill connection limit '+str(db_meta[4]))
  local_sql('revoke all on database production_restore_drill from public')
@@ -172,12 +174,12 @@ try:
  stage=mark_stage('RESTORE_VERIFY')
  # Use psql in the disconnected container; compare the same table content, policies and ACL inventory.
  def local_query(query):
-  return json.loads(run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]))
+  return json.loads(run(['docker','exec','--env','PGPASSWORD='+local_db_password,'--env','PGOPTIONS=-c search_path=pg_catalog',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',query]))
  for table,expected in before['tables'].items():
   n,t=table.split('.',1);table_ident='"'+n.replace('"','""')+'"."'+t.replace('"','""')+'"'
   actual=local_query("select json_build_array(count(*),md5(coalesce(string_agg(h,'' order by h),''))) from (select md5(row_to_json(t)::text) h from "+table_ident+" t) x")
   if actual!=expected:raise RuntimeError('RESTORED_TABLE_MISMATCH')
- for key,q in [('policies',"select schemaname,tablename,policyname,permissive,roles::text,cmd,qual,with_check from pg_policies order by 1,2,3"),('grants',"select n.nspname,c.relname,c.relowner::regrole::text,(select json_agg(json_build_array(a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) order by a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) from aclexplode(coalesce(c.relacl,acldefault(case when c.relkind='S' then 'S'::\"char\" else 'r'::\"char\" end,c.relowner))) a)::text,c.relrowsecurity,c.relforcerowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind in ('r','p','S','v') and n.nspname !~ '^pg_' and n.nspname not in ('information_schema','cron','net') order by 1,2")]:
+ for key,q in [('policies',"select schemaname,tablename,policyname,permissive,array(select unnest(roles) order by 1)::text as roles,cmd,qual,with_check from pg_policies order by 1,2,3"),('grants',"select n.nspname,c.relname,c.relowner::regrole::text,(select json_agg(json_build_array(a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) order by a.grantor::regrole::text,case when a.grantee=0 then 'PUBLIC' else a.grantee::regrole::text end,a.privilege_type,a.is_grantable) from aclexplode(coalesce(c.relacl,acldefault(case when c.relkind='S' then 'S'::\"char\" else 'r'::\"char\" end,c.relowner))) a)::text,c.relrowsecurity,c.relforcerowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind in ('r','p','S','v') and n.nspname !~ '^pg_' and n.nspname not in ('information_schema','cron','net') order by 1,2")]:
   a=local_query('select coalesce(json_agg(row_to_json(x)),\'[]\') from ('+q+') x');a=[list(x.values()) for x in a]
   if json.loads(json.dumps(before[key],default=str))!=a:
    (root/'permissions-diff-private.json').write_text(json.dumps({'kind':key,'source':before[key],'restored':a},default=str));raise RuntimeError('RESTORED_PERMISSIONS_MISMATCH')
@@ -188,7 +190,7 @@ try:
  # Prove anonymous/no-claim roles cannot read event data in the restored clone.
  for role in ['anon','authenticated']:
   q='begin;set local role '+ident(role)+";select set_config('request.jwt.claims','{}',true);select count(*) from public.events;rollback;"
-  check=subprocess.run(['docker','exec','--env','PGPASSWORD='+local_db_password,container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',q],capture_output=True,text=True)
+  check=subprocess.run(['docker','exec','--env','PGPASSWORD='+local_db_password,'--env','PGOPTIONS=-c search_path=pg_catalog',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-At','-v','ON_ERROR_STOP=1','-c',q],capture_output=True,text=True)
   if check.returncode and 'permission denied' not in check.stderr.lower():raise RuntimeError('RESTORED_ACCESS_CHECK_ERROR')
   if not check.returncode and '0' not in check.stdout.splitlines():raise RuntimeError('RESTORED_ANONYMOUS_ACCESS_LEAK')
  report['restore_negative_access']='PASS_ANON_AND_AUTHENTICATED_WITHOUT_CLAIMS'
