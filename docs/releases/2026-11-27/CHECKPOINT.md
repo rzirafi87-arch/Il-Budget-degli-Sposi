@@ -1,3 +1,5 @@
+> Esito conclusivo aggiornato: vedere [CONCLUSIONE.md](CONCLUSIONE.md). Questo file conserva il checkpoint iniziale.
+
 # Checkpoint rilascio — 27 novembre 2026
 
 **PASS preparazione ed evidenze funzionali. STOP autorizzazione rollout.**

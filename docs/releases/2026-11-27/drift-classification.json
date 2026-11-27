@@ -1,0 +1,128 @@
+[
+  {
+    "name": "check_table_availability(p_table_id uuid)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "find_or_create_place(p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "get_or_create_category(p_event uuid, p_name text)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "get_table_stats(p_event_id uuid)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "get_visible_suppliers(p_category text, p_region text, p_province text, p_is_demo boolean)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "increment_analytics_counter(p_entity_type text, p_entity_id uuid, p_counter_type text)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "is_subscription_active(p_subscription_tier text, p_expires_at timestamp with time zone)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "normalize_phone(phone_input text)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "normalize_url(url_input text)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "populate_event_categories()",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "populate_user_timeline()",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "read_family_baptism(p_id uuid)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": false,
+    "acl_equal": true
+  },
+  {
+    "name": "regenerate_event_timeline(p_event_id uuid)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "save_family_baptism(p_id uuid, p_revision integer, p_plan jsonb)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": false,
+    "acl_equal": true
+  },
+  {
+    "name": "seed_categories(p_event uuid)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "seed_full_event(p_event uuid)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "seed_subcategories(p_category uuid, VARIADIC p_names text[])",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "set_owner_id()",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "update_updated_at()",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "update_updated_at_column()",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  },
+  {
+    "name": "upsert_vendor(p_name text, p_type text, p_source text, p_source_id text, p_phone text, p_email text, p_website text, p_rating numeric, p_rating_count integer, p_description text, p_price_range text, p_metadata jsonb, p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+    "body_equal_ignoring_line_endings": true,
+    "config_equal": true,
+    "acl_equal": true
+  }
+]

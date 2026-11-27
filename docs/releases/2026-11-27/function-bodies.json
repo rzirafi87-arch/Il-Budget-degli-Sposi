@@ -1,0 +1,342 @@
+{
+  "qa": [
+    {
+      "name": "check_table_availability(p_table_id uuid)",
+      "source": "\nDECLARE\n  v_total_seats INTEGER;\n  v_assigned_seats INTEGER;\nBEGIN\n  SELECT total_seats INTO v_total_seats\n  FROM tables WHERE id = p_table_id;\n  \n  SELECT COUNT(*) INTO v_assigned_seats\n  FROM table_assignments WHERE table_id = p_table_id;\n  \n  RETURN (v_assigned_seats < v_total_seats);\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "find_or_create_place(p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "source": "\nDECLARE\n  v_place_id UUID;\nBEGIN\n  -- Try to find existing place by IDs (priority: Google > OSM > Wikidata)\n  SELECT id INTO v_place_id FROM places\n  WHERE google_place_id = p_google_place_id AND p_google_place_id IS NOT NULL\n  LIMIT 1;\n  \n  IF v_place_id IS NULL AND p_osm_id IS NOT NULL THEN\n    SELECT id INTO v_place_id FROM places\n    WHERE osm_id = p_osm_id\n    LIMIT 1;\n  END IF;\n  \n  IF v_place_id IS NULL AND p_wikidata_qid IS NOT NULL THEN\n    SELECT id INTO v_place_id FROM places\n    WHERE wikidata_qid = p_wikidata_qid\n    LIMIT 1;\n  END IF;\n  \n  -- If not found, create new place\n  IF v_place_id IS NULL THEN\n    INSERT INTO places (\n      google_place_id, osm_id, wikidata_qid,\n      lat, lng, address, city, province, region, postal_code\n    ) VALUES (\n      p_google_place_id, p_osm_id, p_wikidata_qid,\n      p_lat, p_lng, p_address, p_city, p_province, p_region, p_postal_code\n    )\n    RETURNING id INTO v_place_id;\n  ELSE\n    -- Update existing place with new IDs if missing\n    UPDATE places SET\n      google_place_id = COALESCE(google_place_id, p_google_place_id),\n      osm_id = COALESCE(osm_id, p_osm_id),\n      wikidata_qid = COALESCE(wikidata_qid, p_wikidata_qid),\n      lat = COALESCE(p_lat, lat),\n      lng = COALESCE(p_lng, lng),\n      updated_at = NOW()\n    WHERE id = v_place_id;\n  END IF;\n  \n  RETURN v_place_id;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "get_or_create_category(p_event uuid, p_name text)",
+      "source": "\ndeclare\n  v_id uuid;\nbegin\n  insert into public.categories (id, event_id, name)\n  values (gen_random_uuid(), p_event, p_name)\n  on conflict (event_id, lower(name)) do nothing;\n\n  select c.id into v_id\n  from public.categories c\n  where c.event_id = p_event and lower(c.name) = lower(p_name)\n  limit 1;\n\n  return v_id;\nend ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "get_table_stats(p_event_id uuid)",
+      "source": "\nBEGIN\n  RETURN QUERY\n  SELECT \n    COUNT(DISTINCT t.id)::INTEGER as total_tables,\n    COALESCE(SUM(t.total_seats), 0)::INTEGER as total_seats,\n    COUNT(DISTINCT ta.id)::INTEGER as assigned_seats,\n    (COALESCE(SUM(t.total_seats), 0) - COUNT(DISTINCT ta.id))::INTEGER as available_seats\n  FROM tables t\n  LEFT JOIN table_assignments ta ON ta.table_id = t.id\n  WHERE t.event_id = p_event_id;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "get_visible_suppliers(p_category text, p_region text, p_province text, p_is_demo boolean)",
+      "source": "\nBEGIN\n  RETURN QUERY\n  SELECT \n    s.id, s.name, s.region, s.province, s.city, s.address,\n    s.phone, s.email, s.website, s.description, s.category,\n    s.verified, s.subscription_tier, s.is_featured\n  FROM public.suppliers s\n  WHERE \n    -- Filter by category if provided\n    (p_category IS NULL OR s.category = p_category)\n    -- Filter by region if provided\n    AND (p_region IS NULL OR s.region = p_region)\n    -- Filter by province if provided\n    AND (p_province IS NULL OR s.province = p_province)\n    -- Visibility rules based on tier\n    AND (\n      -- Premium Plus: visible everywhere including demo\n      (s.subscription_tier = 'premium_plus' AND public.is_subscription_active(s.subscription_tier, s.subscription_expires_at))\n      -- Premium: visible in hub + category (not in demo unless explicitly allowed)\n      OR (s.subscription_tier = 'premium' AND public.is_subscription_active(s.subscription_tier, s.subscription_expires_at) AND NOT p_is_demo)\n      -- Base: visible only in category pages (not in demo)\n      OR (s.subscription_tier = 'base' AND public.is_subscription_active(s.subscription_tier, s.subscription_expires_at) AND p_category IS NOT NULL AND NOT p_is_demo)\n      -- Free: never visible in public searches\n    )\n  ORDER BY \n    -- Premium Plus first\n    CASE WHEN s.subscription_tier = 'premium_plus' THEN 1\n         WHEN s.subscription_tier = 'premium' THEN 2\n         WHEN s.subscription_tier = 'base' THEN 3\n         ELSE 4 END,\n    -- Featured items first within each tier\n    s.is_featured DESC,\n    -- Then by name\n    s.name ASC;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres,anon=X/postgres,authenticated=X/postgres}"
+    },
+    {
+      "name": "increment_analytics_counter(p_entity_type text, p_entity_id uuid, p_counter_type text)",
+      "source": "\nBEGIN\n  IF p_entity_type = 'supplier' THEN\n    IF p_counter_type = 'profile_views' THEN\n      UPDATE public.suppliers SET profile_views = profile_views + 1, last_view_at = TIMEZONE('utc', NOW()) WHERE id = p_entity_id;\n    ELSIF p_counter_type = 'contact_clicks' THEN\n      UPDATE public.suppliers SET contact_clicks = contact_clicks + 1 WHERE id = p_entity_id;\n    ELSIF p_counter_type = 'website_clicks' THEN\n      UPDATE public.suppliers SET website_clicks = website_clicks + 1 WHERE id = p_entity_id;\n    END IF;\n  ELSIF p_entity_type = 'location' THEN\n    IF p_counter_type = 'profile_views' THEN\n      UPDATE public.locations SET profile_views = profile_views + 1, last_view_at = TIMEZONE('utc', NOW()) WHERE id = p_entity_id;\n    ELSIF p_counter_type = 'contact_clicks' THEN\n      UPDATE public.locations SET contact_clicks = contact_clicks + 1 WHERE id = p_entity_id;\n    ELSIF p_counter_type = 'website_clicks' THEN\n      UPDATE public.locations SET website_clicks = website_clicks + 1 WHERE id = p_entity_id;\n    END IF;\n  ELSIF p_entity_type = 'church' THEN\n    IF p_counter_type = 'profile_views' THEN\n      UPDATE public.churches SET profile_views = profile_views + 1, last_view_at = TIMEZONE('utc', NOW()) WHERE id = p_entity_id;\n    ELSIF p_counter_type = 'contact_clicks' THEN\n      UPDATE public.churches SET contact_clicks = contact_clicks + 1 WHERE id = p_entity_id;\n    ELSIF p_counter_type = 'website_clicks' THEN\n      UPDATE public.churches SET website_clicks = website_clicks + 1 WHERE id = p_entity_id;\n    END IF;\n  END IF;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "is_subscription_active(p_subscription_tier text, p_expires_at timestamp with time zone)",
+      "source": "\nBEGIN\n  -- Free tier is always \"active\"\n  IF p_subscription_tier = 'free' THEN\n    RETURN true;\n  END IF;\n  \n  -- Paid tiers need valid expiry\n  IF p_expires_at IS NULL THEN\n    RETURN false;\n  END IF;\n  \n  RETURN p_expires_at > TIMEZONE('utc', NOW());\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "normalize_phone(phone_input text)",
+      "source": "\nBEGIN\n  IF phone_input IS NULL THEN\n    RETURN NULL;\n  END IF;\n  \n  -- Remove spaces, dashes, parentheses\n  phone_input := regexp_replace(phone_input, '[\\s\\-\\(\\)]', '', 'g');\n  \n  -- Add +39 if missing (Italian numbers)\n  IF phone_input ~ '^3[0-9]{8,9}$' OR phone_input ~ '^0[0-9]{8,10}$' THEN\n    phone_input := '+39' || phone_input;\n  ELSIF NOT phone_input ~ '^\\+' THEN\n    phone_input := '+' || phone_input;\n  END IF;\n  \n  RETURN phone_input;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "normalize_url(url_input text)",
+      "source": "\nBEGIN\n  IF url_input IS NULL THEN\n    RETURN NULL;\n  END IF;\n  \n  -- Add https:// if missing\n  IF url_input !~ '^https?://' THEN\n    url_input := 'https://' || url_input;\n  END IF;\n  \n  -- Replace http:// with https://\n  url_input := regexp_replace(url_input, '^http://', 'https://');\n  \n  -- Remove trailing slash\n  url_input := regexp_replace(url_input, '/$', '');\n  \n  RETURN url_input;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "populate_event_categories()",
+      "source": "\nDECLARE\n  subcat_record RECORD;\nBEGIN\n  -- Solo se evento ha event_type valorizzato\n  IF NEW.event_type IS NOT NULL THEN\n    -- Copia tutte le subcategories per questo tipo evento\n    FOR subcat_record IN\n      SELECT s.id, s.default_budget\n      FROM public.subcategories s\n      JOIN public.categories c ON c.id = s.category_id\n      JOIN public.event_types et ON et.id = c.event_type_id\n      WHERE et.code = NEW.event_type\n    LOOP\n      INSERT INTO public.event_category_selection (\n        event_id,\n        subcategory_id,\n        budget,\n        is_selected\n      ) VALUES (\n        NEW.id,\n        subcat_record.id,\n        COALESCE(subcat_record.default_budget, 0),\n        true -- Di default tutte selezionate\n      )\n      ON CONFLICT (event_id, subcategory_id) DO NOTHING; -- Evita duplicati\n    END LOOP;\n  END IF;\n\n  RETURN NEW;\nEND;\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "populate_user_timeline()",
+      "source": "\nDECLARE\n  template_record RECORD;\nBEGIN\n  IF NEW.event_type IS NOT NULL AND NEW.event_date IS NOT NULL THEN\n    FOR template_record IN\n      SELECT et.id, et.title, et.description, et.offset_days, et.category, et.is_critical\n      FROM public.event_timelines et\n      JOIN public.event_types evt ON evt.id = et.event_type_id\n      WHERE evt.code = NEW.event_type\n    LOOP\n      INSERT INTO public.user_event_timeline (\n        event_id,\n        timeline_id,\n        title,\n        description,\n        due_date,\n        is_completed\n      ) VALUES (\n        NEW.id,\n        template_record.id,\n        template_record.title,\n        template_record.description,\n        (NEW.event_date::date + template_record.offset_days * INTERVAL '1 day')::date,\n        false\n      )\n      ON CONFLICT DO NOTHING;\n    END LOOP;\n  END IF;\n\n  RETURN NEW;\nEND;\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "read_family_baptism(p_id uuid)",
+      "source": "\ndeclare result jsonb;\nbegin\n if not exists(select 1 from public.events where id=p_id and owner_id=auth.uid() and event_type='baptism') then raise exception 'EVENT_UNAVAILABLE'; end if;\n select jsonb_build_object('event_id',p_id,'revision',revision,'plan',plan || jsonb_build_object(\n 'guests',coalesce((select jsonb_agg(jsonb_build_object('id',g.id,'name',g.name,'ceremony',case when not coalesce(g.rsvp_received,false) then 'pending' when g.attending then 'yes' else 'no' end,'menu',coalesce(g.menu_preferences[1],'pending'),'food',g.allergies_intolerances) || g.baptism_details order by g.created_at,g.id) from public.guests g where g.event_id=p_id and g.baptism_details is not null),'[]'::jsonb),\n 'costs',coalesce((select jsonb_agg(jsonb_build_object('id',e.id,'name',e.description,'enabled',e.is_enabled,'payments',coalesce(e.payment_installments,'[]'::jsonb)) || e.baptism_details order by e.inserted_at,e.id) from public.expenses e where e.event_id=p_id and e.baptism_details is not null),'[]'::jsonb))) into result from public.baptism_family_plans where event_id=p_id;\n return result;\nend ",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}"
+    },
+    {
+      "name": "regenerate_event_timeline(p_event_id uuid)",
+      "source": "\nDECLARE\n  event_record RECORD;\n  timeline_count INT;\nBEGIN\n  SELECT * INTO event_record FROM public.events WHERE id = p_event_id;\n  \n  IF NOT FOUND THEN\n    RETURN 'Evento non trovato';\n  END IF;\n\n  DELETE FROM public.user_event_timeline WHERE event_id = p_event_id;\n\n  INSERT INTO public.user_event_timeline (event_id, timeline_id, title, description, due_date, is_completed)\n  SELECT \n    p_event_id,\n    et.id,\n    et.title,\n    et.description,\n    (event_record.event_date::date + et.offset_days * INTERVAL '1 day')::date,\n    false\n  FROM public.event_timelines et\n  JOIN public.event_types evt ON evt.id = et.event_type_id\n  WHERE evt.code = event_record.event_type;\n\n  GET DIAGNOSTICS timeline_count = ROW_COUNT;\n\n  RETURN format('\u2705 Rigenerato: %s milestone timeline', timeline_count);\nEND;\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "save_family_baptism(p_id uuid, p_revision integer, p_plan jsonb)",
+      "source": "\ndeclare\n owner uuid:=auth.uid(); title text; budget numeric; day date; current_rev integer; prior_hash text; prior_base integer;\n g jsonb; c jsonb; p jsonb; total numeric; paid numeric; active boolean; eid uuid; hash text:=md5(p_plan::text);\nbegin\n if owner is null or p_id is null or p_revision is null or p_revision<0 or jsonb_typeof(p_plan) is distinct from 'object' or octet_length(p_plan::text)>1000000 or p_plan->>'version' is distinct from '2' or jsonb_typeof(p_plan->'guests') is distinct from 'array' or jsonb_typeof(p_plan->'costs') is distinct from 'array' then raise exception 'INVALID_BAPTISM'; end if;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');budget:=coalesce(nullif(p_plan->>'budget','')::numeric,0);day:=nullif(left(p_plan->>'ceremony',10),'')::date;\n if length(title)>120 or budget<0 or budget>999999999 or budget='NaN'::numeric or jsonb_array_length(p_plan->'guests')>2000 or jsonb_array_length(p_plan->'costs')>1000 or coalesce(p_plan->>'scenario','') not in ('solo','later','home','lunch','hall') then raise exception 'INVALID_BAPTISM';end if;\n foreach title in array array['adults','companions','children','noMeal'] loop\n  if not coalesce(p_plan->>title,'') ~ '^\\d+$' then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n end loop;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');\n if (p_plan->>'companions')::numeric>(p_plan->>'adults')::numeric then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n if p_plan->>'scenario' in ('home','lunch','hall') and nullif(p_plan->>'time','') is not null and nullif(p_plan->>'ceremony','') is not null and (p_plan->>'time')::timestamp<=(p_plan->>'ceremony')::timestamp then raise exception 'INVALID_BAPTISM_TIME';end if;\n perform pg_advisory_xact_lock(hashtextextended(p_id::text,0));\n select revision,request_hash,base_revision into current_rev,prior_hash,prior_base from public.baptism_family_plans b join public.events e on e.id=b.event_id where e.id=p_id and e.owner_id=owner and e.event_type='baptism' for update of e,b;\n if current_rev is not null then\n  if prior_hash=hash and prior_base=p_revision then return current_rev;end if;\n  if current_rev<>p_revision then raise exception 'BAPTISM_CONFLICT';end if;\n elsif p_revision<>0 then raise exception 'EVENT_UNAVAILABLE';\n else\n  if exists(select 1 from public.events where id=p_id) then raise exception 'EVENT_UNAVAILABLE';end if;\n  insert into public.events(id,owner_id,event_type,public_id,name,event_date,total_budget,language,country) values(p_id,owner,'baptism',replace(gen_random_uuid()::text,'-',''),title,day,budget,coalesce(p_plan->>'locale','it'),'it');\n  insert into public.baptism_family_plans(event_id,revision,plan) values(p_id,0,'{}');\n end if;\n if (select count(*) from jsonb_array_elements(p_plan->'guests'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'guests')) or (select count(*) from jsonb_array_elements(p_plan->'costs'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'costs')) then raise exception 'DUPLICATE_BAPTISM_ITEM';end if;\n for g in select value from jsonb_array_elements(p_plan->'guests') loop\n  eid:=(g->>'id')::uuid;\n  if coalesce(btrim(g->>'name'),'')='' or coalesce(g->>'ceremony','') not in ('pending','yes','no') or coalesce(g->>'reception','') not in ('pending','yes','no') or coalesce(g->>'menu','') not in ('adult','child','none','pending') or coalesce(g->>'kind','') not in ('adult','child') then raise exception 'INVALID_BAPTISM_GUEST';end if;\n  if exists(select 1 from public.guests where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  if coalesce(g->>'companionOf','')<>'' and (g->>'companionOf'=g->>'id' or not exists(select 1 from jsonb_array_elements(p_plan->'guests') x where x->>'id'=g->>'companionOf' and coalesce(x->>'companionOf','')='')) then raise exception 'INVALID_BAPTISM_COMPANION';end if;\n  insert into public.guests(id,event_id,name,guest_type,rsvp_received,attending,menu_preferences,allergies_intolerances,baptism_details)\n  values(eid,p_id,g->>'name','common',g->>'ceremony'<>'pending',g->>'ceremony'='yes',array[g->>'menu'],coalesce(g->>'food',''),g- 'id'-'name'-'ceremony'-'menu'-'food')\n  on conflict(id) do update set name=excluded.name,rsvp_received=excluded.rsvp_received,attending=excluded.attending,menu_preferences=excluded.menu_preferences,allergies_intolerances=excluded.allergies_intolerances,baptism_details=excluded.baptism_details;\n end loop;\n delete from public.guests where event_id=p_id and baptism_details is not null and id::text not in (select value->>'id' from jsonb_array_elements(p_plan->'guests'));\n for c in select value from jsonb_array_elements(p_plan->'costs') loop\n  eid:=(c->>'id')::uuid;\n  if coalesce(btrim(c->>'name'),'')='' or coalesce(c->>'scope','') not in ('ceremony','reception') or not coalesce(c->>'quantity','')~'^\\d+$' or coalesce(c->>'unitCost','') !~ '^\\d+(\\.\\d+)?$' or jsonb_typeof(c->'payments') is distinct from 'array' then raise exception 'INVALID_BAPTISM_COST';end if;\n  if exists(select 1 from public.expenses where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  paid:=0;\n  for p in select value from jsonb_array_elements(c->'payments') loop\n   if coalesce(p->>'amount','')!~'^\\d+(\\.\\d+)?$' then raise exception 'INVALID_BAPTISM_PAYMENT';end if;\n   paid:=paid+(p->>'amount')::numeric;\n  end loop;\n  active:=coalesce((c->>'enabled')::boolean,false) and (c->>'scope'<>'reception' or p_plan->>'scenario' in ('home','lunch','hall'));\n  total:=case when active then round((c->>'quantity')::numeric*(c->>'unitCost')::numeric,2) else 0 end;\n  insert into public.expenses(id,event_id,description,amount,paid_amount,payment_installments,is_enabled,spend_type,status,baptism_details)\n  values(eid,p_id,c->>'name',total,paid,c->'payments',true,'common','pending',c-'id'-'name'-'payments'-'enabled'||jsonb_build_object('enabled',coalesce((c->>'enabled')::boolean,false)))\n  on conflict(id) do update set description=excluded.description,amount=excluded.amount,paid_amount=excluded.paid_amount,payment_installments=excluded.payment_installments,baptism_details=excluded.baptism_details;\n end loop;\n -- Paid rows may only be disabled, never erased through a replacement snapshot.\n if exists(select 1 from public.expenses e where event_id=p_id and baptism_details is not null and coalesce(paid_amount,0)>0 and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'))) then raise exception 'BAPTISM_PAID_COST_REMOVAL';end if;\n delete from public.expenses where event_id=p_id and baptism_details is not null and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'));\n update public.events set name=title,event_date=day,total_budget=budget where id=p_id;\n update public.baptism_family_plans set plan=p_plan-'guests'-'costs',revision=revision+1,request_hash=hash,base_revision=p_revision where event_id=p_id returning revision into current_rev;\n return current_rev;\nend ",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}"
+    },
+    {
+      "name": "seed_categories(p_event uuid)",
+      "source": "\nBEGIN\n  INSERT INTO public.categories (id, event_id, name)\n  SELECT uuid_generate_v4(), p_event, t.name\n  FROM (VALUES\n    ('Sposa'),\n    ('Sposo'),\n    ('Abiti & Accessori (altri)'),\n    ('Cerimonia'),\n    ('Location & Catering'),\n    ('Fiori & Decor'),\n    ('Foto & Video'),\n    ('Inviti & Stationery'),\n    ('Musica & Intrattenimento'),\n    ('Beauty & Benessere'),\n    ('Bomboniere & Regali'),\n    ('Trasporti'),\n    ('Ospitalit\u00e0 & Logistica'),\n    ('Viaggio di nozze'),\n    ('Staff & Coordinamento'),\n    ('Burocrazia & Documenti'),\n    ('Comunicazione & Media'),\n    ('Extra & Contingenze')\n  ) AS t(name);\nEND ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "seed_full_event(p_event uuid)",
+      "source": "\ndeclare\n  v_cat uuid;\nbegin\n  -- 1) Abiti & Accessori (altri)\n  v_cat := get_or_create_category(p_event, 'Abiti & Accessori (altri)');\n  perform ensure_subcategory(v_cat, 'Ospiti/Genitori extra');\n  perform ensure_subcategory(v_cat, 'Fedi nuziali');\n\n  -- 2) Cerimonia\n  v_cat := get_or_create_category(p_event, 'Cerimonia');\n  perform ensure_subcategory(v_cat, 'Chiesa/comune');\n  perform ensure_subcategory(v_cat, 'Musiche');\n  perform ensure_subcategory(v_cat, 'Libretti');\n  perform ensure_subcategory(v_cat, 'Fiori cerimonia');\n  perform ensure_subcategory(v_cat, 'Documenti e pratiche');\n  perform ensure_subcategory(v_cat, 'Offerte / Diritti');\n\n  -- 3) Fiori & Decor\n  v_cat := get_or_create_category(p_event, 'Fiori & Decor');\n  perform ensure_subcategory(v_cat, 'Bouquet');\n  perform ensure_subcategory(v_cat, 'Boutonni\u00e8re');\n  perform ensure_subcategory(v_cat, 'Centrotavola');\n  perform ensure_subcategory(v_cat, 'Allestimenti');\n  perform ensure_subcategory(v_cat, 'Candele');\n  perform ensure_subcategory(v_cat, 'Tableau');\n  perform ensure_subcategory(v_cat, 'Segnaposto');\n  perform ensure_subcategory(v_cat, 'Noleggi (vasi/strutture)');\n\n  -- 4) Foto & Video\n  v_cat := get_or_create_category(p_event, 'Foto & Video');\n  perform ensure_subcategory(v_cat, 'Servizio foto');\n  perform ensure_subcategory(v_cat, 'Video');\n  perform ensure_subcategory(v_cat, 'Drone');\n  perform ensure_subcategory(v_cat, 'Album');\n  perform ensure_subcategory(v_cat, 'Stampe');\n  perform ensure_subcategory(v_cat, 'Secondo fotografo');\n\n  -- 5) Inviti & Stationery\n  v_cat := get_or_create_category(p_event, 'Inviti & Stationery');\n  perform ensure_subcategory(v_cat, 'Partecipazioni');\n  perform ensure_subcategory(v_cat, 'Menu');\n  perform ensure_subcategory(v_cat, 'Segnaposto');\n  perform ensure_subcategory(v_cat, 'Libretti Messa');\n  perform ensure_subcategory(v_cat, 'Timbri & Clich\u00e9');\n  perform ensure_subcategory(v_cat, 'Francobolli / Spedizioni');\n  perform ensure_subcategory(v_cat, 'Calligrafia');\n  perform ensure_subcategory(v_cat, 'Cartoncini / Tag');\n  perform ensure_subcategory(v_cat, 'QR code & Stampa');\n\n  -- 6) Sposa\n  v_cat := get_or_create_category(p_event, 'Sposa');\n  perform ensure_subcategory(v_cat, 'Abito sposa');\n  perform ensure_subcategory(v_cat, 'Scarpe sposa');\n  perform ensure_subcategory(v_cat, 'Accessori (velo, gioielli)');\n  perform ensure_subcategory(v_cat, 'Intimo & sottogonna');\n  perform ensure_subcategory(v_cat, 'Parrucchiera');\n  perform ensure_subcategory(v_cat, 'Make-up');\n  perform ensure_subcategory(v_cat, 'Prove');\n  perform ensure_subcategory(v_cat, 'Altro sposa');\n\n  -- 7) Sposo\n  v_cat := get_or_create_category(p_event, 'Sposo');\n  perform ensure_subcategory(v_cat, 'Abito sposo');\n  perform ensure_subcategory(v_cat, 'Scarpe sposo');\n  perform ensure_subcategory(v_cat, 'Accessori (cravatta, gemelli)');\n  perform ensure_subcategory(v_cat, 'Barbiere / Grooming');\n  perform ensure_subcategory(v_cat, 'Prove');\n  perform ensure_subcategory(v_cat, 'Altro sposo');\n\n  -- 8) Location & Catering\n  v_cat := get_or_create_category(p_event, 'Location & Catering');\n  perform ensure_subcategory(v_cat, 'Affitto sala');\n  perform ensure_subcategory(v_cat, 'Catering / Banqueting');\n  perform ensure_subcategory(v_cat, 'Torta nuziale');\n  perform ensure_subcategory(v_cat, 'Vini & Bevande');\n  perform ensure_subcategory(v_cat, 'Open bar');\n  perform ensure_subcategory(v_cat, 'Mise en place');\n  perform ensure_subcategory(v_cat, 'Noleggio tovagliato / piatti');\n\n  -- 9) Musica & Intrattenimento\n  v_cat := get_or_create_category(p_event, 'Musica & Intrattenimento');\n  perform ensure_subcategory(v_cat, 'DJ / Band');\n  perform ensure_subcategory(v_cat, 'Audio / Luci');\n  perform ensure_subcategory(v_cat, 'Animazione');\n  perform ensure_subcategory(v_cat, 'Diritti SIAE');\n  perform ensure_subcategory(v_cat, 'Guestbook phone / postazioni');\n\n  -- 10) Trasporti\n  v_cat := get_or_create_category(p_event, 'Trasporti');\n  perform ensure_subcategory(v_cat, 'Auto sposi');\n  perform ensure_subcategory(v_cat, 'Navette ospiti');\n  perform ensure_subcategory(v_cat, 'Carburante / Pedaggi');\n\n  -- 11) Bomboniere & Regali ospiti\n  v_cat := get_or_create_category(p_event, 'Bomboniere & Regali');\n  perform ensure_subcategory(v_cat, 'Bomboniere');\n  perform ensure_subcategory(v_cat, 'Confetti');\n  perform ensure_subcategory(v_cat, 'Packaging / Scatole');\n  perform ensure_subcategory(v_cat, 'Allestimento tavolo bomboniere');\n\n  -- 12) Ospitalit\u00e0 & Logistica\n  v_cat := get_or_create_category(p_event, 'Ospitalit\u00e0 & Logistica');\n  perform ensure_subcategory(v_cat, 'Alloggi ospiti');\n  perform ensure_subcategory(v_cat, 'Welcome bag / Kit');\n  perform ensure_subcategory(v_cat, 'Cartellonistica & Segnaletica');\n\n  -- 13) Burocrazia\n  v_cat := get_or_create_category(p_event, 'Burocrazia');\n  perform ensure_subcategory(v_cat, 'Pubblicazioni');\n  perform ensure_subcategory(v_cat, 'Certificati');\n  perform ensure_subcategory(v_cat, 'Traduzioni / Apostille');\n\n  -- 14) Beauty & Benessere\n  v_cat := get_or_create_category(p_event, 'Beauty & Benessere');\n  perform ensure_subcategory(v_cat, 'Estetista');\n  perform ensure_subcategory(v_cat, 'SPA / Massaggi');\n  perform ensure_subcategory(v_cat, 'Solarium');\n\n  -- 15) Viaggio di nozze\n  v_cat := get_or_create_category(p_event, 'Viaggio di nozze');\n  perform ensure_subcategory(v_cat, 'Quota viaggio');\n  perform ensure_subcategory(v_cat, 'Assicurazioni');\n  perform ensure_subcategory(v_cat, 'Visti / Documenti');\n  perform ensure_subcategory(v_cat, 'Extra');\n  perform ensure_subcategory(v_cat, 'Lista nozze');\n\n  -- 16) Comunicazione & Media\n  v_cat := get_or_create_category(p_event, 'Comunicazione & Media');\n  perform ensure_subcategory(v_cat, 'Sito web / QR');\n  perform ensure_subcategory(v_cat, 'Social media');\n  perform ensure_subcategory(v_cat, 'Grafica / Design');\n\n  -- 17) Extra & Contingenze\n  v_cat := get_or_create_category(p_event, 'Extra & Contingenze');\n  perform ensure_subcategory(v_cat, 'Imprevisti');\n  perform ensure_subcategory(v_cat, 'Spese varie');\nend ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "seed_subcategories(p_category uuid, VARIADIC p_names text[])",
+      "source": "\nDECLARE \n  n TEXT;\nBEGIN\n  FOREACH n IN ARRAY p_names LOOP\n    INSERT INTO public.subcategories (id, category_id, name)\n    VALUES (uuid_generate_v4(), p_category, n);\n  END LOOP;\nEND ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "set_owner_id()",
+      "source": "\nBEGIN\n  IF NEW.owner_id IS NULL THEN\n    NEW.owner_id := auth.uid();\n  END IF;\n  RETURN NEW;\nEND;\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "update_updated_at()",
+      "source": "\nBEGIN\n  NEW.updated_at = NOW();\n  RETURN NEW;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "update_updated_at_column()",
+      "source": "\nBEGIN\n  NEW.updated_at = now();\n  RETURN NEW;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "upsert_vendor(p_name text, p_type text, p_source text, p_source_id text, p_phone text, p_email text, p_website text, p_rating numeric, p_rating_count integer, p_description text, p_price_range text, p_metadata jsonb, p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "source": "\nDECLARE\n  v_vendor_id UUID;\n  v_place_id UUID;\nBEGIN\n  -- Normalize inputs\n  p_phone := normalize_phone(p_phone);\n  p_website := normalize_url(p_website);\n  \n  -- Find or create place (if location data provided)\n  IF p_lat IS NOT NULL AND p_lng IS NOT NULL AND p_city IS NOT NULL THEN\n    v_place_id := find_or_create_place(\n      p_google_place_id, p_osm_id, p_wikidata_qid,\n      p_lat, p_lng, p_address, p_city, p_province, p_region, p_postal_code\n    );\n  END IF;\n  \n  -- Upsert vendor\n  INSERT INTO vendors (\n    name, type, source, source_id, phone, email, website,\n    rating, rating_count, description, price_range, metadata,\n    verified, last_synced_at\n  ) VALUES (\n    p_name, p_type, p_source, p_source_id, p_phone, p_email, p_website,\n    p_rating, p_rating_count, p_description, p_price_range, p_metadata,\n    (p_rating >= 4.0), NOW()\n  )\n  ON CONFLICT (source_id) WHERE source_id IS NOT NULL\n  DO UPDATE SET\n    name = EXCLUDED.name,\n    phone = COALESCE(EXCLUDED.phone, vendors.phone),\n    email = COALESCE(EXCLUDED.email, vendors.email),\n    website = COALESCE(EXCLUDED.website, vendors.website),\n    rating = EXCLUDED.rating,\n    rating_count = EXCLUDED.rating_count,\n    description = COALESCE(EXCLUDED.description, vendors.description),\n    price_range = COALESCE(EXCLUDED.price_range, vendors.price_range),\n    metadata = COALESCE(EXCLUDED.metadata, vendors.metadata),\n    verified = (EXCLUDED.rating >= 4.0),\n    last_synced_at = NOW(),\n    updated_at = NOW()\n  RETURNING id INTO v_vendor_id;\n  \n  -- Link vendor to place\n  IF v_place_id IS NOT NULL THEN\n    INSERT INTO vendor_places (vendor_id, place_id, is_primary)\n    VALUES (v_vendor_id, v_place_id, true)\n    ON CONFLICT (vendor_id, place_id) DO NOTHING;\n  END IF;\n  \n  RETURN v_vendor_id;\nEND;\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    }
+  ],
+  "production": [
+    {
+      "name": "check_table_availability(p_table_id uuid)",
+      "source": "\r\nDECLARE\r\n  v_total_seats INTEGER;\r\n  v_assigned_seats INTEGER;\r\nBEGIN\r\n  SELECT total_seats INTO v_total_seats\r\n  FROM tables WHERE id = p_table_id;\r\n  \r\n  SELECT COUNT(*) INTO v_assigned_seats\r\n  FROM table_assignments WHERE table_id = p_table_id;\r\n  \r\n  RETURN (v_assigned_seats < v_total_seats);\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "find_or_create_place(p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "source": "\r\nDECLARE\r\n  v_place_id UUID;\r\nBEGIN\r\n  -- Try to find existing place by IDs (priority: Google > OSM > Wikidata)\r\n  SELECT id INTO v_place_id FROM places\r\n  WHERE google_place_id = p_google_place_id AND p_google_place_id IS NOT NULL\r\n  LIMIT 1;\r\n  \r\n  IF v_place_id IS NULL AND p_osm_id IS NOT NULL THEN\r\n    SELECT id INTO v_place_id FROM places\r\n    WHERE osm_id = p_osm_id\r\n    LIMIT 1;\r\n  END IF;\r\n  \r\n  IF v_place_id IS NULL AND p_wikidata_qid IS NOT NULL THEN\r\n    SELECT id INTO v_place_id FROM places\r\n    WHERE wikidata_qid = p_wikidata_qid\r\n    LIMIT 1;\r\n  END IF;\r\n  \r\n  -- If not found, create new place\r\n  IF v_place_id IS NULL THEN\r\n    INSERT INTO places (\r\n      google_place_id, osm_id, wikidata_qid,\r\n      lat, lng, address, city, province, region, postal_code\r\n    ) VALUES (\r\n      p_google_place_id, p_osm_id, p_wikidata_qid,\r\n      p_lat, p_lng, p_address, p_city, p_province, p_region, p_postal_code\r\n    )\r\n    RETURNING id INTO v_place_id;\r\n  ELSE\r\n    -- Update existing place with new IDs if missing\r\n    UPDATE places SET\r\n      google_place_id = COALESCE(google_place_id, p_google_place_id),\r\n      osm_id = COALESCE(osm_id, p_osm_id),\r\n      wikidata_qid = COALESCE(wikidata_qid, p_wikidata_qid),\r\n      lat = COALESCE(p_lat, lat),\r\n      lng = COALESCE(p_lng, lng),\r\n      updated_at = NOW()\r\n    WHERE id = v_place_id;\r\n  END IF;\r\n  \r\n  RETURN v_place_id;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "get_or_create_category(p_event uuid, p_name text)",
+      "source": "\r\ndeclare\r\n  v_id uuid;\r\nbegin\r\n  insert into public.categories (id, event_id, name)\r\n  values (gen_random_uuid(), p_event, p_name)\r\n  on conflict (event_id, lower(name)) do nothing;\r\n\r\n  select c.id into v_id\r\n  from public.categories c\r\n  where c.event_id = p_event and lower(c.name) = lower(p_name)\r\n  limit 1;\r\n\r\n  return v_id;\r\nend ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "get_table_stats(p_event_id uuid)",
+      "source": "\r\nBEGIN\r\n  RETURN QUERY\r\n  SELECT \r\n    COUNT(DISTINCT t.id)::INTEGER as total_tables,\r\n    COALESCE(SUM(t.total_seats), 0)::INTEGER as total_seats,\r\n    COUNT(DISTINCT ta.id)::INTEGER as assigned_seats,\r\n    (COALESCE(SUM(t.total_seats), 0) - COUNT(DISTINCT ta.id))::INTEGER as available_seats\r\n  FROM tables t\r\n  LEFT JOIN table_assignments ta ON ta.table_id = t.id\r\n  WHERE t.event_id = p_event_id;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "get_visible_suppliers(p_category text, p_region text, p_province text, p_is_demo boolean)",
+      "source": "\r\nBEGIN\r\n  RETURN QUERY\r\n  SELECT \r\n    s.id, s.name, s.region, s.province, s.city, s.address,\r\n    s.phone, s.email, s.website, s.description, s.category,\r\n    s.verified, s.subscription_tier, s.is_featured\r\n  FROM public.suppliers s\r\n  WHERE \r\n    -- Filter by category if provided\r\n    (p_category IS NULL OR s.category = p_category)\r\n    -- Filter by region if provided\r\n    AND (p_region IS NULL OR s.region = p_region)\r\n    -- Filter by province if provided\r\n    AND (p_province IS NULL OR s.province = p_province)\r\n    -- Visibility rules based on tier\r\n    AND (\r\n      -- Premium Plus: visible everywhere including demo\r\n      (s.subscription_tier = 'premium_plus' AND public.is_subscription_active(s.subscription_tier, s.subscription_expires_at))\r\n      -- Premium: visible in hub + category (not in demo unless explicitly allowed)\r\n      OR (s.subscription_tier = 'premium' AND public.is_subscription_active(s.subscription_tier, s.subscription_expires_at) AND NOT p_is_demo)\r\n      -- Base: visible only in category pages (not in demo)\r\n      OR (s.subscription_tier = 'base' AND public.is_subscription_active(s.subscription_tier, s.subscription_expires_at) AND p_category IS NOT NULL AND NOT p_is_demo)\r\n      -- Free: never visible in public searches\r\n    )\r\n  ORDER BY \r\n    -- Premium Plus first\r\n    CASE WHEN s.subscription_tier = 'premium_plus' THEN 1\r\n         WHEN s.subscription_tier = 'premium' THEN 2\r\n         WHEN s.subscription_tier = 'base' THEN 3\r\n         ELSE 4 END,\r\n    -- Featured items first within each tier\r\n    s.is_featured DESC,\r\n    -- Then by name\r\n    s.name ASC;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres,anon=X/postgres,authenticated=X/postgres}"
+    },
+    {
+      "name": "increment_analytics_counter(p_entity_type text, p_entity_id uuid, p_counter_type text)",
+      "source": "\r\nBEGIN\r\n  IF p_entity_type = 'supplier' THEN\r\n    IF p_counter_type = 'profile_views' THEN\r\n      UPDATE public.suppliers SET profile_views = profile_views + 1, last_view_at = TIMEZONE('utc', NOW()) WHERE id = p_entity_id;\r\n    ELSIF p_counter_type = 'contact_clicks' THEN\r\n      UPDATE public.suppliers SET contact_clicks = contact_clicks + 1 WHERE id = p_entity_id;\r\n    ELSIF p_counter_type = 'website_clicks' THEN\r\n      UPDATE public.suppliers SET website_clicks = website_clicks + 1 WHERE id = p_entity_id;\r\n    END IF;\r\n  ELSIF p_entity_type = 'location' THEN\r\n    IF p_counter_type = 'profile_views' THEN\r\n      UPDATE public.locations SET profile_views = profile_views + 1, last_view_at = TIMEZONE('utc', NOW()) WHERE id = p_entity_id;\r\n    ELSIF p_counter_type = 'contact_clicks' THEN\r\n      UPDATE public.locations SET contact_clicks = contact_clicks + 1 WHERE id = p_entity_id;\r\n    ELSIF p_counter_type = 'website_clicks' THEN\r\n      UPDATE public.locations SET website_clicks = website_clicks + 1 WHERE id = p_entity_id;\r\n    END IF;\r\n  ELSIF p_entity_type = 'church' THEN\r\n    IF p_counter_type = 'profile_views' THEN\r\n      UPDATE public.churches SET profile_views = profile_views + 1, last_view_at = TIMEZONE('utc', NOW()) WHERE id = p_entity_id;\r\n    ELSIF p_counter_type = 'contact_clicks' THEN\r\n      UPDATE public.churches SET contact_clicks = contact_clicks + 1 WHERE id = p_entity_id;\r\n    ELSIF p_counter_type = 'website_clicks' THEN\r\n      UPDATE public.churches SET website_clicks = website_clicks + 1 WHERE id = p_entity_id;\r\n    END IF;\r\n  END IF;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "is_subscription_active(p_subscription_tier text, p_expires_at timestamp with time zone)",
+      "source": "\r\nBEGIN\r\n  -- Free tier is always \"active\"\r\n  IF p_subscription_tier = 'free' THEN\r\n    RETURN true;\r\n  END IF;\r\n  \r\n  -- Paid tiers need valid expiry\r\n  IF p_expires_at IS NULL THEN\r\n    RETURN false;\r\n  END IF;\r\n  \r\n  RETURN p_expires_at > TIMEZONE('utc', NOW());\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "normalize_phone(phone_input text)",
+      "source": "\r\nBEGIN\r\n  IF phone_input IS NULL THEN\r\n    RETURN NULL;\r\n  END IF;\r\n  \r\n  -- Remove spaces, dashes, parentheses\r\n  phone_input := regexp_replace(phone_input, '[\\s\\-\\(\\)]', '', 'g');\r\n  \r\n  -- Add +39 if missing (Italian numbers)\r\n  IF phone_input ~ '^3[0-9]{8,9}$' OR phone_input ~ '^0[0-9]{8,10}$' THEN\r\n    phone_input := '+39' || phone_input;\r\n  ELSIF NOT phone_input ~ '^\\+' THEN\r\n    phone_input := '+' || phone_input;\r\n  END IF;\r\n  \r\n  RETURN phone_input;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "normalize_url(url_input text)",
+      "source": "\r\nBEGIN\r\n  IF url_input IS NULL THEN\r\n    RETURN NULL;\r\n  END IF;\r\n  \r\n  -- Add https:// if missing\r\n  IF url_input !~ '^https?://' THEN\r\n    url_input := 'https://' || url_input;\r\n  END IF;\r\n  \r\n  -- Replace http:// with https://\r\n  url_input := regexp_replace(url_input, '^http://', 'https://');\r\n  \r\n  -- Remove trailing slash\r\n  url_input := regexp_replace(url_input, '/$', '');\r\n  \r\n  RETURN url_input;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "populate_event_categories()",
+      "source": "\r\nDECLARE\r\n  subcat_record RECORD;\r\nBEGIN\r\n  -- Solo se evento ha event_type valorizzato\r\n  IF NEW.event_type IS NOT NULL THEN\r\n    -- Copia tutte le subcategories per questo tipo evento\r\n    FOR subcat_record IN\r\n      SELECT s.id, s.default_budget\r\n      FROM public.subcategories s\r\n      JOIN public.categories c ON c.id = s.category_id\r\n      JOIN public.event_types et ON et.id = c.event_type_id\r\n      WHERE et.code = NEW.event_type\r\n    LOOP\r\n      INSERT INTO public.event_category_selection (\r\n        event_id,\r\n        subcategory_id,\r\n        budget,\r\n        is_selected\r\n      ) VALUES (\r\n        NEW.id,\r\n        subcat_record.id,\r\n        COALESCE(subcat_record.default_budget, 0),\r\n        true -- Di default tutte selezionate\r\n      )\r\n      ON CONFLICT (event_id, subcategory_id) DO NOTHING; -- Evita duplicati\r\n    END LOOP;\r\n  END IF;\r\n\r\n  RETURN NEW;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "populate_user_timeline()",
+      "source": "\r\nDECLARE\r\n  template_record RECORD;\r\nBEGIN\r\n  IF NEW.event_type IS NOT NULL AND NEW.event_date IS NOT NULL THEN\r\n    FOR template_record IN\r\n      SELECT et.id, et.title, et.description, et.offset_days, et.category, et.is_critical\r\n      FROM public.event_timelines et\r\n      JOIN public.event_types evt ON evt.id = et.event_type_id\r\n      WHERE evt.code = NEW.event_type\r\n    LOOP\r\n      INSERT INTO public.user_event_timeline (\r\n        event_id,\r\n        timeline_id,\r\n        title,\r\n        description,\r\n        due_date,\r\n        is_completed\r\n      ) VALUES (\r\n        NEW.id,\r\n        template_record.id,\r\n        template_record.title,\r\n        template_record.description,\r\n        (NEW.event_date::date + template_record.offset_days * INTERVAL '1 day')::date,\r\n        false\r\n      )\r\n      ON CONFLICT DO NOTHING;\r\n    END LOOP;\r\n  END IF;\r\n\r\n  RETURN NEW;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "read_family_baptism(p_id uuid)",
+      "source": "\ndeclare result jsonb;\nbegin\n if not exists(select 1 from public.events where id=p_id and owner_id=auth.uid() and event_type='baptism') then raise exception 'EVENT_UNAVAILABLE'; end if;\n select jsonb_build_object('event_id',p_id,'revision',revision,'plan',plan || jsonb_build_object(\n 'guests',coalesce((select jsonb_agg(jsonb_build_object('id',g.id,'name',g.name,'ceremony',case when not coalesce(g.rsvp_received,false) then 'pending' when g.attending then 'yes' else 'no' end,'menu',coalesce(g.menu_preferences[1],'pending'),'food',g.allergies_intolerances) || g.baptism_details order by g.created_at,g.id) from public.guests g where g.event_id=p_id and g.baptism_details is not null),'[]'::jsonb),\n 'costs',coalesce((select jsonb_agg(jsonb_build_object('id',e.id,'name',e.description,'enabled',e.is_enabled,'payments',coalesce(e.payment_installments,'[]'::jsonb)) || e.baptism_details order by e.inserted_at,e.id) from public.expenses e where e.event_id=p_id and e.baptism_details is not null),'[]'::jsonb))) into result from public.baptism_family_plans where event_id=p_id;\n return result;\nend ",
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}"
+    },
+    {
+      "name": "regenerate_event_timeline(p_event_id uuid)",
+      "source": "\r\nDECLARE\r\n  event_record RECORD;\r\n  timeline_count INT;\r\nBEGIN\r\n  SELECT * INTO event_record FROM public.events WHERE id = p_event_id;\r\n  \r\n  IF NOT FOUND THEN\r\n    RETURN 'Evento non trovato';\r\n  END IF;\r\n\r\n  DELETE FROM public.user_event_timeline WHERE event_id = p_event_id;\r\n\r\n  INSERT INTO public.user_event_timeline (event_id, timeline_id, title, description, due_date, is_completed)\r\n  SELECT \r\n    p_event_id,\r\n    et.id,\r\n    et.title,\r\n    et.description,\r\n    (event_record.event_date::date + et.offset_days * INTERVAL '1 day')::date,\r\n    false\r\n  FROM public.event_timelines et\r\n  JOIN public.event_types evt ON evt.id = et.event_type_id\r\n  WHERE evt.code = event_record.event_type;\r\n\r\n  GET DIAGNOSTICS timeline_count = ROW_COUNT;\r\n\r\n  RETURN format('\u2705 Rigenerato: %s milestone timeline', timeline_count);\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "save_family_baptism(p_id uuid, p_revision integer, p_plan jsonb)",
+      "source": "\ndeclare\n owner uuid:=auth.uid(); title text; budget numeric; day date; current_rev integer; prior_hash text; prior_base integer;\n g jsonb; c jsonb; p jsonb; total numeric; paid numeric; active boolean; eid uuid; hash text:=md5(p_plan::text);\nbegin\n if owner is null or p_id is null or p_revision is null or p_revision<0 or jsonb_typeof(p_plan) is distinct from 'object' or octet_length(p_plan::text)>1000000 or p_plan->>'version' is distinct from '2' or jsonb_typeof(p_plan->'guests') is distinct from 'array' or jsonb_typeof(p_plan->'costs') is distinct from 'array' then raise exception 'INVALID_BAPTISM'; end if;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');budget:=coalesce(nullif(p_plan->>'budget','')::numeric,0);day:=nullif(left(p_plan->>'ceremony',10),'')::date;\n if length(title)>120 or budget<0 or budget>999999999 or budget='NaN'::numeric or jsonb_array_length(p_plan->'guests')>2000 or jsonb_array_length(p_plan->'costs')>1000 or coalesce(p_plan->>'scenario','') not in ('solo','later','home','lunch','hall') then raise exception 'INVALID_BAPTISM';end if;\n foreach title in array array['adults','companions','children','noMeal'] loop\n  if not coalesce(p_plan->>title,'') ~ '^\\d+$' then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n end loop;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');\n if (p_plan->>'companions')::numeric>(p_plan->>'adults')::numeric then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n if p_plan->>'scenario' in ('home','lunch','hall') and nullif(p_plan->>'time','') is not null and nullif(p_plan->>'ceremony','') is not null and (p_plan->>'time')::timestamp<=(p_plan->>'ceremony')::timestamp then raise exception 'INVALID_BAPTISM_TIME';end if;\n perform pg_advisory_xact_lock(hashtextextended(p_id::text,0));\n select revision,request_hash,base_revision into current_rev,prior_hash,prior_base from public.baptism_family_plans b join public.events e on e.id=b.event_id where e.id=p_id and e.owner_id=owner and e.event_type='baptism' for update of e,b;\n if current_rev is not null then\n  if prior_hash=hash and prior_base=p_revision then return current_rev;end if;\n  if current_rev<>p_revision then raise exception 'BAPTISM_CONFLICT';end if;\n elsif p_revision<>0 then raise exception 'EVENT_UNAVAILABLE';\n else\n  if exists(select 1 from public.events where id=p_id) then raise exception 'EVENT_UNAVAILABLE';end if;\n  insert into public.events(id,owner_id,event_type,public_id,name,event_date,total_budget,language,country) values(p_id,owner,'baptism',replace(gen_random_uuid()::text,'-',''),title,day,budget,coalesce(p_plan->>'locale','it'),'it');\n  insert into public.baptism_family_plans(event_id,revision,plan) values(p_id,0,'{}');\n end if;\n if (select count(*) from jsonb_array_elements(p_plan->'guests'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'guests')) or (select count(*) from jsonb_array_elements(p_plan->'costs'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'costs')) then raise exception 'DUPLICATE_BAPTISM_ITEM';end if;\n for g in select value from jsonb_array_elements(p_plan->'guests') loop\n  eid:=(g->>'id')::uuid;\n  if coalesce(btrim(g->>'name'),'')='' or coalesce(g->>'ceremony','') not in ('pending','yes','no') or coalesce(g->>'reception','') not in ('pending','yes','no') or coalesce(g->>'menu','') not in ('adult','child','none','pending') or coalesce(g->>'kind','') not in ('adult','child') then raise exception 'INVALID_BAPTISM_GUEST';end if;\n  if exists(select 1 from public.guests where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  if coalesce(g->>'companionOf','')<>'' and (g->>'companionOf'=g->>'id' or not exists(select 1 from jsonb_array_elements(p_plan->'guests') x where x->>'id'=g->>'companionOf' and coalesce(x->>'companionOf','')='')) then raise exception 'INVALID_BAPTISM_COMPANION';end if;\n  insert into public.guests(id,event_id,name,guest_type,rsvp_received,attending,menu_preferences,allergies_intolerances,baptism_details)\n  values(eid,p_id,g->>'name','common',g->>'ceremony'<>'pending',g->>'ceremony'='yes',array[g->>'menu'],coalesce(g->>'food',''),g- 'id'-'name'-'ceremony'-'menu'-'food')\n  on conflict(id) do update set name=excluded.name,rsvp_received=excluded.rsvp_received,attending=excluded.attending,menu_preferences=excluded.menu_preferences,allergies_intolerances=excluded.allergies_intolerances,baptism_details=excluded.baptism_details;\n end loop;\n delete from public.guests where event_id=p_id and baptism_details is not null and id::text not in (select value->>'id' from jsonb_array_elements(p_plan->'guests'));\n for c in select value from jsonb_array_elements(p_plan->'costs') loop\n  eid:=(c->>'id')::uuid;\n  if coalesce(btrim(c->>'name'),'')='' or coalesce(c->>'scope','') not in ('ceremony','reception') or not coalesce(c->>'quantity','')~'^\\d+$' or coalesce(c->>'unitCost','') !~ '^\\d+(\\.\\d+)?$' or jsonb_typeof(c->'payments') is distinct from 'array' then raise exception 'INVALID_BAPTISM_COST';end if;\n  if exists(select 1 from public.expenses where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  paid:=0;\n  for p in select value from jsonb_array_elements(c->'payments') loop\n   if coalesce(p->>'amount','')!~'^\\d+(\\.\\d+)?$' then raise exception 'INVALID_BAPTISM_PAYMENT';end if;\n   paid:=paid+(p->>'amount')::numeric;\n  end loop;\n  active:=coalesce((c->>'enabled')::boolean,false) and (c->>'scope'<>'reception' or p_plan->>'scenario' in ('home','lunch','hall'));\n  total:=case when active then round((c->>'quantity')::numeric*(c->>'unitCost')::numeric,2) else 0 end;\n  insert into public.expenses(id,event_id,description,amount,paid_amount,payment_installments,is_enabled,spend_type,status,baptism_details)\n  values(eid,p_id,c->>'name',total,paid,c->'payments',true,'common','pending',c-'id'-'name'-'payments'-'enabled'||jsonb_build_object('enabled',coalesce((c->>'enabled')::boolean,false)))\n  on conflict(id) do update set description=excluded.description,amount=excluded.amount,paid_amount=excluded.paid_amount,payment_installments=excluded.payment_installments,baptism_details=excluded.baptism_details;\n end loop;\n -- Paid rows may only be disabled, never erased through a replacement snapshot.\n if exists(select 1 from public.expenses e where event_id=p_id and baptism_details is not null and coalesce(paid_amount,0)>0 and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'))) then raise exception 'BAPTISM_PAID_COST_REMOVAL';end if;\n delete from public.expenses where event_id=p_id and baptism_details is not null and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'));\n update public.events set name=title,event_date=day,total_budget=budget where id=p_id;\n update public.baptism_family_plans set plan=p_plan-'guests'-'costs',revision=revision+1,request_hash=hash,base_revision=p_revision where event_id=p_id returning revision into current_rev;\n return current_rev;\nend ",
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}"
+    },
+    {
+      "name": "seed_categories(p_event uuid)",
+      "source": "\r\nBEGIN\r\n  INSERT INTO public.categories (id, event_id, name)\r\n  SELECT uuid_generate_v4(), p_event, t.name\r\n  FROM (VALUES\r\n    ('Sposa'),\r\n    ('Sposo'),\r\n    ('Abiti & Accessori (altri)'),\r\n    ('Cerimonia'),\r\n    ('Location & Catering'),\r\n    ('Fiori & Decor'),\r\n    ('Foto & Video'),\r\n    ('Inviti & Stationery'),\r\n    ('Musica & Intrattenimento'),\r\n    ('Beauty & Benessere'),\r\n    ('Bomboniere & Regali'),\r\n    ('Trasporti'),\r\n    ('Ospitalit\u00e0 & Logistica'),\r\n    ('Viaggio di nozze'),\r\n    ('Staff & Coordinamento'),\r\n    ('Burocrazia & Documenti'),\r\n    ('Comunicazione & Media'),\r\n    ('Extra & Contingenze')\r\n  ) AS t(name);\r\nEND ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "seed_full_event(p_event uuid)",
+      "source": "\r\ndeclare\r\n  v_cat uuid;\r\nbegin\r\n  -- 1) Abiti & Accessori (altri)\r\n  v_cat := get_or_create_category(p_event, 'Abiti & Accessori (altri)');\r\n  perform ensure_subcategory(v_cat, 'Ospiti/Genitori extra');\r\n  perform ensure_subcategory(v_cat, 'Fedi nuziali');\r\n\r\n  -- 2) Cerimonia\r\n  v_cat := get_or_create_category(p_event, 'Cerimonia');\r\n  perform ensure_subcategory(v_cat, 'Chiesa/comune');\r\n  perform ensure_subcategory(v_cat, 'Musiche');\r\n  perform ensure_subcategory(v_cat, 'Libretti');\r\n  perform ensure_subcategory(v_cat, 'Fiori cerimonia');\r\n  perform ensure_subcategory(v_cat, 'Documenti e pratiche');\r\n  perform ensure_subcategory(v_cat, 'Offerte / Diritti');\r\n\r\n  -- 3) Fiori & Decor\r\n  v_cat := get_or_create_category(p_event, 'Fiori & Decor');\r\n  perform ensure_subcategory(v_cat, 'Bouquet');\r\n  perform ensure_subcategory(v_cat, 'Boutonni\u00e8re');\r\n  perform ensure_subcategory(v_cat, 'Centrotavola');\r\n  perform ensure_subcategory(v_cat, 'Allestimenti');\r\n  perform ensure_subcategory(v_cat, 'Candele');\r\n  perform ensure_subcategory(v_cat, 'Tableau');\r\n  perform ensure_subcategory(v_cat, 'Segnaposto');\r\n  perform ensure_subcategory(v_cat, 'Noleggi (vasi/strutture)');\r\n\r\n  -- 4) Foto & Video\r\n  v_cat := get_or_create_category(p_event, 'Foto & Video');\r\n  perform ensure_subcategory(v_cat, 'Servizio foto');\r\n  perform ensure_subcategory(v_cat, 'Video');\r\n  perform ensure_subcategory(v_cat, 'Drone');\r\n  perform ensure_subcategory(v_cat, 'Album');\r\n  perform ensure_subcategory(v_cat, 'Stampe');\r\n  perform ensure_subcategory(v_cat, 'Secondo fotografo');\r\n\r\n  -- 5) Inviti & Stationery\r\n  v_cat := get_or_create_category(p_event, 'Inviti & Stationery');\r\n  perform ensure_subcategory(v_cat, 'Partecipazioni');\r\n  perform ensure_subcategory(v_cat, 'Menu');\r\n  perform ensure_subcategory(v_cat, 'Segnaposto');\r\n  perform ensure_subcategory(v_cat, 'Libretti Messa');\r\n  perform ensure_subcategory(v_cat, 'Timbri & Clich\u00e9');\r\n  perform ensure_subcategory(v_cat, 'Francobolli / Spedizioni');\r\n  perform ensure_subcategory(v_cat, 'Calligrafia');\r\n  perform ensure_subcategory(v_cat, 'Cartoncini / Tag');\r\n  perform ensure_subcategory(v_cat, 'QR code & Stampa');\r\n\r\n  -- 6) Sposa\r\n  v_cat := get_or_create_category(p_event, 'Sposa');\r\n  perform ensure_subcategory(v_cat, 'Abito sposa');\r\n  perform ensure_subcategory(v_cat, 'Scarpe sposa');\r\n  perform ensure_subcategory(v_cat, 'Accessori (velo, gioielli)');\r\n  perform ensure_subcategory(v_cat, 'Intimo & sottogonna');\r\n  perform ensure_subcategory(v_cat, 'Parrucchiera');\r\n  perform ensure_subcategory(v_cat, 'Make-up');\r\n  perform ensure_subcategory(v_cat, 'Prove');\r\n  perform ensure_subcategory(v_cat, 'Altro sposa');\r\n\r\n  -- 7) Sposo\r\n  v_cat := get_or_create_category(p_event, 'Sposo');\r\n  perform ensure_subcategory(v_cat, 'Abito sposo');\r\n  perform ensure_subcategory(v_cat, 'Scarpe sposo');\r\n  perform ensure_subcategory(v_cat, 'Accessori (cravatta, gemelli)');\r\n  perform ensure_subcategory(v_cat, 'Barbiere / Grooming');\r\n  perform ensure_subcategory(v_cat, 'Prove');\r\n  perform ensure_subcategory(v_cat, 'Altro sposo');\r\n\r\n  -- 8) Location & Catering\r\n  v_cat := get_or_create_category(p_event, 'Location & Catering');\r\n  perform ensure_subcategory(v_cat, 'Affitto sala');\r\n  perform ensure_subcategory(v_cat, 'Catering / Banqueting');\r\n  perform ensure_subcategory(v_cat, 'Torta nuziale');\r\n  perform ensure_subcategory(v_cat, 'Vini & Bevande');\r\n  perform ensure_subcategory(v_cat, 'Open bar');\r\n  perform ensure_subcategory(v_cat, 'Mise en place');\r\n  perform ensure_subcategory(v_cat, 'Noleggio tovagliato / piatti');\r\n\r\n  -- 9) Musica & Intrattenimento\r\n  v_cat := get_or_create_category(p_event, 'Musica & Intrattenimento');\r\n  perform ensure_subcategory(v_cat, 'DJ / Band');\r\n  perform ensure_subcategory(v_cat, 'Audio / Luci');\r\n  perform ensure_subcategory(v_cat, 'Animazione');\r\n  perform ensure_subcategory(v_cat, 'Diritti SIAE');\r\n  perform ensure_subcategory(v_cat, 'Guestbook phone / postazioni');\r\n\r\n  -- 10) Trasporti\r\n  v_cat := get_or_create_category(p_event, 'Trasporti');\r\n  perform ensure_subcategory(v_cat, 'Auto sposi');\r\n  perform ensure_subcategory(v_cat, 'Navette ospiti');\r\n  perform ensure_subcategory(v_cat, 'Carburante / Pedaggi');\r\n\r\n  -- 11) Bomboniere & Regali ospiti\r\n  v_cat := get_or_create_category(p_event, 'Bomboniere & Regali');\r\n  perform ensure_subcategory(v_cat, 'Bomboniere');\r\n  perform ensure_subcategory(v_cat, 'Confetti');\r\n  perform ensure_subcategory(v_cat, 'Packaging / Scatole');\r\n  perform ensure_subcategory(v_cat, 'Allestimento tavolo bomboniere');\r\n\r\n  -- 12) Ospitalit\u00e0 & Logistica\r\n  v_cat := get_or_create_category(p_event, 'Ospitalit\u00e0 & Logistica');\r\n  perform ensure_subcategory(v_cat, 'Alloggi ospiti');\r\n  perform ensure_subcategory(v_cat, 'Welcome bag / Kit');\r\n  perform ensure_subcategory(v_cat, 'Cartellonistica & Segnaletica');\r\n\r\n  -- 13) Burocrazia\r\n  v_cat := get_or_create_category(p_event, 'Burocrazia');\r\n  perform ensure_subcategory(v_cat, 'Pubblicazioni');\r\n  perform ensure_subcategory(v_cat, 'Certificati');\r\n  perform ensure_subcategory(v_cat, 'Traduzioni / Apostille');\r\n\r\n  -- 14) Beauty & Benessere\r\n  v_cat := get_or_create_category(p_event, 'Beauty & Benessere');\r\n  perform ensure_subcategory(v_cat, 'Estetista');\r\n  perform ensure_subcategory(v_cat, 'SPA / Massaggi');\r\n  perform ensure_subcategory(v_cat, 'Solarium');\r\n\r\n  -- 15) Viaggio di nozze\r\n  v_cat := get_or_create_category(p_event, 'Viaggio di nozze');\r\n  perform ensure_subcategory(v_cat, 'Quota viaggio');\r\n  perform ensure_subcategory(v_cat, 'Assicurazioni');\r\n  perform ensure_subcategory(v_cat, 'Visti / Documenti');\r\n  perform ensure_subcategory(v_cat, 'Extra');\r\n  perform ensure_subcategory(v_cat, 'Lista nozze');\r\n\r\n  -- 16) Comunicazione & Media\r\n  v_cat := get_or_create_category(p_event, 'Comunicazione & Media');\r\n  perform ensure_subcategory(v_cat, 'Sito web / QR');\r\n  perform ensure_subcategory(v_cat, 'Social media');\r\n  perform ensure_subcategory(v_cat, 'Grafica / Design');\r\n\r\n  -- 17) Extra & Contingenze\r\n  v_cat := get_or_create_category(p_event, 'Extra & Contingenze');\r\n  perform ensure_subcategory(v_cat, 'Imprevisti');\r\n  perform ensure_subcategory(v_cat, 'Spese varie');\r\nend ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "seed_subcategories(p_category uuid, VARIADIC p_names text[])",
+      "source": "\r\nDECLARE \r\n  n TEXT;\r\nBEGIN\r\n  FOREACH n IN ARRAY p_names LOOP\r\n    INSERT INTO public.subcategories (id, category_id, name)\r\n    VALUES (uuid_generate_v4(), p_category, n);\r\n  END LOOP;\r\nEND ",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "set_owner_id()",
+      "source": "\r\nBEGIN\r\n  IF NEW.owner_id IS NULL THEN\r\n    NEW.owner_id := auth.uid();\r\n  END IF;\r\n  RETURN NEW;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=pg_catalog, public, auth, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "update_updated_at()",
+      "source": "\r\nBEGIN\r\n  NEW.updated_at = NOW();\r\n  RETURN NEW;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "update_updated_at_column()",
+      "source": "\r\nBEGIN\r\n  NEW.updated_at = now();\r\n  RETURN NEW;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "name": "upsert_vendor(p_name text, p_type text, p_source text, p_source_id text, p_phone text, p_email text, p_website text, p_rating numeric, p_rating_count integer, p_description text, p_price_range text, p_metadata jsonb, p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "source": "\r\nDECLARE\r\n  v_vendor_id UUID;\r\n  v_place_id UUID;\r\nBEGIN\r\n  -- Normalize inputs\r\n  p_phone := normalize_phone(p_phone);\r\n  p_website := normalize_url(p_website);\r\n  \r\n  -- Find or create place (if location data provided)\r\n  IF p_lat IS NOT NULL AND p_lng IS NOT NULL AND p_city IS NOT NULL THEN\r\n    v_place_id := find_or_create_place(\r\n      p_google_place_id, p_osm_id, p_wikidata_qid,\r\n      p_lat, p_lng, p_address, p_city, p_province, p_region, p_postal_code\r\n    );\r\n  END IF;\r\n  \r\n  -- Upsert vendor\r\n  INSERT INTO vendors (\r\n    name, type, source, source_id, phone, email, website,\r\n    rating, rating_count, description, price_range, metadata,\r\n    verified, last_synced_at\r\n  ) VALUES (\r\n    p_name, p_type, p_source, p_source_id, p_phone, p_email, p_website,\r\n    p_rating, p_rating_count, p_description, p_price_range, p_metadata,\r\n    (p_rating >= 4.0), NOW()\r\n  )\r\n  ON CONFLICT (source_id) WHERE source_id IS NOT NULL\r\n  DO UPDATE SET\r\n    name = EXCLUDED.name,\r\n    phone = COALESCE(EXCLUDED.phone, vendors.phone),\r\n    email = COALESCE(EXCLUDED.email, vendors.email),\r\n    website = COALESCE(EXCLUDED.website, vendors.website),\r\n    rating = EXCLUDED.rating,\r\n    rating_count = EXCLUDED.rating_count,\r\n    description = COALESCE(EXCLUDED.description, vendors.description),\r\n    price_range = COALESCE(EXCLUDED.price_range, vendors.price_range),\r\n    metadata = COALESCE(EXCLUDED.metadata, vendors.metadata),\r\n    verified = (EXCLUDED.rating >= 4.0),\r\n    last_synced_at = NOW(),\r\n    updated_at = NOW()\r\n  RETURNING id INTO v_vendor_id;\r\n  \r\n  -- Link vendor to place\r\n  IF v_place_id IS NOT NULL THEN\r\n    INSERT INTO vendor_places (vendor_id, place_id, is_primary)\r\n    VALUES (v_vendor_id, v_place_id, true)\r\n    ON CONFLICT (vendor_id, place_id) DO NOTHING;\r\n  END IF;\r\n  \r\n  RETURN v_vendor_id;\r\nEND;\r\n",
+      "proconfig": [
+        "search_path=public, extensions, pg_temp"
+      ],
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    }
+  ]
+}

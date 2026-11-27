@@ -1,0 +1,134 @@
+{
+  "qa": [
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_delete_event",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "can_manage_event_location_supplier_links(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_insert_event",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(can_manage_event_location_supplier_links(event_id) AND (created_by = ( SELECT auth.uid() AS uid)))"
+    },
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_select_event",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "can_manage_event_location_supplier_links(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_update_event",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "can_manage_event_location_supplier_links(event_id)",
+      "with_check": "can_manage_event_location_supplier_links(event_id)"
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_delete_event",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "can_access_event(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_insert_event",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(can_access_event(event_id) AND (created_by = ( SELECT auth.uid() AS uid)))"
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_select_event",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "can_access_event(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_update_event",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "can_access_event(event_id)",
+      "with_check": "can_access_event(event_id)"
+    }
+  ],
+  "production": [
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_delete_event",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "can_manage_event_location_supplier_links(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_insert_event",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(can_manage_event_location_supplier_links(event_id) AND (created_by = ( SELECT auth.uid() AS uid)))"
+    },
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_select_event",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "can_manage_event_location_supplier_links(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_location_supplier_links",
+      "policyname": "event_location_supplier_links_update_event",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "can_manage_event_location_supplier_links(event_id)",
+      "with_check": "can_manage_event_location_supplier_links(event_id)"
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_delete_event",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "can_access_event(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_insert_event",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(can_access_event(event_id) AND (created_by = ( SELECT auth.uid() AS uid)))"
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_select_event",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "can_access_event(event_id)",
+      "with_check": null
+    },
+    {
+      "tablename": "event_private_catalog_records",
+      "policyname": "event_private_catalog_records_update_event",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "can_access_event(event_id)",
+      "with_check": "can_access_event(event_id)"
+    }
+  ]
+}
