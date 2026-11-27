@@ -29,6 +29,8 @@ jobs:
         env:
           SOURCE_URL: ${{ secrets.PRODUCTION_BACKUP_DATABASE_URL }}
           STORAGE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+          BREVO_API_KEY: ${{ secrets.PLAYWRIGHT_BREVO_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
         run: /tmp/backup-python/bin/python scripts/backup/acquire.py
       - uses: actions/upload-artifact@v4
         with:
