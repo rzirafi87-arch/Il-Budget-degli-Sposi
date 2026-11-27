@@ -84,7 +84,6 @@ jobs:
           test -s /tmp/release-isolated.dump
           sha256sum /tmp/release-isolated.dump
           docker exec "$db_container" createdb -U supabase_admin -T template0 release_restore_drill
-          docker exec "$db_container" psql -U supabase_admin -d release_restore_drill -v ON_ERROR_STOP=1 -c "drop schema if exists public cascade"
           docker exec -i "$db_container" pg_restore -U supabase_admin -d release_restore_drill --exit-on-error < /tmp/release-isolated.dump
           test "$(docker exec "$db_container" psql -U supabase_admin -d release_restore_drill -Atc "select value from public.release_restore_canary where id=1")" = "isolated-only"
           for database in postgres release_restore_drill; do
