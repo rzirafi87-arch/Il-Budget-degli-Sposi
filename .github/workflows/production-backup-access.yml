@@ -24,7 +24,10 @@ jobs:
           mkdir /tmp/backup-target
           cd /tmp/backup-target
           supabase init
-          supabase start > /tmp/backup-target/start.log 2>&1
+          mkdir -p supabase/.temp
+          printf '%s\n' '17.6.1.021' > supabase/.temp/postgres-version
+          supabase db start > /tmp/backup-target/start.log 2>&1
+          docker ps --format '{{.Image}}' | grep -F 'supabase/postgres:17.6.1.021'
       - name: Acquire read-only Production snapshot, encrypt and verify offline restore
         env:
           SOURCE_URL: ${{ secrets.PRODUCTION_BACKUP_DATABASE_URL }}
