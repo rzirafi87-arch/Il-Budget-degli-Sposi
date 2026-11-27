@@ -1,0 +1,3910 @@
+{
+  "qaSchema": [
+    {
+      "kind": "function",
+      "name": "private.assert_branch48_partner_lifecycle_compatible()",
+      "hash": "76035dfdba8c7de24796baf543539c8a"
+    },
+    {
+      "kind": "function",
+      "name": "private.capture_saved_catalog_snapshot()",
+      "hash": "addf7cbe8018f5e3d6804716e7ad1c18"
+    },
+    {
+      "kind": "function",
+      "name": "private.enforce_event_document_quota()",
+      "hash": "98132ce403c875d19fe341e99225377a"
+    },
+    {
+      "kind": "function",
+      "name": "private.enforce_subcategory_identity()",
+      "hash": "1091ee4502502f966ae6393ac4b591ba"
+    },
+    {
+      "kind": "function",
+      "name": "private.event_access_role_for_actor(p_event_id uuid, p_actor_id",
+      "hash": "cdec48dc4aeae333185a908ceedc0c93"
+    },
+    {
+      "kind": "function",
+      "name": "private.guard_event_document_cascade()",
+      "hash": "6167a41f5c7d58a75407045486a9c344"
+    },
+    {
+      "kind": "function",
+      "name": "private.guard_event_document_storage_parent()",
+      "hash": "820ffea6bc0ffce3b550b0ffea4a41f7"
+    },
+    {
+      "kind": "function",
+      "name": "private.handle_new_auth_user()",
+      "hash": "95bc9518fff60e4f66fcb591e432db9f"
+    },
+    {
+      "kind": "function",
+      "name": "private.record_first_value()",
+      "hash": "cb3b9cfb3b2be3a6102ca62850ff0b30"
+    },
+    {
+      "kind": "function",
+      "name": "private.release_subcategory_identity()",
+      "hash": "609c37ff0d2a9a0007badbfa706417a6"
+    },
+    {
+      "kind": "function",
+      "name": "private.subcategory_identity_parts(p_category_id uuid, p_name t",
+      "hash": "63483156e822a0364aea40640f667882"
+    },
+    {
+      "kind": "function",
+      "name": "public.accept_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "71df173b5d49ed81e094e5fb489364d4"
+    },
+    {
+      "kind": "function",
+      "name": "public.apply_budget_idea_atomic(p_event_id uuid, p_actor_id uui",
+      "hash": "06c1505104886bec6d1a2d82a4baf54b"
+    },
+    {
+      "kind": "function",
+      "name": "public.begin_event_document_delete(p_event_id uuid, p_actor_id ",
+      "hash": "69738b6a7f554edf63c4c363077c7cbe"
+    },
+    {
+      "kind": "function",
+      "name": "public.bump_baptism_revision()",
+      "hash": "bb84dd20267dae40ac844aa836ecd1e7"
+    },
+    {
+      "kind": "function",
+      "name": "public.can_access_event(p_event_id uuid)",
+      "hash": "7ebbec11e1354efd1b46e8bb4700c7ad"
+    },
+    {
+      "kind": "function",
+      "name": "public.can_manage_event_location_supplier_links(p_event_id uuid",
+      "hash": "5bf30f31a8d979b082a3e5b0ca06f705"
+    },
+    {
+      "kind": "function",
+      "name": "public.catalog_payload_has_only_allowed_keys(entity_type_value ",
+      "hash": "e1c81990fd4cf44e1f8aea819ee9e698"
+    },
+    {
+      "kind": "function",
+      "name": "public.check_table_availability(p_table_id uuid)",
+      "hash": "b243d277383590c585eebc60221df4b4"
+    },
+    {
+      "kind": "function",
+      "name": "public.claim_expired_event_document_uploads(p_event_id uuid, p_",
+      "hash": "b7c035fee0d3898501e8e24714016f8f"
+    },
+    {
+      "kind": "function",
+      "name": "public.complete_event_document_delete(p_event_id uuid, p_actor_",
+      "hash": "e0a676ba2b2067f906b09543852d5bfd"
+    },
+    {
+      "kind": "function",
+      "name": "public.complete_event_document_upload_cleanup(p_event_id uuid, ",
+      "hash": "f254222cda986854fe57b7169d9527af"
+    },
+    {
+      "kind": "function",
+      "name": "public.consume_rate_limit(p_key text, p_limit integer, p_window",
+      "hash": "f86b840a9a763b87fc4e767193a03061"
+    },
+    {
+      "kind": "function",
+      "name": "public.create_event_owner_membership()",
+      "hash": "02d8ab4080dbe96cab0a54b3ccc22b3f"
+    },
+    {
+      "kind": "function",
+      "name": "public.delete_event_table(p_event_id uuid, p_actor_id uuid, p_t",
+      "hash": "e7f5c9f3a74d4c8d480d0f1845000dc2"
+    },
+    {
+      "kind": "function",
+      "name": "public.eighteenth_action(p_event uuid, p_revision integer, p_re",
+      "hash": "bfaedae01aa05d4d1daa19e56f93c752"
+    },
+    {
+      "kind": "function",
+      "name": "public.eighteenth_snapshot(p_event uuid)",
+      "hash": "e32ffb1aa0b46322c1ce7f112ad40839"
+    },
+    {
+      "kind": "function",
+      "name": "public.enforce_supplier_work_identity_immutable()",
+      "hash": "844c76b995a843dc5c7b741824e57e2d"
+    },
+    {
+      "kind": "function",
+      "name": "public.enforce_supplier_work_private_supplier_type()",
+      "hash": "c92198ce7ffefbf0b870f4359d0e688f"
+    },
+    {
+      "kind": "function",
+      "name": "public.ensure_subcategory(p_category uuid, p_name text)",
+      "hash": "8ef7efca7fcc0d2da2b856ea711dd74b"
+    },
+    {
+      "kind": "function",
+      "name": "public.event_document_path_is_untracked(p_event_id uuid, p_acto",
+      "hash": "bc3a48cb0b6906afc8cef874804da691"
+    },
+    {
+      "kind": "function",
+      "name": "public.finalize_event_document_upload(p_event_id uuid, p_actor_",
+      "hash": "9b54b3846db3789a668fbc81d632611d"
+    },
+    {
+      "kind": "function",
+      "name": "public.find_or_create_place(p_google_place_id text, p_osm_id te",
+      "hash": "58ae23a19d314cb52cdec899a01a93eb"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_or_create_category(p_event uuid, p_name text)",
+      "hash": "8f4c8dbfcd1081555776855583b815c6"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_table_stats(p_event_id uuid)",
+      "hash": "6efc4da2ed720028fff3b1b4dd376848"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_visible_suppliers(p_category text, p_region text, p_",
+      "hash": "02f27f6cbfc202f6ddc93ab21698dc83"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_wedding_budget_focus(p_country text, p_event text)",
+      "hash": "2beae7cfc674690d25090bcf8a65e5d3"
+    },
+    {
+      "kind": "function",
+      "name": "public.gift_list_legacy_write()",
+      "hash": "6d06550099ed67b2658dec7e9279d3eb"
+    },
+    {
+      "kind": "function",
+      "name": "public.increment_analytics_counter(p_entity_type text, p_entity",
+      "hash": "2180178ff9f2e672d7e22083ceb4a31b"
+    },
+    {
+      "kind": "function",
+      "name": "public.is_catalog_admin()",
+      "hash": "56ee309746413dfdbe9584a9819fed44"
+    },
+    {
+      "kind": "function",
+      "name": "public.is_event_owner(p_event_id uuid)",
+      "hash": "cad6d3e117b23e1fbe0b7ee52945188b"
+    },
+    {
+      "kind": "function",
+      "name": "public.is_subscription_active(p_subscription_tier text, p_expir",
+      "hash": "68fa5ea93351b08f8dfd0da10849425e"
+    },
+    {
+      "kind": "function",
+      "name": "public.moderate_catalog_submission(p_submission_id uuid, p_acti",
+      "hash": "aee6038a1d022af62756568eda8aba0d"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_catalog_text(value text)",
+      "hash": "53a5869fc7ca1f2b590d5c4fdf6aca89"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_church_catalog_row()",
+      "hash": "9d70bbff27a1b185bc31f3c39a94f4bb"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_location_catalog_row()",
+      "hash": "7daa34fc1bfcf6f4d1f6d9bedcd823c6"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_phone(phone_input text)",
+      "hash": "49fae81252daf954d6cb70f4cf9679cb"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_supplier_catalog_row()",
+      "hash": "8284fd5df1278fa56f4752ff66618757"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_url(url_input text)",
+      "hash": "30095e6d6ba62dd744243570e60eef44"
+    },
+    {
+      "kind": "function",
+      "name": "public.patch_event_details(p_event_id uuid, p_actor_id uuid, p_",
+      "hash": "705d72fc5f2de61eda59ff6304d43577"
+    },
+    {
+      "kind": "function",
+      "name": "public.populate_event_categories()",
+      "hash": "fd2cb691dd77694dba9560cb5ba60967"
+    },
+    {
+      "kind": "function",
+      "name": "public.populate_user_timeline()",
+      "hash": "45e4fcc5c2d2d8a345b69565b5fd0fc8"
+    },
+    {
+      "kind": "function",
+      "name": "public.prepare_event_private_catalog_record()",
+      "hash": "bd33f8807b4e7759cfe66ba8a34a5565"
+    },
+    {
+      "kind": "function",
+      "name": "public.prevent_event_owner_change()",
+      "hash": "5b9fc4402baba0ed904c549ff935335f"
+    },
+    {
+      "kind": "function",
+      "name": "public.prevent_table_capacity_underflow()",
+      "hash": "7a1d9c5452b9fcd81b435cd0ab75d4f1"
+    },
+    {
+      "kind": "function",
+      "name": "public.protect_event_location_supplier_link_identity()",
+      "hash": "d192f1c8140a94e52101fd4f221029e1"
+    },
+    {
+      "kind": "function",
+      "name": "public.protect_saved_catalog_snapshot()",
+      "hash": "8f88e95258f6c341553542eaff3fd82b"
+    },
+    {
+      "kind": "function",
+      "name": "public.read_family_baptism(p_id uuid)",
+      "hash": "87c9fc1454c971e510bbb4b7581d11bb"
+    },
+    {
+      "kind": "function",
+      "name": "public.record_eighteenth_payment(p_event uuid, p_expense uuid, ",
+      "hash": "21e9fb72c9c260eecff0369a8c66f468"
+    },
+    {
+      "kind": "function",
+      "name": "public.regenerate_event_data(p_event_id uuid)",
+      "hash": "e19619f0c7e9841d7897dac49e99fa74"
+    },
+    {
+      "kind": "function",
+      "name": "public.regenerate_event_timeline(p_event_id uuid)",
+      "hash": "bbd5333f0138b9a04aff251912179250"
+    },
+    {
+      "kind": "function",
+      "name": "public.reject_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "c23eb25c637170940d2ba75414cf98d0"
+    },
+    {
+      "kind": "function",
+      "name": "public.release_event_document_upload(p_event_id uuid, p_actor_i",
+      "hash": "f6133736699f8d18045b61becc693ab0"
+    },
+    {
+      "kind": "function",
+      "name": "public.reserve_event_document_upload(p_event_id uuid, p_actor_i",
+      "hash": "741bca1a49ca5e822b5a2edabefc517f"
+    },
+    {
+      "kind": "function",
+      "name": "public.rotate_event_invitation_token(p_invitation_id uuid, p_ev",
+      "hash": "20d40ed035fba0555e09cfc3bb2fdd98"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_budget_idea_snapshot(p_event_id uuid, p_user_id uui",
+      "hash": "e84682112ed81e212e6eec19e4ccd2bc"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_eighteenth_party_plan(p_id uuid, p_revision integer",
+      "hash": "72cc730251fcd6593b8b73f51d6c2805"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_event_guest_snapshot(p_event_id uuid, p_user_id uui",
+      "hash": "c81366229ca170af0ad4bca4f006c43a"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_event_table_plan(p_event_id uuid, p_actor_id uuid, ",
+      "hash": "985d1bbd85d387855f515634c8105117"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_family_baptism(p_id uuid, p_revision integer, p_pla",
+      "hash": "1bd0eb4c77c3048a69bdf0c8fceac908"
+    },
+    {
+      "kind": "function",
+      "name": "public.search_global_catalog(p_entity_type text, p_query text, ",
+      "hash": "0eb98420a291edb818a26ef03b91f696"
+    },
+    {
+      "kind": "function",
+      "name": "public.seed_categories(p_event uuid)",
+      "hash": "a9a01efdf27410400150b4c49e3aa6ae"
+    },
+    {
+      "kind": "function",
+      "name": "public.seed_full_event(p_event uuid)",
+      "hash": "fd60a315856ed23e09867989e6eff487"
+    },
+    {
+      "kind": "function",
+      "name": "public.seed_subcategories(p_category uuid, VARIADIC p_names tex",
+      "hash": "aa2e5bc728037b234348d824ee3404a6"
+    },
+    {
+      "kind": "function",
+      "name": "public.set_owner_id()",
+      "hash": "bde5c062091330254dde83e2ab8247c2"
+    },
+    {
+      "kind": "function",
+      "name": "public.update_updated_at()",
+      "hash": "07243131e7e83c4fe0f0f877f68bc288"
+    },
+    {
+      "kind": "function",
+      "name": "public.update_updated_at_column()",
+      "hash": "ed612030b0656df4f8abcb3d101e5d24"
+    },
+    {
+      "kind": "function",
+      "name": "public.upsert_vendor(p_name text, p_type text, p_source text, p",
+      "hash": "571588bb23e683ea1352c801ee4506e8"
+    },
+    {
+      "kind": "function",
+      "name": "public.validate_table_assignment_event_capacity()",
+      "hash": "5a225b10ec1b1f8c9821e2e8d1cd82af"
+    },
+    {
+      "kind": "function",
+      "name": "public.wedding_budget_slug(value text)",
+      "hash": "ccbc50c3f1bb6725940afd2c69fc961b"
+    },
+    {
+      "kind": "policy",
+      "name": "public.account_deletion_requests.account_deletion_select_self",
+      "hash": "aa9774b3ef5d3ba79330d4be9711f8be"
+    },
+    {
+      "kind": "policy",
+      "name": "public.analytics_events.Users can view own supplier analytics",
+      "hash": "66d7860aa22584e8303dced05a4afcad"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.atelier.Allow public read access to atelier",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.baptism_family_plans.baptism_owner_reads",
+      "hash": "f73344bc2bad33813a34716c5034e98e"
+    },
+    {
+      "kind": "policy",
+      "name": "public.budget_ideas.budget_ideas_owner_access",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.budget_items.budget_items_owner_access",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_admin_select",
+      "hash": "79eab544698b5f30a6db94ccb9509175"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_own_insert",
+      "hash": "54f3b168b40952abe87d83457a0652f9"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_own_select",
+      "hash": "d846bf2f5166264f935ad114f3741ee7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_own_update",
+      "hash": "ff1472f98ba7544d43b9aa89815bc460"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.category_translations.Public can read category translati",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.checklist_modules.public read checklist_modules",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.churches.churches_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.eighteenth_party_plans.party_plan_authorized_read",
+      "hash": "7d096eb840bdbae8a4340a96a1c88a75"
+    },
+    {
+      "kind": "policy",
+      "name": "public.eighteenth_plans.eighteenth_owner",
+      "hash": "8658f361e775971cb8656103b3265ebe"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_documents.event_documents_select_event",
+      "hash": "d61473bdae50b640c53966f770dfa6fc"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_invitations.event_invitations_owner_insert",
+      "hash": "8570e0ab3f858c708a7f524a97ac8720"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_invitations.event_invitations_owner_select",
+      "hash": "522019a12f991ec5d9f249e2593dc5ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "63f73b5eb45bf123cfbd2a4ea330a347"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "a295b78b23caa2c03c7fab87c49fb6c3"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "3c9540d3b5f7b07aa6608992b3de1be0"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "f2e8e73f13a24dd6324b5499004f4e77"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_owner_delete_partner",
+      "hash": "79eee01cf31949e4b7c5e202bf306530"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_owner_insert_partner",
+      "hash": "7daf768fd2769693466eba870e06869c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_owner_update_partner",
+      "hash": "53ebcc863db44aa5fbb1f79b42b1e225"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_partner_leave",
+      "hash": "430b48c90c220eacdd442b7e7926139a"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_select_accessible",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "9d01ceb229323f4b4e11246a0014328e"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_timeline_translations.Public can read event timeli",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_timelines.Anyone can view event timelines",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_categories.Anyone can view event type categor",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_subcategories.Anyone can view event type subc",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_translations.Public can read event type trans",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_variants.Public can read event type variants",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_types.Anyone can view event types",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_delete_own",
+      "hash": "4971a710d0ae70fe1a9720d836ab0542"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_insert_self",
+      "hash": "0afe78a0ed179c0f52f048edfea94a71"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_select_own",
+      "hash": "8ac4dfb18e29094763f20bbc6d1e80b3"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_update_own",
+      "hash": "0445bdc268d8efe3e226acb2522d429a"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.family_groups.Owners can manage family groups",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.geo_countries.Public can read countries",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_delete_event",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_insert_event",
+      "hash": "9d01ceb229323f4b4e11246a0014328e"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_select_event",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_update_event",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.guests.Users can manage their own guests",
+      "hash": "8eb8ef278848ab7bf9d18c3252b6eed4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.i18n_locales.Public can read locales",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.locations.locations_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_cerimonia.Anyone can view approved ceremony music",
+      "hash": "cb64da67f0fc4ee68332e094797b7c19"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_cerimonia.Authenticated users can submit ceremony",
+      "hash": "b293b1456002f3f490037bc899ed5d1f"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_ricevimento.Anyone can view approved reception mu",
+      "hash": "cb64da67f0fc4ee68332e094797b7c19"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_ricevimento.Authenticated users can submit recept",
+      "hash": "b293b1456002f3f490037bc899ed5d1f"
+    },
+    {
+      "kind": "policy",
+      "name": "public.non_invited_recipients.Owners can manage non invited rec",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.payment_reminders.Users can manage their own payment rem",
+      "hash": "69e624ab8b2c238145301e187635c72d"
+    },
+    {
+      "kind": "policy",
+      "name": "public.places.Public can read places",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.profiles.profiles_insert_self",
+      "hash": "be5d41cb72e2986b3fb04a6a36e77667"
+    },
+    {
+      "kind": "policy",
+      "name": "public.profiles.profiles_select_own",
+      "hash": "45f0a1c99f6d21272a430a6d1bd9a8a4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.profiles.profiles_update_own",
+      "hash": "3b59e4444cb7dbcfe2e83b18b2d9bbe6"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_delete_own",
+      "hash": "f3aef841b8c98296f75cc195bb520204"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_insert_self",
+      "hash": "5b2a584c7916140dbc7215216f28b959"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_select_own",
+      "hash": "0ed745b753a702f57d5a8e79099e28d4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_update_own",
+      "hash": "94cff66da99c76092a2a8d21c980758b"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategory_translations.Public can read subcategory tra",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subscription_packages.Allow public read subscription_pac",
+      "hash": "5953e84e60fce235b35384f7ded73878"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subscription_transactions.Users can view own transaction",
+      "hash": "66d7860aa22584e8303dced05a4afcad"
+    },
+    {
+      "kind": "policy",
+      "name": "public.supplier_locations.supplier_locations_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.suppliers.suppliers_insert_auth",
+      "hash": "8fec72e9a73a00d0c4f1f5174cf87fc3"
+    },
+    {
+      "kind": "policy",
+      "name": "public.suppliers.suppliers_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.suppliers.suppliers_update_own",
+      "hash": "e26fd115f2494dded5c23aed8099de31"
+    },
+    {
+      "kind": "policy",
+      "name": "public.table_assignments.Owners can manage table assignments",
+      "hash": "8d7f42e56175ed606f3babcf2aa53c90"
+    },
+    {
+      "kind": "policy",
+      "name": "public.tables.Owners can manage tables",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.timeline_items.Owners can manage timeline items",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.traditions.public read traditions",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_event_timeline.Users can manage their own timeline",
+      "hash": "8eb8ef278848ab7bf9d18c3252b6eed4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_delete_own",
+      "hash": "d250af881c5eff2a0ad6dcd5aee15b6b"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_insert_own",
+      "hash": "be661edf64fa9f829fdedab0a2344a11"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_select_own",
+      "hash": "aa9774b3ef5d3ba79330d4be9711f8be"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_update_own",
+      "hash": "65b1e39916e8ccb89fabc7fdacd4676a"
+    },
+    {
+      "kind": "policy",
+      "name": "public.vendor_places.Public can read vendor places",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.vendors.Public can read vendors",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_planners.Anyone can view approved wedding planne",
+      "hash": "cb64da67f0fc4ee68332e094797b7c19"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_planners.Authenticated users can submit wedding ",
+      "hash": "b293b1456002f3f490037bc899ed5d1f"
+    },
+    {
+      "kind": "table",
+      "name": "account_deletion_requests",
+      "hash": "45a99920ae774cfeb60f33e3bdf70d56"
+    },
+    {
+      "kind": "table",
+      "name": "analytics_events",
+      "hash": "9aab1517fbd66fa198d3c4b86c8e26df"
+    },
+    {
+      "kind": "table",
+      "name": "appointments",
+      "hash": "3c3112bd4bce911bd9f164b563bd548c"
+    },
+    {
+      "kind": "table",
+      "name": "atelier",
+      "hash": "a18eabb9f8eac46c5270c17ffc04f4af"
+    },
+    {
+      "kind": "table",
+      "name": "baptism_family_plans",
+      "hash": "3b6afc4ac733e8397dfebf41db50063e"
+    },
+    {
+      "kind": "table",
+      "name": "budget_ideas",
+      "hash": "1c12f8babb2b68e968a66a0d982ee8c1"
+    },
+    {
+      "kind": "table",
+      "name": "budget_items",
+      "hash": "47f8e115521b5ee36951355e75d68e0d"
+    },
+    {
+      "kind": "table",
+      "name": "catalog_provenance",
+      "hash": "0d283e1d77781ee2bcf96d667bcd74dc"
+    },
+    {
+      "kind": "table",
+      "name": "catalog_review_queue",
+      "hash": "a405f7069ae1fa9a2281008d8ce0c093"
+    },
+    {
+      "kind": "table",
+      "name": "categories",
+      "hash": "759241d0178e78615a0f54fb6dde111a"
+    },
+    {
+      "kind": "table",
+      "name": "category_translations",
+      "hash": "3578c9964a3a1da3fb86ffa470a41133"
+    },
+    {
+      "kind": "table",
+      "name": "checklist_modules",
+      "hash": "2262c54276821fc7d672057a67a579c0"
+    },
+    {
+      "kind": "table",
+      "name": "churches",
+      "hash": "fefa733fe0d3fa9e7e3ed134d7829679"
+    },
+    {
+      "kind": "table",
+      "name": "eighteenth_party_plans",
+      "hash": "3b6afc4ac733e8397dfebf41db50063e"
+    },
+    {
+      "kind": "table",
+      "name": "eighteenth_plans",
+      "hash": "5e57675adac9bdac8df6b42762c86595"
+    },
+    {
+      "kind": "table",
+      "name": "event_documents",
+      "hash": "6fac3f7d4298840ad641c1556dca960f"
+    },
+    {
+      "kind": "table",
+      "name": "event_invitations",
+      "hash": "c135c4a109b89beec730e9df7f44b0b6"
+    },
+    {
+      "kind": "table",
+      "name": "event_location_supplier_links",
+      "hash": "38194398ec2f23c773078ea39c67c3a7"
+    },
+    {
+      "kind": "table",
+      "name": "event_members",
+      "hash": "89037d0d7ad2fb32dbb692b77e12d98e"
+    },
+    {
+      "kind": "table",
+      "name": "event_private_catalog_records",
+      "hash": "a21420219954c4bd7b733f60cdb3f9f2"
+    },
+    {
+      "kind": "table",
+      "name": "event_timeline_translations",
+      "hash": "1afdf24ce83c92364691eeaec67e914d"
+    },
+    {
+      "kind": "table",
+      "name": "event_timelines",
+      "hash": "f376a40eb896c85789f1d2a5e7f71873"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_categories",
+      "hash": "68e7f75bbad6ca3e065efea30d0c801c"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_subcategories",
+      "hash": "9944ecd1753b1243cea0bced39c2f643"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_translations",
+      "hash": "3247d0f723848ad17377e2e747dc9c04"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_variants",
+      "hash": "41da67973e228d6e6e7df9fc2be1d5a5"
+    },
+    {
+      "kind": "table",
+      "name": "event_types",
+      "hash": "a21e4d0527b19778156e893fc9f855c5"
+    },
+    {
+      "kind": "table",
+      "name": "events",
+      "hash": "3403b83ce62d8792e2adad5ac4ed520f"
+    },
+    {
+      "kind": "table",
+      "name": "expenses",
+      "hash": "23a421ecac0c84e321df484420547764"
+    },
+    {
+      "kind": "table",
+      "name": "family_groups",
+      "hash": "b58ec952301230b75c815f5bd52f8f7e"
+    },
+    {
+      "kind": "table",
+      "name": "geo_countries",
+      "hash": "60e972b2704cfe38acef14641c26cbdc"
+    },
+    {
+      "kind": "table",
+      "name": "gift_list_items",
+      "hash": "96a13d925b6d04fe258cb8f5aa43134d"
+    },
+    {
+      "kind": "table",
+      "name": "guests",
+      "hash": "5154f7a760de97fa702e73c840c51653"
+    },
+    {
+      "kind": "table",
+      "name": "i18n_locales",
+      "hash": "349bb2bf6a8dbd6e7bae26cfe55f28ec"
+    },
+    {
+      "kind": "table",
+      "name": "incomes",
+      "hash": "8c5c0e77ea253432aaaa766b59032521"
+    },
+    {
+      "kind": "table",
+      "name": "locations",
+      "hash": "733a1485e5c3f602ec3083b630740021"
+    },
+    {
+      "kind": "table",
+      "name": "musica_cerimonia",
+      "hash": "fc16078bb575ed68f6877023c7d346c3"
+    },
+    {
+      "kind": "table",
+      "name": "musica_ricevimento",
+      "hash": "fc16078bb575ed68f6877023c7d346c3"
+    },
+    {
+      "kind": "table",
+      "name": "non_invited_recipients",
+      "hash": "d1dd648329d369b152cb33b4c12ff356"
+    },
+    {
+      "kind": "table",
+      "name": "payment_reminders",
+      "hash": "2363a9914e28664ac4ff89a997c084ef"
+    },
+    {
+      "kind": "table",
+      "name": "places",
+      "hash": "a4ab6a7051145a97f12ff3f033e3aeb4"
+    },
+    {
+      "kind": "table",
+      "name": "profiles",
+      "hash": "658fce9bc6155d20e9bed79b6100732b"
+    },
+    {
+      "kind": "table",
+      "name": "rate_limit_buckets",
+      "hash": "65970573050425685f7fc3a75c765edc"
+    },
+    {
+      "kind": "table",
+      "name": "saved_churches",
+      "hash": "59a3bb1f7200f35f0592ea9cb6ea8002"
+    },
+    {
+      "kind": "table",
+      "name": "saved_locations",
+      "hash": "3247db2a024d8f6eeded681176f80b8a"
+    },
+    {
+      "kind": "table",
+      "name": "saved_suppliers",
+      "hash": "9820f36b5fc73acc5eed6c7aa98ba7d6"
+    },
+    {
+      "kind": "table",
+      "name": "subcategories",
+      "hash": "90400beddbd5d6f0f47c09e4618dd6ba"
+    },
+    {
+      "kind": "table",
+      "name": "subcategory_translations",
+      "hash": "2ba168ac68ad453fd13a2a445be8679b"
+    },
+    {
+      "kind": "table",
+      "name": "subscription_packages",
+      "hash": "385ab6530c7ac0bd3628f8f50f4a1df4"
+    },
+    {
+      "kind": "table",
+      "name": "subscription_transactions",
+      "hash": "fcb70ea68feaab7a30e6907865680dd8"
+    },
+    {
+      "kind": "table",
+      "name": "supplier_locations",
+      "hash": "7699c4f4faf934ffe2dd7ef99c91a452"
+    },
+    {
+      "kind": "table",
+      "name": "suppliers",
+      "hash": "6089199b0494f2eb9042ab5a981e3bd9"
+    },
+    {
+      "kind": "table",
+      "name": "sync_jobs",
+      "hash": "edc6ae109e7578b00bc7707fefbd3a8d"
+    },
+    {
+      "kind": "table",
+      "name": "table_assignments",
+      "hash": "fe17bf70157ee2cc1c7e861fbdd8ab2c"
+    },
+    {
+      "kind": "table",
+      "name": "tables",
+      "hash": "1d6b9ef2047a58dcfc739fef5fc3fbdf"
+    },
+    {
+      "kind": "table",
+      "name": "timeline_items",
+      "hash": "0d759b49ce450ad4da4bea484e7fa19f"
+    },
+    {
+      "kind": "table",
+      "name": "traditions",
+      "hash": "60ce48318439b70cddbb78461251bccd"
+    },
+    {
+      "kind": "table",
+      "name": "user_event_timeline",
+      "hash": "252c20207d05972dba7ebbca827b89fe"
+    },
+    {
+      "kind": "table",
+      "name": "user_favorites",
+      "hash": "8c5b22bf3e53ec7fea56cd6a9bff34cd"
+    },
+    {
+      "kind": "table",
+      "name": "vendor_places",
+      "hash": "a264a15971def479c27dc6947c5e918b"
+    },
+    {
+      "kind": "table",
+      "name": "vendors",
+      "hash": "4d682cb4b9c62293faa03bf04380245e"
+    },
+    {
+      "kind": "table",
+      "name": "wedding_cards",
+      "hash": "83b6f3741e94b43b9e43efcacb5fba58"
+    },
+    {
+      "kind": "table",
+      "name": "wedding_planners",
+      "hash": "d80dd05aff58ec35c224674ec04d9ed9"
+    }
+  ],
+  "productionSchema": [
+    {
+      "kind": "function",
+      "name": "private.assert_branch48_partner_lifecycle_compatible()",
+      "hash": "76035dfdba8c7de24796baf543539c8a"
+    },
+    {
+      "kind": "function",
+      "name": "private.capture_saved_catalog_snapshot()",
+      "hash": "addf7cbe8018f5e3d6804716e7ad1c18"
+    },
+    {
+      "kind": "function",
+      "name": "private.enforce_event_document_quota()",
+      "hash": "98132ce403c875d19fe341e99225377a"
+    },
+    {
+      "kind": "function",
+      "name": "private.enforce_subcategory_identity()",
+      "hash": "1091ee4502502f966ae6393ac4b591ba"
+    },
+    {
+      "kind": "function",
+      "name": "private.event_access_role_for_actor(p_event_id uuid, p_actor_id",
+      "hash": "cdec48dc4aeae333185a908ceedc0c93"
+    },
+    {
+      "kind": "function",
+      "name": "private.guard_event_document_cascade()",
+      "hash": "6167a41f5c7d58a75407045486a9c344"
+    },
+    {
+      "kind": "function",
+      "name": "private.guard_event_document_storage_parent()",
+      "hash": "820ffea6bc0ffce3b550b0ffea4a41f7"
+    },
+    {
+      "kind": "function",
+      "name": "private.handle_new_auth_user()",
+      "hash": "95bc9518fff60e4f66fcb591e432db9f"
+    },
+    {
+      "kind": "function",
+      "name": "private.record_first_value()",
+      "hash": "cb3b9cfb3b2be3a6102ca62850ff0b30"
+    },
+    {
+      "kind": "function",
+      "name": "private.release_subcategory_identity()",
+      "hash": "609c37ff0d2a9a0007badbfa706417a6"
+    },
+    {
+      "kind": "function",
+      "name": "private.subcategory_identity_parts(p_category_id uuid, p_name t",
+      "hash": "63483156e822a0364aea40640f667882"
+    },
+    {
+      "kind": "function",
+      "name": "public.accept_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "71df173b5d49ed81e094e5fb489364d4"
+    },
+    {
+      "kind": "function",
+      "name": "public.apply_budget_idea_atomic(p_event_id uuid, p_actor_id uui",
+      "hash": "06c1505104886bec6d1a2d82a4baf54b"
+    },
+    {
+      "kind": "function",
+      "name": "public.begin_event_document_delete(p_event_id uuid, p_actor_id ",
+      "hash": "69738b6a7f554edf63c4c363077c7cbe"
+    },
+    {
+      "kind": "function",
+      "name": "public.bump_baptism_revision()",
+      "hash": "bffcda8e1a605a45d42414286c3d5101"
+    },
+    {
+      "kind": "function",
+      "name": "public.can_access_event(p_event_id uuid)",
+      "hash": "7ebbec11e1354efd1b46e8bb4700c7ad"
+    },
+    {
+      "kind": "function",
+      "name": "public.can_manage_event_location_supplier_links(p_event_id uuid",
+      "hash": "5bf30f31a8d979b082a3e5b0ca06f705"
+    },
+    {
+      "kind": "function",
+      "name": "public.catalog_payload_has_only_allowed_keys(entity_type_value ",
+      "hash": "e1c81990fd4cf44e1f8aea819ee9e698"
+    },
+    {
+      "kind": "function",
+      "name": "public.check_table_availability(p_table_id uuid)",
+      "hash": "ad007c615e853a70d2d56f08e6f33d1e"
+    },
+    {
+      "kind": "function",
+      "name": "public.claim_expired_event_document_uploads(p_event_id uuid, p_",
+      "hash": "b7c035fee0d3898501e8e24714016f8f"
+    },
+    {
+      "kind": "function",
+      "name": "public.complete_event_document_delete(p_event_id uuid, p_actor_",
+      "hash": "e0a676ba2b2067f906b09543852d5bfd"
+    },
+    {
+      "kind": "function",
+      "name": "public.complete_event_document_upload_cleanup(p_event_id uuid, ",
+      "hash": "f254222cda986854fe57b7169d9527af"
+    },
+    {
+      "kind": "function",
+      "name": "public.consume_rate_limit(p_key text, p_limit integer, p_window",
+      "hash": "f86b840a9a763b87fc4e767193a03061"
+    },
+    {
+      "kind": "function",
+      "name": "public.create_event_owner_membership()",
+      "hash": "02d8ab4080dbe96cab0a54b3ccc22b3f"
+    },
+    {
+      "kind": "function",
+      "name": "public.delete_event_table(p_event_id uuid, p_actor_id uuid, p_t",
+      "hash": "e7f5c9f3a74d4c8d480d0f1845000dc2"
+    },
+    {
+      "kind": "function",
+      "name": "public.enforce_supplier_work_identity_immutable()",
+      "hash": "844c76b995a843dc5c7b741824e57e2d"
+    },
+    {
+      "kind": "function",
+      "name": "public.enforce_supplier_work_private_supplier_type()",
+      "hash": "c92198ce7ffefbf0b870f4359d0e688f"
+    },
+    {
+      "kind": "function",
+      "name": "public.ensure_subcategory(p_category uuid, p_name text)",
+      "hash": "8ef7efca7fcc0d2da2b856ea711dd74b"
+    },
+    {
+      "kind": "function",
+      "name": "public.event_document_path_is_untracked(p_event_id uuid, p_acto",
+      "hash": "bc3a48cb0b6906afc8cef874804da691"
+    },
+    {
+      "kind": "function",
+      "name": "public.finalize_event_document_upload(p_event_id uuid, p_actor_",
+      "hash": "9b54b3846db3789a668fbc81d632611d"
+    },
+    {
+      "kind": "function",
+      "name": "public.find_or_create_place(p_google_place_id text, p_osm_id te",
+      "hash": "6d7e55033ec0f42bf04ed9761619ae74"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_or_create_category(p_event uuid, p_name text)",
+      "hash": "31ab96635d745be7eb0a609ab8efc602"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_table_stats(p_event_id uuid)",
+      "hash": "cf3417c1f32942bbbb51c806d85b3159"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_visible_suppliers(p_category text, p_region text, p_",
+      "hash": "e2c98ad85d08e855b1bd40fd1832de93"
+    },
+    {
+      "kind": "function",
+      "name": "public.get_wedding_budget_focus(p_country text, p_event text)",
+      "hash": "2beae7cfc674690d25090bcf8a65e5d3"
+    },
+    {
+      "kind": "function",
+      "name": "public.gift_list_legacy_write()",
+      "hash": "6d06550099ed67b2658dec7e9279d3eb"
+    },
+    {
+      "kind": "function",
+      "name": "public.increment_analytics_counter(p_entity_type text, p_entity",
+      "hash": "f9f28f9e632a4e08bce1f2343190a305"
+    },
+    {
+      "kind": "function",
+      "name": "public.is_catalog_admin()",
+      "hash": "56ee309746413dfdbe9584a9819fed44"
+    },
+    {
+      "kind": "function",
+      "name": "public.is_event_owner(p_event_id uuid)",
+      "hash": "cad6d3e117b23e1fbe0b7ee52945188b"
+    },
+    {
+      "kind": "function",
+      "name": "public.is_subscription_active(p_subscription_tier text, p_expir",
+      "hash": "2cda9bf858fdb0c1d28c32db1fbf1d90"
+    },
+    {
+      "kind": "function",
+      "name": "public.moderate_catalog_submission(p_submission_id uuid, p_acti",
+      "hash": "aee6038a1d022af62756568eda8aba0d"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_catalog_text(value text)",
+      "hash": "53a5869fc7ca1f2b590d5c4fdf6aca89"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_church_catalog_row()",
+      "hash": "9d70bbff27a1b185bc31f3c39a94f4bb"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_location_catalog_row()",
+      "hash": "7daa34fc1bfcf6f4d1f6d9bedcd823c6"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_phone(phone_input text)",
+      "hash": "3f01d1e7ab2fc53532c9d11ea6794087"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_supplier_catalog_row()",
+      "hash": "8284fd5df1278fa56f4752ff66618757"
+    },
+    {
+      "kind": "function",
+      "name": "public.normalize_url(url_input text)",
+      "hash": "a04a861ff8ed86732af8801593b26850"
+    },
+    {
+      "kind": "function",
+      "name": "public.patch_event_details(p_event_id uuid, p_actor_id uuid, p_",
+      "hash": "705d72fc5f2de61eda59ff6304d43577"
+    },
+    {
+      "kind": "function",
+      "name": "public.populate_event_categories()",
+      "hash": "17b14962e90520ebb47b4e63de999ff1"
+    },
+    {
+      "kind": "function",
+      "name": "public.populate_user_timeline()",
+      "hash": "34ee2df93cf9f62734517eb0f1b83ddc"
+    },
+    {
+      "kind": "function",
+      "name": "public.prepare_event_private_catalog_record()",
+      "hash": "bd33f8807b4e7759cfe66ba8a34a5565"
+    },
+    {
+      "kind": "function",
+      "name": "public.prevent_event_owner_change()",
+      "hash": "5b9fc4402baba0ed904c549ff935335f"
+    },
+    {
+      "kind": "function",
+      "name": "public.prevent_table_capacity_underflow()",
+      "hash": "7a1d9c5452b9fcd81b435cd0ab75d4f1"
+    },
+    {
+      "kind": "function",
+      "name": "public.protect_event_location_supplier_link_identity()",
+      "hash": "d192f1c8140a94e52101fd4f221029e1"
+    },
+    {
+      "kind": "function",
+      "name": "public.protect_saved_catalog_snapshot()",
+      "hash": "8f88e95258f6c341553542eaff3fd82b"
+    },
+    {
+      "kind": "function",
+      "name": "public.read_family_baptism(p_id uuid)",
+      "hash": "28519fad59147f76ea34cea330de9dee"
+    },
+    {
+      "kind": "function",
+      "name": "public.regenerate_event_data(p_event_id uuid)",
+      "hash": "e19619f0c7e9841d7897dac49e99fa74"
+    },
+    {
+      "kind": "function",
+      "name": "public.regenerate_event_timeline(p_event_id uuid)",
+      "hash": "f418fd87cb800a21731ccc58f67e6168"
+    },
+    {
+      "kind": "function",
+      "name": "public.reject_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "c23eb25c637170940d2ba75414cf98d0"
+    },
+    {
+      "kind": "function",
+      "name": "public.release_event_document_upload(p_event_id uuid, p_actor_i",
+      "hash": "f6133736699f8d18045b61becc693ab0"
+    },
+    {
+      "kind": "function",
+      "name": "public.reserve_event_document_upload(p_event_id uuid, p_actor_i",
+      "hash": "741bca1a49ca5e822b5a2edabefc517f"
+    },
+    {
+      "kind": "function",
+      "name": "public.rotate_event_invitation_token(p_invitation_id uuid, p_ev",
+      "hash": "20d40ed035fba0555e09cfc3bb2fdd98"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_budget_idea_snapshot(p_event_id uuid, p_user_id uui",
+      "hash": "e84682112ed81e212e6eec19e4ccd2bc"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_event_guest_snapshot(p_event_id uuid, p_user_id uui",
+      "hash": "c81366229ca170af0ad4bca4f006c43a"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_event_table_plan(p_event_id uuid, p_actor_id uuid, ",
+      "hash": "985d1bbd85d387855f515634c8105117"
+    },
+    {
+      "kind": "function",
+      "name": "public.save_family_baptism(p_id uuid, p_revision integer, p_pla",
+      "hash": "b34fe34854eca497b8d911cde3854d82"
+    },
+    {
+      "kind": "function",
+      "name": "public.search_global_catalog(p_entity_type text, p_query text, ",
+      "hash": "0eb98420a291edb818a26ef03b91f696"
+    },
+    {
+      "kind": "function",
+      "name": "public.seed_categories(p_event uuid)",
+      "hash": "b7d077702239c02164fd24eccecd5713"
+    },
+    {
+      "kind": "function",
+      "name": "public.seed_full_event(p_event uuid)",
+      "hash": "865619f0fbd483a6ce451ed47f0c8058"
+    },
+    {
+      "kind": "function",
+      "name": "public.seed_subcategories(p_category uuid, VARIADIC p_names tex",
+      "hash": "856d047c5ad5c0a79e6853fa06e97161"
+    },
+    {
+      "kind": "function",
+      "name": "public.set_owner_id()",
+      "hash": "312b1fffcc89351acdee5d8d188bb566"
+    },
+    {
+      "kind": "function",
+      "name": "public.update_updated_at()",
+      "hash": "4857218a6cd18b45ff5236b5c36439b0"
+    },
+    {
+      "kind": "function",
+      "name": "public.update_updated_at_column()",
+      "hash": "0dc0791981a0d2cf140f1a9b42b13075"
+    },
+    {
+      "kind": "function",
+      "name": "public.upsert_vendor(p_name text, p_type text, p_source text, p",
+      "hash": "6fe0479de04563c7a131150ff494c646"
+    },
+    {
+      "kind": "function",
+      "name": "public.validate_table_assignment_event_capacity()",
+      "hash": "5a225b10ec1b1f8c9821e2e8d1cd82af"
+    },
+    {
+      "kind": "function",
+      "name": "public.wedding_budget_slug(value text)",
+      "hash": "ccbc50c3f1bb6725940afd2c69fc961b"
+    },
+    {
+      "kind": "policy",
+      "name": "public.account_deletion_requests.account_deletion_select_self",
+      "hash": "aa9774b3ef5d3ba79330d4be9711f8be"
+    },
+    {
+      "kind": "policy",
+      "name": "public.analytics_events.Users can view own supplier analytics",
+      "hash": "66d7860aa22584e8303dced05a4afcad"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.appointments.appointments_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.atelier.Allow public read access to atelier",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.baptism_family_plans.baptism_owner_reads",
+      "hash": "f73344bc2bad33813a34716c5034e98e"
+    },
+    {
+      "kind": "policy",
+      "name": "public.budget_ideas.budget_ideas_owner_access",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.budget_items.budget_items_owner_access",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_admin_select",
+      "hash": "79eab544698b5f30a6db94ccb9509175"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_own_insert",
+      "hash": "54f3b168b40952abe87d83457a0652f9"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_own_select",
+      "hash": "d846bf2f5166264f935ad114f3741ee7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.catalog_review_queue.catalog_review_queue_own_update",
+      "hash": "ff1472f98ba7544d43b9aa89815bc460"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.categories.categories_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.category_translations.Public can read category translati",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.checklist_modules.public read checklist_modules",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.churches.churches_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_documents.event_documents_select_event",
+      "hash": "d61473bdae50b640c53966f770dfa6fc"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_invitations.event_invitations_owner_insert",
+      "hash": "8570e0ab3f858c708a7f524a97ac8720"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_invitations.event_invitations_owner_select",
+      "hash": "522019a12f991ec5d9f249e2593dc5ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "a295b78b23caa2c03c7fab87c49fb6c3"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "63f73b5eb45bf123cfbd2a4ea330a347"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "f2e8e73f13a24dd6324b5499004f4e77"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_location_supplier_links.event_location_supplier_li",
+      "hash": "3c9540d3b5f7b07aa6608992b3de1be0"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_owner_delete_partner",
+      "hash": "79eee01cf31949e4b7c5e202bf306530"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_owner_insert_partner",
+      "hash": "7daf768fd2769693466eba870e06869c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_owner_update_partner",
+      "hash": "53ebcc863db44aa5fbb1f79b42b1e225"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_partner_leave",
+      "hash": "430b48c90c220eacdd442b7e7926139a"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_members.event_members_select_accessible",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "9d01ceb229323f4b4e11246a0014328e"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_private_catalog_records.event_private_catalog_reco",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_timeline_translations.Public can read event timeli",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_timelines.Anyone can view event timelines",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_categories.Anyone can view event type categor",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_subcategories.Anyone can view event type subc",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_translations.Public can read event type trans",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_type_variants.Public can read event type variants",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.event_types.Anyone can view event types",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_delete_own",
+      "hash": "4971a710d0ae70fe1a9720d836ab0542"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_insert_self",
+      "hash": "0afe78a0ed179c0f52f048edfea94a71"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_select_own",
+      "hash": "8ac4dfb18e29094763f20bbc6d1e80b3"
+    },
+    {
+      "kind": "policy",
+      "name": "public.events.events_update_own",
+      "hash": "0445bdc268d8efe3e226acb2522d429a"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.expenses.expenses_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.family_groups.Owners can manage family groups",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.geo_countries.Public can read countries",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_delete_event",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_insert_event",
+      "hash": "9d01ceb229323f4b4e11246a0014328e"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_select_event",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.gift_list_items.gift_list_items_update_event",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.guests.Users can manage their own guests",
+      "hash": "8eb8ef278848ab7bf9d18c3252b6eed4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.i18n_locales.Public can read locales",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.incomes.incomes_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.locations.locations_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_cerimonia.Anyone can view approved ceremony music",
+      "hash": "cb64da67f0fc4ee68332e094797b7c19"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_cerimonia.Authenticated users can submit ceremony",
+      "hash": "b293b1456002f3f490037bc899ed5d1f"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_ricevimento.Anyone can view approved reception mu",
+      "hash": "cb64da67f0fc4ee68332e094797b7c19"
+    },
+    {
+      "kind": "policy",
+      "name": "public.musica_ricevimento.Authenticated users can submit recept",
+      "hash": "b293b1456002f3f490037bc899ed5d1f"
+    },
+    {
+      "kind": "policy",
+      "name": "public.non_invited_recipients.Owners can manage non invited rec",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.payment_reminders.Users can manage their own payment rem",
+      "hash": "69e624ab8b2c238145301e187635c72d"
+    },
+    {
+      "kind": "policy",
+      "name": "public.places.Public can read places",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.profiles.profiles_insert_self",
+      "hash": "be5d41cb72e2986b3fb04a6a36e77667"
+    },
+    {
+      "kind": "policy",
+      "name": "public.profiles.profiles_select_own",
+      "hash": "45f0a1c99f6d21272a430a6d1bd9a8a4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.profiles.profiles_update_own",
+      "hash": "3b59e4444cb7dbcfe2e83b18b2d9bbe6"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_churches.saved_churches_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_locations.saved_locations_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_insert_own",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.saved_suppliers.saved_suppliers_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_delete_own",
+      "hash": "f3aef841b8c98296f75cc195bb520204"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_insert_self",
+      "hash": "5b2a584c7916140dbc7215216f28b959"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_select_own",
+      "hash": "0ed745b753a702f57d5a8e79099e28d4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategories.subcategories_update_own",
+      "hash": "94cff66da99c76092a2a8d21c980758b"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subcategory_translations.Public can read subcategory tra",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subscription_packages.Allow public read subscription_pac",
+      "hash": "5953e84e60fce235b35384f7ded73878"
+    },
+    {
+      "kind": "policy",
+      "name": "public.subscription_transactions.Users can view own transaction",
+      "hash": "66d7860aa22584e8303dced05a4afcad"
+    },
+    {
+      "kind": "policy",
+      "name": "public.supplier_locations.supplier_locations_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.suppliers.suppliers_insert_auth",
+      "hash": "8fec72e9a73a00d0c4f1f5174cf87fc3"
+    },
+    {
+      "kind": "policy",
+      "name": "public.suppliers.suppliers_public_read",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.suppliers.suppliers_update_own",
+      "hash": "e26fd115f2494dded5c23aed8099de31"
+    },
+    {
+      "kind": "policy",
+      "name": "public.table_assignments.Owners can manage table assignments",
+      "hash": "8d7f42e56175ed606f3babcf2aa53c90"
+    },
+    {
+      "kind": "policy",
+      "name": "public.tables.Owners can manage tables",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.timeline_items.Owners can manage timeline items",
+      "hash": "2f97ed0c8daeee502136a66ed021e8ce"
+    },
+    {
+      "kind": "policy",
+      "name": "public.traditions.public read traditions",
+      "hash": "f5cc46cc576772d33536968bf0730ba7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_event_timeline.Users can manage their own timeline",
+      "hash": "8eb8ef278848ab7bf9d18c3252b6eed4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_delete_own",
+      "hash": "d250af881c5eff2a0ad6dcd5aee15b6b"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_insert_own",
+      "hash": "be661edf64fa9f829fdedab0a2344a11"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_select_own",
+      "hash": "aa9774b3ef5d3ba79330d4be9711f8be"
+    },
+    {
+      "kind": "policy",
+      "name": "public.user_favorites.user_favorites_update_own",
+      "hash": "65b1e39916e8ccb89fabc7fdacd4676a"
+    },
+    {
+      "kind": "policy",
+      "name": "public.vendor_places.Public can read vendor places",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.vendors.Public can read vendors",
+      "hash": "6045ed016518c762cd9b04d55b0d0ee4"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_delete_own",
+      "hash": "c104c182e6420b1a2f7520b794ce9bb7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_insert_self",
+      "hash": "d6d11f6c8c7ce4f1477cacf60c0d4384"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_select_own",
+      "hash": "13bd9fe6be44764eebb180c469521e7c"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_cards.wedding_cards_update_own",
+      "hash": "a1dd5d3e66202b3bc2acbe7b00e9d6c7"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_planners.Anyone can view approved wedding planne",
+      "hash": "cb64da67f0fc4ee68332e094797b7c19"
+    },
+    {
+      "kind": "policy",
+      "name": "public.wedding_planners.Authenticated users can submit wedding ",
+      "hash": "b293b1456002f3f490037bc899ed5d1f"
+    },
+    {
+      "kind": "table",
+      "name": "account_deletion_requests",
+      "hash": "45a99920ae774cfeb60f33e3bdf70d56"
+    },
+    {
+      "kind": "table",
+      "name": "analytics_events",
+      "hash": "9aab1517fbd66fa198d3c4b86c8e26df"
+    },
+    {
+      "kind": "table",
+      "name": "appointments",
+      "hash": "3c3112bd4bce911bd9f164b563bd548c"
+    },
+    {
+      "kind": "table",
+      "name": "atelier",
+      "hash": "a18eabb9f8eac46c5270c17ffc04f4af"
+    },
+    {
+      "kind": "table",
+      "name": "baptism_family_plans",
+      "hash": "3b6afc4ac733e8397dfebf41db50063e"
+    },
+    {
+      "kind": "table",
+      "name": "budget_ideas",
+      "hash": "1c12f8babb2b68e968a66a0d982ee8c1"
+    },
+    {
+      "kind": "table",
+      "name": "budget_items",
+      "hash": "47f8e115521b5ee36951355e75d68e0d"
+    },
+    {
+      "kind": "table",
+      "name": "catalog_provenance",
+      "hash": "0d283e1d77781ee2bcf96d667bcd74dc"
+    },
+    {
+      "kind": "table",
+      "name": "catalog_review_queue",
+      "hash": "a405f7069ae1fa9a2281008d8ce0c093"
+    },
+    {
+      "kind": "table",
+      "name": "categories",
+      "hash": "759241d0178e78615a0f54fb6dde111a"
+    },
+    {
+      "kind": "table",
+      "name": "category_translations",
+      "hash": "3578c9964a3a1da3fb86ffa470a41133"
+    },
+    {
+      "kind": "table",
+      "name": "checklist_modules",
+      "hash": "2262c54276821fc7d672057a67a579c0"
+    },
+    {
+      "kind": "table",
+      "name": "churches",
+      "hash": "fefa733fe0d3fa9e7e3ed134d7829679"
+    },
+    {
+      "kind": "table",
+      "name": "event_documents",
+      "hash": "6fac3f7d4298840ad641c1556dca960f"
+    },
+    {
+      "kind": "table",
+      "name": "event_invitations",
+      "hash": "c135c4a109b89beec730e9df7f44b0b6"
+    },
+    {
+      "kind": "table",
+      "name": "event_location_supplier_links",
+      "hash": "38194398ec2f23c773078ea39c67c3a7"
+    },
+    {
+      "kind": "table",
+      "name": "event_members",
+      "hash": "89037d0d7ad2fb32dbb692b77e12d98e"
+    },
+    {
+      "kind": "table",
+      "name": "event_private_catalog_records",
+      "hash": "a21420219954c4bd7b733f60cdb3f9f2"
+    },
+    {
+      "kind": "table",
+      "name": "event_timeline_translations",
+      "hash": "1afdf24ce83c92364691eeaec67e914d"
+    },
+    {
+      "kind": "table",
+      "name": "event_timelines",
+      "hash": "f376a40eb896c85789f1d2a5e7f71873"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_categories",
+      "hash": "68e7f75bbad6ca3e065efea30d0c801c"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_subcategories",
+      "hash": "9944ecd1753b1243cea0bced39c2f643"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_translations",
+      "hash": "3247d0f723848ad17377e2e747dc9c04"
+    },
+    {
+      "kind": "table",
+      "name": "event_type_variants",
+      "hash": "41da67973e228d6e6e7df9fc2be1d5a5"
+    },
+    {
+      "kind": "table",
+      "name": "event_types",
+      "hash": "a21e4d0527b19778156e893fc9f855c5"
+    },
+    {
+      "kind": "table",
+      "name": "events",
+      "hash": "3403b83ce62d8792e2adad5ac4ed520f"
+    },
+    {
+      "kind": "table",
+      "name": "expenses",
+      "hash": "601875cc8c91349aff2319c32da82143"
+    },
+    {
+      "kind": "table",
+      "name": "family_groups",
+      "hash": "b58ec952301230b75c815f5bd52f8f7e"
+    },
+    {
+      "kind": "table",
+      "name": "geo_countries",
+      "hash": "60e972b2704cfe38acef14641c26cbdc"
+    },
+    {
+      "kind": "table",
+      "name": "gift_list_items",
+      "hash": "96a13d925b6d04fe258cb8f5aa43134d"
+    },
+    {
+      "kind": "table",
+      "name": "guests",
+      "hash": "5154f7a760de97fa702e73c840c51653"
+    },
+    {
+      "kind": "table",
+      "name": "i18n_locales",
+      "hash": "349bb2bf6a8dbd6e7bae26cfe55f28ec"
+    },
+    {
+      "kind": "table",
+      "name": "incomes",
+      "hash": "8c5c0e77ea253432aaaa766b59032521"
+    },
+    {
+      "kind": "table",
+      "name": "locations",
+      "hash": "733a1485e5c3f602ec3083b630740021"
+    },
+    {
+      "kind": "table",
+      "name": "musica_cerimonia",
+      "hash": "fc16078bb575ed68f6877023c7d346c3"
+    },
+    {
+      "kind": "table",
+      "name": "musica_ricevimento",
+      "hash": "fc16078bb575ed68f6877023c7d346c3"
+    },
+    {
+      "kind": "table",
+      "name": "non_invited_recipients",
+      "hash": "d1dd648329d369b152cb33b4c12ff356"
+    },
+    {
+      "kind": "table",
+      "name": "payment_reminders",
+      "hash": "2363a9914e28664ac4ff89a997c084ef"
+    },
+    {
+      "kind": "table",
+      "name": "places",
+      "hash": "a4ab6a7051145a97f12ff3f033e3aeb4"
+    },
+    {
+      "kind": "table",
+      "name": "profiles",
+      "hash": "658fce9bc6155d20e9bed79b6100732b"
+    },
+    {
+      "kind": "table",
+      "name": "rate_limit_buckets",
+      "hash": "65970573050425685f7fc3a75c765edc"
+    },
+    {
+      "kind": "table",
+      "name": "saved_churches",
+      "hash": "59a3bb1f7200f35f0592ea9cb6ea8002"
+    },
+    {
+      "kind": "table",
+      "name": "saved_locations",
+      "hash": "3247db2a024d8f6eeded681176f80b8a"
+    },
+    {
+      "kind": "table",
+      "name": "saved_suppliers",
+      "hash": "9820f36b5fc73acc5eed6c7aa98ba7d6"
+    },
+    {
+      "kind": "table",
+      "name": "subcategories",
+      "hash": "90400beddbd5d6f0f47c09e4618dd6ba"
+    },
+    {
+      "kind": "table",
+      "name": "subcategory_translations",
+      "hash": "2ba168ac68ad453fd13a2a445be8679b"
+    },
+    {
+      "kind": "table",
+      "name": "subscription_packages",
+      "hash": "385ab6530c7ac0bd3628f8f50f4a1df4"
+    },
+    {
+      "kind": "table",
+      "name": "subscription_transactions",
+      "hash": "fcb70ea68feaab7a30e6907865680dd8"
+    },
+    {
+      "kind": "table",
+      "name": "supplier_locations",
+      "hash": "7699c4f4faf934ffe2dd7ef99c91a452"
+    },
+    {
+      "kind": "table",
+      "name": "suppliers",
+      "hash": "6089199b0494f2eb9042ab5a981e3bd9"
+    },
+    {
+      "kind": "table",
+      "name": "sync_jobs",
+      "hash": "edc6ae109e7578b00bc7707fefbd3a8d"
+    },
+    {
+      "kind": "table",
+      "name": "table_assignments",
+      "hash": "fe17bf70157ee2cc1c7e861fbdd8ab2c"
+    },
+    {
+      "kind": "table",
+      "name": "tables",
+      "hash": "1d6b9ef2047a58dcfc739fef5fc3fbdf"
+    },
+    {
+      "kind": "table",
+      "name": "timeline_items",
+      "hash": "0d759b49ce450ad4da4bea484e7fa19f"
+    },
+    {
+      "kind": "table",
+      "name": "traditions",
+      "hash": "60ce48318439b70cddbb78461251bccd"
+    },
+    {
+      "kind": "table",
+      "name": "user_event_timeline",
+      "hash": "252c20207d05972dba7ebbca827b89fe"
+    },
+    {
+      "kind": "table",
+      "name": "user_favorites",
+      "hash": "8c5b22bf3e53ec7fea56cd6a9bff34cd"
+    },
+    {
+      "kind": "table",
+      "name": "vendor_places",
+      "hash": "a264a15971def479c27dc6947c5e918b"
+    },
+    {
+      "kind": "table",
+      "name": "vendors",
+      "hash": "4d682cb4b9c62293faa03bf04380245e"
+    },
+    {
+      "kind": "table",
+      "name": "wedding_cards",
+      "hash": "83b6f3741e94b43b9e43efcacb5fba58"
+    },
+    {
+      "kind": "table",
+      "name": "wedding_planners",
+      "hash": "d80dd05aff58ec35c224674ec04d9ed9"
+    }
+  ],
+  "qaFunctions": [
+    {
+      "proname": "bump_baptism_revision",
+      "definition": "CREATE OR REPLACE FUNCTION public.bump_baptism_revision()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare eid uuid;\nbegin\n if TG_OP='UPDATE' and OLD.baptism_details is not null and (NEW.event_id<>OLD.event_id or NEW.baptism_details is null) then raise exception 'BAPTISM_ROW_IDENTITY_IMMUTABLE';end if;\n eid=case when TG_OP='DELETE' then OLD.event_id else NEW.event_id end;\n if (case when TG_OP='DELETE' then OLD.baptism_details else NEW.baptism_details end) is not null then\n  perform 1 from public.events where id=eid for update;\n  if found then\n   update public.baptism_family_plans set revision=revision+1,request_hash=null where event_id=eid;\n  end if;\n end if;\n return case when TG_OP='DELETE' then OLD else NEW end;\nend $function$\n"
+    },
+    {
+      "proname": "can_access_event",
+      "definition": "CREATE OR REPLACE FUNCTION public.can_access_event(p_event_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select (select auth.uid()) is not null\n    and private.event_access_role_for_actor(p_event_id, (select auth.uid())) is not null\n$function$\n"
+    },
+    {
+      "proname": "populate_event_categories",
+      "definition": "CREATE OR REPLACE FUNCTION public.populate_event_categories()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'auth', 'extensions', 'pg_temp'\nAS $function$\nDECLARE\n  subcat_record RECORD;\nBEGIN\n  -- Solo se evento ha event_type valorizzato\n  IF NEW.event_type IS NOT NULL THEN\n    -- Copia tutte le subcategories per questo tipo evento\n    FOR subcat_record IN\n      SELECT s.id, s.default_budget\n      FROM public.subcategories s\n      JOIN public.categories c ON c.id = s.category_id\n      JOIN public.event_types et ON et.id = c.event_type_id\n      WHERE et.code = NEW.event_type\n    LOOP\n      INSERT INTO public.event_category_selection (\n        event_id,\n        subcategory_id,\n        budget,\n        is_selected\n      ) VALUES (\n        NEW.id,\n        subcat_record.id,\n        COALESCE(subcat_record.default_budget, 0),\n        true -- Di default tutte selezionate\n      )\n      ON CONFLICT (event_id, subcategory_id) DO NOTHING; -- Evita duplicati\n    END LOOP;\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+    },
+    {
+      "proname": "read_family_baptism",
+      "definition": "CREATE OR REPLACE FUNCTION public.read_family_baptism(p_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'auth', 'extensions', 'pg_temp'\nAS $function$\ndeclare result jsonb;\nbegin\n if not exists(select 1 from public.events where id=p_id and owner_id=auth.uid() and event_type='baptism') then raise exception 'EVENT_UNAVAILABLE'; end if;\n select jsonb_build_object('event_id',p_id,'revision',revision,'plan',plan || jsonb_build_object(\n 'guests',coalesce((select jsonb_agg(jsonb_build_object('id',g.id,'name',g.name,'ceremony',case when not coalesce(g.rsvp_received,false) then 'pending' when g.attending then 'yes' else 'no' end,'menu',coalesce(g.menu_preferences[1],'pending'),'food',g.allergies_intolerances) || g.baptism_details order by g.created_at,g.id) from public.guests g where g.event_id=p_id and g.baptism_details is not null),'[]'::jsonb),\n 'costs',coalesce((select jsonb_agg(jsonb_build_object('id',e.id,'name',e.description,'enabled',e.is_enabled,'payments',coalesce(e.payment_installments,'[]'::jsonb)) || e.baptism_details order by e.inserted_at,e.id) from public.expenses e where e.event_id=p_id and e.baptism_details is not null),'[]'::jsonb))) into result from public.baptism_family_plans where event_id=p_id;\n return result;\nend $function$\n"
+    },
+    {
+      "proname": "save_family_baptism",
+      "definition": "CREATE OR REPLACE FUNCTION public.save_family_baptism(p_id uuid, p_revision integer, p_plan jsonb)\n RETURNS integer\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'auth', 'extensions', 'pg_temp'\nAS $function$\ndeclare\n owner uuid:=auth.uid(); title text; budget numeric; day date; current_rev integer; prior_hash text; prior_base integer;\n g jsonb; c jsonb; p jsonb; total numeric; paid numeric; active boolean; eid uuid; hash text:=md5(p_plan::text);\nbegin\n if owner is null or p_id is null or p_revision is null or p_revision<0 or jsonb_typeof(p_plan) is distinct from 'object' or octet_length(p_plan::text)>1000000 or p_plan->>'version' is distinct from '2' or jsonb_typeof(p_plan->'guests') is distinct from 'array' or jsonb_typeof(p_plan->'costs') is distinct from 'array' then raise exception 'INVALID_BAPTISM'; end if;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');budget:=coalesce(nullif(p_plan->>'budget','')::numeric,0);day:=nullif(left(p_plan->>'ceremony',10),'')::date;\n if length(title)>120 or budget<0 or budget>999999999 or budget='NaN'::numeric or jsonb_array_length(p_plan->'guests')>2000 or jsonb_array_length(p_plan->'costs')>1000 or coalesce(p_plan->>'scenario','') not in ('solo','later','home','lunch','hall') then raise exception 'INVALID_BAPTISM';end if;\n foreach title in array array['adults','companions','children','noMeal'] loop\n  if not coalesce(p_plan->>title,'') ~ '^\\d+$' then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n end loop;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');\n if (p_plan->>'companions')::numeric>(p_plan->>'adults')::numeric then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n if p_plan->>'scenario' in ('home','lunch','hall') and nullif(p_plan->>'time','') is not null and nullif(p_plan->>'ceremony','') is not null and (p_plan->>'time')::timestamp<=(p_plan->>'ceremony')::timestamp then raise exception 'INVALID_BAPTISM_TIME';end if;\n perform pg_advisory_xact_lock(hashtextextended(p_id::text,0));\n select revision,request_hash,base_revision into current_rev,prior_hash,prior_base from public.baptism_family_plans b join public.events e on e.id=b.event_id where e.id=p_id and e.owner_id=owner and e.event_type='baptism' for update of e,b;\n if current_rev is not null then\n  if prior_hash=hash and prior_base=p_revision then return current_rev;end if;\n  if current_rev<>p_revision then raise exception 'BAPTISM_CONFLICT';end if;\n elsif p_revision<>0 then raise exception 'EVENT_UNAVAILABLE';\n else\n  if exists(select 1 from public.events where id=p_id) then raise exception 'EVENT_UNAVAILABLE';end if;\n  insert into public.events(id,owner_id,event_type,public_id,name,event_date,total_budget,language,country) values(p_id,owner,'baptism',replace(gen_random_uuid()::text,'-',''),title,day,budget,coalesce(p_plan->>'locale','it'),'it');\n  insert into public.baptism_family_plans(event_id,revision,plan) values(p_id,0,'{}');\n end if;\n if (select count(*) from jsonb_array_elements(p_plan->'guests'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'guests')) or (select count(*) from jsonb_array_elements(p_plan->'costs'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'costs')) then raise exception 'DUPLICATE_BAPTISM_ITEM';end if;\n for g in select value from jsonb_array_elements(p_plan->'guests') loop\n  eid:=(g->>'id')::uuid;\n  if coalesce(btrim(g->>'name'),'')='' or coalesce(g->>'ceremony','') not in ('pending','yes','no') or coalesce(g->>'reception','') not in ('pending','yes','no') or coalesce(g->>'menu','') not in ('adult','child','none','pending') or coalesce(g->>'kind','') not in ('adult','child') then raise exception 'INVALID_BAPTISM_GUEST';end if;\n  if exists(select 1 from public.guests where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  if coalesce(g->>'companionOf','')<>'' and (g->>'companionOf'=g->>'id' or not exists(select 1 from jsonb_array_elements(p_plan->'guests') x where x->>'id'=g->>'companionOf' and coalesce(x->>'companionOf','')='')) then raise exception 'INVALID_BAPTISM_COMPANION';end if;\n  insert into public.guests(id,event_id,name,guest_type,rsvp_received,attending,menu_preferences,allergies_intolerances,baptism_details)\n  values(eid,p_id,g->>'name','common',g->>'ceremony'<>'pending',g->>'ceremony'='yes',array[g->>'menu'],coalesce(g->>'food',''),g- 'id'-'name'-'ceremony'-'menu'-'food')\n  on conflict(id) do update set name=excluded.name,rsvp_received=excluded.rsvp_received,attending=excluded.attending,menu_preferences=excluded.menu_preferences,allergies_intolerances=excluded.allergies_intolerances,baptism_details=excluded.baptism_details;\n end loop;\n delete from public.guests where event_id=p_id and baptism_details is not null and id::text not in (select value->>'id' from jsonb_array_elements(p_plan->'guests'));\n for c in select value from jsonb_array_elements(p_plan->'costs') loop\n  eid:=(c->>'id')::uuid;\n  if coalesce(btrim(c->>'name'),'')='' or coalesce(c->>'scope','') not in ('ceremony','reception') or not coalesce(c->>'quantity','')~'^\\d+$' or coalesce(c->>'unitCost','') !~ '^\\d+(\\.\\d+)?$' or jsonb_typeof(c->'payments') is distinct from 'array' then raise exception 'INVALID_BAPTISM_COST';end if;\n  if exists(select 1 from public.expenses where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  paid:=0;\n  for p in select value from jsonb_array_elements(c->'payments') loop\n   if coalesce(p->>'amount','')!~'^\\d+(\\.\\d+)?$' then raise exception 'INVALID_BAPTISM_PAYMENT';end if;\n   paid:=paid+(p->>'amount')::numeric;\n  end loop;\n  active:=coalesce((c->>'enabled')::boolean,false) and (c->>'scope'<>'reception' or p_plan->>'scenario' in ('home','lunch','hall'));\n  total:=case when active then round((c->>'quantity')::numeric*(c->>'unitCost')::numeric,2) else 0 end;\n  insert into public.expenses(id,event_id,description,amount,paid_amount,payment_installments,is_enabled,spend_type,status,baptism_details)\n  values(eid,p_id,c->>'name',total,paid,c->'payments',true,'common','pending',c-'id'-'name'-'payments'-'enabled'||jsonb_build_object('enabled',coalesce((c->>'enabled')::boolean,false)))\n  on conflict(id) do update set description=excluded.description,amount=excluded.amount,paid_amount=excluded.paid_amount,payment_installments=excluded.payment_installments,baptism_details=excluded.baptism_details;\n end loop;\n -- Paid rows may only be disabled, never erased through a replacement snapshot.\n if exists(select 1 from public.expenses e where event_id=p_id and baptism_details is not null and coalesce(paid_amount,0)>0 and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'))) then raise exception 'BAPTISM_PAID_COST_REMOVAL';end if;\n delete from public.expenses where event_id=p_id and baptism_details is not null and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'));\n update public.events set name=title,event_date=day,total_budget=budget where id=p_id;\n update public.baptism_family_plans set plan=p_plan-'guests'-'costs',revision=revision+1,request_hash=hash,base_revision=p_revision where event_id=p_id returning revision into current_rev;\n return current_rev;\nend $function$\n"
+    }
+  ],
+  "productionFunctions": [
+    {
+      "proname": "bump_baptism_revision",
+      "definition": "CREATE OR REPLACE FUNCTION public.bump_baptism_revision()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare eid uuid;\nbegin\n if TG_OP='UPDATE' and OLD.baptism_details is not null and (NEW.event_id<>OLD.event_id or NEW.baptism_details is null) then raise exception 'BAPTISM_ROW_IDENTITY_IMMUTABLE';end if;\n eid=case when TG_OP='DELETE' then OLD.event_id else NEW.event_id end;\n if (case when TG_OP='DELETE' then OLD.baptism_details else NEW.baptism_details end) is not null then\n  perform 1 from public.events where id=eid for update;\n  update public.baptism_family_plans set revision=revision+1,request_hash=null where event_id=eid;\n end if;\n return case when TG_OP='DELETE' then OLD else NEW end;\nend $function$\n"
+    },
+    {
+      "proname": "can_access_event",
+      "definition": "CREATE OR REPLACE FUNCTION public.can_access_event(p_event_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select (select auth.uid()) is not null\n    and private.event_access_role_for_actor(p_event_id, (select auth.uid())) is not null\n$function$\n"
+    },
+    {
+      "proname": "populate_event_categories",
+      "definition": "CREATE OR REPLACE FUNCTION public.populate_event_categories()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'auth', 'extensions', 'pg_temp'\nAS $function$\r\nDECLARE\r\n  subcat_record RECORD;\r\nBEGIN\r\n  -- Solo se evento ha event_type valorizzato\r\n  IF NEW.event_type IS NOT NULL THEN\r\n    -- Copia tutte le subcategories per questo tipo evento\r\n    FOR subcat_record IN\r\n      SELECT s.id, s.default_budget\r\n      FROM public.subcategories s\r\n      JOIN public.categories c ON c.id = s.category_id\r\n      JOIN public.event_types et ON et.id = c.event_type_id\r\n      WHERE et.code = NEW.event_type\r\n    LOOP\r\n      INSERT INTO public.event_category_selection (\r\n        event_id,\r\n        subcategory_id,\r\n        budget,\r\n        is_selected\r\n      ) VALUES (\r\n        NEW.id,\r\n        subcat_record.id,\r\n        COALESCE(subcat_record.default_budget, 0),\r\n        true -- Di default tutte selezionate\r\n      )\r\n      ON CONFLICT (event_id, subcategory_id) DO NOTHING; -- Evita duplicati\r\n    END LOOP;\r\n  END IF;\r\n\r\n  RETURN NEW;\r\nEND;\r\n$function$\n"
+    },
+    {
+      "proname": "read_family_baptism",
+      "definition": "CREATE OR REPLACE FUNCTION public.read_family_baptism(p_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare result jsonb;\nbegin\n if not exists(select 1 from public.events where id=p_id and owner_id=auth.uid() and event_type='baptism') then raise exception 'EVENT_UNAVAILABLE'; end if;\n select jsonb_build_object('event_id',p_id,'revision',revision,'plan',plan || jsonb_build_object(\n 'guests',coalesce((select jsonb_agg(jsonb_build_object('id',g.id,'name',g.name,'ceremony',case when not coalesce(g.rsvp_received,false) then 'pending' when g.attending then 'yes' else 'no' end,'menu',coalesce(g.menu_preferences[1],'pending'),'food',g.allergies_intolerances) || g.baptism_details order by g.created_at,g.id) from public.guests g where g.event_id=p_id and g.baptism_details is not null),'[]'::jsonb),\n 'costs',coalesce((select jsonb_agg(jsonb_build_object('id',e.id,'name',e.description,'enabled',e.is_enabled,'payments',coalesce(e.payment_installments,'[]'::jsonb)) || e.baptism_details order by e.inserted_at,e.id) from public.expenses e where e.event_id=p_id and e.baptism_details is not null),'[]'::jsonb))) into result from public.baptism_family_plans where event_id=p_id;\n return result;\nend $function$\n"
+    },
+    {
+      "proname": "save_family_baptism",
+      "definition": "CREATE OR REPLACE FUNCTION public.save_family_baptism(p_id uuid, p_revision integer, p_plan jsonb)\n RETURNS integer\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare\n owner uuid:=auth.uid(); title text; budget numeric; day date; current_rev integer; prior_hash text; prior_base integer;\n g jsonb; c jsonb; p jsonb; total numeric; paid numeric; active boolean; eid uuid; hash text:=md5(p_plan::text);\nbegin\n if owner is null or p_id is null or p_revision is null or p_revision<0 or jsonb_typeof(p_plan) is distinct from 'object' or octet_length(p_plan::text)>1000000 or p_plan->>'version' is distinct from '2' or jsonb_typeof(p_plan->'guests') is distinct from 'array' or jsonb_typeof(p_plan->'costs') is distinct from 'array' then raise exception 'INVALID_BAPTISM'; end if;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');budget:=coalesce(nullif(p_plan->>'budget','')::numeric,0);day:=nullif(left(p_plan->>'ceremony',10),'')::date;\n if length(title)>120 or budget<0 or budget>999999999 or budget='NaN'::numeric or jsonb_array_length(p_plan->'guests')>2000 or jsonb_array_length(p_plan->'costs')>1000 or coalesce(p_plan->>'scenario','') not in ('solo','later','home','lunch','hall') then raise exception 'INVALID_BAPTISM';end if;\n foreach title in array array['adults','companions','children','noMeal'] loop\n  if not coalesce(p_plan->>title,'') ~ '^\\d+$' then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n end loop;\n title:=coalesce(nullif(btrim(p_plan->>'name'),''),'Battesimo');\n if (p_plan->>'companions')::numeric>(p_plan->>'adults')::numeric then raise exception 'INVALID_BAPTISM_COUNTS';end if;\n if p_plan->>'scenario' in ('home','lunch','hall') and nullif(p_plan->>'time','') is not null and nullif(p_plan->>'ceremony','') is not null and (p_plan->>'time')::timestamp<=(p_plan->>'ceremony')::timestamp then raise exception 'INVALID_BAPTISM_TIME';end if;\n perform pg_advisory_xact_lock(hashtextextended(p_id::text,0));\n select revision,request_hash,base_revision into current_rev,prior_hash,prior_base from public.baptism_family_plans b join public.events e on e.id=b.event_id where e.id=p_id and e.owner_id=owner and e.event_type='baptism' for update of e,b;\n if current_rev is not null then\n  if prior_hash=hash and prior_base=p_revision then return current_rev;end if;\n  if current_rev<>p_revision then raise exception 'BAPTISM_CONFLICT';end if;\n elsif p_revision<>0 then raise exception 'EVENT_UNAVAILABLE';\n else\n  if exists(select 1 from public.events where id=p_id) then raise exception 'EVENT_UNAVAILABLE';end if;\n  insert into public.events(id,owner_id,event_type,public_id,name,event_date,total_budget,language,country) values(p_id,owner,'baptism',replace(gen_random_uuid()::text,'-',''),title,day,budget,coalesce(p_plan->>'locale','it'),'it');\n  insert into public.baptism_family_plans(event_id,revision,plan) values(p_id,0,'{}');\n end if;\n if (select count(*) from jsonb_array_elements(p_plan->'guests'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'guests')) or (select count(*) from jsonb_array_elements(p_plan->'costs'))<>(select count(distinct value->>'id') from jsonb_array_elements(p_plan->'costs')) then raise exception 'DUPLICATE_BAPTISM_ITEM';end if;\n for g in select value from jsonb_array_elements(p_plan->'guests') loop\n  eid:=(g->>'id')::uuid;\n  if coalesce(btrim(g->>'name'),'')='' or coalesce(g->>'ceremony','') not in ('pending','yes','no') or coalesce(g->>'reception','') not in ('pending','yes','no') or coalesce(g->>'menu','') not in ('adult','child','none','pending') or coalesce(g->>'kind','') not in ('adult','child') then raise exception 'INVALID_BAPTISM_GUEST';end if;\n  if exists(select 1 from public.guests where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  if coalesce(g->>'companionOf','')<>'' and (g->>'companionOf'=g->>'id' or not exists(select 1 from jsonb_array_elements(p_plan->'guests') x where x->>'id'=g->>'companionOf' and coalesce(x->>'companionOf','')='')) then raise exception 'INVALID_BAPTISM_COMPANION';end if;\n  insert into public.guests(id,event_id,name,guest_type,rsvp_received,attending,menu_preferences,allergies_intolerances,baptism_details)\n  values(eid,p_id,g->>'name','common',g->>'ceremony'<>'pending',g->>'ceremony'='yes',array[g->>'menu'],coalesce(g->>'food',''),g- 'id'-'name'-'ceremony'-'menu'-'food')\n  on conflict(id) do update set name=excluded.name,rsvp_received=excluded.rsvp_received,attending=excluded.attending,menu_preferences=excluded.menu_preferences,allergies_intolerances=excluded.allergies_intolerances,baptism_details=excluded.baptism_details;\n end loop;\n delete from public.guests where event_id=p_id and baptism_details is not null and id::text not in (select value->>'id' from jsonb_array_elements(p_plan->'guests'));\n for c in select value from jsonb_array_elements(p_plan->'costs') loop\n  eid:=(c->>'id')::uuid;\n  if coalesce(btrim(c->>'name'),'')='' or coalesce(c->>'scope','') not in ('ceremony','reception') or not coalesce(c->>'quantity','')~'^\\d+$' or coalesce(c->>'unitCost','') !~ '^\\d+(\\.\\d+)?$' or jsonb_typeof(c->'payments') is distinct from 'array' then raise exception 'INVALID_BAPTISM_COST';end if;\n  if exists(select 1 from public.expenses where id=eid and (event_id<>p_id or baptism_details is null)) then raise exception 'EVENT_UNAVAILABLE';end if;\n  paid:=0;\n  for p in select value from jsonb_array_elements(c->'payments') loop\n   if coalesce(p->>'amount','')!~'^\\d+(\\.\\d+)?$' then raise exception 'INVALID_BAPTISM_PAYMENT';end if;\n   paid:=paid+(p->>'amount')::numeric;\n  end loop;\n  active:=coalesce((c->>'enabled')::boolean,false) and (c->>'scope'<>'reception' or p_plan->>'scenario' in ('home','lunch','hall'));\n  total:=case when active then round((c->>'quantity')::numeric*(c->>'unitCost')::numeric,2) else 0 end;\n  insert into public.expenses(id,event_id,description,amount,paid_amount,payment_installments,is_enabled,spend_type,status,baptism_details)\n  values(eid,p_id,c->>'name',total,paid,c->'payments',true,'common','pending',c-'id'-'name'-'payments'-'enabled'||jsonb_build_object('enabled',coalesce((c->>'enabled')::boolean,false)))\n  on conflict(id) do update set description=excluded.description,amount=excluded.amount,paid_amount=excluded.paid_amount,payment_installments=excluded.payment_installments,baptism_details=excluded.baptism_details;\n end loop;\n -- Paid rows may only be disabled, never erased through a replacement snapshot.\n if exists(select 1 from public.expenses e where event_id=p_id and baptism_details is not null and coalesce(paid_amount,0)>0 and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'))) then raise exception 'BAPTISM_PAID_COST_REMOVAL';end if;\n delete from public.expenses where event_id=p_id and baptism_details is not null and id::text not in(select value->>'id' from jsonb_array_elements(p_plan->'costs'));\n update public.events set name=title,event_date=day,total_budget=budget where id=p_id;\n update public.baptism_family_plans set plan=p_plan-'guests'-'costs',revision=revision+1,request_hash=hash,base_revision=p_revision where event_id=p_id returning revision into current_rev;\n return current_rev;\nend $function$\n"
+    }
+  ],
+  "qaMigrations": [
+    {
+      "version": "20261118123034",
+      "name": "qa_production_pre_branch_25"
+    },
+    {
+      "version": "20261118123058",
+      "name": "qa_20260829110059_consolidate_security_and_indexes"
+    },
+    {
+      "version": "20261118123645",
+      "name": "qa_20260829190000_global_church_catalog"
+    },
+    {
+      "version": "20261118123750",
+      "name": "qa_20260830100000_global_location_catalog"
+    },
+    {
+      "version": "20261118123813",
+      "name": "qa_20260830200000_global_supplier_catalog"
+    },
+    {
+      "version": "20261118123817",
+      "name": "qa_20260831001000_event_type_capabilities"
+    },
+    {
+      "version": "20261118123818",
+      "name": "qa_20260831064351_common_catalog_pipeline"
+    },
+    {
+      "version": "20261118123820",
+      "name": "qa_20260831214214_catalog_reliability_dedup"
+    },
+    {
+      "version": "20261118123822",
+      "name": "qa_20260831233000_global_catalog_search_geo"
+    },
+    {
+      "version": "20261118123847",
+      "name": "qa_20260901091423_branch_33_performance_hardening"
+    },
+    {
+      "version": "20261118123909",
+      "name": "qa_20260902112923_branch_36_event_scoped_appointments"
+    },
+    {
+      "version": "20261118123911",
+      "name": "qa_20260903111500_branch_38_expense_runtime_alignment"
+    },
+    {
+      "version": "20261118123913",
+      "name": "qa_20260903113000_branch_38_couple_event_access"
+    },
+    {
+      "version": "20261118123915",
+      "name": "qa_20260908090000_branch_39_production_readiness"
+    },
+    {
+      "version": "20261118124228",
+      "name": "qa_20260908213000_branch_41_beta_feedback_stabilization"
+    },
+    {
+      "version": "20261118124256",
+      "name": "qa_20260909033000_branch_41_user_favorites"
+    },
+    {
+      "version": "20261118124258",
+      "name": "qa_20260909035000_branch_41_guest_snapshot_permissions"
+    },
+    {
+      "version": "20261118124259",
+      "name": "qa_20260909040500_branch_41_budget_items_spend_type"
+    },
+    {
+      "version": "20261118124322",
+      "name": "qa_20260909042500_branch_41_budget_snapshot"
+    },
+    {
+      "version": "20261118124346",
+      "name": "qa_20260909044000_branch_41_budget_snapshot_variable_fix"
+    },
+    {
+      "version": "20261118124348",
+      "name": "qa_20260909144000_branch_42_catalog_country_codes"
+    },
+    {
+      "version": "20261118124439",
+      "name": "qa_20260910140052_branch_43_wedding_ux_ceremony_flexibility"
+    },
+    {
+      "version": "20261118124441",
+      "name": "qa_20260910203000_branch_43_budget_item_origin"
+    },
+    {
+      "version": "20261118124505",
+      "name": "qa_20260911090000_branch_44_community_catalog_moderation"
+    },
+    {
+      "version": "20261118124507",
+      "name": "qa_20260911100000_branch_44_submission_column_permissions"
+    },
+    {
+      "version": "20261118124526",
+      "name": "qa_20260911080649_branch_45_wedding_budget_taxonomy_dedup"
+    },
+    {
+      "version": "20261118214322",
+      "name": "qa_20260913132811_branch_47_partner_collaboration"
+    },
+    {
+      "version": "20261118224724",
+      "name": "baptism_family_plans"
+    },
+    {
+      "version": "20261119201510",
+      "name": "baptism_shared_ledger_validation"
+    },
+    {
+      "version": "20261119201706",
+      "name": "event_access_nonempty_email"
+    },
+    {
+      "version": "20261120210746",
+      "name": "eighteenth_planner"
+    },
+    {
+      "version": "20261120210940",
+      "name": "eighteenth_create_rls"
+    },
+    {
+      "version": "20261120211531",
+      "name": "eighteenth_expense_details"
+    },
+    {
+      "version": "20261121204143",
+      "name": "qa_reconcile_verified_branch48_through_branch52"
+    },
+    {
+      "version": "20261122144955",
+      "name": "baptism_restore_client_rpc_grants"
+    },
+    {
+      "version": "20261123122734",
+      "name": "20260922190000_branch_53_event_documents"
+    },
+    {
+      "version": "20261123122750",
+      "name": "20260922204756_branch_53_gift_list_items"
+    },
+    {
+      "version": "20261123122853",
+      "name": "20260922210136_branch_53_transactional_tables"
+    },
+    {
+      "version": "20261123122903",
+      "name": "20260927134918_branch_53_atomic_integrity_reimplementation"
+    },
+    {
+      "version": "20261123123123",
+      "name": "20260928131021_branch_53_delete_remediation"
+    },
+    {
+      "version": "20261123123140",
+      "name": "20261001081905_branch_53_gift_list_legacy_compatibility"
+    },
+    {
+      "version": "20261123123151",
+      "name": "20261004090526_branch_53_review_followup"
+    },
+    {
+      "version": "20261123123203",
+      "name": "20261004092439_branch_53_document_lifecycle_followup"
+    },
+    {
+      "version": "20261123123204",
+      "name": "20261004094408_branch_53_upload_actor_cleanup_followup"
+    },
+    {
+      "version": "20261123123205",
+      "name": "20261004095304_branch_53_upload_race_followup"
+    },
+    {
+      "version": "20261123123206",
+      "name": "20261004183049_branch_53_table_mutation_acl_followup"
+    },
+    {
+      "version": "20261123123208",
+      "name": "20261004184418_branch_53_late_upload_guard_followup"
+    },
+    {
+      "version": "20261123123228",
+      "name": "20261017101208_branch_53_document_download_hardening"
+    },
+    {
+      "version": "20261123123420",
+      "name": "20261017132156_branch_54_first_value_activation"
+    },
+    {
+      "version": "20261123123421",
+      "name": "20261018190000_branch_57_private_rls_hardening"
+    },
+    {
+      "version": "20261123123438",
+      "name": "20261117183002_atomic_budget_idea_apply"
+    },
+    {
+      "version": "20261123123439",
+      "name": "20261118070000_atomic_event_update"
+    },
+    {
+      "version": "20261123123741",
+      "name": "qa_test_support_pgtap"
+    },
+    {
+      "version": "20261125100634",
+      "name": "baptism_revision_parent_cascade_guard"
+    },
+    {
+      "version": "20261125102641",
+      "name": "eighteenth_party_plan_revision"
+    },
+    {
+      "version": "20261125104656",
+      "name": "eighteenth_partial_payments"
+    }
+  ],
+  "productionMigrations": [
+    {
+      "version": "20260828133459",
+      "name": "secure_exposed_tables"
+    },
+    {
+      "version": "20260829153556",
+      "name": "consolidate_security_and_indexes"
+    },
+    {
+      "version": "20260830074711",
+      "name": "global_church_catalog"
+    },
+    {
+      "version": "20260830173426",
+      "name": "global_location_catalog"
+    },
+    {
+      "version": "20260830183545",
+      "name": "global_supplier_catalog"
+    },
+    {
+      "version": "20260831060846",
+      "name": "event_type_capabilities"
+    },
+    {
+      "version": "20260831141246",
+      "name": "common_catalog_pipeline"
+    },
+    {
+      "version": "20260831215937",
+      "name": "catalog_reliability_dedup"
+    },
+    {
+      "version": "20260901073705",
+      "name": "global_catalog_search_geo"
+    },
+    {
+      "version": "20260901092223",
+      "name": "branch_33_performance_hardening"
+    },
+    {
+      "version": "20260902113921",
+      "name": "branch_36_event_scoped_appointments"
+    },
+    {
+      "version": "20260903092336",
+      "name": "branch_38_expense_runtime_alignment"
+    },
+    {
+      "version": "20260903092938",
+      "name": "branch_38_couple_event_access"
+    },
+    {
+      "version": "20260903093116",
+      "name": "branch_38_couple_event_access_acl"
+    },
+    {
+      "version": "20260908082006",
+      "name": "branch_39_production_readiness"
+    },
+    {
+      "version": "20260908215725",
+      "name": "branch_41_beta_feedback_stabilization"
+    },
+    {
+      "version": "20260909032549",
+      "name": "branch_41_user_favorites"
+    },
+    {
+      "version": "20260909035224",
+      "name": "branch_41_guest_snapshot_permissions"
+    },
+    {
+      "version": "20260909035816",
+      "name": "branch_41_budget_items_spend_type"
+    },
+    {
+      "version": "20260909040355",
+      "name": "branch_41_budget_snapshot"
+    },
+    {
+      "version": "20260909041042",
+      "name": "branch_41_budget_snapshot_variable_fix"
+    },
+    {
+      "version": "20260909145237",
+      "name": "branch_42_catalog_country_codes"
+    },
+    {
+      "version": "20260910142454",
+      "name": "branch_43_wedding_ux_ceremony_flexibility"
+    },
+    {
+      "version": "20260910201047",
+      "name": "branch_43_budget_item_origin"
+    },
+    {
+      "version": "20260910215159",
+      "name": "branch_44_community_catalog_moderation"
+    },
+    {
+      "version": "20260910215242",
+      "name": "branch_44_submission_column_permissions"
+    },
+    {
+      "version": "20260911082451",
+      "name": "branch_45_wedding_budget_taxonomy_dedup"
+    },
+    {
+      "version": "20260913215351",
+      "name": "branch_47_partner_collaboration"
+    },
+    {
+      "version": "20260913215459",
+      "name": "branch_47_revoke_anonymous_collaboration_access"
+    },
+    {
+      "version": "20260914133505",
+      "name": "branch_48_partner_lifecycle"
+    },
+    {
+      "version": "20260915152249",
+      "name": "20260914110000_branch_48_owner_immutability"
+    },
+    {
+      "version": "20260915152251",
+      "name": "20260914114238_branch_48_safe_event_deletion"
+    },
+    {
+      "version": "20260915152254",
+      "name": "20260914150000_branch_48_partner_lifecycle"
+    },
+    {
+      "version": "20260915152257",
+      "name": "20260915114500_branch_48_budget_snapshot_casefold"
+    },
+    {
+      "version": "20260915152259",
+      "name": "20260915130000_branch_48_subcategory_canonical_identity"
+    },
+    {
+      "version": "20260915152301",
+      "name": "20260915133000_branch_48_ensure_subcategory_identity"
+    },
+    {
+      "version": "20260917102836",
+      "name": "20260916193000_branch_51_least_privilege"
+    },
+    {
+      "version": "20260921124531",
+      "name": "20260919161056_branch_52_event_catalog_snapshots"
+    },
+    {
+      "version": "20260921124540",
+      "name": "20260919200457_branch_52_location_supplier_associations"
+    },
+    {
+      "version": "20260921124552",
+      "name": "20260920072942_branch_52_supplier_timeline_appointments"
+    },
+    {
+      "version": "20261017092736",
+      "name": "20260922190000_branch_53_event_documents"
+    },
+    {
+      "version": "20261017093651",
+      "name": "20260922204756_branch_53_gift_list_items"
+    },
+    {
+      "version": "20261017093734",
+      "name": "20260922210136_branch_53_transactional_tables"
+    },
+    {
+      "version": "20261017093820",
+      "name": "20260927134918_branch_53_atomic_integrity_reimplementation"
+    },
+    {
+      "version": "20261017094129",
+      "name": "20260928131021_branch_53_delete_remediation"
+    },
+    {
+      "version": "20261017094208",
+      "name": "20261001081905_branch_53_gift_list_legacy_compatibility"
+    },
+    {
+      "version": "20261017094232",
+      "name": "20261004090526_branch_53_review_followup"
+    },
+    {
+      "version": "20261017094249",
+      "name": "20261004092439_branch_53_document_lifecycle_followup"
+    },
+    {
+      "version": "20261017094301",
+      "name": "20261004094408_branch_53_upload_actor_cleanup_followup"
+    },
+    {
+      "version": "20261017094314",
+      "name": "20261004095304_branch_53_upload_race_followup"
+    },
+    {
+      "version": "20261017094331",
+      "name": "20261004183049_branch_53_table_mutation_acl_followup"
+    },
+    {
+      "version": "20261017094350",
+      "name": "20261004184418_branch_53_late_upload_guard_followup"
+    },
+    {
+      "version": "20261017104931",
+      "name": "20261017101208_branch_53_document_download_hardening"
+    },
+    {
+      "version": "20261123131655",
+      "name": "20261017132156_branch_54_first_value_activation"
+    },
+    {
+      "version": "20261123131705",
+      "name": "20261018190000_branch_57_private_rls_hardening"
+    },
+    {
+      "version": "20261123131800",
+      "name": "20261117183002_atomic_budget_idea_apply"
+    },
+    {
+      "version": "20261123131801",
+      "name": "20261118070000_atomic_event_update"
+    },
+    {
+      "version": "20261123131802",
+      "name": "20261118230000_baptism_family_plans"
+    },
+    {
+      "version": "20261123131955",
+      "name": "20261119090102_baptism_family_validation"
+    },
+    {
+      "version": "20261123131956",
+      "name": "20261122150000_baptism_restore_client_rpc_grants"
+    }
+  ],
+  "qaFunctionsFull": [
+    {
+      "name": "private.assert_branch48_partner_lifecycle_compatible()",
+      "hash": "76035dfdba8c7de24796baf543539c8a"
+    },
+    {
+      "name": "private.capture_saved_catalog_snapshot()",
+      "hash": "addf7cbe8018f5e3d6804716e7ad1c18"
+    },
+    {
+      "name": "private.enforce_event_document_quota()",
+      "hash": "98132ce403c875d19fe341e99225377a"
+    },
+    {
+      "name": "private.enforce_subcategory_identity()",
+      "hash": "1091ee4502502f966ae6393ac4b591ba"
+    },
+    {
+      "name": "private.event_access_role_for_actor(p_event_id uuid, p_actor_id uuid)",
+      "hash": "cdec48dc4aeae333185a908ceedc0c93"
+    },
+    {
+      "name": "private.guard_event_document_cascade()",
+      "hash": "6167a41f5c7d58a75407045486a9c344"
+    },
+    {
+      "name": "private.guard_event_document_storage_parent()",
+      "hash": "820ffea6bc0ffce3b550b0ffea4a41f7"
+    },
+    {
+      "name": "private.handle_new_auth_user()",
+      "hash": "95bc9518fff60e4f66fcb591e432db9f"
+    },
+    {
+      "name": "private.record_first_value()",
+      "hash": "cb3b9cfb3b2be3a6102ca62850ff0b30"
+    },
+    {
+      "name": "private.release_subcategory_identity()",
+      "hash": "609c37ff0d2a9a0007badbfa706417a6"
+    },
+    {
+      "name": "private.subcategory_identity_parts(p_category_id uuid, p_name text, p_is_custom boolean, p_canonical_key text)",
+      "hash": "63483156e822a0364aea40640f667882"
+    },
+    {
+      "name": "public.accept_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "71df173b5d49ed81e094e5fb489364d4"
+    },
+    {
+      "name": "public.apply_budget_idea_atomic(p_event_id uuid, p_actor_id uuid, p_country text, p_items jsonb)",
+      "hash": "06c1505104886bec6d1a2d82a4baf54b"
+    },
+    {
+      "name": "public.begin_event_document_delete(p_event_id uuid, p_actor_id uuid, p_document_id uuid)",
+      "hash": "69738b6a7f554edf63c4c363077c7cbe"
+    },
+    {
+      "name": "public.bump_baptism_revision()",
+      "hash": "bb84dd20267dae40ac844aa836ecd1e7"
+    },
+    {
+      "name": "public.can_access_event(p_event_id uuid)",
+      "hash": "7ebbec11e1354efd1b46e8bb4700c7ad"
+    },
+    {
+      "name": "public.can_manage_event_location_supplier_links(p_event_id uuid)",
+      "hash": "5bf30f31a8d979b082a3e5b0ca06f705"
+    },
+    {
+      "name": "public.catalog_payload_has_only_allowed_keys(entity_type_value text, payload jsonb, payload_kind text)",
+      "hash": "e1c81990fd4cf44e1f8aea819ee9e698"
+    },
+    {
+      "name": "public.check_table_availability(p_table_id uuid)",
+      "hash": "b243d277383590c585eebc60221df4b4"
+    },
+    {
+      "name": "public.claim_expired_event_document_uploads(p_event_id uuid, p_actor_id uuid, p_limit integer)",
+      "hash": "b7c035fee0d3898501e8e24714016f8f"
+    },
+    {
+      "name": "public.complete_event_document_delete(p_event_id uuid, p_actor_id uuid, p_operation_id uuid, p_document_id uuid, p_object_path text)",
+      "hash": "e0a676ba2b2067f906b09543852d5bfd"
+    },
+    {
+      "name": "public.complete_event_document_upload_cleanup(p_event_id uuid, p_actor_id uuid, p_reservation_id uuid, p_object_path text)",
+      "hash": "f254222cda986854fe57b7169d9527af"
+    },
+    {
+      "name": "public.consume_rate_limit(p_key text, p_limit integer, p_window_seconds integer)",
+      "hash": "f86b840a9a763b87fc4e767193a03061"
+    },
+    {
+      "name": "public.create_event_owner_membership()",
+      "hash": "02d8ab4080dbe96cab0a54b3ccc22b3f"
+    },
+    {
+      "name": "public.delete_event_table(p_event_id uuid, p_actor_id uuid, p_table_id uuid)",
+      "hash": "e7f5c9f3a74d4c8d480d0f1845000dc2"
+    },
+    {
+      "name": "public.eighteenth_action(p_event uuid, p_revision integer, p_request uuid, p_action text, p_data jsonb)",
+      "hash": "bfaedae01aa05d4d1daa19e56f93c752"
+    },
+    {
+      "name": "public.eighteenth_snapshot(p_event uuid)",
+      "hash": "e32ffb1aa0b46322c1ce7f112ad40839"
+    },
+    {
+      "name": "public.enforce_supplier_work_identity_immutable()",
+      "hash": "844c76b995a843dc5c7b741824e57e2d"
+    },
+    {
+      "name": "public.enforce_supplier_work_private_supplier_type()",
+      "hash": "c92198ce7ffefbf0b870f4359d0e688f"
+    },
+    {
+      "name": "public.ensure_subcategory(p_category uuid, p_name text)",
+      "hash": "8ef7efca7fcc0d2da2b856ea711dd74b"
+    },
+    {
+      "name": "public.event_document_path_is_untracked(p_event_id uuid, p_actor_id uuid, p_object_path text)",
+      "hash": "bc3a48cb0b6906afc8cef874804da691"
+    },
+    {
+      "name": "public.finalize_event_document_upload(p_event_id uuid, p_actor_id uuid, p_reservation_id uuid, p_object_path text, p_file_size bigint)",
+      "hash": "9b54b3846db3789a668fbc81d632611d"
+    },
+    {
+      "name": "public.find_or_create_place(p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "hash": "58ae23a19d314cb52cdec899a01a93eb"
+    },
+    {
+      "name": "public.get_or_create_category(p_event uuid, p_name text)",
+      "hash": "8f4c8dbfcd1081555776855583b815c6"
+    },
+    {
+      "name": "public.get_table_stats(p_event_id uuid)",
+      "hash": "6efc4da2ed720028fff3b1b4dd376848"
+    },
+    {
+      "name": "public.get_visible_suppliers(p_category text, p_region text, p_province text, p_is_demo boolean)",
+      "hash": "02f27f6cbfc202f6ddc93ab21698dc83"
+    },
+    {
+      "name": "public.get_wedding_budget_focus(p_country text, p_event text)",
+      "hash": "2beae7cfc674690d25090bcf8a65e5d3"
+    },
+    {
+      "name": "public.gift_list_legacy_write()",
+      "hash": "6d06550099ed67b2658dec7e9279d3eb"
+    },
+    {
+      "name": "public.increment_analytics_counter(p_entity_type text, p_entity_id uuid, p_counter_type text)",
+      "hash": "2180178ff9f2e672d7e22083ceb4a31b"
+    },
+    {
+      "name": "public.is_catalog_admin()",
+      "hash": "56ee309746413dfdbe9584a9819fed44"
+    },
+    {
+      "name": "public.is_event_owner(p_event_id uuid)",
+      "hash": "cad6d3e117b23e1fbe0b7ee52945188b"
+    },
+    {
+      "name": "public.is_subscription_active(p_subscription_tier text, p_expires_at timestamp with time zone)",
+      "hash": "68fa5ea93351b08f8dfd0da10849425e"
+    },
+    {
+      "name": "public.moderate_catalog_submission(p_submission_id uuid, p_action text, p_payload jsonb, p_canonical_record_id uuid, p_moderation_note text, p_user_message text, p_reviewer_id uuid)",
+      "hash": "aee6038a1d022af62756568eda8aba0d"
+    },
+    {
+      "name": "public.normalize_catalog_text(value text)",
+      "hash": "53a5869fc7ca1f2b590d5c4fdf6aca89"
+    },
+    {
+      "name": "public.normalize_church_catalog_row()",
+      "hash": "9d70bbff27a1b185bc31f3c39a94f4bb"
+    },
+    {
+      "name": "public.normalize_location_catalog_row()",
+      "hash": "7daa34fc1bfcf6f4d1f6d9bedcd823c6"
+    },
+    {
+      "name": "public.normalize_phone(phone_input text)",
+      "hash": "49fae81252daf954d6cb70f4cf9679cb"
+    },
+    {
+      "name": "public.normalize_supplier_catalog_row()",
+      "hash": "8284fd5df1278fa56f4752ff66618757"
+    },
+    {
+      "name": "public.normalize_url(url_input text)",
+      "hash": "30095e6d6ba62dd744243570e60eef44"
+    },
+    {
+      "name": "public.patch_event_details(p_event_id uuid, p_actor_id uuid, p_event jsonb, p_card jsonb)",
+      "hash": "705d72fc5f2de61eda59ff6304d43577"
+    },
+    {
+      "name": "public.populate_event_categories()",
+      "hash": "fd2cb691dd77694dba9560cb5ba60967"
+    },
+    {
+      "name": "public.populate_user_timeline()",
+      "hash": "45e4fcc5c2d2d8a345b69565b5fd0fc8"
+    },
+    {
+      "name": "public.prepare_event_private_catalog_record()",
+      "hash": "bd33f8807b4e7759cfe66ba8a34a5565"
+    },
+    {
+      "name": "public.prevent_event_owner_change()",
+      "hash": "5b9fc4402baba0ed904c549ff935335f"
+    },
+    {
+      "name": "public.prevent_table_capacity_underflow()",
+      "hash": "7a1d9c5452b9fcd81b435cd0ab75d4f1"
+    },
+    {
+      "name": "public.protect_event_location_supplier_link_identity()",
+      "hash": "d192f1c8140a94e52101fd4f221029e1"
+    },
+    {
+      "name": "public.protect_saved_catalog_snapshot()",
+      "hash": "8f88e95258f6c341553542eaff3fd82b"
+    },
+    {
+      "name": "public.read_family_baptism(p_id uuid)",
+      "hash": "87c9fc1454c971e510bbb4b7581d11bb"
+    },
+    {
+      "name": "public.record_eighteenth_payment(p_event uuid, p_expense uuid, p_payment uuid, p_amount numeric, p_date date, p_note text)",
+      "hash": "21e9fb72c9c260eecff0369a8c66f468"
+    },
+    {
+      "name": "public.regenerate_event_data(p_event_id uuid)",
+      "hash": "e19619f0c7e9841d7897dac49e99fa74"
+    },
+    {
+      "name": "public.regenerate_event_timeline(p_event_id uuid)",
+      "hash": "bbd5333f0138b9a04aff251912179250"
+    },
+    {
+      "name": "public.reject_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "c23eb25c637170940d2ba75414cf98d0"
+    },
+    {
+      "name": "public.release_event_document_upload(p_event_id uuid, p_actor_id uuid, p_reservation_id uuid, p_object_path text)",
+      "hash": "f6133736699f8d18045b61becc693ab0"
+    },
+    {
+      "name": "public.reserve_event_document_upload(p_event_id uuid, p_actor_id uuid, p_idempotency_key uuid, p_file_size bigint, p_original_name text, p_mime_type text, p_category text, p_notes text, p_ttl_seconds integer)",
+      "hash": "741bca1a49ca5e822b5a2edabefc517f"
+    },
+    {
+      "name": "public.rotate_event_invitation_token(p_invitation_id uuid, p_event_id uuid, p_user_id uuid, p_token_hash text, p_expires_at timestamp with time zone)",
+      "hash": "20d40ed035fba0555e09cfc3bb2fdd98"
+    },
+    {
+      "name": "public.save_budget_idea_snapshot(p_event_id uuid, p_user_id uuid, p_rows jsonb)",
+      "hash": "e84682112ed81e212e6eec19e4ccd2bc"
+    },
+    {
+      "name": "public.save_eighteenth_party_plan(p_id uuid, p_revision integer, p_plan jsonb)",
+      "hash": "72cc730251fcd6593b8b73f51d6c2805"
+    },
+    {
+      "name": "public.save_event_guest_snapshot(p_event_id uuid, p_user_id uuid, p_default_rsvp_deadline date, p_family_groups jsonb, p_guests jsonb, p_non_invited jsonb)",
+      "hash": "c81366229ca170af0ad4bca4f006c43a"
+    },
+    {
+      "name": "public.save_event_table_plan(p_event_id uuid, p_actor_id uuid, p_tables jsonb, p_replace boolean)",
+      "hash": "985d1bbd85d387855f515634c8105117"
+    },
+    {
+      "name": "public.save_family_baptism(p_id uuid, p_revision integer, p_plan jsonb)",
+      "hash": "1bd0eb4c77c3048a69bdf0c8fceac908"
+    },
+    {
+      "name": "public.search_global_catalog(p_entity_type text, p_query text, p_category text, p_city text, p_province text, p_region text, p_country text, p_verification_status text, p_latitude double precision, p_longitude double precision, p_radius_km double precision, p_sort text, p_offset integer, p_limit integer)",
+      "hash": "0eb98420a291edb818a26ef03b91f696"
+    },
+    {
+      "name": "public.seed_categories(p_event uuid)",
+      "hash": "a9a01efdf27410400150b4c49e3aa6ae"
+    },
+    {
+      "name": "public.seed_full_event(p_event uuid)",
+      "hash": "fd60a315856ed23e09867989e6eff487"
+    },
+    {
+      "name": "public.seed_subcategories(p_category uuid, VARIADIC p_names text[])",
+      "hash": "aa2e5bc728037b234348d824ee3404a6"
+    },
+    {
+      "name": "public.set_owner_id()",
+      "hash": "bde5c062091330254dde83e2ab8247c2"
+    },
+    {
+      "name": "public.update_updated_at()",
+      "hash": "07243131e7e83c4fe0f0f877f68bc288"
+    },
+    {
+      "name": "public.update_updated_at_column()",
+      "hash": "ed612030b0656df4f8abcb3d101e5d24"
+    },
+    {
+      "name": "public.upsert_vendor(p_name text, p_type text, p_source text, p_source_id text, p_phone text, p_email text, p_website text, p_rating numeric, p_rating_count integer, p_description text, p_price_range text, p_metadata jsonb, p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "hash": "571588bb23e683ea1352c801ee4506e8"
+    },
+    {
+      "name": "public.validate_table_assignment_event_capacity()",
+      "hash": "5a225b10ec1b1f8c9821e2e8d1cd82af"
+    },
+    {
+      "name": "public.wedding_budget_slug(value text)",
+      "hash": "ccbc50c3f1bb6725940afd2c69fc961b"
+    }
+  ],
+  "productionFunctionsFull": [
+    {
+      "name": "private.assert_branch48_partner_lifecycle_compatible()",
+      "hash": "76035dfdba8c7de24796baf543539c8a"
+    },
+    {
+      "name": "private.capture_saved_catalog_snapshot()",
+      "hash": "addf7cbe8018f5e3d6804716e7ad1c18"
+    },
+    {
+      "name": "private.enforce_event_document_quota()",
+      "hash": "98132ce403c875d19fe341e99225377a"
+    },
+    {
+      "name": "private.enforce_subcategory_identity()",
+      "hash": "1091ee4502502f966ae6393ac4b591ba"
+    },
+    {
+      "name": "private.event_access_role_for_actor(p_event_id uuid, p_actor_id uuid)",
+      "hash": "cdec48dc4aeae333185a908ceedc0c93"
+    },
+    {
+      "name": "private.guard_event_document_cascade()",
+      "hash": "6167a41f5c7d58a75407045486a9c344"
+    },
+    {
+      "name": "private.guard_event_document_storage_parent()",
+      "hash": "820ffea6bc0ffce3b550b0ffea4a41f7"
+    },
+    {
+      "name": "private.handle_new_auth_user()",
+      "hash": "95bc9518fff60e4f66fcb591e432db9f"
+    },
+    {
+      "name": "private.record_first_value()",
+      "hash": "cb3b9cfb3b2be3a6102ca62850ff0b30"
+    },
+    {
+      "name": "private.release_subcategory_identity()",
+      "hash": "609c37ff0d2a9a0007badbfa706417a6"
+    },
+    {
+      "name": "private.subcategory_identity_parts(p_category_id uuid, p_name text, p_is_custom boolean, p_canonical_key text)",
+      "hash": "63483156e822a0364aea40640f667882"
+    },
+    {
+      "name": "public.accept_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "71df173b5d49ed81e094e5fb489364d4"
+    },
+    {
+      "name": "public.apply_budget_idea_atomic(p_event_id uuid, p_actor_id uuid, p_country text, p_items jsonb)",
+      "hash": "06c1505104886bec6d1a2d82a4baf54b"
+    },
+    {
+      "name": "public.begin_event_document_delete(p_event_id uuid, p_actor_id uuid, p_document_id uuid)",
+      "hash": "69738b6a7f554edf63c4c363077c7cbe"
+    },
+    {
+      "name": "public.bump_baptism_revision()",
+      "hash": "bffcda8e1a605a45d42414286c3d5101"
+    },
+    {
+      "name": "public.can_access_event(p_event_id uuid)",
+      "hash": "7ebbec11e1354efd1b46e8bb4700c7ad"
+    },
+    {
+      "name": "public.can_manage_event_location_supplier_links(p_event_id uuid)",
+      "hash": "5bf30f31a8d979b082a3e5b0ca06f705"
+    },
+    {
+      "name": "public.catalog_payload_has_only_allowed_keys(entity_type_value text, payload jsonb, payload_kind text)",
+      "hash": "e1c81990fd4cf44e1f8aea819ee9e698"
+    },
+    {
+      "name": "public.check_table_availability(p_table_id uuid)",
+      "hash": "ad007c615e853a70d2d56f08e6f33d1e"
+    },
+    {
+      "name": "public.claim_expired_event_document_uploads(p_event_id uuid, p_actor_id uuid, p_limit integer)",
+      "hash": "b7c035fee0d3898501e8e24714016f8f"
+    },
+    {
+      "name": "public.complete_event_document_delete(p_event_id uuid, p_actor_id uuid, p_operation_id uuid, p_document_id uuid, p_object_path text)",
+      "hash": "e0a676ba2b2067f906b09543852d5bfd"
+    },
+    {
+      "name": "public.complete_event_document_upload_cleanup(p_event_id uuid, p_actor_id uuid, p_reservation_id uuid, p_object_path text)",
+      "hash": "f254222cda986854fe57b7169d9527af"
+    },
+    {
+      "name": "public.consume_rate_limit(p_key text, p_limit integer, p_window_seconds integer)",
+      "hash": "f86b840a9a763b87fc4e767193a03061"
+    },
+    {
+      "name": "public.create_event_owner_membership()",
+      "hash": "02d8ab4080dbe96cab0a54b3ccc22b3f"
+    },
+    {
+      "name": "public.delete_event_table(p_event_id uuid, p_actor_id uuid, p_table_id uuid)",
+      "hash": "e7f5c9f3a74d4c8d480d0f1845000dc2"
+    },
+    {
+      "name": "public.enforce_supplier_work_identity_immutable()",
+      "hash": "844c76b995a843dc5c7b741824e57e2d"
+    },
+    {
+      "name": "public.enforce_supplier_work_private_supplier_type()",
+      "hash": "c92198ce7ffefbf0b870f4359d0e688f"
+    },
+    {
+      "name": "public.ensure_subcategory(p_category uuid, p_name text)",
+      "hash": "8ef7efca7fcc0d2da2b856ea711dd74b"
+    },
+    {
+      "name": "public.event_document_path_is_untracked(p_event_id uuid, p_actor_id uuid, p_object_path text)",
+      "hash": "bc3a48cb0b6906afc8cef874804da691"
+    },
+    {
+      "name": "public.finalize_event_document_upload(p_event_id uuid, p_actor_id uuid, p_reservation_id uuid, p_object_path text, p_file_size bigint)",
+      "hash": "9b54b3846db3789a668fbc81d632611d"
+    },
+    {
+      "name": "public.find_or_create_place(p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "hash": "6d7e55033ec0f42bf04ed9761619ae74"
+    },
+    {
+      "name": "public.get_or_create_category(p_event uuid, p_name text)",
+      "hash": "31ab96635d745be7eb0a609ab8efc602"
+    },
+    {
+      "name": "public.get_table_stats(p_event_id uuid)",
+      "hash": "cf3417c1f32942bbbb51c806d85b3159"
+    },
+    {
+      "name": "public.get_visible_suppliers(p_category text, p_region text, p_province text, p_is_demo boolean)",
+      "hash": "e2c98ad85d08e855b1bd40fd1832de93"
+    },
+    {
+      "name": "public.get_wedding_budget_focus(p_country text, p_event text)",
+      "hash": "2beae7cfc674690d25090bcf8a65e5d3"
+    },
+    {
+      "name": "public.gift_list_legacy_write()",
+      "hash": "6d06550099ed67b2658dec7e9279d3eb"
+    },
+    {
+      "name": "public.increment_analytics_counter(p_entity_type text, p_entity_id uuid, p_counter_type text)",
+      "hash": "f9f28f9e632a4e08bce1f2343190a305"
+    },
+    {
+      "name": "public.is_catalog_admin()",
+      "hash": "56ee309746413dfdbe9584a9819fed44"
+    },
+    {
+      "name": "public.is_event_owner(p_event_id uuid)",
+      "hash": "cad6d3e117b23e1fbe0b7ee52945188b"
+    },
+    {
+      "name": "public.is_subscription_active(p_subscription_tier text, p_expires_at timestamp with time zone)",
+      "hash": "2cda9bf858fdb0c1d28c32db1fbf1d90"
+    },
+    {
+      "name": "public.moderate_catalog_submission(p_submission_id uuid, p_action text, p_payload jsonb, p_canonical_record_id uuid, p_moderation_note text, p_user_message text, p_reviewer_id uuid)",
+      "hash": "aee6038a1d022af62756568eda8aba0d"
+    },
+    {
+      "name": "public.normalize_catalog_text(value text)",
+      "hash": "53a5869fc7ca1f2b590d5c4fdf6aca89"
+    },
+    {
+      "name": "public.normalize_church_catalog_row()",
+      "hash": "9d70bbff27a1b185bc31f3c39a94f4bb"
+    },
+    {
+      "name": "public.normalize_location_catalog_row()",
+      "hash": "7daa34fc1bfcf6f4d1f6d9bedcd823c6"
+    },
+    {
+      "name": "public.normalize_phone(phone_input text)",
+      "hash": "3f01d1e7ab2fc53532c9d11ea6794087"
+    },
+    {
+      "name": "public.normalize_supplier_catalog_row()",
+      "hash": "8284fd5df1278fa56f4752ff66618757"
+    },
+    {
+      "name": "public.normalize_url(url_input text)",
+      "hash": "a04a861ff8ed86732af8801593b26850"
+    },
+    {
+      "name": "public.patch_event_details(p_event_id uuid, p_actor_id uuid, p_event jsonb, p_card jsonb)",
+      "hash": "705d72fc5f2de61eda59ff6304d43577"
+    },
+    {
+      "name": "public.populate_event_categories()",
+      "hash": "17b14962e90520ebb47b4e63de999ff1"
+    },
+    {
+      "name": "public.populate_user_timeline()",
+      "hash": "34ee2df93cf9f62734517eb0f1b83ddc"
+    },
+    {
+      "name": "public.prepare_event_private_catalog_record()",
+      "hash": "bd33f8807b4e7759cfe66ba8a34a5565"
+    },
+    {
+      "name": "public.prevent_event_owner_change()",
+      "hash": "5b9fc4402baba0ed904c549ff935335f"
+    },
+    {
+      "name": "public.prevent_table_capacity_underflow()",
+      "hash": "7a1d9c5452b9fcd81b435cd0ab75d4f1"
+    },
+    {
+      "name": "public.protect_event_location_supplier_link_identity()",
+      "hash": "d192f1c8140a94e52101fd4f221029e1"
+    },
+    {
+      "name": "public.protect_saved_catalog_snapshot()",
+      "hash": "8f88e95258f6c341553542eaff3fd82b"
+    },
+    {
+      "name": "public.read_family_baptism(p_id uuid)",
+      "hash": "28519fad59147f76ea34cea330de9dee"
+    },
+    {
+      "name": "public.regenerate_event_data(p_event_id uuid)",
+      "hash": "e19619f0c7e9841d7897dac49e99fa74"
+    },
+    {
+      "name": "public.regenerate_event_timeline(p_event_id uuid)",
+      "hash": "f418fd87cb800a21731ccc58f67e6168"
+    },
+    {
+      "name": "public.reject_event_invitation(p_token text, p_user_id uuid)",
+      "hash": "c23eb25c637170940d2ba75414cf98d0"
+    },
+    {
+      "name": "public.release_event_document_upload(p_event_id uuid, p_actor_id uuid, p_reservation_id uuid, p_object_path text)",
+      "hash": "f6133736699f8d18045b61becc693ab0"
+    },
+    {
+      "name": "public.reserve_event_document_upload(p_event_id uuid, p_actor_id uuid, p_idempotency_key uuid, p_file_size bigint, p_original_name text, p_mime_type text, p_category text, p_notes text, p_ttl_seconds integer)",
+      "hash": "741bca1a49ca5e822b5a2edabefc517f"
+    },
+    {
+      "name": "public.rotate_event_invitation_token(p_invitation_id uuid, p_event_id uuid, p_user_id uuid, p_token_hash text, p_expires_at timestamp with time zone)",
+      "hash": "20d40ed035fba0555e09cfc3bb2fdd98"
+    },
+    {
+      "name": "public.save_budget_idea_snapshot(p_event_id uuid, p_user_id uuid, p_rows jsonb)",
+      "hash": "e84682112ed81e212e6eec19e4ccd2bc"
+    },
+    {
+      "name": "public.save_event_guest_snapshot(p_event_id uuid, p_user_id uuid, p_default_rsvp_deadline date, p_family_groups jsonb, p_guests jsonb, p_non_invited jsonb)",
+      "hash": "c81366229ca170af0ad4bca4f006c43a"
+    },
+    {
+      "name": "public.save_event_table_plan(p_event_id uuid, p_actor_id uuid, p_tables jsonb, p_replace boolean)",
+      "hash": "985d1bbd85d387855f515634c8105117"
+    },
+    {
+      "name": "public.save_family_baptism(p_id uuid, p_revision integer, p_plan jsonb)",
+      "hash": "b34fe34854eca497b8d911cde3854d82"
+    },
+    {
+      "name": "public.search_global_catalog(p_entity_type text, p_query text, p_category text, p_city text, p_province text, p_region text, p_country text, p_verification_status text, p_latitude double precision, p_longitude double precision, p_radius_km double precision, p_sort text, p_offset integer, p_limit integer)",
+      "hash": "0eb98420a291edb818a26ef03b91f696"
+    },
+    {
+      "name": "public.seed_categories(p_event uuid)",
+      "hash": "b7d077702239c02164fd24eccecd5713"
+    },
+    {
+      "name": "public.seed_full_event(p_event uuid)",
+      "hash": "865619f0fbd483a6ce451ed47f0c8058"
+    },
+    {
+      "name": "public.seed_subcategories(p_category uuid, VARIADIC p_names text[])",
+      "hash": "856d047c5ad5c0a79e6853fa06e97161"
+    },
+    {
+      "name": "public.set_owner_id()",
+      "hash": "312b1fffcc89351acdee5d8d188bb566"
+    },
+    {
+      "name": "public.update_updated_at()",
+      "hash": "4857218a6cd18b45ff5236b5c36439b0"
+    },
+    {
+      "name": "public.update_updated_at_column()",
+      "hash": "0dc0791981a0d2cf140f1a9b42b13075"
+    },
+    {
+      "name": "public.upsert_vendor(p_name text, p_type text, p_source text, p_source_id text, p_phone text, p_email text, p_website text, p_rating numeric, p_rating_count integer, p_description text, p_price_range text, p_metadata jsonb, p_google_place_id text, p_osm_id text, p_wikidata_qid text, p_lat numeric, p_lng numeric, p_address text, p_city text, p_province text, p_region text, p_postal_code text)",
+      "hash": "6fe0479de04563c7a131150ff494c646"
+    },
+    {
+      "name": "public.validate_table_assignment_event_capacity()",
+      "hash": "5a225b10ec1b1f8c9821e2e8d1cd82af"
+    },
+    {
+      "name": "public.wedding_budget_slug(value text)",
+      "hash": "ccbc50c3f1bb6725940afd2c69fc961b"
+    }
+  ],
+  "qaConstraints": [
+    {
+      "object": "events",
+      "conname": "event_document_cascade_guard",
+      "definition": "CREATE TRIGGER event_document_cascade_guard BEFORE DELETE ON public.events FOR EACH ROW EXECUTE FUNCTION private.guard_event_document_cascade()"
+    },
+    {
+      "object": "events",
+      "conname": "events_budgets_nonnegative",
+      "definition": "CHECK (((COALESCE(bride_initial_budget, (0)::numeric) >= (0)::numeric) AND (COALESCE(groom_initial_budget, (0)::numeric) >= (0)::numeric) AND (COALESCE(total_budget, (0)::numeric) >= (0)::numeric)))"
+    },
+    {
+      "object": "events",
+      "conname": "events_create_owner_membership",
+      "definition": "CREATE TRIGGER events_create_owner_membership AFTER INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION create_event_owner_membership()"
+    },
+    {
+      "object": "events",
+      "conname": "events_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "object": "events",
+      "conname": "events_prevent_owner_change",
+      "definition": "CREATE TRIGGER events_prevent_owner_change BEFORE UPDATE OF owner_id ON public.events FOR EACH ROW EXECUTE FUNCTION prevent_event_owner_change()"
+    },
+    {
+      "object": "events",
+      "conname": "events_public_id_key",
+      "definition": "UNIQUE (public_id)"
+    },
+    {
+      "object": "events",
+      "conname": "trg_events_set_owner",
+      "definition": "CREATE TRIGGER trg_events_set_owner BEFORE INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION set_owner_id()"
+    },
+    {
+      "object": "events",
+      "conname": "trg_populate_event_categories",
+      "definition": "CREATE TRIGGER trg_populate_event_categories AFTER INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION populate_event_categories()"
+    },
+    {
+      "object": "events",
+      "conname": "trg_populate_user_timeline",
+      "definition": "CREATE TRIGGER trg_populate_user_timeline AFTER INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION populate_user_timeline()"
+    },
+    {
+      "object": "events",
+      "conname": "update_events_updated_at",
+      "definition": "CREATE TRIGGER update_events_updated_at BEFORE UPDATE ON public.events FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()"
+    },
+    {
+      "object": "expenses",
+      "conname": "baptism_expense_revision",
+      "definition": "CREATE TRIGGER baptism_expense_revision BEFORE INSERT OR DELETE OR UPDATE ON public.expenses FOR EACH ROW EXECUTE FUNCTION bump_baptism_revision()"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_event_id_fkey",
+      "definition": "FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_payment_method_check",
+      "definition": "CHECK (((payment_method IS NULL) OR (payment_method = ANY (ARRAY['cash'::text, 'bank_transfer'::text, 'credit_card'::text, 'debit_card'::text, 'check'::text, 'paypal'::text, 'other'::text]))))"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_payment_status_check",
+      "definition": "CHECK (((payment_status IS NULL) OR (payment_status = ANY (ARRAY['pending'::text, 'paid'::text, 'partial'::text, 'overdue'::text, 'canceled'::text]))))"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_saved_supplier_id_fkey",
+      "definition": "FOREIGN KEY (saved_supplier_id) REFERENCES saved_suppliers(id) ON DELETE SET NULL"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_subcategory_id_fkey",
+      "definition": "FOREIGN KEY (subcategory_id) REFERENCES subcategories(id) ON DELETE SET NULL"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_taxonomy_status_check",
+      "definition": "CHECK ((taxonomy_status = ANY (ARRAY['active'::text, 'legacy_preserved'::text])))"
+    },
+    {
+      "object": "expenses",
+      "conname": "record_expense_first_value",
+      "definition": "CREATE TRIGGER record_expense_first_value AFTER INSERT OR UPDATE OF status, from_dashboard ON public.expenses FOR EACH ROW EXECUTE FUNCTION private.record_first_value()"
+    },
+    {
+      "object": "expenses",
+      "conname": "update_expenses_updated_at",
+      "definition": "CREATE TRIGGER update_expenses_updated_at BEFORE UPDATE ON public.expenses FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()"
+    }
+  ],
+  "productionConstraints": [
+    {
+      "object": "events",
+      "conname": "event_document_cascade_guard",
+      "definition": "CREATE TRIGGER event_document_cascade_guard BEFORE DELETE ON public.events FOR EACH ROW EXECUTE FUNCTION private.guard_event_document_cascade()"
+    },
+    {
+      "object": "events",
+      "conname": "events_budgets_nonnegative",
+      "definition": "CHECK (((COALESCE(bride_initial_budget, (0)::numeric) >= (0)::numeric) AND (COALESCE(groom_initial_budget, (0)::numeric) >= (0)::numeric) AND (COALESCE(total_budget, (0)::numeric) >= (0)::numeric)))"
+    },
+    {
+      "object": "events",
+      "conname": "events_create_owner_membership",
+      "definition": "CREATE TRIGGER events_create_owner_membership AFTER INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION create_event_owner_membership()"
+    },
+    {
+      "object": "events",
+      "conname": "events_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "object": "events",
+      "conname": "events_prevent_owner_change",
+      "definition": "CREATE TRIGGER events_prevent_owner_change BEFORE UPDATE OF owner_id ON public.events FOR EACH ROW EXECUTE FUNCTION prevent_event_owner_change()"
+    },
+    {
+      "object": "events",
+      "conname": "events_public_id_key",
+      "definition": "UNIQUE (public_id)"
+    },
+    {
+      "object": "events",
+      "conname": "trg_events_set_owner",
+      "definition": "CREATE TRIGGER trg_events_set_owner BEFORE INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION set_owner_id()"
+    },
+    {
+      "object": "events",
+      "conname": "trg_populate_event_categories",
+      "definition": "CREATE TRIGGER trg_populate_event_categories AFTER INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION populate_event_categories()"
+    },
+    {
+      "object": "events",
+      "conname": "trg_populate_user_timeline",
+      "definition": "CREATE TRIGGER trg_populate_user_timeline AFTER INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION populate_user_timeline()"
+    },
+    {
+      "object": "events",
+      "conname": "update_events_updated_at",
+      "definition": "CREATE TRIGGER update_events_updated_at BEFORE UPDATE ON public.events FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()"
+    },
+    {
+      "object": "expenses",
+      "conname": "baptism_expense_revision",
+      "definition": "CREATE TRIGGER baptism_expense_revision BEFORE INSERT OR DELETE OR UPDATE ON public.expenses FOR EACH ROW EXECUTE FUNCTION bump_baptism_revision()"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_event_id_fkey",
+      "definition": "FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_payment_method_check",
+      "definition": "CHECK (((payment_method IS NULL) OR (payment_method = ANY (ARRAY['cash'::text, 'bank_transfer'::text, 'credit_card'::text, 'debit_card'::text, 'check'::text, 'paypal'::text, 'other'::text]))))"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_payment_status_check",
+      "definition": "CHECK (((payment_status IS NULL) OR (payment_status = ANY (ARRAY['pending'::text, 'paid'::text, 'partial'::text, 'overdue'::text, 'canceled'::text]))))"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_saved_supplier_id_fkey",
+      "definition": "FOREIGN KEY (saved_supplier_id) REFERENCES saved_suppliers(id) ON DELETE SET NULL"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_subcategory_id_fkey",
+      "definition": "FOREIGN KEY (subcategory_id) REFERENCES subcategories(id) ON DELETE SET NULL"
+    },
+    {
+      "object": "expenses",
+      "conname": "expenses_taxonomy_status_check",
+      "definition": "CHECK ((taxonomy_status = ANY (ARRAY['active'::text, 'legacy_preserved'::text])))"
+    },
+    {
+      "object": "expenses",
+      "conname": "record_expense_first_value",
+      "definition": "CREATE TRIGGER record_expense_first_value AFTER INSERT OR UPDATE OF status, from_dashboard ON public.expenses FOR EACH ROW EXECUTE FUNCTION private.record_first_value()"
+    },
+    {
+      "object": "expenses",
+      "conname": "update_expenses_updated_at",
+      "definition": "CREATE TRIGGER update_expenses_updated_at BEFORE UPDATE ON public.expenses FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()"
+    }
+  ]
+}
