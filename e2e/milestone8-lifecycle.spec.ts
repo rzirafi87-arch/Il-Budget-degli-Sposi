@@ -281,7 +281,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
         response.request().method() === "POST"
         && new URL(response.url()).pathname === "/api/my/current-event"
       );
-      await page.getByRole("listitem", { name: `QA-M8-MATRIX-A-${identity.marker}`, exact: true }).click();
+      await page.getByRole("button", { name: `QA-M8-MATRIX-A-${identity.marker}`, exact: true }).click();
       expect((await selection).status()).toBe(200);
       await expect(page).toHaveURL(/\/it\/dashboard/);
       await page.reload();
@@ -391,7 +391,7 @@ test.describe("[M8] isolated authenticated lifecycle", () => {
         response.request().method() === "POST"
         && new URL(response.url()).pathname === "/api/my/current-event"
       );
-      await page.getByRole("listitem", { name: firstName, exact: true }).click();
+      await page.getByRole("button", { name: firstName, exact: true }).click();
       expect((await selection).status()).toBe(200);
       await page.waitForURL(/\/it\/dashboard/);
       await openIdeaBudget(page);

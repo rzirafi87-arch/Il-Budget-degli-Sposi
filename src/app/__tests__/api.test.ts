@@ -115,8 +115,10 @@ describe('API routes', () => {
     const body = { name: 'Item', country_code: 'it' };
     const req = { headers: new Headers({ authorization: 'Bearer token' }), json: async () => body };
   const res = await budgetItemsRoute.POST(req as unknown as import('next/server').NextRequest);
-    const json = await (res as { json: () => Promise<unknown> }).json() as { item: { event_id: string } };
+    const json = await (res as { json: () => Promise<unknown> }).json() as { item: { event_id: string; source: string; spend_type: string } };
     expect(json.item).toBeTruthy();
     expect(json.item.event_id).toBe('evt-1');
+    expect(json.item.source).toBe('manual');
+    expect(json.item.spend_type).toBe('common');
   });
 });

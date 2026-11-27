@@ -4,6 +4,7 @@ import { rateLimitResponse } from "@/lib/publicApiGuard";
 import { getServiceClient } from "@/lib/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { generatePublicId } from "@/lib/publicId";
+import { parseEighteenthSetup } from "@/lib/eighteenthSetup";
 import { validateEventTypeForRegistration } from "@/lib/eventTypeCapabilities";
 import { safeInternalPath } from "@/lib/auth";
 import { randomUUID } from "node:crypto";
@@ -148,6 +149,12 @@ export async function POST(req: NextRequest) {
     }
     const eventType = eventTypeDecision.eventType;
 
+    const party = eventType === "eighteenth" ? parseEighteenthSetup({
+      name: "name" in body ? body.name : null, date: "date" in body ? body.date : null,
+      budget: "budget" in body ? body.budget : null,
+    }) : null;
+    if (eventType === "eighteenth" && !party) return registrationError("INVALID_PARTY_DETAILS", 400);
+
     if (!EMAIL_PATTERN.test(primaryEmail) || password.length < 10 || password.length > 128) {
       return NextResponse.json(
         { ok: false, error: "Email non valida o password inferiore a 10 caratteri" },
@@ -220,9 +227,10 @@ export async function POST(req: NextRequest) {
         owner_id: ownerId,
         event_type: eventType,
         total_budget: 0,
-        bride_email: primaryEmail,
-        groom_email: partnerEmail || null,
+        bride_email: party ? null : primaryEmail,
+        groom_email: party ? null : partnerEmail || null,
         event_date: weddingDate || null,
+        ...party,
       })
       .select("id")
       .single();
@@ -235,7 +243,7 @@ export async function POST(req: NextRequest) {
     registration.publicId = publicId;
 
     // 4) Seed event
-    const { error: seedErr } = await db.rpc("seed_full_event", { p_event: ev.id });
+    const { error: seedErr } = party ? { error: null } : await db.rpc("seed_full_event", { p_event: ev.id });
     if (seedErr) {
       console.error("REGISTER seed error code:", seedErr.code || "event_seed_failed");
       return failAndCompensate(db, registration, primaryEmail, "REGISTRATION_INITIALIZATION_FAILED", 500);

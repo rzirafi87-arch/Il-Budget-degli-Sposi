@@ -1,4 +1,37 @@
 {
+  "party18": {
+    "retry": "Réessayer",
+    "name": "Prénom de la personne qui fête ses 18 ans",
+    "date": "Date de la fête",
+    "budget": "Budget initial",
+    "start": "Organiser la fête",
+    "first": "Invitez une première personne ou ajoutez votre premier devis.",
+    "paid": "Dépenses réglées",
+    "remaining": "Disponible après les dépenses réglées",
+    "quotes": "Devis en cours",
+    "category": "Catégorie",
+    "categories": {
+      "venue": "Salle",
+      "catering": "Traiteur",
+      "cake": "Gâteau",
+      "dj": "DJ",
+      "photography": "Photographie",
+      "decor": "Décoration",
+      "invites": "Invitations"
+    },
+    "amount": "Montant",
+    "expense": "Enregistrer la dépense",
+    "quote": "Enregistrer le devis",
+    "empty": "Aucune dépense ni aucun devis pour le moment.",
+    "saved": "Enregistré",
+    "error": "Impossible de charger ou d’enregistrer les données. Réessayez.",
+    "links": {
+      "invitati": "Invités et réponses",
+      "location": "Lieux",
+      "fornitori": "Prestataires",
+      "timeline": "Échéances"
+    }
+  },
   "appointments": {
     "title": "Rendez-vous et échéances",
     "formTitle": "Titre du rendez-vous",

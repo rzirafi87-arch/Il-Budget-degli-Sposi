@@ -1,5 +1,6 @@
 "use client";
 
+import { translator as baptismTranslator } from "@/features/events/baptism/model";
 import ImageCarousel from "@/components/ImageCarousel";
 import { CatalogMap } from "@/components/catalog/CatalogMap";
 import ContributionPanel from "@/components/catalog/ContributionPanel";
@@ -42,6 +43,7 @@ export default function LocationsPage() {
   const geo = useTranslations("catalogSearch");
   const { showToast } = useToast();
   const country = getUserCountrySafe().toLowerCase();
+  const [eventType, setEventType] = useState("");
   const [locations, setLocations] = useState<Location[]>([]);
   const [saved, setSaved] = useState<Record<string, SavedLocation>>({});
   const [token, setToken] = useState<string | null>(null);
@@ -78,7 +80,7 @@ export default function LocationsPage() {
 
   useEffect(() => {
     getOnboardingStatus().then((status) => {
-      if (status.kind === "complete") { setToken(status.accessToken); void loadSaved(status.accessToken); }
+      if (status.kind === "complete") { setEventType(status.event.event_type || "wedding"); setToken(status.accessToken); void loadSaved(status.accessToken); }
     }).catch(() => undefined);
   }, [loadSaved]);
 
@@ -148,7 +150,7 @@ export default function LocationsPage() {
 
   return <section className="space-y-6">
     <PageHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} icon={<Building2 size={24} aria-hidden />} />
-    <ImageCarousel images={getPageImages("location", country)} height="280px" />
+    {eventType === "baptism" ? <picture><source media="(max-width: 640px)" srcSet="/images/baptism/lunch-mobile.webp"/><img className="mb-6 max-h-72 w-full rounded-xl object-cover" width="1600" height="900" src="/images/baptism/lunch-wide.webp" alt={baptismTranslator(locale)("images.lunchAlt")}/></picture> : eventType ? <ImageCarousel images={getPageImages("location", country)} height="280px" /> : null}
     <ContributionPanel entityType="location" initialData={{ city, province, region }} />
     <AppCard padding="md">
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(12rem,18rem)] sm:items-end">

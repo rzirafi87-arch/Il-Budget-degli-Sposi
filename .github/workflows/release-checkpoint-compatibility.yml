@@ -1,0 +1,151 @@
+name: Release checkpoint compatibility and restore
+on:
+  pull_request:
+    branches: [main]
+    paths: ['.github/workflows/release-checkpoint-compatibility.yml']
+permissions:
+  contents: read
+concurrency:
+  group: release-checkpoint-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  compatibility:
+    name: OLD APP current main + NEW B54 SCHEMA
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: old-app
+    env:
+      OLD_APP_REF: cd6b406ac2db510a1a5a06ea398a73c02d97bf7b
+      SUPABASE_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 98a1aebeceb4cecbe53ea1979d4ad7e5597dbefb
+          path: new-schema
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.OLD_APP_REF }}
+          path: old-app
+      - name: Prove immutable refs
+        working-directory: ${{ github.workspace }}
+        env:
+          NEW_SCHEMA_REF: 98a1aebeceb4cecbe53ea1979d4ad7e5597dbefb
+        run: |
+          set -Eeuo pipefail
+          test "$(git -C old-app rev-parse HEAD)" = "$OLD_APP_REF"
+          test "$(git -C new-schema rev-parse HEAD)" = "$NEW_SCHEMA_REF"
+          test "$OLD_APP_REF" != "$NEW_SCHEMA_REF"
+          echo "OLD_APP_SHA=$OLD_APP_REF"
+          echo "NEW_SCHEMA_SHA=$NEW_SCHEMA_REF"
+          echo "PRODUCTION_CONNECTION=NONE"
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: npm, cache-dependency-path: old-app/package-lock.json }
+      - uses: supabase/setup-cli@v1
+        with: { version: 2.116.0 }
+      - name: Start ephemeral Supabase
+        run: |
+          mkdir .supabase-m8
+          cd .supabase-m8
+          supabase init
+          supabase start
+          supabase status -o env > status.env
+          set -a
+          source status.env
+          set +a
+          for value in "$API_URL" "$ANON_KEY" "$SERVICE_ROLE_KEY" "$DB_URL" "$INBUCKET_URL"; do echo "::add-mask::$value"; done
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "PLAYWRIGHT_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "PLAYWRIGHT_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "SUPABASE_SERVICE_ROLE=$SERVICE_ROLE_KEY"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "LOCAL_DATABASE_URL=$DB_URL"
+            echo "PLAYWRIGHT_INBUCKET_URL=$INBUCKET_URL"
+          } >> "$GITHUB_ENV"
+      - name: Rebuild and verify B54 schema
+        working-directory: new-schema
+        run: |
+          set -Eeuo pipefail
+          bash scripts/rebuild-local-supabase.sh "$LOCAL_DATABASE_URL"
+          test "$(psql "$LOCAL_DATABASE_URL" -Atc "select to_regclass('private.event_activations') is not null and to_regclass('private.activation_legacy_events') is not null and to_regprocedure('private.record_first_value()') is not null")" = "t"
+          echo B54_SCHEMA_INSTALLED=YES
+      - name: Actual isolated dump and restore drill
+        working-directory: new-schema
+        run: |
+          set -Eeuo pipefail
+          db_container=$(docker ps --format '{{.Names}}' | awk '/^supabase_db_/ {print;exit}')
+          test -n "$db_container"
+          docker exec "$db_container" psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -c "create table public.release_restore_canary(id integer primary key, value text); insert into public.release_restore_canary values (1,'isolated-only');"
+          docker exec "$db_container" pg_dump -U supabase_admin -d postgres -Fc > /tmp/release-isolated.dump
+          test -s /tmp/release-isolated.dump
+          sha256sum /tmp/release-isolated.dump
+          docker exec "$db_container" createdb -U supabase_admin -T template0 release_restore_drill
+          docker exec -i "$db_container" pg_restore -U supabase_admin -d release_restore_drill --exit-on-error < /tmp/release-isolated.dump
+          test "$(docker exec "$db_container" psql -U supabase_admin -d release_restore_drill -Atc "select value from public.release_restore_canary where id=1")" = "isolated-only"
+          for database in postgres release_restore_drill; do
+            docker exec "$db_container" psql -U supabase_admin -d "$database" -Atc "select md5(string_agg(pg_get_functiondef(p.oid),E'\\n' order by n.nspname,p.proname,pg_get_function_identity_arguments(p.oid))) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prokind='f'" > "/tmp/$database-fingerprint"
+          done
+          cmp /tmp/postgres-fingerprint /tmp/release_restore_drill-fingerprint
+          docker exec "$db_container" dropdb -U supabase_admin release_restore_drill
+          docker exec "$db_container" psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -c "drop table public.release_restore_canary"
+          rm -f /tmp/release-isolated.dump
+          echo "ISOLATED_RESTORE=PASS; PRODUCTION_BACKUP_NOT_VERIFIED" >> "$GITHUB_STEP_SUMMARY"
+      - name: Reapply B54 migration to verify idempotence
+        working-directory: new-schema
+        run: psql "$LOCAL_DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017132156_branch_54_first_value_activation.sql
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build application against ephemeral Supabase
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+      - name: Run minimal real onboarding diagnostic first
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-diagnostic
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - name: Run real isolated browser journeys without skips
+        run: npx playwright test --config=playwright.m8.config.ts --project=m8-320 --project=m8-390 --project=m8-430
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+          SITE_URL: http://127.0.0.1:3000
+          PLAYWRIGHT_LOCAL_SUPABASE: "1"
+          PLAYWRIGHT_QA_EMAIL_DOMAIN: qa.local
+      - name: Verify OLD APP was not patched
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = "$OLD_APP_REF"
+          test -z "$(git status --porcelain --untracked-files=no)"
+          echo "OLD_APP_UNMODIFIED=YES" >> "$GITHUB_STEP_SUMMARY"
+          echo "OLD_APP_SHA=$OLD_APP_REF" >> "$GITHUB_STEP_SUMMARY"
+          echo "PRODUCTION_CONNECTION=NONE" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: branch54-old-app-mobile-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
+          path: ${{ github.workspace }}/old-app/.playwright-results-m8/**/m5-guests-*.png
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: branch54-old-app-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 7
+          path: |
+            ${{ github.workspace }}/old-app/playwright-report-m8/**
+            ${{ github.workspace }}/old-app/.playwright-results-m8/**
+      - name: Destroy ephemeral Supabase and fixtures
+        if: always()
+        run: |
+          if test -d .supabase-m8/supabase; then cd .supabase-m8 && supabase stop --no-backup; fi

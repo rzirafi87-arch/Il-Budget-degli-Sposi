@@ -1,5 +1,6 @@
 "use client";
 
+import PartyDashboard from "@/components/dashboard/PartyDashboard";
 import BudgetFocusHint, { BudgetFocus } from "@/components/dashboard/BudgetFocusHint";
 import BudgetItemsSection from "@/components/dashboard/BudgetItemsSection";
 import BudgetSummary from "@/components/dashboard/BudgetSummary";
@@ -145,7 +146,7 @@ export default function DashboardPage() {
 
   // Fetch dashboard data from API endpoints
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || (process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1" && effectiveEventType === "eighteenth")) return;
 
     let active = true;
     (async () => {
@@ -317,6 +318,8 @@ export default function DashboardPage() {
   if (!isReady) {
     return <LoadingState label={t("loading")} cards={3} />;
   }
+
+  if (process.env.NEXT_PUBLIC_EIGHTEENTH_PREVIEW === "1" && effectiveEventType === "eighteenth" && accessToken) return <PartyDashboard token={accessToken} />;
 
   return (
     <Page>

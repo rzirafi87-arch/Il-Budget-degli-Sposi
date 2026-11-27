@@ -1,4 +1,37 @@
 {
+  "party18": {
+    "retry": "Reintentar",
+    "name": "Nombre de quien cumple 18 años",
+    "date": "Fecha de la fiesta",
+    "budget": "Presupuesto inicial",
+    "start": "Organizar la fiesta",
+    "first": "Invita a la primera persona o registra el primer presupuesto recibido.",
+    "paid": "Gastos pagados",
+    "remaining": "Disponible tras los gastos pagados",
+    "quotes": "Cotizaciones pendientes",
+    "category": "Categoría",
+    "categories": {
+      "venue": "Salón",
+      "catering": "Catering",
+      "cake": "Tarta",
+      "dj": "DJ",
+      "photography": "Fotografía",
+      "decor": "Decoración",
+      "invites": "Invitaciones"
+    },
+    "amount": "Importe",
+    "expense": "Registrar gasto",
+    "quote": "Guardar cotización",
+    "empty": "Todavía no hay gastos ni cotizaciones.",
+    "saved": "Guardado",
+    "error": "No se han podido cargar o guardar los datos. Inténtalo de nuevo.",
+    "links": {
+      "invitati": "Invitados y confirmaciones",
+      "location": "Lugares",
+      "fornitori": "Proveedores",
+      "timeline": "Plazos"
+    }
+  },
   "appointments": {
     "title": "Citas y plazos",
     "formTitle": "Título de la cita",

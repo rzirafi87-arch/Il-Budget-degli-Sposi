@@ -1,4 +1,37 @@
 {
+  "party18": {
+    "retry": "Erneut versuchen",
+    "name": "Name der Person, die 18 wird",
+    "date": "Datum der Feier",
+    "budget": "Startbudget",
+    "start": "Feier planen",
+    "first": "Lade den ersten Gast ein oder erfasse das erste Angebot.",
+    "paid": "Bezahlte Ausgaben",
+    "remaining": "Verfügbar nach bezahlten Ausgaben",
+    "quotes": "Offene Angebote",
+    "category": "Kategorie",
+    "categories": {
+      "venue": "Saal",
+      "catering": "Catering",
+      "cake": "Torte",
+      "dj": "DJ",
+      "photography": "Fotografie",
+      "decor": "Dekoration",
+      "invites": "Einladungen"
+    },
+    "amount": "Betrag",
+    "expense": "Ausgabe erfassen",
+    "quote": "Angebot speichern",
+    "empty": "Noch keine Ausgaben oder Angebote.",
+    "saved": "Gespeichert",
+    "error": "Daten konnten nicht geladen oder gespeichert werden. Bitte erneut versuchen.",
+    "links": {
+      "invitati": "Gäste und Zusagen",
+      "location": "Veranstaltungsorte",
+      "fornitori": "Dienstleister",
+      "timeline": "Termine"
+    }
+  },
   "appointments": {
     "title": "Termine und Fristen",
     "formTitle": "Terminbezeichnung",

@@ -7,6 +7,7 @@ export type EventCreateBody = {
   eventType?: unknown;
   country?: unknown;
   language?: unknown;
+  name?: unknown; date?: unknown; budget?: unknown;
   createAdditional?: unknown;
 };
 export type EventUpdateBody = {

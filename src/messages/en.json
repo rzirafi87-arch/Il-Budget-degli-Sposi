@@ -1,4 +1,37 @@
 {
+  "party18": {
+    "retry": "Retry",
+    "name": "Name of the person turning 18",
+    "date": "Party date",
+    "budget": "Starting budget",
+    "start": "Plan the party",
+    "first": "Invite your first guest or record your first quote.",
+    "paid": "Paid expenses",
+    "remaining": "Remaining after paid expenses",
+    "quotes": "Open quotes",
+    "category": "Category",
+    "categories": {
+      "venue": "Venue",
+      "catering": "Catering",
+      "cake": "Cake",
+      "dj": "DJ",
+      "photography": "Photography",
+      "decor": "Decorations",
+      "invites": "Invitations"
+    },
+    "amount": "Amount",
+    "expense": "Record expense",
+    "quote": "Save quote",
+    "empty": "No expenses or quotes yet.",
+    "saved": "Saved",
+    "error": "Could not load or save your data. Please try again.",
+    "links": {
+      "invitati": "Guests and RSVPs",
+      "location": "Venues",
+      "fornitori": "Suppliers",
+      "timeline": "Deadlines"
+    }
+  },
   "dashboard": "Dashboard",
   "timeline": "Timeline",
   "budget": "Budget",

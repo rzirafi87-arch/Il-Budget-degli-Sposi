@@ -30,6 +30,7 @@ export type MobileFamilyGroup = {
 };
 
 type Props = {
+  showGuestSide?: boolean;
   guest: MobileGuest;
   families: readonly MobileFamilyGroup[];
   onChange: (field: keyof MobileGuest, value: string | boolean | string[]) => void;
@@ -57,6 +58,7 @@ const MENU_ICONS: Record<GuestMenuPreference, string> = {
 };
 
 export function GuestMobileCard({
+  showGuestSide = true,
   guest,
   families,
   onChange,
@@ -92,7 +94,7 @@ export function GuestMobileCard({
       </div>
 
       <div className="grid min-w-0 gap-3 sm:grid-cols-2">
-        <label htmlFor={`${prefix}-type`} className="app-label min-w-0">
+        {showGuestSide && <label htmlFor={`${prefix}-type`} className="app-label min-w-0">
           {t("columns.type")}
           <select
             id={`${prefix}-type`}
@@ -105,7 +107,7 @@ export function GuestMobileCard({
             <option value="bride">{t("guestTypes.bride")}</option>
             <option value="groom">{t("guestTypes.groom")}</option>
           </select>
-        </label>
+        </label>}
 
         <label htmlFor={`${prefix}-family`} className="app-label min-w-0">
           {t("columns.family")}

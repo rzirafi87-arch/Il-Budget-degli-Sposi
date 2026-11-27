@@ -13,6 +13,7 @@
 # testing
 /coverage
 /.playwright-results/
+/.playwright-results-b54/
 /playwright-report/
 /test-results/.last-run.json
 /.production-smoke-integrity-baseline.json
@@ -50,3 +51,7 @@ yarn-error.log*
 next-env.d.ts
 
 !.env.example
+
+# Dedicated QA browser reports
+playwright-report-m8/
+playwright-report-baptism/

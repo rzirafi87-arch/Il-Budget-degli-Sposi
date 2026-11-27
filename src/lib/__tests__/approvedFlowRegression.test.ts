@@ -5,7 +5,7 @@ const read = (relativePath: string) =>
   fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
 describe("approved application flow regressions", () => {
-  it("keeps event selection only inside Quick Settings", () => {
+  it("keeps event switching in settings after multi-event integration", () => {
     const shell = read("src/components/ClientLayoutShell.tsx");
     const settings = read("src/components/QuickSettings.tsx");
     expect(shell).not.toContain("TopBarSelector");

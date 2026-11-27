@@ -1,5 +1,6 @@
 "use client";
 
+import PartyTimeline from "@/features/events/eighteenth/PartyTimeline";
 import ExportButton from "@/components/ExportButton";
 import ExportPDFButton from "@/components/ExportPDFButton";
 import { SupplierLinkView } from "@/components/suppliers/SupplierLinkView";
@@ -75,10 +76,11 @@ function identity(value: SupplierLink | null) {
   return value ? `${value.scope}:${value.resourceId}` : "";
 }
 
-export default function TimelinePage() {
+function SharedTimelinePage() {
   const locale = useLocale();
   const t = useTranslations("milestone7.timeline");
   const m4 = useTranslations("branch52M4.timeline");
+  const weddingChecklist = useTranslations("weddingChecklist");
   const [eventType, setEventType] = useState<string>(DEFAULT_EVENT_TYPE);
   const eventConfig = getEventConfig(eventType);
   const [country] = useState(() => getUserCountrySafe());
@@ -164,7 +166,14 @@ export default function TimelinePage() {
 
   useEffect(() => {
     if (tasksFromDb) return;
-    const templates = localizedTemplates ?? eventConfig.timelineTasks;
+    const weddingFallback: TimelineTaskTemplate[] = [
+      ["planning", 12], ["budget", 12], ["ceremony", 10], ["reception", 9],
+      ["suppliers", 6], ["invitations", 3], ["confirmations", 1], ["finalChecks", 0],
+    ].map(([key, months]) => ({
+      title: weddingChecklist(String(key)), description: "", monthsBefore: Number(months),
+      category: weddingChecklist("category"), priority: "media",
+    }));
+    const templates = localizedTemplates ?? (eventType === "wedding" ? weddingFallback : eventConfig.timelineTasks);
     setTasks(templates.map((template, index) => ({
       ...template,
       id: `${eventType}-task-${index}`,
@@ -173,7 +182,7 @@ export default function TimelinePage() {
       priority: template.priority === "alta" || template.priority === "bassa" ? template.priority : "media",
       supplier: null,
     })));
-  }, [eventConfig, eventType, localizedTemplates, tasksFromDb]);
+  }, [eventConfig, eventType, localizedTemplates, tasksFromDb, weddingChecklist]);
 
   const categories = useMemo(() => ["__all__", ...new Set(tasks.map((task) => task.category))], [tasks]);
   const filteredTasks = useMemo(() => tasks.filter((task) =>
@@ -394,3 +403,5 @@ function convertStepsToTemplates(steps: string[]): TimelineTaskTemplate[] {
     priority: "media",
   }));
 }
+
+export default function TimelinePage(){return <PartyTimeline><SharedTimelinePage/></PartyTimeline>;}
