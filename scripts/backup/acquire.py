@@ -247,7 +247,27 @@ try:
    (root/'permissions-diff-private.json').write_text(json.dumps({'kind':key,'source':before[key],'restored':a},default=str));raise RuntimeError('RESTORED_PERMISSIONS_MISMATCH')
  for permission_name,query in PERMISSION_QUERIES.items():
   actual=local_query('select coalesce(json_agg(row_to_json(x)),\'[]\') from ('+query+') x')
-  if json.loads(json.dumps(before[permission_name],default=str))!=[list(x.values()) for x in actual]:
+  expected_rows=json.loads(json.dumps(before[permission_name],default=str));actual_rows=[list(x.values()) for x in actual]
+  if permission_name=='role_attributes':
+   # ALTER ROLE canonicalizes legacy millisecond values (60000 -> 1min).
+   # Compare effective units, retaining every role flag and every other setting.
+   import re
+   from decimal import Decimal
+   def canonical_roles(rows):
+    result=[]
+    factors={'us':Decimal('0.001'),'ms':Decimal(1),'s':Decimal(1000),'min':Decimal(60000),'h':Decimal(3600000),'d':Decimal(86400000)}
+    for row in rows:
+     normalized=[]
+     for setting in local_query('select to_json('+literal(row[-1])+'::text[])'):
+      key,value=setting.split('=',1)
+      if key in {'statement_timeout','lock_timeout','idle_in_transaction_session_timeout','idle_session_timeout','transaction_timeout'}:
+       m=re.fullmatch(r'([0-9]+(?:\.[0-9]+)?)\s*(us|ms|s|min|h|d)?',value)
+       if m:value=str(Decimal(m.group(1))*factors[m.group(2) or 'ms'])+'ms'
+      normalized.append((key,value))
+     result.append(row[:-1]+[sorted(normalized)])
+    return result
+   expected_rows=canonical_roles(expected_rows);actual_rows=canonical_roles(actual_rows)
+  if expected_rows!=actual_rows:
    (root/'permissions-diff-private.json').write_text(json.dumps({'kind':permission_name,'source':before[permission_name],'restored':[list(x.values()) for x in actual]},default=str));raise RuntimeError('RESTORED_EXTENDED_PERMISSIONS_MISMATCH')
  # Prove anonymous/no-claim roles cannot read event data in the restored clone.
  for role in ['anon','authenticated']:
