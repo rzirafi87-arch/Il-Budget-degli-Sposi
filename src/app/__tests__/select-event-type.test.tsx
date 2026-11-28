@@ -1,4 +1,4 @@
-﻿import "@testing-library/jest-dom";
+import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 const mockReplace = jest.fn();
@@ -8,13 +8,17 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn(), replace: mockReplace }),
 }));
 
+jest.mock("@/lib/supabaseBrowser", () => ({
+  getBrowserClient: () => ({ auth: { getSession: async () => ({ data: { session: { access_token: "token" } }, error: null }) } }),
+}));
+
 jest.mock("@/lib/onboardingClient", () => ({
   getOnboardingStatus: () => mockGetOnboardingStatus(),
 }));
 
 beforeAll(() => {
   global.fetch = jest.fn(() =>
-    Promise.resolve({ ok: true, json: () => Promise.resolve({ traditions: [] }) })
+    Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true, traditions: [] }) })
   ) as unknown as typeof fetch;
 });
 
@@ -98,4 +102,19 @@ describe("SelectEventTypePage", () => {
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/it/select-event"));
     expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
   });
+  it("cerca gli eventi senza rendere disponibili i percorsi non pronti", async () => {
+    window.localStorage.setItem("language", "it");
+    window.localStorage.setItem("country", "it");
+    render(<SelectEventTypePage />);
+    const search = await screen.findByRole("searchbox", { name: "Cerca un evento" });
+    fireEvent.change(search, { target: { value: "confirmation" } });
+    expect(screen.getByText("events.confirmation").closest("button")).toBeDisabled();
+    expect(screen.queryByText("events.wedding")).not.toBeInTheDocument();
+    fireEvent.change(search, { target: { value: "nessuna corrispondenza" } });
+    expect(screen.getByRole("status")).toHaveTextContent("Nessun evento trovato");
+    fireEvent.change(search, { target: { value: "" } });
+    expect(screen.getByText("events.wedding").closest("button")).toBeEnabled();
+    expect(mockReplace).not.toHaveBeenCalledWith("/it/dashboard");
+  });
+
 });

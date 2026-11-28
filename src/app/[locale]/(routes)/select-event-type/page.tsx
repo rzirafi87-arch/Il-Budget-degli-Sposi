@@ -69,6 +69,15 @@ export default function SelectEventTypePage() {
   const [partyDetails, setPartyDetails] = useState({ name: "", date: "", budget: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const searchCopy = {
+    it: { search: "Cerca un evento", empty: "Nessun evento trovato", back: "Cambia tipo di evento" },
+    en: { search: "Search for an event", empty: "No events found", back: "Change event type" },
+    fr: { search: "Rechercher un événement", empty: "Aucun événement trouvé", back: "Changer de type d’événement" },
+    es: { search: "Buscar un evento", empty: "No se encontraron eventos", back: "Cambiar tipo de evento" },
+    de: { search: "Veranstaltung suchen", empty: "Keine Veranstaltungen gefunden", back: "Veranstaltungsart ändern" },
+  }[language];
+  const normalizeSearch = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase(locale).trim();
   const [selected, setSelected] = useState<string>("");
   const [accessChecked, setAccessChecked] = useState(false);
   const [accessError, setAccessError] = useState<string | null>(null);
@@ -149,6 +158,8 @@ export default function SelectEventTypePage() {
     }));
   }, [t]);
 
+  const visibleEvents = events.filter(event => normalizeSearch(`${event.label} ${event.slug}`).includes(normalizeSearch(query)));
+
   async function handleSelect(code: string) {
     const capability = getEventTypeCapability(code);
     if (saving || capability.availabilityStatus !== "READY") return;
@@ -156,9 +167,6 @@ export default function SelectEventTypePage() {
     setSaving(true);
     setError(null);
     try {
-      localStorage.setItem("eventType", code);
-      document.cookie = `eventType=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
-      window.dispatchEvent(new CustomEvent("event-type-changed", { detail: code }));
       setSelected(code);
 
       const { data, error: sessionError } = await getBrowserClient().auth.getSession();
@@ -180,6 +188,10 @@ export default function SelectEventTypePage() {
       if (!response.ok || !payload.ok) {
         throw new Error(payload.error || statusCopy.genericError);
       }
+
+      localStorage.setItem("eventType", code);
+      document.cookie = `eventType=${code}; Path=/; Max-Age=15552000; SameSite=Lax`;
+      window.dispatchEvent(new CustomEvent("event-type-changed", { detail: code }));
 
       router.replace(`/${locale}/dashboard`);
     } catch {
@@ -217,8 +229,14 @@ export default function SelectEventTypePage() {
 
         {selected === "wedding" && tradition && <div className="mb-6"><WeddingTraditionInfo tradition={tradition} /></div>}
 
+        {selected !== "eighteenth" && <label className="mb-4 grid gap-2">
+          <span>{searchCopy.search}</span>
+          <input type="search" value={query} disabled={saving} onChange={event => setQuery(event.target.value)} className="w-full rounded-xl border border-gray-300 bg-white p-3" />
+        </label>}
+        {selected !== "eighteenth" && visibleEvents.length === 0 && <p role="status" className="mb-4">{searchCopy.empty}</p>}
         {selected === "eighteenth" ? (
           <form className="grid gap-4" onSubmit={e => { e.preventDefault(); void handleSelect(selected); }}>
+            <button type="button" disabled={saving} className="app-button app-button--secondary" onClick={() => { setSelected(""); setError(null); }}>{searchCopy.back}</button>
             {(["name", "date", "budget"] as const).map(key => <label key={key} className="grid gap-1">
               {t("party18." + key)}
               <input required type={{ name: "text", date: "date", budget: "number" }[key]}
@@ -228,7 +246,7 @@ export default function SelectEventTypePage() {
             <button disabled={saving} className="app-button app-button--primary">{t("party18.start")}</button>
           </form>
         ) : <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {events.map((event) => {
+          {visibleEvents.map((event) => {
             const isReady = event.capability.availabilityStatus === "READY";
             const isSelected = selected === event.slug;
             return (

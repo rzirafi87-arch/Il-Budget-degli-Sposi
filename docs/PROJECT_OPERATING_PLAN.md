@@ -18,3 +18,14 @@ Riepilogo corrente letto: versione 4 del 25/11. Main remoto cd6b406ac2db510a1a5a
 
 ## Prossima azione esatta
 Concludere modifica select-country e test mirati; registrare risultati nella checklist, pubblicare branch/PR. Aggiornare riepilogo e coordinamento senza alterare audience. Se sincronizzazione pannello fallisce, conservare aggiornamento nel repository e dichiararlo pendente.
+
+## Checkpoint fase 1–2 — 28 novembre 2026
+- Primo risultato remoto: PR98, commit9db912231fd5d8e14fb298f8b63e6754aeab6592. Piano e checklist persistiti; otto Word/Excel recuperati.
+- Coordinamento versione5 pubblicata, sorgente393db5fc2be9bcfc5bdead9c5abc50769b2c7312; audience invariata. Browser: banner28/11 e schede aggiornate visibili. Test pannello13/13, TypeScript/build PASS.
+- Preview9db9122 READY dpl_2NxUdT6Gj2FvMptoaQcN9k5kdRP3. Browser remoto: ricerca Messico, nessun risultato, ricerca mx e selezione conservata PASS. Test browser solo desktop, nessuna mutazione server. Browser cloud non raggiunge localhost: usata Preview esistente, nessuna esposizione aggiuntiva.
+- Production Vercel riconfermata READY su main cd6b406a; Supabase Production e QA ACTIVE_HEALTHY. Ledger riletto: tre migrazioni manifest presenti in QA e assenti Production; snapshot2026-11-28-migration-ledger.json. Nessuna equivalenza automatica fra ledger e schema.
+- Secondo gruppo di modifiche: commit client eventType dopo ensure-default riuscito; ricerca eventi localizzata e ritorno dal modulo18 anni senza perdita dei dettagli; regressioni mirate. Collector config offline RSA-OAEP/AES-GCM con test sintetici, non acquisizione completa né recupero Auth certificato.
+- Tre materiali Compleanno/50 recuperati byte per byte e catalogo tipizzato delle scelte editoriali approvate per quattro eventi; nessuna attivazione pubblica o estensione del PASS QA.
+
+### Lavoro residuo e prossima fase esatta
+Il progetto completo resta INCOMPLETO. Prima di un’altra fase impegnativa: persistire il secondo gruppo di modifiche e verifiche su PR98, poi aggiornare riepilogo/checklist. Avviare quindi adattatore party per birthday/fifty basato sull’evento corrente autorevole, con scritture atomiche, scenari propri/altrui e checklist relativa; lasciare capability pubblica disabilitata. Non riusare limit(1) o delete-then-insert delle vecchie API. Integrare poi Comunione/Laurea/Cresima a partire dai pacchetti e dal catalogo, con QA individuale e Preview. Proseguire in parallelo raccolta configurazioni tramite un canale protetto realmente disponibile; i connettori esposti non offrono export Auth completo. Prima del rollout occorre recupero isolato dei servizi e autorizzazione Production sul candidato concreto. Safari/iOS reale resta da verificare.

@@ -36,7 +36,7 @@ I pacchetti contengono esempi editoriali; non copiarli nei dati degli utenti né
 | Compleanno | `Compleanno_Testi_e_budget.xlsx`, `libfile_d68052ba50b48191bf8bbcaba8d1f246`, 15833 byte, aggiornato 18/11/2026 | Letti fogli Testi, Casa, Ristorante e Sala: 83 chiavi in cinque lingue; esempi spese 150/785/1550 EUR e saldi 50/65/250 EUR. Esempi, non tariffe attuali né budget precompilati. I token `{name}`, `{date}`, `{time}` ecc. restano invarianti. |
 | 50 anni | `Festa_dei_50_anni.html`, `libfile_043c84501da481919c4fab674948ba8a`, 276414 byte, aggiornato 18/11/2026 | Proposta editoriale letta: sé/altra persona, cena intima/musica/sorpresa; checklist, programma, inviti, moduli ricordi, tre preventivi modificabili, regalo condiviso separato dal budget festa, catalogo IT/EN/ES/FR/DE. Non trovata attestazione di approvazione complessiva. Il calcolatore browser non è persistenza nell’app. |
 
-Questi tre file sono stati risolti e letti; non sono stati materializzati o aggiunti al repository da questa attività. Prossima azione: recuperare i byte esatti con il flusso Library, conservando identità/versione; poi aggiungerli come riferimenti editoriali al branch. Non creare un secondo pacchetto da zero.
+Questi tre file sono stati risolti, letti e successivamente recuperati byte per byte in docs/events/birthday e docs/events/fifty. Dimensioni, SHA256 e attributi di identità confrontati; contenuti originali conservati come riferimenti editoriali, senza attivazione pubblica.
 
 ## Conservare, adattare, aggiungere
 
@@ -59,7 +59,7 @@ Questi tre file sono stati risolti e letti; non sono stati materializzati o aggi
 
 ## Prossima lavorazione concreta
 
-1. Recuperare i tre file Library sopra senza riscriverli; mantenere i quattro pacchetti repository e questo inventario nello stesso branch.
+1. Recupero completato: docs/events/birthday/Compleanno_Revisione.docx, Compleanno_Testi_e_budget.xlsx e docs/events/fifty/Festa_dei_50_anni.html. Byte e SHA256 confrontati con gli originali; nessuna riscrittura dei contenuti. Mantenere i pacchetti nello stesso branch.
 2. Importare le sole scelte editoriali già approvate in un catalogo tipizzato isolato e nelle traduzioni, con nessuna attivazione pubblica. Conservare le proposte Compleanno/50 come materiale di revisione.
 3. Progettare un adattatore comune per party `birthday`/`fifty` che usi l’evento corrente autorevole e mutazioni atomiche, conservando dati e acconti. Non usare le vecchie API selezionanti il primo evento.
 4. Verificare il primo percorso in ambiente isolato: creazione, riapertura, cambio con gli altri tre eventi, budget/spese/pagamenti, invitati/inviti e checklist; poi estendere agli altri scenari e lingue. Nessun PASS esteso dai tre eventi esistenti.
