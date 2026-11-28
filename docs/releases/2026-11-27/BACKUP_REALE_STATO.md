@@ -1,91 +1,33 @@
-# Backup reale Production — stato corrente
+# Esito backup — 28 novembre 2026
 
-## Aggiornamento verificato — 28 novembre 2026
+**STOP complessivo: ripristino database e inventario Storage PASS; copertura configurazioni incompleta.**
+Questo esito sostituisce gli arresti RESTORE_VERIFY precedenti. Nessun PASS dedotto dal solo SUCCESS del workflow.
 
-**STOP: il blocco backup PR96 resta aperto.** Questo aggiornamento prevale sulle indicazioni storiche riportate sotto.
+## Evidenza conclusiva sui dati reali
+- PR97 HEAD e29e4c9b62eb125e6a3bb95ac32c33a40aef7d7c.
+- Run https://github.com/rzirafi87-arch/Il-Budget-degli-Sposi/actions/runs/46135929450 ; job140951101133.
+- Rapporto cifrato: PASS_DATABASE_COUNTS_CONTENT_RLS_ACL; PASS_EXISTING_OWNER_AUTHORIZED; PASS_ANON_AND_AUTHENTICATED_WITHOUT_CLAIMS.
+- Snapshot del28/11/2026 alle11:38:51 CET (10:38:51 UTC), acquisito in sola lettura.
+- 108 tabelle: conteggi e impronte dei contenuti uguali alla fonte. 115 policy RLS,123 relazioni/proprietà/ACL,14 ruoli,19 appartenenze,11 schemi,191 funzioni,24 configurazioni di privilegi predefiniti, proprietà/database grants/impostazioni confrontati.
+- Differenze risolte: wrapper GraphQL gestito da Supabase incluso come supplemento al dump; proprietà/ACL degli oggetti di estensione ricostruite dal manifest; ruolo e appartenenze aggiunti dal solo template locale rimossi dal clone. Impostazioni dei ruoli confrontate integralmente, normalizzando i timeout equivalenti (60000ms=1min), senza ignorare chiavi o flag.
+- Restore su build PostgreSQL17.6.1.021 con estensioni della fonte; rete Docker interna, connessioni al clone su socket locale. Cleanup container/volumi/rete e file temporanei SUCCESS.
+- Storage: 1 bucket e0 oggetti; inventario stabile pre/post, metadati del bucket e policy/ACL ripristinati. Non sono dichiarati verificati file esistenti o API Storage del clone: non c'erano byte di file da ripristinare.
 
-- Accesso PostgreSQL Production: PASS read-only nel run 46027023302. La credenziale DB è stata configurata; non va richiesta di nuovo.
-- Backup reale: dump acquisiti da snapshot read-only, ruoli senza password amministrative, inventario Storage e configurazioni recuperabili cifrati. Una copia cifrata è già conservata privatamente in modo persistente; non contiene il solo database sintetico.
-- Storage: inventario acquisito di 1 bucket e 0 oggetti. Non sono dichiarati collaudati file inesistenti.
-- Ultimo worker: commit 833cb4ae0268792cd022d17060147a0298ead8bf, run 46038079998, job 140638505778. Il log riporta DATABASE=PASS; RESTORE=STOP; STORAGE=PASS_ACQUIRED; CONFIG=PARTIAL; FINAL=STOP. Il risultato SUCCESS del workflow attesta l'esecuzione e il cleanup, non il superamento del gate.
-- Blocco tecnico: la verifica conclusiva del ripristino reale si arresta in RESTORE_VERIFY. Il dettaglio è conservato esclusivamente nel pacchetto cifrato; la causa residua dell'ultimo arresto non è ancora stata classificata. Non dichiarare il ripristino PASS sulla base dei confronti parziali precedenti.
-- Blocco configurazioni: valori originali Vercel sensitive non esportabili con gli accessi disponibili ed export completo Supabase Auth non acquisito. Le impostazioni Auth visibili sono state raccolte parzialmente; manca un token personale Supabase per l'export programmatico completo, oppure un export originale equivalente. I valori originali mancanti devono transitare esclusivamente tramite campo protetto, mai in chat o nel repository.
-- I PASS applicativi PR94/PR95 e i 7 workflow del checkpoint PR96 restano conservati; non sono stati ripetuti i test funzionali né la registrazione email.
-- Nessun merge, DDL/DML, configurazione, sospensione o deploy Production eseguito. Nessun nuovo evento o servizio a pagamento attivato.
-- Rapporti e checklist nel repository aggiornati; pannello Sites live non ripubblicato.
+## Conservazione e recuperabilità
+Pacchetto Backup_Production_20261128_Checkpoint.enc conservato cifrato nello spazio privato persistente, senza condivisione creata.
+2065200 byte; SHA256 89069e5f60d9e499d89b820dcb568be8852aae9e00a3b82aa6debe0f8705b1ff.
+Scaricato nuovamente da tale spazio: digest, decifratura autenticata, tutti i digest dei membri e validità JSON configurazioni PASS.
+Dump originale SHA256 fba60c549f11ba6bbc998c51563a83b2bd3312e548c471da0131b47f2d9407c1.
+Cifratura RSA-OAEP SHA256/AES256-GCM con chiave di backup già autorizzata. La chiave privata non è nel repository né nel pacchetto. Il precedente export config27/11 era troncato: usare esclusivamente la nuova copia validata28/11.
 
-Evidenza: https://github.com/rzirafi87-arch/Il-Budget-degli-Sposi/actions/runs/46038079998
+## Blocchi residui precisi
+1. Export completo Supabase Auth non acquisito: mancano configurazione completa e verifica di recupero del servizio Auth, oltre ai dati Auth già presenti nel database.
+2. Valori originali delle variabili Vercel sensitive non tutti attestati. Inventario22, valori10 leggibili acquisiti con configurazione progetto e JSON valido;12 sensitive non esportabili. Connessione DB e varianti sono ricostruibili dalla credenziale già acquisita: non richiedere nuovamente la password. Sette valori originali restano da acquisire o attestare come non configurati: EMAIL_PROVIDER,EMAIL_FROM,EMAIL_FROM_NAME,BREVO_API_KEY,RESEND_API_KEY,SUPABASE_SECRET_KEY,SUPABASE_JWT_SECRET. Le chiavi email del repository sono candidati, non prova dei valori Vercel originali.
+Dettaglio e campi protetti: CONFIG_COVERAGE.md. Nessun valore o dato personale in questi documenti.
+La rigenerazione futura delle credenziali richiede un piano di recupero verificato; non trasforma l'export originale parziale in backup completo.
 
-## Storico precedente
-
-# Backup reale Production — 27 novembre 2026
-
-## Esito: STOP
-Nessuna ripetizione dei test funzionali/compatibilità già PASS. Nessun merge,
-DDL/DML, modifica configurazione, sospensione o deploy Production eseguito.
-
-## Attività indipendenti concluse
-- PR96 ancora aperta sul checkpoint tecnico 9d33ce94.
-- Rilevati gli accessi e le variabili disponibili senza stampare valori.
-- Recuperata la chiave di backup già autorizzata tramite canale privato,
-  senza inserirne il contenuto in repository, report o messaggi.
-- Esportate le configurazioni Vercel leggibili del progetto e metadati delle
-  variabili Production. Cifratura ibrida RSA-OAEP SHA256 + AES-256-GCM;
-  decifratura di controllo e confronto esatto dei byte PASS.
-- Archivio CONFIG_PARZIALE del 27/11 conservato nello spazio privato persistente,
-  senza condivisioni create. Nessun contenuto del backup nel repository.
-- Verifica SQL read-only dell'inventario Auth/Storage completata; nessun dato
-  applicativo o nome di file riportato qui. Non equivale a esportazione.
-
-## Copertura effettiva e limiti
-Configurazioni Vercel esportabili: acquisite e cifrate. Le variabili marcate
-sensitive non sono esportabili in lettura; l'archivio le registra come mancanti,
-non come valori ripristinabili. Nessun dump database, byte Storage o export
-completo Auth è stato acquisito. Nessuna data di backup coerente DB+Storage
-può essere attestata: esiste solo la data del pacchetto CONFIG_PARZIALE.
-Il controllo di decifratura verifica quel pacchetto, NON un restore Production.
-Il ripristino dei dati reali, i relativi conteggi, i file e i permessi non sono
-stati verificati e restano STOP. Il precedente drill sintetico resta separato.
-
-## Accessi mancanti, precisi
-1. Connessione PostgreSQL Production utilizzabile da pg_dump PostgreSQL17:
-   URL libpq completo del progetto vsguhivizuneylqhygfk, utente con lettura
-   completa dei dati/schemi Auth/Storage e privilegi per il dump necessario,
-   password e TLS. Preferire l'URL diretto o pooler in session mode; non il
-   pooler transaction mode. NON è la anon key né la service_role API key.
-   DATABASE_URL/POSTGRES_PASSWORD in Vercel sono sensitive e non restituiti:
-   non cambiarne tipo, target o protezioni per esportarli.
-2. Egress del worker isolato verso PostgreSQL e
-   https://vsguhivizuneylqhygfk.supabase.co/storage/v1/ : due tentativi HTTPS
-   innocui senza credenziali sono terminati in timeout nel runtime corrente.
-   La chiave server API autorizzata è già disponibile privatamente; non serve
-   reinviarla. Non sono stati copiati file in base a un semplice inventario SQL.
-3. Pacchetto di configurazioni originali non esportabili, da password manager
-   o canale protetto: valori Vercel sensitive e configurazione Supabase Auth,
-   redirect, provider/SMTP e materiale necessario ai token/chiavi. Nel progetto
-   risultano mancanti i valori sensitive EMAIL_PROVIDER, EMAIL_FROM,
-   EMAIL_FROM_NAME, BREVO_API_KEY, RESEND_API_KEY, SUPABASE_SECRET_KEY,
-   POSTGRES_URL, POSTGRES_PRISMA_URL, POSTGRES_URL_NON_POOLING,
-   POSTGRES_PASSWORD, SUPABASE_JWT_SECRET, DATABASE_URL.
-   Un valore facoltativo assente va attestato come tale, non inventato.
-
-## Modalità protetta per la credenziale DB
-Campo GitHub Actions repository secret: PRODUCTION_BACKUP_DATABASE_URL.
-Valore: URL PostgreSQL completo già autorizzato, inserito soltanto nel campo
-Secret mascherato di GitHub, mai in chat. L'inserimento non avvia il backup,
-non cambia Production e non autorizza un rilascio. Prima dell'uso il workflow
-va vincolato a sola lettura Production, worker temporaneo e uscita cifrata;
-nessun dump plaintext o secret come artifact GitHub. L'archivio persistente
-resta privato e cifrato separatamente dalla chiave.
-
-## Coerenza richiesta dopo sblocco
-Snapshot DB consistente; inventario Storage dalla stessa finestra; scaricamento
-oggetti con verifiche di versione/digest pre/post, rilevamento modifiche concorrenti
-senza fermare Production. Se non si ottiene un insieme coerente, STOP anziché
-certificare un point-in-time inesistente. Ripristino in stack isolato gratuito,
-con messaggistica/provider esterni disattivati solo nel clone, confronto conteggi,
-vincoli, byte/digest, metadati, ownership/RLS/ACL e accessi autorizzati/negati.
-
-## Decisione finale
-STOP backup reale; il solo archivio parziale non chiude il blocco PR96.
-Tutti i PASS precedenti sono conservati. Nessun servizio a pagamento attivato.
+## Vincoli conservati
+PR96 resta9d33ce94; PASS PR94/PR95 e test applicativi precedenti conservati, registrazione non ripetuta.
+Nessun merge, modifica dati/configurazioni, sospensione, migrazione o deploy Production; nessun altro evento o servizio a pagamento attivato.
+Checklist aggiornata nel repository; pannello Sites live non ripubblicato.
+Il rilascio resta non autorizzato. Dopo la chiusura dei blocchi: checkpoint separato, ordine PR94→PR95, tre migrazioni nel manifest e deploy esplicito come in SEQUENZA_DA_AUTORIZZARE.md.
