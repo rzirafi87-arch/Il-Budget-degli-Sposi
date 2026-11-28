@@ -16,6 +16,11 @@ Questa sezione è corrente; le sezioni datate seguenti sono storico. Non estende
 | Tutti | Rilascio | Bloccato | Production | main cd6b406a | Nessun rilascio eseguito | Backup config incompleto e autorizzazione assente | Presentare candidato completo revisionabile |
 | Tutti | Coordinamento | Completato e verificato | Sito esistente | versione5 sorgente393db5fc | Pubblicazione e browser banner28/11 PASS; 13 test/TypeScript/build PASS | Non certifica il funzionamento dell’app | Aggiornare dopo prossimi risultati |
 
+| Tutti | Selezione evento | Completato e verificato nel perimetro | Locale | PR98 6846f85 | 19 test in7 suite, TypeScript/build PASS; cookie/notifica dopo conferma server | Browser autenticato nuovo salvataggio non eseguito; CI non attestata | Verifica browser isolata, poi adattatore party |
+| Tutti | Config crypto | Completato e verificato nel perimetro | Locale sintetico | PR98 6846f85 | 17 test coverage/seal PASS | Non acquisisce export mancanti e non certifica restore servizi | Collegare fonti protette, gate config resta STOP |
+| Sei eventi | Materiali e catalogo | Completato recupero; integrazione in corso | Repository | PR98 6846f85 | Undici originali e catalogo con fonti SHA/cinque lingue | Nessuna attivazione pubblica/QA nuovi eventi | birthday/fifty atomico, poi altri percorsi |
+| Tutti | Preview nuovo codice | READY | Preview | PR98 6846f85 / dpl_HJH3B1p94KiaaAt8CbyADdRmuyUf | Stato remoto READY28/11 | Non equivale a QA autenticato di tutte le funzioni | Collaudo mirato isolato |
+
 ---
 
 # Esito backup — 28 novembre 2026

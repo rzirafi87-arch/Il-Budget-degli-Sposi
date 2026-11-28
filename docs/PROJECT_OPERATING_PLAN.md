@@ -29,3 +29,6 @@ Concludere modifica select-country e test mirati; registrare risultati nella che
 
 ### Lavoro residuo e prossima fase esatta
 Il progetto completo resta INCOMPLETO. Prima di un’altra fase impegnativa: persistire il secondo gruppo di modifiche e verifiche su PR98, poi aggiornare riepilogo/checklist. Avviare quindi adattatore party per birthday/fifty basato sull’evento corrente autorevole, con scritture atomiche, scenari propri/altrui e checklist relativa; lasciare capability pubblica disabilitata. Non riusare limit(1) o delete-then-insert delle vecchie API. Integrare poi Comunione/Laurea/Cresima a partire dai pacchetti e dal catalogo, con QA individuale e Preview. Proseguire in parallelo raccolta configurazioni tramite un canale protetto realmente disponibile; i connettori esposti non offrono export Auth completo. Prima del rollout occorre recupero isolato dei servizi e autorizzazione Production sul candidato concreto. Safari/iOS reale resta da verificare.
+
+## Ripresa corrente
+Il secondo gruppo è persistito nella PR98 a6846f85. Per esiti finali e prossima implementazione prevale docs/WORK_CHECKPOINT_20261128.md, senza cancellare i checkpoint precedenti.
