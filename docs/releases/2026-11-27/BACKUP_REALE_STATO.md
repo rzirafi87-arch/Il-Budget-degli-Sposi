@@ -1,3 +1,23 @@
+# Backup reale Production — stato corrente
+
+## Aggiornamento verificato — 28 novembre 2026
+
+**STOP: il blocco backup PR96 resta aperto.** Questo aggiornamento prevale sulle indicazioni storiche riportate sotto.
+
+- Accesso PostgreSQL Production: PASS read-only nel run 46027023302. La credenziale DB è stata configurata; non va richiesta di nuovo.
+- Backup reale: dump acquisiti da snapshot read-only, ruoli senza password amministrative, inventario Storage e configurazioni recuperabili cifrati. Una copia cifrata è già conservata privatamente in modo persistente; non contiene il solo database sintetico.
+- Storage: inventario acquisito di 1 bucket e 0 oggetti. Non sono dichiarati collaudati file inesistenti.
+- Ultimo worker: commit 833cb4ae0268792cd022d17060147a0298ead8bf, run 46038079998, job 140638505778. Il log riporta DATABASE=PASS; RESTORE=STOP; STORAGE=PASS_ACQUIRED; CONFIG=PARTIAL; FINAL=STOP. Il risultato SUCCESS del workflow attesta l'esecuzione e il cleanup, non il superamento del gate.
+- Blocco tecnico: la verifica conclusiva del ripristino reale si arresta in RESTORE_VERIFY. Il dettaglio è conservato esclusivamente nel pacchetto cifrato; la causa residua dell'ultimo arresto non è ancora stata classificata. Non dichiarare il ripristino PASS sulla base dei confronti parziali precedenti.
+- Blocco configurazioni: valori originali Vercel sensitive non esportabili con gli accessi disponibili ed export completo Supabase Auth non acquisito. Le impostazioni Auth visibili sono state raccolte parzialmente; manca un token personale Supabase per l'export programmatico completo, oppure un export originale equivalente. I valori originali mancanti devono transitare esclusivamente tramite campo protetto, mai in chat o nel repository.
+- I PASS applicativi PR94/PR95 e i 7 workflow del checkpoint PR96 restano conservati; non sono stati ripetuti i test funzionali né la registrazione email.
+- Nessun merge, DDL/DML, configurazione, sospensione o deploy Production eseguito. Nessun nuovo evento o servizio a pagamento attivato.
+- Rapporti e checklist nel repository aggiornati; pannello Sites live non ripubblicato.
+
+Evidenza: https://github.com/rzirafi87-arch/Il-Budget-degli-Sposi/actions/runs/46038079998
+
+## Storico precedente
+
 # Backup reale Production — 27 novembre 2026
 
 ## Esito: STOP
