@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import WeddingTraditionInfo, { WeddingTradition } from "@/components/WeddingTraditionInfo";
 import { COUNTRIES } from "@/lib/loadConfigs";
 import { useLocale, useTranslations } from "next-intl";
@@ -10,16 +10,33 @@ export default function SelectCountryPage() {
   const router = useRouter();
   const locale = useLocale();
 
+  const [query, setQuery] = useState("");
+  const language = (["it", "en", "fr", "es", "de"] as const).find(code => code === locale) || "it";
+  const copy = {
+    it: { search: "Cerca una nazione", empty: "Nessuna nazione trovata", soon: "In arrivo", progress: "Passaggio 2 di 3" },
+    en: { search: "Search for a country", empty: "No countries found", soon: "Coming soon", progress: "Step 2 of 3" },
+    fr: { search: "Rechercher un pays", empty: "Aucun pays trouvé", soon: "Bientôt disponible", progress: "Étape 2 sur 3" },
+    es: { search: "Buscar un país", empty: "No se encontraron países", soon: "Próximamente", progress: "Paso 2 de 3" },
+    de: { search: "Land suchen", empty: "Keine Länder gefunden", soon: "Demnächst", progress: "Schritt 2 von 3" },
+  }[language];
+  const countryNames = new Intl.DisplayNames([locale], { type: "region" });
+  const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase(locale).trim();
+  const visibleCountries = COUNTRIES.map(country => ({ ...country, name: countryNames.of(country.code.toUpperCase()) || country.label }))
+    .filter(country => normalize(`${country.name} ${country.label} ${country.code}`).includes(normalize(query)));
+
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [tradition, setTradition] = useState<WeddingTradition | null>(null);
 
   // Prefetch tradition preview when country changes
   useEffect(() => {
     if (!selectedCountry) return;
+    let active = true;
+    setTradition(null);
     fetch(`/api/traditions?country=${encodeURIComponent(selectedCountry)}`)
       .then((r) => r.json())
-      .then((d) => setTradition((d.traditions && d.traditions[0]) || null))
-      .catch(() => setTradition(null));
+      .then((d) => { if (active) setTradition((d.traditions && d.traditions[0]) || null); })
+      .catch(() => { if (active) setTradition(null); });
+    return () => { active = false; };
   }, [selectedCountry]);
 
   // Ensure language/country cookies, redirect if already set
@@ -76,7 +93,7 @@ export default function SelectCountryPage() {
       }}
     >
       <div className="onboarding-panel max-w-lg">
-        <div className="onboarding-progress" aria-label="Passaggio 2 di 3">
+        <div className="onboarding-progress" aria-label={copy.progress}>
           <span className="onboarding-progress__step" />
           <span className="onboarding-progress__step onboarding-progress__step--active" />
           <span className="onboarding-progress__step" />
@@ -88,8 +105,13 @@ export default function SelectCountryPage() {
         <p className="text-center text-gray-600 mb-6 text-base">
           {t("onboarding.selectCountryDesc", { fallback: "Seleziona il paese per personalizzare i contenuti" })}
         </p>
-        <div className="grid grid-cols-2 gap-4">
-          {COUNTRIES.map((c) => (
+        <label className="mb-4 grid gap-2">
+          <span>{copy.search}</span>
+          <input type="search" value={query} onChange={event => setQuery(event.target.value)} className="w-full rounded-xl border border-gray-300 bg-white p-3" />
+        </label>
+        {visibleCountries.length === 0 && <p role="status" className="mb-4">{copy.empty}</p>}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {visibleCountries.map((c) => (
             <button
               key={c.code}
               className="onboarding-choice w-full text-lg"
@@ -98,10 +120,10 @@ export default function SelectCountryPage() {
               aria-pressed={selectedCountry === c.code}
             >
               <span className="text-2xl" aria-hidden="true">{c.emoji}</span>
-              <span>{new Intl.DisplayNames([document?.documentElement?.lang || 'it'], { type: 'region' }).of(c.code.toUpperCase()) || c.label}</span>
+              <span>{c.name}</span>
               {c.available === false && (
                 <span className="ml-2 inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
-                  In arrivo
+                  {copy.soon}
                 </span>
               )}
             </button>

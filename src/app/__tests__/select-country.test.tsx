@@ -1,5 +1,5 @@
-﻿import '@testing-library/jest-dom';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 // Mock next/navigation for useRouter
 jest.mock('next/navigation', () => ({
@@ -50,4 +50,18 @@ describe('SelectCountryPage', () => {
     // Clic non deve lanciare errori, il push è mockato
     fireEvent.click(avanti);
   });
+  it('filtra per nome e codice senza perdere la selezione', async () => {
+    render(<SelectCountryPage />);
+    await act(async () => { fireEvent.click(screen.getByText(/^(MX|Messico)$/i)); });
+    const search = screen.getByRole('searchbox', { name: /cerca una nazione/i });
+    fireEvent.change(search, { target: { value: 'fr' } });
+    expect(screen.getByRole('button', { name: /francia/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /messico/i })).not.toBeInTheDocument();
+    expect(localStorage.getItem('country')).toBe('mx');
+    fireEvent.change(search, { target: { value: 'nessuna corrispondenza' } });
+    expect(screen.getByRole('status')).toHaveTextContent('Nessuna nazione trovata');
+    fireEvent.change(search, { target: { value: '' } });
+    expect(screen.getByRole('button', { name: /messico/i })).toHaveAttribute('aria-pressed', 'true');
+  });
+
 });

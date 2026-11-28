@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-28",
+  "method": "read-only list_migrations",
+  "productionCount": 60,
+  "qaCount": 56,
+  "requiredManifest": [
+    {
+      "name": "baptism_revision_parent_cascade_guard",
+      "production": [],
+      "qa": [
+        {
+          "version": "20261125100634",
+          "name": "baptism_revision_parent_cascade_guard"
+        }
+      ]
+    },
+    {
+      "name": "eighteenth_party_plan_revision",
+      "production": [],
+      "qa": [
+        {
+          "version": "20261125102641",
+          "name": "eighteenth_party_plan_revision"
+        }
+      ]
+    },
+    {
+      "name": "eighteenth_partial_payments",
+      "production": [],
+      "qa": [
+        {
+          "version": "20261125104656",
+          "name": "eighteenth_partial_payments"
+        }
+      ]
+    }
+  ],
+  "limit": "Ledger presence is not schema equivalence. Provider version aliases differ; preserve the prior schema reconciliation and do not replay historical migrations."
+}
