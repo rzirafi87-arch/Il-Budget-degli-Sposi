@@ -237,9 +237,9 @@ try:
  run(['docker','cp',str(root/'restore-exact-role-settings.sql'),container+':/tmp/restore-exact-role-settings.sql'])
  run(['docker','exec',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/restore-exact-role-settings.sql'])
  stage=mark_stage('RESTORE_EXACT_MEMBERSHIPS')
- expected_memberships=before['role_memberships']
+ expected_memberships={tuple(x) for x in before['role_memberships']}
  for membership in json_rows(PERMISSION_QUERIES['role_memberships']):
-  if membership not in expected_memberships:
+  if tuple(membership) not in expected_memberships:
    role_name,member,grantor,admin,inherit,can_set=membership
    local_sql('REVOKE '+ident(role_name)+' FROM '+ident(member)+' GRANTED BY '+ident(grantor))
  stage=mark_stage('RESTORE_VERIFY')
