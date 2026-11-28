@@ -1,3 +1,23 @@
+# Aggiornamento operativo — 28 novembre 2026
+
+Questa sezione è corrente; le sezioni datate seguenti sono storico. Non estendere i PASS oltre SHA, ambiente e perimetro indicati. Nessuna operazione Production autorizzata.
+
+| Evento | Area | Stato | Ambiente | Branch / PR / SHA | Evidenza e data | Limiti | Prossimo passo |
+|---|---|---|---|---|---|---|---|
+| Matrimonio/Battesimo | QA | Completato e verificato, PASS conservato | QA/Preview | PR94 a4bd47f, codice e6585e8 | HEAD remoto invariato 28/11; evidenze PR94 | Safari/iOS reale non certificato | Regressione solo per dipendenze modificate |
+| Diciottesimo | QA, multi-evento | Completato e verificato, PASS conservato | QA/Preview | PR95 98a1aebe | HEAD invariato 28/11, 998 test/151 suite, run45637463755 | Chromium viewport; nessun nuovo collaudo mobile reale | Verificare cambi nuovi senza rifare intera suite |
+| Tutti | Backup DB/Storage | Completato e verificato nel perimetro | Restore isolato | PR97 e29e4c9 | Run46135929450: 108 tabelle, conteggi/contenuti/RLS/ACL PASS; Storage1 bucket/0 oggetti; log letto28/11 | Persistenza/decifratura attestata dal rapporto568c700, non rieseguita qui | Conservare evidenze; configurazioni separate |
+| Tutti | Configurazioni recupero | Bloccato | Production lettura / target isolato | PR97 e29e4c9 | CONFIG PARTIAL; FINAL STOP. CONFIG_COVERAGE.md 28/11 | Export Auth completo e sette valori Vercel non attestati; password DB già acquisita | Collector cifrato separato, validazione e recupero Auth isolato |
+| Tutti | Continuità | Completato e verificato | Repository | integration/project-completion-20261128 / 831dc462 | Piano persistente docs/PROJECT_OPERATING_PLAN.md | Capacità residue non esposte: nessuna percentuale inventata | Salvare prima di fasi impegnative e dopo risultati significativi |
+| Tutti | Scelta nazione | In corso | Locale | integration/project-completion-20261128 | Ricerca nome/codice, etichette IT/EN/FR/ES/DE, protezione risposte tradizioni obsolete | Test mirati PASS; browser/Preview nuovo codice da verificare | Pubblicare candidato e verifiche mirate |
+| Battesimo/Comunione/Cresima/Laurea | Contenuti | In corso | Branch isolato | docs/* recuperati nel nuovo branch | Word/Excel esistenti recuperati senza modificare il contenuto | Recupero non equivale ad approvazione attivazione o QA | Inventario e integrazione dei contenuti approvati |
+| Compleanno/50 | Contenuti e sviluppo | Da verificare | Branch isolato | birthday / fifty, capability COMING_SOON | Materiali recuperabili, nessun flag attivato | API legacy da riconciliare con contesto autorevole | Recuperare materiali e sostituire flussi legacy prima dell’attivazione |
+| Tutti | Migrazioni/rollback | Completato il piano; da autorizzare | Production invariata | Rapporto568c700, PR96 9d33ce9 | Tre migrazioni manifest; old-app/new-schema PASS run45993656604 | Non applicate le tre migrazioni, nessun merge/deploy | Checkpoint finale dopo chiusura configurazioni |
+| Tutti | Rilascio | Bloccato | Production | main cd6b406a | Nessun rilascio eseguito | Backup config incompleto e autorizzazione assente | Presentare candidato completo revisionabile |
+| Tutti | Coordinamento | In corso | Sito esistente | versione4 sorgente426f201 | Fonte aggiornata con schede28/11, preservati record manuali e audience | Sincronizzazione nuova versione da concludere | Build/package/pubblicazione solo pannello |
+
+---
+
 # Esito backup — 28 novembre 2026
 
 **STOP complessivo: ripristino database e inventario Storage PASS; copertura configurazioni incompleta.**
