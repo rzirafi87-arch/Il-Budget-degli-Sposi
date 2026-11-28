@@ -232,7 +232,7 @@ try:
   for setting in settings:
    key,value=setting.split('=',1)
    role_config_commands.append('SELECT pg_catalog.set_config('+literal(key)+','+literal(value)+',false);')
-   role_config_commands.append('ALTER ROLE '+ident(role_name)+' SET '+ident(key)+(' FROM CURRENT;' if key=='search_path' else ' TO '+literal(value)+';'))
+   role_config_commands.append('ALTER ROLE '+ident(role_name)+' SET '+ident(key)+' FROM CURRENT;')
  role_config_commands.append('COMMIT;');(root/'restore-exact-role-settings.sql').write_text('\n'.join(role_config_commands)+'\n')
  run(['docker','cp',str(root/'restore-exact-role-settings.sql'),container+':/tmp/restore-exact-role-settings.sql'])
  run(['docker','exec',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/restore-exact-role-settings.sql'])
@@ -261,7 +261,7 @@ try:
      for setting in local_query('select to_json('+literal(row[-1])+'::text[])'):
       key,value=setting.split('=',1)
       if key in {'statement_timeout','lock_timeout','idle_in_transaction_session_timeout','idle_session_timeout','transaction_timeout'}:
-       m=re.fullmatch(r'([0-9]+(?:\.[0-9]+)?)\s*(us|ms|s|min|h|d)?',value)
+       m=re.fullmatch(r'([0-9]+(?:[.][0-9]+)?)[ ]*(us|ms|s|min|h|d)?',value)
        if m:value=str(Decimal(m.group(1))*factors[m.group(2) or 'ms'])+'ms'
       normalized.append((key,value))
      result.append(row[:-1]+[sorted(normalized)])
