@@ -1,0 +1,52 @@
+name: Production encrypted backup and isolated restore
+on:
+  pull_request:
+    branches: [feature/eighteenth-completion-20261123]
+    paths: ['.github/workflows/production-backup-access.yml', 'scripts/backup/**']
+permissions: { contents: read }
+jobs:
+  backup-restore:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: supabase/setup-cli@v1
+        with: { version: 2.116.0 }
+      - name: Prepare isolated restore target without Production writes
+        run: |
+          umask 077
+          python3 -m venv /tmp/backup-python
+          /tmp/backup-python/bin/pip -q install 'psycopg[binary]==3.2.13' 'cryptography==46.0.3'
+          mkdir /tmp/backup-target
+          cd /tmp/backup-target
+          supabase init
+          mkdir -p supabase/.temp
+          printf '%s\n' '17.6.1.021' > supabase/.temp/postgres-version
+          supabase db start > /tmp/backup-target/start.log 2>&1
+          docker ps --format '{{.Image}}' | grep -F 'supabase/postgres:17.6.1.021'
+      - name: Acquire read-only Production snapshot, encrypt and verify offline restore
+        env:
+          SOURCE_URL: ${{ secrets.PRODUCTION_BACKUP_DATABASE_URL }}
+          STORAGE_KEY: ${{ secrets.PLAYWRIGHT_SUPABASE_SERVICE_ROLE_KEY }}
+          BREVO_API_KEY: ${{ secrets.PLAYWRIGHT_BREVO_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.PLAYWRIGHT_RESEND_API_KEY }}
+        run: /tmp/backup-python/bin/python scripts/backup/acquire.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-encrypted-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/encrypted-backup/*.enc
+          if-no-files-found: error
+          retention-days: 3
+      - name: Destroy isolated real-data restore and temporary plaintext
+        if: always()
+        run: |
+          cd /tmp/backup-target
+          supabase stop --no-backup > /tmp/backup-stop.log 2>&1 || true
+          docker ps -aq --filter name=supabase_ | xargs -r docker rm -f > /dev/null 2>&1 || true
+          docker volume ls -q --filter name=supabase_ | xargs -r docker volume rm -f > /dev/null 2>&1 || true
+          docker network rm "production-restore-offline-${{ github.run_id }}" > /dev/null 2>&1 || true
+          rm -rf /tmp/production-backup-* /tmp/backup-target /tmp/backup-python
