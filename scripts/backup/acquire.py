@@ -232,7 +232,7 @@ try:
   for setting in settings:
    key,value=setting.split('=',1)
    role_config_commands.append('SELECT pg_catalog.set_config('+literal(key)+','+literal(value)+',false);')
-   role_config_commands.append('ALTER ROLE '+ident(role_name)+' SET '+ident(key)+' FROM CURRENT;')
+   role_config_commands.append('ALTER ROLE '+ident(role_name)+' SET '+ident(key)+(' FROM CURRENT;' if key=='search_path' else ' TO '+literal(value)+';'))
  role_config_commands.append('COMMIT;');(root/'restore-exact-role-settings.sql').write_text('\n'.join(role_config_commands)+'\n')
  run(['docker','cp',str(root/'restore-exact-role-settings.sql'),container+':/tmp/restore-exact-role-settings.sql'])
  run(['docker','exec',container,'psql','--no-password','-h','/var/run/postgresql','-U','supabase_admin','-d','production_restore_drill','-v','ON_ERROR_STOP=1','-f','/tmp/restore-exact-role-settings.sql'])
